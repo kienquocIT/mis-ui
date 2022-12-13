@@ -1,0 +1,39 @@
+{% load static compress %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+    {% compress css %}
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        {% block css %}{% endblock %}
+    {% endcompress %}
+</head>
+<body>
+<div class="hk-wrapper" data-layout="vertical" data-layout-style="default" data-menu="light" data-footer="simple">
+    {% include 'extends/headers.html' %}
+
+    <div class="hk-pg-wrapper">
+<h1>This is a Heading</h1>
+<p>This is a paragraph.</p>
+        {% block contentPage %}{% endblock %}
+        {% include 'extends/footers.html' %}
+    </div>
+</div>
+
+{% compress js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JS -->
+   	<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+    <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/init.js' %}"></script>
+
+    {% block jsFooter %}{% endblock %}
+
+{% endcompress %}
+</body>
+</html>

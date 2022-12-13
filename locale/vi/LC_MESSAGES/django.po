@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-09 17:20+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\apps\core\auths\templates\auths\login.html:47
+msgid "Sign in to your account"
+msgstr "Đăng nhập vào tài khoản của bạn"
+
+#: .\apps\core\auths\templates\auths\login.html:58
+msgid "Choose..."
+msgstr "Chọn ..."
+
+#: .\apps\core\auths\templates\auths\login.html:64
+msgid "User Name"
+msgstr "Tên Đăng Nhập"
+
+#: .\apps\core\auths\templates\auths\login.html:74
+msgid "Password"
+msgstr "Mật Khẩu"
+
+#: .\apps\core\auths\templates\auths\login.html:76
+msgid "Forgot Password ?"
+msgstr "Quên Mật Khẩu ?"
+
+#: .\apps\core\auths\templates\auths\login.html:102
+msgid "Keep me logged in"
+msgstr "Ghi nhớ đăng nhập"
+
+#: .\apps\core\auths\templates\auths\login.html:106
+msgid "Login"
+msgstr "Đăng Nhập"
+
+#: .\apps\core\auths\templates\auths\login.html:108
+msgid "Creat new account to MIS"
+msgstr "Tạo mới tài khoản trên MIS"
+
+#: .\apps\shared\msg\auth.py:5
+msgid "Setup login return exception"
+msgstr "Yêu cầu đăng nhập xử lý thất bại"
+
+#: .\apps\shared\msg\auth.py:6
+msgid "Login successfully"
+msgstr "Đăng nhập thành công"
+
+#: .\apps\shared\msg\auth.py:7
+msgid "tenant_code"
+msgstr "Mã Tenant"
+
+#: .\apps\shared\msg\auth.py:8
+msgid "detail"
+msgstr "Chi tiết"
+
+#: .\apps\shared\msg\server.py:5
+msgid "Server errors"
+msgstr "Lỗi máy chủ"

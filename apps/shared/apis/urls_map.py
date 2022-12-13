@@ -4,3 +4,4 @@ class ApiURL(object):
     my_profile = 'auth/profile'
     refresh_token = 'auth/token-refresh'
     tenants = 'provisioning/tenants'
+    user_list = 'account/users'

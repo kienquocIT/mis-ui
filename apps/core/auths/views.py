@@ -10,9 +10,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import AuthLoginForm
-from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg
+from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg
 from apps.core.account.models import User
-from apps.shared.msg import ServerMsg
 
 
 class AuthLogin(APIView):

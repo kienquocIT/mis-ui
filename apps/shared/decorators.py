@@ -47,7 +47,7 @@ def mask_view(**parent_kwargs):
                     return redirect(reverse('AuthLogin'))
 
             # redirect or next step with is_auth
-            view_return = func_view(self, request, *args, **kwargs)
+            view_return = func_view(self, request, *args, **kwargs) # --> {'user_list': user_list}
             if isinstance(view_return, HttpResponse):
                 return view_return
             elif is_api:
@@ -62,6 +62,8 @@ def mask_view(**parent_kwargs):
                     space_selected, space_list = parse_spaces(kwargs.get('space_code', None))
                     ctx['base']['space_selected'] = space_selected
                     ctx['base']['space_list'] = space_list
+
+                    ctx['data'] = view_return
                     return render(request, template_path, ctx)
                 return redirect(reverse('AuthLogin'))
             raise ValueError(f'Return not map happy case. Over with: is_api={is_api},template={template_path}')

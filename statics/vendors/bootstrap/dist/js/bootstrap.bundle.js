@@ -1747,7 +1747,7 @@
 
       this._element.classList.remove(CLASS_NAME_COLLAPSE);
 
-      this._element.classList.add(CLASS_NAME_COLLAPSING);
+      // this._element.classList.add(CLASS_NAME_COLLAPSING);
 
       this._element.style[dimension] = 0;
 
@@ -1758,7 +1758,7 @@
       const complete = () => {
         this._isTransitioning = false;
 
-        this._element.classList.remove(CLASS_NAME_COLLAPSING);
+        // this._element.classList.remove(CLASS_NAME_COLLAPSING);
 
         this._element.classList.add(CLASS_NAME_COLLAPSE, CLASS_NAME_SHOW$7);
 
@@ -1790,7 +1790,7 @@
       this._element.style[dimension] = `${this._element.getBoundingClientRect()[dimension]}px`;
       reflow(this._element);
 
-      this._element.classList.add(CLASS_NAME_COLLAPSING);
+      // this._element.classList.add(CLASS_NAME_COLLAPSING);
 
       this._element.classList.remove(CLASS_NAME_COLLAPSE, CLASS_NAME_SHOW$7);
 
@@ -1810,7 +1810,7 @@
       const complete = () => {
         this._isTransitioning = false;
 
-        this._element.classList.remove(CLASS_NAME_COLLAPSING);
+        // this._element.classList.remove(CLASS_NAME_COLLAPSING);
 
         this._element.classList.add(CLASS_NAME_COLLAPSE);
 

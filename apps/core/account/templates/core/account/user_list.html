@@ -1,7 +1,165 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% block css %}
+    <style>
+        button{
+            border: 0 solid;
+        }
+        @media screen and (max-width: 800px) {
+        }
+
+        @media screen and (max-width: 1050px) {
+        }
+
+        #offcanvasRight{
+            width: 75%;
+        }
+        @media screen and (max-width: 600px){
+            #offcanvasRight{
+                width: 100%;
+            }
+        }
+
+
+
+        .app-downloads i{
+            width: 1.2em;
+            height: 1.2em;
+            margin-right: 0.5em;
+            margin-top: 0.2em;
+        }
+
+        .offcanvas-header{
+            margin-right: 1em;
+            margin-left: 1em;
+            border-bottom: 0.01em solid #dcdcdc;
+        }
+
+        .name-field input{
+            width: 80%;
+            border: 0.1em solid #dcdcdc;
+            border-radius: 0.5em;
+        }
+        .other-field, .auto-create-pw, .button-field{
+            margin-top: 1em;
+        }
+        .other-field input{
+            width: 90%;
+            border: 0.1em solid #dcdcdc;
+            border-radius: 0.5em;
+        }
+
+        tbody tr td button{
+            background: none;
+        }
+    </style>
+{% endblock %}
+{% block PageHeader %}
+
+{% endblock %}
 {% block contentPage %}
-    <div style="padding-left: 20px;padding-top: 20px;">
-        <p>{{ data.user_list }}</p>
+    <div class="row">
+        <div class="col-lg-4">
+            <p>System > <span>User</span></p>
+        </div>
     </div>
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add User</button>
+
+    <div class="offcanvas offcanvas-end" tabindex="-2" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h3 id="offcanvasRightLabel">Add User</h3>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="col-lg-3 col-sm-3"></div>
+                <div class="col-lg-9 col-sm-9">
+                    <form id="form-create-user" data-url="" data-url-redirect="" data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="row name-field">
+                                    <label>First Name</label>
+                                    <input type="text" placeholder="Input text" name="document_firstname" id="first_name" required >
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="row name-field">
+                                    <label>Last Name</label>
+                                    <input type="text" placeholder="Input text" name="document_lastname" id="last_name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row other-field">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="Input text" name="document_email" id="email-user" required>
+                        </div>
+                        <div class="row other-field">
+                            <label>Phone</label>
+                            <input type="text" placeholder="Input text" name="document_phone" id="phone-user" required>
+                        </div>
+                        <div class="row other-field username">
+                            <label>User Name</label>
+                            <input type="text" placeholder="Input text" name="document_username" id="username" required>
+                        </div>
+                        <div class="row other-field" hidden>
+                            <label>User ID</label>
+                            <input type="text" placeholder="Input text" name="document_userid" id="userid">
+                        </div>
+                        <div class="row button-field">
+                            <div class="col-lg-2">
+                                <button type="submit" class="btn btn-primary btn-save">Submit</button>
+                            </div>
+                            <div class="col-lg-7"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding-left: 20px;padding-top: 20px;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Plan</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        {{ data.user_list|json_script:'data-user' }}
+
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script>
+        $("#form-create-user").submit(function (event){
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (res) => {
+                        console.log(res.status);
+                        location.reload();
+                    },
+                    (err) => {
+                        $('.username').append('<span>Username is existing</span>');
+                        $('.username').css('color', 'red');
+                        $('.username').css('background', '#FFF0F5');
+                        $('#username').css('border-color', 'red');
+                        {#$('.username label').css('color', 'red');#}
+                        {#$('.username').css('border', '0.1em solid red');#}
+                        $.fn.notifyPopup({description: err}, 'failure');
+                    }
+                )
+        });
+
+
+        $("#tbody").on("click", ".btn-edit", function (event){
+            event.preventDefault();
+        });
+    </script>
 {% endblock %}

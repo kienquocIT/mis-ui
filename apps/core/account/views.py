@@ -1,9 +1,10 @@
-from django.shortcuts import render
 import json
+
+from django.shortcuts import render
 from rest_framework.views import APIView
-from .models import AuthUser, User
-from .serializers import UserSerializer
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg
+from .models import User
+from .serializers import UserDetailSerializer, UserListSerializer
+from apps.shared import mask_view, ServerMsg
 from rest_framework.response import Response
 
 
@@ -11,52 +12,49 @@ class UserListView(APIView):
     @mask_view(auth_require=True, template='core/account/user_list.html')
     def get(self, request, *args, **kwargs):
         user_list = User.objects.all()
-        serializer = UserSerializer(user_list, many=True)
+        serializer = UserListSerializer(user_list, many=True)
         return {'user_list': json.loads(json.dumps(serializer.data))}
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        if request.method == "POST":
-            # frm = UserForm(data=request.data)
-            data = request.data
-            User.objects.create(first_name=data['document_firstname'],
-                                last_name=data['document_lastname'],
-                                email=data['document_email'],
-                                phone=data['document_phone'],
-                                password=data['document_password'],
-                                username=data['document_username'])
-            return Response({
-                "code": 200,
-                "status": "successful",
-                "message": "code was sent try to validate code"
-            })
+        if request.method == 'POST':
+            user = UserListSerializer(data=request.data)
+            if user.is_valid():
+                user.save()
+                return Response({
+                    "code": 200,
+                    "status": "successful",
+                    "message": "code was sent try to validate code"
+                })
         return Response({'detail': ServerMsg.server_err}, status=500)
 
-    @mask_view(auth_require=True, is_api=True)
-    def put(self, request, *args, **kwargs):
-        if request.method == "PUT":
-            data = request.data
-            user = User.objects.get(pk=data['document_id-edit'])
-            user.first_name = data['document_firstname-edit']
-            user.last_name = data['document_lastname-edit']
-            user.phone = data['document_phone-edit']
-            user.email = data['document_email-edit']
+
+class UserDetailView(APIView):
+
+    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    def get(self, request, pk, *args, **kwargs):
+        user = User.objects.get(pk=pk)
+        return {'user': user}
+
+    def put(self, request, pk, *args, **kwargs):
+        instance = User.objects.get(pk=pk)
+        user = UserDetailSerializer(data=request.data, instance=instance)
+        if user.is_valid():
             user.save()
             return Response({
                 "code": 200,
                 "status": "successful",
-                "message": "code was sent try to validate code"
-            })
-
-        return Response({'detail': ServerMsg.server_err}, status=500)
-
-    def delete(self, request, *args, **kwargs):
-        if request.method == "DELETE":
-            user = User.objects.get(pk=request.data['user_id'])
-            user.delete()
-            return Response({
-                "code": 200,
-                "status": "successful",
-                "message": "code was sent try to validate code"
+                "message": "edit user successfully"
             })
         return Response({'detail': ServerMsg.server_err}, status=500)
+
+    # def delete(self, request, pk, *args, **kwargs):
+    #     if request.method == "DELETE":
+    #         user = User.objects.get(pk=request.data['user_id'])
+    #         user.delete()
+    #         return Response({
+    #             "code": 200,
+    #             "status": "successful",
+    #             "message": "delete user successfully"
+    #         })
+    #     return Response({'detail': ServerMsg.server_err}, status=500)

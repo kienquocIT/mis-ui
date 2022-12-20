@@ -8,12 +8,12 @@
             border: 0 solid;
         }
 
-        #offcanvasRight{
+        #offcanvasRight {
             width: 75%;
         }
 
         @media screen and (max-width: 850px) {
-            #offcanvasRight{
+            #offcanvasRight {
                 width: 100%;
             }
         }
@@ -39,14 +39,16 @@
             border: 0.1em solid #dcdcdc;
             border-radius: 0.2em;
         }
+
         tbody tr td button {
             background: none;
         }
 
-        table{
+        table {
             width: 100%;
         }
-        .alert-success, .alert-danger{
+
+        .alert-success, .alert-danger {
             z-index: 1000;
             position: fixed;
             display: none;
@@ -145,11 +147,11 @@
     <!--end edit user-->
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
         <div class="alert alert-success">
-        <strong>Deleting!</strong>
-        <div class="spinner-border text-success" role="status">
-            <span class="sr-only">Loading...</span>
+            <strong>Deleting!</strong>
+            <div class="spinner-border text-success" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
         <div class="alert alert-danger " id="danger-del-noti">
             <strong>Error!</strong>
         </div>
@@ -213,7 +215,7 @@
                     {
                         'render': function (data, type, row) {
                             let temp = ``;
-                            temp += `<a href='users/`+row.id+`'><button class="btn-edit" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-edit" aria-controls="offcanvasRight">
+                            temp += `<a href='users/` + row.id + `'><button class="btn-edit" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-edit" aria-controls="offcanvasRight">
                                         <i class="fa fa-edit"></i>
                                      </button></a>`;
                             temp += `<button class="btn-del"><i class="fa fa-trash-alt"></i></button>`;
@@ -233,7 +235,7 @@
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (res) => {
-                        if($('#offcanvasRight .alert-danger').css('display') != 'none'){
+                        if ($('#offcanvasRight .alert-danger').css('display') != 'none') {
                             $('.alert-danger').hide(500);
                         }
                         $('.alert-success').show(1000);

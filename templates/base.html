@@ -6,6 +6,7 @@
     <title>Page Title</title>
     {% compress css %}
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
         {% block css %}{% endblock %}
     {% endcompress %}
     {% compress js %}
@@ -28,10 +29,11 @@
 
     <!-- Bootstrap Core JS -->
    	<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-
     <script src="{% static 'assets/js/feather.min.js' %}"></script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/init.js' %}"></script>
+
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
     {% block jsFooter %}{% endblock %}
 

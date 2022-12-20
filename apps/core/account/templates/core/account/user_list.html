@@ -4,102 +4,132 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.jqueryui.min.css">
     <style>
-        button{
+        button {
             border: 0 solid;
         }
-        #offcanvasRight, #offcanvasRight-edit{
+
+        #offcanvasRight{
             width: 75%;
         }
-        @media screen and (max-width: 900px){
-            #offcanvasRight, #offcanvasRight-edit{
-                width: 800%;
+
+        @media screen and (max-width: 850px) {
+            #offcanvasRight{
+                width: 100%;
             }
         }
 
-        .offcanvas-header{
+        .offcanvas-header {
             margin-right: 1em;
             margin-left: 1em;
             border-bottom: 0.01em solid #dcdcdc;
         }
 
-        .name-field input{
+        .name-field input {
             width: 80%;
             border: 0.1em solid #dcdcdc;
-            border-radius: 0.5em;
-        }
-        .other-field, .input-checkbox, .button-field{
-            margin-top: 1em;
-        }
-        .other-field input{
-            width: 90%;
-            border: 0.1em solid #dcdcdc;
-            border-radius: 0.5em;
+            border-radius: 0.2em;
         }
 
-        tbody tr td button{
+        .other-field, .input-checkbox, .button-field {
+            margin-top: 1em;
+        }
+
+        .other-field input {
+            width: 90%;
+            border: 0.1em solid #dcdcdc;
+            border-radius: 0.2em;
+        }
+        tbody tr td button {
             background: none;
         }
+
+        table{
+            width: 100%;
+        }
+        .alert-success, .alert-danger{
+            z-index: 1000;
+            position: fixed;
+            display: none;
+            right: 0;
+            top: 10%;
+        }
+
     </style>
 {% endblock %}
 {% block PageHeader %}
-
 {% endblock %}
 {% block contentPage %}
-    <div class="row">
+    <div class="row" style="margin-left: 1em; border-bottom: 0.01em solid #dcdcdc;">
         <div class="col-lg-4">
             <p>System > <span>User</span></p>
         </div>
     </div>
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add User</button>
+    <br>
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasRight" style="margin-left: 1em"><i class="far fa-plus-square"></i>
+    </button>
     <!--Form create user-->
 
-    <div class="offcanvas offcanvas-end" tabindex="-2" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="alert alert-success">
+            <strong>Creating!</strong>
+            <div class="spinner-border text-success" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div class="alert alert-danger">
+            <strong>Error!</strong>
+        </div>
         <div class="offcanvas-header">
             <h3 id="offcanvasRightLabel">Add User</h3>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <div class="row">
-                <div class="col-lg-3 col-sm-3"></div>
-                <div class="col-lg-9 col-sm-9">
+                <div class="col-lg-2 col-sm-2"></div>
+                <div class="col-lg-8 col-sm-8">
                     <form id="form-create-user" data-url="" data-url-redirect="" data-method="POST">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>First Name</label>
-                                    <input type="text" placeholder="Input text" name="document_firstname" id="first_name" required >
+                                    <input type="text" placeholder="Input text" name="first_name"
+                                           id="first_name" required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>Last Name</label>
-                                    <input type="text" placeholder="Input text" name="document_lastname" id="last_name">
+                                    <input type="text" placeholder="Input text" name="last_name" id="last_name">
                                 </div>
                             </div>
                         </div>
                         <div class="row other-field">
                             <label>Email Address</label>
-                            <input type="email" placeholder="Input text" name="document_email" id="email-user" required>
+                            <input type="email" placeholder="Input text" name="email" id="email-user" required>
                         </div>
                         <div class="row other-field">
                             <label>Phone</label>
-                            <input type="text" placeholder="Input text" name="document_phone" id="phone-user" required>
+                            <input type="text" placeholder="Input text" name="phone" id="phone-user" required>
                         </div>
                         <div class="row other-field username">
                             <label>User Name</label>
-                            <input type="text" placeholder="Input text" name="document_username" id="username" required>
+                            <input type="text" placeholder="Input text" name="username" id="username" required>
+                            <span class="not-valid-username" style="display: none">Username is existing</span>
                         </div>
                         <div class="row input-checkbox">
-                            <label><input type="checkbox" id="auto-create-pw" name="document_password"/>&nbsp;Auto create password</label>
+                            <label><input type="checkbox" id="auto-create-pw"/>&nbsp;Auto
+                                create password</label>
                         </div>
 
-                        <div class="row other-field username">
+                        <div class="row other-field password">
                             <label>Password</label>
-                            <input type="password" placeholder="Input text" name="document_password" id="password" required>
+                            <input type="password" placeholder="Input text" name="password" id="password"
+                                   required>
                         </div>
                         <div class="row button-field">
-                            <div class="col-lg-2">
+                            <div class="col-lg-2 col-sm-2">
                                 <button type="submit" class="btn btn-primary btn-save">Submit</button>
                             </div>
                             <div class="col-lg-7"></div>
@@ -112,72 +142,25 @@
 
     <!-- end form create user -->
 
-    <!--Form edit user-->
-
-    <div class="offcanvas offcanvas-end" tabindex="-2" id="offcanvasRight-edit" aria-labelledby="offcanvasRightLabel">
-        <div class="offcanvas-header">
-            <h3 id="offcanvasRightLabel">Edit User</h3>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="row">
-                <div class="col-lg-3 col-sm-3"></div>
-                <div class="col-lg-9 col-sm-9">
-                    <form id="form-edit-user" data-url="" data-url-redirect="/" data-method="PUT">
-                        {% csrf_token %}
-                        <div class="row other-field" hidden>
-                            <label>ID</label>
-                            <input type="text" placeholder="Input text" name="document_id-edit" id="id-user-edit">
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="row name-field">
-                                    <label>First Name</label>
-                                    <input type="text" placeholder="Input text" name="document_firstname-edit" id="first_name-edit" required >
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="row name-field">
-                                    <label>Last Name</label>
-                                    <input type="text" placeholder="Input text" name="document_lastname-edit" id="last_name-edit" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row other-field">
-                            <label>Phone</label>
-                            <input type="text" placeholder="Input text" name="document_phone-edit" id="phone-edit" required>
-                        </div>
-                        <div class="row other-field">
-                            <label>Email</label>
-                            <input type="email" placeholder="Input text" name="document_email-edit" id="email-edit" required>
-                        </div>
-                        <div class="row other-field username">
-                            <label>User Name</label>
-                            <input type="text" placeholder="Input text" name="document_username-edit" id="username-edit" readonly>
-                        </div>
-                        <div class="row button-field">
-                            <div class="col-lg-2">
-                                <button type="submit" class="btn btn-primary btn-save" id="save-edit-user">Submit</button>
-                            </div>
-                            <div class="col-lg-7"></div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <!--end edit user-->
+    <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
+        <div class="alert alert-success">
+        <strong>Deleting!</strong>
+        <div class="spinner-border text-success" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
-
-    <!--end edit user-->
-
-    <div style="padding-left: 20px;padding-top: 20px;">
+        <div class="alert alert-danger " id="danger-del-noti">
+            <strong>Error!</strong>
+        </div>
         <table class="table" id="user-list">
             <thead>
-                <tr>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Username</th>
-                    <th scope="col"></th>
-                </tr>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Username</th>
+                <th scope="col"></th>
+            </tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -186,36 +169,31 @@
 {% endblock %}
 {% block jsFooter %}
     <script>
-
-    function generateP() {
+        function generateP() {
             var pass = '';
             var str = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
             for (let i = 1; i <= 8; i++) {
                 var char = Math.floor(Math.random()
-                            * str.length + 1);
-
+                    * str.length + 1);
                 pass += str.charAt(char)
             }
-
             return pass;
         }
-        $('#auto-create-pw').on('change', function (){
-            if ($(this).is(':checked') == true){
+
+        $('#auto-create-pw').on('change', function () {
+            if ($(this).is(':checked') == true) {
                 $('#password').val(generateP());
-                $('#password').prop("readonly",true);
-            }
-            else{
+                $('#password').prop("readonly", true);
+            } else {
                 $('#password').val('');
-                $('#password').prop("readonly",false);
+                $('#password').prop("readonly", false);
             }
         });
-
-
         var user_list_DT;
+
         function loadDataUser() {
             let data = JSON.parse($('script[id=user-data]').html())
-
             user_list_DT = $('#user-list').DataTable({
                 processing: true,
                 data: data,
@@ -235,78 +213,39 @@
                     {
                         'render': function (data, type, row) {
                             let temp = ``;
-                            temp += `<button class="btn-edit" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-edit" aria-controls="offcanvasRight">
+                            temp += `<a href='users/`+row.id+`'><button class="btn-edit" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-edit" aria-controls="offcanvasRight">
                                         <i class="fa fa-edit"></i>
-                                     </button>`;
+                                     </button></a>`;
                             temp += `<button class="btn-del"><i class="fa fa-trash-alt"></i></button>`;
                             return temp
                         }
                     },
                 ]
             });
-            $('#user-list tbody').on('click', '.btn-edit', function (e) {
-                const rowIndex = user_list_DT.row($(this).parents('tr')).index();
-                var selected = data[rowIndex];
-                let model_edit_user = $('#offcanvasRight-edit');
-                model_edit_user.find('input[name=document_id-edit]').first().val(selected.id);
-                model_edit_user.find('input[name=document_firstname-edit]').first().val(selected.first_name);
-                model_edit_user.find('input[name=document_phone-edit]').first().val(selected.phone);
-                model_edit_user.find('input[name=document_email-edit]').first().val(selected.email);
-                model_edit_user.find('input[name=document_lastname-edit]').first().val(selected.last_name);
-                model_edit_user.find('input[name=document_username-edit]').first().val(selected.username);
-             });
-
-             $('#user-list tbody').on('click', '.btn-del', function (e){
-                 const rowIndex = user_list_DT.row($(this).parents('tr')).index();
-                 var selected = data[rowIndex];
-                 e.preventDefault();
-                 let csr = $("input[name=csrfmiddlewaretoken]").val();
-                 mydata = {
-                     user_id: selected.id,
-                 };
-                 $.fn.callAjax("", "DELETE", mydata, csr)
-                .then(
-                    (res) => {
-                        location.reload();
-                    },
-                    (err) => {
-                        console.log(err)
-                    }
-                )
-
-             });
         }
+
         loadDataUser();
 
-        $("#form-create-user").submit(function (event){
+        $("#form-create-user").submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (res) => {
-                        location.reload();
+                        if($('#offcanvasRight .alert-danger').css('display') != 'none'){
+                            $('.alert-danger').hide(500);
+                        }
+                        $('.alert-success').show(1000);
+                        setTimeout(location.reload.bind(location), 3000);
                     },
                     (err) => {
-                        $('.username').append('<span>Username is existing</span>');
+                        $('.alert-danger').show(500);
+                        $('.not-valid-username').show();
                         $('.username').css('color', 'red');
                         $('.username').css('background', '#FFF0F5');
                         $('#username').css('border-color', 'red');
-                    }
-                )
-        });
-
-        $("#form-edit-user").submit(function (event){
-            event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (res) => {
-                        location.reload();
-                    },
-                    (err) => {
-
+                        console.log(err)
                     }
                 )
         });

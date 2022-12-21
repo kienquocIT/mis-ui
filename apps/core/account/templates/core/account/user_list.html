@@ -27,7 +27,7 @@
         .name-field input {
             width: 80%;
             border: 0.1em solid #dcdcdc;
-            border-radius: 0.2em;
+            border-radius: 0.4em;
         }
 
         .other-field, .input-checkbox, .button-field {
@@ -37,7 +37,7 @@
         .other-field input {
             width: 90%;
             border: 0.1em solid #dcdcdc;
-            border-radius: 0.2em;
+            border-radius: 0.4em;
         }
 
         tbody tr td button {
@@ -54,6 +54,14 @@
             display: none;
             right: 0;
             top: 10%;
+        }
+
+        form input{
+            height: 3em;
+        }
+
+        #auto-create-pw{
+            height: 1em;
         }
 
     </style>
@@ -97,32 +105,36 @@
                                 <div class="row name-field">
                                     <label>First Name</label>
                                     <input type="text" placeholder="Input text" name="first_name"
-                                           id="first_name" required>
+                                           required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>Last Name</label>
-                                    <input type="text" placeholder="Input text" name="last_name" id="last_name">
+                                    <input type="text" placeholder="Input text" name="last_name">
                                 </div>
                             </div>
                         </div>
                         <div class="row other-field">
-                            <label>Email Address</label>
-                            <input type="email" placeholder="Input text" name="email" id="email-user" required>
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Input text" name="full_name" required>
                         </div>
                         <div class="row other-field">
-                            <label>Phone</label>
-                            <input type="text" placeholder="Input text" name="phone" id="phone-user" required>
+                            <label>Email Address</label>
+                            <input type="email" placeholder="Input text" name="email" required>
+                        </div>
+                        <div class="row other-field">
+                            <label>Select Company</label>
+                            <input type="text" placeholder="Input text" name="company" required>
                         </div>
                         <div class="row other-field username">
                             <label>User Name</label>
-                            <input type="text" placeholder="Input text" name="username" id="username" required>
+                            <input type="text" placeholder="Input text" name="username" required>
                             <span class="not-valid-username" style="display: none">Username is existing</span>
                         </div>
-                        <div class="row input-checkbox">
-                            <label><input type="checkbox" id="auto-create-pw"/>&nbsp;Auto
-                                create password</label>
+                        <div class="input-checkbox">
+                            <input type="checkbox" id="auto-create-pw" name="auto-create-pw"/>
+                            <label for="auto-create-pw">Auto create password</label>
                         </div>
 
                         <div class="row other-field password">
@@ -134,7 +146,11 @@
                             <div class="col-lg-2 col-sm-2">
                                 <button type="submit" class="btn btn-primary btn-save">Submit</button>
                             </div>
-                            <div class="col-lg-7"></div>
+
+                            <div class="col-lg-7 col-sm-7"></div>
+                            <div class="col-lg-2 col-sm-2">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -155,22 +171,29 @@
         <div class="alert alert-danger " id="danger-del-noti">
             <strong>Error!</strong>
         </div>
-        <table class="table" id="user-list">
-            <thead>
-            <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Username</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody></tbody>
+        <table class="table nowrap display" id="user-list" style="text-align: center">
+                <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
         </table>
         {{ data.user_list|json_script:'user-data' }}
+
+
     </div>
 {% endblock %}
 {% block jsFooter %}
     <script>
+        $('.btn-icon').on('click', function () {
+            $('#user-list_wrapper').css('width', '100%');
+            $('.dataTable').css('width', '100%');
+        });
+
         function generateP() {
             var pass = '';
             var str = 'abcdefghijklmnopqrstuvwxyz0123456789';

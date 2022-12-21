@@ -18,7 +18,7 @@
         }
 
         .user-info input {
-            width: 53%;
+            width: 45%;
         }
 
         .user-info-name input {
@@ -32,12 +32,20 @@
             right: 0%;
         }
 
+        input{
+            height: 3em;
+        }
+
         .btn-primary {
             width: 10%;
         }
 
         #btn-resetpw {
             width: 50%;
+        }
+
+        form {
+            border-bottom: 0.1em solid #dcdcdc;
         }
     </style>
 {% endblock %}
@@ -57,6 +65,9 @@
     </div>
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
         <h3>Thông tin User</h3>
+        <div class="row">
+            <div class="col-lg-1"></div>
+        </div>
         <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
             {% csrf_token %}
             <div class="row">
@@ -66,7 +77,6 @@
                         <input type="text" value="{{ data.user.first_name }}" name="first_name" id="inp-firstname">
                     </div>
                 </div>
-                <div class="col-lg-1 col-sm-1"></div>
                 <div class="col-lg-3 col-sm-3">
                     <div class="row user-info-name">
                         <label>Last Name</label>
@@ -76,32 +86,70 @@
             </div>
 
             <div class="row user-info">
-                <label>Email</label>
-                <input type="email" value="{{ data.user.email }}" name="email">
+                <label>Full Name</label>
+                <input type="text" value="Nguyen Van A" name="full_name">
             </div>
-            <div class="row user-info">
-                <label>Phone</label>
-                <input type="text" value="{{ data.user.phone }}" name="phone">
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>Email</label>
+                        <input type="text" value="{{ data.user.email }}" name="email">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>Company</label>
+                        <input type="text" value="PFPT Telecom" name="company">
+                    </div>
+                </div>
             </div>
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-sm-3">
                     <div class="row user-info-name">
                         <label>Username</label>
                         <input type="text" value="{{ data.user.username }}" name="username">
                     </div>
                 </div>
-                <div class="col-lg-1"></div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-sm-3">
                     <button type="button" id="btn-resetpw" style="margin-top: 1.2em" class="btn btn-primary">Đổi mật
                         khẩu
                     </button>
                 </div>
-
             </div>
-            <div class="row">
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <div class="row" style="margin-bottom: 1em">
+                <button type="submit" class="btn btn-primary" hidden>Cập nhật</button>
             </div>
         </form>
+        <br>
+        <div class="row" style="border: 0.01em solid #dcdcdc">
+            <h6>License</h6>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Company Name</th>
+                <th scope="col">Employee</th>
+                <th scope="col">License</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>FPT Telecom</td>
+                <td>Lê Minh</td>
+                <td>Sale, eOffice</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>FTEL Telecom</td>
+                <td>Lê Minh</td>
+                <td>Sale, HRM</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 {% endblock %}
 {% block jsFooter %}

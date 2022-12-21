@@ -18,5 +18,5 @@
 - Add url './users'
 - Add UserListView (get, post) with url 'localhost:8001/account/users'
   - get: use Serializer parse data from object to json (for datatable)
-  - post: use Serializer to get data form form in UI (first name, last name, email, username, password) and save in database
+  - post: use Serializer to get data from form in UI (first name, last name, email, username, password) and save in database
 

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block css %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.jqueryui.min.css">
+    <style>
+        button {
+            border: 0 solid;
+        }
+
+        .user-info, .user-info-name {
+            margin-bottom: 1em;
+        }
+
+        .user-info input, .user-info-name input {
+            border-radius: 0.3em;
+            border: 0.1em solid #dcdcdc;
+        }
+
+        .user-info input {
+            width: 45%;
+        }
+
+        .user-info-name input {
+            width: 80%;
+        }
+
+        .alert-success, .alert-danger {
+            position: fixed;
+            z-index: 1000;
+            display: none;
+            right: 0%;
+        }
+
+        input {
+            height: 3em;
+        }
+
+        .btn-primary {
+            width: 10%;
+        }
+
+        #btn-resetpw {
+            width: 50%;
+        }
+
+        form {
+            border-bottom: 0.1em solid #dcdcdc;
+        }
+    </style>
+{% endblock %}
+{% block PageHeader %}
+{% endblock %}
+{% block contentPage %}
+    <div class="row" style="margin-left: 1em; border-bottom: 0.01em solid #dcdcdc;">
+        <div class="col-lg-4">
+            <p>User > <span>User-detail</span></p>
+        </div>
+    </div>
+    <div class="alert alert-success">
+        <strong>Cập nhật thành công</strong>
+    </div>
+    <div class="alert alert-danger">
+        <strong>Lỗi! Vui lòng kiểm tra lại</strong>
+    </div>
+    <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
+        <h3>Thông tin User</h3>
+        <div class="row">
+            <div class="col-lg-1"></div>
+        </div>
+        <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>First Name</label>
+                        <input type="text" value="{{ data.user.first_name }}" name="first_name" id="inp-firstname">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>Last Name</label>
+                        <input type="text" value="{{ data.user.last_name }}" name="last_name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row user-info">
+                <label>Full Name</label>
+                <input type="text" value="Nguyen Van A" name="full_name">
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>Email</label>
+                        <input type="text" value="{{ data.user.email }}" name="email">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>Company</label>
+                        <input type="text" value="PFPT Telecom" name="company">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-3">
+                    <div class="row user-info-name">
+                        <label>Username</label>
+                        <input type="text" value="{{ data.user.username }}" name="username">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <button type="button" id="btn-resetpw" style="margin-top: 1.2em" class="btn btn-primary">Đổi mật
+                        khẩu
+                    </button>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 1em">
+                <button type="submit" class="btn btn-primary" hidden>Cập nhật</button>
+            </div>
+        </form>
+        <br>
+        <div class="row" style="border: 0.01em solid #dcdcdc">
+            <h6>License</h6>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Company Name</th>
+                <th scope="col">Employee</th>
+                <th scope="col">License</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>FPT Telecom</td>
+                <td>Lê Minh</td>
+                <td>Sale, eOffice</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>FTEL Telecom</td>
+                <td>Lê Minh</td>
+                <td>Sale, HRM</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script>
+        $("#form-edit-user").submit(function (event) {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            console.log(frm.dataForm)
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (res) => {
+                        $('.alert-success').show(1000);
+                        setTimeout(location.reload.bind(location), 3000);
+                    },
+                    (err) => {
+                        $('.alert-danger').show(1000);
+                        console.log(err)
+                    }
+                )
+        });
+    </script>
+{% endblock %}

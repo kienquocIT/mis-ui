@@ -176,7 +176,40 @@ API_URL_PREFIX = 'api'
 protocol = "https" if API_USE_SSL else "http"
 domain = f'{API_IP_OR_ADDR}{f":{API_PORT}" if API_PORT else ""}'
 prefix = f"{API_URL_PREFIX}/" if API_URL_PREFIX else ""
-API_DOMAIN = f'{protocol}://{domain}/{prefix}'
+API_DOMAIN = None
+
+# LOGGING
+
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%d/%b/%Y-%H:%M:%S",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(LOG_DIR, "api.log"),
+            "when": "D",
+            "interval": 1,
+            "backupCount": 10,
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file"],
+            "level": "INFO",
+        },
+    },
+}
 
 # another import
 
@@ -184,3 +217,7 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+# Replace API DOMAIN
+if not API_DOMAIN:
+    API_DOMAIN = f'{protocol}://{domain}/{prefix}'

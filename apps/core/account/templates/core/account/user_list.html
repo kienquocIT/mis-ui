@@ -56,11 +56,11 @@
             top: 10%;
         }
 
-        form input{
+        form input {
             height: 3em;
         }
 
-        #auto-create-pw{
+        #auto-create-pw {
             height: 1em;
         }
 
@@ -149,7 +149,9 @@
 
                             <div class="col-lg-7 col-sm-7"></div>
                             <div class="col-lg-2 col-sm-2">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="offcanvas"
+                                        aria-label="Close">Cancel
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -172,15 +174,15 @@
             <strong>Error!</strong>
         </div>
         <table class="table nowrap display" id="user-list" style="text-align: center">
-                <thead>
-                <tr>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Username</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
+            <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Username</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
         </table>
         {{ data.user_list|json_script:'user-data' }}
 

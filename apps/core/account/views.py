@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect
 from rest_framework.views import APIView
 from .models import User
 from .serializers import UserDetailSerializer, UserListSerializer
-from apps.shared import mask_view, ServerMsg
 from rest_framework.response import Response
 
 from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg

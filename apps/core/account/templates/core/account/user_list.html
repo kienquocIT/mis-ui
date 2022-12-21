@@ -1,7 +1,320 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block contentPage %}
-    <div style="padding-left: 20px;padding-top: 20px;">
-        <p>{{ data.user_list }}</p>
+    <div class="col-md-12">
+        <div class="col-md-12" style="margin-bottom: 10px;">
+            <span data-bs-toggle="modal" data-bs-target="#createUserModalForms">
+                <span
+                        class="btn-add-tenant" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                        title="{% trans 'Create User' %}"
+                >
+                    <i class="fas fa-plus"></i>
+                    {% trans 'Create User' %}
+                </span>
+            </span>
+        </div>
+        <div class="col-md-12">
+            <table id="tenant-list" class="table nowrap display" style="width:100%" data-of-table="public-tenant-data">
+                <thead>
+                <tr>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Full name' %}</th>
+                    <th>{% trans 'User name' %}</th>
+                    <th>{% trans 'Plan' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in user_list %}
+                <tr>
+                        <td>{{ user.code }}</td>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.plan }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- New User -->
+{#        <div class="modal fade" id="createTenantModalForms" tabindex="-1" role="dialog"#}
+{#                aria-labelledby="createTenantModalForms"#}
+{#                aria-hidden="true">#}
+{#            <div class="modal-dialog" role="document" data-scale-window="on">#}
+{#                <div class="modal-content">#}
+{#                    <div class="modal-header">#}
+{#                        <h5 class="modal-title">{% trans 'Create Tenant' %}</h5>#}
+{#                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">#}
+{#                            <span aria-hidden="true">×</span>#}
+{#                        </button>#}
+{#                    </div>#}
+{#                    <div class="modal-body">#}
+{#                        <form id="frm-add-new-tenant" data-url="" data-url-redirect="/" data-method="POST">#}
+{#                            {% csrf_token %}#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for="exampleDropdownFormEmail1"#}
+{#                                ><b>{% trans 'Tenant Name' %}</b></label>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-12">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control" name="document-title"#}
+{#                                                    placeholder="{% trans 'Organization name' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for="exampleDropdownFormPassword1"#}
+{#                                ><b>{% trans 'Tenant Information' %}</b></label>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control" name="document-code"#}
+{#                                                    placeholder="{% trans 'Code' %}"#}
+{#                                                    oninput="this.value=this.value.toUpperCase()">#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-md-7">#}
+{#                                        <div class="input-group mb-2">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control" name="document-sub_domain"#}
+{#                                                    placeholder="{% trans 'Sub domain' %}"#}
+{#                                                    style="border-radius: 0.375rem"#}
+{#                                                    oninput="this.value=this.value.toLowerCase()"#}
+{#                                            >#}
+{#                                            <div class="input-group-prepend">#}
+{#                                                <div class="input-group-text">#}
+{#                                                    <span style="font-weight: bold">.quantrimis.com.vn</span>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for="exampleDropdownFormPassword1"#}
+{#                                ><b>{% trans 'Representative' %}</b></label>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control"#}
+{#                                                    name="document-representative_fullname"#}
+{#                                                    placeholder="{% trans 'Full name' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-md-7">#}
+{#                                        <div class="input-group mb-2">#}
+{#                                            <div class="input-group-prepend">#}
+{#                                                <div class="input-group-text">#}
+{#                                                    <span style="font-weight: bold">+84</span>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                            <input#}
+{#                                                    type="number" class="form-control"#}
+{#                                                    name="document-representative_phone_number"#}
+{#                                                    placeholder="{% trans 'Phone number' %}"#}
+{#                                            >#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                            <!-- Purchase Order -->#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for="exampleDropdownFormPassword1"#}
+{#                                ><b>{% trans 'Purchase Order' %}</b></label>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control"#}
+{#                                                    id="tenant-purchase-order"#}
+{#                                                    name="document-purchase_order"#}
+{#                                                    placeholder="{% trans 'Purchase order' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                            <!-- Start/ End date -->#}
+{#                            <div class="mb-3">#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <div class="form-group">#}
+{#                                            <label class="form-label"><b>Start Date</b></label>#}
+{#                                            <input class="form-control" id="tenant-start-date" name="single-date" value="02/12/20 8:30PM">#}
+{#                                        </div>#}
+{#                                        <div hidden>#}
+{#                                            <input type="datetime-local" id="tenant-plan-date-active" name="document-date_active">#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                    <div class="col-md-5">#}
+{#                                        <div class="form-group">#}
+{#                                            <label class="form-label"><b>End Date</b></label>#}
+{#                                            <input class="form-control" id="tenant-end-date" name="single-date" value="02/12/20 8:30PM">#}
+{#                                        </div>#}
+{#                                        <div hidden>#}
+{#                                            <input type="datetime-local" id="tenant-plan-date-end" name="document-date_end">#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                            <!-- auto renew type -->#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for=""#}
+{#                                ><b>{% trans 'Auto renew type' %}</b></label>#}
+{#                                <p><input#}
+{#                                        id="tenant-create-company" name="document-is_auto_renew" type="checkbox"#}
+{#                                        checked#}
+{#                                >{% trans 'Auto Renew' %}#}
+{#                                   </p>#}
+{#                            </div>#}
+{##}
+{#                            <!-- Plan -->#}
+{#                            <div hidden>#}
+{#                                <input type="text" id="tenant-plan-data-str" value="{{ plan_data_dict_str }}">#}
+{#                            </div>#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for="exampleDropdownFormPassword1"#}
+{#                                ><b>{% trans 'Subscription Plans' %}</b></label>#}
+{#                                <table class="table" id="table-tenant-plan">#}
+{#                                    <thead>#}
+{#                                    <tr>#}
+{#                                        <th scope="col">{% trans 'Plan' %}</th>#}
+{#                                        <th scope="col">{% trans 'Limit' %}</th>#}
+{#                                        <th scope="col">{% trans 'License' %}</th>#}
+{#                                    </tr>#}
+{#                                    </thead>#}
+{#                                    <tbody>#}
+{#                                    <div hidden>#}
+{#                                        <input type="text" id="tenant-plan-info" name="document-plan_data">#}
+{#                                    </div>#}
+{#                                    </tbody>#}
+{#                                </table>#}
+{#                                <a class="d-inline-flex align-items-center add-new-row" href="#">#}
+{#                                    <i class="ri-add-box-line me-1"></i> Add new plan#}
+{#                                </a>#}
+{#                            </div>#}
+{##}
+{#                            <!-- auto create company -->#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for=""#}
+{#                                ><b>{% trans 'Company of Tenant' %}</b></label>#}
+{#                                <p><input#}
+{#                                        id="tenant-create-company" name="document-auto_create_company" type="checkbox"#}
+{#                                        checked#}
+{#                                > {% trans 'Create Company' %}#}
+{#                                    ({% trans 'maximum' %}: 5)</p>#}
+{#                            </div>#}
+{##}
+{#                            <!-- Create admin -->#}
+{#                            <div class="mb-3">#}
+{#                                <label#}
+{#                                        class="form-label"#}
+{#                                        for="exampleDropdownFormPassword1"#}
+{#                                ><b>{% trans 'Tenant Admin' %}</b></label>#}
+{#                                <div hidden>#}
+{#                                    <input type="text" id="tenant-admin-info" name="document-admin_info">#}
+{#                                </div>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input type="text" class="form-control"#}
+{#                                                    id="tenant-admin-first-name"#}
+{#                                                    placeholder="{% trans 'First name' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control"#}
+{#                                                    id="tenant-admin-last-name"#}
+{#                                                    placeholder="{% trans 'Last name' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-3">#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control"#}
+{#                                                    id="tenant-admin-email"#}
+{#                                                    placeholder="{% trans 'Email' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-md-7">#}
+{#                                        <div class="input-group mb-2">#}
+{#                                            <div class="input-group-prepend">#}
+{#                                                <div class="input-group-text">#}
+{#                                                    <span style="font-weight: bold">+84</span>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                            <input#}
+{#                                                    type="number" class="form-control"#}
+{#                                                    id="tenant-admin-phone"#}
+{#                                                    placeholder="{% trans 'Phone number' %}"#}
+{#                                            >#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-3">#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control"#}
+{#                                                    id="tenant-admin-account"#}
+{#                                                    placeholder="{% trans 'Username' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-md-5">#}
+{#                                        <label style="width: 100%;">#}
+{#                                            <input#}
+{#                                                    type="text" class="form-control"#}
+{#                                                    id="tenant-admin-password"#}
+{#                                                    placeholder="{% trans 'Password' %}"#}
+{#                                            >#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                            <div class="mb-3">#}
+{#                                <br/>#}
+{#                                <input id="tenant-create-submit" type="submit" class="btn btn-primary"#}
+{#                                        style="width: 100%;" value="{% trans 'Add' %}"/>#}
+{#                            </div>#}
+{#                        </form>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
     </div>
 {% endblock %}

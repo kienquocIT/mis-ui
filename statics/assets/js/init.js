@@ -618,7 +618,7 @@ var chatApp = function () {
                 demoScroll.scrollTo({top: 100000, behavior: "smooth"});
                 setTimeout(function () {
                     $('.typing-wrap').remove();
-                    $('<li class="media received"><div class="avatar avatar-xs"> <img src="dist/img/avatar8.jpg" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span><div class="msg-action"><a href="#" class="btn btn-sm btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Reply</a><a class="dropdown-item" href="#">Forward</a><a class="dropdown-item" href="#">Copy</a></div></div></div></div></div></div></li>').appendTo(".hk-chat-popup .chat-popup-body ul.list-unstyled");
+                    $('<li class="media received"><div class="avatar avatar-xs"> <img src="" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span><div class="msg-action"><a href="#" class="btn btn-sm btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Reply</a><a class="dropdown-item" href="#">Forward</a><a class="dropdown-item" href="#">Copy</a></div></div></div></div></div></div></li>').appendTo(".hk-chat-popup .chat-popup-body ul.list-unstyled");
                     demoScroll.scrollTo({top: 100000, behavior: "smooth"});
                 }, 1000);
             } else if (e.which == 13) {
@@ -1006,6 +1006,12 @@ $(window).trigger("resize");
 // clean notify child
 $(document).ready(function () {
     new NotifyPopup().cleanChildNotifyBlock();
+    $('.btn-redirect').click(function () {
+        const url = $(this).attr('data-url');
+        if (url) {
+            location.href = url;
+        }
+    });
 });
 
 
@@ -1034,9 +1040,50 @@ jQuery.fn.notifyPopup = function (option, typeAlert = 'info') {
     }
 }
 
+jQuery.fn.notifyB = function (option, typeAlert = null) {
+    setTimeout(function () {
+        $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+    }, 100);
+    let msg = "";
+    if (option.title) {
+        msg += option.title;
+    }
+    if (option.description) {
+        let des_tmp = '';
+        if (typeof option.description === 'string') {
+            des_tmp = option.description;
+        } else if (Array.isArray(option.description)) {
+            des_tmp = option.description.join(", ");
+        } else {
+            des_tmp = option.description.toString();
+        }
+        if (msg) {
+            msg += ": " + des_tmp;
+        } else {
+            msg = des_tmp;
+        }
+    }
+    let alert_config = {
+        animate: {
+            enter: 'animated bounceInDown',
+            exit: 'animated bounceOutUp'
+        },
+        type: "dismissible alert-primary",
+    }
+    if (typeAlert === 'success') {
+        alert_config['type'] = "dismissible alert-success";
+    } else if (typeAlert === 'failure') {
+        alert_config['type'] = "dismissible alert-danger";
+    } else if (typeAlert === 'warning') {
+        alert_config['type'] = "dismissible alert-warning";
+    } else if (typeAlert === 'info') {
+        alert_config['type'] = "dismissible alert-info";
+    }
+    $.notify(msg, alert_config);
+}
 
 // support call API with ajax
-jQuery.fn.callAjax = function (url, method, data) {
+jQuery.fn.callAjax = function (url, method, data, timeout=3) {
     return new Promise(function (resolve, reject) {
         let ctx = {
             url: url,
@@ -1110,13 +1157,16 @@ jQuery.fn.formSubmit = function (formElement, notify = {'success': true, 'failur
         let frm = new SetupFormSubmit($(formElement));
         if (frm.dataUrl && frm.dataMethod) {
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm).then((resp) => {
-                if (notify.success) $.fn.notifyPopup({description: resp.detail}, 'info');
+                if (notify.success) $.fn.notifyB({description: resp.detail}, 'info');
                 resolve(resp);
                 if (enableRedirect) if (frm.dataUrlRedirect) $.fn.redirectUrl(frm.dataUrlRedirect, frm.dataRedirectTimeout);
             }, (err) => {
                 console.log(err);
-                if (notify.failure) $.fn.notifyPopup({description: err.detail}, 'failure');
-                reject(err);
+                console.log(err.detail);
+                if (notify.failure) $.fn.notifyB({description: err.detail}, 'failure');
+                if (reject) {
+                    reject(err);
+                }
             })
         } else throw 'Setup call raise exception with URL or method is incorrect.!';
     });

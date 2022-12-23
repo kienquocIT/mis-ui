@@ -1,0 +1,43 @@
+/* Off Canvas responsive Screen */
+
+@media only screen and (min-width: 1001px) {
+    .cus-offcanvas {
+        width: 60% !important;
+        min-width: 400px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .cus-offcanvas {
+        width: 100% !important;
+        min-width: 400px !important;
+    }
+}
+
+.wizard > .steps .done a {
+    color: #000000 !important;
+}
+
+.wizard > .steps .current a {
+    color: #0a53be !important;
+}
+
+
+/* ... Off Canvas responsive Screen */
+.hidden {
+    display: none !important;
+}
+
+
+/* Apps in Plan */
+.btn-collapse {
+    cursor: pointer;
+}
+.card {
+    margin-top: 30px;
+}
+
+/* Hidden secondary slider */
+.hk-sidebar-togglable {
+    display: none;
+}

@@ -80,14 +80,14 @@
                 <div class="col-lg-3 col-sm-3">
                     <div class="row user-info-name">
                         <label>Last Name</label>
-                        <input type="text" value="{{ data.user.last_name }}" name="last_name">
+                        <input type="text" value="{{ data.user.last_name }}" name="last_name" id="inp-lastname">
                     </div>
                 </div>
             </div>
 
             <div class="row user-info">
                 <label>Full Name</label>
-                <input type="text" value="Nguyen Van A" name="full_name">
+                <input type="text" value="Nguyen Van A" name="full_name" id="inp-fullname">
             </div>
 
             <div class="row">
@@ -154,11 +154,11 @@
 {% endblock %}
 {% block jsFooter %}
     <script>
+        $('#inp-fullname').val($('#inp-firstname').val() + ' ' + $('#inp-lastname').val());
         $("#form-edit-user").submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
-            console.log(frm.dataForm)
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (res) => {

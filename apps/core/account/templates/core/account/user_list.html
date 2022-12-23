@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% block css %}
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.jqueryui.min.css">
     <style>
+
         button {
-            border: 0 solid;
+            border: 0;
         }
 
         #offcanvasRight {
             width: 75%;
         }
 
-        @media screen and (max-width: 850px) {
+        @media screen and(max-width: 850px) {
             #offcanvasRight {
                 width: 100%;
             }
@@ -24,7 +26,8 @@
             border-bottom: 0.01em solid #dcdcdc;
         }
 
-        .name-field input {
+        .name-field
+        input {
             width: 80%;
             border: 0.1em solid #dcdcdc;
             border-radius: 0.4em;
@@ -63,7 +66,6 @@
         #auto-create-pw {
             height: 1em;
         }
-
     </style>
 {% endblock %}
 {% block PageHeader %}
@@ -104,20 +106,20 @@
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>First Name</label>
-                                    <input type="text" placeholder="Input text" name="first_name"
+                                    <input type="text" placeholder="Input text" name="first_name" id="inp-firstname"
                                            required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>Last Name</label>
-                                    <input type="text" placeholder="Input text" name="last_name">
+                                    <input type="text" placeholder="Input text" name="last_name" id="inp-lastname">
                                 </div>
                             </div>
                         </div>
                         <div class="row other-field">
                             <label>Full Name</label>
-                            <input type="text" placeholder="Input text" name="full_name" required>
+                            <input type="text" placeholder="Input text" name="full_name" required id="inp-fullname" disabled>
                         </div>
                         <div class="row other-field">
                             <label>Email Address</label>
@@ -173,12 +175,12 @@
         <div class="alert alert-danger " id="danger-del-noti">
             <strong>Error!</strong>
         </div>
-        <table class="table nowrap display" id="user-list" style="text-align: center">
+        <table class="table nowrap display" id="user-list">
             <thead>
             <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
+                <th scope="col">Full Name</th>
                 <th scope="col">Username</th>
+                <th scope="col">Plan</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -186,11 +188,22 @@
         </table>
         {{ data.user_list|json_script:'user-data' }}
 
-
     </div>
 {% endblock %}
 {% block jsFooter %}
     <script>
+        let first_name = '';
+        let last_name = '';
+        $('#inp-firstname').change(function () {
+            first_name = $(this).val();
+            $('#inp-fullname').val(first_name + ' ' + last_name);
+        });
+
+        $('#inp-lastname').change(function () {
+            last_name = $(this).val();
+            $('#inp-fullname').val(first_name + ' ' + last_name);
+        });
+
         $('.btn-icon').on('click', function () {
             $('#user-list_wrapper').css('width', '100%');
             $('.dataTable').css('width', '100%');
@@ -226,16 +239,22 @@
                 data: data,
                 columns: [
                     {
-                        'data': 'first_name',
-                        'className': 'user-firstname',
-                    },
-                    {
-                        'data': 'last_name',
-                        'className': 'user-lastname',
+                        'render': function (data, type, row) {
+                            let temp = ``;
+                            temp += row.first_name + ' ' + row.last_name;
+                            return temp
+                        }
                     },
                     {
                         'data': 'username',
                         'className': 'user-username',
+                    },
+                    {
+                        'render': function (data, type, row) {
+                            let temp = ``;
+                            temp += `unlicense`;
+                            return temp
+                        }
                     },
                     {
                         'render': function (data, type, row) {
@@ -246,8 +265,9 @@
                             temp += `<button class="btn-del"><i class="fa fa-trash-alt"></i></button>`;
                             return temp
                         }
-                    },
-                ]
+                    }
+                ],
+                columnDefs: [{orderable:false, targets: 3}]
             });
         }
 
@@ -276,5 +296,7 @@
                     }
                 )
         });
+
     </script>
+    {#    <script src="{% static 'core/account/js/script.js' %}"></script>#}
 {% endblock %}

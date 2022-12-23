@@ -1,45 +1,139 @@
-{% load static compress %}
-
+{% load static i18n compress %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Page Title</title>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIS - Management Information System</title>
+    <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     {% compress css %}
+        <!-- Data Table CSS -->
+        <link
+                href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+                type="text/css"
+        />
+        <link
+                href="{% static 'vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
+                rel="stylesheet" type="text/css"
+        />
+
+        <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
-        {% block css %}{% endblock %}
+        <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        {% block cssHeader %}{% endblock %}
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
 </head>
 <body>
-<div class="hk-wrapper" data-layout="vertical" data-layout-style="default" data-menu="light" data-footer="simple">
-    {% include 'extends/headers.html' %}
+<!-- Wrapper -->
+<div
+        class="hk-wrapper" data-layout="vertical" data-layout-style="collapsed" data-menu="light" data-footer="simple"
+        data-hover="active"
+>
+    {% include 'extends/top_nav.html' %}
 
-    <div class="hk-pg-wrapper">
-        {% block contentPage %}{% endblock %}
-        {% include 'extends/footers.html' %}
+    <!-- Vertical Nav -->
+    <div class="hk-menu">
+        {% include 'extends/vertical_nav_brand.html' %}
+
+        {% include 'extends/vertical_nav_main_menu.html' %}
     </div>
+    <div id="hk_menu_backdrop" class="hk-menu-backdrop"></div>
+    <!-- /Vertical Nav -->
+
+    <!-- Main Content -->
+    <div class="hk-pg-wrapper pb-0">
+        <div class="hk-pg-body py-0">
+            <div class="blogapp-wrap blogapp-sidebar-toggle">
+                <nav class="blogapp-sidebar">
+                    {% include 'extends/app_sidebar.html' %}
+                </nav>
+                <div class="blogapp-content">
+                    <div class="blogapp-detail-wrap">
+                        <header class="blog-header">
+                            <div class="d-flex align-items-center">
+                                {% include 'extends/breadcrumb.html' %}
+                            </div>
+                            <div class="blog-options-wrap">
+
+                                {% block pageAction %}{% endblock %}
+
+                                <div class="v-separator  d-lg-inline-block d-none"></div>
+                                <a
+                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover hk-navbar-togglable flex-shrink-0  d-lg-inline-block d-none"
+                                        href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                        data-bs-original-title="Collapse"
+                                >
+										<span class="icon">
+											<span class="feather-icon"><i data-feather="chevron-up"></i></span>
+											<span class="feather-icon d-none"><i data-feather="chevron-down"></i></span>
+										</span>
+                                </a>
+                            </div>
+                            <div class="hk-sidebar-togglable active"></div>
+                        </header>
+                        <div class="blog-body">
+                            <div data-simplebar class="nicescroll-bar">
+
+                                {% block pageContent %}{% endblock %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Body -->
+    </div>
+    <!-- /Main Content -->
 </div>
+<!-- /Wrapper -->
 
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
 
     <!-- Bootstrap Core JS -->
-{#    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>#}
-    {#   	<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>#}
-    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
 
+    <!-- FeatherIcons JS -->
     <script src="{% static 'assets/js/feather.min.js' %}"></script>
+
+    <!-- Fancy Dropdown JS -->
+    <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+
+    <!-- Simplebar JS -->
+    <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+    <!-- Data Table JS -->
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+
+    <!-- Select2 JS -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <!-- Init JS -->
     <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
     <script src="{% static 'assets/js/init.js' %}"></script>
+    <script src="{% static 'assets/js/chips-init.js' %}"></script>
+    <script src="{% static 'assets/js/init-loader.js' %}"></script>
 
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
     {% block jsFooter %}{% endblock %}
-
 {% endcompress %}
 </body>
 </html>

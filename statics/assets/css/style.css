@@ -90292,10 +90292,10 @@ Project:	Jampack
     padding-left: 0;
   }
   .blogapp-wrap.blogapp-sidebar-toggle .blogapp-sidebar {
-    left: 0;
+    /*left: 0;*/
   }
   .blogapp-wrap.blogapp-sidebar-toggle .blogapp-content {
-    left: 16.875rem;
+    /*left: 16.875rem;*/
     padding-left: 16.875rem;
     margin-left: -16.875rem;
   }
@@ -90670,51 +90670,51 @@ Project:	Jampack
   }
 }
 @media (max-width: 1199px) {
-  .invoiceapp-wrap .invoiceapp-content .invoiceapp-detail-wrap .invoice-settings {
-    top: 0;
-  }
-  .invoiceapp-wrap .invoiceapp-content .invoiceapp-detail-wrap .invoice-body .nicescroll-bar .create-invoice-wrap .invoice-table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .invoiceapp-wrap .invoiceapp-content .invoiceapp-detail-wrap .invoice-body .nicescroll-bar .create-invoice-wrap .invoice-table-wrap .invoice-table {
-    min-width: 900px;
-  }
-  .invoiceapp-wrap .invoiceapp-sidebar {
-    left: -270px;
-  }
-  .invoiceapp-wrap .invoiceapp-content {
-    margin-left: 0;
-    padding-left: 0;
-  }
-  .invoiceapp-wrap.invoiceapp-sidebar-toggle .invoiceapp-sidebar {
-    left: 0;
-  }
-  .invoiceapp-wrap.invoiceapp-sidebar-toggle .invoiceapp-content {
-    left: 16.875rem;
-    padding-left: 16.875rem;
-    margin-left: -16.875rem;
-  }
-  .invoiceapp-wrap .hk-sidebar-togglable {
-    -webkit-transform: translateX(32px);
-    -moz-transform: translateX(32px);
-    -ms-transform: translateX(32px);
-    -o-transform: translateX(32px);
-    transform: translateX(32px);
-  }
-  .invoiceapp-wrap .hk-sidebar-togglable:after {
-    content: "\ea6c";
-  }
-  .invoiceapp-wrap .hk-sidebar-togglable.active {
-    -webkit-transform: translateX(0);
-    -moz-transform: translateX(0);
-    -ms-transform: translateX(0);
-    -o-transform: translateX(0);
-    transform: translateX(0);
-  }
-  .invoiceapp-wrap .hk-sidebar-togglable.active:after {
-    content: "\ea62";
-  }
+  /*.invoiceapp-wrap .invoiceapp-content .invoiceapp-detail-wrap .invoice-settings {*/
+  /*  top: 0;*/
+  /*}*/
+  /*.invoiceapp-wrap .invoiceapp-content .invoiceapp-detail-wrap .invoice-body .nicescroll-bar .create-invoice-wrap .invoice-table-wrap {*/
+  /*  overflow-x: auto;*/
+  /*  -webkit-overflow-scrolling: touch;*/
+  /*}*/
+  /*.invoiceapp-wrap .invoiceapp-content .invoiceapp-detail-wrap .invoice-body .nicescroll-bar .create-invoice-wrap .invoice-table-wrap .invoice-table {*/
+  /*  min-width: 900px;*/
+  /*}*/
+  /*.invoiceapp-wrap .invoiceapp-sidebar {*/
+  /*  left: -270px;*/
+  /*}*/
+  /*.invoiceapp-wrap .invoiceapp-content {*/
+  /*  margin-left: 0;*/
+  /*  padding-left: 0;*/
+  /*}*/
+  /*.invoiceapp-wrap.invoiceapp-sidebar-toggle .invoiceapp-sidebar {*/
+  /*  left: 0;*/
+  /*}*/
+  /*.invoiceapp-wrap.invoiceapp-sidebar-toggle .invoiceapp-content {*/
+  /*  left: 16.875rem;*/
+  /*  padding-left: 16.875rem;*/
+  /*  margin-left: -16.875rem;*/
+  /*}*/
+  /*.invoiceapp-wrap .hk-sidebar-togglable {*/
+  /*  -webkit-transform: translateX(32px);*/
+  /*  -moz-transform: translateX(32px);*/
+  /*  -ms-transform: translateX(32px);*/
+  /*  -o-transform: translateX(32px);*/
+  /*  transform: translateX(32px);*/
+  /*}*/
+  /*.invoiceapp-wrap .hk-sidebar-togglable:after {*/
+  /*  content: "\ea6c";*/
+  /*}*/
+  /*.invoiceapp-wrap .hk-sidebar-togglable.active {*/
+  /*  -webkit-transform: translateX(0);*/
+  /*  -moz-transform: translateX(0);*/
+  /*  -ms-transform: translateX(0);*/
+  /*  -o-transform: translateX(0);*/
+  /*  transform: translateX(0);*/
+  /*}*/
+  /*.invoiceapp-wrap .hk-sidebar-togglable.active:after {*/
+  /*  content: "\ea62";*/
+  /*}*/
 }
 /*Integrations*/
 .integrationsapp-wrap {

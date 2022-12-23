@@ -19,7 +19,7 @@ class AuthLogin(APIView):
 
     def get(self, request, template='auths/login.html'):
         if request.user and not isinstance(request.user, AnonymousUser):
-            return redirect(reverse('HomeView'))
+            return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         return render(request, template, {})
 
@@ -38,7 +38,6 @@ class AuthLogin(APIView):
                     return Response({'detail': AuthMsg.login_success, 'data': resp_data.result}, status=200)
                 return Response({'detail': AuthMsg.login_exc, 'data': resp_data.result}, status=400)
             case False:
-                print(resp_data.errors)
                 return Response({
                     'detail': [f'{_(key)}: {value}' for key, value in resp_data.errors.items()]}, status=400
                 )

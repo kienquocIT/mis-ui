@@ -1083,7 +1083,7 @@ jQuery.fn.notifyB = function (option, typeAlert = null) {
 }
 
 // support call API with ajax
-jQuery.fn.callAjax = function (url, method, data, timeout=3) {
+jQuery.fn.callAjax = function (url, method, data, headers={}) {
     return new Promise(function (resolve, reject) {
         let ctx = {
             url: url,
@@ -1091,11 +1091,12 @@ jQuery.fn.callAjax = function (url, method, data, timeout=3) {
             dataType: 'json',
             contentType: "application/json",
             data: JSON.stringify(data),
+            headers: {"X-CSRFToken": headers},
             success: function (rest) {
                 resolve(rest);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                reject(jqXHR.responseJSON);
+                reject(jqXHR.responseJSON); {}
             },
         };
         $.ajax(ctx);

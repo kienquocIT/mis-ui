@@ -23,7 +23,7 @@ class HomeView(APIView):
         rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
         if rest:
             if rest.result:
-                return render(request, TEMPLATE.get('list'), {'ctx': rest.result})
+                return rest.result
         return Response({'detail': ServerMsg.server_err}, status=500)
 
 

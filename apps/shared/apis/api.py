@@ -18,7 +18,7 @@ class RespData(object):
         errors: dict : errors server return
     """
 
-    def __init__(self, _state=None, _result=None, _errors=None):
+    def __init__(self, _state=None, _result=None, _errors=None, _status=None):
         """
         Properties will keep type of attribute that is always correct
         Args: attribute of Http Response
@@ -29,6 +29,7 @@ class RespData(object):
         self._state = _state
         self._result = _result
         self._errors = _errors
+        self._status = _status
 
     @property
     def state(self) -> bool or None:
@@ -49,6 +50,12 @@ class RespData(object):
         if isinstance(self._errors, dict):
             return self._errors
         raise ValueError(f'Errors of response must be dict type, it currently is {type(self._result)}.')
+
+    @property
+    def status(self) -> int:
+        if isinstance(self._status, int):
+            return self._status
+        raise ValueError(f'Status of response must be integer type, it currently is {type(self._status)}.')
 
 
 class APIUtil:
@@ -118,11 +125,17 @@ class APIUtil:
         Returns: RespData Object
 
         """
-        resp_json = resp.json()
+        if resp.status_code == 500:
+            resp_json = {
+                cls.key_response_err: {'detail': 'Server Error'},
+            }
+        else:
+            resp_json = resp.json()
         return RespData(
             resp.status_code,
             resp_json.get(cls.key_response_data, {}),
-            resp_json.get(cls.key_response_err, {})
+            resp_json.get(cls.key_response_err, {}),
+            resp.status_code,
         )
 
     def call_get(self, safe_url: str, headers: dict) -> RespData:

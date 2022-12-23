@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
-{% block css %}
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.jqueryui.min.css">
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs5/css/dataTables.jqueryui.min.css' %}">
     <style>
 
         button {
             border: 0;
         }
 
+        #user-list_filter {
+            padding-right: 50px;
+        }
         #offcanvasRight {
             width: 75%;
         }
@@ -26,8 +28,7 @@
             border-bottom: 0.01em solid #dcdcdc;
         }
 
-        .name-field
-        input {
+        .name-field input {
             width: 80%;
             border: 0.1em solid #dcdcdc;
             border-radius: 0.4em;
@@ -70,7 +71,7 @@
 {% endblock %}
 {% block PageHeader %}
 {% endblock %}
-{% block contentPage %}
+{% block pageContent %}
     <div class="row" style="margin-left: 1em; border-bottom: 0.01em solid #dcdcdc;">
         <div class="col-lg-4">
             <p>System > <span>User</span></p>

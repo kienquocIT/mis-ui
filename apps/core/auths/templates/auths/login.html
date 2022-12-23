@@ -38,7 +38,7 @@
                 <div class="row">
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
-                            <form class="w-100" id="form-login" data-url="" data-url-redirect="/" data-method="POST">
+                            <form class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST">
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
                                         <div class="text-center mb-7">
@@ -60,7 +60,7 @@
                                                                 data-url="{% url 'TenantLoginChoice' %}"
                                                                 data-method="GET"
                                                                 name="tenant_code">
-                                                            <option selected disabled value="">
+                                                            <option disabled value="">
                                                                 {% trans 'Choose...' %}
                                                             </option>
                                                         </select>
@@ -73,7 +73,9 @@
                                                                class="form-control"
                                                                placeholder="Enter username or email ID" value=""
                                                                type="text"
-                                                               tabindex="1">
+                                                               tabindex="1"
+                                                                required
+                                                        >
                                                     </div>
                                                     <div class="form-group col-lg-12">
                                                         <div class="form-label-group">
@@ -87,7 +89,9 @@
                                                                            class="form-control"
                                                                            placeholder="Enter your password" value=""
                                                                            type="password"
-                                                                           tabindex="2">
+                                                                           tabindex="2"
+                                                                           required
+                                                                    >
 																	<a href="#" class="input-suffix text-muted">
 																		<span class="feather-icon"><i class="form-icon"
                                                                                                       data-feather="eye"></i></span>
@@ -165,6 +169,7 @@
 
     <!-- Notify Popup -->
     <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
 
     <!-- Init JS -->
     <script src="{% static 'assets/js/init.js' %}"></script>
@@ -174,7 +179,16 @@
     <script>
         $(document).ready(function () {
             $('#form-login').submit(function (event) {
-                $.fn.formSubmit($('#form-login'));
+                $.fn.formSubmit($('#form-login')).then(
+                    (resp)=>{
+                        let path_redirect = "/";
+                        const params = Object.fromEntries(new URLSearchParams(location.search));
+                        if (params.next){
+                          path_redirect = params.next;
+                        }
+                        $.fn.redirectUrl(path_redirect, 3000);  // 5 seconds
+                    }
+                );
                 event.preventDefault();
             });
 

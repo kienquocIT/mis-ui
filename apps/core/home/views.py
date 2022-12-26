@@ -19,7 +19,7 @@ class HomeView(View):
         rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
         if rest:
             if rest.result:
-                return rest.result, status.HTTP_200_OK
+                return {"user_list": rest.result}, status.HTTP_200_OK
         return None, status.HTTP_401_UNAUTHORIZED
 
 

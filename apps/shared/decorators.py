@@ -117,6 +117,16 @@ def mask_view(**parent_kwargs):
             if isinstance(view_return, HttpResponse):
                 return view_return
             elif cls_check.is_api:
+                if isinstance(view_return, (list, tuple)) and len(view_return) == 2:
+                    if view_return[0] is False:
+                        if isinstance(view_return[1], HttpResponse):
+                            return view_return[1]
+                        else:
+                            request.session.flush()
+                            request.user = AnonymousUser
+                            return Response({'data': view_return}, status=401)
+                    else:
+                        view_return = view_return[1]
                 return Response({'data': view_return}, status=200)
             elif cls_check.template_path:
                 if request.user and not isinstance(request.user, AnonymousUser):

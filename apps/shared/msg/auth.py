@@ -6,3 +6,4 @@ class AuthMsg(object):
     login_success = _('Login successfully')
     KEY_TENANT_CODE = _('tenant_code')
     KEY_DETAIL = _('detail')
+    AUTH_EXPIRE = _('The session login was expired.')

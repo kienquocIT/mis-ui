@@ -10,8 +10,8 @@
     <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
 
     {% compress css %}
         <!-- Data Table CSS -->
@@ -26,7 +26,7 @@
 
         <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+        <link href="{% static 'assets/css/font-awesome.min.css' %}">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         {% block cssHeader %}{% endblock %}
@@ -41,6 +41,10 @@
         class="hk-wrapper" data-layout="vertical" data-layout-style="collapsed" data-menu="light" data-footer="simple"
         data-hover="active"
 >
+    <p
+            style="display: none" id="get-menu-active" data-nav-menu="{{ nav.menu_id_current }}"
+            data-nav-tenant="{{ nav.space_code_current }}"
+    ></p>
     {% include 'extends/top_nav.html' %}
 
     <!-- Vertical Nav -->
@@ -130,8 +134,19 @@
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let nav_data = $('#get-menu-active');
+
+            let menu_id_active = nav_data.attr('data-nav-menu');
+            if (menu_id_active) $('#' + menu_id_active).closest('.nav-item').addClass('active');
+
+            let tenant_code_active = nav_data.attr('data-nav-tenant');
+            if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
+        });
+    </script>
 
     {% block jsFooter %}{% endblock %}
 {% endcompress %}

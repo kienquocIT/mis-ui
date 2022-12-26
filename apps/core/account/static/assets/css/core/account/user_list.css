@@ -1,0 +1,67 @@
+button {
+    border: 0;
+}
+
+#offcanvasRight {
+    width: 75%;
+}
+
+@media screen and(max-width: 850px) {
+    #offcanvasRight {
+        width: 100%;
+    }
+}
+
+.offcanvas-header {
+    margin-right: 1em;
+    margin-left: 1em;
+    border-bottom: 0.01em solid #dcdcdc;
+}
+
+.name-field input {
+    width: 80%;
+    border: 0.1em solid #dcdcdc;
+    border-radius: 0.4em;
+}
+
+.other-field, .input-checkbox, .button-field {
+    margin-top: 1em;
+}
+
+.other-field input {
+    width: 90%;
+    border: 0.1em solid #dcdcdc;
+    border-radius: 0.4em;
+}
+
+tbody tr td button {
+    background: none;
+}
+
+table {
+    width: 100%;
+}
+
+.alert-success, .noti-create {
+    z-index: 1000;
+    position: fixed;
+    display: none;
+    right: 0;
+    top: 10%;
+}
+
+form input {
+    height: 3em;
+}
+
+#auto-create-pw {
+    height: 1em;
+}
+
+#user-list_filter{
+    padding-right: 3em;
+}
+
+table {
+    background: white;
+}

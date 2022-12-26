@@ -1,10 +1,7 @@
 from django.views import View
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg
-
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from apps.shared import ServerAPI, mask_view
 
 API_URL = {
     'user_list': 'account/users'
@@ -21,10 +18,9 @@ class HomeView(View):
     def get(self, request, *args, **kwargs):
         rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
         if rest:
-            if rest.state and rest.status:
-                if rest.state is True and rest.status == 200 and rest.result:
-                    return rest.result
-        return {}
+            if rest.result:
+                return rest.result, status.HTTP_200_OK
+        return None, status.HTTP_401_UNAUTHORIZED
 
 
 class TenantCompany(View):

@@ -1,93 +1,45 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
-{% block css %}
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.jqueryui.min.css">
-    <style>
-        button {
-            border: 0 solid;
-        }
-
-        #offcanvasRight {
-            width: 75%;
-        }
-
-        @media screen and (max-width: 850px) {
-            #offcanvasRight {
-                width: 100%;
-            }
-        }
-
-        .offcanvas-header {
-            margin-right: 1em;
-            margin-left: 1em;
-            border-bottom: 0.01em solid #dcdcdc;
-        }
-
-        .name-field input {
-            width: 80%;
-            border: 0.1em solid #dcdcdc;
-            border-radius: 0.4em;
-        }
-
-        .other-field, .input-checkbox, .button-field {
-            margin-top: 1em;
-        }
-
-        .other-field input {
-            width: 90%;
-            border: 0.1em solid #dcdcdc;
-            border-radius: 0.4em;
-        }
-
-        tbody tr td button {
-            background: none;
-        }
-
-        table {
-            width: 100%;
-        }
-
-        .alert-success, .alert-danger {
-            z-index: 1000;
-            position: fixed;
-            display: none;
-            right: 0;
-            top: 10%;
-        }
-
-        form input {
-            height: 3em;
-        }
-
-        #auto-create-pw {
-            height: 1em;
-        }
-
-    </style>
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs5/css/dataTables.jqueryui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/core/account/user_list.css' %}">
 {% endblock %}
 {% block PageHeader %}
 {% endblock %}
-{% block contentPage %}
-    <div class="row" style="margin-left: 1em; border-bottom: 0.01em solid #dcdcdc;">
-        <div class="col-lg-4">
-            <p>System > <span>User</span></p>
-        </div>
-    </div>
-    <br>
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-            aria-controls="offcanvasRight" style="margin-left: 1em"><i class="far fa-plus-square"></i>
+
+{% block pageAction %}
+    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasRight">
+        <i data-feather="plus"></i>
     </button>
+
+
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+
     <!--Form create user-->
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
+         style="margin-top: 4em;">
         <div class="alert alert-success">
             <strong>Creating!</strong>
             <div class="spinner-border text-success" role="status">
                 <span class="sr-only"></span>
             </div>
         </div>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger noti-create">
             <strong>Error!</strong>
         </div>
         <div class="offcanvas-header">
@@ -104,20 +56,21 @@
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>First Name</label>
-                                    <input type="text" placeholder="Input text" name="first_name"
+                                    <input type="text" placeholder="Input text" name="first_name" id="inp-firstname"
                                            required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6">
                                 <div class="row name-field">
                                     <label>Last Name</label>
-                                    <input type="text" placeholder="Input text" name="last_name">
+                                    <input type="text" placeholder="Input text" name="last_name" id="inp-lastname">
                                 </div>
                             </div>
                         </div>
                         <div class="row other-field">
                             <label>Full Name</label>
-                            <input type="text" placeholder="Input text" name="full_name" required>
+                            <input type="text" placeholder="Input text" name="full_name" required id="inp-fullname"
+                                   disabled>
                         </div>
                         <div class="row other-field">
                             <label>Email Address</label>
@@ -130,7 +83,7 @@
                         <div class="row other-field username">
                             <label>User Name</label>
                             <input type="text" placeholder="Input text" name="username" required>
-                            <span class="not-valid-username" style="display: none">Username is existing</span>
+                            {#                            <span class="not-valid-username" style="display: none">Username is existing</span>#}
                         </div>
                         <div class="input-checkbox">
                             <input type="checkbox" id="auto-create-pw" name="auto-create-pw"/>
@@ -141,6 +94,10 @@
                             <label>Password</label>
                             <input type="password" placeholder="Input text" name="password" id="password"
                                    required>
+                        </div>
+                        <div class="input-checkbox">
+                            <input type="checkbox" id="auto-create-pw" name="auto-create-pw"/>
+                            <label for="auto-create-pw">require change password when first sign in</label>
                         </div>
                         <div class="row button-field">
                             <div class="col-lg-2 col-sm-2">
@@ -162,23 +119,13 @@
 
     <!-- end form create user -->
 
-    <!--end edit user-->
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
-        <div class="alert alert-success">
-            <strong>Deleting!</strong>
-            <div class="spinner-border text-success" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <div class="alert alert-danger " id="danger-del-noti">
-            <strong>Error!</strong>
-        </div>
-        <table class="table nowrap display" id="user-list" style="text-align: center">
+        <table class="table nowrap display" id="user-list">
             <thead>
             <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
+                <th scope="col">Full Name</th>
                 <th scope="col">Username</th>
+                <th scope="col">Plan</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -186,95 +133,9 @@
         </table>
         {{ data.user_list|json_script:'user-data' }}
 
-
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script>
-        $('.btn-icon').on('click', function () {
-            $('#user-list_wrapper').css('width', '100%');
-            $('.dataTable').css('width', '100%');
-        });
-
-        function generateP() {
-            var pass = '';
-            var str = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-            for (let i = 1; i <= 8; i++) {
-                var char = Math.floor(Math.random()
-                    * str.length + 1);
-                pass += str.charAt(char)
-            }
-            return pass;
-        }
-
-        $('#auto-create-pw').on('change', function () {
-            if ($(this).is(':checked') == true) {
-                $('#password').val(generateP());
-                $('#password').prop("readonly", true);
-            } else {
-                $('#password').val('');
-                $('#password').prop("readonly", false);
-            }
-        });
-        var user_list_DT;
-
-        function loadDataUser() {
-            let data = JSON.parse($('script[id=user-data]').html())
-            user_list_DT = $('#user-list').DataTable({
-                processing: true,
-                data: data,
-                columns: [
-                    {
-                        'data': 'first_name',
-                        'className': 'user-firstname',
-                    },
-                    {
-                        'data': 'last_name',
-                        'className': 'user-lastname',
-                    },
-                    {
-                        'data': 'username',
-                        'className': 'user-username',
-                    },
-                    {
-                        'render': function (data, type, row) {
-                            let temp = ``;
-                            temp += `<a href='users/` + row.id + `'><button class="btn-edit" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight-edit" aria-controls="offcanvasRight">
-                                        <i class="fa fa-edit"></i>
-                                     </button></a>`;
-                            temp += `<button class="btn-del"><i class="fa fa-trash-alt"></i></button>`;
-                            return temp
-                        }
-                    },
-                ]
-            });
-        }
-
-        loadDataUser();
-
-        $("#form-create-user").submit(function (event) {
-            event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (res) => {
-                        if ($('#offcanvasRight .alert-danger').css('display') != 'none') {
-                            $('.alert-danger').hide(500);
-                        }
-                        $('.alert-success').show(1000);
-                        setTimeout(location.reload.bind(location), 3000);
-                    },
-                    (err) => {
-                        $('.alert-danger').show(500);
-                        $('.not-valid-username').show();
-                        $('.username').css('color', 'red');
-                        $('.username').css('background', '#FFF0F5');
-                        $('#username').css('border-color', 'red');
-                        console.log(err)
-                    }
-                )
-        });
-    </script>
+    <script src="{% static 'assets/js/core/account/user_data.js' %}"></script>
 {% endblock %}
+

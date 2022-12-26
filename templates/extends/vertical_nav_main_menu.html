@@ -8,7 +8,7 @@
             </div>
             <ul class="navbar-nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'EmployeeList' %}">
+                    <a class="nav-link" href="{% url 'EmployeeList' %}" id="menu-employee-list">
                         <span class="nav-icon-wrap">
                             <span class="svg-icon">
                                 <svg
@@ -26,7 +26,7 @@
                         <span class="nav-link-text">Employees</span>
                     </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a
                             class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
                             data-bs-target="#dash_invoice"
@@ -54,18 +54,18 @@
                         <li class="nav-item">
                             <ul class="nav flex-column">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="invoice-list.html"><span class="nav-link-text">Invoice List</span></a>
+                                    <a class="nav-link" href="/"><span class="nav-link-text">Invoice List</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="invoice-templates.html"><span
+                                    <a class="nav-link" href="/"><span
                                             class="nav-link-text"
                                     >Invoice Templates</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="create-invoice.html"><span class="nav-link-text">Create Invoice</span></a>
+                                    <a class="nav-link" href="/"><span class="nav-link-text">Create Invoice</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="invoice-preview.html"><span class="nav-link-text">Invoice Preview</span></a>
+                                    <a class="nav-link" href="/"><span class="nav-link-text">Invoice Preview</span></a>
                                 </li>
                             </ul>
                         </li>
@@ -110,6 +110,25 @@
                             </ul>
                         </li>
                     </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'UserListView' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon">
+                                <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="icon icon-tabler icon-tabler-inbox" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                        fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                >
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                    <path d="M4 13h3l3 3h4l3 -3h3"/>
+                                </svg>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">User</span>
+                    </a>
                 </li>
             </ul>
         </div>

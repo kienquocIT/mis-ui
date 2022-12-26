@@ -1083,7 +1083,7 @@ jQuery.fn.notifyB = function (option, typeAlert = null) {
 }
 
 // support call API with ajax
-jQuery.fn.callAjax = function (url, method, data, headers={}) {
+jQuery.fn.callAjax = function (url, method, data, headers = {}) {
     return new Promise(function (resolve, reject) {
         let ctx = {
             url: url,
@@ -1096,7 +1096,9 @@ jQuery.fn.callAjax = function (url, method, data, headers={}) {
                 resolve(rest);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                reject(jqXHR.responseJSON); {}
+                reject(jqXHR.responseJSON);
+                {
+                }
             },
         };
         $.ajax(ctx);
@@ -1104,14 +1106,44 @@ jQuery.fn.callAjax = function (url, method, data, headers={}) {
 }
 
 
-// Simulate a mouse click:
+// Simulate redirect path
 jQuery.fn.redirectUrl = function (redirectPath, timeout = 0) {
     setTimeout(() => {
-        // window.location.replace(redirectPath);
         window.location.href = redirectPath;
+        // window.location.replace(redirectPath);
     }, timeout);
 }
-
+jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
+    let redirectPath = 'auth/login';
+    if (location_to_next) {
+        jQuery.fn.redirectUrl(redirectPath + "?next=" + window.location.href);
+    } else {
+        jQuery.fn.redirectUrl(redirectPath);
+    }
+}
+jQuery.fn.switcherResp = function (resp, accept_status=[]){
+    if (typeof resp === 'object'){
+        let status = 500;
+        if (resp.hasOwnProperty('status')) {
+            status = resp.status;
+        }
+        switch (status){
+            case 200:
+                return resp.data
+            case 201:
+                return resp.data
+            case 401:
+                return jQuery.fn.redirectLogin(3);
+            case 403:
+                jQuery.fn.notifyB({'description': 'Permission deny.'});
+                return {};
+            case 500:
+                return {};
+            default:
+                return {};
+        }
+    }
+}
 
 // support for Form Submit
 class SetupFormSubmit {

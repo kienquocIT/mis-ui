@@ -42,25 +42,3 @@ class UserDetailView(APIView):
             return {'user': user.result}
         return Response({'detail': user.errors}, status=400)
 
-    # def put(self, request, pk, *args, **kwargs):
-    #     instance = User.objects.get(pk=pk)
-    #     user = UserDetailSerializer(data=request.data, instance=instance)
-    #     if user.is_valid():
-    #         user.save()
-    #         return Response({
-    #             "code": 200,
-    #             "status": "successful",
-    #             "message": "edit user successfully"
-    #         })
-    #     return Response({'detail': ServerMsg.server_err}, status=500)
-
-    # def delete(self, request, pk, *args, **kwargs):
-    #     if request.method == "DELETE":
-    #         user = User.objects.get(pk=request.data['user_id'])
-    #         user.delete()
-    #         return Response({
-    #             "code": 200,
-    #             "status": "successful",
-    #             "message": "delete user successfully"
-    #         })
-    #     return Response({'detail': ServerMsg.server_err}, status=500)

@@ -120,9 +120,23 @@ def mask_view(**parent_kwargs):
                 return Response({'data': view_return}, status=200)
             elif cls_check.template_path:
                 if request.user and not isinstance(request.user, AnonymousUser):
+                    if isinstance(view_return, (list, tuple)) and len(view_return) == 2:
+                        if view_return[0] is False:
+                            if isinstance(view_return[1], HttpResponse):
+                                return view_return[1]
+                            else:
+                                request.session.flush()
+                                request.user = AnonymousUser
+                                return redirect(reverse('AuthLogin'))
+                        else:
+                            view_return = view_return[1]
                     ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
                     ctx['data'] = view_return
                     ctx['breadcrumb'] = cls_check.parse_breadcrumb()
+                    ctx['nav'] = {
+                        'menu_id_current': parent_kwargs.get('menu_active', None),
+                        'space_code_current': 1,
+                    }
                     return render(request, cls_check.template_path, ctx)
                 return redirect(reverse('AuthLogin'))
             raise ValueError(

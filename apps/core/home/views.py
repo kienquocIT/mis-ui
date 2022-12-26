@@ -1,10 +1,7 @@
 from django.shortcuts import render
 from django.views import View
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg
-
+from rest_framework.permissions import IsAuthenticated
+from apps.shared import ServerAPI, mask_view
 
 API_URL = {
     'user_list': 'account/users'
@@ -22,8 +19,8 @@ class HomeView(View):
         rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
         if rest:
             if rest.result:
-                return render(request, TEMPLATE.get('list'), {'ctx': rest.result})
-        return Response({'detail': ServerMsg.server_err}, status=500)
+                return rest.result
+        return False, None,
 
 
 class TenantCompany(View):

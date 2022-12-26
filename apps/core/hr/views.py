@@ -8,7 +8,12 @@ from apps.shared import mask_view, ServerAPI, ApiURL
 
 
 class EmployeeList(View):
-    @mask_view(auth_require=True, template='core/hr/employee/employee_list.html', breadcrumb='EMPLOYEE_LIST_PAGE')
+    @mask_view(
+        auth_require=True,
+        template='core/hr/employee/employee_list.html',
+        breadcrumb='EMPLOYEE_LIST_PAGE',
+        menu_active='menu-employee-list',
+    )
     def get(self, request, *args, **kwargs):
         return {}
 

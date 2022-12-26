@@ -1,4 +1,4 @@
-import json
+from rest_framework import status
 from rest_framework.views import APIView
 
 from rest_framework.response import Response
@@ -30,7 +30,7 @@ class UserListView(APIView):
                     "status": "successful",
                     "message": "code was sent try to validate code"
                 })
-        return Response({'detail': ServerMsg.server_err}, status=500)
+        return Response({'detail': ServerMsg.SERVER_ERR}, status=500)
 
 
 class UserDetailView(APIView):

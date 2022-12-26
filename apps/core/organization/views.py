@@ -1,7 +1,7 @@
 
 from rest_framework.views import APIView
 
-from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg
+from apps.shared import mask_view
 
 
 class OrganizationCreateView(APIView):

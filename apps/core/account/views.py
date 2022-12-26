@@ -16,15 +16,13 @@ class UserListView(APIView):
     def get(self, request, *args, **kwargs):
         user_list = ServerAPI(user=None, url=ApiURL.user_list).get()
         if user_list.state:
-            return {'user_list': json.loads(json.dumps(user_list.result))}
+            return {'user_list': user_list.result}
         return Response({'detail': user_list.errors}, status=400)
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             data = request.data
-            current_tenant = '9bcf0d40-c54a-48fc-8688-8f99cff866f9' #request.user.tenant
-            data.update({'tenant_current': current_tenant})
             user = ServerAPI(user=None, url=ApiURL.user_list).post(data)
             if user.state:
                 return Response({

@@ -21,9 +21,10 @@ class HomeView(View):
     def get(self, request, *args, **kwargs):
         rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
         if rest:
-            if rest.result:
-                return rest.result
-        return Response({'detail': ServerMsg.server_err}, status=500)
+            if rest.state and rest.status:
+                if rest.state is True and rest.status == 200 and rest.result:
+                    return rest.result
+        return {}
 
 
 class TenantCompany(View):

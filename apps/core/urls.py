@@ -5,4 +5,5 @@ urlpatterns = [
     path('auth/', include('apps.core.auths.urls')),
     path('account/', include('apps.core.account.urls')),
     path('hr/', include('apps.core.hr.urls')),
+    path('organization/', include('apps.core.organization.urls')),
 ]

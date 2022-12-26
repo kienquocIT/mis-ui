@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/organization/group_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+    <div class="row">
+        <a class="d-inline-flex align-items-center setting-btn" href="#">
+            <i class="fas fa-edit btn-action"></i>&nbsp;Setting
+        </a>
+    </div>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="d-flex">
+        <div class="d-flex flex-wrap justify-content-between flex-1">
+            <div class="mb-lg-0 mb-2 me-8">
+                <h6 class="detail-pg-title">First Name</h6>
+                <a class="d-inline-flex align-items-center add-new-row" href="#">
+                    <i class="ri-add-box-line me-1"></i>Create Group
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <table
+            id="datable_group_list" class="table nowrap w-100 mb-5" data-url="{% url 'GroupListAPI' %}"
+            data-method="GET"
+    >
+        <thead>
+        <tr>
+            <th></th>
+            <th>Group Level</th>
+            <th>Group Description</th>
+            <th>Group Display Title</th>
+            <th>Group Code</th>
+            <th>Upper Group</th>
+            <th>Manager</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><a href="">Add SubGroup</a></td>
+            <td>
+                <select style="border: None">
+                    <option>Level 1</option>
+                    <option selected>Level 2</option>
+                    <option>Level 3</option>
+                </select>
+            </td>
+            <td>Board or Management</td>
+            <td>Ban Giám Đốc</td>
+            <td>BOM</td>
+            <td>None</td>
+            <td>Nguyễn Thành</td>
+            <td>
+                <a href=""><i class="fas fa-edit btn-action"></i></a>
+                <a href=""><i class="far fa-trash-alt btn-action"></i></a>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="">Add SubGroup</a></td>
+            <td>
+                <select style="border: None">
+                    <option>Level 1</option>
+                    <option>Level 2</option>
+                    <option selected>Level 3</option>
+                </select>
+            </td>
+            <td>Department</td>
+            <td>Phòng Phát Triển Dự Án</td>
+            <td>PĐ</td>
+            <td>Ban Giám Đốc</td>
+            <td>Vương Nhã</td>
+            <td>
+                <a href=""><i class="fas fa-edit btn-action"></i></a>
+                <a href=""><i class="far fa-trash-alt btn-action"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/organization/group_data.js' %}"></script>#}
+{% endblock %}

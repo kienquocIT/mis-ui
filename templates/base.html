@@ -41,6 +41,10 @@
         class="hk-wrapper" data-layout="vertical" data-layout-style="collapsed" data-menu="light" data-footer="simple"
         data-hover="active"
 >
+    <p
+            style="display: none" id="get-menu-active" data-nav-menu="{{ nav.menu_id_current }}"
+            data-nav-tenant="{{ nav.space_code_current }}"
+    ></p>
     {% include 'extends/top_nav.html' %}
 
     <!-- Vertical Nav -->
@@ -132,6 +136,18 @@
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
 
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            let nav_data = $('#get-menu-active');
+
+            let menu_id_active = nav_data.attr('data-nav-menu');
+            if (menu_id_active) $('#' + menu_id_active).closest('.nav-item').addClass('active');
+
+            let tenant_code_active = nav_data.attr('data-nav-tenant');
+            if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
+        });
+    </script>
 
     {% block jsFooter %}{% endblock %}
 {% endcompress %}

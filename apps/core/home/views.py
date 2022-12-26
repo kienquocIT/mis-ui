@@ -1,10 +1,7 @@
 from django.views import View
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
-from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg
-
+from apps.shared import ServerAPI, mask_view
 
 API_URL = {
     'user_list': 'account/users'
@@ -23,7 +20,7 @@ class HomeView(View):
         if rest:
             if rest.result:
                 return rest.result
-        return Response({'detail': ServerMsg.server_err}, status=500)
+        return False, None,
 
 
 class TenantCompany(View):

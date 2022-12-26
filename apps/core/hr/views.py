@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
+from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
@@ -25,11 +26,10 @@ class EmployeeListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
         if resp.state:
-            return {'employee_list': resp.result}
+            return {'employee_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
-            request.session.flush()
-            return redirect(reverse('AuthLogin'))
-        return {'errors': resp.errors}
+            return None, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class EmployeeCreate(View):

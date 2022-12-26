@@ -4,16 +4,13 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from rest_framework import status
 
 from rest_framework.response import Response
 
+from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .caches import CacheController, CacheKeyCollect
-
-KEY_AUTH_REQUIRED = 'auth_require'
-KEY_IS_API = 'is_api'
-KEY_TEMPLATE = 'template'
-KEY_BREADCRUMB = 'breadcrumb'
 
 
 class ArgumentDecorator:
@@ -113,42 +110,51 @@ def mask_view(**parent_kwargs):
                 return state_auth
 
             # redirect or next step with is_auth
+            # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
             view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
             if isinstance(view_return, HttpResponse):
                 return view_return
-            elif cls_check.is_api:
+            else:
+                # parse data
+                data, http_status = None, 200
                 if isinstance(view_return, (list, tuple)) and len(view_return) == 2:
-                    if view_return[0] is False:
-                        if isinstance(view_return[1], HttpResponse):
-                            return view_return[1]
-                        else:
-                            request.session.flush()
-                            request.user = AnonymousUser
-                            return Response({'data': view_return}, status=401)
-                    else:
-                        view_return = view_return[1]
-                return Response({'data': view_return}, status=200)
-            elif cls_check.template_path:
-                if request.user and not isinstance(request.user, AnonymousUser):
-                    if isinstance(view_return, (list, tuple)) and len(view_return) == 2:
-                        if view_return[0] is False:
-                            if isinstance(view_return[1], HttpResponse):
-                                return view_return[1]
-                            else:
-                                request.session.flush()
-                                request.user = AnonymousUser
+                    data, http_status = view_return
+                else:
+                    data = view_return
+                data['status'] = http_status
+
+                # handle return HTTP
+                if cls_check.is_api:
+                    match http_status:
+                        case status.HTTP_401_UNAUTHORIZED:
+                            return Response(
+                                {'data': AuthMsg.AUTH_EXPIRE, 'status': status.HTTP_401_UNAUTHORIZED},
+                                status=status.HTTP_401_UNAUTHORIZED
+                            )
+                        case status.HTTP_500_INTERNAL_SERVER_ERROR:
+                            return Response(
+                                {'data': ServerMsg.SERVER_ERR, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                            )
+                        case _:
+                            return Response({'data': data, 'status': http_status}, status=http_status)
+                elif cls_check.template_path:
+                    if request.user and not isinstance(request.user, AnonymousUser):
+                        match http_status:
+                            case status.HTTP_401_UNAUTHORIZED:
                                 return redirect(reverse('AuthLogin'))
-                        else:
-                            view_return = view_return[1]
-                    ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
-                    ctx['data'] = view_return
-                    ctx['breadcrumb'] = cls_check.parse_breadcrumb()
-                    ctx['nav'] = {
-                        'menu_id_current': parent_kwargs.get('menu_active', None),
-                        'space_code_current': 1,
-                    }
-                    return render(request, cls_check.template_path, ctx)
-                return redirect(reverse('AuthLogin'))
+                            case status.HTTP_500_INTERNAL_SERVER_ERROR:
+                                return HttpResponse(status=500)
+                            case _:
+                                ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
+                                ctx['data'] = view_return
+                                ctx['breadcrumb'] = cls_check.parse_breadcrumb()
+                                ctx['nav'] = {
+                                    'menu_id_current': parent_kwargs.get('menu_active', None),
+                                    'space_code_current': 1,
+                                }
+                                return render(request, cls_check.template_path, ctx)
+                    return redirect(reverse('AuthLogin'))
             raise ValueError(
                 f'Return not map happy case. Over with: is_api={cls_check.is_api},template={cls_check.template_path}'
             )

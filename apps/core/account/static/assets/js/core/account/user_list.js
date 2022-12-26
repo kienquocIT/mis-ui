@@ -28,10 +28,6 @@ $(function () {
                 return '';
             }
         }, {
-            'data': 'code', render: (data, type, row, meta) => {
-                return String.format(`<b>{0}</b>`, data);
-            }
-        }, {
             'data': 'full_name', 'render': (data, type, row, meta) => {
                 if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
                     return `<div class="media align-items-center">
@@ -51,38 +47,8 @@ $(function () {
                 return '';
             }
         }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
-                }
-                return '';
-            }
-        }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
-                    let result = [];
-                    row.role.map(item => item.name ? result.push(`<span class="badge badge-soft-primary">` + item.name + `</span>`) : null);
-                    return result.join(" ");
-                }
-                return '';
-            }
-        }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                    return new Date(row.date_joined).toDateString();
-                }
-                return '';
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
-                    if (row.is_active) {
-                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
-                    } else {
-                        return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
-                    }
-                }
-                return '';
+            'data': 'username', render: (data, type, row, meta) => {
+                return `<span class="badge badge-primary">` + row.username + `</span>`;
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
@@ -96,7 +62,7 @@ $(function () {
 
     function initDataTable(config) {
         /*DataTable Init*/
-        let dtb = $('#datable_employee_list');
+        let dtb = $('#datable_user_list');
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
@@ -137,15 +103,15 @@ $(function () {
     }
 
     function loadDataTable() {
-        let tb = $('#datable_employee_list');
+        let tb = $('#datable_user_list');
         $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (data.hasOwnProperty('employee_list')) {
-                    config['data'] = data.employee_list;
-                }
-                initDataTable(config);
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('user_list')) {
+                config['data'] = resp.data.user_list;
             }
+            initDataTable(config);
+        }, (errs) => {
+            location.href = "/auth/login";
+            initDataTable(config);
         },)
     }
 

@@ -1,5 +1,5 @@
-from django.shortcuts import render
 from django.views import View
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from apps.shared import ServerAPI, mask_view
 
@@ -19,8 +19,8 @@ class HomeView(View):
         rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
         if rest:
             if rest.result:
-                return rest.result
-        return False, None,
+                return rest.result, status.HTTP_200_OK
+        return None, status.HTTP_401_UNAUTHORIZED
 
 
 class TenantCompany(View):

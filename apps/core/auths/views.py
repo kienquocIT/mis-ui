@@ -41,7 +41,7 @@ class AuthLogin(APIView):
                 return Response({
                     'detail': [f'{_(key)}: {value}' for key, value in resp_data.errors.items()]}, status=400
                 )
-        return Response({'detail': ServerMsg.server_err}, status=500)
+        return Response({'detail': ServerMsg.SERVER_ERR}, status=500)
 
 
 class AuthLogout(APIView):

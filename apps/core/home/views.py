@@ -1,6 +1,6 @@
+from django.shortcuts import render
 from django.views import View
 from rest_framework.permissions import IsAuthenticated
-
 from apps.shared import ServerAPI, mask_view
 
 API_URL = {

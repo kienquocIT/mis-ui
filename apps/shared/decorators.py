@@ -105,9 +105,17 @@ def mask_view(**parent_kwargs):
                 real_path=request.path,
             )
 
-            state_auth = cls_check.activate_auth_require(request.user)
-            if state_auth is not True:
-                return state_auth
+            if login_require:
+                if not request.user or isinstance(request.user, AnonymousUser):
+                    if is_api:
+                        return Response({'detail': 'Authentication is not credentials.'})
+
+                    path_redirect = reverse('AuthLogin')
+                    if cls_check.real_path:
+                        path_redirect += f"?next={cls_check.real_path}"
+                    request.session.flush()
+                    request.user = AnonymousUser
+                    return redirect(path_redirect)
 
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
@@ -142,12 +150,14 @@ def mask_view(**parent_kwargs):
                     if request.user and not isinstance(request.user, AnonymousUser):
                         match http_status:
                             case status.HTTP_401_UNAUTHORIZED:
+                                request.session.flush()
+                                request.user = AnonymousUser
                                 return redirect(reverse('AuthLogin'))
                             case status.HTTP_500_INTERNAL_SERVER_ERROR:
                                 return HttpResponse(status=500)
                             case _:
                                 ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
-                                ctx['data'] = view_return
+                                ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()
                                 ctx['nav'] = {
                                     'menu_id_current': parent_kwargs.get('menu_active', None),

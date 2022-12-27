@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    <style>
+        label {
+            font-weight: bolder;
+            margin-bottom: 0.5em;
+        }
+
+        form .row {
+            margin-bottom: 1em;
+        }
+
+        input, select {
+            height: 3em;
+            border: 0.05em solid gray;
+            border-radius: 0.3em;
+        }
+
+        textarea {
+            border-radius: 0.3em;
+        }
+
+        hr {
+            border: 0.01em solid gray;
+        }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <button class="btn" type="submit">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-7">
+            <form id="form_create">
+                <div class="row">
+                    <label>{% trans "Select Group Level" %}</label>
+                    <select name="">
+                        <option value="1" selected>Level 1</option>
+                        <option value="2">Level 2</option>
+                        <option value="3">Level 3</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label>{% trans "Select Parent Level" %}</label>
+                    <select name="">
+                        <option value="1" selected>Level 1</option>
+                        <option value="2">Level 2</option>
+                        <option value="3">Level 3</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label>{% trans "Reference Group Title" %}</label>
+                    <input type="text" placeholder="Team" name="">
+                </div>
+                <div class="row">
+                    <label>{% trans "Input Display Group Title" %}</label>
+                    <input type="text" placeholder="Nhom Phat Trien" name="">
+                </div>
+                <div class="row">
+                    <label>{% trans "Input Group Code" %}</label>
+                    <input type="text" placeholder="DEVT" name="">
+                </div>
+                <div class="row">
+                    <label>{% trans "Description" %}</label>
+                    <textarea rows="4" cols="50" name=""></textarea>
+                </div>
+            </form>
+            <br><br><br>
+
+            <button style="background: none; border: none; color: #007D88">
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i data-feather="plus"></i>
+                    </span>
+                </span>{% trans "Add employee to group" %}
+            </button>
+            <br>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans "Employee Name" %}</th>
+                    <th scope="col">{% trans "Roles" %}</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Phạm Nhân</td>
+                    <td>Developer, Devops</td>
+                    <td>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip"
+                           data-bs-placement="top" title="" data-bs-original-title="Edit"
+                           href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="edit"></i></span></span></a>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete"
+                           href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="trash-2"></i></span></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Nguyễn Văn Hải</td>
+                    <td>Tester, support</td>
+                    <td>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip"
+                           data-bs-placement="top" title="" data-bs-original-title="Edit"
+                           href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="edit"></i></span></span></a>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete"
+                           href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="trash-2"></i></span></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Lê Lợi</td>
+                    <td>Team leader</td>
+                    <td>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip"
+                           data-bs-placement="top" title="" data-bs-original-title="Edit"
+                           href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="edit"></i></span></span></a>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete"
+                           href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="trash-2"></i></span></span></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br><br><br>
+            <hr>
+            <br>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="row">
+                        <label>{% trans "1st Manager System Title" %}</label>
+                        <input type="text" placeholder="Team Leader" name="">
+                    </div>
+
+                    <div class="row">
+                        <label>{% trans "Input 1st Manager Display Title" %}</label>
+                        <input type="text" placeholder="Trưởng nhóm" name="">
+                    </div>
+                    <div class="row">
+                        <label>{% trans "Assign To" %}</label>
+                        <select name="">
+                            <option selected>Lê Minh Thuận</option>
+                            <option value="1">Nguyễn Văn A</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <div class="row">
+                        <label>{% trans "1st Manager System Title" %}</label>
+                        <input type="text" placeholder="Deputy Team Leader" name="">
+                    </div>
+
+                    <div class="row">
+                        <label>{% trans "Input 1st Manager Display Title" %}</label>
+                        <input type="text" placeholder="Trưởng nhóm" name="">
+                    </div>
+                    <div class="row">
+                        <label>{% trans "Assign To" %}</label>
+                        <select>
+                            <option selected>Lê Minh Thuận</option>
+                            <option value="1">Nguyễn Văn A</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row" style="padding-top: 2em;">
+                    <div class="col-sm-6">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                    <div class="col-sm-5"></div>
+                    <div class="col-sm-1">
+                        <button type="button" class="btn btn-light">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $("#form_create").submit(function (event) {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            console.log(resp)
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+        });
+    </script>
+{% endblock %}
+

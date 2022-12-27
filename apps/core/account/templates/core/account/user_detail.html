@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block css %}
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.jqueryui.min.css">
+{% block cssHeader %}
+
     <style>
         button {
             border: 0 solid;
@@ -18,7 +17,7 @@
         }
 
         .user-info input {
-            width: 45%;
+            width: 90%;
         }
 
         .user-info-name input {
@@ -49,55 +48,65 @@
         }
     </style>
 {% endblock %}
-{% block PageHeader %}
+{% block pageAction %}
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="{% url 'EmployeeCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Add"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+        </span>
+    </a>
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
 {% endblock %}
-{% block contentPage %}
-    <div class="row" style="margin-left: 1em; border-bottom: 0.01em solid #dcdcdc;">
-        <div class="col-lg-4">
-            <p>User > <span>User-detail</span></p>
-        </div>
-    </div>
-    <div class="alert alert-success">
-        <strong>Cập nhật thành công</strong>
-    </div>
-    <div class="alert alert-danger">
-        <strong>Lỗi! Vui lòng kiểm tra lại</strong>
-    </div>
+{% block pageContent %}
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
-        <h3>Thông tin User</h3>
         <div class="row">
             <div class="col-lg-1"></div>
         </div>
         <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
             {% csrf_token %}
             <div class="row">
-                <div class="col-lg-3 col-sm-3">
+                <div class="col-lg-6 col-sm-6">
                     <div class="row user-info-name">
                         <label>First Name</label>
-                        <input type="text" value="{{ data.user.first_name }}" name="first_name" id="inp-firstname">
+                        <input type="text" value="{{ data.0.user.first_name }}" name="first_name" id="inp-firstname">
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-3">
+                <div class="col-lg-6 col-sm-6">
                     <div class="row user-info-name">
                         <label>Last Name</label>
-                        <input type="text" value="{{ data.user.last_name }}" name="last_name" id="inp-lastname">
+                        <input type="text" value="{{ data.0.user.last_name }}" name="last_name" id="inp-lastname">
                     </div>
                 </div>
             </div>
 
             <div class="row user-info">
                 <label>Full Name</label>
-                <input type="text" value="Nguyen Van A" name="full_name" id="inp-fullname">
+                <input type="text" value="{{ data.0.user.full_name }}" name="full_name" id="inp-fullname">
             </div>
 
             <div class="row">
-                <div class="col-lg-3 col-sm-3">
+                <div class="col-lg-6 col-sm-6">
                     <div class="row user-info-name">
                         <label>Email</label>
-                        <input type="text" value="{{ data.user.email }}" name="email">
+                        <input type="text" value="{{ data.0.user.email }}" name="email">
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-3">
+                <div class="col-lg-6 col-sm-6">
                     <div class="row user-info-name">
                         <label>Company</label>
                         <input type="text" value="PFPT Telecom" name="company">
@@ -105,10 +114,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-3 col-sm-3">
+                <div class="col-lg-6 col-sm-6">
                     <div class="row user-info-name">
                         <label>Username</label>
-                        <input type="text" value="{{ data.user.username }}" name="username">
+                        <input type="text" value="{{ data.0.user.username }}" name="username">
                     </div>
                 </div>
                 <div class="col-lg-3 col-sm-3">
@@ -118,7 +127,7 @@
                 </div>
             </div>
             <div class="row" style="margin-bottom: 1em">
-                <button type="submit" class="btn btn-primary" hidden>Cập nhật</button>
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
             </div>
         </form>
         <br>
@@ -154,7 +163,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script>
-        $('#inp-fullname').val($('#inp-firstname').val() + ' ' + $('#inp-lastname').val());
+        $('#inp-fullname').val($('#inp-lastname').val() + ' ' + $('#inp-firstname').val());
         $("#form-edit-user").submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();

@@ -68,6 +68,10 @@ class BreadcrumbView:
             return [item.data for item in data]
         return []
 
+    HOME_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+    ]
+
     EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.HR_PAGE,

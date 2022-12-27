@@ -7,34 +7,6 @@
             border: 0 solid;
         }
 
-        .user-info, .user-info-name {
-            margin-bottom: 1em;
-        }
-
-        .user-info input, .user-info-name input {
-            border-radius: 0.3em;
-            border: 0.1em solid #dcdcdc;
-        }
-
-        .user-info input {
-            width: 90%;
-        }
-
-        .user-info-name input {
-            width: 80%;
-        }
-
-        .alert-success, .alert-danger {
-            position: fixed;
-            z-index: 1000;
-            display: none;
-            right: 0%;
-        }
-
-        input {
-            height: 3em;
-        }
-
         .btn-primary {
             width: 10%;
         }
@@ -51,12 +23,13 @@
 {% block pageAction %}
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'EmployeeCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add"
+             data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Save"
+            id ="action"
     >
         <span class="icon">
             <span class="feather-icon">
-                <i data-feather="plus"></i>
+                <i data-feather="save"></i>
             </span>
         </span>
     </a>
@@ -75,60 +48,63 @@
 {% block pageContent %}
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
         <div class="row">
-            <div class="col-lg-1"></div>
+            <div class="col-1"></div>
         </div>
         <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
             {% csrf_token %}
             <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>First Name</label>
-                        <input type="text" value="{{ data.0.user.first_name }}" name="first_name" id="inp-firstname">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input class="form-control" type="text" value="{{ data.0.user.first_name }}" name="first_name" id="inp-firstname">
                     </div>
                 </div>
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Last Name</label>
-                        <input type="text" value="{{ data.0.user.last_name }}" name="last_name" id="inp-lastname">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input class="form-control" type="text" value="{{ data.0.user.last_name }}" name="last_name" id="inp-lastname">
                     </div>
                 </div>
             </div>
 
-            <div class="row user-info">
-                <label>Full Name</label>
-                <input type="text" value="{{ data.0.user.full_name }}" name="full_name" id="inp-fullname">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input class="form-control" type="text" value="{{ data.0.user.full_name }}" name="full_name" id="inp-fullname">
             </div>
 
             <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Email</label>
-                        <input type="text" value="{{ data.0.user.email }}" name="email">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" type="text" value="{{ data.0.user.email }}" name="email">
                     </div>
                 </div>
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Company</label>
-                        <input type="text" value="PFPT Telecom" name="company">
-                    </div>
+                <div class="col-6">
+                    <div class="form-group">
+                            <label class="form-label">{% trans "Select Company" %}</label>
+                            <select class="form-select" name="company" disabled>
+                                <option selected>FPT Telecom</option>
+                                <option value="1">MT Solution</option>
+                            </select>
+                        </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Username</label>
-                        <input type="text" value="{{ data.0.user.username }}" name="username">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input class="form-control" type="text" value="{{ data.0.user.username }}" name="username">
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-3">
+                <div class="col-3">
                     <button type="button" id="btn-resetpw" style="margin-top: 1.2em" class="btn btn-primary">Đổi mật
                         khẩu
                     </button>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 1em">
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
-            </div>
+{#            <div class="row" style="margin-bottom: 1em">#}
+{#                <button type="submit" class="btn btn-primary">Cập nhật</button>#}
+{#            </div>#}
         </form>
         <br>
         <div class="row" style="border: 0.01em solid #dcdcdc">

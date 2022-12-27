@@ -41,7 +41,10 @@ $(function () {
 <!--                                        </div>-->
                                     </div>
                                     <div class="media-body">
-                                        <span class="d-block">` + row.full_name + `</span>
+                                        <a href="/account/users/` + row.id + `">
+                                            <span class="d-block">` + row.full_name + `</span>
+                                        </a>    
+                                            
                                     </div>
                                 </div>`;
                     }
@@ -50,6 +53,10 @@ $(function () {
             }, {
                 'data': 'username', render: (data, type, row, meta) => {
                     return `<span class="badge badge-primary">` + row.username + `</span>`;
+                }
+            }, {
+                'data': 'username', render: (data, type, row, meta) => {
+                    return `<span>unlicense</span>`;
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {

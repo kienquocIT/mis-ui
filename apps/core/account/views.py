@@ -13,12 +13,18 @@ TEMPLATE = {
 
 
 class UserList(View):
-    @mask_view(auth_require=True, template='core/account/user_list.html')
+    @mask_view(auth_require=True, template='core/account/user_list.html', breadcrumb='USER_LIST_PAGE')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class UserListView(APIView):
+class UserCreate(View):
+    @mask_view(auth_require=True, template='core/account/user_create.html', breadcrumb='USER_CREATE_PAGE')
+    def get(self, request, *args, **kwargs):
+        return{}, status.HTTP_200_OK
+
+
+class UserListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(auth_require=True, is_api=True)
@@ -40,7 +46,7 @@ class UserListView(APIView):
 
 class UserDetailView(APIView):
 
-    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
     def get(self, request, pk, *args, **kwargs):
         user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).get()
         if user.state:

@@ -44,5 +44,5 @@ class UserDetailView(APIView):
     def get(self, request, pk, *args, **kwargs):
         user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).get()
         if user.state:
-            return {'user': user.result}
-        return Response({'detail': user.errors}, status=400)
+            return {'user': user.result}, status.HTTP_200_OK
+        return {'detail': user.errors}, status.HTTP_401_UNAUTHORIZED

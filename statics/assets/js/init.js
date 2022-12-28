@@ -1096,8 +1096,15 @@ jQuery.fn.callAjax = function (url, method, data, headers = {}) {
                 resolve(rest);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                reject(jqXHR.responseJSON);
-                {
+                let resp_data = jqXHR.responseJSON;
+                if (resp_data && typeof resp_data === 'object'){
+                    if (resp_data.hasOwnProperty('status')){
+                        $.fn.notifyB({'description': resp_data['data']}, 'failure');
+                        if (resp_data.status === 401){
+                            $.fn.redirectLogin(2000, true);
+                        }
+                    }
+                    reject(resp_data);
                 }
             },
         };
@@ -1107,19 +1114,18 @@ jQuery.fn.callAjax = function (url, method, data, headers = {}) {
 
 
 // Simulate redirect path
-jQuery.fn.redirectUrl = function (redirectPath, timeout = 0) {
+jQuery.fn.redirectUrl = function (redirectPath, timeout = 0, params='') {
     setTimeout(() => {
-        window.location.href = redirectPath;
-        // window.location.replace(redirectPath);
+        window.location.href = redirectPath + '?' + params;
     }, timeout);
 }
 jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
-    let redirectPath = 'auth/login';
+    let redirectPath = '/auth/login';
+    let redirectParams = '';
     if (location_to_next) {
-        jQuery.fn.redirectUrl(redirectPath + "?next=" + window.location.href);
-    } else {
-        jQuery.fn.redirectUrl(redirectPath);
+        redirectParams = 'next=' + window.location.pathname;
     }
+    jQuery.fn.redirectUrl(redirectPath, timeout, redirectParams);
 }
 jQuery.fn.switcherResp = function (resp, accept_status=[]){
     if (typeof resp === 'object'){

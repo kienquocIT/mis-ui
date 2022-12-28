@@ -57,4 +57,13 @@ $(document).ready(function () {
         }
     }
     // new ValidateDataResp(testObj, OBJECT_SCHEMA).valid();
+
+
+    // Submit support on listen from button
+    $('.btn_support_submit').click(function (e) {
+        let frm_id = $(this).attr('data-form-id');
+        if (frm_id) {
+            $('#' + frm_id).submit();
+        }
+    })
 })

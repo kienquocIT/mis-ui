@@ -1,9 +1,10 @@
+from django.views import View
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from rest_framework.response import Response
 from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg
-
 
 TEMPLATE = {
     'list': 'core/account/user_list.html',
@@ -11,34 +12,58 @@ TEMPLATE = {
 }
 
 
-class UserListView(APIView):
-    @mask_view(auth_require=True, template='core/account/user_list.html')
+class UserList(View):
+    @mask_view(auth_require=True, template='core/account/user_list.html', breadcrumb='USER_LIST_PAGE')
     def get(self, request, *args, **kwargs):
-        user_list = ServerAPI(user=None, url=ApiURL.user_list).get()
+        return {}, status.HTTP_200_OK
+
+
+class UserCreate(View):
+    @mask_view(auth_require=True, template='core/account/user_create.html', breadcrumb='USER_CREATE_PAGE')
+    def get(self, request, *args, **kwargs):
+        return{}, status.HTTP_200_OK
+
+
+class UserListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        user_list = ServerAPI(user=request.user, url=ApiURL.user_list).get()
         if user_list.state:
-            return {'user_list': user_list.result}
-        return Response({'detail': user_list.errors}, status=400)
+            return {'user_list': user_list.result}, status.HTTP_200_OK
+        return {'detail': user_list.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             data = request.data
-            user = ServerAPI(user=None, url=ApiURL.user_list).post(data)
+            user = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
             if user.state:
-                return Response({
-                    "code": 200,
-                    "status": "successful",
-                    "message": "code was sent try to validate code"
-                })
-        return Response({'detail': ServerMsg.SERVER_ERR}, status=500)
+                return user.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class UserDetailView(APIView):
 
-    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
     def get(self, request, pk, *args, **kwargs):
-        user = ServerAPI(user=None, url=ApiURL.user_list + '/' + pk).get()
+        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).get()
         if user.state:
-            return {'user': user.result}
-        return Response({'detail': user.errors}, status=400)
+            return {'user': user.result}, status.HTTP_200_OK
+        return {'detail': user.errors}, status.HTTP_401_UNAUTHORIZED
 
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).put(data)
+        if user.state:
+            return user.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).delete(request.data)
+        if user.state:
+            return{}, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

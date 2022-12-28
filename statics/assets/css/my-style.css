@@ -41,3 +41,20 @@
 .hk-sidebar-togglable {
     display: none;
 }
+
+/* color */
+.cl-red {
+    color: red;
+}
+.cl-blue {
+    color: blue;
+}
+.cl-green {
+    color: green;
+}
+
+/* field css */
+.field-required {
+    color: red;
+    padding-left: 3px;
+}

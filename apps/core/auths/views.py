@@ -19,7 +19,9 @@ class AuthLogin(APIView):
 
     def get(self, request, template='auths/login.html'):
         if request.user and not isinstance(request.user, AnonymousUser):
-            return redirect(request.query_params.get('next', reverse('HomeView')))
+            resp_data = ServerAPI(user=request.user, url=ApiURL.my_profile).get()
+            if resp_data.state is True:
+                return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
         return render(request, template, {})

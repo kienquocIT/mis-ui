@@ -194,19 +194,29 @@
 
             //
             function loadTenantList(){
-                if ($('#tenant-select').attr('data-loaded') !== true) {
-                    $.fn.callAjax($('#tenant-select').attr('data-url'), $('#tenant-select').attr('data-method')).then(
+                let tenant_element = $('#tenant-select');
+                if (tenant_element.attr('data-loaded') !== true) {
+                    $.fn.callAjax(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
                         (resp) => {
-                            $('#tenant-select').attr('data-loaded', true);
-                            {#$(this).children().not(':first').remove();#}
-                            $('#tenant-select').children().remove();
+                            let code_list = [];
+                            tenant_element.attr('data-loaded', true);
+                            tenant_element.children().remove();
                             resp.result.map((element) => {
-                                $('#tenant-select').append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                code_list.push(element.code);
                             });
-                            $('#tenant-select').children().first().attr('selected', 'selected');
+
+                            let tenant_code = window.location.hostname.split(".");
+                            if (tenant_code) {
+                                let code_selected = tenant_code[0].toUpperCase();
+                                if (code_list.indexOf(code_selected) !== -1 ){
+                                    tenant_element.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                                }
+                            }
+                            tenant_element.children().last().attr('selected', 'selected');
                         },
                         (err) => {
-                            $('#tenant-select').attr('data-loaded', false);
+                            tenant_element.attr('data-loaded', false);
                         }
                     )
                 }

@@ -23,6 +23,9 @@ class BreadcrumbItem(object):
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren('Employee List', 'EmployeeList')
     HOME_VIEW_SPACE = BreadcrumbChildren('Employee List', 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren('Employee Create', 'EmployeeCreate')
+    ORGANIZATION_PAGE = BreadcrumbChildren('Organization')
+    GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren('Group Level List', 'GroupLevelList')
+    GROUP_LEVEL_CREATE_PAGE = BreadcrumbChildren('Group Level Create', 'GroupLevelCreate')
 
 
 class BreadcrumbView:
@@ -79,3 +82,11 @@ class BreadcrumbView:
     ]
 
     EMPLOYEE_CREATE_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.EMPLOYEE_CREATE_PAGE]
+
+    GROUP_LEVEL_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ORGANIZATION_PAGE,
+        BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
+    ]
+
+    GROUP_LEVEL_CREATE_PAGE = GROUP_LEVEL_LIST_PAGE + [BreadcrumbItem.GROUP_LEVEL_CREATE_PAGE]

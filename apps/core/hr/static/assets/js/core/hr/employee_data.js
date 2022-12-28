@@ -138,15 +138,15 @@ $(function () {
 
     function loadDataTable() {
         let tb = $('#datable_employee_list');
-        $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (data.hasOwnProperty('employee_list')) {
-                    config['data'] = data.employee_list;
+        $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
+                    initDataTable(config);
                 }
-                initDataTable(config);
-            }
-        },)
+            },
+        )
     }
 
     loadDataTable();

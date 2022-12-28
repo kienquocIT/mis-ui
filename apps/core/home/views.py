@@ -14,13 +14,13 @@ TEMPLATE = {
 
 
 class HomeView(View):
-    @mask_view(auth_require=True, template='core/home/home.html')
+    @mask_view(
+        auth_require=True,
+        template='core/home/home.html',
+        breadcrumb='HOME_PAGE'
+    )
     def get(self, request, *args, **kwargs):
-        rest = ServerAPI(user=request.user, url=API_URL.get('user_list')).get()
-        if rest:
-            if rest.result:
-                return {"user_list": rest.result}, status.HTTP_200_OK
-        return None, status.HTTP_401_UNAUTHORIZED
+        return {}, status.HTTP_200_OK
 
 
 class TenantCompany(View):
@@ -28,4 +28,4 @@ class TenantCompany(View):
 
     @mask_view(auth_require=True, template='core/company/company_list.html')
     def get(self, request, *args, **kwargs):
-        return {}
+        return {}, status.HTTP_200_OK

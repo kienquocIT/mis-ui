@@ -13,12 +13,18 @@ TEMPLATE = {
 
 
 class UserList(View):
-    @mask_view(auth_require=True, template='core/account/user_list.html')
+    @mask_view(auth_require=True, template='core/account/user_list.html', breadcrumb='USER_LIST_PAGE')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class UserListView(APIView):
+class UserCreate(View):
+    @mask_view(auth_require=True, template='core/account/user_create.html', breadcrumb='USER_CREATE_PAGE')
+    def get(self, request, *args, **kwargs):
+        return{}, status.HTTP_200_OK
+
+
+class UserListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(auth_require=True, is_api=True)
@@ -40,9 +46,24 @@ class UserListView(APIView):
 
 class UserDetailView(APIView):
 
-    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
     def get(self, request, pk, *args, **kwargs):
         user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).get()
         if user.state:
             return {'user': user.result}, status.HTTP_200_OK
         return {'detail': user.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).put(data)
+        if user.state:
+            return user.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).delete(request.data)
+        if user.state:
+            return{}, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

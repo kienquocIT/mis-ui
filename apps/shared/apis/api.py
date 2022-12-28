@@ -183,6 +183,52 @@ class APIUtil:
                     resp = requests.post(url=safe_url, headers=headers, json=data)
         return self.get_data_from_resp(resp)
 
+    def call_put(self, safe_url: str, headers: dict, data: dict) -> RespData:
+        """
+        Support ServerAPI call to server with PUT method. (refresh token after recall if token is expires)
+        Args:
+            safe_url: (string) url parsed
+            headers: (dict) headers add to request
+            data: (dict) body data of request
+
+        Returns: RespData object have attribute state, result, errors
+            state: (bool) True if status_code is range (200, 300) else False : Is success call
+            result: (dict or list) : is Response Data from API
+            errors: (dict) : is Error Data from API
+        """
+        resp = requests.put(url=safe_url, headers=headers, json=data)
+        if resp.status_code == 401:
+            if self.user_obj:
+                # refresh token
+                headers_upgrade = self.refresh_token(user_obj=self.user_obj)
+                if headers_upgrade:
+                    headers.update(headers_upgrade)
+                    resp = requests.put(url=safe_url, headers=headers, json=data)
+        return self.get_data_from_resp(resp)
+
+    def call_delete(self, safe_url: str, headers: dict, data: dict) -> RespData:
+        """
+        Support ServerAPI call to server with DELETE method. (refresh token after recall if token is expires)
+        Args:
+            safe_url: (string) url parsed
+            headers: (dict) headers add to request
+            data: (dict) body data of request
+
+        Returns: RespData object have attribute state, result, errors
+            state: (bool) True if status_code is range (200, 300) else False : Is success call
+            result: (dict or list) : is Response Data from API
+            errors: (dict) : is Error Data from API
+        """
+        resp = requests.delete(url=safe_url, headers=headers, json=data)
+        if resp.status_code == 401:
+            if self.user_obj:
+                # refresh token
+                headers_upgrade = self.refresh_token(user_obj=self.user_obj)
+                if headers_upgrade:
+                    headers.update(headers_upgrade)
+                    resp = requests.delete(url=safe_url, headers=headers, json=data)
+        return self.get_data_from_resp(resp)
+
 
 class ServerAPI:
     """
@@ -232,8 +278,32 @@ class ServerAPI:
         Args:
             data: (dict): body data of request
 
-        Returns: APIUtil --> call_get()
+        Returns: APIUtil --> call_post()
         """
         if isinstance(data, dict):
             return APIUtil(user_obj=self.user).call_post(safe_url=self.url, headers=self.headers, data=data)
+        raise ValueError('Body data for POST request must be dictionary')
+
+    def put(self, data) -> RespData:
+        """
+        Support call request API with PUT method.
+        Args:
+            data: (dict): body data of request
+
+        Returns: APIUtil --> call_put()
+        """
+        if isinstance(data, dict):
+            return APIUtil(user_obj=self.user).call_put(safe_url=self.url, headers=self.headers, data=data)
+        raise ValueError('Body data for POST request must be dictionary')
+
+    def delete(self, data) -> RespData:
+        """
+        Support call request API with DELETE method.
+        Args:
+            data: (dict): body data of request
+
+        Returns: APIUtil --> call_delete()
+        """
+        if isinstance(data, dict):
+            return APIUtil(user_obj=self.user).call_delete(safe_url=self.url, headers=self.headers, data=data)
         raise ValueError('Body data for POST request must be dictionary')

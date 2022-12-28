@@ -1,65 +1,25 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static %}
 {% block cssHeader %}
-
     <style>
-        button {
-            border: 0 solid;
-        }
-
-        .user-info, .user-info-name {
-            margin-bottom: 1em;
-        }
-
-        .user-info input, .user-info-name input {
-            border-radius: 0.3em;
-            border: 0.1em solid #dcdcdc;
-        }
-
-        .user-info input {
-            width: 90%;
-        }
-
-        .user-info-name input {
+        #offcanvasRight {
             width: 80%;
-        }
-
-        .alert-success, .alert-danger {
-            position: fixed;
-            z-index: 1000;
-            display: none;
-            right: 0%;
-        }
-
-        input {
-            height: 3em;
-        }
-
-        .btn-primary {
-            width: 10%;
-        }
-
-        #btn-resetpw {
-            width: 50%;
-        }
-
-        form {
-            border-bottom: 0.1em solid #dcdcdc;
         }
     </style>
 {% endblock %}
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'EmployeeCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
-            </span>
+    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasExample">
+
+    <span class="icon">
+        <span class="feather-icon">
+            <i data-feather="save"></i>
         </span>
-    </a>
+    </span>
+    </button>
+
+
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -74,62 +34,143 @@
 {% endblock %}
 {% block pageContent %}
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
-        <div class="row">
-            <div class="col-lg-1"></div>
+        <!-- Form edit -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel"
+             style="padding-top: 4em;">
+            <div class="offcanvas-header" style="border-bottom: 0.01em solid #dcdcdc">
+                <h5 id="offcanvasRightLabel">Edit user</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">First Name</label>
+                                <input class="form-control" type="text" value="{{ data.0.user.first_name }}"
+                                       name="first_name"
+                                       id="form-firstname">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">Last Name</label>
+                                <input class="form-control" type="text" value="{{ data.0.user.last_name }}"
+                                       name="last_name"
+                                       id="form-lastname">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Full Name' %}</label>
+                                <input class="form-control" type="text" value="{{ data.0.user.full_name }}"
+                                       name="full_name"
+                                       id="form-fullname">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input class="form-control" type="text" value="{{ data.0.user.phone }}"
+                                       name="phone"
+                                       id="form-fullname">
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input class="form-control" type="text" value="{{ data.0.user.email }}"
+                                           name="email">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Select Company" %}</label>
+                                    <select class="form-select" name="company" disabled>
+                                        <option selected>FPT Telecom</option>
+                                        <option value="1">MT Solution</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 1em">
+                            <div class="col-5"></div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-primary" style="margin-left: 3em;">Cập nhật
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>First Name</label>
-                        <input type="text" value="{{ data.0.user.first_name }}" name="first_name" id="inp-firstname">
-                    </div>
-                </div>
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Last Name</label>
-                        <input type="text" value="{{ data.0.user.last_name }}" name="last_name" id="inp-lastname">
-                    </div>
-                </div>
-            </div>
+        <div class="row">
+            <div class="col-1"></div>
+        </div>
+        <!-- End form edit -->
 
-            <div class="row user-info">
-                <label>Full Name</label>
-                <input type="text" value="{{ data.0.user.full_name }}" name="full_name" id="inp-fullname">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input class="form-control" type="text" value="{{ data.0.user.first_name }}" name="first_name"
+                           id="inp-firstname" readonly>
+                </div>
             </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input class="form-control" type="text" value="{{ data.0.user.last_name }}" name="last_name"
+                           id="inp-lastname" readonly>
+                </div>
+            </div>
+        </div>
 
-            <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Email</label>
-                        <input type="text" value="{{ data.0.user.email }}" name="email">
-                    </div>
-                </div>
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Company</label>
-                        <input type="text" value="PFPT Telecom" name="company">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="row user-info-name">
-                        <label>Username</label>
-                        <input type="text" value="{{ data.0.user.username }}" name="username">
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-3">
-                    <button type="button" id="btn-resetpw" style="margin-top: 1.2em" class="btn btn-primary">Đổi mật
-                        khẩu
-                    </button>
+        <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-control" type="text" value="{{ data.0.user.full_name }}" name="full_name"
+                   id="inp-fullname" readonly>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="text" value="{{ data.0.user.email }}" name="email" readonly>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 1em">
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Select Company" %}</label>
+                    <select class="form-select" name="company" disabled>
+                        <option selected>FPT Telecom</option>
+                        <option value="1">MT Solution</option>
+                    </select>
+                </div>
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input class="form-control" type="text" value="{{ data.0.user.username }}" name="username" readonly>
+                </div>
+            </div>
+            <div class="col-3">
+                <button type="button" id="btn-resetpw" style="margin-top: 1.2em" class="btn btn-primary">Đổi mật
+                    khẩu
+                </button>
+            </div>
+        </div>
+
         <br>
         <div class="row" style="border: 0.01em solid #dcdcdc">
             <h6>License</h6>
@@ -162,23 +203,5 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script>
-        $('#inp-fullname').val($('#inp-lastname').val() + ' ' + $('#inp-firstname').val());
-        $("#form-edit-user").submit(function (event) {
-            event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (res) => {
-                        $('.alert-success').show(1000);
-                        setTimeout(location.reload.bind(location), 3000);
-                    },
-                    (err) => {
-                        $('.alert-danger').show(1000);
-                        console.log(err)
-                    }
-                )
-        });
-    </script>
+    <script src="{% static 'assets/js/core/account/user_detail.js' %}"></script>
 {% endblock %}

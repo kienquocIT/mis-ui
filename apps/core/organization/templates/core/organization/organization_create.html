@@ -2,30 +2,31 @@
 {% load static i18n %}
 
 {% block cssHeader %}
-    <style>
-        label {
-            font-weight: bolder;
-            margin-bottom: 0.5em;
-        }
-
-        form .row {
-            margin-bottom: 1em;
-        }
-
-        input, select {
-            height: 3em;
-            border: 0.05em solid gray;
-            border-radius: 0.3em;
-        }
-
-        textarea {
-            border-radius: 0.3em;
-        }
-
-        hr {
-            border: 0.01em solid gray;
-        }
-    </style>
+    <link type="text/css" src="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
+{#    <style>#}
+{#        label {#}
+{#            font-weight: bolder;#}
+{#            margin-bottom: 0.5em;#}
+{#        }#}
+{##}
+{#        form .row {#}
+{#            margin-bottom: 1em;#}
+{#        }#}
+{##}
+{#        input, select {#}
+{#            height: 3em;#}
+{#            border: 0.05em solid gray;#}
+{#            border-radius: 0.3em;#}
+{#        }#}
+{##}
+{#        textarea {#}
+{#            border-radius: 0.3em;#}
+{#        }#}
+{##}
+{#        hr {#}
+{#            border: 0.01em solid gray;#}
+{#        }#}
+{#    </style>#}
 {% endblock %}
 
 {% block pageAction %}
@@ -50,165 +51,339 @@
 {% endblock %}
 
 {% block pageContent %}
-    <div class="row">
-        <div class="col-sm-3">
-        </div>
-        <div class="col-sm-7">
-            <form id="form_create">
-                <div class="row">
-                    <label>{% trans "Select Group Level" %}</label>
-                    <select name="">
-                        <option value="1" selected>Level 1</option>
-                        <option value="2">Level 2</option>
-                        <option value="3">Level 3</option>
-                    </select>
-                </div>
-                <div class="row">
-                    <label>{% trans "Select Parent Level" %}</label>
-                    <select name="">
-                        <option value="1" selected>Level 1</option>
-                        <option value="2">Level 2</option>
-                        <option value="3">Level 3</option>
-                    </select>
-                </div>
-                <div class="row">
-                    <label>{% trans "Reference Group Title" %}</label>
-                    <input type="text" placeholder="Team" name="">
-                </div>
-                <div class="row">
-                    <label>{% trans "Input Display Group Title" %}</label>
-                    <input type="text" placeholder="Nhom Phat Trien" name="">
-                </div>
-                <div class="row">
-                    <label>{% trans "Input Group Code" %}</label>
-                    <input type="text" placeholder="DEVT" name="">
-                </div>
-                <div class="row">
-                    <label>{% trans "Description" %}</label>
-                    <textarea rows="4" cols="50" name=""></textarea>
-                </div>
-            </form>
-            <br><br><br>
+    {#    <div class="row">#}
+    {#    <div class="col-sm-3">#}
+    {#    </div>#}
+    {#    <div class="col-sm-7">#}
+    {#    <form id="form_create">#}
+    {#        <div class="row">#}
+    {#            <label>{% trans "Select Group Level" %}</label>#}
+    {#            <select name="">#}
+    {#                <option value="1" selected>Level 1</option>#}
+    {#                <option value="2">Level 2</option>#}
+    {#                <option value="3">Level 3</option>#}
+    {#            </select>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <label>{% trans "Select Parent Level" %}</label>#}
+    {#            <select name="">#}
+    {#                <option value="1" selected>Level 1</option>#}
+    {#                <option value="2">Level 2</option>#}
+    {#                <option value="3">Level 3</option>#}
+    {#            </select>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <label>{% trans "Reference Group Title" %}</label>#}
+    {#            <input type="text" placeholder="Team" name="">#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <label>{% trans "Input Display Group Title" %}</label>#}
+    {#            <input type="text" placeholder="Nhom Phat Trien" name="">#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <label>{% trans "Input Group Code" %}</label>#}
+    {#            <input type="text" placeholder="DEVT" name="">#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <label>{% trans "Description" %}</label>#}
+    {#            <textarea rows="4" cols="50" name=""></textarea>#}
+    {#        </div>#}
+    {#    </form>#}
+    {#    <br><br><br>#}
+     <div class="col-md-12">
+        <span data-bs-toggle="modal" data-bs-target="#createTenantModalForms">
+            <span
+                    class="btn-add-tenant" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="{% trans 'Create Tenant' %}" style=""
+            >
+                <i class="fas fa-plus-circle"></i>
+                {% trans 'Create Tenant' %}
+            </span>
+        </span>
+     </div>
+    <div class="modal fade" id="createTenantModalForms" tabindex="-1" role="dialog"
+                aria-labelledby="createTenantModalForms"
+                aria-hidden="true">
+            <div class="modal-dialog" role="document" data-scale-window="on">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Create Tenant' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="frm-add-new-tenant" data-url="" data-url-redirect="/" data-method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for="exampleDropdownFormEmail1"
+                                ><b>{% trans 'Tenant Name' %}</b></label>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control" name="document-title"
+                                                    placeholder="{% trans 'Organization name' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for="exampleDropdownFormPassword1"
+                                ><b>{% trans 'Tenant Information' %}</b></label>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control" name="document-code"
+                                                    placeholder="{% trans 'Code' %}"
+                                                    oninput="this.value=this.value.toUpperCase()">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="input-group mb-2">
+                                            <input
+                                                    type="text" class="form-control" name="document-sub_domain"
+                                                    placeholder="{% trans 'Sub domain' %}"
+                                                    style="border-radius: 0.375rem"
+                                                    oninput="this.value=this.value.toLowerCase()"
+                                            >
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <span style="font-weight: bold">.quantrimis.com.vn</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for="exampleDropdownFormPassword1"
+                                ><b>{% trans 'Representative' %}</b></label>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control"
+                                                    name="document-representative_fullname"
+                                                    placeholder="{% trans 'Full name' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <span style="font-weight: bold">+84</span>
+                                                </div>
+                                            </div>
+                                            <input
+                                                    type="number" class="form-control"
+                                                    name="document-representative_phone_number"
+                                                    placeholder="{% trans 'Phone number' %}"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-            <button style="background: none; border: none; color: #007D88">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i data-feather="plus"></i>
-                    </span>
-                </span>{% trans "Add employee to group" %}
-            </button>
-            <br>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">{% trans "Employee Name" %}</th>
-                    <th scope="col">{% trans "Roles" %}</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Phạm Nhân</td>
-                    <td>Developer, Devops</td>
-                    <td>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip"
-                           data-bs-placement="top" title="" data-bs-original-title="Edit"
-                           href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="edit"></i></span></span></a>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                           data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete"
-                           href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="trash-2"></i></span></span></a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Nguyễn Văn Hải</td>
-                    <td>Tester, support</td>
-                    <td>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip"
-                           data-bs-placement="top" title="" data-bs-original-title="Edit"
-                           href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="edit"></i></span></span></a>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                           data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete"
-                           href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="trash-2"></i></span></span></a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Lê Lợi</td>
-                    <td>Team leader</td>
-                    <td>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip"
-                           data-bs-placement="top" title="" data-bs-original-title="Edit"
-                           href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="edit"></i></span></span></a>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                           data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete"
-                           href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="trash-2"></i></span></span></a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <br><br><br>
-            <hr>
-            <br>
-            <div class="row">
-                <div class="col-sm-5">
-                    <div class="row">
-                        <label>{% trans "1st Manager System Title" %}</label>
-                        <input type="text" placeholder="Team Leader" name="">
-                    </div>
+                            <!-- Purchase Order -->
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for="exampleDropdownFormPassword1"
+                                ><b>{% trans 'Purchase Order' %}</b></label>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control"
+                                                    id="tenant-purchase-order"
+                                                    name="document-purchase_order"
+                                                    placeholder="{% trans 'Purchase order' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="row">
-                        <label>{% trans "Input 1st Manager Display Title" %}</label>
-                        <input type="text" placeholder="Trưởng nhóm" name="">
-                    </div>
-                    <div class="row">
-                        <label>{% trans "Assign To" %}</label>
-                        <select name="">
-                            <option selected>Lê Minh Thuận</option>
-                            <option value="1">Nguyễn Văn A</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-2"></div>
-                <div class="col-sm-5">
-                    <div class="row">
-                        <label>{% trans "1st Manager System Title" %}</label>
-                        <input type="text" placeholder="Deputy Team Leader" name="">
-                    </div>
+                            <!-- Start/ End date -->
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="form-label"><b>Start Date</b></label>
+                                            <input class="form-control" id="tenant-start-date" name="single-date" value="02/12/20 8:30PM">
+                                        </div>
+                                        <div hidden>
+                                            <input type="datetime-local" id="tenant-plan-date-active" name="document-date_active">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="form-label"><b>End Date</b></label>
+                                            <input class="form-control" id="tenant-end-date" name="single-date" value="02/12/20 8:30PM">
+                                        </div>
+                                        <div hidden>
+                                            <input type="datetime-local" id="tenant-plan-date-end" name="document-date_end">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="row">
-                        <label>{% trans "Input 1st Manager Display Title" %}</label>
-                        <input type="text" placeholder="Trưởng nhóm" name="">
-                    </div>
-                    <div class="row">
-                        <label>{% trans "Assign To" %}</label>
-                        <select>
-                            <option selected>Lê Minh Thuận</option>
-                            <option value="1">Nguyễn Văn A</option>
-                        </select>
-                    </div>
+                            <!-- auto renew type -->
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for=""
+                                ><b>{% trans 'Auto renew type' %}</b></label>
+                                <p><input
+                                        id="tenant-renew-type" name="document-license_buy_type" type="checkbox"
+                                        checked
+                                >{% trans 'Auto Renew' %}
+                                   </p>
+                            </div>
 
-                </div>
-                <div class="row" style="padding-top: 2em;">
-                    <div class="col-sm-6">
-                        <button type="submit" class="btn btn-primary">Add</button>
-                    </div>
-                    <div class="col-sm-5"></div>
-                    <div class="col-sm-1">
-                        <button type="button" class="btn btn-light">Cancel</button>
+                            <!-- Plan -->
+                            <div hidden>
+                                <input type="text" id="tenant-plan-data-str" value="{{ plan_data_dict_str }}">
+                            </div>
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for="exampleDropdownFormPassword1"
+                                ><b>{% trans 'Subscription Plans' %}</b></label>
+                                <table class="table" id="table-tenant-plan">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">{% trans 'Plan' %}</th>
+                                        <th scope="col">{% trans 'Limit' %}</th>
+                                        <th scope="col">{% trans 'License' %}</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <div hidden>
+                                        <input type="text" id="tenant-plan-info" name="document-plan_data">
+                                    </div>
+                                    </tbody>
+                                </table>
+                                <a class="d-inline-flex align-items-center add-new-row" href="#">
+                                    <i class="ri-add-box-line me-1"></i> Add new plan
+                                </a>
+                            </div>
+
+                            <!-- auto create company -->
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for=""
+                                ><b>{% trans 'Company of Tenant' %}</b></label>
+                                <p><input
+                                        id="tenant-create-company" name="document-auto_create_company" type="checkbox"
+                                        checked
+                                > {% trans 'Create Company' %}
+                                    ({% trans 'maximum' %}: 5)</p>
+                            </div>
+
+                            <!-- Create admin -->
+                            <div class="mb-3">
+                                <label
+                                        class="form-label"
+                                        for="exampleDropdownFormPassword1"
+                                ><b>{% trans 'Tenant Admin' %}</b></label>
+                                <div hidden>
+                                    <input type="text" id="tenant-admin-info" name="document-admin_info">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input type="text" class="form-control"
+                                                    id="tenant-admin-first-name"
+                                                    placeholder="{% trans 'First name' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control"
+                                                    id="tenant-admin-last-name"
+                                                    placeholder="{% trans 'Last name' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control"
+                                                    id="tenant-admin-email"
+                                                    placeholder="{% trans 'Email' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <span style="font-weight: bold">+84</span>
+                                                </div>
+                                            </div>
+                                            <input
+                                                    type="number" class="form-control"
+                                                    id="tenant-admin-phone"
+                                                    placeholder="{% trans 'Phone number' %}"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control"
+                                                    id="tenant-admin-account"
+                                                    placeholder="{% trans 'Username' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label style="width: 100%;">
+                                            <input
+                                                    type="text" class="form-control"
+                                                    id="tenant-admin-password"
+                                                    placeholder="{% trans 'Password' %}"
+                                            >
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <br/>
+                                <input id="tenant-create-submit" type="submit" class="btn btn-primary"
+                                        style="width: 100%;" value="{% trans 'Add' %}"/>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+
+
 
 
 {% endblock %}

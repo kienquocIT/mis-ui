@@ -96,7 +96,7 @@ urlpatterns = [
    4. sử dụng jQuery để gọi điều hướng form submit
 9. Tổng quan:
 
-    !["Template Structure"](README_IMG\template_structure.png)
+    ![](README_IMG/template_structure.png)
 
 ### Static: Các file asset bao gồm static và media hỗ trợ cho HTML và dữ lịệu
 1. Sử dụng cho tất cả các chỗ thêm file vào folder static

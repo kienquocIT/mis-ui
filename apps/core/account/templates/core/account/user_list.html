@@ -55,12 +55,17 @@
 
         </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <form>
+            {% csrf_token %}
+            <tbody>
+            </tbody>
+        </form>
+
     </table>
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/account/user_list.js' %}"></script>
+    <script src="{% static 'assets/js/core/account/user_delete.js' %}"></script>
 {% endblock %}
 

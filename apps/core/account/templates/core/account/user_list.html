@@ -7,14 +7,17 @@
 {% endblock %}
 
 {% block pageAction %}
-    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-            aria-controls="offcanvasRight">
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="{% url 'UserCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Add"
+    >
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="plus"></i>
             </span>
         </span>
-    </button>
+    </a>
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -29,95 +32,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <!--Form create user-->
-
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
-         style="margin-top: 4em;">
-        <div class="alert alert-success">
-            <strong>{% trans "Succesfully" %}</strong>
-            <div class="spinner-border text-success" role="status">
-                <span class="sr-only"></span>
-            </div>
-        </div>
-        <div class="alert alert-danger noti-create">
-            <strong>{% trans "Fail" %}</strong>
-        </div>
-        <div class="offcanvas-header">
-            <h3 id="offcanvasRightLabel">{% trans "Add User" %}</h3>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="row">
-                <div class="col-lg-2 col-sm-2"></div>
-                <div class="col-lg-8 col-sm-8">
-                    <form id="form-create-user" data-url="{% url 'UserListAPI' %}" data-url-redirect="" data-method="POST">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="row name-field">
-                                    <label>{% trans "First Name" %}</label>
-                                    <input type="text" placeholder="Input text" name="first_name" id="inp-firstname"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="row name-field">
-                                    <label>{% trans "Last Name" %}</label>
-                                    <input type="text" placeholder="Input text" name="last_name" id="inp-lastname">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row other-field">
-                            <label>{% trans "Full Name" %}Full Name</label>
-                            <input type="text" placeholder="Input text" name="full_name" required id="inp-fullname"
-                                   disabled>
-                        </div>
-                        <div class="row other-field">
-                            <label>{% trans "Email Address" %}</label>
-                            <input type="email" placeholder="Input text" name="email" required>
-                        </div>
-                        <div class="row other-field">
-                            <label>{% trans "Select Company" %}</label>
-                            <input type="text" placeholder="Input text" name="company" required>
-                        </div>
-                        <div class="row other-field username">
-                            <label>{% trans "User Name" %}</label>
-                            <input type="text" placeholder="Input text" name="username" required>
-                            <span class="not-valid-username" style="display: none">Username is existing</span>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="auto-create-pw" name="auto-create-pw"/>
-                            <label for="auto-create-pw">Auto create password</label>
-                        </div>
-
-                        <div class="row other-field password">
-                            <label>{% trans "Password" %}</label>
-                            <input type="password" placeholder="Input text" name="password" id="password"
-                                   required>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="auto-create-pw" name="auto-create-pw"/>
-                            <label for="auto-create-pw">require change password when first sign in</label>
-                        </div>
-                        <div class="row button-field">
-                            <div class="col-lg-2 col-sm-2">
-                                <button type="submit" class="btn btn-primary btn-save">Submit</button>
-                            </div>
-
-                            <div class="col-lg-7 col-sm-7"></div>
-                            <div class="col-lg-2 col-sm-2">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="offcanvas"
-                                        aria-label="Close">Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- end form create user -->
     <table
             id="datable_user_list" class="table nowrap w-100 mb-5" data-url='{% url "UserListAPI" %}'
             data-method="GET"
@@ -136,16 +50,22 @@
             </th>
             <th>{% trans "Full Name" %}</th>
             <th>{% trans "User Name" %}</th>
+            <th>{% trans "Plan" %}</th>
             <th>{% trans "Actions" %}</th>
+
         </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <form>
+            {% csrf_token %}
+            <tbody>
+            </tbody>
+        </form>
+
     </table>
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/account/user_list.js' %}"></script>
-    <script src="{% static 'assets/js/core/account/user_create.js' %}"></script>
+    <script src="{% static 'assets/js/core/account/user_delete.js' %}"></script>
 {% endblock %}
 

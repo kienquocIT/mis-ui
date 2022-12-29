@@ -44,7 +44,7 @@ class UserListAPI(APIView):
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-class UserDetailView(APIView):
+class UserDetailAPI(APIView):
 
     @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
     def get(self, request, pk, *args, **kwargs):

@@ -14,7 +14,7 @@
 
     <span class="icon">
         <span class="feather-icon">
-            <i data-feather="save"></i>
+            <i data-feather="edit"></i>
         </span>
     </span>
     </button>
@@ -34,6 +34,7 @@
 {% endblock %}
 {% block pageContent %}
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
+    {{ data.user.first_name }}
         <!-- Form edit -->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel"
              style="padding-top: 4em;">
@@ -49,7 +50,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">First Name</label>
-                                <input class="form-control" type="text" value="{{ data.0.user.first_name }}"
+                                <input class="form-control" type="text" value="{{ data.user.first_name }}"
                                        name="first_name"
                                        id="form-firstname">
                             </div>
@@ -57,7 +58,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">Last Name</label>
-                                <input class="form-control" type="text" value="{{ data.0.user.last_name }}"
+                                <input class="form-control" type="text" value="{{ data.user.last_name }}"
                                        name="last_name"
                                        id="form-lastname">
                             </div>
@@ -67,7 +68,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Full Name' %}</label>
-                                <input class="form-control" type="text" value="{{ data.0.user.full_name }}"
+                                <input class="form-control" type="text" value="{{ data.user.full_name }}"
                                        name="full_name"
                                        id="form-fullname">
                             </div>
@@ -75,7 +76,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">Phone</label>
-                                <input class="form-control" type="text" value="{{ data.0.user.phone }}"
+                                <input class="form-control" type="text" value="{{ data.user.phone }}"
                                        name="phone"
                                        id="form-fullname">
                             </div>
@@ -86,7 +87,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
-                                    <input class="form-control" type="text" value="{{ data.0.user.email }}"
+                                    <input class="form-control" type="text" value="{{ data.user.email }}"
                                            name="email">
                                 </div>
                             </div>
@@ -121,14 +122,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">First Name</label>
-                    <input class="form-control" type="text" value="{{ data.0.user.first_name }}" name="first_name"
+                    <input class="form-control" type="text" value="{{ data.user.first_name }}" name="first_name"
                            id="inp-firstname" readonly>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
-                    <input class="form-control" type="text" value="{{ data.0.user.last_name }}" name="last_name"
+                    <input class="form-control" type="text" value="{{ data.user.last_name }}" name="last_name"
                            id="inp-lastname" readonly>
                 </div>
             </div>
@@ -136,7 +137,7 @@
 
         <div class="form-group">
             <label class="form-label">Full Name</label>
-            <input class="form-control" type="text" value="{{ data.0.user.full_name }}" name="full_name"
+            <input class="form-control" type="text" value="{{ data.user.full_name }}" name="full_name"
                    id="inp-fullname" readonly>
         </div>
 
@@ -144,7 +145,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="text" value="{{ data.0.user.email }}" name="email" readonly>
+                    <input class="form-control" type="text" value="{{ data.user.email }}" name="email" readonly>
                 </div>
             </div>
             <div class="col-6">
@@ -161,7 +162,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">Username</label>
-                    <input class="form-control" type="text" value="{{ data.0.user.username }}" name="username" readonly>
+                    <input class="form-control" type="text" value="{{ data.user.username }}" name="username" readonly>
                 </div>
             </div>
             <div class="col-3">

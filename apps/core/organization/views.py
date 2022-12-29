@@ -87,10 +87,3 @@ class RoleList(View):
     @mask_view(auth_require=True, template='core/organization/role/list_role.html')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
-
-
-class OrganizationList(APIView):
-
-    @mask_view(auth_require=True, template='core/organization/organization_list.html')
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK

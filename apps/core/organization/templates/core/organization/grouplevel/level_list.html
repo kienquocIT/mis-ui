@@ -2,15 +2,15 @@
 {% load static i18n %}
 
 {% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/core/account/user_list.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/core/organization/grouplevel/level_list.css' %}">
 {% endblock %}
 
 {% block pageAction %}
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'UserCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add"
+            id="btn-add-group-level"
+            data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Add" style="cursor: pointer;"
     >
         <span class="icon">
             <span class="feather-icon">
@@ -32,8 +32,9 @@
 {% endblock %}
 
 {% block pageContent %}
+    {% csrf_token %}
     <table
-            id="datable_user_list" class="table nowrap w-100 mb-5" data-url='{% url "UserListAPI" %}'
+            id="datable-group-level" class="table nowrap w-100 mb-5" data-url="{% url 'GroupLevelListAPI' %}"
             data-method="GET"
     >
         <thead>
@@ -48,24 +49,33 @@
                     <label class="form-check-label" for="customCheck1"></label>
                 </span>
             </th>
-            <th>{% trans "Full Name" %}</th>
-            <th>{% trans "User Name" %}</th>
-            <th>{% trans "Plan" %}</th>
-            <th>{% trans "Actions" %}</th>
-
+            <th>Group Level</th>
+            <th>Group Description</th>
+            <th>1st Manager Description</th>
+            <th>2nd Manager Description</th>
+            <th>Actions</th>
         </tr>
         </thead>
-        <form id="form-user" data-url="{% url "UserList" %}">
-            {% csrf_token %}
-            <tbody>
-            </tbody>
-        </form>
-
+        <tbody>
+        </tbody>
     </table>
+
+    <div class="col-md-12" style="margin-top: 50px">
+    <span
+            class="btn-save-group-level" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            title="{% trans 'Save' %}" style=""
+    >
+    {% trans 'Save' %}
+    </span>
+    <span
+            class="btn-cancel-group-level" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            title="{% trans 'Cancel' %}" style=""
+    >
+    {% trans 'Cancel' %}
+    </span>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'assets/js/core/account/user_list.js' %}"></script>
-    <script src="{% static 'assets/js/core/account/user_delete.js' %}"></script>
+    <script src="{% static 'assets/js/core/organization/grouplevel/level_list.js' %}"></script>
 {% endblock %}
-

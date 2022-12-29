@@ -27,6 +27,7 @@ class BreadcrumbItem(object):
     USER_LIST_PAGE = BreadcrumbChildren('User List', 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren('User Create', 'UserCreate')
 
+    COMPANY_PAGE = BreadcrumbChildren('Company')
 
 
 class BreadcrumbView:
@@ -90,4 +91,10 @@ class BreadcrumbView:
     ]
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
+
+    COMPANY_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_PAGE,
+    ]
+
 

@@ -26,6 +26,8 @@ class HomeView(View):
 class TenantCompany(View):
     permission_classes = [IsAuthenticated]
 
-    @mask_view(auth_require=True, template='core/company/company_list.html')
+    @mask_view(auth_require=True,
+               template='core/company/company_list.html',
+               breadcrumb='COMPANY_LIST_PAGE')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

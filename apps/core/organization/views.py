@@ -1,4 +1,3 @@
-
 from django.views import View
 from rest_framework import status
 
@@ -13,6 +12,7 @@ class OrganizationCreate(View):
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
+
 class OrganizationCreateAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -25,4 +25,11 @@ class OrganizationCreateAPI(APIView):
 
         # return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        return {}, status.HTTP_200_OK
+
+
+class RoleList(View):
+
+    @mask_view(auth_require=True, template='core/organization/role/list_role.html')
+    def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

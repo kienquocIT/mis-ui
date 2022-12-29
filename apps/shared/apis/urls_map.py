@@ -6,6 +6,7 @@ class ApiURL(object):
     tenants = 'provisioning/tenants'
     user_list = 'account/users'
     EMPLOYEE_LIST = 'hr/employees'
+    GROUP_LEVEL_LIST = 'organization/levels'
 
     # organization/group
     GROUP_LIST = 'organization/group'

@@ -23,7 +23,7 @@ class GroupLevelList(View):
         menu_active='menu-employee-list',
     )
     def get(self, request, *args, **kwargs):
-        return {}
+        return {}, status.HTTP_200_OK
 
 
 class GroupLevelListAPI(APIView):
@@ -64,7 +64,7 @@ class GroupLevelCreate(View):
 # Group
 class OrganizationCreate(APIView):
 
-    @mask_view(auth_require=True, template='core/organization/grouplevel/create.html')
+    @mask_view(auth_require=True, template='core/organization/group/create.html')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 

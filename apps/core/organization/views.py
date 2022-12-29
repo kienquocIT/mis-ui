@@ -21,7 +21,7 @@ class GroupLevelList(View):
         menu_active='menu-employee-list',
     )
     def get(self, request, *args, **kwargs):
-        return {}
+        return {}, status.HTTP_200_OK
 
 
 class GroupLevelListAPI(APIView):

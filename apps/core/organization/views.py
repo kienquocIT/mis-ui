@@ -8,17 +8,6 @@ from django.views import View
 from rest_framework import status
 
 
-# Group
-class GroupList(View):
-    @mask_view(
-        auth_require=True,
-        template='core/organization/group/group_list.html',
-        breadcrumb='GROUP_LIST_PAGE'
-    )
-    def get(self, request, *args, **kwargs):
-        return {}
-
-
 # Group Level
 class GroupLevelList(View):
     @mask_view(
@@ -95,3 +84,14 @@ class RoleList(View):
     @mask_view(auth_require=True, template='core/organization/role/list_role.html')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+# Group
+class GroupList(View):
+    @mask_view(
+        auth_require=True,
+        template='core/organization/group/group_list.html',
+        breadcrumb='GROUP_LIST_PAGE'
+    )
+    def get(self, request, *args, **kwargs):
+        return {}

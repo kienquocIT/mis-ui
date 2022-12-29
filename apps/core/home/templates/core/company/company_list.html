@@ -60,7 +60,7 @@
 
     <!-- Add Company -->
     <div class="modal fade" id="AddCompanyForms" tabindex="-1" role="dialog"
-         aria-labelledby="AddCompanyForms" aria-hidden="true">
+         aria-labelledby="AddCompanyForms" aria-hidden="true" style="padding-top: 65px;">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -91,7 +91,7 @@
                                     </label>
                                     <label style="width: 100%;">
                                         <input type="text" class="form-control"
-                                               id="representative_id" name="Representative"
+                                               id="representative_id" name="representative"
                                                placeholder="Nguyên Hồng">
                                     </label>
                                 </div>
@@ -120,7 +120,7 @@
                                         <b>{% trans 'Email' %}</b>
                                     </label>
                                     <label style="width: 100%;">
-                                        <input type="text" class="form-control"
+                                        <input type="email" class="form-control"
                                                id="email_id" name="email"
                                                placeholder="abc@gmail.com">
                                     </label>
@@ -131,7 +131,7 @@
                                         <b>{% trans 'Phone Number' %}</b>
                                     </label>
                                     <label style="width: 100%;">
-                                        <input type="text" class="form-control"
+                                        <input type="number" class="form-control"
                                                id="phone_number_id" name="phone_number"
                                                placeholder="0123456789">
                                     </label>

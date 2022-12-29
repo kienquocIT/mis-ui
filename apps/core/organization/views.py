@@ -9,7 +9,7 @@ from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
 
 
 # Group Level
@@ -38,6 +38,15 @@ class GroupLevelListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            data = request.data
+            response = ServerAPI(user=request.user, url=ApiURL.GROUP_LEVEL_LIST).post(data)
+            if response.state:
+                return response.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class GroupLevelCreate(View):

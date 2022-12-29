@@ -32,6 +32,7 @@
 {% endblock %}
 
 {% block pageContent %}
+    {% csrf_token %}
     <table
             id="datable-group-level" class="table nowrap w-100 mb-5" data-url="{% url 'GroupLevelListAPI' %}"
             data-method="GET"

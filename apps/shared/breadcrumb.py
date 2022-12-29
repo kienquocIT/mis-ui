@@ -30,7 +30,8 @@ class BreadcrumbItem(object):
     USER_LIST_PAGE = BreadcrumbChildren('User List', 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren('User Create', 'UserCreate')
 
-
+    ORGANIZATION_PAGE = BreadcrumbChildren('Organization')
+    GROUP_LIST_PAGE = BreadcrumbChildren('Group List', 'GroupList')
 
 class BreadcrumbView:
     @staticmethod
@@ -102,3 +103,9 @@ class BreadcrumbView:
     ]
 
     GROUP_LEVEL_CREATE_PAGE = GROUP_LEVEL_LIST_PAGE + [BreadcrumbItem.GROUP_LEVEL_CREATE_PAGE]
+
+    GROUP_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ORGANIZATION_PAGE,
+        BreadcrumbItem.GROUP_LIST_PAGE,
+    ]

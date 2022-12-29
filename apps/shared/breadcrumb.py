@@ -32,6 +32,7 @@ class BreadcrumbItem(object):
 
     ORGANIZATION_PAGE = BreadcrumbChildren('Organization')
     GROUP_LIST_PAGE = BreadcrumbChildren('Group List', 'GroupList')
+    COMPANY_PAGE = BreadcrumbChildren('Company')
 
 class BreadcrumbView:
     @staticmethod
@@ -109,3 +110,9 @@ class BreadcrumbView:
         BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LIST_PAGE,
     ]
+
+    COMPANY_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_PAGE,
+    ]
+

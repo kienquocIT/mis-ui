@@ -18,7 +18,7 @@ class GroupListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
+        resp = ServerAPI(url=ApiURL.GROUP_LIST, user=request.user).get()
         if resp.state:
             return {'group_list': resp.result}
         elif resp.status == 401:

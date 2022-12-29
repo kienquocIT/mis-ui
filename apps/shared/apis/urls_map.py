@@ -8,3 +8,9 @@ class ApiURL(object):
 
     # hr
     EMPLOYEE_LIST = 'hr/employees'
+
+    # organization/group
+    GROUP_LIST = 'organization/group'
+
+    # company
+    COMPANY_LIST = 'company'

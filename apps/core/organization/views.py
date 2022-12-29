@@ -1,15 +1,20 @@
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
 
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
 from rest_framework import status
 
+
 # Group
 class GroupList(View):
-    @mask_view(auth_require=True, template='core/organization/group/group_list.html', breadcrumb='GROUP_LIST_PAGE')
+    @mask_view(
+        auth_require=True,
+        template='core/organization/group/group_list.html',
+        breadcrumb='GROUP_LIST_PAGE'
+    )
     def get(self, request, *args, **kwargs):
         return {}
 

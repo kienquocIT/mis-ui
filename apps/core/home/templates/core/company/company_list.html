@@ -1,1 +1,178 @@
 {% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'core/home/css/company_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <div class="d-flex">
+        <div class="d-flex flex-wrap justify-content-between flex-1">
+            <div class="mb-lg-0 mb-2 me-8">
+                <span data-bs-toggle="modal" data-bs-target="#AddCompanyForms">
+                    <a class="d-inline-flex align-items-center add-company">
+                        <i class="ri-add-box-line me-1"></i>Add Company
+                    </a>
+                </span>
+            </div>
+        </div>
+
+
+    </div><br>
+
+    <table
+            id="datable_company_list" class="table nowrap w-100 mb-5" data-url=""
+            data-method="GET" style="max-width: 75%"
+    >
+        <thead>
+        <tr>
+            <th>Company name</th>
+            <th>Created date</th>
+            <th>Representative</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>FPT Telecom</td>
+            <td>15/10/2022</td>
+            <td>Trần Thanh Nhàn</td>
+            <td>
+                <a href=""><i class="fas fa-edit btn-action"></i></a>
+                <a href=""><i class="far fa-trash-alt btn-action"></i></a>
+            </td>
+        </tr>
+        <tr>
+            <td>FPT Shop</td>
+            <td>20/12/2022</td>
+            <td>Lê Văn An</td>
+            <td>
+                <a href=""><i class="fas fa-edit btn-action"></i></a>
+                <a href=""><i class="far fa-trash-alt btn-action"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <!-- Add Company -->
+    <div class="modal fade" id="AddCompanyForms" tabindex="-1" role="dialog"
+         aria-labelledby="AddCompanyForms" aria-hidden="true" style="padding-top: 65px;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Add Company' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form style="padding: 20px" id="frm-add-company" data-url="" data-url-redirect="/" data-method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Company Name' %}</b>
+                                    </label>
+                                    <label style="width: 100%;">
+                                        <input type="text" class="form-control"
+                                               id="company_name_id" name="company_name"
+                                               placeholder="FTEL Service">
+                                    </label>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Representative' %}</b>
+                                    </label>
+                                    <label style="width: 100%;">
+                                        <input type="text" class="form-control"
+                                               id="representative_id" name="representative"
+                                               placeholder="Nguyên Hồng">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Address' %}</b>
+                                    </label>
+                                    <label style="width: 100%;">
+                                        <input type="text" class="form-control"
+                                            id="address_id" name="address"
+                                            placeholder="150 Huỳnh Văn Bánh">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Email' %}</b>
+                                    </label>
+                                    <label style="width: 100%;">
+                                        <input type="email" class="form-control"
+                                               id="email_id" name="email"
+                                               placeholder="abc@gmail.com">
+                                    </label>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Phone Number' %}</b>
+                                    </label>
+                                    <label style="width: 100%;">
+                                        <input type="number" class="form-control"
+                                               id="phone_number_id" name="phone_number"
+                                               placeholder="0123456789">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Parent Company' %}</b>
+                                    </label>
+                                    <label style="width: 100%;">
+                                        <input type="text" class="form-control"
+                                               id="parent_company_id" name="parent_company"
+                                               placeholder="FPT Telecom" disabled>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-success" id="add-company-submit">Add</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button style="position:relative; float:right" type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'core/home/js/company_list.js' %}"></script>
+{% endblock %}

@@ -6,12 +6,12 @@ $(document).ready(function () {
     $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
         .then(
             (resp) => {
-                console.log(resp);
+                $.fn.notifyPopup({description: resp.detail}, 'success');
                 $('#AddCompanyForms').modal('hide');
                 location.reload();
             },
             (errs) => {
-                console.log(errs);
+                $.fn.notifyPopup({description: errs.detail}, 'failure');
             }
         )
 });

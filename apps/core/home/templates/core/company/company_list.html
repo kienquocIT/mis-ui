@@ -23,40 +23,28 @@
 
     </div><br>
 
-    <table
-            id="datable_company_list" class="table nowrap w-100 mb-5" data-url=""
-            data-method="GET" style="max-width: 75%"
-    >
+    <table id="datable_company_list" class="table nowrap w-100 mb-5"
+           data-url="{% url "TenantCompanyListAPI" %}"
+           data-url-redirect="/"
+           data-method="get">
         <thead>
         <tr>
-            <th>Company name</th>
-            <th>Created date</th>
-            <th>Representative</th>
-            <th></th>
+            <th style="max-width: 5%">
+                <span class="form-check">
+                    <input type="checkbox"
+                           class="form-check-input check-select-all"
+                           id="customCheck1">
+                    <label class="form-check-label" for="customCheck1"></label>
+                </span>
+            </th>
+            <th style="max-width: 40%">Company name</th>
+            <th style="max-width: 25%">Created date</th>
+            <th style="max-width: 20%">Representative</th>
+            <th style="max-width: 10%">Action</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td>FPT Telecom</td>
-            <td>15/10/2022</td>
-            <td>Trần Thanh Nhàn</td>
-            <td>
-                <a href=""><i class="fas fa-edit btn-action"></i></a>
-                <a href=""><i class="far fa-trash-alt btn-action"></i></a>
-            </td>
-        </tr>
-        <tr>
-            <td>FPT Shop</td>
-            <td>20/12/2022</td>
-            <td>Lê Văn An</td>
-            <td>
-                <a href=""><i class="fas fa-edit btn-action"></i></a>
-                <a href=""><i class="far fa-trash-alt btn-action"></i></a>
-            </td>
-        </tr>
-        </tbody>
+        <tbody></tbody>
     </table>
-
 
     <!-- Add Company -->
     <div class="modal fade" id="AddCompanyForms" tabindex="-1" role="dialog"
@@ -70,7 +58,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form style="padding: 20px" id="frm-add-company" data-url="{% url "TenantCompanyCreateAPI" %}" data-url-redirect="/" data-method="post">
+                    <form style="padding: 20px" id="frm-add-company" data-url="{% url "TenantCompanyListAPI" %}" data-url-redirect="/" data-method="post">
                         {% csrf_token %}
                         <div class="mb-3">
                             <div class="row">
@@ -174,5 +162,6 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'core/home/js/company_list.js' %}"></script>
+    <script src="{% static 'core/home/js/load_company_DT.js' %}"></script>
+    <script src="{% static 'core/home/js/add_new_company.js' %}"></script>
 {% endblock %}

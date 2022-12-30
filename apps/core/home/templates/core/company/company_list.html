@@ -70,7 +70,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form style="padding: 20px" id="frm-add-company" data-url="" data-url-redirect="/" data-method="post">
+                    <form style="padding: 20px" id="frm-add-company" data-url="{% url "TenantCompanyCreateAPI" %}" data-url-redirect="/" data-method="post">
                         {% csrf_token %}
                         <div class="mb-3">
                             <div class="row">
@@ -80,8 +80,8 @@
                                     </label>
                                     <label style="width: 100%;">
                                         <input type="text" class="form-control"
-                                               id="company_name_id" name="company_name"
-                                               placeholder="FTEL Service">
+                                               id="company_name_id" name="title"
+                                               placeholder="FTEL Service" required>
                                     </label>
                                 </div>
 

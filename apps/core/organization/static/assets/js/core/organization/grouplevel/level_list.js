@@ -24,29 +24,24 @@ $(function () {
         },
         data: [],
         columns: [{
-            'render': () => {
-                return '';
-            }
-        }, {
             'data': 'level', render: (data, type, row, meta) => {
                 return String.format(data);
             }
         }, {
             'data': 'description', render: (data, type, row, meta) => {
-                return String.format(data);
+                return `<input type="text" min="0" class="form-control" name="group-level-description" placeholder="Group Description" value="${data}">`;
             }
         }, {
             'data': 'first_manager_description', render: (data, type, row, meta) => {
-                return String.format(data);
+                return `<input type="text" min="0" class="form-control" name="group-level-first-manager-description" placeholder="1st Manager Description" value="${data}">`;
             }
         }, {
             'data': 'second_manager_description', render: (data, type, row, meta) => {
-                return String.format(data);
+                return `<input type="text" min="0" class="form-control" name="group-level-second-manager-description" placeholder="2nd Manager Description" value="${data}">`;
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="group-level-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt3;
+                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-level-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
             }
         },]
     }
@@ -57,16 +52,16 @@ $(function () {
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
-            var tdCnt = 0;
-            $('table tr').each(function () {
-                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                tdCnt++;
-            });
-            $(document).on('click', '.del-button', function () {
-                targetDt.rows('.selected').remove().draw(false);
-                return false;
-            });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
+            // var tdCnt = 0;
+            // $('table tr').each(function () {
+            //     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
+            //     tdCnt++;
+            // });
+            // $(document).on('click', '.del-button', function () {
+            //     targetDt.rows('.selected').remove().draw(false);
+            //     return false;
+            // });
+            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-150p"><option selected>Select Template</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"></div>');
             dtb.parent().addClass('table-responsive');
 
 
@@ -110,6 +105,7 @@ $(function () {
 });
 
 
+// Action on add row
 $(document).on('click', '#btn-add-group-level', function () {
     tableGroupLevelAdd()
 });
@@ -120,18 +116,18 @@ function tableGroupLevelAdd() {
     let tableRowLen = tableApply.tBodies[0].rows.length;
     let level =  (tableRowLen + 1)
     let checkBoxId = `chk_sel_${(tableRowLen + 1)}`
-    let planQuantityId = `document-plan-quantity-${(tableRowLen + 1)}`
 
-    $('#datable-group-level tbody').append(`<tr><td><span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${checkBoxId}"><label class="form-check-label" for="${checkBoxId}"></label></span></td> <td><span id="group-level">${level}</span></td> <td><input type="text" min="0" class="form-control document-tenant-plan" name="document-tenant-plan-quantity" id="${planQuantityId}" placeholder="Group Description"></td> <td><input type="text" min="0" class="form-control document-tenant-plan" name="document-tenant-plan-quantity" id="${planQuantityId}" placeholder="1st Manager Description"></td> <td><input type="text" min="0" class="form-control document-tenant-plan" name="document-tenant-plan-quantity" id="${planQuantityId}" placeholder="2nd Manager Description"></td> <td class=" action-center"><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-level-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a></td> </tr>`);
+    $('#datable-group-level tbody').append(`<tr> <td><span id="group-level">${level}</span></td> <td><input type="text" min="0" class="form-control" name="group-level-description" placeholder="Group Description"></td> <td><input type="text" min="0" class="form-control" name="group-level-first-manager-description" placeholder="1st Manager Description"></td> <td><input type="text" min="0" class="form-control" name="group-level-second-manager-description" placeholder="2nd Manager Description"></td> <td class=" action-center"><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-level-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a></td> </tr>`);
     return false;
 }
 
 
+// Action on delete row
 $(document).on('click', '.group-level-del-button', function (e) {
     // $(this).closest('tr').prev().remove();
     // $(this).closest('tr').next().remove();
     let currentRow = $(this).closest('tr')
-    let currentLevel = Number(currentRow[0].children[1].innerText)
+    let currentLevel = Number(currentRow[0].children[0].innerText)
     let tableApply = document.getElementById("datable-group-level");
     let tableRowLen = tableApply.tBodies[0].rows.length;
 
@@ -140,10 +136,58 @@ $(document).on('click', '.group-level-del-button', function (e) {
     // Reorder level of above rows from delete row
     for (let i = currentLevel; i < tableRowLen; i++) {
         let upperRow = currentRow[0].parentNode.rows[ (++idx - 1) ];
-        let upperRowLevel = Number(upperRow.children[1].innerText)
-        upperRow.children[1].innerText=String(upperRowLevel - 1)
+        let upperRowLevel = Number(upperRow.children[0].innerText)
+        upperRow.children[0].innerText=String(upperRowLevel - 1)
     }
 
     currentRow.remove();
     return false;
+});
+
+
+// Save form group level
+$(document).on('click', '.btn-save-group-level', function (e) {
+    let groupLevelSave = {}
+    let tableDataSave = []
+    let rowDataSave = {}
+    let keys = [
+        "level",
+        "description",
+        "first_manager_description",
+        "second_manager_description"
+    ]
+    let tableSave = document.getElementById("datable-group-level");
+    let tableRowLen = tableSave.tBodies[0].rows.length;
+    for (let idx = 0; idx < tableRowLen; idx++) {
+        rowDataSave = {}
+        let row = tableSave.rows[(idx+1)];
+        let childrenLength = row.children.length
+        for (let i = 0; i < (childrenLength - 1); i++) {
+            let child = row.children[(i)]
+            let childText = child.innerText
+            let childValue = child.firstChild.value
+            if (keys[i]) {
+                if (childValue) {
+                    rowDataSave[keys[i]] = childValue
+                } else {
+                    rowDataSave[keys[i]] = Number(childText)
+                }
+            }
+        }
+        tableDataSave.push(rowDataSave)
+    }
+    if (tableDataSave) {
+        groupLevelSave['group_level_data'] = tableDataSave
+    }
+
+    let crf_token = $("input[name=csrfmiddlewaretoken]").val();
+    $.fn.callAjax('/organization/level/api', "POST", groupLevelSave, crf_token)
+        .then(
+            (res) => {
+                $.fn.notifyPopup({description: res.detail}, 'success');
+                location.reload();
+            },
+            (err) => {
+                $.fn.notifyPopup({description: err.detail}, 'failure');
+            })
 });

@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
 
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -11,7 +11,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
 
-
 # Group Level
 class GroupLevelList(View):
     @mask_view(
@@ -21,7 +20,7 @@ class GroupLevelList(View):
         menu_active='menu-employee-list',
     )
     def get(self, request, *args, **kwargs):
-        return {}
+        return {}, status.HTTP_200_OK
 
 
 class GroupLevelListAPI(APIView):
@@ -39,6 +38,15 @@ class GroupLevelListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
+    @mask_view(auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            data = request.data
+            response = ServerAPI(user=request.user, url=ApiURL.GROUP_LEVEL_LIST).post(data)
+            if response.state:
+                return response.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
 
 class GroupLevelCreate(View):
     @mask_view(
@@ -48,6 +56,7 @@ class GroupLevelCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {}
+
 
 
 # Group
@@ -83,7 +92,7 @@ class RoleList(View):
 EMPLOYYEE_LIST = [
     {
         'employee_code': 'EP0015',
-        'name': 'Lê Minh',
+        'name': 'L� Minh',
     }, {
         'employee_code': 'EP0016',
         'name': 'Darlene Robertson',
@@ -102,11 +111,11 @@ EMPLOYYEE_LIST = [
     },
     {
         'employee_code': 'EP00120',
-        'name': 'Nguyễn Văn A',
+        'name': 'Nguy?n Van A',
     },
     {
         'employee_code': 'EP0021',
-        'name': 'Nam Nè',
+        'name': 'Nam N�',
     }
 ]
 

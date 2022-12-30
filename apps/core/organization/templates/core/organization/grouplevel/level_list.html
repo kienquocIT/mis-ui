@@ -32,22 +32,23 @@
 {% endblock %}
 
 {% block pageContent %}
+    {% csrf_token %}
     <table
             id="datable-group-level" class="table nowrap w-100 mb-5" data-url="{% url 'GroupLevelListAPI' %}"
             data-method="GET"
     >
         <thead>
         <tr>
-            <th>
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-            </th>
+{#            <th>#}
+{#                <span class="form-check">#}
+{#                    <input#}
+{#                            type="checkbox"#}
+{#                            class="form-check-input check-select-all"#}
+{#                            id="customCheck1"#}
+{#                    >#}
+{#                    <label class="form-check-label" for="customCheck1"></label>#}
+{#                </span>#}
+{#            </th>#}
             <th>Group Level</th>
             <th>Group Description</th>
             <th>1st Manager Description</th>

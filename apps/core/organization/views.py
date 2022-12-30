@@ -1,15 +1,10 @@
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
-
-from django.shortcuts import redirect
-from django.urls import reverse
 from django.views import View
 from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
+
 
 # Group Level
 class GroupLevelList(View):
@@ -58,7 +53,6 @@ class GroupLevelCreate(View):
         return {}
 
 
-
 # Group
 class OrganizationCreate(APIView):
 
@@ -82,9 +76,19 @@ class OrganizationCreateAPI(APIView):
         return {}, status.HTTP_200_OK
 
 
+class GroupList(View):
+    @mask_view(
+        auth_require=True,
+        template='core/organization/group/group_list.html',
+        breadcrumb='GROUP_LIST_PAGE'
+    )
+    def get(self, request, *args, **kwargs):
+        return {}
+
+
 class RoleList(View):
 
-    @mask_view(auth_require=True, template='core/organization/role/list_role.html')
+    @mask_view(auth_require=True, template='core/organization/role/list_role.html', breadcrumb='ROLE_LIST_PAGE')
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
@@ -92,7 +96,7 @@ class RoleList(View):
 EMPLOYYEE_LIST = [
     {
         'employee_code': 'EP0015',
-        'name': 'Lê Minh',
+        'name': 'Le Minh',
     }, {
         'employee_code': 'EP0016',
         'name': 'Darlene Robertson',
@@ -111,20 +115,13 @@ EMPLOYYEE_LIST = [
     },
     {
         'employee_code': 'EP00120',
-        'name': 'Nguy?n Van A',
+        'name': 'Nguyen Van A',
     },
     {
         'employee_code': 'EP0021',
-        'name': 'Nam Nè',
+        'name': 'Trinh Tuan Nam',
     }
 ]
-
-
-class RoleCreate(View):
-    @mask_view(auth_require=True, template='core/organization/role/create_role.html')
-    def get(self, request, *args, **kwargs):
-        return {'employee_list': EMPLOYYEE_LIST}, status.HTTP_200_OK
-
 
 def get_employee(lst, code):
     name = ''
@@ -135,60 +132,98 @@ def get_employee(lst, code):
     return name
 
 
+ROLE_LIST = [
+    {
+        'id': '0',
+        'role_name': 'Developer',
+        'abbreviation': 'DEV',
+        'holder': [
+            {
+                'employee_code': 'EP0019',
+                'name': get_employee(EMPLOYYEE_LIST, 'EP0019')
+            },
+        ],
+    },
+    {
+        'id': '1',
+        'role_name': 'Business analyst',
+        'abbreviation': 'BA',
+        'holder': [
+            {
+                'employee_code': 'EP0017',
+                'name': get_employee(EMPLOYYEE_LIST, 'EP0017')
+            },
+            {
+                'employee_code': 'EP0018',
+                'name': get_employee(EMPLOYYEE_LIST, 'EP0018')
+            },
+        ],
+    },
+    {
+        'id': '2',
+        'role_name': 'Tester',
+        'abbreviation': 'Test',
+        'holder': [
+            {
+                'employee_code': 'EP0016',
+                'name': get_employee(EMPLOYYEE_LIST, 'EP0016')
+            },
+        ],
+    }
+]
+
+
+class RoleCreate(View):
+    @mask_view(auth_require=True, template='core/organization/role/create_role.html', breadcrumb="ROLE_CREATE_PAGE")
+    def get(self, request, *args, **kwargs):
+        return {'employee_list': EMPLOYYEE_LIST}, status.HTTP_200_OK
+
+
+class RoleDetail(View):
+    @mask_view(auth_require=True, template='core/organization/role/update_role.html')
+    def get(self, request, pk, *args, **kwargs):
+        return {'employee_list': EMPLOYYEE_LIST}, status.HTTP_200_OK
+
+
 class RoleListAPI(APIView):
-    ROLE_LIST = [
-        {
-            'id': 1,
-            'role_name': 'Developer',
-            'abbreviation': 'DEV',
-            'holder': [
-                {
-                    'employee_code': 'EP0019',
-                    'name': get_employee(EMPLOYYEE_LIST, 'EP0019')
-                },
-            ],
-        },
-        {
-            'id': 2,
-            'role_name': 'Business analyst',
-            'abbreviation': 'BA',
-            'holder': [
-                {
-                    'employee_code': 'EP0017',
-                    'name': get_employee(EMPLOYYEE_LIST, 'EP0017')
-                },
-                {
-                    'employee_code': 'EP0018',
-                    'name': get_employee(EMPLOYYEE_LIST, 'EP0018')
-                },
-            ],
-        },
-        {
-            'id': 3,
-            'role_name': 'Tester',
-            'abbreviation': 'Test',
-            'holder': [
-                {
-                    'employee_code': 'EP0016',
-                    'name': get_employee(EMPLOYYEE_LIST, 'EP0016')
-                },
-            ],
-        }
-    ]
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        return {'role_list': self.ROLE_LIST}, status.HTTP_200_OK
+        return {'role_list': ROLE_LIST}, status.HTTP_200_OK
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        self.ROLE_LIST.append({
-            'id': 1,
+        ROLE_LIST.append({
+            'id': str(len(ROLE_LIST)),
             'role_name': request.data['role_name'],
             'abbreviation': request.data['abbreviation'],
             'holder': [{'employee_code': i, 'name': get_employee(EMPLOYYEE_LIST, i)} for i in request.data['employee']]
         })
         return request.data, status.HTTP_200_OK
 
-    def put(self, request, *args, **kwargs):
-        pass
+
+class RoleDetailAPI(APIView):
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, pk, *args, **kwargs):
+        data = {}
+        for i in ROLE_LIST:
+            if i['id'] == pk:
+                data = i
+                break
+        return {'role': data}, status.HTTP_200_OK
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        ROLE_LIST[int(pk)].update({
+            'role_name': request.data['role_name'],
+            'abbreviation': request.data['abbreviation'],
+            'holder': [{'employee_code': i, 'name': get_employee(EMPLOYYEE_LIST, i)} for i in request.data['employee']]
+        })
+        return {}, status.HTTP_200_OK
+
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        ROLE_LIST.pop(int(pk))
+        return {}, status.HTTP_200_OK
+

@@ -34,6 +34,10 @@ class BreadcrumbItem(object):
     GROUP_LIST_PAGE = BreadcrumbChildren('Group List', 'GroupList')
     COMPANY_PAGE = BreadcrumbChildren('Company')
 
+    ROLE_LIST_PAGE = BreadcrumbChildren('Role List', 'RoleList')
+    ROLE_CREATE_PAGE = BreadcrumbChildren("Create Role", 'RoleCreate')
+
+
 class BreadcrumbView:
     @staticmethod
     def check_view_name():
@@ -96,7 +100,6 @@ class BreadcrumbView:
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
 
-
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ORGANIZATION_PAGE,
@@ -115,4 +118,12 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
     ]
+
+    ROLE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ORGANIZATION_PAGE,
+        BreadcrumbItem.ROLE_LIST_PAGE,
+    ]
+
+    ROLE_CREATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.ROLE_CREATE_PAGE]
 

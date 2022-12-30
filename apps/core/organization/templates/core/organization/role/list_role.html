@@ -66,8 +66,11 @@
 
         </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <form id="form-delete" data-method="DELETE" data-url="{% url "RoleList" %}">
+            {% csrf_token %}
+            <tbody>
+            </tbody>
+        </form>
     </table>
 {% endblock %}
 

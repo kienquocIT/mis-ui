@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load static %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+    <button class="btn" type="submit" form="form-update-role">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form id="form-update-role" data-method="POST" , data-url="{% url "RoleList" %}"
+          data-url-redirect="{% url "RoleList" %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6 form-group">
+                <label class="form-label">
+                    {% trans 'Role name' %}r
+                </label>
+                <input class="form-control" placeholder="Input role name" name="role_name" id="role_name">
+            </div>
+
+            <div class="col-6 form-group">
+                <label class="form-label">
+                    {% trans 'Abbreviation' %}r
+                </label>
+                <input class="form-control" placeholder="Input role name" name="abbreviation" id="abbreviation">
+            </div>
+
+            <div class="form-group">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Employee Code</th>
+                        <th scope="col">Name</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in data.employee_list %}
+                        <tr>
+                            <td>{{ item.employee_code }}</td>
+                            <td>{{ item.name }}</td>
+                            <td><input type="checkbox" data-id="{{ item.employee_code }}"></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/organization/role/role_list.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            url = location.pathname + `/api`
+            $.fn.callAjax(url, 'GET')
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $('#abbreviation').val(data.role.abbreviation)
+                            $('#role_name').val(data.role.role_name)
+                            for (let i = 0; i < data.role.holder.length; i++) {
+                                $("tbody input[data-id=" + data.role.holder[i].employee_code + "]").prop('checked', true);
+                            }
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+            $("#form-update-role").submit(function (event) {
+                data_url = location.pathname + '/api';
+                event.preventDefault();
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                let frm = new SetupFormSubmit($(this));
+                let employee_list = $("tbody input:checkbox:checked").map(function () {
+                    return $(this).data('id')
+                }).get();
+                let data = frm.dataForm;
+                data['employee'] = employee_list;
+                $.fn.callAjax(data_url, "PUT", data, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Đang cập nhật role"}, 'success');
+                                $.fn.redirectUrl(frm.dataUrlRedirect, 2000);
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+                        }
+                    )
+            });
+        });
+    </script>
+{% endblock %}

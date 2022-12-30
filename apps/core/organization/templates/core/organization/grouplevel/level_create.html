@@ -1,49 +1,302 @@
 <div class="card card-border">
-    <div class="card-header bg-primary sticky-card-header">
-        <h6 class="text-white">Sticky Card Header</h6>
-    </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-8 col-6">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et accumsan
-                    justo, vitae lobortis nulla. Duis quam libero, consectetur at enim vel, aliquam sagittis ante. Donec
-                    rutrum imperdiet rhoncus. Aenean neque ligula, rutrum sit amet nibh in, lobortis rutrum tellus.
-                    Integer efficitur augue eu enim ornare dictum. Pellentesque consectetur nisi eu viverra eleifend.
-                    Pellentesque viverra ac velit a venenatis. Morbi condimentum ultricies neque, sed finibus elit
-                    fringilla in. Etiam vel ex ut nulla pretium bibendum eu eget nibh. Duis mattis aliquet ligula, ac
-                    commodo elit consequat id. Nulla dapibus lacinia massa at volutpat. Nullam ac leo est. Mauris mattis
-                    pulvinar venenatis.</p>
-                <p class="card-text">Nunc faucibus elit in tristique laoreet. Donec cursus tellus vel eros euismod
-                    aliquam. Nunc at pharetra purus. Nunc sit amet ante risus. Donec ut bibendum justo. Nulla sit amet
-                    euismod eros. Aenean tristique, augue at faucibus placerat, tortor sem tincidunt nisi, id hendrerit
-                    tortor mi in nulla. Duis sed luctus ex.</p>
-                <p class="card-text">Suspendisse quis mauris non purus gravida egestas. Quisque laoreet rutrum sem ac
-                    dapibus. Nunc interdum nibh sed elementum placerat. Integer rutrum odio sed quam gravida aliquet.
-                    Nam vel nunc in libero lacinia ultricies. Curabitur rutrum bibendum lacus eu semper. Sed euismod
-                    ipsum risus, eu auctor quam ullamcorper ac. Sed tempus facilisis tellus quis tempor. In feugiat nunc
-                    sit amet felis tincidunt, id rhoncus mi porta. Etiam luctus mi in hendrerit semper.</p>
+            <div class="card position-sticky" style="top:150px">
+            <div class="card-body">
+                <div class="col-3">
+                    <div class="row">
+                        <div class="form-group">
+                            <a class="nav-link active" href="#section5">
+                                <label class="form-label"><b>{% trans 'Input General Information' %}</b></label>
+                            </a>
+                        </div>
+                    </div>
 
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-            <div class="col-md-4 col-6">
-                <div class="card position-sticky" style="top:150px">
-                    <div class="card-header">
-                        <h6>Sticky Card</h6>
+                    <div class="row" style="margin-bottom: 10px">
+                        <div class="col-9">
+                            <div class="border-line" style="border-bottom: solid; border-bottom-color: #007D88">
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    </div>
-                    <div class="card-footer text-muted">
-                        Card Footer
+
+                    <div class="row">
+                        <div class="form-group">
+                            <a class="nav-link active" href="#section6">
+                                <label class="form-label">
+                                    <b>{% trans 'Add Employees, Manager' %}</b>
+                                </label>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
 
-    </div>
-    <div class="card-footer text-muted">
-        Card Footer
+
+                <div class="col-9">
+                    <div
+                            data-bs-spy="scroll" data-bs-target="#scrollspy_demo_v" data-bs-smooth-scroll="true"
+                            class="position-relative "
+                    >
+                        <div id="section5">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Select Group Level' %}<span
+                                                    class="field-required"
+                                            >(*)</span></label>
+                                            <select
+                                                    class="form-select" id="select-box-group-level"
+                                                    data-url="{% url 'GroupLevelListAPI' %}"
+                                                    data-method="GET"
+                                                    name="group-level"
+                                                    required
+                                            >
+                                                <option selected>Select...</option>
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Level link to this group' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Select Parent Group' %}</label>
+                                            <select
+                                                    class="form-select" id="select-box-group"
+                                                    data-url="{% url 'GroupListAPI' %}"
+                                                    data-method="GET"
+                                                    name="group-parent"
+                                                    required
+                                            >
+                                                <option selected>Select...</option>
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Group parent of this group' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Reference Group Title' %}
+                                    </label>
+                                    <input
+                                            type="email" class="form-control" placeholder="" name="first_name"
+                                            required
+                                    >
+                                    <span class="form-text text-muted">{% trans 'Name of Reference Group' %}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Input Display Group Title' %}
+                                        <span class="field-required">(*)</span>
+                                    </label>
+                                    <input
+                                            type="email" class="form-control" placeholder="Group Title A"
+                                            name="first_name"
+                                            required
+                                    >
+                                    <span class="form-text text-muted">{% trans 'Name of Group' %}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Input Group Code' %}
+                                        <span class="field-required">(*)</span>
+                                    </label>
+                                    <input
+                                            type="email" class="form-control" placeholder="Group Code" name="first_name"
+                                            required
+                                    >
+                                    <span class="form-text text-muted">{% trans 'Code of Group' %}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Description' %}
+                                    </label>
+                                    <textarea class="form-control" rows="4" cols="50" name=""></textarea>
+                                    <span class="form-text text-muted">{% trans 'Desciption of Group' %}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="section6">
+                            <div class="form-group">
+                                <button
+                                        type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                                        aria-controls="offcanvasExample"
+                                        style="background: none;border: none; color: #007D88"
+                                >
+            <span
+                    class="btn-add-tenant" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="{% trans 'Add Employee to group' %}" style=""
+            >
+                <i class="fas fa-plus-circle"></i>
+                {% trans 'Add employee to group' %}
+            </span>
+                                </button>
+                            </div>
+
+
+                            <table
+                                    id="datable-group-level" class="table nowrap w-100 mb-5"
+                                    data-url="{% url 'GroupLevelListAPI' %}"
+                                    data-method="GET"
+                            >
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Employee Name</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans '1st Manager System Title' %}
+                                                <span class="field-required">(*)</span>
+                                            </label>
+                                            <input
+                                                    type="email" class="form-control" placeholder=""
+                                                    name="first_name"
+                                                    required
+                                            >
+                                            <span class="form-text text-muted">{% trans 'System title of 1st manager' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans '2nd Manager System Title' %}
+                                                <span class="field-required">(*)</span>
+                                            </label>
+                                            <input
+                                                    type="email" class="form-control" placeholder=""
+                                                    name="first_name"
+                                                    required
+                                            >
+                                            <span class="form-text text-muted">{% trans 'System title of 1st manager' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans 'Input Display 1st Manager Title' %}
+                                                <span class="field-required">(*)</span>
+                                            </label>
+                                            <input
+                                                    type="email" class="form-control" placeholder="Group Title A"
+                                                    name="first_name"
+                                                    required
+                                            >
+                                            <span class="form-text text-muted">{% trans 'Title of 1st manager' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans 'Input Display 2nd Manager Title' %}
+                                                <span class="field-required">(*)</span>
+                                            </label>
+                                            <input
+                                                    type="email" class="form-control" placeholder="Group Title A"
+                                                    name="first_name"
+                                                    required
+                                            >
+                                            <span class="form-text text-muted">{% trans 'Title of 2nd manager' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Assign To' %}<span
+                                                    class="field-required"
+                                            >(*)</span></label>
+                                            <select
+                                                    class="form-select" id="select-box-group-level"
+                                                    data-url="{% url 'GroupLevelListAPI' %}"
+                                                    data-method="GET"
+                                                    name="group-level"
+                                                    required
+                                            >
+                                                <option selected>Select...</option>
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Level link to this group' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Assign To' %}<span
+                                                    class="field-required"
+                                            >(*)</span></label>
+                                            <select
+                                                    class="form-select" id="select-box-group"
+                                                    data-url="{% url 'GroupListAPI' %}"
+                                                    data-method="GET"
+                                                    name="group-parent"
+                                                    required
+                                            >
+                                                <option selected>Select...</option>
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Group parent of this group' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="form-check form-switch form-switch-lg mb-1">
+                        <label class="form-label">
+                            {% trans 'Active the employee after created' %}
+                            <span class="field-required">(*)</span>
+                        </label>
+                        <input
+                                type="checkbox"
+                                class="form-check-input"
+                                name="is_active" checked
+                                required
+                        >
+                    </div>
+                </div>
+            </div>
     </div>
 </div>

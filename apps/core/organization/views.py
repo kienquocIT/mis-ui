@@ -132,19 +132,38 @@ class RoleListAPI(APIView):
             'id': 1,
             'role_name': 'Developer',
             'abbreviation': 'DEV',
-            'holder': [get_employee(EMPLOYYEE_LIST, 'EP0019')],
+            'holder': [
+                {
+                    'employee_code': 'EP0019',
+                    'name': get_employee(EMPLOYYEE_LIST, 'EP0019')
+                },
+            ],
         },
         {
             'id': 2,
             'role_name': 'Business analyst',
             'abbreviation': 'BA',
-            'holder': [get_employee(EMPLOYYEE_LIST, 'EP0017'), get_employee(EMPLOYYEE_LIST, 'EP0018')],
+            'holder': [
+                {
+                    'employee_code': 'EP0017',
+                    'name': get_employee(EMPLOYYEE_LIST, 'EP0017')
+                },
+                {
+                    'employee_code': 'EP0018',
+                    'name': get_employee(EMPLOYYEE_LIST, 'EP0018')
+                },
+            ],
         },
         {
             'id': 3,
             'role_name': 'Tester',
             'abbreviation': 'Test',
-            'holder': [get_employee(EMPLOYYEE_LIST, 'EP0016')],
+            'holder': [
+                {
+                    'employee_code': 'EP0016',
+                    'name': get_employee(EMPLOYYEE_LIST, 'EP0016')
+                },
+            ],
         }
     ]
 
@@ -158,6 +177,9 @@ class RoleListAPI(APIView):
             'id': 1,
             'role_name': request.data['role_name'],
             'abbreviation': request.data['abbreviation'],
-            'holder': [get_employee(EMPLOYYEE_LIST, i) for i in request.data['employee']]
+            'holder': [{'employee_code': i, 'name': get_employee(EMPLOYYEE_LIST, i)} for i in request.data['employee']]
         })
         return request.data, status.HTTP_200_OK
+
+    def put(self, request, *args, **kwargs):
+        pass

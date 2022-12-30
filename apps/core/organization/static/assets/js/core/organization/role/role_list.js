@@ -49,13 +49,16 @@ $(function () {
                 }
             }, {
                 'data': 'holder', render: (data, type, row, meta) => {
-                    return `<div class="form-group"> 
-                                <span class="badge badge-primary">`+ row.holder +`</span>
-                            </div>`;
+                    let element = ''
+                    for(let i=0; i < row.holder.length; i++){
+                        element += `<span class="badge badge-primary">`+ row.holder[i].name +`</span> `
+                    }
+
+                    return `<div>` + element + `</div>`;
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="align-justify"></i></span></span></a>`;
+                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover add-holder" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="`+ row.abbreviation + `" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="align-justify"></i></span></span></a>`;
                     return bt2 ;
                 }
             },{

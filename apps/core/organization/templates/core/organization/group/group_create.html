@@ -16,6 +16,8 @@
     />
 
     <!-- Customize -->
+    <link rel="stylesheet" href="{% static 'assets/css/core/organization/group/group_create.css' %}">
+
     <style>
         #upload-area {
             height: 150px;
@@ -236,15 +238,15 @@
                                     <div class="row">
                                         <div class="col-8"></div>
                                         <div class="col-2" style="padding-left: 50px">
-                                            <button
+                                            <span
                                                     class="btn btn-primary" id="button-add-group-employee"
-                                            >{% trans "Add" %}</button>
+                                            >{% trans "Add" %}</span>
                                         </div>
                                         <div
                                                 class="col-2" data-bs-dismiss="offcanvas"
                                                 aria-label="Close"
                                         >
-                                            <button class="btn btn-light">{% trans 'Cancel' %}</button>
+                                            <span class="btn btn-light">{% trans 'Cancel' %}</span>
                                         </div>
                                     </div>
 

@@ -204,7 +204,7 @@ $(function () {
             /*Checkbox Add*/
             var tdCnt = 0;
             $('table tr').each(function () {
-                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:last-child"));
+                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-group-employee" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:last-child"));
                 tdCnt++;
             });
             $(document).on('click', '.del-button', function () {
@@ -257,29 +257,45 @@ $(function () {
 
 // Action on add modal employee
 $(document).on('click', '#button-add-group-employee', function () {
-    tableGroupEmployeelAdd()
+    tableGroupEmployeeAdd()
 });
 
 
-function tableGroupEmployeelAdd() {
+function tableGroupEmployeeAdd() {
     let tableApply = document.getElementById("datable_employee_list_popup");
     let tableRowLen = tableApply.tBodies[0].rows.length;
-    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
-    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-employee-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
-    let actionData = `<td>` + bt2 + bt3 + `</td>`;
     for (let idx = 0; idx < tableRowLen; idx++) {
         let row = tableApply.rows[idx + 1]
         let childrenLength = row.children.length
         let trData = ``
         let trSTT = 0
-        for (let i = 1; i < (childrenLength - 4); i++) {
-            let child = row.children[(i)]
-            let childText = child.innerText
-            let childValue = child.firstChild.value
-            trData += `<td><span>${childText}</span></td>`;
+        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
+        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-employee-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-in-modal="${(idx + 1)}"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+        let actionData = `<td>` + bt2 + bt3 + `</td>`;
+        if (row.classList.contains('selected')) {
+            for (let i = 1; i < (childrenLength - 4); i++) {
+                let child = row.children[(i)]
+                let childText = child.innerText
+                let childValue = child.firstChild.value
+                trData += `<td><span>${childText}</span></td>`;
+            }
+            trSTT++
+            $('#datable-group-employee-show tbody').append(`<tr>` + `<td><span>${trSTT}</span></td>` + trData + actionData + `</tr>`);
         }
-        trSTT++
-        $('#datable-group-employee-show tbody').append(`<tr>` + `<td><span>${trSTT}</span></td>` + trData + actionData + `</tr>`);
     }
     return false;
 }
+
+
+// Action on delete row
+$(document).on('click', '.group-employee-del-button', function (e) {
+    // $(this).closest('tr').prev().remove();
+    // $(this).closest('tr').next().remove();
+    let currentRow = $(this).closest('tr')
+    let idxInModal = Number($(this).attr('data-in-modal'))
+    let tableModal = document.getElementById("datable_employee_list_popup");
+    let rowInModal = tableModal.rows[idxInModal]
+    currentRow.remove();
+    rowInModal.classList.remove("selected");
+    return false;
+});

@@ -110,6 +110,7 @@ class GroupListAPI(APIView):
                 return response.result, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
+
 class RoleList(View):
 
     @mask_view(auth_require=True, template='core/organization/role/list_role.html', breadcrumb='ROLE_LIST_PAGE')

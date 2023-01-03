@@ -105,6 +105,11 @@ $(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
                         config['data'] = resp.data.company_list;
+                        if (resp.data.company_list[0].is_auto_create_company === false)
+                        {
+                            const add_company_div = document.getElementById("add_company_button");
+                            add_company_div.remove();
+                        }
                     }
                     initDataTable(config);
                 }

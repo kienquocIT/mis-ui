@@ -39,15 +39,8 @@ class TenantCompanyListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        # return {'company_list': [
-        #     {'company_name': 'Cong ty 1', 'cre_date': '20/11/2022', "representative": 'Nguyen Van A'},
-        #     {'company_name': 'Cong ty 2', 'cre_date': '21/11/2022', "representative": 'Tran Thi C'},
-        #     {'company_name': 'Cong ty 3', 'cre_date': '22/11/2022', "representative": 'Nguyen Van Y'},
-        #     {'company_name': 'Cong ty 4', 'cre_date': '23/11/2022', "representative": 'Pham Van B'},
-        #     {'company_name': 'Cong ty 5', 'cre_date': '24/11/2022', "representative": 'Nguyen Van R'},
-        #     {'company_name': 'Cong ty 6', 'cre_date': '25/11/2022', "representative": 'Le Van W'},
-        # ]}, status.HTTP_200_OK
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
+        #, 'is_auto_create_company': resp.result[0]['is_auto_create_company']sss
         if resp.state:
             return {'company_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

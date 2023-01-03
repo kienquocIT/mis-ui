@@ -9,7 +9,7 @@ class ApiURL(object):
     GROUP_LEVEL_LIST = 'organization/levels'
 
     # organization/group
-    GROUP_LIST = 'organization/group'
+    GROUP_LIST = 'organization/groups'
 
     # home/company
     COMPANY_LIST = 'tenant/company'

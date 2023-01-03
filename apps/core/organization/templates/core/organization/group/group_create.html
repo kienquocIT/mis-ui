@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupListAPI' %}">
+    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}">
         {% csrf_token %}
         <div class="container-fluid">
             <div class="row">
@@ -120,7 +120,6 @@
                                                     data-url="{% url 'GroupListAPI' %}"
                                                     data-method="GET"
                                                     name="parent_n"
-                                                    required
                                             >
                                                 <option selected>Select...</option>
                                             </select>
@@ -311,7 +310,7 @@
                                                 <span class="field-required">(*)</span>
                                             </label>
                                             <input
-                                                    type="text" class="form-control" placeholder="Group Title A"
+                                                    type="text" class="form-control" placeholder="First Manager A"
                                                     name="first_manager_title"
                                                     required
                                             >
@@ -326,7 +325,7 @@
                                                 {% trans 'Input Display 2nd Manager Title' %}
                                             </label>
                                             <input
-                                                    type="text" class="form-control" placeholder="Group Title A"
+                                                    type="text" class="form-control" placeholder="Second Manager A"
                                                     name="second_manager_title"
                                                     required
                                             >

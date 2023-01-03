@@ -2,9 +2,9 @@ $(document).ready(function () {
     // load group level list
     function loadGroupLevelList() {
         let ele = $('#select-box-group-level');
-        let ele_ref_group_title = $('#reference-group-title');
-        let ele_first_manager_system_title = $('#first-manager-system-title');
-        let ele_second_manager_system_title = $('#second-manager-system-title');
+        // let ele_ref_group_title = $('#reference-group-title');
+        // let ele_first_manager_system_title = $('#first-manager-system-title');
+        // let ele_second_manager_system_title = $('#second-manager-system-title');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -13,11 +13,12 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('group_level_list') && Array.isArray(data.group_level_list)) {
+                        ele.append(`<option>` + `</option>`)
                         data.group_level_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.level + `</option>`)
-                            ele_ref_group_title.val(item.description)
-                            ele_first_manager_system_title.val(item.first_manager_description)
-                            ele_second_manager_system_title.val(item.second_manager_description)
+                            ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">` + item.level + `</option>`)
+                            // ele_ref_group_title.val(item.description)
+                            // ele_first_manager_system_title.val(item.first_manager_description)
+                            // ele_second_manager_system_title.val(item.second_manager_description)
                         })
                     }
                 }
@@ -36,6 +37,7 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
+                        ele.append(`<option>` + `</option>`)
                         data.group_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                         })
@@ -121,6 +123,13 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         if (frm.dataForm && dataEmployee) {
             frm.dataForm['group_employee'] = dataEmployee
+        }
+        if (frm.dataForm) {
+            for (let key in frm.dataForm) {
+                if (frm.dataForm[key] === '') {
+                    delete frm.dataForm[key]
+                }
+            }
         }
         console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
@@ -344,3 +353,15 @@ function setGroupEmployeeData() {
     }
     return dataGroupEmployee
 }
+
+
+$(document).on('change', '#select-box-group-level', function (e) {
+    let sel = $(this)[0].options[$(this)[0].selectedIndex]
+    let ref_group_title = sel.getAttribute('data-description')
+    let first_manager_system_title = sel.getAttribute('data-first-manager-description');
+    let second_manager_system_title = sel.getAttribute('data-second-manager-description');
+
+    $('#reference-group-title').val(ref_group_title);
+    $('#first-manager-system-title').val(first_manager_system_title);
+    $('#second-manager-system-title').val(second_manager_system_title);
+});

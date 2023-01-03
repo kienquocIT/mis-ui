@@ -117,7 +117,11 @@ $(document).ready(function () {
         errorClass: 'is-invalid cl-red',
     })
     frm.submit(function (event) {
+        let dataEmployee = setGroupEmployeeData()
         let frm = new SetupFormSubmit($(this));
+        if (frm.dataForm && dataEmployee) {
+            frm.dataForm['group_employee'] = dataEmployee
+        }
         console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -168,8 +172,11 @@ $(function () {
                 return String.format(`<b>{0}</b>`, data);
             }
         }, {
-            'data': 'full_name', render: (data, type, row, meta) => {
-                return String.format(data);
+            'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
+                    return `<span id="${row.id}">` + row.full_name + `</span>`;
+                }
+                return '';
             }
         }, {
             'render': (data, type, row, meta) => {
@@ -290,8 +297,12 @@ function tableGroupEmployeeAdd() {
             for (let i = 1; i < (childrenLength - 4); i++) {
                 let child = row.children[(i)]
                 let childText = child.innerText
-                let childValue = child.firstChild.value
-                trData += `<td><span>${childText}</span></td>`;
+                let childID = child.firstChild.id
+                if (childID) {
+                    trData += `<td><span id="${childID}">${childText}</span></td>`;
+                } else {
+                    trData += `<td><span>${childText}</span></td>`;
+                }
             }
             trSTT++
             $('#datable-group-employee-show tbody').append(`<tr>` + `<td><span>${trSTT}</span></td>` + trData + actionData + `</tr>`);
@@ -313,3 +324,23 @@ $(document).on('click', '.group-employee-del-button', function (e) {
     rowInModal.classList.remove("selected");
     return false;
 });
+
+
+// Set employee data
+function setGroupEmployeeData() {
+    let tableGroupEmployee = document.getElementById("datable-group-employee-show");
+    let tableLength = tableGroupEmployee.tBodies[0].rows.length;
+    let dataGroupEmployee = []
+    for (let idx = 0; idx < tableLength; idx++) {
+        let row = tableGroupEmployee.rows[idx + 1]
+        let childrenLength = row.children.length
+        for (let i = 1; i < (childrenLength - 1); i++) {
+            let child = row.children[(i)]
+            let childID = child.firstChild.id
+            if (childID) {
+                dataGroupEmployee.push(childID)
+            }
+        }
+    }
+    return dataGroupEmployee
+}

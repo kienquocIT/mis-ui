@@ -120,6 +120,20 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                    }
+                )
     });
 });
 

@@ -48,7 +48,8 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_employee_create" class="needs-validation" data-url="" data-method="POST" novalidate>
+    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupListAPI' %}">
+        {% csrf_token %}
         <div class="container-fluid">
             <div class="row">
                 <div class="col-3">
@@ -101,7 +102,7 @@
                                                     class="form-select" id="select-box-group-level"
                                                     data-url="{% url 'GroupLevelListAPI' %}"
                                                     data-method="GET"
-                                                    name="group-level"
+                                                    name="group_level"
                                                     required
                                             >
                                                 <option selected>Select...</option>
@@ -118,7 +119,7 @@
                                                     class="form-select" id="select-box-group"
                                                     data-url="{% url 'GroupListAPI' %}"
                                                     data-method="GET"
-                                                    name="group-parent"
+                                                    name="parent_n"
                                                     required
                                             >
                                                 <option selected>Select...</option>
@@ -148,7 +149,7 @@
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Title A"
-                                            name="first_name"
+                                            name="title"
                                             required
                                     >
                                     <span class="form-text text-muted">{% trans 'Name of Group' %}</span>
@@ -161,7 +162,7 @@
                                         <span class="field-required">(*)</span>
                                     </label>
                                     <input
-                                            type="text" class="form-control" placeholder="Group Code" name="first_name"
+                                            type="text" class="form-control" placeholder="Group Code" name="code"
                                             required
                                     >
                                     <span class="form-text text-muted">{% trans 'Code of Group' %}</span>
@@ -172,7 +173,7 @@
                                     <label class="form-label">
                                         {% trans 'Description' %}
                                     </label>
-                                    <textarea class="form-control" rows="4" cols="50" name=""></textarea>
+                                    <textarea class="form-control" rows="4" cols="50" name="description"></textarea>
                                     <span class="form-text text-muted">{% trans 'Desciption of Group' %}</span>
                                 </div>
                             </div>
@@ -313,7 +314,7 @@
                                             </label>
                                             <input
                                                     type="text" class="form-control" placeholder="Group Title A"
-                                                    name="first_name"
+                                                    name="first_manager_title"
                                                     required
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 1st manager' %}</span>
@@ -328,7 +329,7 @@
                                             </label>
                                             <input
                                                     type="text" class="form-control" placeholder="Group Title A"
-                                                    name="first_name"
+                                                    name="second_manager_title"
                                                     required
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 2nd manager' %}</span>
@@ -348,7 +349,7 @@
                                                     class="form-select" id="select-box-first-manager"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
-                                                    name="first-manager"
+                                                    name="first_manager"
                                                     required
                                             >
                                                 <option selected>Select...</option>
@@ -365,7 +366,7 @@
                                                     class="form-select" id="select-box-second-manager"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
-                                                    name="second-manager"
+                                                    name="second_manager"
                                                     required
                                             >
                                                 <option selected>Select...</option>

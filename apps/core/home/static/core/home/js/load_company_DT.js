@@ -38,21 +38,19 @@ $(function () {
                         //     }
                 },
                 {
-                    'data': 'code', render: (data, type, row, meta) => {
-                        return `<span>` + data + `</span>`;
-                    }
+                    'data': 'date_created'
                 },
                 {
-                    'data': 'tenant_id', render: (data, type, row, meta) => {
-                        return `<div><span class="badge badge-primary">`+ row.tenant_id +`</span></div>`;
+                    'data': 'representative_fullname', render: (data, type, row, meta) => {
+                        return `<div><span class="badge badge-primary">`+ data +`</span></div>`;
                     }
                 },
 
                 {
                     'className': 'action-center', 'render': (data, type, row, meta) => {
-                        let bt2 = `<span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span>`;
-                        let bt3 = `<span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>`;
-                        return bt2 + bt3;
+                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                        return `<div><center>` + bt2 + bt3 + `</center></div>`;
                     }
                 },
             ]

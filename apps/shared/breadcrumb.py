@@ -30,7 +30,6 @@ class BreadcrumbItem(object):
     USER_LIST_PAGE = BreadcrumbChildren('User List', 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren('User Create', 'UserCreate')
 
-    ORGANIZATION_PAGE = BreadcrumbChildren('Organization')
     GROUP_LIST_PAGE = BreadcrumbChildren('Group List', 'GroupList')
     COMPANY_PAGE = BreadcrumbChildren('Company')
 

@@ -12,7 +12,7 @@ class GroupLevelList(View):
         auth_require=True,
         template='core/organization/grouplevel/level_list.html',
         breadcrumb='GROUP_LEVEL_LIST_PAGE',
-        menu_active='menu-employee-list',
+        menu_active='',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -85,6 +85,30 @@ class GroupList(View):
     def get(self, request, *args, **kwargs):
         return {}
 
+
+class GroupListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.GROUP_LIST, user=request.user).get()
+        if resp.state:
+            return {'group_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            data = request.data
+            response = ServerAPI(user=request.user, url=ApiURL.GROUP_LIST).post(data)
+            if response.state:
+                return response.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 class RoleList(View):
 
@@ -226,4 +250,3 @@ class RoleDetailAPI(APIView):
     def delete(self, request, pk, *args, **kwargs):
         ROLE_LIST.pop(int(pk))
         return {}, status.HTTP_200_OK
-

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import OrganizationCreate, OrganizationCreateAPI, RoleList
+from .views import OrganizationCreate, OrganizationCreateAPI, RoleList, GroupListAPI
 from apps.core.organization.views import GroupList, GroupLevelList, GroupLevelCreate, GroupLevelListAPI, RoleDetailAPI
 from .views import OrganizationCreate, RoleList, RoleListAPI, OrganizationCreateAPI, RoleCreate, RoleDetail
 
@@ -9,6 +9,7 @@ urlpatterns = [
     path('level/api', GroupLevelListAPI.as_view(), name='GroupLevelListAPI'),
     path('level/create', GroupLevelCreate.as_view(), name='GroupLevelCreate'),
     path('group', GroupList.as_view(), name='GroupList'),
+    path('group/api', GroupListAPI.as_view(), name='GroupListAPI'),
     path('group/create', OrganizationCreate.as_view(), name='OrganizationCreate'),
     path('group/create', OrganizationCreateAPI.as_view(), name='OrganizationCreateAPI'),
 

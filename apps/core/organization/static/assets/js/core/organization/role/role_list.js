@@ -51,7 +51,7 @@ $(function () {
                 'data': 'employees', render: (data, type, row, meta) => {
                     let element = ''
                     for(let i=0; i< row.employees.length; i++){
-                        element += `<span>` + row.employees[i].id + `</span>`
+                        element += `<span class="badge badge-primary">` + row.employees[i].full_name + `</span>`
                     }
                     return element
                 }

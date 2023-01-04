@@ -152,12 +152,19 @@ class RoleDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).get()
+        if role.state:
+            return {'role': role.result}, status.HTTP_200_OK
+        return {'detail': role.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        data = request.data
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).put(data)
+        if role.state:
+            return role.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
-    @mask_view(auth_require=True, is_api=True)
-    def delete(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+    # @mask_view(auth_require=True, is_api=True)
+    # def delete(self, request, pk, *args, **kwargs):
+    #     return {}, status.HTTP_200_OK

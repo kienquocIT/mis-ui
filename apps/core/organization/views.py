@@ -118,10 +118,12 @@ class GroupListAPI(APIView):
 
 
 class GroupDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).delete(request.data)
-        if response.state:
-            return{}, status.HTTP_200_OK
+        if request.method == 'DELETE':
+            response = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).delete(request.data)
+            if response.state:
+                return{}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

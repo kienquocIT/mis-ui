@@ -165,6 +165,9 @@ class RoleDetailAPI(APIView):
             return role.result, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
-    # @mask_view(auth_require=True, is_api=True)
-    # def delete(self, request, pk, *args, **kwargs):
-    #     return {}, status.HTTP_200_OK
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).delete(request.data)
+        if role.state:
+            return role.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

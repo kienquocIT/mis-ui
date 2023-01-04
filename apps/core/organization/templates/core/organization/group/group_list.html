@@ -28,6 +28,7 @@
             id="datable_group_list" class="table nowrap w-100 mb-5" data-url="{% url 'GroupListAPI' %}"
             data-method="GET"
     >
+        {% csrf_token %}
         <thead>
         <tr>
             <th>
@@ -41,7 +42,7 @@
                 </span>
             </th>
             <th>Group Level</th>
-            <th>Group Description</th>
+            <th>Reference Group Title</th>
             <th>Group Display Title</th>
             <th>Group Code</th>
             <th>Upper Group</th>
@@ -55,5 +56,5 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'assets/js/core/organization/group/group_list.js' %}"></script>#}
+    <script src="{% static 'assets/js/core/organization/group/group_list.js' %}"></script>
 {% endblock %}

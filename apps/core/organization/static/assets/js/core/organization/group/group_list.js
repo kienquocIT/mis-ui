@@ -36,8 +36,12 @@ $(function () {
                 }
             }
         }, {
-            'data': 'description', render: (data, type, row, meta) => {
-                return String.format(data);
+            'data': 'group_level', render: (data, type, row, meta) => {
+                if (data.description) {
+                    return String.format(data.description);
+                } else {
+                    return ""
+                }
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
@@ -65,8 +69,10 @@ $(function () {
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2" data-url="{% url 'GroupDetailAPI' %}" data-method="DELETE" data-url-redirect="/organization/group/"></i></span></span></a>`;
+                let urlDetail = "/organization/group/" + row.id
+                let urlList = "/organization/group"
+                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href=""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" id="btn-delete-group-data" data-url="${urlDetail}" data-method="DELETE" data-url-redirect="${urlList}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                 return bt2 + bt3;
             }
         },]
@@ -128,4 +134,24 @@ $(function () {
     }
 
     loadDataTable();
+});
+
+
+$(document).on('click', '#btn-delete-group-data', function (e) {
+    let url = $(this).attr('data-url');
+    let urlMethod = $(this).attr('data-method');
+    let urlRedirect = $(this).attr('data-url-redirect');
+    let csr = $("input[name=csrfmiddlewaretoken]").val();
+    $.fn.callAjax(url, urlMethod, {}, csr)
+        .then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.redirectUrl(urlRedirect, 3000);
+                }
+            },
+            (errs) => {
+                // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+            }
+        )
 });

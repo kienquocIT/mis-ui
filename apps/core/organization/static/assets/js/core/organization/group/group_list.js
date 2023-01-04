@@ -29,7 +29,11 @@ $(function () {
             }
         }, {
             'data': 'group_level', render: (data, type, row, meta) => {
-                return String.format(data);
+                if (data.level) {
+                    return String.format(data.level);
+                } else {
+                    return ""
+                }
             }
         }, {
             'data': 'description', render: (data, type, row, meta) => {
@@ -44,23 +48,25 @@ $(function () {
                 return String.format(data);
             }
         }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+            'data': 'parent_n', render: (data, type, row, meta) => {
+                if (data.title) {
+                    return String.format(data.title);
+                } else {
+                    return ""
                 }
-                return '';
             }
         }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+            'data': 'first_manager', render: (data, type, row, meta) => {
+                if (data.full_name) {
+                    return String.format(data.full_name);
+                } else {
+                    return ""
                 }
-                return '';
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2" data-url="{% url 'GroupDetailAPI' %}" data-method="DELETE" data-url-redirect="/organization/group/"></i></span></span></a>`;
                 return bt2 + bt3;
             }
         },]

@@ -113,6 +113,9 @@ $(document).on('click', '#btn-add-group-level', function () {
 
 function tableGroupLevelAdd() {
     let tableApply = document.getElementById("datable-group-level");
+    if (tableApply.tBodies[0].rows[0].children[0].classList[0] === "dataTables_empty") {
+            tableApply.deleteRow(1);
+        }
     let tableRowLen = tableApply.tBodies[0].rows.length;
     let level =  (tableRowLen + 1)
     let checkBoxId = `chk_sel_${(tableRowLen + 1)}`

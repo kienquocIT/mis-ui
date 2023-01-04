@@ -58,6 +58,7 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        ele.append(`<option>` + `</option>`)
                         data.employee_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                         })
@@ -78,6 +79,7 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        ele.append(`<option>` + `</option>`)
                         data.employee_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                         })

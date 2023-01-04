@@ -1,3 +1,5 @@
+import os
+
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
@@ -104,6 +106,14 @@ class GroupListAPI(APIView):
             response = ServerAPI(user=request.user, url=ApiURL.GROUP_LIST).post(data)
             if response.state:
                 return response.result, status.HTTP_200_OK
+            else:
+                if response.errors:
+                    if isinstance(response.errors, dict):
+                        err_msg = ""
+                        for key, value in response.errors.items():
+                            err_msg += str(key) + ": " + str(value)
+                            break
+                        return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 

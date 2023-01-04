@@ -144,6 +144,11 @@ def mask_view(**parent_kwargs):
                                 {'data': ServerMsg.SERVER_ERR, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
                             )
+                        case status.HTTP_400_BAD_REQUEST:
+                            return Response(
+                                {'data': data.get('errors', ''), 'status': status.HTTP_400_BAD_REQUEST},
+                                status=status.HTTP_400_BAD_REQUEST
+                            )
                         case _:
                             return Response({'data': data, 'status': http_status}, status=http_status)
                 elif cls_check.template_path:

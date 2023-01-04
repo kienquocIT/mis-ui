@@ -52,29 +52,14 @@ class GroupLevelCreate(View):
         breadcrumb='GROUP_LEVEL_CREATE_PAGE'
     )
     def get(self, request, *args, **kwargs):
-        return {}
-
-
-# Group
-class OrganizationCreate(APIView):
-
-    @mask_view(auth_require=True, template='core/organization/group/group_create.html')
-    def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class OrganizationCreateAPI(APIView):
-    permission_classes = [IsAuthenticated]
+# Group
+class GroupCreate(APIView):
 
-    @mask_view(auth_require=True, is_api=True)
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        # org = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
-        # if org.state:
-        #     return org.result, status.HTTP_200_OK
-
-        # return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
-
+    @mask_view(auth_require=True, template='core/organization/group/group_create.html')
+    def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
@@ -90,10 +75,11 @@ class GroupList(View):
     @mask_view(
         auth_require=True,
         template='core/organization/group/group_list.html',
-        breadcrumb='GROUP_LIST_PAGE'
+        breadcrumb='GROUP_LIST_PAGE',
+        menu_active='menu-group-list',
     )
     def get(self, request, *args, **kwargs):
-        return {}
+        return {}, status.HTTP_200_OK
 
 
 class GroupListAPI(APIView):

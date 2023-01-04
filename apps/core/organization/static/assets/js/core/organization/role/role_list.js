@@ -29,16 +29,16 @@ $(function () {
                     return '';
                 }
             }, {
-                'data': 'role_name', 'render': (data, type, row, meta) => {
+                'data': 'title', 'render': (data, type, row, meta) => {
 
                     return `<div class="media align-items-center">
                                 <div class="media-head me-2">
                                     <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                        <span class="initial-wrap">` + row.role_name.charAt(0).toUpperCase() + `</span>
+                                        <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
                                     </div>                                      
                                 </div>
                                 <div class="media-body">
-                                        <span class="d-block">` + row.role_name + `</span>  
+                                        <span class="d-block">` + row.title + `</span>  
                                 </div>
                             </div>`;
 
@@ -48,13 +48,12 @@ $(function () {
                     return `<span>` + row.abbreviation + `</span>`;
                 }
             }, {
-                'data': 'holder', render: (data, type, row, meta) => {
+                'data': 'employees', render: (data, type, row, meta) => {
                     let element = ''
-                    for (let i = 0; i < row.holder.length; i++) {
-                        element += `<span class="badge badge-primary">` + row.holder[i].name + `</span> `
+                    for(let i=0; i< row.employees.length; i++){
+                        element += `<span>` + row.employees[i].id + `</span>`
                     }
-
-                    return `<div>` + element + `</div>`;
+                    return element
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {

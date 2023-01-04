@@ -118,136 +118,46 @@ class RoleList(View):
         return {}, status.HTTP_200_OK
 
 
-EMPLOYYEE_LIST = [
-    {
-        'employee_code': 'EP0015',
-        'name': 'Le Minh',
-    }, {
-        'employee_code': 'EP0016',
-        'name': 'Darlene Robertson',
-    },
-    {
-        'employee_code': 'EP0017',
-        'name': 'Esther Howard',
-    },
-    {
-        'employee_code': 'EP0018',
-        'name': 'Guy Hawkins',
-    },
-    {
-        'employee_code': 'EP0019',
-        'name': 'Brooklyn Simmons',
-    },
-    {
-        'employee_code': 'EP00120',
-        'name': 'Nguyen Van A',
-    },
-    {
-        'employee_code': 'EP0021',
-        'name': 'Trinh Tuan Nam',
-    }
-]
-
-def get_employee(lst, code):
-    name = ''
-    for item in lst:
-        if item['employee_code'] == code:
-            name = item['name']
-            break
-    return name
-
-
-ROLE_LIST = [
-    {
-        'id': '0',
-        'role_name': 'Developer',
-        'abbreviation': 'DEV',
-        'holder': [
-            {
-                'employee_code': 'EP0019',
-                'name': get_employee(EMPLOYYEE_LIST, 'EP0019')
-            },
-        ],
-    },
-    {
-        'id': '1',
-        'role_name': 'Business analyst',
-        'abbreviation': 'BA',
-        'holder': [
-            {
-                'employee_code': 'EP0017',
-                'name': get_employee(EMPLOYYEE_LIST, 'EP0017')
-            },
-            {
-                'employee_code': 'EP0018',
-                'name': get_employee(EMPLOYYEE_LIST, 'EP0018')
-            },
-        ],
-    },
-    {
-        'id': '2',
-        'role_name': 'Tester',
-        'abbreviation': 'Test',
-        'holder': [
-            {
-                'employee_code': 'EP0016',
-                'name': get_employee(EMPLOYYEE_LIST, 'EP0016')
-            },
-        ],
-    }
-]
-
-
 class RoleCreate(View):
     @mask_view(auth_require=True, template='core/organization/role/create_role.html', breadcrumb="ROLE_CREATE_PAGE")
     def get(self, request, *args, **kwargs):
-        return {'employee_list': EMPLOYYEE_LIST}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class RoleDetail(View):
     @mask_view(auth_require=True, template='core/organization/role/update_role.html')
     def get(self, request, pk, *args, **kwargs):
-        return {'employee_list': EMPLOYYEE_LIST}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class RoleListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        return {'role_list': ROLE_LIST}, status.HTTP_200_OK
+        role_list = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).get()
+        if role_list.state:
+            return {'role_list': role_list.result}, status.HTTP_200_OK
+        return {'detail': role_list.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        ROLE_LIST.append({
-            'id': str(len(ROLE_LIST)),
-            'role_name': request.data['role_name'],
-            'abbreviation': request.data['abbreviation'],
-            'holder': [{'employee_code': i, 'name': get_employee(EMPLOYYEE_LIST, i)} for i in request.data['employee']]
-        })
-        return request.data, status.HTTP_200_OK
+        data = request.data
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).post(data)
+        if role.state:
+            return role.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class RoleDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *args, **kwargs):
-        data = {}
-        for i in ROLE_LIST:
-            if i['id'] == pk:
-                data = i
-                break
-        return {'role': data}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        ROLE_LIST[int(pk)].update({
-            'role_name': request.data['role_name'],
-            'abbreviation': request.data['abbreviation'],
-            'holder': [{'employee_code': i, 'name': get_employee(EMPLOYYEE_LIST, i)} for i in request.data['employee']]
-        })
         return {}, status.HTTP_200_OK
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        ROLE_LIST.pop(int(pk))
         return {}, status.HTTP_200_OK

@@ -10,3 +10,6 @@ class ApiURL(object):
 
     # organization/group
     GROUP_LIST = 'organization/groups'
+
+    #organization/role
+    ROLE_LIST = 'organization/roles'

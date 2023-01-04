@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupListAPI' %}">
+    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}">
         {% csrf_token %}
         <div class="container-fluid">
             <div class="row">
@@ -120,7 +120,6 @@
                                                     data-url="{% url 'GroupListAPI' %}"
                                                     data-method="GET"
                                                     name="parent_n"
-                                                    required
                                             >
                                                 <option selected>Select...</option>
                                             </select>
@@ -238,7 +237,10 @@
                                     <br><br>
                                     <div class="row">
                                         <div class="col-8"></div>
-                                        <div class="col-2" style="padding-left: 50px">
+                                        <div
+                                                class="col-2" data-bs-dismiss="offcanvas"
+                                                aria-label="Close" style="padding-left: 50px"
+                                        >
                                             <span
                                                     class="btn btn-primary" id="button-add-group-employee"
                                             >{% trans "Add" %}</span>
@@ -256,8 +258,6 @@
 
                             <table
                                     id="datable-group-employee-show" class="table nowrap w-100 mb-5"
-                                    data-url="{% url 'GroupLevelListAPI' %}"
-                                    data-method="GET"
                             >
                                 <thead>
                                 <tr>
@@ -313,7 +313,7 @@
                                                 <span class="field-required">(*)</span>
                                             </label>
                                             <input
-                                                    type="text" class="form-control" placeholder="Group Title A"
+                                                    type="text" class="form-control" placeholder="First Manager A"
                                                     name="first_manager_title"
                                                     required
                                             >
@@ -328,7 +328,7 @@
                                                 {% trans 'Input Display 2nd Manager Title' %}
                                             </label>
                                             <input
-                                                    type="text" class="form-control" placeholder="Group Title A"
+                                                    type="text" class="form-control" placeholder="Second Manager A"
                                                     name="second_manager_title"
                                                     required
                                             >

@@ -2,9 +2,9 @@ $(document).ready(function () {
     // load group level list
     function loadGroupLevelList() {
         let ele = $('#select-box-group-level');
-        let ele_ref_group_title = $('#reference-group-title');
-        let ele_first_manager_system_title = $('#first-manager-system-title');
-        let ele_second_manager_system_title = $('#second-manager-system-title');
+        // let ele_ref_group_title = $('#reference-group-title');
+        // let ele_first_manager_system_title = $('#first-manager-system-title');
+        // let ele_second_manager_system_title = $('#second-manager-system-title');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -13,11 +13,12 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('group_level_list') && Array.isArray(data.group_level_list)) {
+                        ele.append(`<option>` + `</option>`)
                         data.group_level_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.level + `</option>`)
-                            ele_ref_group_title.val(item.description)
-                            ele_first_manager_system_title.val(item.first_manager_description)
-                            ele_second_manager_system_title.val(item.second_manager_description)
+                            ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">` + item.level + `</option>`)
+                            // ele_ref_group_title.val(item.description)
+                            // ele_first_manager_system_title.val(item.first_manager_description)
+                            // ele_second_manager_system_title.val(item.second_manager_description)
                         })
                     }
                 }
@@ -36,6 +37,7 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
+                        ele.append(`<option>` + `</option>`)
                         data.group_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                         })
@@ -117,7 +119,18 @@ $(document).ready(function () {
         errorClass: 'is-invalid cl-red',
     })
     frm.submit(function (event) {
+        let dataEmployee = setGroupEmployeeData()
         let frm = new SetupFormSubmit($(this));
+        if (frm.dataForm && dataEmployee) {
+            frm.dataForm['group_employee'] = dataEmployee
+        }
+        if (frm.dataForm) {
+            for (let key in frm.dataForm) {
+                if (frm.dataForm[key] === '') {
+                    delete frm.dataForm[key]
+                }
+            }
+        }
         console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -168,8 +181,11 @@ $(function () {
                 return String.format(`<b>{0}</b>`, data);
             }
         }, {
-            'data': 'full_name', render: (data, type, row, meta) => {
-                return String.format(data);
+            'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
+                    return `<span id="${row.id}">` + row.full_name + `</span>`;
+                }
+                return '';
             }
         }, {
             'render': (data, type, row, meta) => {
@@ -276,6 +292,17 @@ $(document).on('click', '#button-add-group-employee', function () {
 
 
 function tableGroupEmployeeAdd() {
+    let listDataInModal = []
+    let tableShowOffModal = document.getElementById("datable-group-employee-show");
+    let tableShowRowLength = tableShowOffModal.tBodies[0].rows.length;
+    for (let s = 0; s < tableShowRowLength; s++) {
+        let showRow = tableShowOffModal.rows[s + 1]
+        let dataInModal = showRow.lastElementChild.children[1].getAttribute('data-in-modal')
+        if (dataInModal) {
+            listDataInModal.push(Number(dataInModal))
+        }
+    }
+
     let tableApply = document.getElementById("datable_employee_list_popup");
     let tableRowLen = tableApply.tBodies[0].rows.length;
     for (let idx = 0; idx < tableRowLen; idx++) {
@@ -286,12 +313,16 @@ function tableGroupEmployeeAdd() {
         let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
         let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-employee-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-in-modal="${(idx + 1)}"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
         let actionData = `<td>` + bt2 + bt3 + `</td>`;
-        if (row.classList.contains('selected')) {
+        if (row.classList.contains('selected') && !listDataInModal.includes((idx + 1))) {
             for (let i = 1; i < (childrenLength - 4); i++) {
                 let child = row.children[(i)]
                 let childText = child.innerText
-                let childValue = child.firstChild.value
-                trData += `<td><span>${childText}</span></td>`;
+                let childID = child.firstChild.id
+                if (childID) {
+                    trData += `<td><span id="${childID}">${childText}</span></td>`;
+                } else {
+                    trData += `<td><span>${childText}</span></td>`;
+                }
             }
             trSTT++
             $('#datable-group-employee-show tbody').append(`<tr>` + `<td><span>${trSTT}</span></td>` + trData + actionData + `</tr>`);
@@ -311,5 +342,40 @@ $(document).on('click', '.group-employee-del-button', function (e) {
     let rowInModal = tableModal.rows[idxInModal]
     currentRow.remove();
     rowInModal.classList.remove("selected");
+    rowInModal.lastElementChild.children[0].firstElementChild.checked = false
+    $('.check-select-all').prop('checked', false);
     return false;
+});
+
+
+// Set employee data
+function setGroupEmployeeData() {
+    let tableGroupEmployee = document.getElementById("datable-group-employee-show");
+    let tableLength = tableGroupEmployee.tBodies[0].rows.length;
+    let dataGroupEmployee = []
+    for (let idx = 0; idx < tableLength; idx++) {
+        let row = tableGroupEmployee.rows[idx + 1]
+        let childrenLength = row.children.length
+        for (let i = 1; i < (childrenLength - 1); i++) {
+            let child = row.children[(i)]
+            let childID = child.firstChild.id
+            if (childID) {
+                dataGroupEmployee.push(childID)
+            }
+        }
+    }
+    return dataGroupEmployee
+}
+
+
+// Load group level datas
+$(document).on('change', '#select-box-group-level', function (e) {
+    let sel = $(this)[0].options[$(this)[0].selectedIndex]
+    let ref_group_title = sel.getAttribute('data-description')
+    let first_manager_system_title = sel.getAttribute('data-first-manager-description');
+    let second_manager_system_title = sel.getAttribute('data-second-manager-description');
+
+    $('#reference-group-title').val(ref_group_title);
+    $('#first-manager-system-title').val(first_manager_system_title);
+    $('#second-manager-system-title').val(second_manager_system_title);
 });

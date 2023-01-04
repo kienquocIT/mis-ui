@@ -23,7 +23,7 @@ class BreadcrumbItem(object):
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren('Employee List', 'EmployeeList')
     HOME_VIEW_SPACE = BreadcrumbChildren('Employee List', 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren('Employee Create', 'EmployeeCreate')
-    ORGANIZATION_PAGE = BreadcrumbChildren('Organization')
+    ORGANIZATION_PAGE = BreadcrumbChildren('Organization', 'GroupList')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren('Group Level List', 'GroupLevelList')
     GROUP_LEVEL_CREATE_PAGE = BreadcrumbChildren('Group Level Create', 'GroupLevelCreate')
 

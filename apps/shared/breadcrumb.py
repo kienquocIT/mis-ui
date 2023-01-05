@@ -120,7 +120,7 @@ class BreadcrumbView:
 
     ROLE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
+        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.ROLE_LIST_PAGE,
     ]
 

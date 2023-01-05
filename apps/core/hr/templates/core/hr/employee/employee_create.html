@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_employee_create" class="needs-validation" data-url="" data-method="POST" novalidate>
+    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'EmployeeListAPI' %}" data-method="POST" novalidate>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-8">
@@ -73,7 +73,7 @@
                                     {% trans 'First Name' %}
                                     <span class="field-required">(*)</span>
                                 </label>
-                                <input type="email" class="form-control" placeholder="A" name="first_name" required>
+                                <input type="text" class="form-control" placeholder="A" name="first_name" required>
                                 <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
                             </div>
                         </div>
@@ -226,63 +226,66 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <!-- Customize JS -->
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            function loadUserList() {
-                // load user list
-                let ele = $('#select-box-user');
-                let url = ele.attr('data-url');
-                let method = ele.attr('data-method');
-                $.fn.callAjax(url, method).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            ele.text("");
-                            if (data.hasOwnProperty('user_list') && Array.isArray(data.user_list)) {
-                                data.user_list.map(function (item) {
-                                    ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
-                                })
-                            }
-                        }
-                    }
-                )
-            }
 
-            function loadDefaultData() {
+    <script src="{% static 'assets/js/core/hr/group/group_create.js' %}"></script>
+
+{#    <script>#}
+{#        $(document).ready(function () {#}
+{#            function loadUserList() {#}
+{#                // load user list#}
+{#                let ele = $('#select-box-user');#}
+{#                let url = ele.attr('data-url');#}
+{#                let method = ele.attr('data-method');#}
+{#                $.fn.callAjax(url, method).then(#}
+{#                    (resp) => {#}
+{#                        let data = $.fn.switcherResp(resp);#}
+{#                        if (data) {#}
+{#                            ele.text("");#}
+{#                            if (data.hasOwnProperty('user_list') && Array.isArray(data.user_list)) {#}
+{#                                data.user_list.map(function (item) {#}
+{#                                    ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)#}
+{#                                })#}
+{#                            }#}
+{#                        }#}
+{#                    }#}
+{#                )#}
+{#            }#}
+{##}
+{#            function loadDefaultData() {#}
                 {# load date now #}
-                $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
-
-                loadUserList();
-
-                $('#input-avatar').on('change', function (ev) {
-                    let upload_img = $('#upload-area');
-                    upload_img.text("");
-                    upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
-                });
-                $('#upload-area').click(function (e) {
-                    $('#input-avatar').click();
-                });
-
-                $('#languages').select2();
-            }
-
-            loadDefaultData();
-
+{#                $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));#}
+{##}
+{#                loadUserList();#}
+{##}
+{#                $('#input-avatar').on('change', function (ev) {#}
+{#                    let upload_img = $('#upload-area');#}
+{#                    upload_img.text("");#}
+{#                    upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");#}
+{#                });#}
+{#                $('#upload-area').click(function (e) {#}
+{#                    $('#input-avatar').click();#}
+{#                });#}
+{##}
+{#                $('#languages').select2();#}
+{#            }#}
+{##}
+{#            loadDefaultData();#}
+{##}
             {# form submit #}
-            jQuery.validator.setDefaults({
-                debug: true,
-                success: "valid"
-            });
-            let frm = $('#frm_employee_create');
-            frm.validate({
-                errorElement: 'p',
-                errorClass: 'is-invalid cl-red',
-            })
-            frm.submit(function (event) {
-                let frm = new SetupFormSubmit($(this));
-                console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
-                event.preventDefault();
-            });
-        });
-    </script>
+{#            jQuery.validator.setDefaults({#}
+{#                debug: true,#}
+{#                success: "valid"#}
+{#            });#}
+{#            let frm = $('#frm_employee_create');#}
+{#            frm.validate({#}
+{#                errorElement: 'p',#}
+{#                errorClass: 'is-invalid cl-red',#}
+{#            })#}
+{#            frm.submit(function (event) {#}
+{#                let frm = new SetupFormSubmit($(this));#}
+{#                console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);#}
+{#                event.preventDefault();#}
+{#            });#}
+{#        });#}
+{#    </script>#}
 {% endblock %}

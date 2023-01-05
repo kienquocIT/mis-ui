@@ -15,7 +15,7 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('group_level_list') && Array.isArray(data.group_level_list)) {
                         ele.append(`<option>` + `</option>`)
                         data.group_level_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">` + item.level + `</option>`)
+                            ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">level ` + item.level + `</option>`)
                             // ele_ref_group_title.val(item.description)
                             // ele_first_manager_system_title.val(item.first_manager_description)
                             // ele_second_manager_system_title.val(item.second_manager_description)

@@ -53,7 +53,7 @@ class GroupLevelCreate(View):
 
 
 # Group
-class GroupCreate(APIView):
+class GroupCreate(View):
 
     @mask_view(auth_require=True, template='core/organization/group/group_create.html')
     def get(self, request, *args, **kwargs):
@@ -102,6 +102,13 @@ class GroupListAPI(APIView):
                             break
                         return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class GroupUpdate(View):
+
+    @mask_view(auth_require=True, template='core/organization/group/group_update.html')
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
 
 class GroupDetailAPI(APIView):

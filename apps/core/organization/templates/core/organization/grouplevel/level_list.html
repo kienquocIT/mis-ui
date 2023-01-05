@@ -67,12 +67,15 @@
     >
     {% trans 'Save' %}
     </span>
-    <span
-            class="btn-cancel-group-level" data-bs-toggle="tooltip" data-bs-placement="bottom"
-            title="{% trans 'Cancel' %}" style=""
-    >
-    {% trans 'Cancel' %}
-    </span>
+
+        <a href="{% url 'GroupList' %}" id="menu-group-list">
+        <span
+                class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="{% trans 'Cancel' %}" style=""
+        >
+        {% trans 'Cancel' %}
+        </span>
+        </a>
     </div>
 {% endblock %}
 

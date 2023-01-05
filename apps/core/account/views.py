@@ -67,3 +67,4 @@ class UserDetailAPI(APIView):
         if user.state:
             return{}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+

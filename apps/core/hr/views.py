@@ -5,7 +5,7 @@ from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
 
 
 class EmployeeList(View):
@@ -36,3 +36,65 @@ class EmployeeCreate(View):
     @mask_view(auth_require=True, template='core/hr/employee/employee_create.html', breadcrumb='EMPLOYEE_CREATE_PAGE')
     def get(self, request, *args, **kwargs):
         return {}
+
+
+class RoleList(View):
+
+    @mask_view(auth_require=True, template='core/hr/role/list_role.html', breadcrumb='ROLE_LIST_PAGE')
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class RoleCreate(View):
+    @mask_view(auth_require=True, template='core/hr/role/create_role.html', breadcrumb="ROLE_CREATE_PAGE")
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class RoleDetail(View):
+    @mask_view(auth_require=True, template='core/hr/role/update_role.html')
+    def get(self, request, pk, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class RoleListAPI(APIView):
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        role_list = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).get()
+        if role_list.state:
+            return {'role_list': role_list.result}, status.HTTP_200_OK
+        return {'detail': role_list.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).post(data)
+        if role.state:
+            return role.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class RoleDetailAPI(APIView):
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, pk, *args, **kwargs):
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).get()
+        if role.state:
+            return {'role': role.result}, status.HTTP_200_OK
+        return {'detail': role.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).put(data)
+        if role.state:
+            return role.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).delete(request.data)
+        if role.state:
+            return {}, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

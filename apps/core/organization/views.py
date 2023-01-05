@@ -1,13 +1,8 @@
-import os
-
+from django.views import View
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
-
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.views import View
-from rest_framework import status
 
 
 # Group Level
@@ -65,14 +60,6 @@ class GroupCreate(APIView):
         return {}, status.HTTP_200_OK
 
 
-class RoleList(View):
-
-    @mask_view(auth_require=True, template='core/organization/role/list_role.html')
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
-# Group
 class GroupList(View):
     @mask_view(
         auth_require=True,

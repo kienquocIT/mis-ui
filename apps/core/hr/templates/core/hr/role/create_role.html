@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load static %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+    <button class="btn" type="submit" form="form-create-role">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form id="form-create-role" data-method="POST" , data-url="{% url "RoleListAPI" %}"
+          data-url-redirect="{% url "RoleList" %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6 form-group">
+                <label class="form-label">
+                    {% trans 'Role name' %}
+                </label>
+                <input class="form-control" placeholder="Input role name" name="title" required>
+            </div>
+
+            <div class="col-6 form-group">
+                <label class="form-label">
+                    {% trans 'Abbreviation' %}r
+                </label>
+                <input class="form-control" placeholder="Input role name" name="abbreviation" required>
+            </div>
+
+            <div class="form-group">
+
+                <table
+                        id="datable_employee_list" class="table nowrap w-100 mb-5"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-method="GET"
+                >
+                    <thead>
+                    <tr>
+                        <th>
+                            <span class="form-check">
+                                <input
+                                        type="checkbox"
+                                        class="form-check-input check-select-all"
+                                        id="customCheck1"
+                                >
+                                <label class="form-check-label" for="customCheck1"></label>
+                            </span>
+                        </th>
+                        <th>Code</th>
+                        <th>Full Name</th>
+                        <th>Department</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/hr/role/create_role.js' %}"></script>
+{% endblock %}

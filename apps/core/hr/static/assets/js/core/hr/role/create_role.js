@@ -1,7 +1,8 @@
-/*Blog Init*/
-"use strict";
-$(function () {
-    $(document).ready(function () {
+$(document).ready(function () {
+    /*Blog Init*/
+    //Load data table
+    "use strict";
+    $(function () {
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -29,49 +30,46 @@ $(function () {
                     return '';
                 }
             }, {
-                'data': 'title', 'render': (data, type, row, meta) => {
-
-                    return `<div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                        <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
-                                    </div>                                      
-                                </div>
-                                <div class="media-body">
-                                        <span class="d-block">` + row.title + `</span>  
-                                </div>
-                            </div>`;
-
+                'data': 'code', render: (data, type, row, meta) => {
+                    return String.format(`<b>{0}</b>`, data);
                 }
             }, {
-                'data': 'abbreviation', render: (data, type, row, meta) => {
-                    return `<span>` + row.abbreviation + `</span>`;
-                }
-            }, {
-                'data': 'employees', render: (data, type, row, meta) => {
-                    let element = ''
-                    for(let i=0; i< row.employees.length; i++){
-                        element += `<span class="badge badge-primary">` + row.employees[i].full_name + `</span>`
+                'data': 'full_name', 'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
+                        return `<div class="media align-items-center">
+                                    <div class="media-head me-2">
+                                        <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                            <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
+                                        </div>
+<!--                                        <div class="avatar avatar-xs">-->
+<!--                                            <img src="dist/img/avatar10.jpg" alt="user" class="avatar-img rounded-circle">-->
+<!--                                        </div>-->
+                                    </div>
+                                    <div class="media-body">
+                                        <span class="d-block">` + row.full_name + `</span>
+                                    </div>
+                                </div>`;
                     }
-                    return element
+                    return '';
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('department') && typeof row.department === "object") {
+                        return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                    }
+                    return '';
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover add-holder" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="` + row.id + `" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="align-justify"></i></span></span></a>`;
-                    return bt2;
-                }
-            }, {
-                'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return bt2 + bt3;
+                    let inp = `<input type="checkbox" data-id=` + row.id + `>`
+                    return inp;
                 }
             },]
         }
 
         function initDataTable(config) {
             /*DataTable Init*/
-            let dtb = $('#datable_role_list');
+            let dtb = $('#datable_employee_list');
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
                 /*Checkbox Add*/
@@ -110,54 +108,44 @@ $(function () {
                 });
             }
         }
-
         function loadDataTable() {
-            let tb = $('#datable_role_list');
-            $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('role_list')) {
-                        config['data'] = resp.data.role_list;
+            let tb = $('#datable_employee_list');
+            $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
+                        initDataTable(config);
                     }
-                    initDataTable(config);
-                }
-            }, (errs) => {
-                initDataTable(config);
-            },)
+                },
+            )
         }
-
         loadDataTable();
-    })
+    });
 
-});
-
-$("tbody").on("click", ".del-button", function () {
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    let role_id = $(this).attr('data-id');
-    let form = $('#form-delete');
-    let role_data = {
-        'id': role_id
-    }
-    let data_url = form.attr('data-url');
-    $.fn.callAjax(data_url + '/' + role_id + '/api', "DELETE", role_data, csr).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            $.fn.notifyPopup({description: "Thành công"}, 'success')
-            $.fn.redirectUrl(location.pathname, 3000);
-        }
-    }, (errs) => {
-        $.fn.notifyPopup({description: "Thất bại"}, 'failure')
-    },)
-});
-
-$("tbody").on("click", ".edit-button", function () {
-    let form = $('#form-delete');
-    let data_url = form.attr('data-url') + '/' + $(this).attr('data-id');
-    $(this).attr("href", data_url);
-});
-
-$("tbody").on("click", ".add-holder", function () {
-    let form = $('#form-delete');
-    let data_url = form.attr('data-url') + '/' + $(this).attr('data-id');
-    $(this).attr("href", data_url);
+    // Submit form create
+    $("#form-create-role").submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let employee_list = $("tbody input:checkbox:checked").map(function () {
+            return $(this).data('id')
+        }).get();
+        let data = frm.dataForm;
+        data['employees'] = employee_list;
+        console.log(data);
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, data, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Đang tạo role mới"}, 'success');
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 2000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyPopup({description: "Thất bại"}, 'failure');
+                }
+            )
+    });
 });

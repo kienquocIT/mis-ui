@@ -16,5 +16,5 @@ class ApiURL(object):
     COMPANY_LIST = 'tenant/company'
 
     #organization/role
-    ROLE_LIST = 'organization/roles'
-    ROLE_DETAIL = 'organization/role'
+    ROLE_LIST = 'hr/roles'
+    ROLE_DETAIL = 'hr/role'

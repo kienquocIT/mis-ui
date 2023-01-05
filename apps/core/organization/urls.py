@@ -11,7 +11,7 @@ urlpatterns = [
     path('group', GroupList.as_view(), name='GroupList'),
     path('group/api', GroupListAPI.as_view(), name='GroupListAPI'),
     path('group/create', GroupCreate.as_view(), name='GroupCreate'),
-    path('group/update', GroupUpdate.as_view(), name='GroupUpdate'),
     path('group/<str:pk>', GroupDetailAPI.as_view(), name='GroupDetailAPI'),
+    path('group/update/<str:pk>', GroupUpdate.as_view(), name='GroupUpdate'),
 
 ]

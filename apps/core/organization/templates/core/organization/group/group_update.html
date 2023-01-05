@@ -95,15 +95,12 @@
                                 <div class="col-4">
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="form-label">{% trans 'Select Group Level' %}<span
-                                                    class="field-required"
-                                            >(*)</span></label>
+                                            <label class="form-label">{% trans 'Select Group Level' %}</label>
                                             <select
                                                     class="form-select" id="select-box-group-level"
                                                     data-url="{% url 'GroupLevelListAPI' %}"
                                                     data-method="GET"
                                                     name="group_level"
-                                                    required
                                             >
                                                 <option selected>Select...</option>
                                             </select>
@@ -144,12 +141,10 @@
                                 <div class="form-group">
                                     <label class="form-label">
                                         {% trans 'Input Display Group Title' %}
-                                        <span class="field-required">(*)</span>
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Title A"
                                             name="title"
-                                            required
                                     >
                                     <span class="form-text text-muted">{% trans 'Name of Group' %}</span>
                                 </div>
@@ -158,11 +153,9 @@
                                 <div class="form-group">
                                     <label class="form-label">
                                         {% trans 'Input Group Code' %}
-                                        <span class="field-required">(*)</span>
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Code" name="code"
-                                            required
                                     >
                                     <span class="form-text text-muted">{% trans 'Code of Group' %}</span>
                                 </div>
@@ -310,12 +303,10 @@
                                         <div class="form-group">
                                             <label class="form-label">
                                                 {% trans 'Input Display 1st Manager Title' %}
-                                                <span class="field-required">(*)</span>
                                             </label>
                                             <input
                                                     type="text" class="form-control" placeholder="First Manager A"
                                                     name="first_manager_title"
-                                                    required
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 1st manager' %}</span>
                                         </div>
@@ -341,15 +332,12 @@
                                 <div class="col-6">
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="form-label">{% trans 'First Manager Assign To' %}<span
-                                                    class="field-required"
-                                            >(*)</span></label>
+                                            <label class="form-label">{% trans 'First Manager Assign To' %}</label>
                                             <select
                                                     class="form-select" id="select-box-first-manager"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
                                                     name="first_manager"
-                                                    required
                                             >
                                                 <option selected>Select...</option>
                                             </select>

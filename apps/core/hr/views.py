@@ -206,17 +206,24 @@ class GroupListAPI(APIView):
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class GroupDetail(View):
+
+    @mask_view(
+        auth_require=True,
+        template='core/hr/group/group_detail.html'
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
 class GroupUpdate(View):
 
     @mask_view(
         auth_require=True,
         template='core/hr/group/group_update.html'
     )
-    def get(self, request, *args, **kwargs):
-        doc_id = None
-        if request.resolver_match:
-            doc_id = request.resolver_match.kwargs.get('pk', None)
-        return {'doc_id': doc_id}, status.HTTP_200_OK
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
 class GroupDetailAPI(APIView):
@@ -224,14 +231,15 @@ class GroupDetailAPI(APIView):
 
     @mask_view(
         auth_require=True,
-        template='core/hr/group/group_detail.html',
+        is_api=True,
+        # template='core/hr/group/group_detail.html',
         # breadcrumb='USER_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).get()
-        if response.state:
-            return {'group': response.result}, status.HTTP_200_OK
-        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+        resp = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).get()
+        if resp.state:
+            return {'group': resp.result}, status.HTTP_200_OK
+        return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(
         auth_require=True,

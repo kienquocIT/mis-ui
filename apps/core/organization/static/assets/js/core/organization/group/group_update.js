@@ -1,4 +1,27 @@
 $(document).ready(function () {
+    // load instance data
+    function loadInstanceData() {
+        let ele = $('#frm_group_update');
+        let url = ele.attr('data-url');
+        let docID = ele.attr('data-doc-id');
+        let method = "GET";
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('group') && Array.isArray(data.group)) {
+                        ele.append(`<option>` + `</option>`)
+                        data.group.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+
     // load group level list
     function loadGroupLevelList() {
         let ele = $('#select-box-group-level');

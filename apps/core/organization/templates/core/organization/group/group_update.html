@@ -37,7 +37,7 @@
             data-bs-placement="top"
             title="save"
             data-bs-original-title="Save"
-            data-form-id="frm_employee_create"
+            data-form-id="frm_group_update"
     >
         <span class="btn-icon-wrap">
             <span class="feather-icon">
@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}">
+    <form id="frm_group_update" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}" data-doc-id="{{ doc_id }}">
         {% csrf_token %}
         <div class="container-fluid">
             <div class="row">

@@ -32,7 +32,10 @@ class GroupLevelListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
-    @mask_view(auth_require=True, is_api=True)
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             data = request.data
@@ -55,7 +58,10 @@ class GroupLevelCreate(View):
 # Group
 class GroupCreate(View):
 
-    @mask_view(auth_require=True, template='core/organization/group/group_create.html')
+    @mask_view(
+        auth_require=True,
+        template='core/organization/group/group_create.html'
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
@@ -86,7 +92,10 @@ class GroupListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
-    @mask_view(auth_require=True, is_api=True)
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             data = request.data
@@ -106,15 +115,35 @@ class GroupListAPI(APIView):
 
 class GroupUpdate(View):
 
-    @mask_view(auth_require=True, template='core/organization/group/group_update.html')
+    @mask_view(
+        auth_require=True,
+        template='core/organization/group/group_update.html'
+    )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        doc_id = None
+        if request.resolver_match:
+            doc_id = request.resolver_match.kwargs.get('pk', None)
+        return {'doc_id': doc_id}, status.HTTP_200_OK
 
 
 class GroupDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
-    @mask_view(auth_require=True, is_api=True)
+    @mask_view(
+        auth_require=True,
+        template='core/organization/group/group_detail.html',
+        # breadcrumb='USER_DETAIL_PAGE'
+    )
+    def get(self, request, pk, *args, **kwargs):
+        response = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).get()
+        if response.state:
+            return {'group': response.result}, status.HTTP_200_OK
+        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
     def delete(self, request, pk, *args, **kwargs):
         if request.method == 'DELETE':
             response = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).delete(request.data)

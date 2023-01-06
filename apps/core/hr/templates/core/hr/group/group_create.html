@@ -16,7 +16,7 @@
     />
 
     <!-- Customize -->
-    <link rel="stylesheet" href="{% static 'assets/css/core/organization/group/group_create.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/group/group_create.css' %}">
 
     <style>
         #upload-area {
@@ -37,7 +37,7 @@
             data-bs-placement="top"
             title="save"
             data-bs-original-title="Save"
-            data-form-id="frm_group_update"
+            data-form-id="frm_group_create"
     >
         <span class="btn-icon-wrap">
             <span class="feather-icon">
@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_group_update" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}" data-doc-id="{{ doc_id }}">
+    <form id="frm_group_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}">
         {% csrf_token %}
         <div class="container-fluid">
             <div class="row">
@@ -95,12 +95,15 @@
                                 <div class="col-4">
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="form-label">{% trans 'Select Group Level' %}</label>
+                                            <label class="form-label">{% trans 'Select Group Level' %}<span
+                                                    class="field-required"
+                                            >(*)</span></label>
                                             <select
                                                     class="form-select" id="select-box-group-level"
                                                     data-url="{% url 'GroupLevelListAPI' %}"
                                                     data-method="GET"
                                                     name="group_level"
+                                                    required
                                             >
                                                 <option selected>Select...</option>
                                             </select>
@@ -141,10 +144,12 @@
                                 <div class="form-group">
                                     <label class="form-label">
                                         {% trans 'Input Display Group Title' %}
+                                        <span class="field-required">(*)</span>
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Title A"
                                             name="title"
+                                            required
                                     >
                                     <span class="form-text text-muted">{% trans 'Name of Group' %}</span>
                                 </div>
@@ -153,9 +158,11 @@
                                 <div class="form-group">
                                     <label class="form-label">
                                         {% trans 'Input Group Code' %}
+                                        <span class="field-required">(*)</span>
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Code" name="code"
+                                            required
                                     >
                                     <span class="form-text text-muted">{% trans 'Code of Group' %}</span>
                                 </div>
@@ -303,10 +310,12 @@
                                         <div class="form-group">
                                             <label class="form-label">
                                                 {% trans 'Input Display 1st Manager Title' %}
+                                                <span class="field-required">(*)</span>
                                             </label>
                                             <input
                                                     type="text" class="form-control" placeholder="First Manager A"
                                                     name="first_manager_title"
+                                                    required
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 1st manager' %}</span>
                                         </div>
@@ -332,12 +341,15 @@
                                 <div class="col-6">
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="form-label">{% trans 'First Manager Assign To' %}</label>
+                                            <label class="form-label">{% trans 'First Manager Assign To' %}<span
+                                                    class="field-required"
+                                            >(*)</span></label>
                                             <select
                                                     class="form-select" id="select-box-first-manager"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
                                                     name="first_manager"
+                                                    required
                                             >
                                                 <option selected>Select...</option>
                                             </select>
@@ -403,5 +415,5 @@
     <!-- Customize JS -->
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
-    <script src="{% static 'assets/js/core/organization/group/group_update.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/group/group_create.js' %}"></script>
 {% endblock %}

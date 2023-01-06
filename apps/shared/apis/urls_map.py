@@ -6,11 +6,11 @@ class ApiURL(object):
     tenants = 'provisioning/tenants'
     user_list = 'account/users'
     EMPLOYEE_LIST = 'hr/employees'
-    GROUP_LEVEL_LIST = 'organization/levels'
+    GROUP_LEVEL_LIST = 'hr/levels'
 
     # organization/group
-    GROUP_LIST = 'organization/groups'
-    GROUP_DETAIL = 'organization/group'
+    GROUP_LIST = 'hr/groups'
+    GROUP_DETAIL = 'hr/group'
 
     # home/company
     COMPANY_LIST = 'tenant/company'

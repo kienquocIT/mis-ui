@@ -32,9 +32,8 @@ class CompanyListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            data = request.data
-            response = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).post(data)
-            if response.state:
-                return response.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        return response.errors, response.status

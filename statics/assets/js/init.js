@@ -1065,10 +1065,8 @@ jQuery.fn.notifyB = function (option, typeAlert = null) {
     }
     let alert_config = {
         animate: {
-            enter: 'animated bounceInDown',
-            exit: 'animated bounceOutUp'
-        },
-        type: "dismissible alert-primary",
+            enter: 'animated bounceInDown', exit: 'animated bounceOutUp'
+        }, type: "dismissible alert-primary",
     }
     if (typeAlert === 'success') {
         alert_config['type'] = "dismissible alert-success";
@@ -1093,17 +1091,15 @@ jQuery.fn.callAjax = function (url, method, data, headers = {}) {
             data: JSON.stringify(data),
             headers: {"X-CSRFToken": headers},
             success: function (rest) {
-                resolve(rest);
+                let data = $.fn.switcherResp(rest);
+                if (data) {
+                    resolve(rest);
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 let resp_data = jqXHR.responseJSON;
-                if (resp_data && typeof resp_data === 'object'){
-                    if (resp_data.hasOwnProperty('status')){
-                        $.fn.notifyB({'description': resp_data['data']}, 'failure');
-                        if (resp_data.status === 401){
-                            $.fn.redirectLogin(2000, true);
-                        }
-                    }
+                if (resp_data && typeof resp_data === 'object') {
+                    $.fn.switcherResp(resp_data);
                     reject(resp_data);
                 }
             },
@@ -1114,7 +1110,7 @@ jQuery.fn.callAjax = function (url, method, data, headers = {}) {
 
 
 // Simulate redirect path
-jQuery.fn.redirectUrl = function (redirectPath, timeout = 0, params='') {
+jQuery.fn.redirectUrl = function (redirectPath, timeout = 0, params = '') {
     setTimeout(() => {
         window.location.href = redirectPath + '?' + params;
     }, timeout);
@@ -1127,21 +1123,40 @@ jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
     }
     jQuery.fn.redirectUrl(redirectPath, timeout, redirectParams);
 }
-jQuery.fn.switcherResp = function (resp, accept_status=[]){
-    if (typeof resp === 'object'){
+jQuery.fn.cleanDataNotify = (data) => {
+    ['status'].map((key) => {
+        delete data[key];
+    });
+    return data
+};
+jQuery.fn.notifyErrors = (errs)=>{
+     if (errs && typeof errs === 'object') {
+         Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
+             jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
+         });
+     }
+}
+jQuery.fn.switcherResp = function (resp) {
+    if (typeof resp === 'object') {
         let status = 500;
         if (resp.hasOwnProperty('status')) {
             status = resp.status;
         }
-        switch (status){
+        switch (status) {
             case 200:
                 return resp.data
             case 201:
                 return resp.data
+            case 400:
+                $.fn.notifyErrors(resp.data);
+                return {};
             case 401:
-                return jQuery.fn.redirectLogin(3);
+                console.log(resp.data);
+                $.fn.notifyB({'description': resp.data}, 'failure');
+                // return jQuery.fn.redirectLogin(1000);
+                return {}
             case 403:
-                jQuery.fn.notifyB({'description': 'Permission deny.'});
+                jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
                 return {};
             case 500:
                 return {};

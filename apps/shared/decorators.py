@@ -146,7 +146,7 @@ def mask_view(**parent_kwargs):
                             )
                         case status.HTTP_400_BAD_REQUEST:
                             return Response(
-                                {'data': data.get('errors', ''), 'status': status.HTTP_400_BAD_REQUEST},
+                                {'data': data, 'status': status.HTTP_400_BAD_REQUEST},
                                 status=status.HTTP_400_BAD_REQUEST
                             )
                         case _:

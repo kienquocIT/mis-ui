@@ -95,6 +95,16 @@ class User(AuthUser):
         if state_check:
             try:
                 user = User.objects.get(username=api_result['username'])
+                user.first_name = api_result['first_name']
+                user.last_name = api_result['last_name']
+                user.email = api_result.get('email', '')
+                user.phone = api_result.get('phone', '')
+                user.dob = api_result.get('dob', None)
+                user.gender = api_result.get('gender', None)
+                user.language = api_result.get('language', settings.LANGUAGE_CODE)
+                user.avatar = api_result.get('avatar', None)
+                user.is_admin_tenant = api_result.get('is_admin_tenant', False)
+                user.save()
             except User.DoesNotExist:
                 user = User.objects.create(
                     id=api_result['id'],

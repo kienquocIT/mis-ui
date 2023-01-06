@@ -13,4 +13,4 @@ class ApiURL(object):
     GROUP_DETAIL = 'organization/group'
 
     # home/company
-    COMPANY_LIST = 'tenant/company'
+    COMPANY_LIST = 'company/list'

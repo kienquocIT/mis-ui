@@ -115,7 +115,7 @@ $(document).ready(function () {
         debug: true,
         success: "valid"
     });
-    let frm = $('#frm_employee_create');
+    let frm = $('#frm_group_create');
     frm.validate({
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',

@@ -3,18 +3,49 @@ $(document).ready(function () {
     function loadInstanceData() {
         let ele = $('#frm_group_update');
         let url = ele.attr('data-url');
-        let docID = ele.attr('data-doc-id');
         let method = "GET";
+
+        let eleGroupLevel = $('#select-box-group-level-update');
+        let eleParent = $('#select-box-group-update');
+        let eleRefTitle = $('#reference-group-title');
+        let eleTitle = $('#group-title-update');
+        let eleCode = $('#group-code-update');
+        let eleDescription = $('#group-description-update');
+        let eleFirstManRefTitle = $('#first-manager-system-title');
+        let eleSecondManRefTitle = $('#second-manager-system-title');
+        let eleFirstManTitle = $('#group-first-manager-title-update');
+        let eleSecondManTitle = $('#group-second-manager-title-update');
+        let eleFirstManAssign = $('#select-box-first-manager-update');
+        let eleSecondManAssign = $('#select-box-second-manager-update');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('group') && Array.isArray(data.group)) {
-                        ele.append(`<option>` + `</option>`)
-                        data.group.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
+                    if (data.hasOwnProperty('group')) {
+                        eleGroupLevel.text("");
+                        eleGroupLevel.append(`<option value="` + data.group.group_level.id + `" data-description="${data.group.group_level.description}" data-first-manager-description="${data.group.group_level.first_manager_description}" data-second-manager-description="${data.group.group_level.second_manager_description}">level ` + data.group.group_level.level + `</option>`);
+                        eleParent.text("");
+                        if (Object.keys(data.group.parent_n).length !== 0) {
+                            eleParent.append(`<option value="` + data.group.parent_n.id + `">` + data.group.parent_n.title + `</option>`)
+                        } else {
+                            eleParent.append(`<option>` + `</option>`)
+                        }
+                        eleRefTitle.val(data.group.group_level.description);
+                        eleTitle.val(data.group.title);
+                        eleCode.val(data.group.code);
+                        eleDescription.val(data.group.description);
+                        eleFirstManRefTitle.val(data.group.group_level.first_manager_description);
+                        eleSecondManRefTitle.val(data.group.group_level.second_manager_description);
+                        eleFirstManTitle.val(data.group.first_manager_title);
+                        eleSecondManTitle.val(data.group.second_manager_title);
+                        eleFirstManAssign.text("")
+                        eleFirstManAssign.append(`<option value="` + data.group.first_manager.id + `">` + data.group.first_manager.full_name + `</option>`)
+                        eleSecondManAssign.text("")
+                        if (Object.keys(data.group.second_manager).length !== 0) {
+                            eleSecondManAssign.append(`<option value="` + data.group.second_manager.id + `">` + data.group.second_manager.full_name + `</option>`)
+                        } else {
+                            eleSecondManAssign.append(`<option>` + `</option>`)
+                        }
                     }
                 }
             }
@@ -24,24 +55,18 @@ $(document).ready(function () {
 
     // load group level list
     function loadGroupLevelList() {
-        let ele = $('#select-box-group-level');
-        // let ele_ref_group_title = $('#reference-group-title');
-        // let ele_first_manager_system_title = $('#first-manager-system-title');
-        // let ele_second_manager_system_title = $('#second-manager-system-title');
+        let ele = $('#select-box-group-level-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('group_level_list') && Array.isArray(data.group_level_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.group_level_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">level ` + item.level + `</option>`)
-                            // ele_ref_group_title.val(item.description)
-                            // ele_first_manager_system_title.val(item.first_manager_description)
-                            // ele_second_manager_system_title.val(item.second_manager_description)
+                            if (item.id !== ele[0][0].value) {
+                                ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">level ` + item.level + `</option>`)
+                            }
                         })
                     }
                 }
@@ -51,18 +76,19 @@ $(document).ready(function () {
 
     // load group list
     function loadGroupList() {
-        let ele = $('#select-box-group');
+        let ele = $('#select-box-group-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
+        let instanceID = $('#frm_group_update').attr('data-doc-id');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.group_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            if (item.id !== ele[0][0].value && item.id !== instanceID) {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
                         })
                     }
                 }
@@ -72,18 +98,18 @@ $(document).ready(function () {
 
     // load first manager list
     function loadFirstManagerList() {
-        let ele = $('#select-box-first-manager');
+        let ele = $('#select-box-first-manager-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.employee_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                            if (item.id !== ele[0][0].value) {
+                                ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                            }
                         })
                     }
                 }
@@ -93,18 +119,18 @@ $(document).ready(function () {
 
     // load second manager list
     function loadSecondManagerList() {
-        let ele = $('#select-box-second-manager');
+        let ele = $('#select-box-second-manager-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.employee_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                            if (item.id !== ele[0][0].value) {
+                                ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                            }
                         })
                     }
                 }
@@ -115,6 +141,7 @@ $(document).ready(function () {
     function loadDefaultData() {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
 
+        loadInstanceData();
         loadGroupLevelList();
         loadGroupList();
         loadFirstManagerList();
@@ -394,7 +421,7 @@ function setGroupEmployeeData() {
 
 
 // Load group level datas
-$(document).on('change', '#select-box-group-level', function (e) {
+$(document).on('change', '#select-box-group-level-update', function (e) {
     let sel = $(this)[0].options[$(this)[0].selectedIndex]
     let ref_group_title = sel.getAttribute('data-description')
     let first_manager_system_title = sel.getAttribute('data-first-manager-description');

@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_group_update" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST" novalidate data-url-redirect="{% url 'GroupList' %}" data-doc-id="{{ doc_id }}">
+    <form id="frm_group_update" class="needs-validation" data-url="/hr/group/{{ data.data.doc_id }}" data-method="PUT" novalidate data-url-redirect="{% url 'GroupList' %}" data-doc-id="{{ data.data.doc_id }}">
         {% csrf_token %}
         <div class="container-fluid">
             <div class="row">
@@ -97,7 +97,7 @@
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'Select Group Level' %}</label>
                                             <select
-                                                    class="form-select" id="select-box-group-level"
+                                                    class="form-select" id="select-box-group-level-update"
                                                     data-url="{% url 'GroupLevelListAPI' %}"
                                                     data-method="GET"
                                                     name="group_level"
@@ -113,7 +113,7 @@
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'Select Parent Group' %}</label>
                                             <select
-                                                    class="form-select" id="select-box-group"
+                                                    class="form-select" id="select-box-group-update"
                                                     data-url="{% url 'GroupListAPI' %}"
                                                     data-method="GET"
                                                     name="parent_n"
@@ -144,7 +144,7 @@
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Title A"
-                                            name="title"
+                                            name="title" id="group-title-update"
                                     >
                                     <span class="form-text text-muted">{% trans 'Name of Group' %}</span>
                                 </div>
@@ -156,6 +156,7 @@
                                     </label>
                                     <input
                                             type="text" class="form-control" placeholder="Group Code" name="code"
+                                            id="group-code-update"
                                     >
                                     <span class="form-text text-muted">{% trans 'Code of Group' %}</span>
                                 </div>
@@ -165,7 +166,10 @@
                                     <label class="form-label">
                                         {% trans 'Description' %}
                                     </label>
-                                    <textarea class="form-control" rows="4" cols="50" name="description"></textarea>
+                                    <textarea
+                                            class="form-control" rows="4" cols="50" name="description"
+                                            id="group-description-update"
+                                    ></textarea>
                                     <span class="form-text text-muted">{% trans 'Desciption of Group' %}</span>
                                 </div>
                             </div>
@@ -306,7 +310,7 @@
                                             </label>
                                             <input
                                                     type="text" class="form-control" placeholder="First Manager A"
-                                                    name="first_manager_title"
+                                                    name="first_manager_title" id="group-first-manager-title-update"
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 1st manager' %}</span>
                                         </div>
@@ -320,7 +324,7 @@
                                             </label>
                                             <input
                                                     type="text" class="form-control" placeholder="Second Manager A"
-                                                    name="second_manager_title"
+                                                    name="second_manager_title" id="group-second-manager-title-update"
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 2nd manager' %}</span>
                                         </div>
@@ -334,7 +338,7 @@
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'First Manager Assign To' %}</label>
                                             <select
-                                                    class="form-select" id="select-box-first-manager"
+                                                    class="form-select" id="select-box-first-manager-update"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
                                                     name="first_manager"
@@ -350,7 +354,7 @@
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'Second Manager Assign To' %}</label>
                                             <select
-                                                    class="form-select" id="select-box-second-manager"
+                                                    class="form-select" id="select-box-second-manager-update"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
                                                     name="second_manager"

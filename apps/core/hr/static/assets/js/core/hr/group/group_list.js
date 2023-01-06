@@ -30,7 +30,7 @@ $(function () {
         }, {
             'data': 'group_level', render: (data, type, row, meta) => {
                 if (data.level) {
-                    return String.format(data.level);
+                    return String.format("level " + data.level);
                 } else {
                     return ""
                 }
@@ -52,7 +52,7 @@ $(function () {
                 return String.format(data);
             }
         }, {
-            'data': 'parent_n', render: (data, type, row, meta) => {
+            'data': 'upper_group', render: (data, type, row, meta) => {
                 if (data.title) {
                     return String.format(data.title);
                 } else {

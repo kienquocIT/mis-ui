@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <!-- Main Menu -->
 <div data-simplebar class="nicescroll-bar">
     <div class="menu-content-wrap">
@@ -7,26 +7,6 @@
                 <span>Apps</span>
             </div>
             <ul class="navbar-nav flex-column">
-                {#                <li class="nav-item">#}
-                {#                    <a class="nav-link" href="{% url 'CompanyList' %}" id="menu-employee-list">#}
-                {#                        <span class="nav-icon-wrap">#}
-                {#                            <span class="svg-icon">#}
-                {#                                <i class="zmdi zmdi-city"></i>#}
-                {#                            </span>#}
-                {#                        </span>#}
-                {#                        <span class="nav-link-text">Company</span>#}
-                {#                    </a>#}
-                {#                </li>#}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'TenantCompany' %}" id="menu-company-list">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon">
-                                <i class="zmdi zmdi-city"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">Company</span>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'GroupList' %}" id="menu-group-list">
                         <span class="nav-icon-wrap">
@@ -34,17 +14,27 @@
                                 <i class="fas fa-sitemap"></i>
                             </span>
                         </span>
-                        <span class="nav-link-text">Organization</span>
+                        <span class="nav-link-text">{% trans 'Organization' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'CompanyList' %}" id="menu-company-list">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon">
+                                <i class="fas fa-building"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Company' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'EmployeeList' %}" id="menu-employee-list">
                         <span class="nav-icon-wrap">
                             <span class="svg-icon">
-                                <i data-feather="smile"></i>
+                                <i class="fas fa-user"></i>
                             </span>
                         </span>
-                        <span class="nav-link-text">Employees</span>
+                        <span class="nav-link-text">{% trans 'Employees' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -61,10 +51,10 @@
                     <a class="nav-link" href="{% url 'UserList' %}">
                         <span class="nav-icon-wrap">
                             <span class="svg-icon">
-                                <i data-feather="user"></i>
+                                <i class="fas fa-users-cog"></i>
                             </span>
                         </span>
-                        <span class="nav-link-text">User</span>
+                        <span class="nav-link-text">{% trans 'User' %}</span>
                     </a>
                 </li>
             </ul>

@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <style>
+        #offcanvasRight {
+            width: 50%;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasExample">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="edit"></i>
+            </span>
+        </span>
+    </button>
+
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh" >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="media align-items-center" style="padding-left: 20Px; padding-top: 20px; padding-right: 20px;">
+        <div class="media-head me-2">
+            <div class="avatar avatar-xs avatar-success avatar-rounded">
+                <span class="initial-wrap">{{ data.icon }}</span>
+            </div>
+        </div>
+        <div class="media-body">
+            <a href="/company/list/`+row.id+`">
+                <span class="d-block" style="font-size: xx-large">{{ data.company.title }}</span>
+            </a>
+        </div>
+    </div>
+    <div style="padding-left: 20Px; padding-top: 20px; padding-right: 20px;">
+        <!-- Form edit -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel"
+             style="padding-top: 4em;">
+            <div class="offcanvas-header" style="border-bottom: 0.01em solid #dcdcdc">
+                <h5 id="offcanvasRightLabel">Edit company</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-company" style="padding: 10px">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label"><b>{% trans 'Company Name' %}</b></label>
+                                <input class="form-control" type="text"
+                                       name="title" value="{{ data.company.title }}"
+                                       id="form-edit-title">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label"><b>{% trans 'Code' %}</b></label>
+                                <input class="form-control" type="text"
+                                       name="code" value="{{ data.company.code }}"
+                                       id="form-edit-code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label"><b>{% trans 'Representative' %}</b></label>
+                                <input class="form-control" type="text"
+                                       name="representative_fullname" value="{{ data.company.representative_fullname }}"
+                                       id="form-edit-representative_fullname">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label"><b>{% trans 'Address' %}</b></label>
+                                <input class="form-control" type="text"
+                                       name="address" value="{{ data.company.address }}"
+                                       id="form-edit-address">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label"><b>{% trans 'Phone' %}</b></label>
+                                <input class="form-control" type="text"
+                                       name="phone" value="{{ data.company.phone }}"
+                                       id="form-edit-phone">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label"><b>{% trans 'Email' %}</b></label>
+                                <input class="form-control" type="text"
+                                       name="email" value="{{ data.company.email }}"
+                                       id="form-edit-email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <button type="submit" class="btn btn-primary">{% trans 'Update' %}</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+        </div>
+        <!-- End form edit -->
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label"><b>{% trans 'Code' %}</b></label>
+                    <input class="form-control" type="text"
+                           name="code" value="{{ data.company.code }}"
+                           id="form-code" readonly>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label"><b>{% trans 'Representative' %}</b></label>
+                    <input class="form-control" type="text"
+                           name="representative_fullname" value="{{ data.company.representative_fullname }}"
+                           id="form-representative_fullname" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label"><b>{% trans 'Address' %}</b></label>
+                    <input class="form-control" type="text"
+                           name="address" value="{{ data.company.address }}"
+                           id="form-address" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label"><b>{% trans 'Phone' %}</b></label>
+                    <input class="form-control" type="text"
+                           name="phone" value="{{ data.company.phone }}"
+                           id="form-phone" readonly>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label"><b>{% trans 'Email' %}</b></label>
+                    <input class="form-control" type="text"
+                           name="email" value="{{ data.company.email }}"
+                           id="form-email" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'core/company/js/company_detail.js' %}"></script>
+{% endblock %}

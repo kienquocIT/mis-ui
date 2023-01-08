@@ -184,7 +184,7 @@ $(document).on('click', '.btn-save-group-level', function (e) {
     }
 
     let crf_token = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax('/organization/level/api', "POST", groupLevelSave, crf_token)
+    $.fn.callAjax('/hr/level/api', "POST", groupLevelSave, crf_token)
         .then(
             (res) => {
                 $.fn.notifyPopup({description: res.detail}, 'success');

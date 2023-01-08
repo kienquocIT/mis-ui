@@ -30,7 +30,7 @@ $(function () {
         }, {
             'data': 'group_level', render: (data, type, row, meta) => {
                 if (data.level) {
-                    return String.format(data.level);
+                    return String.format("level " + data.level);
                 } else {
                     return ""
                 }
@@ -52,7 +52,7 @@ $(function () {
                 return String.format(data);
             }
         }, {
-            'data': 'parent_n', render: (data, type, row, meta) => {
+            'data': 'upper_group', render: (data, type, row, meta) => {
                 if (data.title) {
                     return String.format(data.title);
                 } else {
@@ -69,9 +69,10 @@ $(function () {
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
-                let urlDetail = "/organization/group/" + row.id
-                let urlList = "/organization/group"
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href=""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                let urlDetail = "/hr/group/" + row.id
+                let urlList = "/hr/group"
+                let urlUpdate = "/hr/group/update/" + row.id
+                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="${urlUpdate}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                 let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" id="btn-delete-group-data" data-url="${urlDetail}" data-method="DELETE" data-url-redirect="${urlList}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                 return bt2 + bt3;
             }

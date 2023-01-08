@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <!-- Data Table CSS -->
+    <link
+            href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+
+    <!-- Customize -->
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/group/group_detail.css' %}">
+
+    <style>
+        #upload-area {
+            height: 150px;
+        {#width: 150px;#} line-height: 150px;
+            background-size: auto 100%;
+            background-repeat: no-repeat;
+            background-position: center top;
+            text-align: center;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <div
+            id="group-detail-page" class="needs-validation" data-url="/hr/group/{{ data.data.doc_id }}"
+            data-method="GET" data-url-redirect="{% url 'GroupList' %}" data-doc-id="{{ data.data.doc_id }}"
+    >
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card position-sticky" style="top: 10px; margin-top: 0; border: 0; box-shadow: none">
+                        <div class="card-body" style="margin-top: -25px">
+                            <div class="row">
+                                <a class="nav-link active" href="#section5">
+                                    <div class="form-group">
+                                        <label class="form-label"><b>{% trans 'Input General Information' %}</b></label>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="row" style="margin-bottom: 10px">
+                                <div class="col-12">
+                                    <div
+                                            class="border-line"
+                                            style="border-bottom: solid; border-bottom-color: #007D88; margin-left: 3px"
+                                    >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <a class="nav-link active" href="#section6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <b>{% trans 'Add Employees, Manager' %}</b>
+                                        </label>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-9">
+                    <div
+                            data-bs-spy="scroll" data-bs-target="#scrollspy_demo_v" data-bs-smooth-scroll="true"
+                            class="position-relative "
+                    >
+                        <!-- Section Input General Information -->
+                        <div id="section5">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Select Group Level' %}</label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="title" id="select-box-group-level-detail"
+                                                    style="background-color: white;"
+                                                    readonly
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Select Parent Group' %}</label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="title" id="select-box-group-detail"
+                                                    style="background-color: white;"
+                                                    readonly
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Reference Group Title' %}
+                                    </label>
+                                    <input
+                                            type="text" class="form-control" placeholder="" name="first_name"
+                                            id="reference-group-title"
+                                            readonly
+                                    >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Input Display Group Title' %}
+                                    </label>
+                                    <input
+                                            type="text" class="form-control" placeholder="Group Title A"
+                                            name="title" id="group-title-detail" style="background-color: white;"
+                                            readonly
+                                    >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Input Group Code' %}
+                                    </label>
+                                    <input
+                                            type="text" class="form-control" placeholder="Group Code" name="code"
+                                            id="group-code-detail" style="background-color: white;"
+                                            readonly
+                                    >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Description' %}
+                                    </label>
+                                    <textarea
+                                            class="form-control" rows="4" cols="50" name="description"
+                                            id="group-description-detail" style="background-color: white;"
+                                            readonly
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Add Employees, Manager -->
+                        <div id="section6">
+
+                            <table
+                                    id="datable-group-employee-show" class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Employee Name</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans '1st Manager System Title' %}
+                                            </label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="first_name"
+                                                    id="first-manager-system-title"
+                                                    disabled
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans '2nd Manager System Title' %}
+                                            </label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="first_name"
+                                                    id="second-manager-system-title"
+                                                    disabled
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans 'Display 1st Manager Title' %}
+                                            </label>
+                                            <input
+                                                    type="text" class="form-control" placeholder="First Manager A"
+                                                    name="first_manager_title" id="group-first-manager-title-detail"
+                                                    style="background-color: white;" readonly
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans 'Display 2nd Manager Title' %}
+                                            </label>
+                                            <input
+                                                    type="text" class="form-control" placeholder="Second Manager A"
+                                                    name="second_manager_title" id="group-second-manager-title-detail"
+                                                    style="background-color: white;" readonly
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'First Manager Assign To' %}</label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="title" id="select-box-first-manager-detail"
+                                                    style="background-color: white;"
+                                                    readonly
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Second Manager Assign To' %}</label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="title" id="select-box-second-manager-detail"
+                                                    style="background-color: white;"
+                                                    readonly
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block jsFooter %}
+    <!-- Data Table JS -->
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <!-- Moment JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <!-- Customize JS -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+    <script src="{% static 'assets/js/core/hr/group/group_detail.js' %}"></script>
+{% endblock %}

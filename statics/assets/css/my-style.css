@@ -89,3 +89,7 @@
 .modal.show {
     background-color: rgba(91, 91, 91, 0.35);
 }
+
+.menu-child-icon i {
+    font-size: 0.6em;
+}

@@ -37,3 +37,36 @@ class CompanyListAPI(APIView):
         if response.state:
             return response.result, status.HTTP_200_OK
         return response.errors, response.status
+
+
+class CompanyListOverviewList(View):
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_overview/company_overview_list.html',
+        breadcrumb='COMPANY_OVERVIEW_PAGE'
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class CompanyListOverviewListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_OVERVIEW).get()
+        if resp.state:
+            return {'company_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class CompanyListOverviewDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_overview/company_overview_detail.html',
+        breadcrumb='COMPANY_OVERVIEW_DETAIL_PAGE'
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

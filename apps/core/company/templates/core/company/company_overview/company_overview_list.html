@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}{% endblock %}
+
+{% block pageAction %}{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="datable_company_overview_list" class="table nowrap w-100 mb-5"
+            data-url="{% url "CompanyListOverviewListAPI" %}"
+            data-url-redirect="/"
+            data-method="GET"
+            data-url-detail="{% url 'CompanyListOverviewDetail' pk=1 %}"
+    >
+        <thead>
+        <tr>
+            <th class="wrap-text">
+                {% trans 'Code' %}
+                <i
+                        class="fas fa-info-circle icon-info"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open detail page.' %}"
+                ></i>
+            </th>
+            <th class="wrap-text">{% trans 'Name' %}</th>
+            <th class="wrap-text">{% trans 'License Used' %}</th>
+            <th class="wrap-text">{% trans 'Total User' %}</th>
+            <th class="wrap-text">{% trans 'Power User' %}</th>
+            <th class="wrap-text">{% trans 'Employee Linked User / Total' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'core/company/company_overview/js/company_overview_list.js' %}"></script>
+{% endblock %}

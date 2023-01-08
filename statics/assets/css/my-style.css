@@ -93,3 +93,31 @@
 .menu-child-icon i {
     font-size: 0.6em;
 }
+
+.icon-info {
+    font-size: 0.9em;
+    padding-left: 3px;
+    cursor: pointer;
+}
+
+
+.span-group > .span-item:first-child {
+    border-radius: 5px 0 0 5px;
+}
+
+.span-group > .span-item:last-child {
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.span-group > .span-item:last-child:hover {
+    background-color: #454845;
+    color: #FFFFFF;
+}
+.span-group > .span-item {
+    border: 1px solid black;
+    padding: 0.4em 1em;
+}
+.span-group > .span-item:not(:first-child) {
+    border-left: 0;
+}

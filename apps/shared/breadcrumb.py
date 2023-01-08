@@ -31,7 +31,9 @@ class BreadcrumbItem(object):
     USER_CREATE_PAGE = BreadcrumbChildren('User Create', 'UserCreate')
 
     GROUP_LIST_PAGE = BreadcrumbChildren('Organization Group', 'GroupList')
-    COMPANY_PAGE = BreadcrumbChildren('Company')
+    COMPANY_PAGE = BreadcrumbChildren('Company', 'CompanyList')
+    COMPANY_OVERVIEW_PAGE = BreadcrumbChildren('Company Overview', 'CompanyListOverviewList')
+    COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren('Detail')
 
     ROLE_LIST_PAGE = BreadcrumbChildren('Role List', 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren("Create Role", 'RoleCreate')
@@ -116,6 +118,19 @@ class BreadcrumbView:
     COMPANY_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
+    ]
+
+    COMPANY_OVERVIEW_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_PAGE,
+        BreadcrumbItem.COMPANY_OVERVIEW_PAGE,
+    ]
+
+    COMPANY_OVERVIEW_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_PAGE,
+        BreadcrumbItem.COMPANY_OVERVIEW_PAGE,
+        BreadcrumbItem.COMPANY_OVERVIEW_DETAIL_PAGE,
     ]
 
     ROLE_LIST_PAGE = [

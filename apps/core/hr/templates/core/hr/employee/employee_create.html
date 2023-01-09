@@ -16,6 +16,8 @@
     />
 
     <!-- Customize -->
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_create.css' %}">
+
     <style>
         #upload-area {
             height: 150px;
@@ -64,6 +66,7 @@
             id="frm_employee_create" class="needs-validation" data-url="{% url 'EmployeeListAPI' %}" data-method="POST"
             novalidate
     >
+        {% csrf_token %}
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">

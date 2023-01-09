@@ -29,6 +29,26 @@ class EmployeeListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            data = request.data
+            response = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).post(data)
+            if response.state:
+                return response.result, status.HTTP_200_OK
+            else:
+                if response.errors:
+                    if isinstance(response.errors, dict):
+                        err_msg = ""
+                        for key, value in response.errors.items():
+                            err_msg += str(key) + ": " + str(value)
+                            break
+                        return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
 
 class EmployeeCreate(View):
     @mask_view(auth_require=True, template='core/hr/employee/employee_create.html', breadcrumb='EMPLOYEE_CREATE_PAGE')

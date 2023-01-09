@@ -58,8 +58,10 @@ $(document).ready(function () {
                                 for (let i = 0; i < appLength; i++) {
                                     app_list += `<li class="list-break mt-3 mb-3" style="display: inline">
                                             <input
-                                                    type="checkbox" id="list-app-add-employee"
-                                                    name="list-app-add-employee" class="form-check-input"
+                                                    type="checkbox" id="list-app-add-employee-${t}"
+                                                    name="list-app-add-employee-${t}" class="form-check-input"
+                                                    data-plan-id="${data.plan_list[t].id}"
+                                                    data-app-id="${data.plan_list[t].application[i].id}"
                                             />
                                             <label
                                                     for="list-app-add-employee" class="form-check-label"
@@ -96,6 +98,33 @@ $(document).ready(function () {
         )
     }
 
+    function setupDataPlanApp() {
+        let dataPlanAppSubmit = [];
+        let plan_id = null;
+        let tablePlanApp = document.getElementById("datable-employee-plan-app");
+        let tablePlanAppLength = tablePlanApp.tBodies[0].rows.length;
+        for (let s = 0; s < tablePlanAppLength; s++) {
+            let dataPlanList = {};
+            let dataAppList = [];
+            let showRow = tablePlanApp.rows[s]
+            let app_list = showRow.children[0].children[0].children[1].children[0].children
+            if (app_list) {
+                for (let i = 0; i < app_list.length; i++) {
+                    let app = app_list[i].children[0];
+                    plan_id = app.getAttribute('data-plan-id');
+                    let app_id = app.getAttribute('data-app-id');
+                    if (app.checked === true) {
+                        dataAppList.push(app_id)
+                    }
+                }
+            dataPlanList['plan'] = plan_id;
+            dataPlanList['application'] = dataAppList;
+            dataPlanAppSubmit.push(dataPlanList)
+            }
+        }
+    return dataPlanAppSubmit
+    }
+
     function loadDefaultData() {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
 
@@ -130,5 +159,32 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let dataPlanApp = setupDataPlanApp()
+        if (dataPlanApp && frm.dataForm) {
+            frm.dataForm['plan_app'] = dataPlanApp
+        }
+
+        if (frm.dataForm.hasOwnProperty('date_joined')) {
+            frm.dataForm['date_joined'] = moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss')
+        }
+
+        if (frm.dataForm.hasOwnProperty('dob')) {
+            frm.dataForm['dob'] = moment(frm.dataForm['dob']).format('YYYY-MM-DD')
+        }
+
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                    }
+                )
     });
 });

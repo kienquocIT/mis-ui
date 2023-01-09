@@ -10,7 +10,7 @@ $("tbody").on("click", ".del-button", function (){
         let data = $.fn.switcherResp(resp);
         if (data) {
             $.fn.notifyPopup({description: "Thành công"}, 'success')
-            $.fn.redirectUrl(location.pathname, 3000);
+            $.fn.redirectUrl(location.pathname, 1500);
         }
     }, (errs) => {
         $.fn.notifyPopup({description: "Thất bại"}, 'failure')

@@ -11,6 +11,32 @@ $(document).ready(function () {
         $('#form-fullname').val(last_name + ' ' + first_name);
     });
 
+    function loadCompanyList(ele) {
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
+                        data.company_list.map(function (item) {
+                            if(item.id == $('#id_user').val()){
+                                ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                            else{
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    loadCompanyList($('#select-box-company'));
+    loadCompanyList($('#select-box-edit'));
+
 
     $('#inp-fullname').val($('#inp-lastname').val() + ' ' + $('#inp-firstname').val());
     $('#form-fullname').val($('#form-lastname').val() + ' ' + $('#form-firstname').val());

@@ -35,9 +35,8 @@ $(function () {
             }, {
                 'data': 'license_used', 'render': (data, type, row, meta) => {
                     let element = ``;
-                    for (let i = 0; i < row.license_used.length; i++)
-                    {
-                        element += `<span class="badge badge-info">` + row.license_used[i].plan + `&nbsp` + row.license_used[i].quantity  + `</span> `;
+                    for (let i = 0; i < row.license_used.length; i++) {
+                        element += `<span class="badge badge-info">` + row.license_used[i].plan + `&nbsp` + row.license_used[i].quantity + `</span> `;
                     }
                     return element;
                 }
@@ -106,6 +105,17 @@ $(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tenant')) {
                         config['data'] = resp.data.tenant;
+
+
+                        let abc = {
+                            'title': 'Tenant Name',
+                            'total_user': 0,
+                            'license_used': [{'plan': 'Sale', 'quantity': 75}, {'plan': 'Hr', 'quantity': 30}],
+                            'power_user': 2,
+                            'employee': 3,
+                            'employee_connect_to_user': 1
+                        }
+                        config['data'].push(abc)
                     }
                     initDataTable(config);
                 }
@@ -115,6 +125,7 @@ $(function () {
         }
 
         loadDataTable();
-    })
+    });
+
 
 });

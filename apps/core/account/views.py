@@ -36,11 +36,10 @@ class UserListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            data = request.data
-            user = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
-            if user.state:
-                return user.result, status.HTTP_200_OK
+        data = request.data
+        user = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
+        if user.state:
+            return user.result, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 

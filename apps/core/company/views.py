@@ -15,7 +15,6 @@ class CompanyList(View):
         breadcrumb='COMPANY_LIST_PAGE'
     )
     def get(self, request, *args, **kwargs):
-        print('company')
         return {}, status.HTTP_200_OK
 
 

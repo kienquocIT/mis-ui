@@ -2,11 +2,6 @@
 {% load i18n %}
 {% load static %}
 {% block cssHeader %}
-    <style>
-        #offcanvasRight {
-            width: 80%;
-        }
-    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
@@ -18,7 +13,6 @@
         </span>
     </span>
     </button>
-
 
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
@@ -33,10 +27,10 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <input type="text" name="id" hidden value="{{ data.user.company_current }}" id="id_user">
     <div style="padding-left: 20Px;padding-top: 20px; padding-right: 20px;">
         <!-- Form edit -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel"
-             style="padding-top: 4em;">
+        <div class="offcanvas offcanvas-end pt-8 w-80" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel">
             <div class="offcanvas-header" style="border-bottom: 0.01em solid #dcdcdc">
                 <h5 id="offcanvasRightLabel">Edit user</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
@@ -80,30 +74,31 @@
                                        id="form-fullname">
                             </div>
                         </div>
-
-
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
-                                    <input class="form-control" type="text" value="{{ data.user.email }}"
-                                           name="email">
+                                    <input class="form-control" type="text" value="{{ data.user.email }}" name="email">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Select Company" %}</label>
-                                    <select class="form-select" name="company" disabled>
-                                        <option selected>FPT Telecom</option>
-                                        <option value="1">MT Solution</option>
+                                    <select
+                                            name="company_current"
+                                            class="form-select"
+                                            id="select-box-edit"
+                                            data-url="{% url "CompanyListAPI" %}"
+                                            data-method="GET"
+                                            >
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="row" style="margin-top: 1em">
-                            <div class="col-5"></div>
-                            <div class="col-6">
-                                <button type="submit" class="btn btn-primary" style="margin-left: 3em;">Cập nhật
+                        <div class="row">
+                            <div class="col-10"></div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary">Cập nhật
                                 </button>
                             </div>
 
@@ -121,14 +116,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">First Name</label>
-                    <input class="form-control" type="text" value="{{ data.user.first_name }}" name="first_name"
+                    <input class="form-control" type="text" value="{{ data.user.first_name }}"
                            id="inp-firstname" readonly>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
-                    <input class="form-control" type="text" value="{{ data.user.last_name }}" name="last_name"
+                    <input class="form-control" type="text" value="{{ data.user.last_name }}"
                            id="inp-lastname" readonly>
                 </div>
             </div>
@@ -136,7 +131,7 @@
 
         <div class="form-group">
             <label class="form-label">Full Name</label>
-            <input class="form-control" type="text" value="{{ data.user.full_name }}" name="full_name"
+            <input class="form-control" type="text" value="{{ data.user.full_name }}"
                    id="inp-fullname" readonly>
         </div>
 
@@ -144,15 +139,18 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input class="form-control" type="text" value="{{ data.user.email }}" name="email" readonly>
+                    <input class="form-control" type="text" value="{{ data.user.email }}" readonly>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">{% trans "Select Company" %}</label>
-                    <select class="form-select" name="company" disabled>
-                        <option selected>FPT Telecom</option>
-                        <option value="1">MT Solution</option>
+                    <select
+                            class="form-select"
+                            id="select-box-company"
+                            data-url="{% url "CompanyListAPI" %}"
+                            data-method="GET"
+                            disabled>
                     </select>
                 </div>
             </div>
@@ -161,11 +159,11 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">Username</label>
-                    <input class="form-control" type="text" value="{{ data.user.username }}" name="username" readonly>
+                    <input class="form-control" type="text" value="{{ data.user.username }}" readonly>
                 </div>
             </div>
             <div class="col-3">
-                <button type="button" id="btn-resetpw" style="margin-top: 1.2em" class="btn btn-primary">Đổi mật
+                <button type="button" id="btn-resetpw" class="btn btn-primary mt-5">Đổi mật
                     khẩu
                 </button>
             </div>
@@ -176,29 +174,18 @@
             <h6>License</h6>
         </div>
 
-        <table class="table">
+        <table id="datable_company_list" class="table nowrap w-90 mb-5"
+               data-url="{% url "CompanyListAPI" %}"
+               data-url-redirect="/"
+               data-method="get">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Company Name</th>
-                <th scope="col">Employee</th>
-                <th scope="col">License</th>
+                <th class="mw-40">Company name</th>
+                <th class="mw-40">Representative</th>
+                <th class="mw-40">Action</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>FPT Telecom</td>
-                <td>Lê Minh</td>
-                <td>Sale, eOffice</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>FTEL Telecom</td>
-                <td>Lê Minh</td>
-                <td>Sale, HRM</td>
-            </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 {% endblock %}

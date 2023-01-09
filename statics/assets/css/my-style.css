@@ -93,3 +93,22 @@
 .menu-child-icon i {
     font-size: 0.6em;
 }
+
+/*data table css */
+
+.dataTables_paginate .paginate_button i {
+    font-size: 1.2rem;
+    vertical-align: -4px
+}
+
+.dataTables_paginate .paginate_button.previous i {
+    margin-right: 4px;
+}
+
+.dataTables_paginate .paginate_button.next i {
+    margin-left: 5px;
+}
+
+[type="search"] {
+    outline: none;
+}

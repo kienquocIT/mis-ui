@@ -38,19 +38,19 @@ $(function () {
                 }
             }, {
                 'data': 'total_user', 'render': (data, type, row, meta) => {
-                    return `<span>` + row.total_user +`</span>`;
+                    return `<center><span>` + row.total_user +`</span></center>`;
                 }
             }, {
                 'data': 'power_user','render': (data, type, row, meta) => {
-                    return `<span>`+row.power_user+`</span>`;
+                    return `<center><span>`+row.power_user+`</span></center>`;
                 }
             }, {
                 'data': 'employee','render': (data, type, row, meta) => {
-                    return `<span>`+row.employee+`</span>`;
+                    return `<center><span>`+row.employee+`</span></center>`;
                 }
             }, {
                 'data': 'employee_connect_to_user','render': (data, type, row, meta) => {
-                    return `<span>`+row.employee_connect_to_user+`</span>`;
+                    return `<center><span>`+row.employee_connect_to_user+`</span></center>`;
                 }
             },
             ]
@@ -100,7 +100,6 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tenant')) {
-                        console.log(resp.data.tenant);
                         config['data'] = resp.data.tenant;
                     }
                     initDataTable(config);

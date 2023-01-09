@@ -3,13 +3,20 @@
 $(function () {
     $(document).ready(function () {
         let config = {
+            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
-            paginate: false,
+            columnDefs: [{
+                "searchable": false, "orderable": false,
+            }],
             language: {
                 search: "",
                 searchPlaceholder: "Search",
-                info: "",
-                sLengthMenu: "View  MENU",
+                info: "_START_ - _END_ of _TOTAL_",
+                sLengthMenu: "View  _MENU_",
+                paginate: {
+                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                }
             },
             drawCallback: function () {
                 $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');

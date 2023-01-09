@@ -22,4 +22,4 @@ class ApiURL(object):
     ROLE_DETAIL = 'hr/role'
 
     #tenant
-    TENANT = 'tenant/'
+    TENANT = 'tenant/userlist'

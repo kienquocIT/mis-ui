@@ -30,3 +30,6 @@ class TenantInformationAPI(APIView):
         if tenant.state:
             return {'tenant': tenant.result}, status.HTTP_200_OK
         return {'detail': tenant.errors}, status.HTTP_401_UNAUTHORIZED
+
+    def post(self):
+        pass

@@ -15,6 +15,7 @@ class CompanyList(View):
         breadcrumb='COMPANY_LIST_PAGE'
     )
     def get(self, request, *args, **kwargs):
+        print('company')
         return {}, status.HTTP_200_OK
 
 
@@ -37,3 +38,28 @@ class CompanyListAPI(APIView):
         if response.state:
             return response.result, status.HTTP_200_OK
         return response.errors, response.status
+
+
+class CompanyDetailAPI(APIView):
+    @mask_view(auth_require=True, template='core/company/company_detail.html')
+    def get(self, request, pk, *args, **kwargs):
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
+        if response.state:
+            return {'company': response.result, 'icon': response.result["title"][0]}, status.HTTP_200_OK
+        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).put(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        print('here')
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).delete(request.data)
+        if response.state:
+            return {}, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

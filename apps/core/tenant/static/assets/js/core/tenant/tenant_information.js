@@ -34,23 +34,28 @@ $(function () {
                 }
             }, {
                 'data': 'license_used', 'render': (data, type, row, meta) => {
-                    return `<span class="badge badge-info">` + row.license_used + `</span>`
+                    let element = ``;
+                    for (let i = 0; i < row.license_used.length; i++)
+                    {
+                        element += `<span class="badge badge-info">` + row.license_used[i].plan + `&nbsp` + row.license_used[i].quantity  + `</span> `;
+                    }
+                    return element;
                 }
             }, {
                 'data': 'total_user', 'render': (data, type, row, meta) => {
-                    return `<center><span>` + row.total_user +`</span></center>`;
+                    return `<center><span>` + row.total_user + `</span></center>`;
                 }
             }, {
-                'data': 'power_user','render': (data, type, row, meta) => {
-                    return `<center><span>`+row.power_user+`</span></center>`;
+                'data': 'power_user', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.power_user + `</span></center>`;
                 }
             }, {
-                'data': 'employee','render': (data, type, row, meta) => {
-                    return `<center><span>`+row.employee+`</span></center>`;
+                'data': 'employee', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.employee + `</span></center>`;
                 }
             }, {
-                'data': 'employee_connect_to_user','render': (data, type, row, meta) => {
-                    return `<center><span>`+row.employee_connect_to_user+`</span></center>`;
+                'data': 'employee_connect_to_user', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.employee_connect_to_user + `</span></center>`;
                 }
             },
             ]

@@ -5,6 +5,7 @@ class ApiURL(object):
     refresh_token = 'auth/token-refresh'
     tenants = 'provisioning/tenants'
     user_list = 'account/users'
+    user_detail = 'account/user'
     EMPLOYEE_LIST = 'hr/employees'
     GROUP_LEVEL_LIST = 'hr/levels'
 

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">
+{#    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">#}
 {% endblock %}
 
 {% block pageAction %}
@@ -32,16 +32,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <button class="btn" style="color: #007D88">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus-square"></i>
-                Add Role
-            </span>
-        </span>
-    </button>
-
-
     <table
             id="datable_role_list" class="table nowrap w-100 mb-5" data-url='{% url "RoleListAPI" %}'
             data-method="GET"

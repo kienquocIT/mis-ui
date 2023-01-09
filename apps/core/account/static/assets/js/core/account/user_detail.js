@@ -51,7 +51,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: "Đang cập nhật"}, 'success')
-                        setTimeout(location.reload.bind(location), 2000);
+                        setTimeout(location.reload.bind(location), 1000);
                     }
                 },
                 (errs) => {

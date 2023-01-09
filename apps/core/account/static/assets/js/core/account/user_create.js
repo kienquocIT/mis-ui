@@ -16,7 +16,7 @@ $(document).ready(function () {
         $('.dataTable').css('width', '100%');
     });
 
-    function generateP() {
+    function generatePW() {
         var pass = '';
         var str = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
 
     $('#auto-create-pw').on('change', function () {
         if ($(this).is(':checked') == true) {
-            const pw = generateP()
+            const pw = generatePW();
             $('#password').val(pw);
             $('#password').prop("readonly", true);
             $('#confirm-password').val(pw);
@@ -80,7 +80,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Đang tạo user"}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },
                     (errs) => {

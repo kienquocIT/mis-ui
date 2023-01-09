@@ -47,7 +47,7 @@ class UserDetailAPI(APIView):
 
     @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
     def get(self, request, pk, *args, **kwargs):
-        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).get()
+        user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).get()
         if user.state:
             return {'user': user.result}, status.HTTP_200_OK
         return {'detail': user.errors}, status.HTTP_401_UNAUTHORIZED
@@ -55,14 +55,14 @@ class UserDetailAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
         data = request.data
-        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).put(data)
+        user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).put(data)
         if user.state:
             return user.result, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).delete(request.data)
+        user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).delete(request.data)
         if user.state:
             return{}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

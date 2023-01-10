@@ -39,7 +39,7 @@ class BreadcrumbItem(object):
     ROLE_LIST_PAGE = BreadcrumbChildren('Role List', 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren("Create Role", 'RoleCreate')
 
-    TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
+    # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
 
 class BreadcrumbView:
@@ -144,5 +144,5 @@ class BreadcrumbView:
 
     ROLE_CREATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.ROLE_CREATE_PAGE]
 
-    TENANT_INFORMATION_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.TENANT_INFORMATION_PAGE]
+    # TENANT_INFORMATION_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.TENANT_INFORMATION_PAGE]
 

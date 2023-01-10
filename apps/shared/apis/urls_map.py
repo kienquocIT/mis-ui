@@ -23,3 +23,5 @@ class ApiURL(object):
 
     # base
     PLAN_LIST = 'base/plans'
+
+    TENANT = 'tenant/userlist'

@@ -5,7 +5,7 @@ $("tbody").on("click", ".del-button", function (){
     user_data = {
         'id': user_id
     }
-    $.fn.callAjax(data_url, "DELETE", user_data, csr).then((resp) => {
+    $.fn.callAjax(data_url + '/api', "DELETE", user_data, csr).then((resp) => {
 
         let data = $.fn.switcherResp(resp);
         if (data) {

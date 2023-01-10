@@ -20,20 +20,20 @@
 {% block pageContent %}
     <input type="text" id="inp-company_current_id" hidden>
     <div class="row">
-        <div class="col-4">
+        <div class="col-6 col-lg-4">
             <div class="form-group">
                 <label class="form-label">First Name</label>
                 <input class="form-control" type="text"
                        id="inp-first_name" readonly>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-6 col-lg-4">
             <div class="form-group">
                 <label class="form-label">Last Name</label>
                 <input class="form-control" type="text" id="inp-last_name" readonly>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-6 col-lg-4">
             <div class="form-group">
                 <label class="form-label">Full Name</label>
                 <input class="form-control" type="text"
@@ -43,15 +43,15 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-4">
+        <div class="col-6 col-lg-4">
             <div class="form-group">
                 <label class="form-label">Email</label>
                 <input class="form-control" type="text" id="inp-email" readonly>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-6 col-lg-4">
             <div class="form-group">
-                <label class="form-label">{% trans "Select Company" %}</label>
+                <label class="form-label">{% trans "Company" %}</label>
                 <select
                         class="form-select"
                         id="select-box-company"
@@ -61,7 +61,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-6 col-lg-4">
             <div class="form-group">
                 <label class="form-label">Username</label>
                 <input class="form-control" type="text" id="inp-username" readonly>

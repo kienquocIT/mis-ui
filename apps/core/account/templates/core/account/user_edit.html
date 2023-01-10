@@ -15,7 +15,6 @@
             </span>
         </span>
     </button>
-
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -33,36 +32,35 @@
     <form data-url="{{ request.path }}" data-url-redirect="/" data-method="PUT" id="form-edit-user">
         {% csrf_token %}
         <div class="row">
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">First Name</label>
                     <input class="form-control" type="text"
                            id="inp-first_name" name="first_name">
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
                     <input class="form-control" type="text" id="inp-last_name" name="last_name">
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
                     <input class="form-control" type="text"
                            id="inp-full_name" disabled>
                 </div>
-
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <input class="form-control" type="text" id="inp-email" name="email">
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Select Company" %}</label>
                     <select
@@ -75,7 +73,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">Phone</label>
                     <input class="form-control" type="text" id="inp-phone" name="phone">

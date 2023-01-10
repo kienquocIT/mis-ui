@@ -66,7 +66,15 @@ $(document).ready(function () {
     }
 
     loadCompanyList();
-
+    jQuery.validator.setDefaults({
+        debug: true,
+        success: "valid"
+    });
+    let frm = $('#form-create-user');
+    frm.validate({
+        errorElement: 'p',
+        errorClass: 'is-invalid cl-red',
+    })
     $("#form-create-user").submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();

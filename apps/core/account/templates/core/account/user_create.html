@@ -26,8 +26,8 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <form id="form-create-user" data-url="{% url 'UserListAPI' %}" data-url-redirect="{% url 'UserList' %}"
-              data-method="POST">
+        <form class="needs-validation" id="form-create-user" data-url="{% url 'UserListAPI' %}" data-url-redirect="{% url 'UserList' %}"
+              data-method="POST" novalidate>
             {% csrf_token %}
             <div class="row">
                 <div class="col-6 col-lg-4">

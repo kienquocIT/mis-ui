@@ -57,7 +57,7 @@
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-			<span class="nav-link-text">Plan, Application</span>
+			<span class="nav-link-text">Plan - Application</span>
 		</a>
 	</li>
     </ul>
@@ -95,7 +95,10 @@
                                             <span class="field-required">(*)</span>
                                         </label>
                                         <input
-                                                type="text" class="form-control" placeholder="A" name="first_name"
+                                                type="text" class="form-control"
+                                                placeholder="A"
+                                                name="first_name"
+                                                id="employee-first-name"
                                                 required
                                         >
                                         <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
@@ -111,6 +114,7 @@
                                                 type="text" placeholder="Nguyen Van"
                                                 class="form-control"
                                                 name="last_name"
+                                                id="employee-last-name"
                                                 required
                                         >
                                         <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
@@ -140,6 +144,7 @@
                                         type="email" class="form-control"
                                         placeholder="customer@mtsolution.com.vn"
                                         name="email"
+                                        id="employee-email"
                                         required
                                 >
                                 <span class="form-text text-muted">{% trans 'Contact to email adress' %}</span>
@@ -156,6 +161,7 @@
 {#                                        data-mask="(999) 999-999-999"#}
                                         class="form-control"
                                         name="phone"
+                                        id="employee-phone"
                                         required
                                 >
                                 <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
@@ -225,7 +231,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <div class="form-check form-switch form-switch-lg mb-1">
+                            <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
                                 <label class="form-label">
                                     {% trans 'Active the employee after created' %}
                                     <span class="field-required">(*)</span>
@@ -235,6 +241,7 @@
                                         class="form-check-input"
                                         name="is_active" checked
                                         required
+                                        style="margin-left: 0"
                                 >
                             </div>
                         </div>

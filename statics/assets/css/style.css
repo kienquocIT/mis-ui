@@ -73953,6 +73953,7 @@ div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-n
   border-color: #d8d8d8;
   border-radius: 0.375rem;
 }
+
 .form-control.square-input, .square-input.form-select, .wizard > .content > .body input.square-input, .square-input.dd-handle {
   border-radius: 0;
 }
@@ -75223,7 +75224,6 @@ div.mce-menu .mce-menu-item-sep, .mce-menu-item-sep:hover {
   border: none;
   justify-content: space-between;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: space-between;
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;

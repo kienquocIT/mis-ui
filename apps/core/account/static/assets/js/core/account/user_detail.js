@@ -38,8 +38,8 @@ $(document).ready(function () {
     loadCompanyList($('#select-box-edit'));
 
 
-    $('#inp-fullname').val($('#inp-lastname').val() + ' ' + $('#inp-firstname').val());
-    $('#form-fullname').val($('#form-lastname').val() + ' ' + $('#form-firstname').val());
+    // $('#inp-fullname').val($('#inp-lastname').val() + ' ' + $('#inp-firstname').val());
+    // $('#form-fullname').val($('#form-lastname').val() + ' ' + $('#form-firstname').val());
     $("#form-edit-user").submit(function (event) {
         url = location.pathname;
         event.preventDefault();

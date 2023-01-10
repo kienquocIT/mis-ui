@@ -38,7 +38,7 @@ $(function () {
                                         </div>
                                     </div>
                                     <div class="media-body">
-                                        <a href="/account/user/` + row.id + `">
+                                        <a href="/account/user/detail/` + row.id + `">
                                             <span class="d-block">` + row.full_name + `</span>
                                         </a>    
                                             

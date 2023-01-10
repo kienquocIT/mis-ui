@@ -24,6 +24,18 @@ class UserCreate(View):
         return{}, status.HTTP_200_OK
 
 
+class UserDetail(View):
+    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class UserEdit(View):
+    @mask_view(auth_require=True, template='core/account/user_edit.html')
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class UserListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -45,7 +57,7 @@ class UserListAPI(APIView):
 
 class UserDetailAPI(APIView):
 
-    @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
+    @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *args, **kwargs):
         user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).get()
         if user.state:

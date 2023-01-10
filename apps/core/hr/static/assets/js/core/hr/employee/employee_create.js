@@ -123,12 +123,12 @@ $(document).ready(function () {
 
     function setupDataPlanApp() {
         let dataPlanAppSubmit = [];
-        let plan_id = null;
         let tablePlanApp = document.getElementById("datable-employee-plan-app");
         let tablePlanAppLength = tablePlanApp.tBodies[0].rows.length;
         for (let s = 0; s < tablePlanAppLength; s++) {
             let dataPlanList = {};
             let dataAppList = [];
+            let plan_id = null;
             let showRow = tablePlanApp.rows[s]
             let app_list = showRow.children[0].children[0].children[1].children[0].children
             if (app_list) {
@@ -140,9 +140,11 @@ $(document).ready(function () {
                         dataAppList.push(app_id)
                     }
                 }
-            dataPlanList['plan'] = plan_id;
-            dataPlanList['application'] = dataAppList;
-            dataPlanAppSubmit.push(dataPlanList)
+                if (plan_id) {
+                    dataPlanList['plan'] = plan_id;
+                    dataPlanList['application'] = dataAppList;
+                    dataPlanAppSubmit.push(dataPlanList)
+                }
             }
         }
     return dataPlanAppSubmit

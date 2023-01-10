@@ -22,12 +22,12 @@ $(function () {
                             return `<div class="media align-items-center">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                                <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
+                                                <span class="initial-wrap"><b>` + row.title.charAt(0).toUpperCase() + `</b></span>
                                             </div>
                                         </div>
                                         <div class="media-body">
                                             <a href="/company/detail/`+row.id+`">
-                                                <span class="d-block">` + row.title + `</span>
+                                                <span class="d-block"><b>` + row.title + `</b></span>
                                             </a>
                                         </div>
                                     </div>`;

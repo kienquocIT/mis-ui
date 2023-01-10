@@ -94,6 +94,17 @@ class CompanyDetailAPI(APIView):
         return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
 
 
+class CompanyUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_update.html',
+        breadcrumb='COMPANY_LIST_PAGE',
+        menu_active='menu_company_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class CompanyUpdateAPI(APIView):
     @mask_view(auth_require=True, template='core/company/company_update.html')
     def get(self, request, pk, *args, **kwargs):

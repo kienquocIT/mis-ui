@@ -4211,7 +4211,7 @@
 		var language = settings.oLanguage;
 		var previousSearch = settings.oPreviousSearch;
 		var features = settings.aanFeatures;
-		var input = '<input type="search" class="'+classes.sFilterInput+'"/>';
+		var input = `<input type="search" class="form-control form-control-sm ${classes.sFilterInput}"/>`;
 	
 		var str = language.sSearch;
 		str = str.match(/_INPUT_/) ?
@@ -4858,7 +4858,7 @@
 		var select = $('<select/>', {
 			'name':          tableId+'_length',
 			'aria-controls': tableId,
-			'class':         classes.sLengthSelect
+			'class':         "form-select form-select-sm " + classes.sLengthSelect
 		} );
 	
 		for ( var i=0, ien=lengths.length ; i<ien ; i++ ) {

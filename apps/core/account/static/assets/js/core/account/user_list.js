@@ -52,10 +52,6 @@ $(function () {
                     return `<span class="badge badge-primary">` + row.username + `</span>`;
                 }
             }, {
-                'data': 'username', render: (data, type, row, meta) => {
-                    return `<span>unlicense</span>`;
-                }
-            }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
                     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="user/edit/`+ row.id +`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="user/detail/`+ row.id +`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;

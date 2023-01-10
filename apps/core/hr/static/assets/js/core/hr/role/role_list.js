@@ -50,7 +50,7 @@ $(function () {
             }, {
                 'data': 'employees', render: (data, type, row, meta) => {
                     let element = ''
-                    for(let i=0; i< row.employees.length; i++){
+                    for (let i = 0; i < row.employees.length; i++) {
                         element += `<span class="badge badge-primary">` + row.employees[i].full_name + `</span>`
                     }
                     return element
@@ -127,24 +127,26 @@ $(function () {
 });
 
 $("tbody").on("click", ".del-button", function () {
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    let role_id = $(this).attr('data-id');
-    let form = $('#form-delete');
-    let role_data = {
-        'csrfmiddlewaretoken': csr,
-        'id': role_id
-    }
-    let data_url = form.attr('data-url');
-    $.fn.callAjax(data_url + '/' + role_id + '/api', "DELETE", role_data, csr).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            console.log(resp);
-            $.fn.notifyPopup({description: "Thành công"}, 'success')
-            $.fn.redirectUrl(location.pathname, 2000);
+    if (confirm("Confirm Delete Role") === true) {
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let role_id = $(this).attr('data-id');
+        let form = $('#form-delete');
+        let role_data = {
+            'csrfmiddlewaretoken': csr,
+            'id': role_id
         }
-    }, (errs) => {
-        $.fn.notifyPopup({description: "Thất bại"}, 'failure')
-    },)
+        let data_url = form.attr('data-url');
+        $.fn.callAjax(data_url + '/' + role_id + '/api', "DELETE", role_data, csr).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                console.log(resp);
+                $.fn.notifyPopup({description: "Thành công"}, 'success')
+                $.fn.redirectUrl(location.pathname, 1000);
+            }
+        }, (errs) => {
+            $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+        },)
+    }
 });
 
 $("tbody").on("click", ".edit-button", function () {
@@ -153,8 +155,3 @@ $("tbody").on("click", ".edit-button", function () {
     $(this).attr("href", data_url);
 });
 
-$("tbody").on("click", ".add-holder", function () {
-    let form = $('#form-delete');
-    let data_url = form.attr('data-url') + '/' + $(this).attr('data-id');
-    $(this).attr("href", data_url);
-});

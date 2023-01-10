@@ -1,10 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    {#    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"#}
+    {#            aria-controls="offcanvasExample">#}
+    {##}
+    {#    <span class="icon">#}
+    {#        <span class="feather-icon">#}
+    {#            <i data-feather="edit"></i>#}
+    {#        </span>#}
+    {#    </span>#}
+    {#    </button>#}
 
-</body>
-</html>
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <input type="text" id="inp-id" hidden>
+    <form data-url="{{ request.path }}" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input class="form-control" type="text"
+                           id="inp-first_name" name="first_name">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input class="form-control" type="text" id="inp-last_name" name="last_name">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input class="form-control" type="text"
+                           id="inp-full_name">
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="text" id="inp-email" name="email">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Select Company" %}</label>
+                    <select
+                            class="form-select"
+                            id="select-box-company"
+                            data-url="{% url "CompanyListAPI" %}"
+                            data-method="GET"
+                            >
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="text" id="inp-username" name="phone">
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/account/user_detail.js' %}"></script>
+{% endblock %}

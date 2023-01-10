@@ -73,3 +73,49 @@ class CompanyListOverviewDetail(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class CompanyDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_detail.html',
+        breadcrumb='COMPANY_LIST_PAGE',
+        menu_active='menu_company_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class CompanyDetailAPI(APIView):
+    @mask_view(auth_require=True, template='core/company/company_detail.html')
+    def get(self, request, pk, *args, **kwargs):
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
+        if response.state:
+            return {'company': response.result, 'icon': response.result["title"][0]}, status.HTTP_200_OK
+        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+
+
+class CompanyUpdateAPI(APIView):
+    @mask_view(auth_require=True, template='core/company/company_update.html')
+    def get(self, request, pk, *args, **kwargs):
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
+        if response.state:
+            return {'company': response.result, 'icon': response.result["title"][0]}, status.HTTP_200_OK
+        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).put(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class CompanyDeleteAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).delete(request.data)
+        if response.state:
+            return {}, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

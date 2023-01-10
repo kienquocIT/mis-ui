@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <style>
+        #offcanvasRight {
+            width: 50%;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            type="submit" form="form-edit-company" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Save Changes">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <input name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden/>
+    <div style="padding-left: 20Px; padding-top: 20px; padding-right: 20px;">
+        <!-- Form edit -->
+        <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-company" style="padding: 10px">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label"><b>{% trans 'Company Name' %}</b></label>
+                        <input class="form-control" type="text"
+                               name="title" value="{{ data.company.title }}"
+                               id="form-edit-title">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label"><b>{% trans 'Code' %}</b></label>
+                        <input class="form-control" type="text"
+                               name="code" value="{{ data.company.code }}"
+                               id="form-edit-code">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label"><b>{% trans 'Representative' %}</b></label>
+                        <input class="form-control" type="text"
+                               name="representative_fullname" value="{{ data.company.representative_fullname }}"
+                               id="form-edit-representative_fullname">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label"><b>{% trans 'Address' %}</b></label>
+                        <input class="form-control" type="text"
+                               name="address" value="{{ data.company.address }}"
+                               id="form-edit-address">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label"><b>{% trans 'Phone' %}</b></label>
+                        <input class="form-control" type="text"
+                               name="phone" value="{{ data.company.phone }}"
+                               id="form-edit-phone">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label"><b>{% trans 'Email' %}</b></label>
+                        <input class="form-control" type="text"
+                               name="email" value="{{ data.company.email }}"
+                               id="form-edit-email">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- End form edit -->
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'core/company/js/company_detail.js' %}"></script>
+{% endblock %}

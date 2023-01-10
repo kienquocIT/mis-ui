@@ -17,7 +17,26 @@ $(function () {
                     return `<a href="#">` + data + `</a>`
                 }
             }, {
-                width: '25%', data: 'title', className: 'wrap-text',
+                width: '25%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {
+                        if (data) {
+                            return `<div class="media align-items-center">
+                                        <div class="media-head me-2">
+                                            <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                                <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
+                                            </div>
+                                        </div>
+                                        <div class="media-body">
+                                            <a href="/company/detail/`+row.id+`">
+                                                <span class="d-block">` + row.title + `</span>
+                                            </a>
+                                        </div>
+                                    </div>`;
+                        }
+                        else {
+                            return ''
+                        }
+                    }
+
             }, {
                 width: '20%', data: 'date_created', render: (data, type, row, meta) => {
                     let date = new Date(data).toLocaleDateString("en-GB")
@@ -26,12 +45,17 @@ $(function () {
                 }
             }, {
                 width: '20%', data: 'representative_fullname', render: (data, type, row, meta) => {
-                    return `<div><span class="badge badge-primary">` + data + `</span></div>`;
+                        if (data) {
+                            return `<div class="representative_fullname"><span class="badge badge-primary">`+ data +`</span></div>`;
+                        }
+                        else {
+                            return `<div class="representative_fullname"><span class="badge badge-primary">`+ $('input[name=default_representative_name]').val() +`</span></div>`;
+                        }
                 }
             }, {
                 width: '15%', className: 'action-center', render: (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/`+row.id+`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     return `<div>` + bt2 + bt3 + `</div>`;
                 }
             },]
@@ -85,6 +109,11 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
                     config['data'] = resp.data['company_list'] ? resp.data['company_list']: [];
+                }
+                if (resp.data.company_list[0].tenant_auto_create_company === false)
+                {
+                    const add_company_div = document.getElementById("add_company_button");
+                    add_company_div.remove();
                 }
             }).then(() => initDataTable(config))
         }

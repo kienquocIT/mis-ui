@@ -14,7 +14,7 @@ $(function () {
                 },
             }, {
                 width: '15%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
-                    return `<a href="#">` + data + `</a>`
+                    return `<a href="/company/detail/`+row.id+`">` + data + `</a>`
                 }
             }, {
                 width: '25%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {

@@ -11,7 +11,7 @@ $(function () {
                 feather.replace();
             }, data: [], columns: [{
                 data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
-                    return String.format(`<a href="{1}" class="badge badge-outline badge-primary">{0}</a>`, data, frm.getUrlDetail(row.id))
+                    return String.format(`<a href="{1}" class="btn btn-flush-primary">{0}</a>`, data, frm.getUrlDetail(row.id))
                 }
             }, {
                 data: 'title', className: 'wrap-text',
@@ -23,19 +23,19 @@ $(function () {
                             let cls_name = '';
                             switch (key.toLowerCase()) {
                                 case 'sale':
-                                    cls_name = 'badge badge-success';
+                                    cls_name = 'badge-success';
                                     break;
                                 case 'e-office':
-                                    cls_name = 'badge badge-primary';
+                                    cls_name = 'badge-primary';
                                     break;
                                 case 'personal':
-                                    cls_name = 'badge badge-secondary';
+                                    cls_name = 'badge-secondary';
                                     break;
                                 case 'hrm':
-                                    cls_name = 'badge badge-indigo';
+                                    cls_name = 'badge-indigo';
                                     break;
                                 default:
-                                    cls_name = 'badge badge-info';
+                                    cls_name = 'badge-info';
                                     break;
                             }
                             arr_html.push(String.format_by_key(`<span href="#" class="badge {cls_name} my-1">{key} ({data})</span>`, {

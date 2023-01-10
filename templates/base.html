@@ -23,12 +23,22 @@
                 href="{% static 'vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
                 rel="stylesheet" type="text/css"
         />
+        <link
+                href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"
+                rel="stylesheet" type="text/css"
+        />
 
         <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/font-awesome.min.css' %}">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <style>
+            @font-face {
+                font-family: "Roboto";
+                src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
+            }
+        </style>
         {% block cssHeader %}{% endblock %}
     {% endcompress %}
     {% compress js %}
@@ -165,11 +175,28 @@
             let nav_data = $('#get-menu-active');
 
             let menu_id_active = nav_data.attr('data-nav-menu');
-            if (menu_id_active) $('#' + menu_id_active).closest('.nav-item').addClass('active');
+            if (menu_id_active) {
+                let ele_menu = $('#' + menu_id_active);
+                if (ele_menu) {
+                    active_menu(ele_menu);
+                }
+            }
 
             let tenant_code_active = nav_data.attr('data-nav-tenant');
             if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
         });
+
+        function active_menu(item) {
+            if (item.length > 0) {
+                item.first().addClass('active')
+                let parent = item.first().parents('.nav-item');
+                if (parent.length > 0) {
+                    parent.first().addClass('active');
+                    active_menu(parent.first());
+                }
+            }
+            return null;
+        }
     </script>
 
     {% block jsFooter %}{% endblock %}

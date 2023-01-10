@@ -12,7 +12,8 @@ class CompanyList(View):
     @mask_view(
         auth_require=True,
         template='core/company/company_list.html',
-        breadcrumb='COMPANY_LIST_PAGE'
+        breadcrumb='COMPANY_LIST_PAGE',
+        menu_active='menu_company_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -43,7 +44,8 @@ class CompanyListOverviewList(View):
     @mask_view(
         auth_require=True,
         template='core/company/company_overview/company_overview_list.html',
-        breadcrumb='COMPANY_OVERVIEW_PAGE'
+        breadcrumb='COMPANY_OVERVIEW_PAGE',
+        menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -66,7 +68,8 @@ class CompanyListOverviewDetail(View):
     @mask_view(
         auth_require=True,
         template='core/company/company_overview/company_overview_detail.html',
-        breadcrumb='COMPANY_OVERVIEW_DETAIL_PAGE'
+        breadcrumb='COMPANY_OVERVIEW_DETAIL_PAGE',
+        menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

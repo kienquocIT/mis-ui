@@ -6,48 +6,33 @@
 {% endblock %}
 
 {% block pageContent %}
-    <div class="mb-3">
-        <select class="form-select" style="width: calc(100% - 12em);float: left;">
-            <option selected>Select</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-        </select>
-        <button class="btn btn-primary" style="width: 10em;float: left;margin-left: 1em">
-            {% trans 'Add' %}
-        </button>
-    </div>
-    <div>
-        <span class="span-group">
-            <span class="span-item">
-                <b>AND</b>
-            </span>
-            <span class="span-item">
-                All user and employee
-            </span>
-            <span class="span-item">&times;</span>
-        </span>
-        <span class="span-group">
-            <span class="span-item">
-                <b>AND</b>
-            </span>
-            <span class="span-item">
-                All user and employee
-            </span>
-            <span class="span-item">&times;</span>
-        </span>
-    </div>
-    <!--Offcanvas Wrapper-->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel">
-        <div class="offcanvas-header">
-            <h5 id="offcanvasRightLabel">Offcanvas right</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div class="mb-5">
+        <div class="input-group mb-3">
+            <label class="hidden" for="filter_operator_logic"></label>
+            <select class="custom-select" id="filter_operator_logic" disabled>
+                <option value="AND" selected>AND</option>
+                <option value="OR">OR</option>
+            </select>
+            <label class="hidden" for="filter_condition_left"></label>
+            <select class="custom-select" id="filter_condition_left">
+                <option value="1">All User and Employee</option>
+                <option value="2">Employee Linked To User</option>
+            </select>
+            <label class="hidden" for="filter_operator_math"></label>
+            <select class="custom-select" id="filter_operator_math" disabled>
+                <option selected value="same">=</option>
+                <option value="not">!=</option>
+            </select>
+            <label class="hidden" for="filter_condition_right"></label>
+            <select class="custom-select" id="filter_condition_right">
+                <option value="1">True</option>
+                <option value="0">False</option>
+            </select>
+            <button class="btn btn-outline-primary" type="button" id="add_filter">{% trans 'Add Filter' %}</button>
+            <button class="btn btn-outline-primary" type="button" id="clear_filter">{% trans 'Clear All Filter' %}</button>
         </div>
-        <div class="offcanvas-body">
-            ...
-        </div>
+        <div class="mb-3" id="display-filter"></div>
     </div>
-    <!--/ Offcanvas Wrapper-->
     <table
             id="datable_company_overview_detail" class="table nowrap w-100 mb-5"
             {#            data-url="{% url "" %}"#}
@@ -81,19 +66,92 @@
                 paginate: false,
             });
 
-            $('.filter-close').on('click', function (event) {
+            $(document).on('click', '.filter-btn-close', function (event) {
                 event.preventDefault();
-                $(this).closest('.input-group').parent().remove();
+                $(this).closest('.filter-group').remove();
+                parse_filter();
             });
+
+            $('#add_filter').on('click', function (event) {
+                event.preventDefault();
+
+                let ele_logic = $('#filter_operator_logic');
+                let ele_left = $('#filter_condition_left');
+                let ele_right = $('#filter_condition_right');
+                let ele_math = $('#filter_operator_math');
+
+                let logic = {
+                    'value': ele_logic.val(),
+                    'show': ele_logic.find('option[value=' + ele_logic.val() + ']').text()
+                };
+                let condition_left = {
+                    'value': ele_left.val(),
+                    'show': ele_left.find('option[value=' + ele_left.val() + ']').text()
+                };
+                let condition_right = {
+                    'value': ele_right.val(),
+                    'show': ele_right.find('option[value=' + ele_right.val() + ']').text()
+                };
+                let operator_math = {
+                    'value': ele_math.val(),
+                    'show': ele_math.find('option[value=' + ele_math.val() + ']').text()
+                };
+                let html = String.format(
+                    `<div class="filter-group">{0}</div>`,
+                    String.format_by_key(
+                        '{logic}{left}{math}{right}{btn}',
+                        {
+                            'logic': String.format(
+                                `<div class="filter-item filter-operator-logic" data-value="{0}" data-show="{1}"><span>{1}</span></div>`,
+                                logic.value, logic.show
+                            ),
+                            'left': String.format(
+                                `<div class="filter-item filter-condition-left" data-value="{0}" data-show="{1}"><span>{1}</span></div>`,
+                                condition_left.value, condition_left.show
+                            ),
+                            'math': String.format(
+                                `<div class="filter-item filter-operator-math" data-value="{0}" data-show="{1}"><span>{1}</span></div>`,
+                                operator_math.value, operator_math.show
+                            ),
+                            'right': String.format(
+                                `<div class="filter-item filter-condition-right" data-value="{0}" data-show="{1}"><span>{1}</span></div>`,
+                                condition_right.value, condition_right.show
+                            ),
+                            'btn': `<div class="filter-item filter-btn-close">&times;</div>`
+                        }
+                    )
+                );
+                $('#display-filter').append(html);
+                parse_filter();
+                return html;
+            });
+
+            $('#clear_filter').on('click', function (event) {
+                event.preventDefault();
+                $('#display-filter').html("");
+            })
 
             $('#filter_select').select2({
                 tags: true,
                 tokenSeparators: [',', ' ']
             });
-
-            $('.box-filter-btn').resize(function () {
-                console.log($(this).width());
-            });
         });
+
+        function parse_filter() {
+            let data = [];
+            $('#display-filter').find('.filter-group').each(function () {
+                let logic = $(this).find('.filter-operator-logic').first();
+                let left = $(this).find('.filter-condition-left').first();
+                let math = $(this).find('.filter-operator-math').first();
+                let right = $(this).find('.filter-condition-right').first();
+                data.push({
+                    'logic': logic.attr('data-value'),
+                    'left': left.attr('data-value'),
+                    'math': math.attr('data-value'),
+                    'right': right.attr('data-value'),
+                })
+            });
+            console.log(data);
+        }
     </script>
 {% endblock %}

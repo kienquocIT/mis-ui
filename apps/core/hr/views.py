@@ -11,7 +11,7 @@ class EmployeeList(View):
         auth_require=True,
         template='core/hr/employee/employee_list.html',
         breadcrumb='EMPLOYEE_LIST_PAGE',
-        menu_active='menu-employee-list',
+        menu_active='menu_employee_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -31,26 +31,45 @@ class EmployeeListAPI(APIView):
 
 
 class EmployeeCreate(View):
-    @mask_view(auth_require=True, template='core/hr/employee/employee_create.html', breadcrumb='EMPLOYEE_CREATE_PAGE')
+    @mask_view(
+        auth_require=True,
+        template='core/hr/employee/employee_create.html',
+        breadcrumb='EMPLOYEE_CREATE_PAGE',
+        menu_active='menu_employee_list',
+    )
     def get(self, request, *args, **kwargs):
         return {}
 
 
 class RoleList(View):
 
-    @mask_view(auth_require=True, template='core/hr/role/list_role.html', breadcrumb='ROLE_LIST_PAGE')
+    @mask_view(
+        auth_require=True,
+        template='core/hr/role/list_role.html',
+        breadcrumb='ROLE_LIST_PAGE',
+        menu_active='menu_role_list',
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class RoleCreate(View):
-    @mask_view(auth_require=True, template='core/hr/role/create_role.html', breadcrumb="ROLE_CREATE_PAGE")
+    @mask_view(
+        auth_require=True,
+        template='core/hr/role/create_role.html',
+        breadcrumb="ROLE_CREATE_PAGE",
+        menu_active='menu_role_list',
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class RoleDetail(View):
-    @mask_view(auth_require=True, template='core/hr/role/update_role.html')
+    @mask_view(
+        auth_require=True,
+        template='core/hr/role/update_role.html',
+        menu_active='menu_role_list',
+    )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
@@ -75,7 +94,11 @@ class RoleListAPI(APIView):
 
 class RoleDetailAPI(APIView):
 
-    @mask_view(auth_require=True, is_api=True)
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+        menu_active='menu_role_list',
+    )
     def get(self, request, pk, *args, **kwargs):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).get()
         if role.state:
@@ -104,7 +127,7 @@ class GroupLevelList(View):
         auth_require=True,
         template='core/hr/grouplevel/level_list.html',
         breadcrumb='GROUP_LEVEL_LIST_PAGE',
-        menu_active='',
+        menu_active='menu_group_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -115,7 +138,7 @@ class GroupLevelListAPI(APIView):
 
     @mask_view(
         auth_require=True,
-        is_api=True
+        is_api=True,
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.GROUP_LEVEL_LIST, user=request.user).get()
@@ -142,7 +165,8 @@ class GroupLevelCreate(View):
     @mask_view(
         auth_require=True,
         template='core/hr/grouplevel/level_create.html',
-        breadcrumb='GROUP_LEVEL_CREATE_PAGE'
+        breadcrumb='GROUP_LEVEL_CREATE_PAGE',
+        menu_active='menu_group_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -153,7 +177,8 @@ class GroupCreate(View):
 
     @mask_view(
         auth_require=True,
-        template='core/hr/group/group_create.html'
+        template='core/hr/group/group_create.html',
+        menu_active='menu_group_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -164,7 +189,7 @@ class GroupList(View):
         auth_require=True,
         template='core/hr/group/group_list.html',
         breadcrumb='GROUP_LIST_PAGE',
-        menu_active='menu-group-list',
+        menu_active='menu_group_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -210,7 +235,8 @@ class GroupDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='core/hr/group/group_detail.html'
+        template='core/hr/group/group_detail.html',
+        menu_active='menu_group_list',
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -220,7 +246,8 @@ class GroupUpdate(View):
 
     @mask_view(
         auth_require=True,
-        template='core/hr/group/group_update.html'
+        template='core/hr/group/group_update.html',
+        menu_active='menu_group_list',
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -249,6 +276,5 @@ class GroupDetailAPI(APIView):
         if request.method == 'DELETE':
             response = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).delete(request.data)
             if response.state:
-                return{}, status.HTTP_200_OK
+                return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
-

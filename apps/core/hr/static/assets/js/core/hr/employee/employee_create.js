@@ -41,6 +41,27 @@ $(document).ready(function () {
         )
     }
 
+    // load group list
+    function loadGroupList() {
+        let ele = $('#select-box-group-employee');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
+                        ele.append(`<option>` + `</option>`)
+                        data.group_list.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
     // load Plan App
     function loadPlanAppList() {
         let tableApply = $('#datable-employee-plan-app');
@@ -130,6 +151,7 @@ $(document).ready(function () {
 
         loadUserList();
         loadRoleList();
+        loadGroupList();
         loadPlanAppList();
 
         $('#input-avatar').on('change', function (ev) {
@@ -171,6 +193,11 @@ $(document).ready(function () {
 
         if (frm.dataForm.hasOwnProperty('dob')) {
             frm.dataForm['dob'] = moment(frm.dataForm['dob']).format('YYYY-MM-DD')
+        }
+
+        let dataRoleList = $('#select-box-role').val()
+        if (dataRoleList) {
+            frm.dataForm['role'] = dataRoleList
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

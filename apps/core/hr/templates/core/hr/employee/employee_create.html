@@ -64,6 +64,7 @@
 
     <form
             id="frm_employee_create" class="needs-validation" data-url="{% url 'EmployeeListAPI' %}" data-method="POST"
+            data-url-redirect="{% url 'EmployeeList' %}"
             novalidate
     >
         {% csrf_token %}
@@ -76,7 +77,8 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select User' %}</label>
                                     <select
-                                            class="form-select" id="select-box-user" data-url="{% url 'UserListAPI' %}"
+                                            class="form-select" id="select-box-user"
+                                            data-url="{% url 'UserListAPI' %}"
                                             data-method="GET"
                                             name="user"
                                     >
@@ -151,7 +153,7 @@
                                 >(*)</span></label>
                                 <input
                                         type="text" placeholder="(+84) 987-654-321"
-                                        data-mask="(999) 999-999-999"
+{#                                        data-mask="(999) 999-999-999"#}
                                         class="form-control"
                                         name="phone"
                                         required
@@ -164,10 +166,14 @@
                                 <label class="form-label">{% trans 'Department' %}<span
                                         class="field-required"
                                 >(*)</span></label>
-                                <select class="form-select" name="department" required>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select
+                                        class="form-select"
+                                        name="group"
+                                        id="select-box-group-employee"
+                                        data-url="{% url 'GroupListAPI' %}"
+                                        data-method="GET"
+                                        required
+                                >
                                 </select>
                                 <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
                             </div>
@@ -208,7 +214,7 @@
                                         class="form-control select2 select2-multiple"
                                         multiple
                                         data-placeholder="{% trans 'Choose' %}"
-                                        name="language"
+                                        name="role"
                                         id="select-box-role"
                                         data-url="{% url 'RoleListAPI' %}"
                                         data-method="GET"

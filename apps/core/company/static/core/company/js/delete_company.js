@@ -1,6 +1,6 @@
 $("tbody").on("click", "#del-company-button", function (event){
+    event.preventDefault();
     if (confirm("Confirm delete ?") === true) {
-        event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let user_id = $(this).attr('data-id');
         let url = '/company/delete/' + user_id

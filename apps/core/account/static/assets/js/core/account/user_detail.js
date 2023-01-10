@@ -15,7 +15,7 @@ $(document).ready(function () {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
         columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+            "searchable": false, "orderable": false,
         }],
         order: [2, 'asc'],
         language: {
@@ -67,8 +67,6 @@ $(document).ready(function () {
         let dtb = $('#datable_company_list');
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-            dtb.parent().addClass('table-responsive');
         }
     }
 
@@ -122,4 +120,3 @@ $(document).ready(function () {
 
     loadCompanyList($('#select-box-company'));
 })
-    ;

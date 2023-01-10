@@ -72,15 +72,15 @@
     <div class="row" style="border: 0.01em solid #dcdcdc">
         <h6>License</h6>
     </div>
-    <table id="datable_company_list" class="table nowrap mb-5"
+    <table id="datable_company_list" class="table nowrap mb-5 w-100"
            data-url="{% url "CompanyListAPI" %}"
            data-url-redirect="/"
            data-method="get">
         <thead>
         <tr>
-            <th class="mw-20">{% trans "Code" %}</th>
+            <th class="mw-10">{% trans "Code" %}</th>
             <th class="mw-40">{% trans "Company Name" %}</th>
-            <th class="mw-40">{% trans "Representative" %}</th>
+            <th class="mw-30">{% trans "Representative" %}</th>
             <th class="mw-20">{% trans "License" %}</th>
         </tr>
         </thead>

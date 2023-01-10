@@ -15,12 +15,11 @@ class ApiURL(object):
 
     # home/company
     COMPANY_LIST = 'company/list'
-    COMPANY_DETAIL = 'company/list'
+    COMPANY_OVERVIEW = 'company/overview'
 
-
-    #organization/role
+    # organization/role
     ROLE_LIST = 'hr/roles'
     ROLE_DETAIL = 'hr/role'
 
-    #tenant
-    TENANT = 'tenant/userlist'
+    # base
+    PLAN_LIST = 'base/plans'

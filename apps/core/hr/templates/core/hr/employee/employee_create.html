@@ -16,6 +16,8 @@
     />
 
     <!-- Customize -->
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_create.css' %}">
+
     <style>
         #upload-area {
             height: 150px;
@@ -26,6 +28,7 @@
             text-align: center;
             cursor: pointer;
         }
+
     </style>
 {% endblock %}
 {% block pageAction %}
@@ -46,170 +49,212 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm_employee_create" class="needs-validation" data-url="{% url 'EmployeeListAPI' %}" data-method="POST" novalidate>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-8">
+    <ul class="nav nav-light nav-tabs">
+	<li class="nav-item">
+		<a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+			<span class="nav-link-text">Information</span>
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+			<span class="nav-link-text">Plan, Application</span>
+		</a>
+	</li>
+    </ul>
+
+    <form
+            id="frm_employee_create" class="needs-validation" data-url="{% url 'EmployeeListAPI' %}" data-method="POST"
+            data-url-redirect="{% url 'EmployeeList' %}"
+            novalidate
+    >
+        {% csrf_token %}
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_block_1">
+                <div class="container-fluid">
                     <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Select User' %}<span
-                                    class="field-required"
-                            >(*)</span></label>
-                            <select
-                                    class="form-select" id="select-box-user" data-url="{% url 'UserListAPI' %}"
-                                    data-method="GET"
-                                    name="user"
-                                    required
-                            >
-                                <option selected>Select...</option>
-                            </select>
-                            <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Select User' %}</label>
+                                    <select
+                                            class="form-select" id="select-box-user"
+                                            data-url="{% url 'UserListAPI' %}"
+                                            data-method="GET"
+                                            name="user"
+                                    >
+                                        <option selected>Select...</option>
+                                    </select>
+                                    <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            {% trans 'First Name' %}
+                                            <span class="field-required">(*)</span>
+                                        </label>
+                                        <input
+                                                type="text" class="form-control" placeholder="A" name="first_name"
+                                                required
+                                        >
+                                        <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            {% trans 'Last Name' %}
+                                            <span class="field-required">(*)</span>
+                                        </label>
+                                        <input
+                                                type="text" placeholder="Nguyen Van"
+                                                class="form-control"
+                                                name="last_name"
+                                                required
+                                        >
+                                        <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Avatar' %}</label>
+                                <div id="upload-area" class="form-control">
+                                    Click here to upload image
+                                </div>
+                                <input id="input-avatar" type="file" class="hidden" name="avatar">
+                                <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">
-                                    {% trans 'First Name' %}
-                                    <span class="field-required">(*)</span>
-                                </label>
-                                <input type="text" class="form-control" placeholder="A" name="first_name" required>
-                                <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
+                                <label class="form-label">{% trans 'Email' %}<span
+                                        class="field-required"
+                                >(*)</span></label>
+                                <input
+                                        type="email" class="form-control"
+                                        placeholder="customer@mtsolution.com.vn"
+                                        name="email"
+                                        required
+                                >
+                                <span class="form-text text-muted">{% trans 'Contact to email adress' %}</span>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
+
                             <div class="form-group">
+                                <label class="form-label">{% trans 'Phone' %}<span
+                                        class="field-required"
+                                >(*)</span></label>
+                                <input
+                                        type="text" placeholder="(+84) 987-654-321"
+{#                                        data-mask="(999) 999-999-999"#}
+                                        class="form-control"
+                                        name="phone"
+                                        required
+                                >
+                                <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Department' %}<span
+                                        class="field-required"
+                                >(*)</span></label>
+                                <select
+                                        class="form-select"
+                                        name="group"
+                                        id="select-box-group-employee"
+                                        data-url="{% url 'GroupListAPI' %}"
+                                        data-method="GET"
+                                        required
+                                >
+                                </select>
+                                <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Date of Birthday' %}<span
+                                        class="field-required"
+                                >(*)</span></label>
+                                <input
+                                        type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"
+                                        value="01/01/2023"
+                                        name="dob"
+                                        required
+                                >
+                                <span class="form-text text-muted">dd/mm/yyyy</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Date Joined' %}<span
+                                        class="field-required"
+                                >(*)</span></label>
+                                <input
+                                        type="text" placeholder="" data-mask="99/99/9999" class="form-control"
+                                        name="date_joined"
+                                        required
+                                >
+                                <span class="form-text text-muted">dd/mm/yyyy</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Role' %}</label>
+                                <select
+                                        class="form-control select2 select2-multiple"
+                                        multiple
+                                        data-placeholder="{% trans 'Choose' %}"
+                                        name="role"
+                                        id="select-box-role"
+                                        data-url="{% url 'RoleListAPI' %}"
+                                        data-method="GET"
+                                >
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="form-check form-switch form-switch-lg mb-1">
                                 <label class="form-label">
-                                    {% trans 'Last Name' %}
+                                    {% trans 'Active the employee after created' %}
                                     <span class="field-required">(*)</span>
                                 </label>
                                 <input
-                                        type="text" placeholder="Nguyen Van"
-                                        class="form-control"
-                                        name="last_name"
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="is_active" checked
                                         required
                                 >
-                                <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_block_2">
+                <table
+                        id="datable-employee-plan-app"
+                        data-url="{% url 'PlanListAPI' %}"
+                        data-method="GET"
+                >
+                    <tbody></tbody>
+                </table>
 
-                </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Avatar' %}</label>
-                        <div id="upload-area" class="form-control">
-                            Click here to upload image
-                        </div>
-                        <input id="input-avatar" type="file" class="hidden" name="avatar">
-                        <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Email' %}<span class="field-required">(*)</span></label>
-                        <input
-                                type="email" class="form-control"
-                                placeholder="customer@mtsolution.com.vn"
-                                name="email"
-                                required
-                        >
-                        <span class="form-text text-muted">{% trans 'Contact to email address' %}</span>
-                    </div>
-                </div>
-                <div class="col-4">
-
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Phone' %}<span class="field-required">(*)</span></label>
-                        <input
-                                type="text" placeholder="(+84) 987-654-321"
-                                data-mask="(999) 999-999-999"
-                                class="form-control"
-                                name="phone"
-                                required
-                        >
-                        <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Department' %}<span
-                                class="field-required"
-                        >(*)</span></label>
-                        <select class="form-select" name="department" required>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Date of Birthday' %}<span class="field-required">(*)</span></label>
-                        <input
-                                type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"
-                                value="01/01/2023"
-                                name="dob"
-                                required
-                        >
-                        <span class="form-text text-muted">dd/mm/yyyy</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Date Joined' %}<span
-                                class="field-required"
-                        >(*)</span></label>
-                        <input
-                                type="text" placeholder="" data-mask="99/99/9999" class="form-control"
-                                name="date_joined"
-                                required
-                        >
-                        <span class="form-text text-muted">dd/mm/yyyy</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label class="form-label">{% trans 'Role' %}</label>
-                        <select
-                                class="form-control select2 select2-multiple"
-                                multiple
-                                data-placeholder="{% trans 'Choose' %}"
-                                name="language"
-                                id="languages"
-                        >
-                            <option value="">Select...</option>
-                            <option value="1">Role 1</option>
-                            <option value="2">Role 2</option>
-                            <option value="3">Role 3</option>
-                            <option value="4">Role 4</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <div class="form-check form-switch form-switch-lg mb-1">
-                        <label class="form-label">
-                            {% trans 'Active the employee after created' %}
-                            <span class="field-required">(*)</span>
-                        </label>
-                        <input
-                                type="checkbox"
-                                class="form-check-input"
-                                name="is_active" checked
-                                required
-                        >
-                    </div>
-                </div>
             </div>
         </div>
     </form>
+
+
 {% endblock %}
 
 
@@ -227,65 +272,6 @@
     <!-- Customize JS -->
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
-    <script src="{% static 'assets/js/core/hr/group/group_create.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 
-{#    <script>#}
-{#        $(document).ready(function () {#}
-{#            function loadUserList() {#}
-{#                // load user list#}
-{#                let ele = $('#select-box-user');#}
-{#                let url = ele.attr('data-url');#}
-{#                let method = ele.attr('data-method');#}
-{#                $.fn.callAjax(url, method).then(#}
-{#                    (resp) => {#}
-{#                        let data = $.fn.switcherResp(resp);#}
-{#                        if (data) {#}
-{#                            ele.text("");#}
-{#                            if (data.hasOwnProperty('user_list') && Array.isArray(data.user_list)) {#}
-{#                                data.user_list.map(function (item) {#}
-{#                                    ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)#}
-{#                                })#}
-{#                            }#}
-{#                        }#}
-{#                    }#}
-{#                )#}
-{#            }#}
-{##}
-{#            function loadDefaultData() {#}
-                {# load date now #}
-{#                $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));#}
-{##}
-{#                loadUserList();#}
-{##}
-{#                $('#input-avatar').on('change', function (ev) {#}
-{#                    let upload_img = $('#upload-area');#}
-{#                    upload_img.text("");#}
-{#                    upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");#}
-{#                });#}
-{#                $('#upload-area').click(function (e) {#}
-{#                    $('#input-avatar').click();#}
-{#                });#}
-{##}
-{#                $('#languages').select2();#}
-{#            }#}
-{##}
-{#            loadDefaultData();#}
-{##}
-            {# form submit #}
-{#            jQuery.validator.setDefaults({#}
-{#                debug: true,#}
-{#                success: "valid"#}
-{#            });#}
-{#            let frm = $('#frm_employee_create');#}
-{#            frm.validate({#}
-{#                errorElement: 'p',#}
-{#                errorClass: 'is-invalid cl-red',#}
-{#            })#}
-{#            frm.submit(function (event) {#}
-{#                let frm = new SetupFormSubmit($(this));#}
-{#                console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);#}
-{#                event.preventDefault();#}
-{#            });#}
-{#        });#}
-{#    </script>#}
 {% endblock %}

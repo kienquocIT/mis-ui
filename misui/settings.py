@@ -45,7 +45,7 @@ INSTALLED_APPS = \
         'apps.core.home',
         'apps.core.hr',
         'apps.core.company',
-        'apps.core.tenant',
+        'apps.core.base',
     ] + [  # Another Application
 
     ]

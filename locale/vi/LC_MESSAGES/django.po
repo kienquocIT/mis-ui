@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 12:05+0700\n"
+"POT-Creation-Date: 2023-01-06 16:01+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgid "Surname and Middle Names"
 msgstr "Họ và Tên Lót"
 
 #: .\apps\core\account\templates\core\account\user_create.html:58
-#: .\apps\core\account\templates\core\account\user_detail.html:70
+#: .\apps\core\account\templates\core\account\user_detail.html:69
 #: .\apps\core\account\templates\core\account\user_list.html:51
 msgid "Full Name"
 msgstr "Tên Đầy Đủ"
@@ -48,7 +48,7 @@ msgid "Full Name of Person"
 msgstr "Tên Đầy Đủ của chủ thể"
 
 #: .\apps\core\account\templates\core\account\user_create.html:66
-#: .\apps\core\company\templates\core\company\company_list.html:163
+#: .\apps\core\company\templates\core\company\company_list.html:162
 #: .\apps\core\hr\templates\core\hr\employee\employee_create.html:112
 msgid "Email"
 msgstr "Email"
@@ -59,8 +59,8 @@ msgid "Contact to email address"
 msgstr "Địa chỉ email liên hệ"
 
 #: .\apps\core\account\templates\core\account\user_create.html:78
-#: .\apps\core\account\templates\core\account\user_detail.html:96
-#: .\apps\core\account\templates\core\account\user_detail.html:153
+#: .\apps\core\account\templates\core\account\user_detail.html:95
+#: .\apps\core\account\templates\core\account\user_detail.html:152
 msgid "Select Company"
 msgstr "Chọn công ty"
 
@@ -105,6 +105,7 @@ msgid "Plan"
 msgstr "Gói dịch vụ"
 
 #: .\apps\core\account\templates\core\account\user_list.html:54
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:65
 msgid "Actions"
 msgstr "Thao tác"
 
@@ -132,103 +133,129 @@ msgstr "Đăng Nhập"
 msgid "Creat new account to MIS"
 msgstr "Tạo mới tài khoản trên MIS"
 
-#: .\apps\core\company\templates\core\company\company_list.html:12
+#: .\apps\core\company\templates\core\company\company_list.html:10
 msgid "Add new"
 msgstr "Tạo mới"
 
-#: .\apps\core\company\templates\core\company\company_list.html:41
-msgid "Name"
-msgstr "Tên"
-
-#: .\apps\core\company\templates\core\company\company_list.html:42
-msgid "Created Date"
-msgstr "Ngày Tạo"
-
-#: .\apps\core\company\templates\core\company\company_list.html:43
-#: .\apps\core\company\templates\core\company\company_list.html:149
-msgid "Representative"
-msgstr "Người Đại Diện"
-
-#: .\apps\core\company\templates\core\company\company_list.html:44
-msgid "Action"
-msgstr "Thao tác"
-
-#: .\apps\core\company\templates\core\company\company_list.html:62
-msgid "Add Company"
-msgstr "Thêm Công Ty"
-
-#: .\apps\core\company\templates\core\company\company_list.html:80
-msgid "Company Name"
-msgstr "Tên Công Ty"
-
-#: .\apps\core\company\templates\core\company\company_list.html:89
-msgid "Name of new company"
-msgstr "Tên của công ty mới"
-
-#: .\apps\core\company\templates\core\company\company_list.html:95
-msgid "Parent Company"
-msgstr "Là công ty con của"
-
-#: .\apps\core\company\templates\core\company\company_list.html:103
-msgid "No selected"
-msgstr "Chưa chọn"
-
-#: .\apps\core\company\templates\core\company\company_list.html:108
-msgid "The new is subsidiary company or not"
-msgstr "Công ty mới là công ty con hoặc không"
-
-#: .\apps\core\company\templates\core\company\company_list.html:116
+#: .\apps\core\company\templates\core\company\company_list.html:39
+#: .\apps\core\company\templates\core\company\company_list.html:115
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:19
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:49
 msgid "Code"
 msgstr "Mã"
 
-#: .\apps\core\company\templates\core\company\company_list.html:126
+#: .\apps\core\company\templates\core\company\company_list.html:40
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:27
+msgid "Name"
+msgstr "Tên"
+
+#: .\apps\core\company\templates\core\company\company_list.html:41
+msgid "Created Date"
+msgstr "Ngày Tạo"
+
+#: .\apps\core\company\templates\core\company\company_list.html:42
+#: .\apps\core\company\templates\core\company\company_list.html:148
+msgid "Representative"
+msgstr "Người Đại Diện"
+
+#: .\apps\core\company\templates\core\company\company_list.html:43
+msgid "Action"
+msgstr "Thao tác"
+
+#: .\apps\core\company\templates\core\company\company_list.html:61
+msgid "Add Company"
+msgstr "Thêm Công Ty"
+
+#: .\apps\core\company\templates\core\company\company_list.html:79
+msgid "Company Name"
+msgstr "Tên Công Ty"
+
+#: .\apps\core\company\templates\core\company\company_list.html:88
+msgid "Name of new company"
+msgstr "Tên của công ty mới"
+
+#: .\apps\core\company\templates\core\company\company_list.html:94
+msgid "Parent Company"
+msgstr "Là công ty con của"
+
+#: .\apps\core\company\templates\core\company\company_list.html:102
+msgid "No selected"
+msgstr "Chưa chọn"
+
+#: .\apps\core\company\templates\core\company\company_list.html:107
+msgid "The new is subsidiary company or not"
+msgstr "Công ty mới là công ty con hoặc không"
+
+#: .\apps\core\company\templates\core\company\company_list.html:125
 msgid "Code new company"
 msgstr "Mã của công ty mới"
 
-#: .\apps\core\company\templates\core\company\company_list.html:132
+#: .\apps\core\company\templates\core\company\company_list.html:131
 msgid "Address"
 msgstr "Địa Chỉ"
 
-#: .\apps\core\company\templates\core\company\company_list.html:138
+#: .\apps\core\company\templates\core\company\company_list.html:137
 msgid ""
 "No.20, 22 Street, Him Lam Quarter, Binh Hung Ward, Binh Chanh District, HCM "
 "city, VN country"
-msgstr "Số 20, Đường 22, Khu Dân Cư Him Lam, Phường Bình Hưng, Quận Bình Chánh, Thành Phố Hồ Chính Minh, Việt Nam"
+msgstr ""
+"Số 20, Đường 22, Khu Dân Cư Him Lam, Phường Bình Hưng, Quận Bình Chánh, "
+"Thành Phố Hồ Chính Minh, Việt Nam"
 
-#: .\apps\core\company\templates\core\company\company_list.html:141
+#: .\apps\core\company\templates\core\company\company_list.html:140
 msgid "Address new company"
 msgstr "Địa chỉ của công ty mới"
 
-#: .\apps\core\company\templates\core\company\company_list.html:157
+#: .\apps\core\company\templates\core\company\company_list.html:156
 msgid "Full name of Representative"
 msgstr "Tên đầy đủ của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:172
+#: .\apps\core\company\templates\core\company\company_list.html:171
 msgid "Email of Representative"
 msgstr "Email của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:178
+#: .\apps\core\company\templates\core\company\company_list.html:177
 msgid "Phone Number"
 msgstr "Số Điện Thoại"
 
-#: .\apps\core\company\templates\core\company\company_list.html:187
+#: .\apps\core\company\templates\core\company\company_list.html:186
 msgid "Phone number of Representative"
 msgstr "Số điện thoại của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:195
+#: .\apps\core\company\templates\core\company\company_list.html:194
 #: .\apps\core\organization\templates\core\organization\group\create.html:127
 #: .\apps\core\organization\templates\core\organization\group\create.html:213
 #: .\apps\core\organization\templates\core\organization\group\group_create.html:246
 msgid "Add"
 msgstr "Thêm"
 
-#: .\apps\core\company\templates\core\company\company_list.html:201
+#: .\apps\core\company\templates\core\company\company_list.html:200
 #: .\apps\core\organization\templates\core\organization\group\create.html:131
 #: .\apps\core\organization\templates\core\organization\group\group_create.html:252
 #: .\apps\core\organization\templates\core\organization\grouplevel\level_list.html:74
 #: .\apps\core\organization\templates\core\organization\grouplevel\level_list.html:76
 msgid "Cancel"
 msgstr "Hủy"
+
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:24
+msgid "Press row here to open detail page."
+msgstr "Nhấn vào mã ở cột này để di chuyển đến trang chi tiết."
+
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:28
+msgid "License Used"
+msgstr "Giấy phép đã sử dụng"
+
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:29
+msgid "Total User"
+msgstr "Tổng Số Người Dùng"
+
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:30
+msgid "Power User"
+msgstr "Người Dùng Đa Công Ty"
+
+#: .\apps\core\company\templates\core\company\company_overview\company_list.html:31
+msgid "Employee Linked User / Total"
+msgstr "Nhân Viên Đã Liên Kết Người Dùng / Tổng"
 
 #: .\apps\core\hr\templates\core\hr\employee\employee_create.html:55
 msgid "Select User"
@@ -282,6 +309,25 @@ msgstr "Chọn"
 #: .\apps\core\organization\templates\core\organization\grouplevel\level_create.html:289
 msgid "Active the employee after created"
 msgstr "Kích hoạt nhân viên sau khi tạo"
+
+#: .\apps\core\hr\templates\core\hr\role\create_role.html:37
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:37
+msgid "Role name"
+msgstr "Vai Trò"
+
+#: .\apps\core\hr\templates\core\hr\role\create_role.html:44
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:62
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:43
+msgid "Abbreviation"
+msgstr ""
+
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:61
+msgid "Role Name"
+msgstr "Tên Vai Trò"
+
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:63
+msgid "Holder"
+msgstr ""
 
 #: .\apps\core\organization\templates\core\organization\group\create.html:43
 #: .\apps\core\organization\templates\core\organization\group\group_create.html:98
@@ -458,6 +504,10 @@ msgstr "Mã Tenant"
 msgid "detail"
 msgstr "Chi tiết"
 
+#: .\apps\shared\msg\auth.py:8
+msgid "Detail"
+msgstr "Chi tiết"
+
 #: .\apps\shared\msg\auth.py:9
 msgid "The session login was expired."
 msgstr "Phiên đăng nhập đã hết hạn."
@@ -510,6 +560,10 @@ msgstr "Công Ty"
 msgid "Employees"
 msgstr "Nhân Viên"
 
-#: .\templates\extends\vertical_nav_main_menu.html:47
+#: .\templates\extends\vertical_nav_main_menu.html:57
 msgid "User"
 msgstr "Người Dùng"
+
+#: .\templates\extends\vertical_nav_main_menu.html:67
+msgid "Company Overview"
+msgstr "Tổng Quan Công Ty"

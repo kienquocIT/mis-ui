@@ -14,6 +14,7 @@ class ApiURL(object):
 
     # home/company
     COMPANY_LIST = 'company/list'
+    COMPANY_OVERVIEW = 'company/overview'
 
     # organization/role
     ROLE_LIST = 'hr/roles'

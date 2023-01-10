@@ -13,15 +13,25 @@ TEMPLATE = {
 
 
 class UserList(View):
-    @mask_view(auth_require=True, template='core/account/user_list.html', breadcrumb='USER_LIST_PAGE')
+    @mask_view(
+        auth_require=True,
+        template='core/account/user_list.html',
+        breadcrumb='USER_LIST_PAGE',
+        menu_active='menu_user_list',
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class UserCreate(View):
-    @mask_view(auth_require=True, template='core/account/user_create.html', breadcrumb='USER_CREATE_PAGE')
+    @mask_view(
+        auth_require=True,
+        template='core/account/user_create.html',
+        breadcrumb='USER_CREATE_PAGE',
+        menu_active='menu_user_list',
+    )
     def get(self, request, *args, **kwargs):
-        return{}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class UserListAPI(APIView):
@@ -65,6 +75,5 @@ class UserDetailAPI(APIView):
     def delete(self, request, pk, *args, **kwargs):
         user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).delete(request.data)
         if user.state:
-            return{}, status.HTTP_200_OK
+            return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
-

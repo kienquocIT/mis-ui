@@ -1193,6 +1193,13 @@ class SetupFormSubmit {
 
         // Data body get from form input
         this.dataForm = $.fn.serializerObject(formSelected);
+
+        // URL DETAIL
+        this.dataUrlDetail = formSelected.attr('data-url-detail');
+        if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+        if(this.dataUrlDetail){
+            this.dataUrlDetail = this.dataUrlDetail.split("/").slice(0, -1).join("/") + "/";
+        }
     }
 
     getCtxAjax() {
@@ -1203,6 +1210,13 @@ class SetupFormSubmit {
             redirect: this.dataUrlRedirect,
             redirectTimeout: this.dataRedirectTimeout
         }
+    }
+
+    getUrlDetail(pk){
+        if (this.dataUrlDetail && pk){
+            return this.dataUrlDetail + pk.toString();
+        }
+        return null;
     }
 }
 

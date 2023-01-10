@@ -181,17 +181,6 @@ class GroupLevelListAPI(APIView):
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-class GroupLevelCreate(View):
-    @mask_view(
-        auth_require=True,
-        template='core/hr/grouplevel/level_create.html',
-        breadcrumb='GROUP_LEVEL_CREATE_PAGE',
-        menu_active='menu_group_list',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 # Group
 class GroupCreate(View):
 

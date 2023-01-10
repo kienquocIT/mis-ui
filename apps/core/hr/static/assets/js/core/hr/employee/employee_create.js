@@ -200,6 +200,14 @@ $(document).ready(function () {
             frm.dataForm['role'] = dataRoleList
         }
 
+        if (frm.dataForm) {
+            for (let key in frm.dataForm) {
+                if (frm.dataForm[key] === '') {
+                    delete frm.dataForm[key]
+                }
+            }
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {

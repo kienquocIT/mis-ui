@@ -52,8 +52,10 @@ $(document).ready(function () {
                 }
             }, {
                 'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                        return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                    if (row.hasOwnProperty('group') && typeof row.group === "object") {
+                        if (Object.keys(row.group).length !== 0) {
+                            return `<span class="badge badge-primary">` + row.group.title + `</span>`;
+                        }
                     }
                     return '';
                 }
@@ -95,6 +97,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
+                        console.log(data)
                         initDataTable(config);
                     }
                 },

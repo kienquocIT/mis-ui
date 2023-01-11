@@ -395,10 +395,14 @@ function tableGroupEmployeeAdd() {
                 let childText = child.innerText
                 if (child.firstChild) {
                     let childID = child.firstChild.id
-                    if (childID) {
-                        trData += `<td><span id="${childID}">${childText}</span></td>`;
+                    if (childText) {
+                        if (childID) {
+                            trData += `<td><span id="${childID}">${childText}</span></td>`;
+                        } else {
+                            trData += `<td><span>${childText}</span></td>`;
+                        }
                     } else {
-                        trData += `<td><span>${childText}</span></td>`;
+                        trData += `<td><span></span></td>`;
                     }
                 }
             }

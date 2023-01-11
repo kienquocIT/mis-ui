@@ -17,34 +17,29 @@ $(function () {
                 data: 'title', className: 'wrap-text',
             }, {
                 data: 'license_used', class: 'wrap-text', width: '20%', render: (data, type, row, meta) => {
-                    if (typeof data === 'object') {
-                        let arr_html = [];
-                        Object.keys(data).map((key) => {
+                    let arr_html = [];
+                    for (let i = 0; i < data.length; i++) {
+                        if (typeof data[i] === 'object') {
                             let cls_name = '';
-                            switch (key.toLowerCase()) {
-                                case 'sale':
-                                    cls_name = 'badge-success';
-                                    break;
-                                case 'e-office':
-                                    cls_name = 'badge-primary';
-                                    break;
-                                case 'personal':
-                                    cls_name = 'badge-secondary';
-                                    break;
-                                case 'hrm':
-                                    cls_name = 'badge-indigo';
-                                    break;
-                                default:
-                                    cls_name = 'badge-info';
-                                    break;
+                            if (data[i].key.toLowerCase() === 'sale') {
+                                cls_name = 'badge-success';
                             }
-                            arr_html.push(String.format_by_key(`<span href="#" class="badge {cls_name} my-1">{key} ({data})</span>`, {
-                                'cls_name': cls_name, 'key': key.toUpperCase(), 'data': data[key],
-                            }));
-                        });
-                        return arr_html.join(" ")
+                            else if (data[i].key.toLowerCase() === 'e-office') {
+                                cls_name = 'badge-primary';
+                            }
+                            else if (data[i].key.toLowerCase() === 'personal') {
+                                cls_name = 'badge-secondary';
+                            }
+                            else if (data[i].key.toLowerCase() === 'hrm') {
+                                cls_name = 'badge-indigo';
+                            }
+                            else {
+                                cls_name = 'badge-info';
+                            }
+                            arr_html += `<span href="" class="badge ` + cls_name + ` my-1">` + data[i].key + ` (` + data[i].quantity + `)` + `</span> `
+                        }
                     }
-                    return '';
+                    return arr_html
                 }
             }, {
                 data: 'total_user', width: '10%', render: (data, type, row, meta) => {

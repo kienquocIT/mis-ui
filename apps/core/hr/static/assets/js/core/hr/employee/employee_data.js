@@ -29,7 +29,10 @@ $(function () {
             }
         }, {
             'data': 'code', render: (data, type, row, meta) => {
-                return String.format(`<b>{0}</b>`, data);
+                // return String.format(`<b>{0}</b>`, data);
+                return `<a href="">
+                    <span><b>${data}</b></span>
+                </a>`
             }
         }, {
             'data': 'full_name', 'render': (data, type, row, meta) => {
@@ -39,9 +42,6 @@ $(function () {
                                         <div class="avatar avatar-xs avatar-success avatar-rounded">
                                             <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
                                         </div>
-<!--                                        <div class="avatar avatar-xs">-->
-<!--                                            <img src="dist/img/avatar10.jpg" alt="user" class="avatar-img rounded-circle">-->
-<!--                                        </div>-->
                                     </div>
                                     <div class="media-body">
                                         <span class="d-block">` + row.full_name + `</span>
@@ -52,8 +52,10 @@ $(function () {
             }
         }, {
             'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                if (row.hasOwnProperty('group') && typeof row.group === "object") {
+                    if (Object.keys(row.group).length !== 0) {
+                        return `<span class="badge badge-primary">` + row.group.title + `</span>`;
+                    }
                 }
                 return '';
             }
@@ -61,7 +63,7 @@ $(function () {
             'render': (data, type, row, meta) => {
                 if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
                     let result = [];
-                    row.role.map(item => item.name ? result.push(`<span class="badge badge-soft-primary">` + item.name + `</span>`) : null);
+                    row.role.map(item => item.title ? result.push(`<span class="badge badge-soft-primary">` + item.title + `</span>`) : null);
                     return result.join(" ");
                 }
                 return '';

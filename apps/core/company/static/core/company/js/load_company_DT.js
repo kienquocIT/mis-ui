@@ -3,97 +3,62 @@
 $(function () {
     $(document).ready(function () {
         let config = {
-            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            ordering: false,
-            columnDefs: [{
-                "searchable": false, "orderable": false,
-            }],
-            language: {
-                search: "",
-                searchPlaceholder: "Search",
-                info: "_START_ - _END_ of _TOTAL_",
-                sLengthMenu: "View  _MENU_",
-                paginate: {
-                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-                }
-            },
-            drawCallback: function () {
+            ordering: false, paginate: false, language: {
+                search: "", searchPlaceholder: "Search", info: "", sLengthMenu: "View  MENU",
+            }, drawCallback: function () {
                 $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
                 feather.replace();
-            },
-            data: [],
-            columns: [
-                {
-                    'render': () => {
-                        return '';
-                    }
+            }, data: [], columns: [{
+                width: '5%', render: () => {
+                    return '';
                 },
-                {
-                    'data': 'title',
-                    'render': (data, type, row, meta) => {
+            }, {
+                width: '10%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
+                    return `<a href="/company/detail/`+row.id+`">` + data + `</a>`
+                }
+            }, {
+                width: '30%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {
                         if (data) {
                             return `<div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                        <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    <a href="/company/list/`+row.id+`">
-                                        <span class="d-block">` + row.title + `</span>
-                                    </a>
-                                </div>
-                            </div>`;
+                                        <div class="media-head me-2">
+                                            <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                                <span class="initial-wrap"><b>` + row.title.charAt(0).toUpperCase() + `</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="media-body">
+                                            <a href="/company/detail/`+row.id+`">
+                                                <span class="d-block"><b>` + row.title + `</b></span>
+                                            </a>
+                                        </div>
+                                    </div>`;
                         }
                         else {
                             return ''
                         }
                     }
-                },
-                {
-                    'data': 'code',
-                    'render': (data, type, row, meta) => {
-                        if (data) {
-                            return `<span class="badge badge-soft-primary">` + data + `</span>`;
-                        }
-                        else {
-                            return ''
-                        }
-                    }
-                },
-                {
-                    'data': 'date_created',
-                    render: (data, type, row, meta) => {
-                        if (data) {
-                            let date = new Date(data).toLocaleDateString("en-GB")
-                            let time = new Date(data).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
-                            return date + ' ' + time;
-                        }
-                        else {
-                            return ""
-                        }
-                    }
-                },
-                {
-                    'data': 'representative_fullname', render: (data, type, row, meta) => {
+
+            }, {
+                width: '20%', data: 'date_created', render: (data, type, row, meta) => {
+                    let date = new Date(data).toLocaleDateString("en-GB")
+                    let time = new Date(data).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+                    return date + ' ' + time;
+                }
+            }, {
+                width: '20%', data: 'representative_fullname', render: (data, type, row, meta) => {
                         if (data) {
                             return `<div class="representative_fullname"><span class="badge badge-primary">`+ data +`</span></div>`;
                         }
                         else {
-                            return `<div class="representative_fullname"><span class="badge badge-success">`+ $('#tenant_fullname').val() +`</span></div>`;
+                            return `<div class="representative_fullname"><span class="badge badge-primary">`+ $('input[name=default_representative_name]').val() +`</span></div>`;
                         }
-                    }
-                },
-
-                {
-                    'className': 'action-center', 'render': (data, type, row, meta) => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/list/`+row.id+`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return `<div><center>` + bt2 + bt3 + `</center></div>`;
-                    }
-                },
-            ]
+                }
+            }, {
+                width: '15%', className: 'action-center', render: (data, type, row, meta) => {
+                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/`+row.id+`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return `<div class="text-center">` + bt2 + bt3 + `</div>`;
+                }
+            },]
         }
 
         function initDataTable(config) {
@@ -142,25 +107,15 @@ $(function () {
             let tb = $('#datable_company_list');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
-                        config['data'] = resp.data.company_list;
-                        console.log(resp.data.company_list)
-                        if (resp.data.company_list[0].tenant_auto_create_company === false)
-                        {
-                            const add_company_div = document.getElementById("add_company_button");
-                            add_company_div.remove();
-                        }
-                        if (resp.data.company_list[0].tenant_representative_fullname)
-                        {
-                            $('#tenant_fullname').val(resp.data.company_list[0].tenant_representative_fullname)
-                        }
-                    }
-                    initDataTable(config);
+                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
+                    config['data'] = resp.data['company_list'] ? resp.data['company_list']: [];
                 }
-            }, (errs) => {
-                initDataTable(config);
-            },)
+                if (resp.data.company_list[0].tenant_auto_create_company === false)
+                {
+                    const add_company_div = document.getElementById("add_company_button");
+                    add_company_div.remove();
+                }
+            }).then(() => initDataTable(config))
         }
 
         loadDataTable();

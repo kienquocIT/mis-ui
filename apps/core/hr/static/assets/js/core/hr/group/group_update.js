@@ -404,6 +404,8 @@ function tableGroupEmployeeAdd() {
                     } else {
                         trData += `<td><span></span></td>`;
                     }
+                } else {
+                    trData += `<td><span></span></td>`;
                 }
             }
             trSTT++

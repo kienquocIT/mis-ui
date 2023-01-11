@@ -320,11 +320,19 @@ function tableGroupEmployeeAdd() {
             for (let i = 1; i < (childrenLength - 4); i++) {
                 let child = row.children[(i)]
                 let childText = child.innerText
-                let childID = child.firstChild.id
-                if (childID) {
-                    trData += `<td><span id="${childID}">${childText}</span></td>`;
+                if (child.firstChild) {
+                    let childID = child.firstChild.id
+                    if (childText) {
+                        if (childID) {
+                            trData += `<td><span id="${childID}">${childText}</span></td>`;
+                        } else {
+                            trData += `<td><span>${childText}</span></td>`;
+                        }
+                    } else {
+                        trData += `<td><span></span></td>`;
+                    }
                 } else {
-                    trData += `<td><span>${childText}</span></td>`;
+                    trData += `<td><span></span></td>`;
                 }
             }
             trSTT++

@@ -13,11 +13,11 @@ $(function () {
                     return '';
                 },
             }, {
-                width: '15%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
+                width: '10%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
                     return `<a href="/company/detail/`+row.id+`">` + data + `</a>`
                 }
             }, {
-                width: '25%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {
+                width: '30%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {
                         if (data) {
                             return `<div class="media align-items-center">
                                         <div class="media-head me-2">

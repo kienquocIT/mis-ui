@@ -25,9 +25,9 @@ class BreadcrumbItem(object):
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren('Employee Create', 'EmployeeCreate')
     ORGANIZATION_PAGE = BreadcrumbChildren('Organization', 'GroupList')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren('Organization Level', 'GroupLevelList')
-    GROUP_LEVEL_CREATE_PAGE = BreadcrumbChildren('Group Level Create', 'GroupLevelCreate')
 
     USER_LIST_PAGE = BreadcrumbChildren('User List', 'UserList')
+
     USER_CREATE_PAGE = BreadcrumbChildren('User Create', 'UserCreate')
 
     GROUP_LIST_PAGE = BreadcrumbChildren('Organization Group', 'GroupList')
@@ -37,6 +37,8 @@ class BreadcrumbItem(object):
 
     ROLE_LIST_PAGE = BreadcrumbChildren('Role List', 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren("Create Role", 'RoleCreate')
+
+    # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
 
 class BreadcrumbView:
@@ -107,8 +109,6 @@ class BreadcrumbView:
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
 
-    GROUP_LEVEL_CREATE_PAGE = GROUP_LEVEL_LIST_PAGE + [BreadcrumbItem.GROUP_LEVEL_CREATE_PAGE]
-
     GROUP_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ORGANIZATION_PAGE,
@@ -140,4 +140,6 @@ class BreadcrumbView:
     ]
 
     ROLE_CREATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.ROLE_CREATE_PAGE]
+
+    # TENANT_INFORMATION_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.TENANT_INFORMATION_PAGE]
 

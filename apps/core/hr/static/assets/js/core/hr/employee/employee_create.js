@@ -12,7 +12,7 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('user_list') && Array.isArray(data.user_list)) {
                         ele.append(`<option>` + `</option>`)
                         data.user_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                            ele.append(`<option value="` + item.id + `" data-first-name="${item.first_name}" data-last-name="${item.last_name}" data-email="${item.email}" data-phone="${item.phone}">` + item.full_name + `</option>`)
                         })
                     }
                 }
@@ -41,11 +41,33 @@ $(document).ready(function () {
         )
     }
 
+    // load group list
+    function loadGroupList() {
+        let ele = $('#select-box-group-employee');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
+                        ele.append(`<option>` + `</option>`)
+                        data.group_list.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
     // load Plan App
     function loadPlanAppList() {
         let tableApply = $('#datable-employee-plan-app');
         let url = tableApply.attr('data-url');
         let method = tableApply.attr('data-method');
+        let listTypeBtn = ["primary", "success", "info", "danger", "warning", ]
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -56,7 +78,7 @@ $(document).ready(function () {
                             if (data.plan_list[t].application && Array.isArray(data.plan_list[t].application)) {
                                 let appLength = data.plan_list[t].application.length;
                                 for (let i = 0; i < appLength; i++) {
-                                    app_list += `<li class="list-break mt-3 mb-3" style="display: inline">
+                                    app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
                                                     name="list-app-add-employee-${t}" class="form-check-input"
@@ -72,12 +94,13 @@ $(document).ready(function () {
 
                             $('#datable-employee-plan-app tbody').append(`<tr>
                         <td>
-                            <div class="row mb-3">
-                                <div class="mb-1">
+                            <div class="row mb-5">
+                                <div>
                                     <button
-                                            class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
                                             aria-controls="collapseExample${t}"
+                                          
                                     >
                                         ${data.plan_list[t].title}
                                     </button>
@@ -100,12 +123,12 @@ $(document).ready(function () {
 
     function setupDataPlanApp() {
         let dataPlanAppSubmit = [];
-        let plan_id = null;
         let tablePlanApp = document.getElementById("datable-employee-plan-app");
         let tablePlanAppLength = tablePlanApp.tBodies[0].rows.length;
         for (let s = 0; s < tablePlanAppLength; s++) {
             let dataPlanList = {};
             let dataAppList = [];
+            let plan_id = null;
             let showRow = tablePlanApp.rows[s]
             let app_list = showRow.children[0].children[0].children[1].children[0].children
             if (app_list) {
@@ -117,9 +140,11 @@ $(document).ready(function () {
                         dataAppList.push(app_id)
                     }
                 }
-            dataPlanList['plan'] = plan_id;
-            dataPlanList['application'] = dataAppList;
-            dataPlanAppSubmit.push(dataPlanList)
+                if (plan_id) {
+                    dataPlanList['plan'] = plan_id;
+                    dataPlanList['application'] = dataAppList;
+                    dataPlanAppSubmit.push(dataPlanList)
+                }
             }
         }
     return dataPlanAppSubmit
@@ -130,6 +155,7 @@ $(document).ready(function () {
 
         loadUserList();
         loadRoleList();
+        loadGroupList();
         loadPlanAppList();
 
         $('#input-avatar').on('change', function (ev) {
@@ -173,6 +199,19 @@ $(document).ready(function () {
             frm.dataForm['dob'] = moment(frm.dataForm['dob']).format('YYYY-MM-DD')
         }
 
+        let dataRoleList = $('#select-box-role').val()
+        if (dataRoleList) {
+            frm.dataForm['role'] = dataRoleList
+        }
+
+        if (frm.dataForm) {
+            for (let key in frm.dataForm) {
+                if (frm.dataForm[key] === '') {
+                    delete frm.dataForm[key]
+                }
+            }
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
@@ -187,4 +226,19 @@ $(document).ready(function () {
                     }
                 )
     });
+});
+
+
+// Load group level datas
+$(document).on('change', '#select-box-user', function (e) {
+    let sel = $(this)[0].options[$(this)[0].selectedIndex]
+    let first_name = sel.getAttribute('data-first-name');
+    let last_name = sel.getAttribute('data-last-name');
+    let email = sel.getAttribute('data-email');
+    let phone = sel.getAttribute('data-phone');
+
+    $('#employee-first-name').val(first_name);
+    $('#employee-last-name').val(last_name);
+    $('#employee-email').val(email);
+    $('#employee-phone').val(phone);
 });

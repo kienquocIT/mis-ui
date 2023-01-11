@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 
-{% block cssHeader %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'core/company/css/company_list.css' %}">
+{% endblock %}
 
 {% block pageAction %}
     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
@@ -23,7 +25,7 @@
             data-method="GET">
         <thead>
         <tr>
-            <th>
+            <th style="max-width: 5%">
                 <span class="form-check">
                     <input type="checkbox"
                             class="form-check-input check-select-all"
@@ -31,11 +33,11 @@
                     <label class="form-check-label" for="customCheck1"></label>
                 </span>
             </th>
-            <th>{% trans 'Code' %}</th>
-            <th>{% trans 'Name' %}</th>
-            <th>{% trans 'Created Date' %}</th>
-            <th>{% trans 'Representative' %}</th>
-            <th>{% trans 'Action' %}</th>
+            <th style="max-width: 25%">Company name</th>
+            <th style="max-width: 15%">Code</th>
+            <th style="max-width: 25%">Created date</th>
+            <th style="max-width: 20%">Representative</th>
+            <th style="max-width: 10%"><center>Action</center></th>
         </tr>
         </thead>
         <tbody></tbody>
@@ -50,9 +52,7 @@
         <div class="modal-dialog modal-lg mt-15" role="document">
             <div class="modal-content mb-7">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        {% trans 'Add Company' %}
-                    </h5>
+                    <h5 class="modal-title">{% trans 'Add Company' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -63,12 +63,11 @@
                             data-url-redirect="/"
                             data-method="POST">
                         {% csrf_token %}
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="company_name_id">
-                                        {% trans 'Company Name' %}
-                                        <span class="required"></span>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Company Name' %}</b>
                                     </label>
                                     <input type="text" class="form-control"
                                             id="company_name_id" name="title"
@@ -76,11 +75,10 @@
                                             required/>
                                     <span class="form-text text-muted">{% trans 'Name of new company' %}</span>
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="parent_company_id">
-                                        {% trans 'Parent Company' %}
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Code' %}</b>
                                     </label>
                                     <select class="form-control form-select" id="parent_company_id"
                                             name="parent_company"
@@ -95,12 +93,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="code_id">
-                                        {% trans 'Code' %}
-                                        <span class="required"></span>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                 <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Representative' %}</b>
                                     </label>
                                     <input type="text" class="form-control"
                                             id="code_id" name="code"
@@ -110,11 +108,13 @@
                                     <span class="form-text text-muted">{% trans 'Code new company' %}</span>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="address_id">
-                                        {% trans 'Address' %}
-                                        <span class="required"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Address' %}</b>
                                     </label>
                                     <input type="text" class="form-control"
                                             id="address_id" name="address"
@@ -124,24 +124,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="representative_fullname_id">
-                                        {% trans 'Representative' %}
-                                        <span class="required"></span>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Email' %}</b>
                                     </label>
                                     <input type="text" class="form-control"
                                             id="representative_fullname_id" name="representative_fullname"
                                             placeholder="Nguyen Van A" required/>
                                     <span class="form-text text-muted">{% trans 'Full name of Representative' %}</span>
                                 </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="email_id">
-                                        {% trans 'Email' %}
-                                        <span class="required"></span>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Phone Number' %}</b>
                                     </label>
                                     <input type="text" class="form-control"
                                             id="email_id" name="email"
@@ -150,11 +148,13 @@
                                     <span class="form-text text-muted">{% trans 'Email of Representative' %}</span>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="phone_id">
-                                        {% trans 'Phone Number' %}
-                                        <span class="required"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label" for="exampleDropdownFormPassword1">
+                                        <b>{% trans 'Parent Company' %}</b>
                                     </label>
                                     <input type="number" class="form-control"
                                             id="phone_id" name="phone"
@@ -179,7 +179,7 @@
             </div>
         </div>
     </div>
-    <!-- / Add Company -->
+
 {% endblock %}
 
 {% block jsFooter %}

@@ -3,16 +3,33 @@
 $(function () {
     $(document).ready(function () {
         let config = {
-            ordering: false, paginate: false, language: {
-                search: "", searchPlaceholder: "Search", info: "", sLengthMenu: "View  MENU",
-            }, drawCallback: function () {
+            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            ordering: false,
+            columnDefs: [{
+                "searchable": false, "orderable": false,
+            }],
+            language: {
+                search: "",
+                searchPlaceholder: "Search",
+                info: "_START_ - _END_ of _TOTAL_",
+                sLengthMenu: "View  _MENU_",
+                paginate: {
+                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                }
+            },
+            drawCallback: function () {
                 $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
                 feather.replace();
-            }, data: [], columns: [{
-                width: '5%', render: () => {
-                    return '';
+            },
+            data: [],
+            columns: [
+                {
+                    'render': () => {
+                        return '';
+                    }
                 },
-            }, {
+            {
                 width: '15%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
                     return `<a href="/company/detail/`+row.id+`">` + data + `</a>`
                 }
@@ -107,8 +124,21 @@ $(function () {
             let tb = $('#datable_company_list');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
-                    config['data'] = resp.data['company_list'] ? resp.data['company_list']: [];
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
+                        config['data'] = resp.data.company_list;
+                        console.log(resp.data.company_list)
+                        if (resp.data.company_list[0].tenant_auto_create_company === false)
+                        {
+                            const add_company_div = document.getElementById("add_company_button");
+                            add_company_div.remove();
+                        }
+                        if (resp.data.company_list[0].tenant_representative_fullname)
+                        {
+                            $('#tenant_fullname').val(resp.data.company_list[0].tenant_representative_fullname)
+                        }
+                    }
+                    initDataTable(config);
                 }
                 if (resp.data.company_list[0].tenant_auto_create_company === false)
                 {

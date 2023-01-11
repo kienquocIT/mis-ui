@@ -1,4 +1,132 @@
 $(document).ready(function () {
+    let config = {
+        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        ordering: false,
+        columnDefs: [{
+            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+        }],
+        order: [2, 'asc'],
+        language: {
+            search: "",
+            searchPlaceholder: "Search",
+            info: "_START_ - _END_ of _TOTAL_",
+            sLengthMenu: "View  _MENU_",
+            paginate: {
+                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+            }
+        },
+        drawCallback: function () {
+            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
+            feather.replace();
+        },
+        data: [],
+        columns: [{
+            'data': 'code', render: (data, type, row, meta) => {
+                return String.format(`<b>{0}</b>`, data);
+            }
+        }, {
+            'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
+                    return `<span id="${row.id}">` + row.full_name + `</span>`;
+                }
+                return '';
+            }
+        }, {
+            'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('department') && typeof row.department === "object") {
+                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                }
+                return '';
+            }
+        }, {
+            'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
+                    return new Date(row.date_joined).toDateString();
+                }
+                return '';
+            }
+        }, {
+            'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
+                    return new Date(row.date_joined).toDateString();
+                }
+                return '';
+            }
+        }, {
+            'className': 'action-center', 'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
+                    if (row.is_active) {
+                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                    } else {
+                        return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
+                    }
+                }
+                return '';
+            }
+        }, {
+            'render': () => {
+                return '';
+            }
+        }]
+    }
+
+    function initDataTable(config) {
+        /*DataTable Init*/
+        let dtb = $('#datable-employee-list-popup-update');
+        if (dtb.length > 0) {
+            var targetDt = dtb.DataTable(config);
+            /*Checkbox Add*/
+            var tdCnt = 0;
+            $('table tr').each(function () {
+                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-group-employee" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:last-child"));
+                tdCnt++;
+            });
+            $(document).on('click', '.del-button', function () {
+                targetDt.rows('.selected').remove().draw(false);
+                return false;
+            });
+            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
+            dtb.parent().addClass('table-responsive');
+
+
+            /*Select all using checkbox*/
+            var DT1 = dtb.DataTable();
+            $(".check-select-all").on("click", function (e) {
+                $('.check-select').attr('checked', true);
+                if ($(this).is(":checked")) {
+                    DT1.rows().select();
+                    $('.check-select').prop('checked', true);
+                } else {
+                    DT1.rows().deselect();
+                    $('.check-select').prop('checked', false);
+                }
+            });
+            $(".check-select").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    $(this).closest('tr').addClass('selected');
+                } else {
+                    $(this).closest('tr').removeClass('selected');
+                    $('.check-select-all').prop('checked', false);
+                }
+            });
+        }
+    }
+
+    function loadDataTable() {
+        let tb = $('#datable-employee-list-popup-update');
+        $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
+                    initDataTable(config);
+                }
+            },
+        )
+    }
+
+
     // load instance data
     function loadInstanceData() {
         let ele = $('#frm_group_update');
@@ -163,6 +291,7 @@ $(document).ready(function () {
     function loadDefaultData() {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
 
+        loadDataTable();
         loadInstanceData();
         loadGroupLevelList();
         loadGroupList();
@@ -225,140 +354,6 @@ $(document).ready(function () {
 });
 
 
-/*Blog Init*/
-"use strict";
-$(function () {
-    let config = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'data': 'code', render: (data, type, row, meta) => {
-                return String.format(`<b>{0}</b>`, data);
-            }
-        }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
-                    return `<span id="${row.id}">` + row.full_name + `</span>`;
-                }
-                return '';
-            }
-        }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
-                }
-                return '';
-            }
-        }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                    return new Date(row.date_joined).toDateString();
-                }
-                return '';
-            }
-        }, {
-            'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                    return new Date(row.date_joined).toDateString();
-                }
-                return '';
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
-                    if (row.is_active) {
-                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
-                    } else {
-                        return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
-                    }
-                }
-                return '';
-            }
-        }, {
-            'render': () => {
-                return '';
-            }
-        }]
-    }
-
-    function initDataTable(config) {
-        /*DataTable Init*/
-        let dtb = $('#datable-employee-list-popup-update');
-        if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
-            /*Checkbox Add*/
-            var tdCnt = 0;
-            $('table tr').each(function () {
-                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-group-employee" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:last-child"));
-                tdCnt++;
-            });
-            $(document).on('click', '.del-button', function () {
-                targetDt.rows('.selected').remove().draw(false);
-                return false;
-            });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
-            dtb.parent().addClass('table-responsive');
-
-
-            /*Select all using checkbox*/
-            var DT1 = dtb.DataTable();
-            $(".check-select-all").on("click", function (e) {
-                $('.check-select').attr('checked', true);
-                if ($(this).is(":checked")) {
-                    DT1.rows().select();
-                    $('.check-select').prop('checked', true);
-                } else {
-                    DT1.rows().deselect();
-                    $('.check-select').prop('checked', false);
-                }
-            });
-            $(".check-select").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    $(this).closest('tr').addClass('selected');
-                } else {
-                    $(this).closest('tr').removeClass('selected');
-                    $('.check-select-all').prop('checked', false);
-                }
-            });
-        }
-    }
-
-    function loadDataTable() {
-        let tb = $('#datable-employee-list-popup-update');
-        $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
-                    initDataTable(config);
-                }
-            },
-        )
-    }
-
-    loadDataTable();
-});
-
-
 // Action on add modal employee
 $(document).on('click', '#button-add-group-employee', function () {
     tableGroupEmployeeAdd()
@@ -377,6 +372,11 @@ function tableGroupEmployeeAdd() {
         }
     }
 
+    for (let d = 0; d < tableShowRowLength; d++) {
+        let showRowDel = tableShowOffModal.rows[d + 1]
+        showRowDel.remove()
+    }
+
     let tableApply = document.getElementById("datable-employee-list-popup-update");
     let tableRowLen = tableApply.tBodies[0].rows.length;
     for (let idx = 0; idx < tableRowLen; idx++) {
@@ -387,7 +387,7 @@ function tableGroupEmployeeAdd() {
         let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
         let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-employee-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-in-modal="${(idx + 1)}"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
         let actionData = `<td>` + bt2 + bt3 + `</td>`;
-        if (row.classList.contains('selected') && !listDataInModal.includes((idx + 1))) {
+        if (row.classList.contains('selected')) {
             for (let i = 1; i < (childrenLength - 4); i++) {
                 let child = row.children[(i)]
                 let childText = child.innerText

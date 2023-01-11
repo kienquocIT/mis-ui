@@ -2,6 +2,8 @@
 "use strict";
 $(function () {
     $(document).ready(function () {
+        $("td").addClass("text-center");
+
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -31,7 +33,7 @@ $(function () {
             }, {
                 'data': 'title', 'render': (data, type, row, meta) => {
 
-                    return `<div class="media align-items-center">
+                    return `<div class="media">
                                 <div class="media-head me-2">
                                     <div class="avatar avatar-xs avatar-success avatar-rounded">
                                         <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
@@ -53,13 +55,13 @@ $(function () {
                     for (let i = 0; i < row.employees.length; i++) {
                         element += `<span class="badge badge-primary w-20 mt-1 ml-1">` + row.employees[i].full_name + `</span>`;
                     }
-                    return `<div class="row">` + element + `</div>`
+                    return `<div class="row"><center>` + element + `</center></div>`
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
                     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return bt2 + bt3;
+                    return `<div class="text-center">` + bt2 + bt3 + `</div>`;
                 }
             },]
         }

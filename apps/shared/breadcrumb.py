@@ -25,7 +25,6 @@ class BreadcrumbItem(object):
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren('Employee Create', 'EmployeeCreate')
     ORGANIZATION_PAGE = BreadcrumbChildren('Organization', 'GroupList')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren('Organization Level', 'GroupLevelList')
-    GROUP_LEVEL_CREATE_PAGE = BreadcrumbChildren('Group Level Create', 'GroupLevelCreate')
 
     USER_LIST_PAGE = BreadcrumbChildren('User List', 'UserList')
 
@@ -109,8 +108,6 @@ class BreadcrumbView:
         BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
-
-    GROUP_LEVEL_CREATE_PAGE = GROUP_LEVEL_LIST_PAGE + [BreadcrumbItem.GROUP_LEVEL_CREATE_PAGE]
 
     GROUP_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

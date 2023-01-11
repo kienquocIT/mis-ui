@@ -26,7 +26,7 @@ $(document).ready(function () {
             },
             data: [],
             columns: [{
-                'className': 'action-center', 'render': (data, type, row, meta) => {
+                'render': (data, type, row, meta) => {
                     let inp = `<span class="form-check mb-0"><input class="form-check-input check-select" type="checkbox" data-id=` + row.id + `></span>`
                     return inp;
                 }
@@ -54,7 +54,18 @@ $(document).ready(function () {
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('group') && typeof row.group === "object") {
                         if (Object.keys(row.group).length !== 0) {
-                            return `<span class="badge badge-primary">` + row.group.title + `</span>`;
+                            return `<span class="badge badge-soft-primary">` + row.group.title + `</span>`;
+                        }
+                    }
+                    return '';
+                }
+            }, {
+                'className': 'action-center', 'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
+                        if (row.is_active) {
+                            return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                        } else {
+                            return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
                         }
                     }
                     return '';

@@ -51,7 +51,7 @@ $(function () {
                 'data': 'employees', render: (data, type, row, meta) => {
                     let element = ''
                     for (let i = 0; i < row.employees.length; i++) {
-                        element += `<span class="badge badge-primary w-20 mt-1 ml-1">` + row.employees[i].full_name + `</span>`;
+                        element += `<span class="badge badge-soft-primary w-20 mt-1 ml-1">` + row.employees[i].full_name + `</span>`;
                     }
                     if(row.employees.length > 4)
                         return `<div class="row">` + element + `</div>`

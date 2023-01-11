@@ -1,7 +1,5 @@
 //load data table employee
 // /*Blog Init*/
-
-"use strict";
 $(function () {
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
@@ -26,7 +24,7 @@ $(function () {
         },
         data: [],
         columns: [{
-            'className': 'action-center', 'render': (data, type, row, meta) => {
+            'render': (data, type, row, meta) => {
                 let inp = `<span class="form-check mb-0"><input class="form-check-input check-select" type="checkbox" data-id=` + row.id + `></span>`
                 return inp;
             }
@@ -55,14 +53,24 @@ $(function () {
             'render': (data, type, row, meta) => {
                 if (row.hasOwnProperty('group') && typeof row.group === "object") {
                     if (Object.keys(row.group).length !== 0) {
-                        return `<span class="badge badge-primary">` + row.group.title + `</span>`;
+                        return `<span class="badge badge-soft-primary">` + row.group.title + `</span>`;
+                    }
+                }
+                return '';
+            }
+        }, {
+            'className': 'action-center', 'render': (data, type, row, meta) => {
+                if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
+                    if (row.is_active) {
+                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                    } else {
+                        return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
                     }
                 }
                 return '';
             }
         },]
     }
-
     function initDataTable(config) {
         /*DataTable Init*/
         let dtb = $('#datable_employee_list');
@@ -90,7 +98,6 @@ $(function () {
             });
         }
     }
-
     function loadDataTable() {
         let tb = $('#datable_employee_list');
         $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
@@ -105,53 +112,56 @@ $(function () {
     }
 
     loadDataTable();
-});
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    // load data page detail role
-    let url = location.pathname + `/api`
-    $.fn.callAjax(url, 'GET')
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $('#abbreviation').val(data.role.abbreviation)
-                    $('#role_name').val(data.role.title)
-                    $('#code').val(data.role.code)
-                    for (let i = 0; i < data.role.employees.length; i++) {
-                        $("input[data-id =" + data.role.employees[i].id + "]").prop('checked', true);
-                    }
-                }
-            },
-            (errs) => {
-                console.log(errs)
-            }
-        )
-
-    // submit form update
-    $("#form-update-role").submit(function (event) {
-        if (confirm("Bạn có muốn lưu thay đổi ?") === true) {
-            let data_url = location.pathname + '/api';
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-            let employee_list = $("tbody input:checkbox:checked").map(function () {
-                return $(this).data('id')
-            }).get();
-            let data = frm.dataForm;
-            data['employees'] = employee_list;
-            $.fn.callAjax(data_url, "PUT", data, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Đang cập nhật Role"}, 'success');
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+        // load data page detail role
+        "use strict";
+        let url = location.pathname + `/api`
+        $.fn.callAjax(url, 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $('#abbreviation').val(data.role.abbreviation)
+                        $('#role_name').val(data.role.title)
+                        $('#code').val(data.role.code)
+                        for (let i = 0; i < data.role.employees.length; i++) {
+                            $("input[data-id =" + data.role.employees[i].id + "]").prop('checked', true);
                         }
-                    },
-                    (errs) => {
-                        $.fn.notifyPopup({description: "Thất bại"}, 'failure')
                     }
-                )
-        }
+                },
+                (errs) => {
+                    console.log(errs)
+                }
+            )
+
+        // submit form update
+        $("#form-update-role").submit(function (event) {
+            if (confirm("Bạn có muốn lưu thay đổi ?") === true) {
+                let data_url = location.pathname + '/api';
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                let frm = new SetupFormSubmit($(this));
+                let employee_list = $("tbody input:checkbox:checked").map(function () {
+                    return $(this).data('id')
+                }).get();
+                let data = frm.dataForm;
+                data['employees'] = employee_list;
+                $.fn.callAjax(data_url, "PUT", data, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Đang cập nhật Role"}, 'success');
+                                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+                        }
+                    )
+            }
+        });
     });
+
 });
+

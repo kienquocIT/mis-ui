@@ -268,14 +268,20 @@ class GroupDetailAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
-        # template='core/hr/group/group_detail.html',
-        # breadcrumb='USER_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).get()
         if resp.state:
             return {'group': resp.result}, status.HTTP_200_OK
         return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).put(data)
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @mask_view(
         auth_require=True,

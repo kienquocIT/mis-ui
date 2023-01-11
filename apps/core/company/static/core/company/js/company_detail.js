@@ -17,4 +17,14 @@ $(document).ready(function () {
                 }
             )
     });
+
+    $("input[class=form-control]").each(function() {
+      if ($(this).val() === 'None') {
+          $(this).val('')
+      }
+    });
+
+    if ($("input[name=representative_fullname]").val() === '') {
+        $("input[name=representative_fullname]").val($("input[name=default_representative_name]").val())
+    }
 });

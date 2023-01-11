@@ -84,7 +84,6 @@ $(document).ready(function () {
                         $('#inp-email').val(data.user.email);
                         $('#inp-username').val(data.user.username);
                         config['data'] = data.user.company;
-                        console.log(config['data'])
                     }
                     initDataTable(config);
                 },

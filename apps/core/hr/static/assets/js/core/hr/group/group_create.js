@@ -185,8 +185,10 @@ $(function () {
             }
         }, {
             'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                    return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
+                    let result = [];
+                    row.role.map(item => item.title ? result.push(`<span class="badge badge-soft-primary">` + item.title + `</span>`) : null);
+                    return result.join(" ");
                 }
                 return '';
             }

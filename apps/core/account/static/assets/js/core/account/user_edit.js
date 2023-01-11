@@ -56,7 +56,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+                    $.fn.notifyPopup({description: errs.data}, 'failure')
                 }
             )
     });

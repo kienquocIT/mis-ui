@@ -112,27 +112,28 @@ $(document).ready(function () {
 
     // submit form update
     $("#form-update-role").submit(function (event) {
-        let data_url = location.pathname + '/api';
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        let employee_list = $("tbody input:checkbox:checked").map(function () {
-            return $(this).data('id')
-        }).get();
-        let data = frm.dataForm;
-        data['employees'] = employee_list;
-        $.fn.callAjax(data_url, "PUT", data, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: "Đang cập nhật role"}, 'success');
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 2000);
+        if (confirm("Bạn có muốn lưu thay đổi ?") === true) {
+            let data_url = location.pathname + '/api';
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            let employee_list = $("tbody input:checkbox:checked").map(function () {
+                return $(this).data('id')
+            }).get();
+            let data = frm.dataForm;
+            data['employees'] = employee_list;
+            $.fn.callAjax(data_url, "PUT", data, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: "Đang cập nhật Role"}, 'success');
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyPopup({description: "Thất bại"}, 'failure')
                     }
-                },
-                (errs) => {
-                    $.fn.notifyPopup({description: "Thất bại"}, 'failure')
-                }
-            )
+                )
+        }
     });
 });

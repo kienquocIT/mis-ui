@@ -117,6 +117,5 @@ $(document).ready(function () {
             }
         )
     }
-
     loadCompanyList($('#select-box-company'));
 })

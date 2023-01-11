@@ -51,6 +51,7 @@
                         <label class="form-label"><b>{% trans 'Code' %}</b></label>
                         <input class="form-control" type="text"
                                name="code" value="{{ data.company.code }}"
+                               oninput="this.value=this.value.toUpperCase()"
                                id="form-edit-code">
                     </div>
                 </div>
@@ -79,7 +80,7 @@
                 <div class="col-6">
                     <div class="form-group">
                         <label class="form-label"><b>{% trans 'Phone' %}</b></label>
-                        <input class="form-control" type="text"
+                        <input class="form-control" type="number"
                                name="phone" value="{{ data.company.phone }}"
                                id="form-edit-phone">
                     </div>

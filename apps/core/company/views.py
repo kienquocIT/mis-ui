@@ -86,7 +86,7 @@ class CompanyDetail(View):
 
 
 class CompanyDetailAPI(APIView):
-    @mask_view(auth_require=True, template='core/company/company_detail.html')
+    @mask_view(auth_require=True, template='core/company/company_detail.html', breadcrumb='COMPANY_LIST_PAGE')
     def get(self, request, pk, *args, **kwargs):
         response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
         if response.state:
@@ -106,7 +106,7 @@ class CompanyUpdate(View):
 
 
 class CompanyUpdateAPI(APIView):
-    @mask_view(auth_require=True, template='core/company/company_update.html')
+    @mask_view(auth_require=True, template='core/company/company_update.html', breadcrumb='COMPANY_LIST_PAGE')
     def get(self, request, pk, *args, **kwargs):
         response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
         if response.state:

@@ -55,7 +55,10 @@ $(function () {
                     for (let i = 0; i < row.employees.length; i++) {
                         element += `<span class="badge badge-primary w-20 mt-1 ml-1">` + row.employees[i].full_name + `</span>`;
                     }
-                    return `<div class="row"><center>` + element + `</center></div>`
+                    if(row.employees.length > 4)
+                        return `<div class="row">` + element + `</div>`
+                    else
+                        return `<div class="row"><center>` + element + `</center></div>`
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {

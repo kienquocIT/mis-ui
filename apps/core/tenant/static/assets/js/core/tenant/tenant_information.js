@@ -30,43 +30,39 @@ $(function () {
                 }
             }, {
                 'data': 'title', 'render': (data, type, row, meta) => {
-
-                    return `<div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                        <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
-                                    </div>                                      
-                                </div>
-                                <div class="media-body">
-                                        <span class="d-block">` + row.title + `</span>  
-                                </div>
-                            </div>`;
-
+                    return `<span>` + row.title + `</span>`;
                 }
             }, {
-                'data': 'abbreviation', render: (data, type, row, meta) => {
-                    return `<span>` + row.abbreviation + `</span>`;
-                }
-            }, {
-                'data': 'employees', render: (data, type, row, meta) => {
-                    let element = ''
-                    for (let i = 0; i < row.employees.length; i++) {
-                        element += `<span class="badge badge-primary w-20 mt-1 ml-1">` + row.employees[i].full_name + `</span>`;
+                'data': 'license_used', 'render': (data, type, row, meta) => {
+                    let element = ``;
+                    for (let i = 0; i < row.license_used.length; i++) {
+                        element += `<span class="badge badge-info">` + row.license_used[i].plan + `&nbsp` + row.license_used[i].quantity + `</span> `;
                     }
-                    return `<div class="row">` + element + `</div>`
+                    return element;
                 }
             }, {
-                'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return bt2 + bt3;
+                'data': 'total_user', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.total_user + `</span></center>`;
                 }
-            },]
+            }, {
+                'data': 'power_user', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.power_user + `</span></center>`;
+                }
+            }, {
+                'data': 'employee', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.employee + `</span></center>`;
+                }
+            }, {
+                'data': 'employee_connect_to_user', 'render': (data, type, row, meta) => {
+                    return `<center><span>` + row.employee_connect_to_user + `</span></center>`;
+                }
+            },
+            ]
         }
 
         function initDataTable(config) {
             /*DataTable Init*/
-            let dtb = $('#datable_role_list');
+            let dtb = $('#table_tenant_information');
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
                 /*Checkbox Add*/
@@ -74,10 +70,6 @@ $(function () {
                 $('table tr').each(function () {
                     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
                     tdCnt++;
-                });
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
                 });
                 $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
                 dtb.parent().addClass('table-responsive');
@@ -107,12 +99,23 @@ $(function () {
         }
 
         function loadDataTable() {
-            let tb = $('#datable_role_list');
+            let tb = $('#table_tenant_information');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('role_list')) {
-                        config['data'] = resp.data.role_list;
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tenant')) {
+                        config['data'] = resp.data.tenant;
+
+
+                        let abc = {
+                            'title': 'Tenant Name',
+                            'total_user': 0,
+                            'license_used': [{'plan': 'Sale', 'quantity': 75}, {'plan': 'Hr', 'quantity': 30}],
+                            'power_user': 2,
+                            'employee': 3,
+                            'employee_connect_to_user': 1
+                        }
+                        config['data'].push(abc)
                     }
                     initDataTable(config);
                 }
@@ -122,36 +125,7 @@ $(function () {
         }
 
         loadDataTable();
-    })
+    });
+
 
 });
-
-$("tbody").on("click", ".del-button", function () {
-    if (confirm("Confirm Delete Role") === true) {
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let role_id = $(this).attr('data-id');
-        let form = $('#form-delete');
-        let role_data = {
-            'csrfmiddlewaretoken': csr,
-            'id': role_id
-        }
-        let data_url = form.attr('data-url');
-        $.fn.callAjax(data_url + '/' + role_id + '/api', "DELETE", role_data, csr).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                console.log(resp);
-                $.fn.notifyPopup({description: "Thành công"}, 'success')
-                $.fn.redirectUrl(location.pathname, 1000);
-            }
-        }, (errs) => {
-            $.fn.notifyPopup({description: "Thất bại"}, 'failure')
-        },)
-    }
-});
-
-$("tbody").on("click", ".edit-button", function () {
-    let form = $('#form-delete');
-    let data_url = form.attr('data-url') + '/' + $(this).attr('data-id');
-    $(this).attr("href", data_url);
-});
-

@@ -36,12 +36,9 @@ $(function () {
                                         <div class="avatar avatar-xs avatar-success avatar-rounded">
                                             <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
                                         </div>
-<!--                                        <div class="avatar avatar-xs">-->
-<!--                                            <img src="dist/img/avatar10.jpg" alt="user" class="avatar-img rounded-circle">-->
-<!--                                        </div>-->
                                     </div>
                                     <div class="media-body">
-                                        <a href="/account/users/` + row.id + `">
+                                        <a href="/account/user/detail/` + row.id + `">
                                             <span class="d-block">` + row.full_name + `</span>
                                         </a>    
                                             
@@ -55,13 +52,9 @@ $(function () {
                     return `<span class="badge badge-primary">` + row.username + `</span>`;
                 }
             }, {
-                'data': 'username', render: (data, type, row, meta) => {
-                    return `<span>unlicense</span>`;
-                }
-            }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="user/edit/`+ row.id +`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="user/detail/`+ row.id +`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     return bt2 + bt3;
                 }
             },]
@@ -123,14 +116,7 @@ $(function () {
                 initDataTable(config);
             },)
         }
-
         loadDataTable();
-
-        $("tbody").on("click", ".edit-button", function (){
-            let form = $('#form-user');
-            let data_url = form.attr('data-url') + '/' + $(this).attr('data-id');
-            $(this).attr("href", data_url);
-        })
-    })
+    });
 
 });

@@ -16,7 +16,7 @@ $(document).ready(function () {
         $('.dataTable').css('width', '100%');
     });
 
-    function generateP() {
+    function generatePW() {
         var pass = '';
         var str = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -30,21 +30,51 @@ $(document).ready(function () {
 
     $('#auto-create-pw').on('change', function () {
         if ($(this).is(':checked') == true) {
-            const pw = generateP()
+            const pw = generatePW();
             $('#password').val(pw);
             $('#password').prop("readonly", true);
             $('#confirm-password').val(pw);
             $('#confirm-password').prop("readonly", true);
+            $('#require-change-pw').prop('checked', true);
         } else {
             $('#password').val('');
             $('#password').prop("readonly", false);
             $('#confirm-password').val('');
             $('#confirm-password').prop("readonly", false);
-
+            $('#require-change-pw').prop('checked', false);
         }
     });
 
+    function loadCompanyList() {
+        let ele = $('#select-box-company');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
+                        // ele.append(`<option>` + `</option>`)
+                        data.company_list.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
 
+    loadCompanyList();
+    jQuery.validator.setDefaults({
+        debug: true,
+        success: "valid"
+    });
+    let frm = $('#form-create-user');
+    frm.validate({
+        errorElement: 'p',
+        errorClass: 'is-invalid cl-red',
+    })
     $("#form-create-user").submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -58,7 +88,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Đang tạo user"}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },
                     (errs) => {
@@ -68,4 +98,3 @@ $(document).ready(function () {
         }
     });
 });
-

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">
+{#    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">#}
 {% endblock %}
 
 {% block pageAction %}
@@ -32,23 +32,13 @@
 {% endblock %}
 
 {% block pageContent %}
-    <button class="btn" style="color: #007D88">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus-square"></i>
-                Add Role
-            </span>
-        </span>
-    </button>
-
-
     <table
             id="datable_role_list" class="table nowrap w-100 mb-5" data-url='{% url "RoleListAPI" %}'
             data-method="GET"
     >
         <thead>
         <tr>
-            <th>
+            <th class="w-5">
                 <span class="form-check">
                     <input
                             type="checkbox"
@@ -58,11 +48,10 @@
                     <label class="form-check-label" for="customCheck1"></label>
                 </span>
             </th>
-            <th>{% trans "Role Name" %}</th>
-            <th>{% trans "Abbreviation" %}</th>
-            <th>{% trans "Holder" %}</th>
-            <th></th>
-            <th>{% trans "Actions" %}</th>
+            <th class="w-20">{% trans "Role Name" %}</th>
+            <th class="w-20">{% trans "Abbreviation" %}</th>
+            <th class="w-45">{% trans "Holder" %}</th>
+            <th class="w-10">{% trans "Actions" %}</th>
 
         </tr>
         </thead>

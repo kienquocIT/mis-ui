@@ -18,27 +18,32 @@ class BreadcrumbChildren(object):
 
 
 class BreadcrumbItem(object):
+    # home
     HOME_PAGE = BreadcrumbChildren(
         _('Home Page'), 'HomeView'
     )
+    HOME_VIEW_SPACE = BreadcrumbChildren(_('Employee List'), 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
+
+    # hr
     HR_PAGE = BreadcrumbChildren(_('HR'))
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
-    HOME_VIEW_SPACE = BreadcrumbChildren(_('Employee List'), 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Employee Create'), 'EmployeeCreate')
-    ORGANIZATION_PAGE = BreadcrumbChildren(_('Organization'), 'GroupList')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren(_('Organization Level'), 'GroupLevelList')
-    GROUP_LEVEL_CREATE_PAGE = BreadcrumbChildren(_('Group Level Create'), 'GroupLevelCreate')
+    GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
+    ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
+    ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
 
+    # tenant
+    ORGANIZATION_PAGE = BreadcrumbChildren(_('Organization'), 'GroupList')
+
+    # user
     USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren(_('User Create'), 'UserCreate')
 
-    GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
+    # company
     COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
     COMPANY_OVERVIEW_PAGE = BreadcrumbChildren(_('Company Overview'), 'CompanyListOverviewList')
     COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-
-    ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
-    ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 

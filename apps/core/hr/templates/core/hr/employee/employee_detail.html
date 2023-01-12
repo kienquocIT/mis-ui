@@ -158,8 +158,9 @@
                             <input
                                     class="form-control"
                                     type="text"
-                                    name="dob"
-                                    required
+                                    id="employee-dob-detail"
+                                    style="background-color: white;"
+                                    readonly
                             />
                         </div>
                     </div>
@@ -169,30 +170,30 @@
                             <input
                                     class="form-control"
                                     type="text"
-                                    name="date_joined"
-                                    required
+                                    id="employee-date-joined-detail"
+                                    style="background-color: white;"
+                                    readonly
                             />
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <label class="form-label">{% trans 'Role' %}</label>
-                            <select
-                                    class="form-control select2 select2-multiple"
-                                    multiple
-                                    data-placeholder="{% trans 'Choose' %}"
+                            <input
+                                    type="text"
+                                    placeholder=""
+                                    class="form-control"
                                     name="role"
-                                    id="select-box-role"
-                                    data-url="{% url 'RoleListAPI' %}"
-                                    data-method="GET"
+                                    id="select-box-role-employee-detail"
+                                    style="background-color: white;"
+                                    readonly
                             >
-                            </select>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-5">
                     <table
-                            id="datable-employee-plan-app"
+                            id="datable-employee-plan-app-detail"
                             data-url="{% url 'PlanListAPI' %}"
                             data-method="GET"
                     >

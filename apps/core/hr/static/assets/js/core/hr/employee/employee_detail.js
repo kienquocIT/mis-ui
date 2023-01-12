@@ -1,82 +1,114 @@
-// $(document).ready(function () {
-//     // load instance data
-//     function loadDetailData() {
-//         let ele = $('#employee-detail-page');
-//         let url = ele.attr('data-url');
-//         let method = ele.attr('data-method');
-//
-//         let eleGroupLevel = $('#select-box-group-level-detail');
-//         let eleParent = $('#select-box-group-detail');
-//         let eleRefTitle = $('#reference-group-title');
-//         let eleTitle = $('#group-title-detail');
-//         let eleCode = $('#group-code-detail');
-//         let eleDescription = $('#group-description-detail');
-//         let eleFirstManRefTitle = $('#first-manager-system-title');
-//         let eleSecondManRefTitle = $('#second-manager-system-title');
-//         let eleFirstManTitle = $('#group-first-manager-title-detail');
-//         let eleSecondManTitle = $('#group-second-manager-title-detail');
-//         let eleFirstManAssign = $('#select-box-first-manager-detail');
-//         let eleSecondManAssign = $('#select-box-second-manager-detail');
-//         $.fn.callAjax(url, method).then(
-//             (resp) => {
-//                 let data = $.fn.switcherResp(resp);
-//                 if (data) {
-//                     if (data.hasOwnProperty('group')) {
-//                         eleGroupLevel.val("level " + data.group.group_level.level);
-//                         eleParent.val(data.group.parent_n.title);
-//                         eleRefTitle.val(data.group.group_level.description);
-//                         eleTitle.val(data.group.title);
-//                         eleCode.val(data.group.code);
-//                         eleDescription.val(data.group.description);
-//                         eleFirstManRefTitle.val(data.group.group_level.first_manager_description);
-//                         eleSecondManRefTitle.val(data.group.group_level.second_manager_description);
-//                         eleFirstManTitle.val(data.group.first_manager_title);
-//                         eleSecondManTitle.val(data.group.second_manager_title);
-//                         eleFirstManAssign.val(data.group.first_manager.full_name);
-//                         eleSecondManAssign.val(data.group.second_manager.full_name);
-//
-//                         if (data.group.group_employee && Array.isArray(data.group.group_employee)) {
-//                             for (let i = 0; i < data.group.group_employee.length; i++) {
-//                                 // let dataRole = ""
-//                                 let dataRole = []
-//                                 if (data.group.group_employee[i].hasOwnProperty('role') && Array.isArray(data.group.group_employee[i].role)) {
-//                                     for (let r = 0; r < data.group.group_employee[i].role.length; r++) {
-//                                         // dataRole += data.group.group_employee[i].role[r].title + ", "
-//                                         dataRole.push(`<span class="badge badge-soft-primary">` + data.group.group_employee[i].role[r].title + `</span>`);
-//                                         dataRole.join(" ");
-//                                     }
-//                                 }
-//                                 $('#datable-group-employee-detail tbody').append(`<tr>` + `<td><span>${i+1}</span></td>` + `<td><span>${data.group.group_employee[i].full_name}</span></td>` + `<td><span>${dataRole}</span></td>` + `</tr>`);
-//                             }
-//
-//                         }
-//                     }
-//                 }
-//             }
-//         )
-//     }
-//
-//     function loadDefaultData() {
-//         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
-//
-//         loadDetailData();
-//
-//         $('#input-avatar').on('change', function (ev) {
-//             let upload_img = $('#upload-area');
-//             upload_img.text("");
-//             upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
-//         });
-//         $('#upload-area').click(function (e) {
-//             $('#input-avatar').click();
-//         });
-//
-//         $('#languages').select2();
-//     }
-//
-//     loadDefaultData();
-//
-//     jQuery.validator.setDefaults({
-//         debug: true,
-//         success: "valid"
-//     });
-// });
+$(document).ready(function () {
+    // load instance data
+    function loadDetailData() {
+        let ele = $('#employee-detail-page');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+
+        let eleUser = $('#select-box-user-detail');
+        let eleFirstName = $('#employee-first-name-detail');
+        let eleLastName = $('#employee-last-name-detail');
+        let eleEmail = $('#employee-email-detail');
+        let elePhone = $('#employee-phone-detail');
+        let eleDepartment = $('#select-box-group-employee-detail');
+        let eleDob = $('#employee-dob-detail');
+        let eleDateJoined = $('#employee-date-joined-detail');
+        let eleRole = $('#select-box-role-employee-detail');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee')) {
+
+                        if (data.employee.user.hasOwnProperty('full_name')) {
+                            eleUser.val(data.employee.user.full_name)
+                        }
+
+                        eleFirstName.val(data.employee.first_name);
+                        eleLastName.val(data.employee.last_name);
+                        eleEmail.val(data.employee.email);
+                        elePhone.val(data.employee.phone);
+
+                        if (data.employee.group.hasOwnProperty('title')) {
+                            eleDepartment.val(data.employee.group.title)
+                        }
+
+                        eleDob.val(moment(data.employee.dob).format('DD-MM-YYYY'));
+                        eleDateJoined.val(moment(data.employee.date_joined).format('DD-MM-YYYY'));
+
+                        if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
+                            let dataRoleEmp = ""
+                            for (let r = 0; r < data.employee.role.length; r++) {
+                                dataRoleEmp += data.employee.role[r].title + ", "
+                            }
+                            eleRole.val(dataRoleEmp)
+                        }
+
+                        if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
+                            let listTypeBtn = ["primary", "success", "info", "danger", "warning",]
+                            for (let t = 0; t < data.employee.plan_app.length; t++) {
+                                let app_list = ``
+                                if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
+                                    let appLength = data.employee.plan_app[t].application.length;
+                                    for (let i = 0; i < appLength; i++) {
+                                        app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
+                                            <i class="fas fa-star"></i>
+                                            <label
+                                                    for="list-app-add-employee" class="form-check-label"
+                                            >${data.employee.plan_app[t].application[i].title}</label>
+                                        </li>`
+                                    }
+                                }
+
+                                $('#datable-employee-plan-app-detail tbody').append(`<tr>
+                        <td>
+                            <div class="row mb-5">
+                                <div>
+                                    <button
+                                            class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseExample${t}" aria-expanded="false"
+                                            aria-controls="collapseExample${t}" style="width: 200px"
+                                          
+                                    >
+                                        ${data.employee.plan_app[t].title}
+                                    </button>
+                                </div>
+                                <div class="show" id="collapseExample${t}">
+                                    <ul>
+                                        ${app_list}
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    function loadDefaultData() {
+
+        loadDetailData();
+
+        $('#input-avatar').on('change', function (ev) {
+            let upload_img = $('#upload-area');
+            upload_img.text("");
+            upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
+        });
+        $('#upload-area').click(function (e) {
+            $('#input-avatar').click();
+        });
+
+        $('#languages').select2();
+    }
+
+    loadDefaultData();
+
+    jQuery.validator.setDefaults({
+        debug: true,
+        success: "valid"
+    });
+});

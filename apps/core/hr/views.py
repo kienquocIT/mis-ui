@@ -82,7 +82,7 @@ class EmployeeDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_DETAIL + '/' + pk).get()
         if resp.state:
-            return {'group': resp.result}, status.HTTP_200_OK
+            return {'employee': resp.result}, status.HTTP_200_OK
         return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
 
 

@@ -61,6 +61,32 @@ class EmployeeCreate(View):
         return {}
 
 
+class EmployeeDetail(View):
+
+    @mask_view(
+        auth_require=True,
+        template='core/hr/employee/employee_detail.html',
+        menu_active='menu_employee_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
+class EmployeeDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_DETAIL + '/' + pk).get()
+        if resp.state:
+            return {'group': resp.result}, status.HTTP_200_OK
+        return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+
+# Role
 class RoleList(View):
 
     @mask_view(

@@ -99,7 +99,7 @@ $(document).ready(function () {
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}"
+                                            aria-controls="collapseExample${t}" style="width: 200px"
                                           
                                     >
                                         ${data.plan_list[t].title}

@@ -152,6 +152,7 @@ $(document).ready(function () {
 
     function loadDefaultData() {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
+        $("input[name='dob']").val(moment().format('DD-MM-YYYY'));
 
         loadUserList();
         loadRoleList();
@@ -241,4 +242,34 @@ $(document).on('change', '#select-box-user', function (e) {
     $('#employee-last-name').val(last_name);
     $('#employee-email').val(email);
     $('#employee-phone').val(phone);
+});
+
+
+$(function () {
+    "use strict";
+
+    /* Single table*/
+    $('input[name="dob"]').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'), 10)
+    }, function (start, end, label) {
+        var years = moment().diff(start, 'years');
+    });
+
+    /* Single table*/
+    $('input[name="date_joined"]').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'), 10)
+    }, function (start, end, label) {
+        var years = moment().diff(start, 'years');
+    });
+
 });

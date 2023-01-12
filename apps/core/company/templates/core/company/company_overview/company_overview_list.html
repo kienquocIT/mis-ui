@@ -6,6 +6,7 @@
 {% block pageAction %}{% endblock %}
 
 {% block pageContent %}
+    {{ data.company_list }}
     <table
             id="datable_company_overview_list" class="table nowrap w-100 mb-5"
             data-url="{% url "CompanyListOverviewListAPI" %}"

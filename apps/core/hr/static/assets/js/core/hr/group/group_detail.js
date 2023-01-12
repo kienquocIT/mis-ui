@@ -37,10 +37,13 @@ $(document).ready(function () {
 
                         if (data.group.group_employee && Array.isArray(data.group.group_employee)) {
                             for (let i = 0; i < data.group.group_employee.length; i++) {
-                                let dataRole = ""
+                                // let dataRole = ""
+                                let dataRole = []
                                 if (data.group.group_employee[i].hasOwnProperty('role') && Array.isArray(data.group.group_employee[i].role)) {
                                     for (let r = 0; r < data.group.group_employee[i].role.length; r++) {
-                                        dataRole += data.group.group_employee[i].role[r].title + ", "
+                                        // dataRole += data.group.group_employee[i].role[r].title + ", "
+                                        dataRole.push(`<span class="badge badge-soft-primary">` + data.group.group_employee[i].role[r].title + `</span>`);
+                                        dataRole.join(" ");
                                     }
                                 }
                                 $('#datable-group-employee-detail tbody').append(`<tr>` + `<td><span>${i+1}</span></td>` + `<td><span>${data.group.group_employee[i].full_name}</span></td>` + `<td><span>${dataRole}</span></td>` + `</tr>`);

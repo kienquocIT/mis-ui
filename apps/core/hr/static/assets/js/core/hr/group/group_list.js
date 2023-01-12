@@ -56,7 +56,7 @@ $(function () {
                 return String.format(data);
             }
         }, {
-            'data': 'upper_group', render: (data, type, row, meta) => {
+            'data': 'parent_n', render: (data, type, row, meta) => {
                 if (data.title) {
                     return String.format(data.title);
                 } else {

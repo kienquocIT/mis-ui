@@ -391,7 +391,7 @@ $(document).on('change', '#select-box-group-level', function () {
     $('#second-manager-system-title').val(second_manager_system_title);
 
     let level = sel.getAttribute('data-level');
-    // loadGroupListFilter(level)
+    loadGroupListFilter(level)
 });
 
 
@@ -399,19 +399,18 @@ $(document).on('change', '#select-box-group-level', function () {
 function loadGroupListFilter(level) {
     if (level) {
         let ele = $('#select-box-group');
-        let url = ele.attr('data-url');
-        let dataFilter = "/?parent_level=" + level
-        let urlFilter = url + "/?parent_level=" + level
+        let url = '/hr/group/parent/' + level
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method, {"param": dataFilter}).then(
+        $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
+                    if (data.hasOwnProperty('group_parent_list') && Array.isArray(data.group_parent_list)) {
                         ele.append(`<option>` + `</option>`)
-                        data.group_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        data.group_parent_list.map(function (item) {
+                            let text = item.title + '-level ' + item.level
+                            ele.append(`<option value="${item.id}">${text}</option>`)
                         })
                     }
                 }

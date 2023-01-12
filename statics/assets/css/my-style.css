@@ -105,5 +105,24 @@
     background-color: rgba(255, 255, 255, 0) !important ;
 }
 
+/* filter table with inline group */
 div.inline { float:left; margin-right: 10px;}
 .clearBoth { clear:both; }
+/*data table css */
+
+.dataTables_paginate .paginate_button i {
+    font-size: 1.2rem;
+    vertical-align: -4px
+}
+
+.dataTables_paginate .paginate_button.previous i {
+    margin-right: 4px;
+}
+
+.dataTables_paginate .paginate_button.next i {
+    margin-left: 5px;
+}
+
+[type="search"] {
+    outline: none;
+}

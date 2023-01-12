@@ -6,14 +6,12 @@ $(document).ready(function () {
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.status === 201) {
-                    $.fn.notifyPopup({description: 'Create successfully'}, 'success');
-                }
+                $.fn.notifyPopup({description: resp.detail}, 'success');
                 $('#AddCompanyForms').modal('hide');
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
+                setTimeout(location.reload.bind(location), 1000);
             }
+        }, (err) => {
+            $.fn.notifyPopup({description: err.detail}, 'failure');
         })
     });
 });

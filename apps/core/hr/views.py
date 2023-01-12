@@ -293,3 +293,19 @@ class GroupDetailAPI(APIView):
             if response.state:
                 return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class GroupParentListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, level, *args, **kwargs):
+        resp = ServerAPI(url=(ApiURL.GROUP_PARENT + '/' + level), user=request.user).get()
+        if resp.state:
+            return {'group_parent_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

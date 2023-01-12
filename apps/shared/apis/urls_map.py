@@ -12,6 +12,7 @@ class ApiURL(object):
     # organization/group
     GROUP_LIST = 'hr/groups'
     GROUP_DETAIL = 'hr/group'
+    GROUP_PARENT = 'hr/group/parent'
 
     # home/company
     COMPANY_LIST = 'company/list'

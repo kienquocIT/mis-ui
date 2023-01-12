@@ -204,7 +204,6 @@ $(document).ready(function () {
         )
     }
 
-
     // load group level list
     function loadGroupLevelList() {
         let ele = $('#select-box-group-level-update');
@@ -217,7 +216,7 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('group_level_list') && Array.isArray(data.group_level_list)) {
                         data.group_level_list.map(function (item) {
                             if (item.id !== ele[0][0].value) {
-                                ele.append(`<option value="` + item.id + `" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">level ` + item.level + `</option>`)
+                                ele.append(`<option value="` + item.id + `" data-level="${item.level}" data-description="${item.description}" data-first-manager-description="${item.first_manager_description}" data-second-manager-description="${item.second_manager_description}">level ` + item.level + `</option>`)
                             }
                         })
                     }
@@ -462,4 +461,32 @@ $(document).on('change', '#select-box-group-level-update', function (e) {
     $('#reference-group-title').val(ref_group_title);
     $('#first-manager-system-title').val(first_manager_system_title);
     $('#second-manager-system-title').val(second_manager_system_title);
+
+    let level = sel.getAttribute('data-level');
+    loadGroupListFilterUpdate(level)
 });
+
+
+// load group list filter by level
+function loadGroupListFilterUpdate(level) {
+    if (level) {
+        let ele = $('#select-box-group-update');
+        let url = '/hr/group/parent/' + level
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('group_parent_list') && Array.isArray(data.group_parent_list)) {
+                        ele.append(`<option>` + `</option>`)
+                        data.group_parent_list.map(function (item) {
+                            let text = item.title + '-level ' + item.level
+                            ele.append(`<option value="${item.id}">${text}</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+}

@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg
+from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
 
 
 class CompanyList(View):
@@ -72,4 +72,30 @@ class CompanyListOverviewDetail(View):
         menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
+        if resp.state:
+            return {'company_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        company_id = kwargs.get('pk', None)
+        if company_id and TypeCheck.check_uuid(company_id):
+            resp = ServerAPI(
+                user=request.user,
+                url=ApiURL.EMPLOYEE_BY_COMPANY_OVERVIEW.push_id(company_id)
+            ).get()
+            if resp.state:
+                return {'data_list': resp.result}, status.HTTP_200_OK
+            elif resp.status == 401:
+                return {}, status.HTTP_401_UNAUTHORIZED
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+        return {}, status.HTTP_404_NOT_FOUND

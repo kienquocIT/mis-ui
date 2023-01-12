@@ -17,7 +17,8 @@ from apps.core.account.models import User
 class AuthLogin(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request, template='auths/login.html'):
+    @classmethod
+    def get(cls, request, template='auths/login.html'):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp_data = ServerAPI(user=request.user, url=ApiURL.my_profile).get()
             if resp_data.state is True:
@@ -26,7 +27,8 @@ class AuthLogin(APIView):
         request.user = AnonymousUser
         return render(request, template, {})
 
-    def post(self, request, *args, **kwargs):
+    @classmethod
+    def post(cls, request, *args, **kwargs):
         frm = AuthLoginForm(data=request.data)
         frm.is_valid()
         resp_data = ServerAPI(user=None, url=ApiURL.login).post(frm.cleaned_data)
@@ -66,4 +68,3 @@ class TenantLoginChoice(APIView):
         if resp_data.state:
             return Response({'result': resp_data.result}, status=200)
         return Response({'detail': resp_data.errors}, status=400)
-

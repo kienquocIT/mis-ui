@@ -108,7 +108,7 @@ class APIUtil:
         Returns: (dict) : it for update to headers before call API
 
         """
-        access_token = cls.get_new_token(refresh_token=getattr('user_obj', 'refresh_token', None))
+        access_token = cls.get_new_token(refresh_token=getattr(user_obj, 'refresh_token', None))
         if access_token:
             user_obj.access_token = access_token
             user_obj.save()

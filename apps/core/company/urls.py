@@ -3,7 +3,7 @@ from django.urls import path
 from apps.core.company.views import (
     CompanyList, CompanyListAPI,
     CompanyListOverviewList, CompanyListOverviewListAPI,
-    CompanyListOverviewDetail,
+    CompanyListOverviewDetail, EmployeeUserByCompanyListOverviewDetailAPI,
 )
 
 urlpatterns = [
@@ -14,4 +14,8 @@ urlpatterns = [
     path('list/overview', CompanyListOverviewList.as_view(), name='CompanyListOverviewList'),
     path('list/overview/api', CompanyListOverviewListAPI.as_view(), name='CompanyListOverviewListAPI'),
     path('list/overview/<str:pk>', CompanyListOverviewDetail.as_view(), name='CompanyListOverviewDetail'),
+    path(
+        'list/overview/employee-user/<str:pk>', EmployeeUserByCompanyListOverviewDetailAPI.as_view(),
+        name='EmployeeUserByCompanyListOverviewDetailAPI'
+    ),
 ]

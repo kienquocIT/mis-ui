@@ -1129,12 +1129,12 @@ jQuery.fn.cleanDataNotify = (data) => {
     });
     return data
 };
-jQuery.fn.notifyErrors = (errs)=>{
-     if (errs && typeof errs === 'object') {
-         Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
-             jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
-         });
-     }
+jQuery.fn.notifyErrors = (errs) => {
+    if (errs && typeof errs === 'object') {
+        Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
+            jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
+        });
+    }
 }
 jQuery.fn.switcherResp = function (resp) {
     if (typeof resp === 'object') {
@@ -1197,7 +1197,7 @@ class SetupFormSubmit {
         // URL DETAIL
         this.dataUrlDetail = formSelected.attr('data-url-detail');
         if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
-        if(this.dataUrlDetail){
+        if (this.dataUrlDetail) {
             this.dataUrlDetail = this.dataUrlDetail.split("/").slice(0, -1).join("/") + "/";
         }
     }
@@ -1212,11 +1212,22 @@ class SetupFormSubmit {
         }
     }
 
-    getUrlDetail(pk){
-        if (this.dataUrlDetail && pk){
+    getUrlDetail(pk) {
+        if (this.dataUrlDetail && pk) {
             return this.dataUrlDetail + pk.toString();
         }
         return null;
+    }
+
+    appendFilter(url, filter) {
+        let params = '';
+        Object.keys(filter).map((key) => {
+            params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
+        })
+        if (params) {
+            return '{0}?{1}'.format_by_idx(url, params);
+        }
+        return url;
     }
 }
 
@@ -1257,4 +1268,38 @@ String.format_by_key = function () {
         s = s.replace(new RegExp("\\{" + key + "\\}", "gm"), objKey[key]);
     });
     return s;
+}
+
+String.prototype.format_by_idx = function () {
+    // argument of function start 0+ for fill to this
+    // `<a href="{0}">{1}</a>`.format("http://...", "Tag a")
+    // Return ==> `<a href="http://...">Tag A</a>`
+    let s = this.toString();
+    for (let i = 0; i < arguments.length; i++) {
+        let reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, arguments[i]);
+    }
+    return s;
+}
+
+String.prototype.format_by_key = function (objKey) {
+    // objKey: Object Key-Value fill to this
+    // `<a href="{href}">{title}</a>`.format_by_key({"href": "http://...", "title": "Tag A"})
+    // Return ==> `<a href="http://...">Tag A</a>`
+    let s = this.toString();
+    Object.keys(objKey).forEach(function (key) {
+        s = s.replace(new RegExp("\\{" + key + "\\}", "gm"), objKey[key]);
+    });
+    return s;
+}
+
+Array.prototype.convert_to_key = function (key = 'id') {
+    if (Array.isArray(this)) {
+        let objData = {};
+        this.map((item) => {
+            objData[item[key]] = item
+        })
+        return objData;
+    }
+    return {};
 }

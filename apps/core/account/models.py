@@ -82,7 +82,7 @@ class User(AuthUser):
     @staticmethod
     def exist_key(dict_data):
         key_required = []
-        for key in ['id', 'username', 'first_name', 'last_name']:
+        for key in ['id', 'username', 'first_name', 'last_name', 'token']:
             if key not in dict_data:
                 key_required.append(key)
         if key_required:

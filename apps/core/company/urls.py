@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.core.company.views import CompanyList, CompanyListAPI
+from apps.core.company.views import CompanyList, CompanyListAPI, CompanyUserNotMapEmployeeListAPI
 
 from apps.core.company.views import (
     CompanyList, CompanyListAPI,
@@ -26,4 +26,5 @@ urlpatterns = [
         'list/overview/employee-user/<str:pk>', EmployeeUserByCompanyListOverviewDetailAPI.as_view(),
         name='EmployeeUserByCompanyListOverviewDetailAPI'
     ),
+    path('list/user-available', CompanyUserNotMapEmployeeListAPI.as_view(), name='CompanyUserNotMapEmployeeListAPI'),
 ]

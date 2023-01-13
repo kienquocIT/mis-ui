@@ -30,7 +30,8 @@ $(function () {
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 // return String.format(`<b>{0}</b>`, data);
-                return `<a href="">
+                let urlEmployeeDetail = "/hr/employee/detail/" + row.id
+                return `<a href="${urlEmployeeDetail}">
                     <span><b>${data}</b></span>
                 </a>`
             }

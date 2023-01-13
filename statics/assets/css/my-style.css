@@ -106,70 +106,8 @@
 }
 
 /* filter table with inline group */
-#display-filter:has(:first-child) {
-    border: 1px dashed #c0c0c0;
-    padding: 1em;
-}
-
-.filter-group {
-    border: 1px solid #d5d5d5;
-    border-radius: 5px;
-    max-width: 30em;
-    overflow: hidden;
-    display: inline-block;
-    font-size: 0.8em;
-    margin-right: 10px;
-    box-shadow: 2px 2px rgba(236, 235, 235, 0.7);
-    font-family: "Roboto", serif !important;
-}
-
-.filter-group .filter-item {
-    margin: 0;
-    padding: 0.6em 0.6em;
-    display: inline-block;
-}
-
-.filter-group .filter-item:first-child {
-    padding-left: 1em;
-    padding-right: 1em;
-    border-right: 1px solid #c7c7c7;
-    color: inherit;
-    border-radius: 5px 0 0 5px;
-}
-
-.filter-group .filter-item:last-child {
-    padding-left: 1em;
-    padding-right: 1em;
-    border-left: 1px solid #c7c7c7;
-    cursor: pointer;
-    color: inherit;
-    border-radius: 0 5px 5px 0;
-}
-
-.filter-group .filter-item:last-child:hover {
-    background-color: #8a8a8a;
-    color: #FFFFFF;
-}
-
-.filter-operator-logic {
-    font-weight: bold;
-}
-.filter-operator-logic > span {
-    font-size: 0.8em;
-}
-
-.filter-condition-left, .filter-condition-right {
-    font-weight: bold;
-}
-.filter-operator-math {
-
-}
-.filter-btn-close {
-
-}
-
-}
-
+div.inline { float:left; margin-right: 10px;}
+.clearBoth { clear:both; }
 /*data table css */
 
 .dataTables_paginate .paginate_button i {

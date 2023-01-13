@@ -1,5 +1,5 @@
 from django.urls import reverse, NoReverseMatch
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 class BreadcrumbChildren(object):
@@ -12,31 +12,38 @@ class BreadcrumbChildren(object):
     @property
     def data(self):
         return {
-            'title': gettext_lazy(self.title) if self.title else '#',
+            'title': self.title if self.title else '#',
             'url': reverse(self.url, kwargs=self.kw_pattern) if self.url else '#',
         }
 
 
 class BreadcrumbItem(object):
-    HOME_PAGE = BreadcrumbChildren('Home Page', 'HomeView')
-    HR_PAGE = BreadcrumbChildren('HR')
-    EMPLOYEE_LIST_PAGE = BreadcrumbChildren('Employee List', 'EmployeeList')
-    HOME_VIEW_SPACE = BreadcrumbChildren('Employee List', 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
-    EMPLOYEE_CREATE_PAGE = BreadcrumbChildren('Employee Create', 'EmployeeCreate')
-    ORGANIZATION_PAGE = BreadcrumbChildren('Organization', 'GroupList')
-    GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren('Organization Level', 'GroupLevelList')
+    # home
+    HOME_PAGE = BreadcrumbChildren(
+        _('Home Page'), 'HomeView'
+    )
+    HOME_VIEW_SPACE = BreadcrumbChildren(_('Employee List'), 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
 
-    USER_LIST_PAGE = BreadcrumbChildren('User List', 'UserList')
+    # hr
+    HR_PAGE = BreadcrumbChildren(_('HR'))
+    EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
+    EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Employee Create'), 'EmployeeCreate')
+    GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren(_('Organization Level'), 'GroupLevelList')
+    GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
+    ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
+    ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
 
-    USER_CREATE_PAGE = BreadcrumbChildren('User Create', 'UserCreate')
+    # tenant
+    ORGANIZATION_PAGE = BreadcrumbChildren(_('Organization'), 'GroupList')
 
-    GROUP_LIST_PAGE = BreadcrumbChildren('Organization Group', 'GroupList')
-    COMPANY_PAGE = BreadcrumbChildren('Company', 'CompanyList')
-    COMPANY_OVERVIEW_PAGE = BreadcrumbChildren('Company Overview', 'CompanyListOverviewList')
-    COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren('Detail')
+    # user
+    USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
+    USER_CREATE_PAGE = BreadcrumbChildren(_('User Create'), 'UserCreate')
 
-    ROLE_LIST_PAGE = BreadcrumbChildren('Role List', 'RoleList')
-    ROLE_CREATE_PAGE = BreadcrumbChildren("Create Role", 'RoleCreate')
+    # company
+    COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
+    COMPANY_OVERVIEW_PAGE = BreadcrumbChildren(_('Company Overview'), 'CompanyListOverviewList')
+    COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 

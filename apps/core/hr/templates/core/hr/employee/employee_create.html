@@ -15,6 +15,9 @@
             type="text/css"
     />
 
+    <!-- Daterangepicker CSS -->
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+
     <!-- Customize -->
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_create.css' %}">
 
@@ -189,30 +192,49 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
+{#                            <div class="form-group">#}
+{#                                <label class="form-label">{% trans 'Date of Birthday' %}<span#}
+{#                                        class="field-required"#}
+{#                                >(*)</span></label>#}
+{#                                <input#}
+{#                                        type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"#}
+{#                                        name="dob"#}
+{#                                        required#}
+{#                                >#}
+{#                                <span class="form-text text-muted">dd/mm/yyyy</span>#}
+{#                            </div>#}
+
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Date of Birthday' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label">{% trans 'Date of Birthday' %}</label>
                                 <input
-                                        type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"
-                                        value="01/01/2023"
+                                        class="form-control"
+                                        type="text"
                                         name="dob"
                                         required
-                                >
-                                <span class="form-text text-muted">dd/mm/yyyy</span>
+                                />
                             </div>
                         </div>
                         <div class="col-4">
+{#                            <div class="form-group">#}
+{#                                <label class="form-label">{% trans 'Date Joined' %}<span#}
+{#                                        class="field-required"#}
+{#                                >(*)</span></label>#}
+{#                                <input#}
+{#                                        type="text" placeholder="" data-mask="99/99/9999" class="form-control"#}
+{#                                        name="date_joined"#}
+{#                                        required#}
+{#                                >#}
+{#                                <span class="form-text text-muted">dd/mm/yyyy</span>#}
+{#                            </div>#}
+
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Date Joined' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label">{% trans 'Date Joined' %}</label>
                                 <input
-                                        type="text" placeholder="" data-mask="99/99/9999" class="form-control"
+                                        class="form-control"
+                                        type="text"
                                         name="date_joined"
                                         required
-                                >
-                                <span class="form-text text-muted">dd/mm/yyyy</span>
+                                />
                             </div>
                         </div>
                         <div class="col-4">
@@ -280,6 +302,10 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <!-- Customize JS -->
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 

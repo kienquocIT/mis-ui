@@ -9,10 +9,12 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    if (data.hasOwnProperty('user_list') && Array.isArray(data.user_list)) {
+                    if (data.hasOwnProperty('company_user_list') && Array.isArray(data.company_user_list)) {
                         ele.append(`<option>` + `</option>`)
-                        data.user_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" data-first-name="${item.first_name}" data-last-name="${item.last_name}" data-email="${item.email}" data-phone="${item.phone}">` + item.full_name + `</option>`)
+                        data.company_user_list.map(function (item) {
+                            if (Object.keys(item.user).length !== 0) {
+                                ele.append(`<option value="` + item.user.id + `" data-first-name="${item.user.first_name}" data-last-name="${item.user.last_name}" data-email="${item.user.email}" data-phone="${item.user.phone}">` + item.user.full_name + `</option>`)
+                            }
                         })
                     }
                 }
@@ -162,7 +164,9 @@ $(document).ready(function () {
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');
             upload_img.text("");
+            tmp = URL.createObjectURL(this.files[0])
             upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
+            $(this).val()
         });
         $('#upload-area').click(function (e) {
             $('#input-avatar').click();

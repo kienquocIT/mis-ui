@@ -14,7 +14,7 @@ $("tbody").on("click", ".del-button", function () {
                 $.fn.redirectUrl(location.pathname, 1000);
             }
         }, (errs) => {
-            $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+            $.fn.notifyPopup({description: errs.data}, 'failure')
         },)
     }
 

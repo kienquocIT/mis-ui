@@ -49,7 +49,7 @@ $(function () {
                 }
             }, {
                 'data': 'username', render: (data, type, row, meta) => {
-                    return `<span class="badge badge-primary">` + row.username + `</span>`;
+                    return `<span class="badge badge-soft-primary">` + row.username + `</span>`;
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {

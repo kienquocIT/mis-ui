@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="form-update-role" data-method="POST" , data-url="{% url "RoleList" %}"
+    <form id="form-update-role" data-method="PUT" , data-url="{% url "RoleList" %}"
           data-url-redirect="{% url "RoleList" %}">
         {% csrf_token %}
         <div class="row">
@@ -41,7 +41,7 @@
             </div>
             <div class="col-6 form-group">
                 <label class="form-label">
-                    {% trans 'Abbreviation' %}r
+                    {% trans 'Abbreviation' %}
                 </label>
                 <input class="form-control" placeholder="Input role name" name="abbreviation" id="abbreviation">
             </div>
@@ -60,7 +60,7 @@
                 >
                     <thead>
                     <tr>
-                        <th>
+                        <th class="w-10">
                             <span class="form-check">
                                 <input
                                         type="checkbox"
@@ -70,10 +70,10 @@
                                 <label class="form-check-label" for="customCheck1"></label>
                             </span>
                         </th>
-                        <th>Code</th>
-                        <th>Full Name</th>
-                        <th>Department</th>
-                        <th></th>
+                        <th class="w-10">{% trans "Code" %}</th>
+                        <th class="w-35">{% trans "Full Name" %}</th>
+                        <th class="w-35">{% trans "Department" %}</th>
+                        <th class="w-10">{% trans "Status" %}</th>
                     </tr>
                     </thead>
                     <tbody>

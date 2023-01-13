@@ -36,7 +36,7 @@
                                         class="field-required"
                                 >(*)</span></label>
                         <input type="text" class="form-control" placeholder="A" name="first_name"
-                               id="inp-firstname">
+                               id="inp-firstname" required>
                         <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                                         class="field-required"
                                 >(*)</span></label>
                         <input class="form-control" type="text" placeholder="Nguyen Van" name="last_name"
-                                id="inp-lastname">
+                                id="inp-lastname" required>
                         <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                     <div class="form-group">
                         <label class="form-label">{% trans "Full Name" %}</label>
                         <input class="form-control" type="text" placeholder="Nguyen Van A" name="full_name"
-                               id="inp-fullname">
+                               id="inp-fullname" readonly>
                         <span class="form-text text-muted">{% trans 'Full Name of Person' %}</span>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                                 type="email" class="form-control"
                                 placeholder="customer@mtsolution.com.vn"
                                 name="email"
-
+                                required
                         >
                         <span class="form-text text-muted">{% trans 'Contact to email address' %}</span>
                     </div>
@@ -138,7 +138,7 @@
                                         class="field-required"
                                 >(*)</span></label>
                         <input class="form-control" type="password" placeholder="*****"
-                               id="confirm-password" required>
+                               id="confirm-password" name="confirm_password" required>
                         <span class="form-text text-muted">{% trans 'Password to login ' %}</span>
                     </div>
                 </div>

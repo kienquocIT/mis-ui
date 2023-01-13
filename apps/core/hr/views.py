@@ -135,7 +135,7 @@ class RoleListAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).post(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class RoleDetailAPI(APIView):
@@ -149,7 +149,7 @@ class RoleDetailAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).get()
         if role.state:
             return {'role': role.result}, status.HTTP_200_OK
-        return {'detail': role.errors}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': role.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
@@ -157,7 +157,7 @@ class RoleDetailAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).put(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):

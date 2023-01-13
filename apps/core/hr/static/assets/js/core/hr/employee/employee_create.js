@@ -96,19 +96,19 @@ $(document).ready(function () {
 
                             $('#datable-employee-plan-app tbody').append(`<tr>
                         <td>
-                            <div class="row mb-5">
+                            <div class="row mb-6">
                                 <div>
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 200px"
+                                            aria-controls="collapseExample${t}" style="width: 250px"
                                           
                                     >
                                         ${data.plan_list[t].title}
                                     </button>
-                                    <span style="margin-left: 10px">License: 19 of 20</span>
+<!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
                                 </div>
-                                <div class="show" id="collapseExample${t}">
+                                <div class="show" id="collapseExample${t}" style="margin-left: 25px">
                                     <ul>
                                         ${app_list}
                                     </ul>

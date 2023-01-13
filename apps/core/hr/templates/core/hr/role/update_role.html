@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="form-update-role" data-method="POST" , data-url="{% url "RoleList" %}"
+    <form id="form-update-role" data-method="PUT" , data-url="{% url "RoleList" %}"
           data-url-redirect="{% url "RoleList" %}">
         {% csrf_token %}
         <div class="row">

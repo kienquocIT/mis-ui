@@ -108,7 +108,6 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
-                        console.log(data)
                         initDataTable(config);
                     }
                 },
@@ -139,7 +138,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: "Thất bại"}, 'failure');
+                    // $.fn.notifyPopup({description: "Thất bại"}, 'failure');
                 }
             )
     });

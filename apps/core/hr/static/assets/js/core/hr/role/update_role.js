@@ -138,6 +138,7 @@ $(function () {
         // submit form update
         $("#form-update-role").submit(function (event) {
             if (confirm("Bạn có muốn lưu thay đổi ?") === true) {
+                event.preventDefault();
                 let data_url = location.pathname + '/api';
                 let csr = $("input[name=csrfmiddlewaretoken]").val();
                 let frm = new SetupFormSubmit($(this));
@@ -146,7 +147,7 @@ $(function () {
                 }).get();
                 let data = frm.dataForm;
                 data['employees'] = employee_list;
-                $.fn.callAjax(data_url, "PUT", data, csr)
+                $.fn.callAjax(data_url, frm.dataMethod, data, csr)
                     .then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
@@ -156,7 +157,7 @@ $(function () {
                             }
                         },
                         (errs) => {
-                            $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+                            // $.fn.notifyPopup({description: errs.data}, 'failure')
                         }
                     )
             }

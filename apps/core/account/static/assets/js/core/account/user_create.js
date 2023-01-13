@@ -75,7 +75,7 @@ $(document).ready(function () {
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',
     })
-    $("#form-create-user").submit(function (event) {
+    frm.submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
@@ -92,7 +92,7 @@ $(document).ready(function () {
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data}, 'failure');
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                     }
                 )
         }

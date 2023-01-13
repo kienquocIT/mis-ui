@@ -24,6 +24,7 @@ class ApiURL(object):
     refresh_token = StringUrl('auth/token-refresh')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
+    user_detail = StringUrl('account/user')
 
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')

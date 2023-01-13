@@ -17,14 +17,22 @@ $(document).ready(function () {
     });
 
     function generatePW() {
-        var pass = '';
-        var str = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let pass = '';
+        var str = 'abcdefghijklmnopqrstuvwxyz';
 
-        for (let i = 1; i <= 8; i++) {
+        for (let i = 1; i <= 6; i++) {
             var char = Math.floor(Math.random()
                 * str.length + 1);
             pass += str.charAt(char)
         }
+
+        var str_num = '0123456789'
+        for (let i = 1; i <= 2; i++) {
+            var char = Math.floor(Math.random()
+                * str_num.length + 1);
+            pass += str_num.charAt(char)
+        }
+        pass = pass.split('').sort(function(){return 0.5-Math.random()}).join('');
         return pass;
     }
 

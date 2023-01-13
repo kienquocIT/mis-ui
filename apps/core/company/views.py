@@ -168,3 +168,16 @@ class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
 
         return {}, status.HTTP_404_NOT_FOUND
 
+
+class CompanyUserNotMapEmployeeListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE).get()
+        if resp.state:
+            return {'company_user_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+

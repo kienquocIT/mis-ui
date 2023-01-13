@@ -151,8 +151,8 @@ $(document).ready(function () {
     }
 
     function loadDefaultData() {
-        $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
-        $("input[name='dob']").val(moment().format('DD-MM-YYYY'));
+        // $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
+        // $("input[name='dob']").val(moment().format('DD-MM-YYYY'));
 
         loadUserList();
         loadRoleList();

@@ -101,5 +101,5 @@ class UserDetailAPI(APIView):
     def delete(self, request, pk, *args, **kwargs):
         user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).delete(request.data)
         if user.state:
-            return None, status.HTTP_204_NO_CONTENT
+            return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

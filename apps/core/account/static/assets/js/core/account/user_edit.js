@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     function loadUserDetail() {
         let url = window.location.pathname.replace('edit', 'detail');
         $.fn.callAjax(url + '/api', 'GET')
@@ -16,7 +17,23 @@ $(document).ready(function () {
                 },
             )
     }
+
     loadUserDetail();
+
+    function getFullName() {
+        let first_name = $('#inp-first_name').val();
+        let last_name =$('#inp-last_name').val();
+        $('#inp-first_name').change(function () {
+            first_name = $(this).val();
+            $('#inp-full_name').val(last_name + ' ' + first_name);
+        });
+
+        $('#inp-last_name').change(function () {
+            last_name = $(this).val();
+            $('#inp-full_name').val(last_name + ' ' + first_name);
+        });
+    }
+    getFullName();
 
     function loadCompanyList(ele) {
         let url = ele.attr('data-url');
@@ -39,6 +56,7 @@ $(document).ready(function () {
             }
         )
     }
+
     loadCompanyList($('#select-box-company'));
 
     $("#form-edit-user").submit(function (event) {

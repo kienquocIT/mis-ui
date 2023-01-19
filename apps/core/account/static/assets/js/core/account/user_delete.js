@@ -1,20 +1,23 @@
-$("tbody").on("click", ".del-button", function (){
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    let user_id = $(this).attr('data-id');
-    let form = $('#form-user');
-    let data_url = form.attr('data-url');
-    user_data = {
-        'id': user_id
-    }
-    $.fn.callAjax( data_url + '/' + user_id, "DELETE", user_data, csr).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            $.fn.notifyPopup({description: "Thành công"}, 'success')
-            $.fn.redirectUrl(location.pathname, 3000);
+$("tbody").on("click", ".del-button", function () {
+    if (confirm("Confirm Delete User?") === true) {
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let user_id = $(this).attr('data-id');
+        let data_url = $(this).attr('href');
+        user_data = {
+            'id': user_id
         }
-    }, (errs) => {
-        $.fn.notifyPopup({description: "Thất bại"}, 'failure')
-    },)
+        $.fn.callAjax(data_url + '/api', "DELETE", user_data, csr).then((resp) => {
+
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyPopup({description: "Thành công"}, 'success')
+                $.fn.redirectUrl(location.pathname, 1000);
+            }
+        }, (errs) => {
+            $.fn.notifyPopup({description: errs.data}, 'failure')
+        },)
+    }
+
 });
 
 

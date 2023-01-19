@@ -215,7 +215,7 @@
                                         <tr>
                                             <th>Code</th>
                                             <th>Full Name</th>
-                                            <th>Department</th>
+                                            <th>Role</th>
                                             <th>Date Joined</th>
                                             <th>Username</th>
                                             <th>Status</th>
@@ -382,7 +382,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <div class="form-check form-switch form-switch-lg mb-1">
+                    <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
                         <label class="form-label">
                             {% trans 'Active organization group after created' %}
                             <span class="field-required">(*)</span>
@@ -392,6 +392,7 @@
                                 class="form-check-input"
                                 name="is_active" checked
                                 required
+                                style="margin-left: 0"
                         >
                     </div>
                 </div>

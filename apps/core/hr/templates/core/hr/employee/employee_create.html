@@ -15,6 +15,9 @@
             type="text/css"
     />
 
+    <!-- Daterangepicker CSS -->
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+
     <!-- Customize -->
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_create.css' %}">
 
@@ -57,7 +60,7 @@
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-			<span class="nav-link-text">Plan, Application</span>
+			<span class="nav-link-text">Plan - Application</span>
 		</a>
 	</li>
     </ul>
@@ -78,7 +81,7 @@
                                     <label class="form-label">{% trans 'Select User' %}</label>
                                     <select
                                             class="form-select" id="select-box-user"
-                                            data-url="{% url 'UserListAPI' %}"
+                                            data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
                                             data-method="GET"
                                             name="user"
                                     >
@@ -95,7 +98,10 @@
                                             <span class="field-required">(*)</span>
                                         </label>
                                         <input
-                                                type="text" class="form-control" placeholder="A" name="first_name"
+                                                type="text" class="form-control"
+                                                placeholder="A"
+                                                name="first_name"
+                                                id="employee-first-name"
                                                 required
                                         >
                                         <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
@@ -111,6 +117,7 @@
                                                 type="text" placeholder="Nguyen Van"
                                                 class="form-control"
                                                 name="last_name"
+                                                id="employee-last-name"
                                                 required
                                         >
                                         <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
@@ -140,6 +147,7 @@
                                         type="email" class="form-control"
                                         placeholder="customer@mtsolution.com.vn"
                                         name="email"
+                                        id="employee-email"
                                         required
                                 >
                                 <span class="form-text text-muted">{% trans 'Contact to email adress' %}</span>
@@ -156,6 +164,7 @@
 {#                                        data-mask="(999) 999-999-999"#}
                                         class="form-control"
                                         name="phone"
+                                        id="employee-phone"
                                         required
                                 >
                                 <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
@@ -163,16 +172,18 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Department' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label">{% trans 'Department' %}
+{#                                    <span#}
+{#                                        class="field-required"#}
+{#                                >(*)</span>#}
+                                </label>
                                 <select
                                         class="form-select"
                                         name="group"
                                         id="select-box-group-employee"
                                         data-url="{% url 'GroupListAPI' %}"
                                         data-method="GET"
-                                        required
+{#                                        required#}
                                 >
                                 </select>
                                 <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
@@ -181,30 +192,49 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
+{#                            <div class="form-group">#}
+{#                                <label class="form-label">{% trans 'Date of Birthday' %}<span#}
+{#                                        class="field-required"#}
+{#                                >(*)</span></label>#}
+{#                                <input#}
+{#                                        type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"#}
+{#                                        name="dob"#}
+{#                                        required#}
+{#                                >#}
+{#                                <span class="form-text text-muted">dd/mm/yyyy</span>#}
+{#                            </div>#}
+
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Date of Birthday' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label">{% trans 'Date of Birthday' %}</label>
                                 <input
-                                        type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"
-                                        value="01/01/2023"
+                                        class="form-control"
+                                        type="text"
                                         name="dob"
                                         required
-                                >
-                                <span class="form-text text-muted">dd/mm/yyyy</span>
+                                />
                             </div>
                         </div>
                         <div class="col-4">
+{#                            <div class="form-group">#}
+{#                                <label class="form-label">{% trans 'Date Joined' %}<span#}
+{#                                        class="field-required"#}
+{#                                >(*)</span></label>#}
+{#                                <input#}
+{#                                        type="text" placeholder="" data-mask="99/99/9999" class="form-control"#}
+{#                                        name="date_joined"#}
+{#                                        required#}
+{#                                >#}
+{#                                <span class="form-text text-muted">dd/mm/yyyy</span>#}
+{#                            </div>#}
+
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Date Joined' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label">{% trans 'Date Joined' %}</label>
                                 <input
-                                        type="text" placeholder="" data-mask="99/99/9999" class="form-control"
+                                        class="form-control"
+                                        type="text"
                                         name="date_joined"
                                         required
-                                >
-                                <span class="form-text text-muted">dd/mm/yyyy</span>
+                                />
                             </div>
                         </div>
                         <div class="col-4">
@@ -225,7 +255,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <div class="form-check form-switch form-switch-lg mb-1">
+                            <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
                                 <label class="form-label">
                                     {% trans 'Active the employee after created' %}
                                     <span class="field-required">(*)</span>
@@ -235,6 +265,7 @@
                                         class="form-check-input"
                                         name="is_active" checked
                                         required
+                                        style="margin-left: 0"
                                 >
                             </div>
                         </div>
@@ -271,6 +302,10 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <!-- Customize JS -->
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 

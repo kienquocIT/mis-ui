@@ -61,6 +61,32 @@ class EmployeeCreate(View):
         return {}
 
 
+class EmployeeDetail(View):
+
+    @mask_view(
+        auth_require=True,
+        template='core/hr/employee/employee_detail.html',
+        menu_active='menu_employee_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
+class EmployeeDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_DETAIL + '/' + pk).get()
+        if resp.state:
+            return {'employee': resp.result}, status.HTTP_200_OK
+        return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+
+# Role
 class RoleList(View):
 
     @mask_view(
@@ -109,7 +135,7 @@ class RoleListAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).post(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class RoleDetailAPI(APIView):
@@ -123,7 +149,7 @@ class RoleDetailAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).get()
         if role.state:
             return {'role': role.result}, status.HTTP_200_OK
-        return {'detail': role.errors}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': role.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
@@ -131,7 +157,7 @@ class RoleDetailAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).put(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
@@ -179,17 +205,6 @@ class GroupLevelListAPI(APIView):
             if response.state:
                 return response.result, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
-
-
-class GroupLevelCreate(View):
-    @mask_view(
-        auth_require=True,
-        template='core/hr/grouplevel/level_create.html',
-        breadcrumb='GROUP_LEVEL_CREATE_PAGE',
-        menu_active='menu_group_list',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
 
 
 # Group
@@ -279,14 +294,20 @@ class GroupDetailAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
-        # template='core/hr/group/group_detail.html',
-        # breadcrumb='USER_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).get()
         if resp.state:
             return {'group': resp.result}, status.HTTP_200_OK
         return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.GROUP_DETAIL + '/' + pk).put(data)
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @mask_view(
         auth_require=True,
@@ -298,3 +319,19 @@ class GroupDetailAPI(APIView):
             if response.state:
                 return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class GroupParentListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, level, *args, **kwargs):
+        resp = ServerAPI(url=(ApiURL.GROUP_PARENT + '/' + level), user=request.user).get()
+        if resp.state:
+            return {'group_parent_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

@@ -169,6 +169,8 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'account.User'
 
+SESSION_COOKIE_AGE = 3 * 60 * 60  # 3 days expires
+
 # call API Config
 API_IP_OR_ADDR = '127.0.0.1'
 API_PORT = '8000'  # None is remove port from url
@@ -235,7 +237,6 @@ CACHES = {
 
 # LOGIN
 LOGIN_URL = 'auth/login'
-
 
 # another import
 

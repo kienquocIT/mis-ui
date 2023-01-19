@@ -34,6 +34,18 @@ class UserCreate(View):
         return {}, status.HTTP_200_OK
 
 
+class UserDetail(View):
+    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class UserEdit(View):
+    @mask_view(auth_require=True, template='core/account/user_edit.html')
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class UserListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -42,38 +54,52 @@ class UserListAPI(APIView):
         user_list = ServerAPI(user=request.user, url=ApiURL.user_list).get()
         if user_list.state:
             return {'user_list': user_list.result}, status.HTTP_200_OK
-        return {'detail': user_list.errors}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': user_list.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            data = request.data
-            user = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
-            if user.state:
-                return user.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        else:
+            if response.errors:
+                if isinstance(response.errors, dict):
+                    err_msg = ""
+                    for key, value in response.errors.items():
+                        err_msg += str(key) + ": " + str(value)
+                        break
+                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+
 
 
 class UserDetailAPI(APIView):
 
-    @mask_view(auth_require=True, template='core/account/user_detail.html', breadcrumb='USER_DETAIL_PAGE')
+    @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *args, **kwargs):
-        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).get()
+        user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).get()
         if user.state:
             return {'user': user.result}, status.HTTP_200_OK
-        return {'detail': user.errors}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': user.errors}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
         data = request.data
-        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).put(data)
-        if user.state:
-            return user.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).put(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        else:
+            if response.errors:
+                if isinstance(response.errors, dict):
+                    err_msg = ""
+                    for key, value in response.errors.items():
+                        err_msg += str(key) + ": " + str(value)
+                        break
+                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        user = ServerAPI(user=request.user, url=ApiURL.user_list + '/' + pk).delete(request.data)
+        user = ServerAPI(user=request.user, url=ApiURL.user_detail + '/' + pk).delete(request.data)
         if user.state:
             return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

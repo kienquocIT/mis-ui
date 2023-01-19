@@ -26,8 +26,9 @@ $(document).ready(function () {
             },
             data: [],
             columns: [{
-                'render': () => {
-                    return '';
+                'render': (data, type, row, meta) => {
+                    let inp = `<span class="form-check mb-0"><input class="form-check-input check-select" type="checkbox" data-id=` + row.id + `></span>`
+                    return inp;
                 }
             }, {
                 'data': 'code', render: (data, type, row, meta) => {
@@ -41,9 +42,6 @@ $(document).ready(function () {
                                         <div class="avatar avatar-xs avatar-success avatar-rounded">
                                             <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
                                         </div>
-<!--                                        <div class="avatar avatar-xs">-->
-<!--                                            <img src="dist/img/avatar10.jpg" alt="user" class="avatar-img rounded-circle">-->
-<!--                                        </div>-->
                                     </div>
                                     <div class="media-body">
                                         <span class="d-block">` + row.full_name + `</span>
@@ -54,15 +52,23 @@ $(document).ready(function () {
                 }
             }, {
                 'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                        return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                    if (row.hasOwnProperty('group') && typeof row.group === "object") {
+                        if (Object.keys(row.group).length !== 0) {
+                            return `<span class="badge badge-soft-primary">` + row.group.title + `</span>`;
+                        }
                     }
                     return '';
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let inp = `<input type="checkbox" data-id=` + row.id + `>`
-                    return inp;
+                    if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
+                        if (row.is_active) {
+                            return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                        } else {
+                            return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
+                        }
+                    }
+                    return '';
                 }
             },]
         }
@@ -72,20 +78,6 @@ $(document).ready(function () {
             let dtb = $('#datable_employee_list');
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
-                /*Checkbox Add*/
-                var tdCnt = 0;
-                $('table tr').each(function () {
-                    $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                    tdCnt++;
-                });
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
-                });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-                dtb.parent().addClass('table-responsive');
-
-
                 /*Select all using checkbox*/
                 var DT1 = dtb.DataTable();
                 $(".check-select-all").on("click", function (e) {
@@ -108,6 +100,7 @@ $(document).ready(function () {
                 });
             }
         }
+
         function loadDataTable() {
             let tb = $('#datable_employee_list');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
@@ -120,6 +113,7 @@ $(document).ready(function () {
                 },
             )
         }
+
         loadDataTable();
     });
 
@@ -144,7 +138,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: "Thất bại"}, 'failure');
+                    // $.fn.notifyPopup({description: "Thất bại"}, 'failure');
                 }
             )
     });

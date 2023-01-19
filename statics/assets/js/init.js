@@ -1219,6 +1219,17 @@ class SetupFormSubmit {
         }
         return null;
     }
+
+    appendFilter(url, filter) {
+        let params = '';
+        Object.keys(filter).map((key) => {
+            params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
+        })
+        if (params) {
+            return '{0}?{1}'.format_by_idx(url, params);
+        }
+        return url;
+    }
 }
 
 jQuery.fn.formSubmit = function (formElement, notify = {'success': true, 'failure': true}, enableRedirect = true,) {
@@ -1258,4 +1269,38 @@ String.format_by_key = function () {
         s = s.replace(new RegExp("\\{" + key + "\\}", "gm"), objKey[key]);
     });
     return s;
+}
+
+String.prototype.format_by_idx = function () {
+    // argument of function start 0+ for fill to this
+    // `<a href="{0}">{1}</a>`.format("http://...", "Tag a")
+    // Return ==> `<a href="http://...">Tag A</a>`
+    let s = this.toString();
+    for (let i = 0; i < arguments.length; i++) {
+        let reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, arguments[i]);
+    }
+    return s;
+}
+
+String.prototype.format_by_key = function (objKey) {
+    // objKey: Object Key-Value fill to this
+    // `<a href="{href}">{title}</a>`.format_by_key({"href": "http://...", "title": "Tag A"})
+    // Return ==> `<a href="http://...">Tag A</a>`
+    let s = this.toString();
+    Object.keys(objKey).forEach(function (key) {
+        s = s.replace(new RegExp("\\{" + key + "\\}", "gm"), objKey[key]);
+    });
+    return s;
+}
+
+Array.prototype.convert_to_key = function (key = 'id') {
+    if (Array.isArray(this)) {
+        let objData = {};
+        this.map((item) => {
+            objData[item[key]] = item
+        })
+        return objData;
+    }
+    return {};
 }

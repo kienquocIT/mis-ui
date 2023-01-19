@@ -39,7 +39,9 @@
                 src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
             }
         </style>
-        {% block cssHeader %}{% endblock %}
+        {% block cssHeader %}
+            <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
+        {% endblock %}
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
@@ -101,7 +103,7 @@
                             <div data-simplebar class="nicescroll-bar">
 
                                 {% block pageContent %}{% endblock %}
-
+                                {% include 'plugins/condition/condition_component.html' %}
                             </div>
                         </div>
                     </div>
@@ -169,7 +171,7 @@
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-
+    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
     <script>
         $(document).ready(function () {
             let nav_data = $('#get-menu-active');
@@ -198,8 +200,22 @@
             return null;
         }
     </script>
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            var condition = new Conditions();
+            condition.init();
+            let formset_cond = $('#formset-condition')
+            condition.ElementAction(ele_target=$('.btn-save'), elm_focus=$('#home-condition'), element_formset=formset_cond);
 
-    {% block jsFooter %}{% endblock %}
+            {#let data_cond = [{"left_cond":"total_value","math":"<","right_cond":"sup_new","order":0},"OR"]#}
+            let data_cond = [{"left_cond":"total_value","math":"<","right_cond":"sup_new","order":0},"OR",[{"left_cond":"req_type","math":"<=","right_cond":"sup_new","order":1},"OR",{"left_cond":"total_value","math":"=","right_cond":"upgrade","order":2},"AND"],"AND"]
+            condition.loadCondition(element_formset=formset_cond, data_condition=data_cond)
+        });
+    </script>
+    {% block jsFooter %}
+    {% endblock %}
 {% endcompress %}
 </body>
 </html>

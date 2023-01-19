@@ -1129,13 +1129,14 @@ jQuery.fn.cleanDataNotify = (data) => {
     });
     return data
 };
-jQuery.fn.notifyErrors = (errs)=>{
-     if (errs && typeof errs === 'object') {
-         Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
-             jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
-         });
-     }
+jQuery.fn.notifyErrors = (errs) => {
+    if (errs && typeof errs === 'object') {
+        Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
+            jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
+        });
+    }
 }
+
 jQuery.fn.switcherResp = function (resp) {
     if (typeof resp === 'object') {
         let status = 500;
@@ -1197,7 +1198,7 @@ class SetupFormSubmit {
         // URL DETAIL
         this.dataUrlDetail = formSelected.attr('data-url-detail');
         if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
-        if(this.dataUrlDetail){
+        if (this.dataUrlDetail) {
             this.dataUrlDetail = this.dataUrlDetail.split("/").slice(0, -1).join("/") + "/";
         }
     }
@@ -1212,8 +1213,8 @@ class SetupFormSubmit {
         }
     }
 
-    getUrlDetail(pk){
-        if (this.dataUrlDetail && pk){
+    getUrlDetail(pk) {
+        if (this.dataUrlDetail && pk) {
             return this.dataUrlDetail + pk.toString();
         }
         return null;

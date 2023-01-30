@@ -47,7 +47,8 @@ class BreadcrumbItem(object):
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
-
+    # components
+    COMPONENTS_PAGE = BreadcrumbChildren(_('Component'), 'ComponentCollections')
 class BreadcrumbView:
     @staticmethod
     def check_view_name():

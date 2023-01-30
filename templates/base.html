@@ -40,7 +40,6 @@
             }
         </style>
         {% block cssHeader %}
-            <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
         {% endblock %}
     {% endcompress %}
     {% compress js %}
@@ -101,9 +100,9 @@
                         </header>
                         <div class="blog-body">
                             <div data-simplebar class="nicescroll-bar">
-
-                                {% block pageContent %}{% endblock %}
-{#                                {% include 'plugins/condition/condition_component.html' %}#}
+                                {% block pageContent %}
+                                    dau xanh
+                                {% endblock %}
                             </div>
                         </div>
                     </div>
@@ -200,8 +199,6 @@
             return null;
         }
     </script>
-    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
-    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     {% block jsFooter %}
     {% endblock %}
 {% endcompress %}

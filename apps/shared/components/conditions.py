@@ -52,13 +52,3 @@ class ConditionFormset(MultiForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-    def convert_and_save(self, *args, **kwargs):
-        payload = {}
-        # condition = convert_data(self.cleaned_data.get('condition'))
-        # payload.update({
-        #     'data_cond': convert_cond,
-        # })
-        # get_data_transition(payload, self, 'transitions')
-        # get_data_transition(payload, self, 'transitions_info')
-        return payload

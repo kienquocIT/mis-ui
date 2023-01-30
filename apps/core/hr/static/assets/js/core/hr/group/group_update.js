@@ -124,6 +124,7 @@ $(document).ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
                     initDataTable(config);
+                    loadInstanceData();
                     loadDefaultData();
                 }
             },
@@ -156,12 +157,16 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('group')) {
                         eleGroupLevel.text("");
                         eleGroupLevel.append(`<option value="` + data.group.group_level.id + `" data-description="${data.group.group_level.description}" data-first-manager-description="${data.group.group_level.first_manager_description}" data-second-manager-description="${data.group.group_level.second_manager_description}">level ` + data.group.group_level.level + `</option>`);
+                        loadGroupLevelList();
+
                         eleParent.text("");
                         if (Object.keys(data.group.parent_n).length !== 0) {
                             eleParent.append(`<option value="` + data.group.parent_n.id + `">` + data.group.parent_n.title + `</option>`)
                         } else {
                             eleParent.append(`<option>` + `</option>`)
                         }
+                        loadGroupList();
+
                         eleRefTitle.val(data.group.group_level.description);
                         eleTitle.val(data.group.title);
                         eleCode.val(data.group.code);
@@ -172,13 +177,15 @@ $(document).ready(function () {
                         eleSecondManTitle.val(data.group.second_manager_title);
                         eleFirstManAssign.text("")
                         eleFirstManAssign.append(`<option value="` + data.group.first_manager.id + `">` + data.group.first_manager.full_name + `</option>`)
-                        eleSecondManAssign.text("")
+                        loadFirstManagerList();
 
+                        eleSecondManAssign.text("")
                         if (Object.keys(data.group.second_manager).length !== 0) {
                             eleSecondManAssign.append(`<option value="` + data.group.second_manager.id + `">` + data.group.second_manager.full_name + `</option>`)
                         } else {
                             eleSecondManAssign.append(`<option>` + `</option>`)
                         }
+                        loadSecondManagerList();
 
                         if (data.group.group_employee && Array.isArray(data.group.group_employee)) {
                             for (let i = 0; i < data.group.group_employee.length; i++) {
@@ -207,6 +214,8 @@ $(document).ready(function () {
                                         let rowNode = tableModal.rows(indexList[idx]).nodes()[0];
                                         rowNode.classList.add("selected");
                                         rowNode.lastElementChild.children[0].firstElementChild.checked = true
+
+                                        break
                                     }
                                 }
                             }
@@ -305,11 +314,11 @@ $(document).ready(function () {
     function loadDefaultData() {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
 
-        loadGroupLevelList();
-        loadGroupList();
-        loadFirstManagerList();
-        loadSecondManagerList();
-        loadInstanceData();
+        // loadGroupLevelList();
+        // loadGroupList();
+        // loadFirstManagerList();
+        // loadSecondManagerList();
+        // loadInstanceData();
 
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');
@@ -324,7 +333,6 @@ $(document).ready(function () {
     }
 
     loadDataTable();
-    // loadDefaultData();
 
     jQuery.validator.setDefaults({
         debug: true,

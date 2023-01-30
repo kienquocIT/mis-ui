@@ -3,7 +3,7 @@
     {% trans 'Setup Condition' %}
 </button>
 <hr>
-<form id="form-create-condition" data-url="{% url 'HomeConditionAPI' %}" data-url-redirect="{% url 'HomeView' %}" data-method="post" method="post">
+<form id="form-create-condition">
     <button type="submit" class="btn btn-primary btn-save float-right">Get condition string</button>
     <input type="text" class="hidden" id="home-condition">
     {% csrf_token %}

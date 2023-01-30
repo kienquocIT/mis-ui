@@ -1,9 +1,10 @@
+var global_cond_val = null;
 class Conditions {
     constructor() {}
     /***
      * handle action click button of formset
-     * @param elm_target element of action on click handle event on click when user click on button
-     * @param elm_focus element store data serializer after user click button elm_target, if null function return array instead
+     * @param elm_target element of action on click
+     * @param elm_focus element store data serializer, if null function return array instead
      * @param element_formset element of formset. for loop get data purpose
      * @constructor
      */
@@ -136,9 +137,17 @@ class Conditions {
             this.loopData(data_condition_temp, element_formset);
         }
     }
-    // init formset for condition
-    // run formset when page loaded
-    // init sub formset when user click add formset
+
+    /***
+     * handle first logic condition each formset
+     * ***/
+    controlLogicCondition(form_condition=null){
+        // if
+    }
+
+    /*** init formset for condition
+    * run formset when page loaded
+    * init sub formset when user click add formset ***/
     init() {
         let formelm = $('[data-formset-prefix]');
         let form_opt =
@@ -184,6 +193,11 @@ class Conditions {
                 let $elm = $('[data-formset-prefix="' + $this + '"]')
                 $elm.find('[data-subformset-prefix]').formset(sub_form_opt);
                 // $elm.find('[data-subformset-prefix] [data-subformset-add]').trigger('click');
+
+                // validate condition each formset
+                // logic rule: - first logic condition when user selected had applied for all siblings logic condition
+                //             - when first logic change all siblings logic change too
+
             });
         }
 
@@ -194,3 +208,20 @@ class Conditions {
 jQuery.fn.renderFormElements = function (arg) {
     return arg
 }
+
+
+$(document).ready(function () {
+    var condition = new Conditions();
+    condition.init();
+    let formset_cond = $('#formset-condition')
+    condition.ElementAction(ele_target = $('.btn-save'), elm_focus = $('#home-condition'), element_formset = formset_cond);
+    let data_cond = [];
+    // let data_cond = [{"left_cond": "total_value", "math": "<", "right_cond": "sup_new", "order": 0}, "OR"]
+    // let data_cond = [{"left_cond": "total_value", "math": "<", "right_cond": "sup_new", "order": 0}, "OR", [{
+    //     "left_cond": "req_type",
+    //     "math": "<=",
+    //     "right_cond": "sup_new",
+    //     "order": 1
+    // }, "OR", {"left_cond": "total_value", "math": "=", "right_cond": "upgrade", "order": 2}, "AND"], "AND"]
+    condition.loadCondition(element_formset = formset_cond, data_condition = data_cond)
+});

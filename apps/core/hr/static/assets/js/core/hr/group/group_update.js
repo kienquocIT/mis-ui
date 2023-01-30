@@ -124,6 +124,7 @@ $(document).ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
                     initDataTable(config);
+                    loadDefaultData();
                 }
             },
         )
@@ -208,15 +209,7 @@ $(document).ready(function () {
                                         rowNode.lastElementChild.children[0].firstElementChild.checked = true
                                     }
                                 }
-
-
-
-                                // let tableModal = document.getElementById("datable-employee-list-popup-update");
-                                // let rowInModal = tableModal.rows[(i+1)]
-                                // rowInModal.classList.add("selected");
-                                // rowInModal.lastElementChild.children[0].firstElementChild.checked = true
                             }
-
                         }
                     }
                 }
@@ -312,7 +305,6 @@ $(document).ready(function () {
     function loadDefaultData() {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
 
-        loadDataTable();
         loadGroupLevelList();
         loadGroupList();
         loadFirstManagerList();
@@ -331,7 +323,8 @@ $(document).ready(function () {
         $('#languages').select2();
     }
 
-    loadDefaultData();
+    loadDataTable();
+    // loadDefaultData();
 
     jQuery.validator.setDefaults({
         debug: true,

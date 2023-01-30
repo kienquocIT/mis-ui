@@ -201,8 +201,8 @@ $(function () {
             }
         }, {
             'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                    return new Date(row.date_joined).toDateString();
+                if (row.hasOwnProperty('user') && row.user.hasOwnProperty('username')) {
+                    return row.user.username;
                 }
                 return '';
             }
@@ -320,8 +320,6 @@ function tableGroupEmployeeAdd() {
         trSTT++;
         trData = `<td><span id="${childID}">${dataChecked.full_name}</span></td><td><span>${roleText}</span></td>`;
         tableShowBodyOffModal.append(`<tr>` + `<td><span>${trSTT}</span></td>` + trData + actionData + `</tr>`);
-
-
     }
     return false;
 }

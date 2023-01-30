@@ -1136,6 +1136,7 @@ jQuery.fn.notifyErrors = (errs) => {
         });
     }
 }
+
 jQuery.fn.switcherResp = function (resp) {
     if (typeof resp === 'object') {
         let status = 500;

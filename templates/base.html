@@ -39,7 +39,9 @@
                 src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
             }
         </style>
-        {% block cssHeader %}{% endblock %}
+        {% block cssHeader %}
+            <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
+        {% endblock %}
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
@@ -101,7 +103,7 @@
                             <div data-simplebar class="nicescroll-bar">
 
                                 {% block pageContent %}{% endblock %}
-
+{#                                {% include 'plugins/condition/condition_component.html' %}#}
                             </div>
                         </div>
                     </div>
@@ -169,7 +171,7 @@
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-
+    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
     <script>
         $(document).ready(function () {
             let nav_data = $('#get-menu-active');
@@ -198,8 +200,10 @@
             return null;
         }
     </script>
-
-    {% block jsFooter %}{% endblock %}
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    {% block jsFooter %}
+    {% endblock %}
 {% endcompress %}
 </body>
 </html>

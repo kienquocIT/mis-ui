@@ -313,11 +313,11 @@ $(document).ready(function () {
         $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
 
         loadDataTable();
-        loadInstanceData();
         loadGroupLevelList();
         loadGroupList();
         loadFirstManagerList();
         loadSecondManagerList();
+        loadInstanceData();
 
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');

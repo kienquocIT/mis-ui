@@ -1,21 +1,27 @@
+from uuid import uuid4
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.conf import settings
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.db.models import Manager
-
-from uuid import uuid4
-
 from django.utils import timezone
+
+from apps.shared import AuthMsg, RandomGenerate
 
 
 class AuthUser(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    username = models.CharField(
-        verbose_name='Account Username',
-        max_length=150,
-        unique=True,
+    user_id = models.UUIDField()
+    username_validator = UnicodeUsernameValidator()
+    username_auth = models.CharField(
+        verbose_name='''Account Username for Authenticate, 
+            format: "{username}-{TenantCode|upper}", slugify before call authenticate''',
+        help_text=AuthMsg.USERNAME_REQUIRE, error_messages={'unique': AuthMsg.USERNAME_ALREADY_EXISTS},
+        max_length=150 + 32, unique=True, validators=[username_validator],
     )
+    username = models.CharField(verbose_name='Account Username', max_length=150)
     first_name = models.CharField(verbose_name='first name', max_length=80, blank=True)
     last_name = models.CharField(verbose_name='last name', max_length=150, blank=True)
     email = models.EmailField(verbose_name='email address', blank=True, null=True)
@@ -38,7 +44,7 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
     objects = Manager()
 
     EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'username_auth'
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
@@ -94,7 +100,9 @@ class User(AuthUser):
         state_check, key_require = cls.exist_key(api_result)
         if state_check:
             try:
-                user = User.objects.get(username=api_result['username'])
+                user = User.objects.get(username_auth=api_result['username_auth'], user_id=api_result['id'])
+                user.user_id = api_result['id']
+                user.username = api_result['username']
                 user.first_name = api_result['first_name']
                 user.last_name = api_result['last_name']
                 user.email = api_result.get('email', '')
@@ -107,7 +115,8 @@ class User(AuthUser):
                 user.save()
             except User.DoesNotExist:
                 user = User.objects.create(
-                    id=api_result['id'],
+                    user_id=api_result['id'],
+                    username_auth=api_result['username_auth'],
                     username=api_result['username'],
                     first_name=api_result['first_name'],
                     last_name=api_result['last_name'],
@@ -119,9 +128,15 @@ class User(AuthUser):
                     avatar=api_result.get('avatar', None),
                     is_admin_tenant=api_result.get('is_admin_tenant', False),
                 )
+            except Exception as err:
+                msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
+                print(msg_err)
+                return None
             user.access_token = api_result['token']['access_token']
             user.refresh_token = api_result['token']['refresh_token']
             user.last_login = timezone.now()
+            passwd_hidden = RandomGenerate.get_string(length=32, allow_special=True)
+            user.set_password(passwd_hidden)
             user.save()
             return user
         print(f'Required key in value API: {", ".join(key_require)}')

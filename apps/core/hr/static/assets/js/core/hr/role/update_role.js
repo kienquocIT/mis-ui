@@ -104,6 +104,7 @@ $(document).ready(function () {
                                         let rowNode = table.rows(indexList[idx]).nodes()[0]
                                         for (let i = 0; i < data.role.employees.length; i++) {
                                             if (data.role.employees[i].id === rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id')) {
+                                                rowNode.classList.add('selected');
                                                 rowNode.firstElementChild.children[0].firstElementChild.checked = true;
                                             }
 

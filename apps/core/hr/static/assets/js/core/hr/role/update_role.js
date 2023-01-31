@@ -88,34 +88,7 @@ $(document).ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
                     initDataTable(config);
-
-                    let url = location.pathname + `/api`
-                    $.fn.callAjax(url, 'GET')
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $('#abbreviation').val(data.role.abbreviation)
-                                    $('#role_name').val(data.role.title)
-                                    $('#code').val(data.role.code)
-                                    let table = $("#datatable_employee_list").DataTable();
-                                    let indexList = table.rows().indexes();
-                                    for (let idx = 0; idx < indexList.length; idx++) {
-                                        let rowNode = table.rows(indexList[idx]).nodes()[0]
-                                        for (let i = 0; i < data.role.employees.length; i++) {
-                                            if (data.role.employees[i].id === rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id')) {
-                                                rowNode.classList.add('selected');
-                                                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
-                                            }
-
-                                        }
-                                    }
-                                }
-                            },
-                            (errs) => {
-                                console.log(errs)
-                            }
-                        )
+                    loadRoleDetail();
                 }
             },
         )
@@ -124,6 +97,35 @@ $(document).ready(function () {
     loadDataTable();
 });
 
+function loadRoleDetail() {
+    let url = location.pathname + `/api`
+    $.fn.callAjax(url, 'GET')
+        .then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $('#abbreviation').val(data.role.abbreviation)
+                    $('#role_name').val(data.role.title)
+                    $('#code').val(data.role.code)
+                    let table = $("#datatable_employee_list").DataTable();
+                    let indexList = table.rows().indexes();
+                    for (let idx = 0; idx < indexList.length; idx++) {
+                        let rowNode = table.rows(indexList[idx]).nodes()[0]
+                        for (let i = 0; i < data.role.employees.length; i++) {
+                            if (data.role.employees[i].id === rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id')) {
+                                rowNode.classList.add('selected');
+                                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
+                            }
+
+                        }
+                    }
+                }
+            },
+            (errs) => {
+                console.log(errs)
+            }
+        )
+}
 
 // submit form update
 $("#form-update-role").submit(function (event) {
@@ -138,7 +140,7 @@ $("#form-update-role").submit(function (event) {
             let indexList = table.rows().indexes();
             for (let idx = 0; idx < indexList.length; idx++) {
                 let rowNode = table.rows(indexList[idx]).nodes()[0]
-                if (rowNode.firstElementChild.children[0].firstElementChild.checked === true){
+                if (rowNode.firstElementChild.children[0].firstElementChild.checked === true) {
                     employee_list.push(rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id'))
                 }
             }

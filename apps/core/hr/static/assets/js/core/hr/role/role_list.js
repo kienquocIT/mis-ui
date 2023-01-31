@@ -25,8 +25,9 @@ $(function () {
             },
             data: [],
             columns: [{
-                'render': () => {
-                    return '';
+                'render': (data, type, row, meta) => {
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
                 'data': 'title', 'render': (data, type, row, meta) => {
@@ -73,11 +74,6 @@ $(function () {
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
                 /*Checkbox Add*/
-                var tdCnt = 0;
-                $('table tr').each(function () {
-                    $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                    tdCnt++;
-                });
                 $(document).on('click', '.del-button', function () {
                     targetDt.rows('.selected').remove().draw(false);
                     return false;

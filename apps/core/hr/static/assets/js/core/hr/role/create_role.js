@@ -27,8 +27,8 @@ $(document).ready(function () {
             data: [],
             columns: [{
                 'render': (data, type, row, meta) => {
-                    let inp = `<span class="form-check mb-0"><input class="form-check-input check-select" type="checkbox" data-id=` + row.id + `></span>`
-                    return inp;
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
                 'data': 'code', render: (data, type, row, meta) => {

@@ -25,8 +25,9 @@ $(function () {
             },
             data: [],
             columns: [{
-                'render': () => {
-                    return '';
+                'render': (data, type, row, meta) => {
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
                 'data': 'full_name', 'render': (data, type, row, meta) => {
@@ -53,8 +54,8 @@ $(function () {
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="user/edit/`+ row.id +`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="user/detail/`+ row.id +`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="user/edit/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="user/detail/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     return bt2 + bt3;
                 }
             },]
@@ -66,11 +67,6 @@ $(function () {
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
                 /*Checkbox Add*/
-                var tdCnt = 0;
-                $('table tr').each(function () {
-                    $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                    tdCnt++;
-                });
                 $(document).on('click', '.del-button', function () {
                     targetDt.rows('.selected').remove().draw(false);
                     return false;
@@ -82,12 +78,10 @@ $(function () {
                 /*Select all using checkbox*/
                 var DT1 = dtb.DataTable();
                 $(".check-select-all").on("click", function (e) {
-                    $('.check-select').attr('checked', true);
+
                     if ($(this).is(":checked")) {
-                        DT1.rows().select();
                         $('.check-select').prop('checked', true);
                     } else {
-                        DT1.rows().deselect();
                         $('.check-select').prop('checked', false);
                     }
                 });
@@ -118,5 +112,4 @@ $(function () {
         }
         loadDataTable();
     });
-
 });

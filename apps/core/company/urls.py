@@ -5,6 +5,7 @@ from apps.core.company.views import (
     CompanyList, CompanyListAPI,
     CompanyListOverviewList, CompanyListOverviewListAPI,
     CompanyListOverviewDetail, EmployeeUserByCompanyListOverviewDetailAPI,
+    EmployeeByCompanyListOverviewDetailAPI, UserByCompanyListOverviewDetailAPI, CompanyOfUserForOverviewDetailAPI,
     CompanyDetailAPI,
     CompanyUpdateAPI,
     CompanyDeleteAPI
@@ -17,7 +18,6 @@ urlpatterns = [
     path('update/<str:pk>', CompanyUpdateAPI.as_view(), name='CompanyUpdateAPI'),
     path('delete/<str:pk>', CompanyDeleteAPI.as_view(), name='CompanyDeleteAPI'),
 
-
     # view from tenant overview
     path('list/overview', CompanyListOverviewList.as_view(), name='CompanyListOverviewList'),
     path('list/overview/api', CompanyListOverviewListAPI.as_view(), name='CompanyListOverviewListAPI'),
@@ -26,4 +26,19 @@ urlpatterns = [
         'list/overview/employee-user/<str:pk>', EmployeeUserByCompanyListOverviewDetailAPI.as_view(),
         name='EmployeeUserByCompanyListOverviewDetailAPI'
     ),
+
+    path(
+        'list/overview/employee/<str:pk>', EmployeeByCompanyListOverviewDetailAPI.as_view(),
+        name='EmployeeByCompanyListOverviewDetailAPI'
+    ),
+    path(
+        'list/overview/user/<str:pk>', UserByCompanyListOverviewDetailAPI.as_view(),
+        name='UserByCompanyListOverviewDetailAPI'
+    ),
+
+    path(
+        'list/overview/company-of-user/<str:pk>', CompanyOfUserForOverviewDetailAPI.as_view(),
+        name='CompanyOfUserForOverviewDetailAPI'
+    ),
+
 ]

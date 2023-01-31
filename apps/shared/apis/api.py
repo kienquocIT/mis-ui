@@ -1,13 +1,27 @@
 import requests
 
+from typing import Callable, Dict, TypedDict
+
 from django.db.models import Model
 from django.conf import settings
 from django.http import response
-from django.shortcuts import redirect
-from django.urls import reverse
-from rest_framework.exceptions import PermissionDenied
+from rest_framework import status
 
 from .urls_map import ApiURL
+
+api_url_refresh_token = ApiURL.refresh_token
+
+
+class RespDict(TypedDict, total=False):
+    state: Callable[[bool or None], bool or None]
+    status: Callable[[int or None], int or None]
+    result: Callable[[list or dict], list or dict]
+    errors: Callable[[dict], dict]
+    page_size: Callable[[int], int]
+    page_count: Callable[[int], int]
+    page_next: Callable[[int], int]
+    page_previous: Callable[[int], int]
+    all: Callable[[dict], dict]
 
 
 class RespData(object):
@@ -18,7 +32,11 @@ class RespData(object):
         errors: dict : errors server return
     """
 
-    def __init__(self, _state=None, _result=None, _errors=None, _status=None):
+    def __init__(
+            self,
+            _state=None, _result=None, _errors=None, _status=None,
+            _page_size=None, _page_count=None, _page_next=None, _page_previous=None,
+    ):
         """
         Properties will keep type of attribute that is always correct
         Args: attribute of Http Response
@@ -26,43 +44,179 @@ class RespData(object):
             _result: .json()['result'] | 'result' is default | You can custom key - confirm with API Docs
             _errors: .json()['errors'] | 'errors' is default | You can custom key - confirm with API Docs
         """
-        self._state = _state
-        self._result = _result
-        self._errors = _errors
-        self._status = _status
+        self._state = _state if _state is not None else False
+        self._result = _result if _result is not None else {}
+        self._errors = _errors if _errors is not None else {}
+        self._status = _status if _status is not None else status.HTTP_500_INTERNAL_SERVER_ERROR
+        self._page_size = _page_size if _page_size is not None else 0
+        self._page_count = _page_count if _page_count is not None else 0
+        self._page_next = _page_next if _page_next is not None else 0
+        self._page_previous = _page_previous if _page_previous is not None else 0
 
     @property
-    def state(self) -> bool or None:
+    def state(self) -> bool:
         if isinstance(self._state, int):
             if 200 <= self._state < 300:
                 return True
             return False
-        return None
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return False
+        raise AttributeError(
+            f'[Response Data Parser][STATE] '
+            f'convert process is incorrect when it return {type(self._state)}({str(self._state)[:30]}) '
+            f'instead of BOOLEAN types.'
+        )
 
     @property
     def result(self) -> dict or list:
         if isinstance(self._result, (dict, list)):
             return self._result
-        raise ValueError(f'Result of response must be dict or list type, it currently is {type(self._result)}.')
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return {}
+        raise AttributeError(
+            f'[Response Data Parser][RESULT] '
+            f'convert process is incorrect when it return {type(self._result)}({str(self._result)[:30]}) '
+            f'instead of LIST or DICT types.'
+        )
 
     @property
     def errors(self) -> dict:
         if isinstance(self._errors, dict):
             return self._errors
-        raise ValueError(f'Errors of response must be dict type, it currently is {type(self._result)}.')
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return {}
+        raise AttributeError(
+            f'[Response Data Parser][ERRORS] '
+            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'instead of DICT types.'
+        )
 
     @property
     def status(self) -> int:
         if isinstance(self._status, int):
             return self._status
-        raise ValueError(f'Status of response must be integer type, it currently is {type(self._status)}.')
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return status.HTTP_500_INTERNAL_SERVER_ERROR
+        raise AttributeError(
+            f'[Response Data Parser][STATUS] '
+            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'instead of INTEGER types.'
+        )
+
+    @property
+    def page_size(self) -> int:
+        if isinstance(self._page_size, int):
+            return self._page_size
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return 0
+        raise AttributeError(
+            f'[Response Data Parser][PAGE_SIZE] '
+            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'instead of INTEGER types.'
+        )
+
+    @property
+    def page_count(self) -> int:
+        if isinstance(self._page_count, int):
+            return self._page_count
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return 0
+        raise AttributeError(
+            f'[Response Data Parser][PAGE_COUNT] '
+            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'instead of INTEGER types.'
+        )
+
+    @property
+    def page_next(self) -> int:
+        if isinstance(self._page_next, int):
+            return self._page_next
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return 0
+        raise AttributeError(
+            f'[Response Data Parser][PAGE_NEXT] '
+            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'instead of INTEGER types.'
+        )
+
+    @property
+    def page_previous(self) -> int:
+        if isinstance(self._page_previous, int):
+            return self._page_previous
+        if settings.RAISE_EXCEPTION_DEBUG is False:
+            return 0
+        raise AttributeError(
+            f'[Response Data Parser][PAGE_PREVIOUS] '
+            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'instead of INTEGER types.'
+        )
+
+    def get_full_data(self, func_change_data: RespDict = None) -> dict:
+        data_all = DictFillResp({}).fill_full(self)  # call fill data to dict
+        allow_change_keys = data_all.keys()
+        if func_change_data:
+            for key, func_call in func_change_data.items():
+                if key == 'all':
+                    data_all = func_call(data_all)
+                elif key in allow_change_keys:
+                    data_all[key] = func_call(data_all[key])
+        return data_all
+
+
+class DictFillResp(dict):
+    def fill_state(self, resp: RespData):
+        self[settings.UI_RESP_KEY_STATE] = resp.state
+        return self
+
+    def fill_status(self, resp: RespData):
+        self[settings.UI_RESP_KEY_STATUS] = resp.status
+        return self
+
+    def fill_result(self, resp: RespData):
+        self[settings.UI_RESP_KEY_RESULT] = resp.result
+        return self
+
+    def fill_errors(self, resp: RespData):
+        self[settings.UI_RESP_KEY_ERRORS] = resp.errors
+        return self
+
+    def fill_page_size(self, resp: RespData):
+        self[settings.UI_RESP_KEY_PAGE_SIZE] = resp.page_size
+        return self
+
+    def fill_page_count(self, resp: RespData):
+        self[settings.UI_RESP_KEY_PAGE_COUNT] = resp.page_count
+        return self
+
+    def fill_page_next(self, resp: RespData):
+        self[settings.UI_RESP_KEY_PAGE_NEXT] = resp.page_next
+        return self
+
+    def fill_page_previous(self, resp: RespData):
+        self[settings.UI_RESP_KEY_PAGE_PREVIOUS] = resp.page_previous
+        return self
+
+    def fill_full(self, resp):
+        self.fill_state(resp)
+        self.fill_status(resp)
+        self.fill_result(resp)
+        self.fill_errors(resp)
+        self.fill_page_count(resp)
+        self.fill_page_next(resp)
+        self.fill_page_previous(resp)
+        return self
 
 
 class APIUtil:
-    key_auth = 'Authorization'
-    prefix_token = 'Bearer'
-    key_response_data = 'result'
-    key_response_err = 'errors'
+    key_auth = settings.API_KEY_AUTH
+    prefix_token = settings.API_PREFIX_TOKEN
+    key_response_data = settings.API_KEY_RESPONSE_DATA
+    key_response_err = settings.API_KEY_RESPONSE_ERRORS
+    key_response_status = settings.API_KEY_RESPONSE_STATUS
+    key_response_page_size = settings.API_KEY_RESPONSE_PAGE_SIZE
+    key_response_page_count = settings.API_KEY_RESPONSE_PAGE_COUNT
+    key_response_page_next = settings.API_KEY_RESPONSE_PAGE_NEXT
+    key_response_page_previous = settings.API_KEY_RESPONSE_PAGE_PREVIOUS
 
     def __init__(self, user_obj: Model = None):
         self.user_obj = user_obj
@@ -90,7 +244,7 @@ class APIUtil:
 
         """
         if refresh_token:
-            resp_obj = ServerAPI(url=ApiURL.refresh_token).post(
+            resp_obj = ServerAPI(url=api_url_refresh_token).post(
                 data={'refresh': refresh_token}
             )
             if resp_obj.state and resp_obj.result and isinstance(resp_obj.result, dict):
@@ -132,10 +286,14 @@ class APIUtil:
         else:
             resp_json = resp.json()
         return RespData(
-            resp.status_code,
-            resp_json.get(cls.key_response_data, {}),
-            resp_json.get(cls.key_response_err, {}),
-            resp.status_code,
+            _state=resp.status_code,
+            _result=resp_json.get(cls.key_response_data, {}),
+            _errors=resp_json.get(cls.key_response_err, {}),
+            _status=resp_json.get(cls.key_response_status, resp.status_code),
+            _page_size=resp_json.get(cls.key_response_status, resp.status_code),
+            _page_count=resp_json.get(cls.key_response_page_count, None),
+            _page_next=resp_json.get(cls.key_response_page_next, None),
+            _page_previous=resp_json.get(cls.key_response_page_previous, None),
         )
 
     def call_get(self, safe_url: str, headers: dict) -> RespData:

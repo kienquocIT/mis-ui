@@ -183,6 +183,29 @@ domain = f'{API_IP_OR_ADDR}{f":{API_PORT}" if API_PORT else ""}'
 prefix = f"{API_URL_PREFIX}/" if API_URL_PREFIX else ""
 API_DOMAIN = None
 
+# Key return resp after call API
+API_KEY_AUTH = 'Authorization'
+API_PREFIX_TOKEN = 'Bearer'
+API_KEY_RESPONSE_DATA = 'result'
+API_KEY_RESPONSE_ERRORS = 'errors'
+API_KEY_RESPONSE_STATUS = 'status'
+API_KEY_RESPONSE_PAGE_SIZE = 'page_size'
+API_KEY_RESPONSE_PAGE_COUNT = 'count'
+API_KEY_RESPONSE_PAGE_NEXT = 'next'
+API_KEY_RESPONSE_PAGE_PREVIOUS = 'previous'
+
+UI_RESP_KEY_STATE = 'state'
+UI_RESP_KEY_STATUS = 'status'
+UI_RESP_KEY_RESULT = 'result'
+UI_RESP_KEY_ERRORS = 'errors'
+UI_RESP_KEY_PAGE_SIZE = 'page_size'
+UI_RESP_KEY_PAGE_COUNT = 'page_count'
+UI_RESP_KEY_PAGE_NEXT = 'page_next'
+UI_RESP_KEY_PAGE_PREVIOUS = 'page_previous'
+
+# DEBUG CODE enable: allow raise errors if it is enabled else return default value (value is correct type)
+RAISE_EXCEPTION_DEBUG = True
+
 # LOGGING
 
 LOG_DIR = os.path.join(BASE_DIR, "logs")

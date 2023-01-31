@@ -1,6 +1,4 @@
-//load data table employee
-// /*Blog Init*/
-$(function () {
+$(document).ready(function () {
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
@@ -25,9 +23,9 @@ $(function () {
         data: [],
         columns: [{
             'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id +`><label class="form-check-label" for="${currentId}"></label></span>`;
-                }
+                let currentId = meta.row
+                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+            }
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 return String.format(`<b>{0}</b>`, data);
@@ -71,98 +69,123 @@ $(function () {
             }
         },]
     }
+
     function initDataTable(config) {
         /*DataTable Init*/
-        let dtb = $('#datable_employee_list');
+        let dtb = $('#datatable_employee_list');
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
             /*Select all using checkbox*/
             var DT1 = dtb.DataTable();
-            $(".check-select-all").on("click", function (e) {
-                $('.check-select').attr('checked', true);
-                if ($(this).is(":checked")) {
-                    DT1.rows().select();
-                    $('.check-select').prop('checked', true);
-                } else {
-                    DT1.rows().deselect();
-                    $('.check-select').prop('checked', false);
-                }
-            });
-            $(".check-select").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    $(this).closest('tr').addClass('selected');
-                } else {
-                    $(this).closest('tr').removeClass('selected');
-                    $('.check-select-all').prop('checked', false);
-                }
-            });
         }
     }
+
     function loadDataTable() {
-        let tb = $('#datable_employee_list');
+        let tb = $('#datatable_employee_list');
         $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
                     initDataTable(config);
+
+                    let url = location.pathname + `/api`
+                    $.fn.callAjax(url, 'GET')
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $('#abbreviation').val(data.role.abbreviation)
+                                    $('#role_name').val(data.role.title)
+                                    $('#code').val(data.role.code)
+                                    let table = $("#datatable_employee_list").DataTable();
+                                    let indexList = table.rows().indexes();
+                                    for (let idx = 0; idx < indexList.length; idx++) {
+                                        let rowNode = table.rows(indexList[idx]).nodes()[0]
+                                        for (let i = 0; i < data.role.employees.length; i++) {
+                                            if (data.role.employees[i].id === rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id')) {
+                                                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
+                                            }
+
+                                        }
+                                    }
+                                }
+                            },
+                            (errs) => {
+                                console.log(errs)
+                            }
+                        )
                 }
             },
         )
     }
 
     loadDataTable();
-    $(document).ready(function () {
-
-        // load data page detail role
-        "use strict";
-        let url = location.pathname + `/api`
-        $.fn.callAjax(url, 'GET')
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $('#abbreviation').val(data.role.abbreviation)
-                        $('#role_name').val(data.role.title)
-                        $('#code').val(data.role.code)
-                        for (let i = 0; i < data.role.employees.length; i++) {
-                            $("input[data-id =" + data.role.employees[i].id + "]").prop('checked', true);
-                        }
-                    }
-                },
-                (errs) => {
-                    console.log(errs)
-                }
-            )
-
-        // submit form update
-        $("#form-update-role").submit(function (event) {
-            if (confirm("Bạn có muốn lưu thay đổi ?") === true) {
-                event.preventDefault();
-                let data_url = location.pathname + '/api';
-                let csr = $("input[name=csrfmiddlewaretoken]").val();
-                let frm = new SetupFormSubmit($(this));
-                let employee_list = $("tbody input:checkbox:checked").map(function () {
-                    return $(this).data('id')
-                }).get();
-                let data = frm.dataForm;
-                data['employees'] = employee_list;
-                $.fn.callAjax(data_url, frm.dataMethod, data, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyPopup({description: "Đang cập nhật Role"}, 'success');
-                                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                            }
-                        },
-                        (errs) => {
-                            // $.fn.notifyPopup({description: errs.data}, 'failure')
-                        }
-                    )
-            }
-        });
-    });
-
 });
 
+
+// submit form update
+$("#form-update-role").submit(function (event) {
+        if (confirm("Bạn có muốn lưu thay đổi ?") === true) {
+            event.preventDefault();
+            let data_url = location.pathname + '/api';
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            let data = frm.dataForm;
+            const employee_list = [];
+            let table = $("#datatable_employee_list").DataTable();
+            let indexList = table.rows().indexes();
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0]
+                if (rowNode.firstElementChild.children[0].firstElementChild.checked === true){
+                    employee_list.push(rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id'))
+                }
+            }
+            data['employees'] = employee_list;
+            $.fn.callAjax(data_url, frm.dataMethod, data, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: "Đang cập nhật Role"}, 'success');
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyPopup({description: errs.data}, 'failure')
+                    }
+                )
+        }
+    }
+);
+
+$(document).on('click', '.check-select', function () {
+    if ($(this).is(":checked")) {
+        $(this).closest('tr').addClass('selected');
+    } else {
+        $(this).closest('tr').removeClass('selected');
+        $('.check-select-all').prop('checked', false);
+    }
+});
+
+
+$(document).on('click', '.check-select-all', function () {
+    $('.check-select').attr('checked', true);
+    let table = $('#datatable_employee_list').DataTable();
+    let indexList = table.rows().indexes();
+    if ($(this).is(":checked")) {
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0];
+            rowNode.classList.add('selected');
+            rowNode.firstElementChild.children[0].firstElementChild.checked = true;
+        }
+        $('.check-select').prop('checked', true);
+    } else {
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0];
+            rowNode.classList.remove("selected");
+            rowNode.firstElementChild.children[0].firstElementChild.checked = false;
+        }
+        $('.check-select').prop('checked', false);
+    }
+});

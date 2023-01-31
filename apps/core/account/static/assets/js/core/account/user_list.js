@@ -63,7 +63,7 @@ $(function () {
 
         function initDataTable(config) {
             /*DataTable Init*/
-            let dtb = $('#datable_user_list');
+            let dtb = $('#datatable_user_list');
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
                 /*Checkbox Add*/
@@ -73,31 +73,11 @@ $(function () {
                 });
                 $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
                 dtb.parent().addClass('table-responsive');
-
-
-                /*Select all using checkbox*/
-                var DT1 = dtb.DataTable();
-                $(".check-select-all").on("click", function (e) {
-
-                    if ($(this).is(":checked")) {
-                        $('.check-select').prop('checked', true);
-                    } else {
-                        $('.check-select').prop('checked', false);
-                    }
-                });
-                $(".check-select").on("click", function (e) {
-                    if ($(this).is(":checked")) {
-                        $(this).closest('tr').addClass('selected');
-                    } else {
-                        $(this).closest('tr').removeClass('selected');
-                        $('.check-select-all').prop('checked', false);
-                    }
-                });
             }
         }
 
         function loadDataTable() {
-            let tb = $('#datable_user_list');
+            let tb = $('#datatable_user_list');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -110,6 +90,38 @@ $(function () {
                 initDataTable(config);
             },)
         }
+
         loadDataTable();
     });
+});
+
+$(document).on('click', '.check-select', function () {
+    if ($(this).is(":checked")) {
+        $(this).closest('tr').addClass('selected');
+    } else {
+        $(this).closest('tr').removeClass('selected');
+        $('.check-select-all').prop('checked', false);
+    }
+});
+
+$(document).on('click', '.check-select-all', function () {
+    $('.check-select').attr('checked', true);
+    let table = $('#datatable_user_list').DataTable();
+    let indexList = table.rows().indexes();
+    console.log(indexList)
+    if ($(this).is(":checked")) {
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0];
+            rowNode.classList.add('selected');
+            rowNode.lastElementChild.children[0].firstElementChild.checked = true;
+        }
+        $('.check-select').prop('checked', true);
+    } else {
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0];
+            rowNode.classList.remove("selected");
+            rowNode.lastElementChild.children[0].firstElementChild.checked = false;
+        }
+        $('.check-select').prop('checked', false);
+    }
 });

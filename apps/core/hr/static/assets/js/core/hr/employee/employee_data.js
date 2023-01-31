@@ -24,8 +24,9 @@ $(function () {
         },
         data: [],
         columns: [{
-            'render': () => {
-                return '';
+            'render': (data, type, row, meta) => {
+                let currentId = "chk_sel_" + String(meta.row + 1)
+                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
             }
         }, {
             'data': 'code', render: (data, type, row, meta) => {
@@ -104,10 +105,10 @@ $(function () {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
             var tdCnt = 0;
-            $('table tr').each(function () {
-                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                tdCnt++;
-            });
+            // $('table tr').each(function () {
+            //     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
+            //     tdCnt++;
+            // });
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
@@ -128,14 +129,14 @@ $(function () {
                     $('.check-select').prop('checked', false);
                 }
             });
-            $(".check-select").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    $(this).closest('tr').addClass('selected');
-                } else {
-                    $(this).closest('tr').removeClass('selected');
-                    $('.check-select-all').prop('checked', false);
-                }
-            });
+            // $(".check-select").on("click", function (e) {
+            //     if ($(this).is(":checked")) {
+            //         $(this).closest('tr').addClass('selected');
+            //     } else {
+            //         $(this).closest('tr').removeClass('selected');
+            //         $('.check-select-all').prop('checked', false);
+            //     }
+            // });
         }
     }
 
@@ -153,4 +154,14 @@ $(function () {
     }
 
     loadDataTable();
+});
+
+
+$(document).on('click', '.check-select', function () {
+    if ($(this).is(":checked")) {
+        $(this).closest('tr').addClass('selected');
+    } else {
+        $(this).closest('tr').removeClass('selected');
+        $('.check-select-all').prop('checked', false);
+    }
 });

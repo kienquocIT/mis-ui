@@ -75,7 +75,7 @@ $(document).ready(function () {
 
         function initDataTable(config) {
             /*DataTable Init*/
-            let dtb = $('#datable_employee_list');
+            let dtb = $('#datatable_employee_list');
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
                 /*Select all using checkbox*/
@@ -102,7 +102,7 @@ $(document).ready(function () {
         }
 
         function loadDataTable() {
-            let tb = $('#datable_employee_list');
+            let tb = $('#datatable_employee_list');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -122,10 +122,16 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        let employee_list = $("tbody input:checkbox:checked").map(function () {
-            return $(this).data('id')
-        }).get();
         let data = frm.dataForm;
+        const employee_list = [];
+        let table = $("#datatable_employee_list").DataTable();
+        let indexList = table.rows().indexes();
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0]
+            if (rowNode.firstElementChild.children[0].firstElementChild.checked === true) {
+                employee_list.push(rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id'))
+            }
+        }
         data['employees'] = employee_list;
         console.log(data);
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, data, csr)

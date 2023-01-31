@@ -201,8 +201,8 @@ $(function () {
             }
         }, {
             'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                    return new Date(row.date_joined).toDateString();
+                if (row.hasOwnProperty('user') && row.user.hasOwnProperty('username')) {
+                    return row.user.username;
                 }
                 return '';
             }
@@ -246,16 +246,16 @@ $(function () {
 
             /*Select all using checkbox*/
             var DT1 = dtb.DataTable();
-            $(".check-select-all").on("click", function (e) {
-                $('.check-select').attr('checked', true);
-                if ($(this).is(":checked")) {
-                    DT1.rows().select();
-                    $('.check-select').prop('checked', true);
-                } else {
-                    DT1.rows().deselect();
-                    $('.check-select').prop('checked', false);
-                }
-            });
+            // $(".check-select-all").on("click", function (e) {
+            //     $('.check-select').attr('checked', true);
+            //     if ($(this).is(":checked")) {
+            //         DT1.rows().select();
+            //         $('.check-select').prop('checked', true);
+            //     } else {
+            //         DT1.rows().deselect();
+            //         $('.check-select').prop('checked', false);
+            //     }
+            // });
             // $(".check-select").on("click", function (e) {
             //     if ($(this).is(":checked")) {
             //         $(this).closest('tr').addClass('selected');
@@ -320,8 +320,6 @@ function tableGroupEmployeeAdd() {
         trSTT++;
         trData = `<td><span id="${childID}">${dataChecked.full_name}</span></td><td><span>${roleText}</span></td>`;
         tableShowBodyOffModal.append(`<tr>` + `<td><span>${trSTT}</span></td>` + trData + actionData + `</tr>`);
-
-
     }
     return false;
 }
@@ -416,5 +414,27 @@ $(document).on('click', '.check-select', function () {
     } else {
         $(this).closest('tr').removeClass('selected');
         $('.check-select-all').prop('checked', false);
+    }
+});
+
+
+$(document).on('click', '.check-select-all', function () {
+    $('.check-select').attr('checked', true);
+    let table = $('#datable_employee_list_popup').DataTable();
+    let indexList = table.rows().indexes();
+    if ($(this).is(":checked")) {
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0];
+            rowNode.classList.add('selected');
+            rowNode.lastElementChild.children[0].firstElementChild.checked = true;
+        }
+        $('.check-select').prop('checked', true);
+    } else {
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0];
+            rowNode.classList.remove("selected");
+            rowNode.lastElementChild.children[0].firstElementChild.checked = false;
+        }
+        $('.check-select').prop('checked', false);
     }
 });

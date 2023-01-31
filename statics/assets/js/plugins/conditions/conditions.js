@@ -1,6 +1,7 @@
-var global_cond_val = null;
 class Conditions {
-    constructor() {}
+    constructor() {
+    }
+
     /***
      * handle action click button of formset
      * @param elm_target element of action on click
@@ -20,7 +21,7 @@ class Conditions {
                         if (!$(item).attr('data-formset-form-deleted')) {
                             let formset_logic_temp = $(this).find('.formset-logic').val();
                             let sub_formset_temp = [];
-                            $(item).find('[data-subformset-body] [data-subformset-form]').each(function (){
+                            $(item).find('[data-subformset-body] [data-subformset-form]').each(function () {
                                 /*** for loop in sub formset get sub condition ***/
 
                                 if (!$(this).attr('data-formset-form-deleted')) {
@@ -51,12 +52,12 @@ class Conditions {
             });
     }
 
-    cleanFormset(element_formset=null){
+    cleanFormset(element_formset = null) {
         element_formset.find('[data-formset-body]').empty()
     }
 
-     // render data item to html
-    appendData(form_elm = null, value = null, idx= 0, sub_idx_arr=0) {
+    // render data item to html
+    appendData(form_elm = null, value = null, idx = 0, sub_idx_arr = 0) {
         let elm_idx = idx
         let $elm_cond = form_elm.find('[data-subformset-body]').children('.formset:not([data-formset-form-deleted])').eq(idx);
         if (sub_idx_arr !== 0) elm_idx = sub_idx_arr
@@ -80,7 +81,8 @@ class Conditions {
         if (value.hasOwnProperty('right_cond') && value.right_cond)
             $elm_cond.find('select[name="' + right_cond + '"]').val(value.right_cond)
     }
-    loopData(data_list=[], elm_form=null){
+
+    loopData(data_list = [], elm_form = null) {
         this.cleanFormset(elm_form)
         for (let idx = 0; idx < data_list.length; idx++) {
             let item = data_list[idx];
@@ -93,28 +95,25 @@ class Conditions {
                 let elm_subform = elm_form.find('[data-formset-body] [data-formset-form]').eq(is_eq).find('[data-subformset-prefix]');
                 elm_subform.find('[data-subformset-add]').trigger('click');
                 this.appendData(elm_subform, item, is_eq)
-            }
-            else if (Array.isArray(item) && item.length) {
+            } else if (Array.isArray(item) && item.length) {
                 /*** add formset and add subformset ***/
                 elm_form.find('[data-formset-add]').trigger('click');
                 let elm_subform = elm_form.find('[data-formset-body] [data-formset-form]').eq(is_eq).find('[data-subformset-prefix]');
-                for (let idx_child = 0; idx_child < item.length; idx_child++){
+                for (let idx_child = 0; idx_child < item.length; idx_child++) {
                     let child = item[idx_child];
-                    if (typeof child === 'object' && !Array.isArray(child) && Object.keys(child).length){
+                    if (typeof child === 'object' && !Array.isArray(child) && Object.keys(child).length) {
                         let child_eq = idx_child
                         if (idx_child > 0) child_eq = idx_child - 1
                         elm_subform.find('[data-subformset-add]').trigger('click');
                         let subform_text = elm_subform.find('[data-subformset-body]').children('.formset').last().find('input[type="number"]').attr('name');
                         let reorder_idx = subform_text.split('-')
                         this.appendData(elm_subform, child, child_eq, parseInt(reorder_idx[1]))
-                    }
-                    else{
+                    } else {
                         let logic_formset = `-${idx_child}-type`;
                         elm_subform.find('select[name*="' + logic_formset + '"]').val(child)
                     }
                 }
-            }
-            else {
+            } else {
                 /*** item is string and item is prev logic of formset
                  add logic to prev item ***/
                 let logic_formset = `-${is_eq}-logic`;
@@ -123,31 +122,25 @@ class Conditions {
             // });
         }
     }
-    loadCondition(element_formset= null, data_condition = []) {
+
+    loadCondition(element_formset = null, data_condition = []) {
         // this.cleanFormset(element_formset)
-        if (element_formset){
+        if (element_formset) {
             let data_condition_temp;
             if (!Array.isArray(data_condition)) {
                 /*** check if data not array format ***/
                 let repalceBoolean = data_condition.replaceAll("False", "false").replaceAll("True", "true");
                 let repalceSlash = repalceBoolean.replaceAll(/"'"/g, '').replaceAll(/'/g, '"').replaceAll("None", '""');
                 data_condition_temp = JSON.parse(repalceSlash);
-            }
-            else data_condition_temp = data_condition;
+            } else data_condition_temp = data_condition;
             this.loopData(data_condition_temp, element_formset);
         }
     }
 
-    /***
-     * handle first logic condition each formset
-     * ***/
-    controlLogicCondition(form_condition=null){
-        // if
-    }
 
     /*** init formset for condition
-    * run formset when page loaded
-    * init sub formset when user click add formset ***/
+     * run formset when page loaded
+     * init sub formset when user click add formset ***/
     init() {
         let formelm = $('[data-formset-prefix]');
         let form_opt =
@@ -174,12 +167,12 @@ class Conditions {
             }
 
         if (formelm.length) {
-            formelm.each(function (idx,elm) {
+            formelm.each(function (idx, elm) {
                 let $this = $(elm)
                 $this.formset(form_opt);
                 // init sub formset
-                let isAvailable = setInterval(function(){
-                    if ($this.find('[data-subformset-prefix]')){
+                let isAvailable = setInterval(function () {
+                    if ($this.find('[data-subformset-prefix]')) {
                         $this.find('[data-subformset-prefix]').formset(sub_form_opt);
                         // $this.find('[data-subformset-prefix] [data-subformset-add]').trigger('click');
                         clearInterval(isAvailable)
@@ -189,16 +182,32 @@ class Conditions {
 
             // init action button sub formset when click add new formset
             $('[data-formset-add]').on('click', function () {
-                let $this = $(this).data('formset-add');
-                let $elm = $('[data-formset-prefix="' + $this + '"]')
+                let $formset_name = $(this).data('formset-add');
+                let $elm = $('[data-formset-prefix="' + $formset_name + '"]')
                 $elm.find('[data-subformset-prefix]').formset(sub_form_opt);
-                // $elm.find('[data-subformset-prefix] [data-subformset-add]').trigger('click');
 
                 // validate condition each formset
-                // logic rule: - first logic condition when user selected had applied for all siblings logic condition
-                //             - when first logic change all siblings logic change too
+                // logic rule: - when user select logic, first logic condition block had applied for all siblings logic condition.
+                //             - when first logic change, all siblings logic change too
+                let $formsetfirst = $elm.find('[data-formset-body] .formset:not([data-formset-form-deleted])').first().find('select[name*="-logic"]')
+                $elm.find('[data-formset-body] .formset + .formset').find('select[name*="-logic"]').val($formsetfirst.val()).prop('disabled', true)
 
+                $('[data-subformset-add]').on('click', function () {
+                    let sub_formset_body = $(this).parent('[data-subformset-prefix]').find('[data-subformset-body]')
+                    let is_first = sub_formset_body.find('.formset:not([data-formset-form-deleted])').first().find('select[name*="-type"]')
+                    sub_formset_body.find('.formset + .formset:not([data-formset-form-deleted])').find('select[name*="-type"]').val(is_first.val()).prop('disabled', true)
+
+                    $('[data-subformset-delete]').on('click', function () {
+                        $(this).parents('[data-subformset-body]').find('.formset:not([data-formset-form-deleted])').first().find('select[name*="-type"]').prop('disabled', false);
+                    });
+                });
+
+                // handle event delete formset
+                $('[data-formset-delete]').on('click', function () {
+                    $(this).parents('[data-formset-body]').find('.formset:not([data-formset-form-deleted])').first().find('select[name*="-logic"]').prop('disabled', false);
+                });
             });
+
         }
 
     };

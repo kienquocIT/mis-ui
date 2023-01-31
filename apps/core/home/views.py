@@ -1,7 +1,5 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 
 from apps.shared import mask_view, ConditionFormset
 
@@ -20,6 +18,16 @@ class HomeView(View):
         auth_require=True,
         template='core/home/home.html',
         breadcrumb='HOME_PAGE'
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ComponentCollections(View):
+    @mask_view(
+        auth_require=True,
+        template='components.html',
+        breadcrumb='COMPONENTS_PAGE'
     )
     def get(self, request, *args, **kwargs):
         cond_formset = ConditionFormset()

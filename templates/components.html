@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <!--CONDITIONS--- css file for component conditions -->
+    <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageContent %}
+    {% include 'plugins/condition/condition_component.html' %}
+{% endblock %}
+
+{% block jsFooter %}
+    <!-- Customize JS -->
+
+    <!--CONDITIONS--- required js file for component conditions -->
+<script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <!--END CONDITIONS -->
+{% endblock %}

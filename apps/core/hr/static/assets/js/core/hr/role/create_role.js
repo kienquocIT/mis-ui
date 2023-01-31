@@ -80,24 +80,6 @@ $(document).ready(function () {
                 var targetDt = dtb.DataTable(config);
                 /*Select all using checkbox*/
                 var DT1 = dtb.DataTable();
-                $(".check-select-all").on("click", function (e) {
-                    $('.check-select').attr('checked', true);
-                    if ($(this).is(":checked")) {
-                        DT1.rows().select();
-                        $('.check-select').prop('checked', true);
-                    } else {
-                        DT1.rows().deselect();
-                        $('.check-select').prop('checked', false);
-                    }
-                });
-                $(".check-select").on("click", function (e) {
-                    if ($(this).is(":checked")) {
-                        $(this).closest('tr').addClass('selected');
-                    } else {
-                        $(this).closest('tr').removeClass('selected');
-                        $('.check-select-all').prop('checked', false);
-                    }
-                });
             }
         }
 
@@ -148,4 +130,37 @@ $(document).ready(function () {
                 }
             )
     });
+
+    // selected checkbox
+    $(document).on('click', '.check-select', function () {
+        if ($(this).is(":checked")) {
+            $(this).closest('tr').addClass('selected');
+        } else {
+            $(this).closest('tr').removeClass('selected');
+            $('.check-select-all').prop('checked', false);
+        }
+    });
+
+    $(document).on('click', '.check-select-all', function () {
+        $('.check-select').attr('checked', true);
+        let table = $('#datatable_employee_list').DataTable();
+        let indexList = table.rows().indexes();
+        if ($(this).is(":checked")) {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.add('selected');
+                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
+            }
+            $('.check-select').prop('checked', true);
+        } else {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.remove("selected");
+                rowNode.firstElementChild.children[0].firstElementChild.checked = false;
+            }
+            $('.check-select').prop('checked', false);
+        }
+    });
 });
+
+

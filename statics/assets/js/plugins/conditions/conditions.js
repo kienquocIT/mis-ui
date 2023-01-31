@@ -140,7 +140,10 @@ class Conditions {
 
     /*** init formset for condition
      * run formset when page loaded
-     * init sub formset when user click add formset ***/
+     * init sub formset when user click add formset
+     * handle click add formset and click add sub formset
+     * handle delete formset and delete sub formset
+     * ***/
     init() {
         let formelm = $('[data-formset-prefix]');
         let form_opt =
@@ -215,22 +218,30 @@ class Conditions {
 
 // init field element went add new condition
 jQuery.fn.renderFormElements = function (arg) {
+    function changeComparisionOperator() {
+        $('.formset-logic').on('change', function () {
+            $(this).parents('[data-formset-body]').find('.formset + .formset .formset-logic').val(this.value);
+        });
+        $('.subformset-logic').on('change', function () {
+            $(this).parents('[data-subformset-body]').find('.formset + .formset .subformset-logic').val(this.value)
+            console.log(this.value)
+        })
+    }
+
+    changeComparisionOperator();
     return arg
 }
 
-
 $(document).ready(function () {
+    // declare and init condition component
     var condition = new Conditions();
     condition.init();
+
+    // add action click for condition element in page
     let formset_cond = $('#formset-condition')
     condition.ElementAction(ele_target = $('.btn-save'), elm_focus = $('#home-condition'), element_formset = formset_cond);
+
+    // load condition when open page or open poup
     let data_cond = [];
-    // let data_cond = [{"left_cond": "total_value", "math": "<", "right_cond": "sup_new", "order": 0}, "OR"]
-    // let data_cond = [{"left_cond": "total_value", "math": "<", "right_cond": "sup_new", "order": 0}, "OR", [{
-    //     "left_cond": "req_type",
-    //     "math": "<=",
-    //     "right_cond": "sup_new",
-    //     "order": 1
-    // }, "OR", {"left_cond": "total_value", "math": "=", "right_cond": "upgrade", "order": 2}, "AND"], "AND"]
     condition.loadCondition(element_formset = formset_cond, data_condition = data_cond)
 });

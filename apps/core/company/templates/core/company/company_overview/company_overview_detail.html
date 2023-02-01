@@ -54,7 +54,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form
-                        id="modal_employee_update" data-url="{% url 'EmployeeDetailAPI' %}" data-method="PUT" method="post"
+                        id="modal_employee_update" data-url="EmployeeDetailAPI" data-method="PUT" method="post"
                         novalidate
                 >
                     {% csrf_token %}
@@ -324,8 +324,9 @@
 
         function updateEmployee(){
             $('#modal_employee_update').on('submit', function(e){
+                e.preventDefault();
                 alert('you submited')
-                $(this).modal('hide');
+                $(this).parents('.modal').modal('hide');
             })
         }
     </script>

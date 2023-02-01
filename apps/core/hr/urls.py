@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.core.hr.views import EmployeeList, EmployeeCreate, EmployeeListAPI, GroupDetailAPI, GroupLevelList, \
     GroupLevelListAPI, GroupList, GroupListAPI, GroupCreate, GroupUpdate, GroupDetail, GroupParentListAPI, \
-    EmployeeDetailAPI, EmployeeDetail
+    EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate
 from apps.core.hr.views import RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     path('employee/create', EmployeeCreate.as_view(), name='EmployeeCreate'),
     path('employee/<str:pk>', EmployeeDetailAPI.as_view(), name='EmployeeDetailAPI'),
     path('employee/detail/<str:pk>', EmployeeDetail.as_view(), name='EmployeeDetail'),
+    path('employee/update/<str:pk>', EmployeeUpdate.as_view(), name='EmployeeUpdate'),
 
     path('role', RoleList.as_view(), name='RoleList'),
     path('role/api', RoleListAPI.as_view(), name='RoleListAPI'),

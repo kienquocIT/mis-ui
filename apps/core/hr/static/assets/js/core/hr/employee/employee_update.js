@@ -331,18 +331,18 @@ $(document).ready(function () {
 });
 
 
-// Load group level datas
-$(document).on('change', '#select-box-user', function (e) {
+// Load user datas
+$(document).on('change', '#select-box-user-update', function (e) {
     let sel = $(this)[0].options[$(this)[0].selectedIndex]
     let first_name = sel.getAttribute('data-first-name');
     let last_name = sel.getAttribute('data-last-name');
     let email = sel.getAttribute('data-email');
     let phone = sel.getAttribute('data-phone');
 
-    $('#employee-first-name').val(first_name);
-    $('#employee-last-name').val(last_name);
-    $('#employee-email').val(email);
-    $('#employee-phone').val(phone);
+    $('#employee-first-name-update').val(first_name);
+    $('#employee-last-name-update').val(last_name);
+    $('#employee-email-update').val(email);
+    $('#employee-phone-update').val(phone);
 });
 
 

@@ -234,7 +234,7 @@ $(document).ready(function () {
 });
 
 
-// Load group level datas
+// Load user datas
 $(document).on('change', '#select-box-user', function (e) {
     let sel = $(this)[0].options[$(this)[0].selectedIndex]
     let first_name = sel.getAttribute('data-first-name');

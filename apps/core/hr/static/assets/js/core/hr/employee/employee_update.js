@@ -49,42 +49,23 @@ $(document).ready(function () {
                         }
 
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
-                            let listTypeBtn = ["primary", "success", "info", "danger", "warning",]
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
-                                let app_list = ``
+                                let planCode = "#" + data.employee.plan_app[t].code
+                                let instancePlan = $(planCode)
+
                                 if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
                                     let appLength = data.employee.plan_app[t].application.length;
                                     for (let i = 0; i < appLength; i++) {
-                                        app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
-                                            <i class="fas fa-star"></i>
-                                            <label
-                                                    for="list-app-add-employee" class="form-check-label"
-                                            >${data.employee.plan_app[t].application[i].title}</label>
-                                        </li>`
+                                        let planAppInstance = instancePlan.closest('td').find('.employee-application');
+                                        let planAppInstanceList = planAppInstance[0].children;
+                                        for (let app = 0; app < planAppInstanceList.length; app++) {
+                                            if (planAppInstanceList[app].id === data.employee.plan_app[t].application[i].id) {
+                                                let appInput = planAppInstanceList[app].children[0];
+                                                appInput.checked  = true;
+                                            }
+                                        }
                                     }
                                 }
-
-                                $('#datable-employee-plan-app-detail tbody').append(`<tr>
-                        <td>
-                            <div class="row mb-5">
-                                <div>
-                                    <button
-                                            class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 200px"
-                                          
-                                    >
-                                        ${data.employee.plan_app[t].title}
-                                    </button>
-                                </div>
-                                <div class="show" id="collapseExample${t}">
-                                    <ul>
-                                        ${app_list}
-                                    </ul>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>`)
                             }
                         }
                     }
@@ -173,7 +154,7 @@ $(document).ready(function () {
                             if (data.plan_list[t].application && Array.isArray(data.plan_list[t].application)) {
                                 let appLength = data.plan_list[t].application.length;
                                 for (let i = 0; i < appLength; i++) {
-                                    app_list += `<li class="list-break mt-2 mb-2" style="display: inline">
+                                    app_list += `<li class="list-break mt-2 mb-2" style="display: inline" id="${data.plan_list[t].application[i].id}">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
                                                     name="list-app-add-employee-${t}" class="form-check-input"
@@ -195,14 +176,14 @@ $(document).ready(function () {
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
                                             aria-controls="collapseExample${t}" style="width: 295px; border-radius: 0; margin-left: -12px"
-                                          
+                                            id="${data.plan_list[t].code}"
                                     >
                                         ${data.plan_list[t].title}
                                     </button>
 <!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
                                 </div>
                                 <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
-                                    <ul>
+                                    <ul class="employee-application">
                                         ${app_list}
                                     </ul>
                                 </div>
@@ -251,12 +232,13 @@ $(document).ready(function () {
 
         $('#select-box-role-employee-update').select2();
 
+        loadPlanAppList();
         loadRoleList();
         // loadInstanceData();
         // loadUserList();
         // loadRoleList();
         // loadGroupList();
-        loadPlanAppList();
+        // loadPlanAppList();
 
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');

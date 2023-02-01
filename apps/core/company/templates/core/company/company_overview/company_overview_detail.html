@@ -87,22 +87,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script>
-        {#Data Sample#}
-        {#[#}
-        {#    {#}
-        {#        'id': 1,#}
-        {#        'full_name': 'Nguyen Van A',#}
-        {#        'code': 'A001',#}
-        {#        'user': {'full_name': 'Nguyen Van A'},#}
-        {#        'license': [{"id": 1, "code": "sale", "title": "Sale"}, {#}
-        {#            "id": 2,#}
-        {#            "code": "e-office",#}
-        {#            "title": "E-Office"#}
-        {#        }],#}
-        {#        'company_id_list': ["c46f4cec-6201-4132-84cb-a1201eef8316"],#}
-        {#    }#}
-        {#],#}
-        $(document).ready(function (event) {
+        $(document).ready(function () {
             // selected company select box
             let company_overviewing_id = window.location.href.split("?")[0].split("#")[0].split("/").slice(-1)[0];
             if (company_overviewing_id) {
@@ -121,6 +106,7 @@
                 ordering: false,
                 paginate: false,
                 drawCallback: function () {
+                    {#render icon after table callback#}
                     feather.replace();
                 },
                 columns: [
@@ -149,20 +135,22 @@
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             let html = '';
-                            data.map((item) => {
-                                html += `<span class="{3}" data-id="{0}" data-code="{1}">{2}</span>`.format_by_idx(
-                                    item.id,
-                                    item.code,
-                                    item.title,
-                                    "badge badge-indigo mr-1"
-                                )
-                            });
+                            if (data)
+                                data.map((item) => {
+                                    html += `<span class="{3}" data-id="{0}" data-code="{1}">{2}</span>`.format_by_idx(
+                                        item.id,
+                                        item.code,
+                                        item.title,
+                                        "badge badge-indigo mr-1"
+                                    )
+                                });
                             return html;
                         }
                     },
                     {
                         data: 'user',
                         render: (data, type, row, meta) => {
+
                             let html = `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`;
                             return html.format_by_idx(
                                 `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`.format_by_idx(
@@ -181,14 +169,15 @@
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             let html = '';
+                            let title = '';
                             if (data && Array.isArray(data)) {
-                                data.map((item) => {
-                                    html += String.format(
-                                        `<span class="{1}">{0}</span> `,
-                                        company_by_id[item].title,
-                                        "badge badge-soft-primary mr-1"
-                                    )
-                                });
+                                for (let item of data)
+                                    for (let value of company_all_list)
+                                        if (value.id === item.id) {
+                                            title = value.title
+                                            break;
+                                        }
+                                html += `<span class="badge badge-soft-primary mr-1">${title}</span> `;
                             }
                             return html;
                         }
@@ -215,6 +204,7 @@
             $(document).on('click', '.btn-open-power-user-info', function (event) {
                 event.preventDefault();
                 let data = get_data_row($(this), tbl);
+
                 load_power_user_to_modal(
                     data.user ? data.user.full_name : data.full_name,
                     "c46f4cec-6201-4132-84cb-a1201eef8316",
@@ -226,51 +216,32 @@
             // filter_all_user_and_employee
             let data_all_user_and_employee = [];
             let data_employee_linked_user = [];
-            $(document).on('change', '#filter_data_employee_user', function (event) {
-                $(this).find('option:selected').each(async function () {
-                    let selected_val = $(this).attr('value');
-                    if (selected_val) {
-                        switch (selected_val) {
-                            case 'filter_all_user_and_employee':
-                                if (data_all_user_and_employee.length === 0) {
-                                    data_all_user_and_employee = await get_data(company_overviewing_id, {});
-                                    console.log('data_resp: ', data_all_user_and_employee);
-                                }
-                                data_all_user_and_employee = [
-                                    {
-                                        'id': 1,
-                                        'full_name': 'Nguyen Van B',
-                                        'code': 'B001',
-                                        'user': {'full_name': 'Nguyen Van B'},
-                                        'license': [
-                                            {"id": 1, "code": "sale", "title": "Sale"},
-                                        ],
-                                        'company_id_list': ["c46f4cec-6201-4132-84cb-a1201eef8316"],
-                                    }
-                                ]
-                                tbl.DataTable().clear().rows.add(data_all_user_and_employee).draw();
-                                break;
-                            case 'filter_employee_linked_to_user':
-                                if (data_all_user_and_employee.length === 0) {
-                                    data_employee_linked_user = await get_data(company_overviewing_id, {});
-                                    console.log('data_resp: ', data_employee_linked_user);
-                                }
-                                data_employee_linked_user = [
-                                    {
-                                        'id': 1,
-                                        'full_name': 'Nguyen Van C',
-                                        'code': 'C001',
-                                        'user': {'full_name': 'Nguyen Van C'},
-                                        'license': [
-                                            {"id": 2, "code": "e-office", "title": "E-Office"}
-                                        ],
-                                    }
-                                ]
-                                tbl.DataTable().clear().rows.add(data_employee_linked_user).draw();
-                                break;
+            $(document).on('change', '#filter_data_employee_user', async function (event) {
+                switch (this.value) {
+                    case 'filter_all_user_and_employee':
+                        if (data_all_user_and_employee.length === 0) {
+                            data_all_user_and_employee = await get_data(company_overviewing_id, {});
                         }
-                    }
-                });
+                    {#delete before commit#}
+                        data_all_user_and_employee[0]['company_id_list'] = [
+                            {
+                                "id": "4acfa2c7-2720-4b29-8b7e-dcd471bfa16b",
+                                "title": "Công ty Cổ Phần Giải Pháp Minh Tâm",
+                            },
+                        ]
+                        data_all_user_and_employee[0]['user'] = {"full_name": data_all_user_and_employee[0]['full_name']}
+                        data_all_user_and_employee[0]['license'] = [
+                            {"id": 2, "code": "e-office", "title": "E-Office"}
+                        ]
+                        tbl.DataTable().clear().rows.add(data_all_user_and_employee).draw();
+                        break;
+                    case 'filter_employee_linked_to_user':
+                        if (data_all_user_and_employee.length === 0) {
+                            data_employee_linked_user = await get_data(company_overviewing_id, {});
+                        }
+                        tbl.DataTable().clear().rows.add(data_employee_linked_user).draw();
+                        break;
+                }
             });
             $('#filter_data_employee_user').trigger('change');  // call change for load data
         });
@@ -303,7 +274,7 @@
                 company_id_list.map((id) => {
                     ul_company_old.append(
                         `<li>{0} {1}</li>`.format_by_idx(
-                            company_data_obj[id].title,
+                            id.title,
                             (company_id_default && company_id_default === id ? `<span class="required"><span>` : "")
                         )
                     )
@@ -318,7 +289,9 @@
             // select company
             let mul_selected = $('#company_list_choose');
             mul_selected.val(null).trigger('change');
-            mul_selected.val(company_id_list);
+            for (let item of company_id_list){
+                mul_selected.val(item.id);
+            }
             mul_selected.select2();
         }
 

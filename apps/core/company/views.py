@@ -139,7 +139,7 @@ class CompanyListOverviewDetail(View):
         menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        # return {}, status.HTTP_200_OK
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
         if resp.state:
             return {'company_list': resp.result}, status.HTTP_200_OK

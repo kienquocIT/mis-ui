@@ -135,7 +135,6 @@ class APIUtil:
             resp.status_code,
             resp_json.get(cls.key_response_data, {}),
             resp_json.get(cls.key_response_err, {}),
-            resp.status_code,
         )
 
     def call_get(self, safe_url: str, headers: dict) -> RespData:

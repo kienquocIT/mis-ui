@@ -85,6 +85,14 @@ class EmployeeDetailAPI(APIView):
             return {'employee': resp.result}, status.HTTP_200_OK
         return {'detail': resp.errors}, status.HTTP_401_UNAUTHORIZED
 
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        res = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_DETAIL + '/' + pk).put(data)
+        if res.state:
+            return res.result, status.HTTP_200_OK
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
 
 # Role
 class RoleList(View):

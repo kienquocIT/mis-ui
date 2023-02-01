@@ -53,31 +53,37 @@
     >
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="power_user_title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <label for="company_list_old">{% trans 'Company Selected' %}:</label>
-                    <ol id="company_list_old" data-text-empty="{% trans 'No records' %}"></ol>
-                    <label for="company_list_choose">{% trans 'Company Change' %}:</label>
-                    <select
-                            class="select2 select2-multiple" multiple="multiple" data-placeholder="Choose"
-                            id="company_list_choose"
-                    >
-                        {% for item in data.company_list %}
-                            <option value="{{ item.id }}">{{ item.title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        {% trans 'Cancel' %}
-                    </button>
-                </div>
+                <form
+                        id="modal_employee_update" data-url="{% url 'EmployeeDetailAPI' %}" data-method="PUT" method="post"
+                        novalidate
+                >
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="power_user_title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="company_list_old">{% trans 'Company Selected' %}:</label>
+                        <ol id="company_list_old" data-text-empty="{% trans 'No records' %}"></ol>
+                        <label for="company_list_choose">{% trans 'Company Change' %}:</label>
+                        <select
+                                class="select2 select2-multiple" multiple="multiple" data-placeholder="Choose"
+                                id="company_list_choose"
+                        >
+                            {% for item in data.company_list %}
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="update_employee">{% trans 'Save' %}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {% trans 'Cancel' %}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -293,6 +299,9 @@
                 mul_selected.val(item.id);
             }
             mul_selected.select2();
+
+            // handle event click update user
+            updateEmployee()
         }
 
         async function get_data(pk, filter) {
@@ -311,6 +320,13 @@
                     return []
                 },
             )
+        }
+
+        function updateEmployee(){
+            $('#modal_employee_update').on('submit', function(e){
+                alert('you submited')
+                $(this).modal('hide');
+            })
         }
     </script>
 {% endblock %}

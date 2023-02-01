@@ -159,7 +159,7 @@ $(document).ready(function () {
 
     // load Plan App
     function loadPlanAppList() {
-        let tableApply = $('#datable-employee-plan-app');
+        let tableApply = $('#datable-employee-plan-app-update');
         let url = tableApply.attr('data-url');
         let method = tableApply.attr('data-method');
         let listTypeBtn = ["primary", "success", "info", "danger", "warning", ]
@@ -173,7 +173,7 @@ $(document).ready(function () {
                             if (data.plan_list[t].application && Array.isArray(data.plan_list[t].application)) {
                                 let appLength = data.plan_list[t].application.length;
                                 for (let i = 0; i < appLength; i++) {
-                                    app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
+                                    app_list += `<li class="list-break mt-2 mb-2" style="display: inline">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
                                                     name="list-app-add-employee-${t}" class="form-check-input"
@@ -187,21 +187,21 @@ $(document).ready(function () {
                                 }
                             }
 
-                            $('#datable-employee-plan-app tbody').append(`<tr>
+                            $('#datable-employee-plan-app-update tbody').append(`<tr>
                         <td>
-                            <div class="row mb-6">
+                            <div class="row mb-6" style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
                                 <div>
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 250px"
+                                            aria-controls="collapseExample${t}" style="width: 295px; border-radius: 0; margin-left: -12px"
                                           
                                     >
                                         ${data.plan_list[t].title}
                                     </button>
 <!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
                                 </div>
-                                <div class="show" id="collapseExample${t}" style="margin-left: 25px">
+                                <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
                                     <ul>
                                         ${app_list}
                                     </ul>
@@ -218,7 +218,7 @@ $(document).ready(function () {
 
     function setupDataPlanApp() {
         let dataPlanAppSubmit = [];
-        let tablePlanApp = document.getElementById("datable-employee-plan-app");
+        let tablePlanApp = document.getElementById("datable-employee-plan-app-update");
         let tablePlanAppLength = tablePlanApp.tBodies[0].rows.length;
         for (let s = 0; s < tablePlanAppLength; s++) {
             let dataPlanList = {};

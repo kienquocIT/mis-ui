@@ -5,7 +5,7 @@ from apps.core.company.views import (
     CompanyList, CompanyListAPI,
     CompanyListOverviewList, CompanyListOverviewListAPI,
     CompanyListOverviewDetail, EmployeeUserByCompanyListOverviewDetailAPI,
-    EmployeeByCompanyListOverviewDetailAPI, UserByCompanyListOverviewDetailAPI, CompanyOfUserForOverviewDetailAPI,
+    EmployeeByCompanyListOverviewDetailAPI,
     CompanyDetailAPI,
     CompanyUpdateAPI,
     CompanyDeleteAPI

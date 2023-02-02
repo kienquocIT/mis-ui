@@ -53,6 +53,7 @@ $(document).ready(function () {
                         if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
                             for (let r = 0; r < data.employee.role.length; r++) {
                                 dataRoleInstance.push(data.employee.role[r].id);
+                                $('#select-box-role-employee-update option[value="'+ data.employee.role[r].id +'"]').prop('selected', true)
                             }
                             // eleRole.val(dataRoleInstance);
                             instanceData['role'] = dataRoleInstance;

@@ -60,17 +60,9 @@ $(document).ready(function () {
                                                         <td><input type="checkbox" checked/></td>
                                                         <td>User</td>
                                                     </tr>`
-
-
-                                        // app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
-                                        //     <i class="fas fa-star"></i>
-                                        //     <label
-                                        //             for="list-app-add-employee" class="form-check-label"
-                                        //     >${data.employee.plan_app[t].application[i].title}</label>
-                                        // </li>`
                                     }
                                 }
-                                let tableApplication = `<table class="mt-3 ml-5" style="width: 70%;">
+                                let tableApplication = `<table class="mt-3 ml-5" style="width: 60%">
                                                         <thead>
                                                         <tr>
                                                             <th>Application</th>
@@ -84,9 +76,7 @@ $(document).ready(function () {
                                                         <tbody>${app_list}</tbody>
                                                     </table>`
 
-                                $('#datable-employee-plan-app-detail tbody').append(`<tr>
-                        <td>
-                            <div class="row mb-5">
+                                $('#data-employee-plan-app-detail').append(`<div class="row mb-5">
                                 <div>
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
@@ -100,9 +90,7 @@ $(document).ready(function () {
                                 <div class="show" id="collapseExample${t}">
                                     ${tableApplication}
                                 </div>
-                            </div>
-                        </td>
-                    </tr>`)
+                            </div>`)
                             }
                         }
                     }

@@ -51,14 +51,38 @@ $(document).ready(function () {
                                 if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
                                     let appLength = data.employee.plan_app[t].application.length;
                                     for (let i = 0; i < appLength; i++) {
-                                        app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
-                                            <i class="fas fa-star"></i>
-                                            <label
-                                                    for="list-app-add-employee" class="form-check-label"
-                                            >${data.employee.plan_app[t].application[i].title}</label>
-                                        </li>`
+                                        app_list += `<tr>
+                                                        <td style="width: 30%"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
+                                                        <td><input type="checkbox" checked/></td>
+                                                        <td><input type="checkbox" checked/></td>
+                                                        <td><input type="checkbox" checked/></td>
+                                                        <td><input type="checkbox" checked/></td>
+                                                        <td><input type="checkbox" checked/></td>
+                                                        <td>User</td>
+                                                    </tr>`
+
+
+                                        // app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
+                                        //     <i class="fas fa-star"></i>
+                                        //     <label
+                                        //             for="list-app-add-employee" class="form-check-label"
+                                        //     >${data.employee.plan_app[t].application[i].title}</label>
+                                        // </li>`
                                     }
                                 }
+                                let tableApplication = `<table class="mt-3 ml-5" style="width: 70%;">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Application</th>
+                                                            <th>View All</th>
+                                                            <th>Create</th>
+                                                            <th>View</th>
+                                                            <th>Edit</th>
+                                                            <th>Delete</th>
+                                                            <th>Range</th>
+                                                        </tr>
+                                                        <tbody>${app_list}</tbody>
+                                                    </table>`
 
                                 $('#datable-employee-plan-app-detail tbody').append(`<tr>
                         <td>
@@ -67,16 +91,14 @@ $(document).ready(function () {
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 200px"
+                                            aria-controls="collapseExample${t}" style="width: 295px"
                                           
                                     >
                                         ${data.employee.plan_app[t].title}
                                     </button>
                                 </div>
                                 <div class="show" id="collapseExample${t}">
-                                    <ul>
-                                        ${app_list}
-                                    </ul>
+                                    ${tableApplication}
                                 </div>
                             </div>
                         </td>

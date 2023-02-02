@@ -58,6 +58,8 @@ $(document).ready(function () {
                             instanceData['role'] = dataRoleInstance;
                         }
                         loadInstanceRoleData();
+                        let checkRoleVal = $('#select-box-role-employee-update').val();
+                        $('#select-box-role-employee-update').val(checkRoleVal);
 
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
                             for (let t = 0; t < data.employee.plan_app.length; t++) {

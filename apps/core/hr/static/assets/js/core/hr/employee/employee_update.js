@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    let instanceData = {}
+
     function loadInstanceData() {
         let ele = $('#frm_employee_update');
         let url = ele.attr('data-url');
@@ -51,8 +54,10 @@ $(document).ready(function () {
                             for (let r = 0; r < data.employee.role.length; r++) {
                                 dataRoleInstance.push(data.employee.role[r].id);
                             }
-                            eleRole.val(dataRoleInstance);
+                            // eleRole.val(dataRoleInstance);
+                            instanceData['role'] = dataRoleInstance;
                         }
+                        loadInstanceRoleData();
 
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
@@ -78,6 +83,11 @@ $(document).ready(function () {
                 }
             }
         )
+    }
+
+    function loadInstanceRoleData() {
+        let eleRole = $('#select-box-role-employee-update');
+        eleRole.val(instanceData['role']);
     }
 
     function loadUserList() {
@@ -238,7 +248,7 @@ $(document).ready(function () {
 
         $('#select-box-role-employee-update').select2();
 
-        // loadPlanAppList();
+        loadPlanAppList();
         loadRoleList();
         // loadInstanceData();
         // loadUserList();

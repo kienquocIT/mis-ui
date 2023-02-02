@@ -3,7 +3,6 @@
 {% load static %}
 
 {% block cssHeader %}
-{#    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">#}
 {% endblock %}
 
 {% block pageAction %}
@@ -33,7 +32,7 @@
 
 {% block pageContent %}
     <table
-            id="datable_role_list" class="table nowrap w-100 mb-5" data-url='{% url "RoleListAPI" %}'
+            id="datatable_role_list" class="table nowrap w-100 mb-5" data-url='{% url "RoleListAPI" %}'
             data-method="GET"
     >
         <thead>
@@ -48,10 +47,10 @@
                     <label class="form-check-label" for="customCheck1"></label>
                 </span>
             </th>
-            <th class="w-20">{% trans "Role Name" %}</th>
-            <th class="w-20">{% trans "Abbreviation" %}</th>
-            <th class="w-45">{% trans "Holder" %}</th>
-            <th class="w-10">{% trans "Actions" %}</th>
+            <th class="w-30">{% trans "Role Name" %}</th>
+            <th class="w-10">{% trans "Abbreviation" %}</th>
+            <th class="w-45 text-center">{% trans "Holder" %}</th>
+            <th class="w-10 text-center">{% trans "Actions" %}</th>
 
         </tr>
         </thead>

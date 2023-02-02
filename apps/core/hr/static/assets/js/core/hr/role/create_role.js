@@ -26,8 +26,9 @@ $(document).ready(function () {
             },
             data: [],
             columns: [{
-                'render': () => {
-                    return '';
+                'render': (data, type, row, meta) => {
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
                 'data': 'code', render: (data, type, row, meta) => {
@@ -41,9 +42,6 @@ $(document).ready(function () {
                                         <div class="avatar avatar-xs avatar-success avatar-rounded">
                                             <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
                                         </div>
-<!--                                        <div class="avatar avatar-xs">-->
-<!--                                            <img src="dist/img/avatar10.jpg" alt="user" class="avatar-img rounded-circle">-->
-<!--                                        </div>-->
                                     </div>
                                     <div class="media-body">
                                         <span class="d-block">` + row.full_name + `</span>
@@ -54,63 +52,39 @@ $(document).ready(function () {
                 }
             }, {
                 'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('department') && typeof row.department === "object") {
-                        return `<span class="badge badge-primary">` + row.department.name + `</span>`;
+                    if (row.hasOwnProperty('group') && typeof row.group === "object") {
+                        if (Object.keys(row.group).length !== 0) {
+                            return `<span class="badge badge-soft-primary">` + row.group.title + `</span>`;
+                        }
                     }
                     return '';
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    let inp = `<input type="checkbox" data-id=` + row.id + `>`
-                    return inp;
+                    if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
+                        if (row.is_active) {
+                            return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                        } else {
+                            return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
+                        }
+                    }
+                    return '';
                 }
             },]
         }
 
         function initDataTable(config) {
             /*DataTable Init*/
-            let dtb = $('#datable_employee_list');
+            let dtb = $('#datatable_employee_list');
             if (dtb.length > 0) {
                 var targetDt = dtb.DataTable(config);
-                /*Checkbox Add*/
-                var tdCnt = 0;
-                $('table tr').each(function () {
-                    $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                    tdCnt++;
-                });
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
-                });
-                // $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-                // dtb.parent().addClass('table-responsive');
-
-
                 /*Select all using checkbox*/
                 var DT1 = dtb.DataTable();
-                $(".check-select-all").on("click", function (e) {
-                    $('.check-select').attr('checked', true);
-                    if ($(this).is(":checked")) {
-                        DT1.rows().select();
-                        $('.check-select').prop('checked', true);
-                    } else {
-                        DT1.rows().deselect();
-                        $('.check-select').prop('checked', false);
-                    }
-                });
-                $(".check-select").on("click", function (e) {
-                    if ($(this).is(":checked")) {
-                        $(this).closest('tr').addClass('selected');
-                    } else {
-                        $(this).closest('tr').removeClass('selected');
-                        $('.check-select-all').prop('checked', false);
-                    }
-                });
             }
         }
 
         function loadDataTable() {
-            let tb = $('#datable_employee_list');
+            let tb = $('#datatable_employee_list');
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -130,10 +104,16 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        let employee_list = $("tbody input:checkbox:checked").map(function () {
-            return $(this).data('id')
-        }).get();
         let data = frm.dataForm;
+        const employee_list = [];
+        let table = $("#datatable_employee_list").DataTable();
+        let indexList = table.rows().indexes();
+        for (let idx = 0; idx < indexList.length; idx++) {
+            let rowNode = table.rows(indexList[idx]).nodes()[0]
+            if (rowNode.firstElementChild.children[0].firstElementChild.checked === true) {
+                employee_list.push(rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id'))
+            }
+        }
         data['employees'] = employee_list;
         console.log(data);
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, data, csr)
@@ -146,8 +126,41 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: "Thất bại"}, 'failure');
+                    // $.fn.notifyPopup({description: "Thất bại"}, 'failure');
                 }
             )
     });
+
+    // selected checkbox
+    $(document).on('click', '.check-select', function () {
+        if ($(this).is(":checked")) {
+            $(this).closest('tr').addClass('selected');
+        } else {
+            $(this).closest('tr').removeClass('selected');
+            $('.check-select-all').prop('checked', false);
+        }
+    });
+
+    $(document).on('click', '.check-select-all', function () {
+        $('.check-select').attr('checked', true);
+        let table = $('#datatable_employee_list').DataTable();
+        let indexList = table.rows().indexes();
+        if ($(this).is(":checked")) {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.add('selected');
+                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
+            }
+            $('.check-select').prop('checked', true);
+        } else {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.remove("selected");
+                rowNode.firstElementChild.children[0].firstElementChild.checked = false;
+            }
+            $('.check-select').prop('checked', false);
+        }
+    });
 });
+
+

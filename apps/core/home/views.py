@@ -1,6 +1,7 @@
 from django.views import View
 from rest_framework import status
-from apps.shared import mask_view
+
+from apps.shared import mask_view, ConditionFormset
 
 API_URL = {
     'user_list': 'account/users'
@@ -21,3 +22,13 @@ class HomeView(View):
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
+
+class ComponentCollections(View):
+    @mask_view(
+        auth_require=True,
+        template='components.html',
+        breadcrumb='COMPONENTS_PAGE'
+    )
+    def get(self, request, *args, **kwargs):
+        cond_formset = ConditionFormset()
+        return {"form": cond_formset}, status.HTTP_200_OK

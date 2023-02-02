@@ -77,6 +77,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(data)
                         $('#inp-company_current_id').val(data.user.company_current_id);
                         $('#inp-first_name').val(data.user.first_name);
                         $('#inp-last_name').val(data.user.last_name);
@@ -84,7 +85,6 @@ $(document).ready(function () {
                         $('#inp-email').val(data.user.email);
                         $('#inp-username').val(data.user.username);
                         config['data'] = data.user.company;
-                        console.log(config['data'])
                     }
                     initDataTable(config);
                 },
@@ -105,6 +105,7 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
+                        console.log(data)
                         data.company_list.map(function (item) {
                             if (item.id == $('#inp-company_current_id').val()) {
                                 ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`)
@@ -117,6 +118,5 @@ $(document).ready(function () {
             }
         )
     }
-
     loadCompanyList($('#select-box-company'));
 })

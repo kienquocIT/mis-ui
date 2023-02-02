@@ -29,27 +29,27 @@
 {% endblock %}
 {% block pageContent %}
     <input type="text" id="inp-company_current_id" hidden>
-    <form data-url="{{ request.path }}" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+    <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
         {% csrf_token %}
         <div class="row">
             <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "First Name" %}</label>
                     <input class="form-control" type="text"
-                           id="inp-first_name" name="first_name">
+                           id="inp-first_name" name="first_name" required>
                 </div>
             </div>
             <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Last Name" %}</label>
-                    <input class="form-control" type="text" id="inp-last_name" name="last_name">
+                    <input class="form-control" type="text" id="inp-last_name" name="last_name" required>
                 </div>
             </div>
             <div class="col-6 col-lg-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Full Name" %}</label>
-                    <input class="form-control" type="text"
-                           id="inp-full_name" disabled>
+                    <input class="form-control-plaintext" type="text"
+                           id="inp-full_name" readonly>
                 </div>
             </div>
         </div>

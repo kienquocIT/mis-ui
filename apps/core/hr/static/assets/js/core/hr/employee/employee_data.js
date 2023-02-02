@@ -24,13 +24,15 @@ $(function () {
         },
         data: [],
         columns: [{
-            'render': () => {
-                return '';
+            'render': (data, type, row, meta) => {
+                let currentId = "chk_sel_" + String(meta.row + 1)
+                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
             }
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 // return String.format(`<b>{0}</b>`, data);
-                return `<a href="">
+                let urlEmployeeDetail = "/hr/employee/detail/" + row.id
+                return `<a href="${urlEmployeeDetail}">
                     <span><b>${data}</b></span>
                 </a>`
             }
@@ -88,9 +90,11 @@ $(function () {
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Archive" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="archive"></i></span></span></a>`;
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="contact-details.html"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                let urlDetail = "/hr/employee/" + row.id
+                let urlList = "/hr/employee"
+                let urlUpdate = "/hr/employee/update/" + row.id
+                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="${urlUpdate}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-url="${urlDetail}" data-method="DELETE" data-url-redirect="${urlList}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                 return bt2 + bt3;
             }
         },]
@@ -103,10 +107,10 @@ $(function () {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
             var tdCnt = 0;
-            $('table tr').each(function () {
-                $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                tdCnt++;
-            });
+            // $('table tr').each(function () {
+            //     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
+            //     tdCnt++;
+            // });
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
@@ -127,14 +131,14 @@ $(function () {
                     $('.check-select').prop('checked', false);
                 }
             });
-            $(".check-select").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    $(this).closest('tr').addClass('selected');
-                } else {
-                    $(this).closest('tr').removeClass('selected');
-                    $('.check-select-all').prop('checked', false);
-                }
-            });
+            // $(".check-select").on("click", function (e) {
+            //     if ($(this).is(":checked")) {
+            //         $(this).closest('tr').addClass('selected');
+            //     } else {
+            //         $(this).closest('tr').removeClass('selected');
+            //         $('.check-select-all').prop('checked', false);
+            //     }
+            // });
         }
     }
 
@@ -152,4 +156,14 @@ $(function () {
     }
 
     loadDataTable();
+});
+
+
+$(document).on('click', '.check-select', function () {
+    if ($(this).is(":checked")) {
+        $(this).closest('tr').addClass('selected');
+    } else {
+        $(this).closest('tr').removeClass('selected');
+        $('.check-select-all').prop('checked', false);
+    }
 });

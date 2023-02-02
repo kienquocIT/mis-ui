@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <!-- Data Table CSS -->
+    <link
+            href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+
+    <!-- Daterangepicker CSS -->
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+
+    <!-- Customize -->
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_detail.css' %}">
+
+{% endblock %}
+{% block pageAction %}
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
+            href="#" data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="save"
+            data-bs-original-title="Save"
+            data-form-id="frm_employee_create"
+    >
+        <span class="btn-icon-wrap">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div
+            id="employee-detail-page" class="needs-validation" data-url="/hr/employee/{{ data.data.doc_id }}"
+            data-method="GET" data-url-redirect="{% url 'EmployeeList' %}" data-doc-id="{{ data.data.doc_id }}"
+    >
+        {% csrf_token %}
+        <div class="tab-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'User' %}</label>
+                                <input
+                                        type="text" class="form-control" placeholder=""
+                                        name="title" id="select-box-user-detail"
+                                        style="background-color: white;"
+                                        readonly
+                                >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'First Name' %}
+                                    </label>
+                                    <input
+                                            type="text" class="form-control"
+                                            placeholder=""
+                                            name="first_name"
+                                            id="employee-first-name-detail"
+                                            style="background-color: white;"
+                                            readonly
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Last Name' %}
+                                    </label>
+                                    <input
+                                            type="text" placeholder=""
+                                            class="form-control"
+                                            name="last_name"
+                                            id="employee-last-name-detail"
+                                            style="background-color: white;"
+                                            readonly
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Avatar' %}</label>
+                            <div id="upload-area" class="form-control">
+                                Click here to upload image
+                            </div>
+                            <input id="input-avatar" type="file" class="hidden" name="avatar">
+                            <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Email' %}</label>
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    placeholder=""
+                                    name="email"
+                                    id="employee-email-detail"
+                                    style="background-color: white;"
+                                    readonly
+                            >
+                        </div>
+                    </div>
+                    <div class="col-4">
+
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Phone' %}</label>
+                            <input
+                                    type="text"
+                                    placeholder=""
+                                    class="form-control"
+                                    name="phone"
+                                    id="employee-phone-detail"
+                                    style="background-color: white;"
+                                    readonly
+                            >
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Department' %}
+                            </label>
+                            <input
+                                    type="text"
+                                    placeholder=""
+                                    class="form-control"
+                                    name="group"
+                                    id="select-box-group-employee-detail"
+                                    style="background-color: white;"
+                                    readonly
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Date of Birthday' %}</label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="employee-dob-detail"
+                                    style="background-color: white;"
+                                    readonly
+                            />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Date Joined' %}</label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="employee-date-joined-detail"
+                                    style="background-color: white;"
+                                    readonly
+                            />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Role' %}</label>
+                            <input
+                                    type="text"
+                                    placeholder=""
+                                    class="form-control"
+                                    name="role"
+                                    id="select-box-role-employee-detail"
+                                    style="background-color: white;"
+                                    readonly
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <label class="form-label mb-5">{% trans 'Plan Application' %}</label>
+                    <table
+                            id="datable-employee-plan-app-detail"
+                            data-url="{% url 'PlanListAPI' %}"
+                            data-method="GET"
+                    >
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block jsFooter %}
+    <!-- Data Table JS -->
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <!-- Moment JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <!-- Customize JS -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
+    <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
+
+{% endblock %}

@@ -9,10 +9,12 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    if (data.hasOwnProperty('user_list') && Array.isArray(data.user_list)) {
+                    if (data.hasOwnProperty('company_user_list') && Array.isArray(data.company_user_list)) {
                         ele.append(`<option>` + `</option>`)
-                        data.user_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" data-first-name="${item.first_name}" data-last-name="${item.last_name}" data-email="${item.email}" data-phone="${item.phone}">` + item.full_name + `</option>`)
+                        data.company_user_list.map(function (item) {
+                            if (Object.keys(item.user).length !== 0) {
+                                ele.append(`<option value="` + item.user.id + `" data-first-name="${item.user.first_name}" data-last-name="${item.user.last_name}" data-email="${item.user.email}" data-phone="${item.user.phone}">` + item.user.full_name + `</option>`)
+                            }
                         })
                     }
                 }
@@ -78,7 +80,7 @@ $(document).ready(function () {
                             if (data.plan_list[t].application && Array.isArray(data.plan_list[t].application)) {
                                 let appLength = data.plan_list[t].application.length;
                                 for (let i = 0; i < appLength; i++) {
-                                    app_list += `<li class="list-break mt-3 mb-2" style="display: inline">
+                                    app_list += `<li class="list-break mt-2 mb-2" style="display: inline">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
                                                     name="list-app-add-employee-${t}" class="form-check-input"
@@ -94,19 +96,22 @@ $(document).ready(function () {
 
                             $('#datable-employee-plan-app tbody').append(`<tr>
                         <td>
-                            <div class="row mb-5">
+                            <div class="row mb-6" style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
+                            
                                 <div>
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}"
+                                            aria-controls="collapseExample${t}" style="width: 295px; border-radius: 0; margin-left: -12px"
                                           
                                     >
                                         ${data.plan_list[t].title}
                                     </button>
-                                    <span style="margin-left: 10px">License: 19 of 20</span>
+<!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
+<!--                                    <hr style="height:2px; border:none; color:#007D88; background-color:#007D88; margin-left: 250px; margin-top: -18px">-->
                                 </div>
-                                <div class="show" id="collapseExample${t}">
+                                
+                                <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
                                     <ul>
                                         ${app_list}
                                     </ul>
@@ -151,7 +156,8 @@ $(document).ready(function () {
     }
 
     function loadDefaultData() {
-        $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
+        // $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
+        // $("input[name='dob']").val(moment().format('DD-MM-YYYY'));
 
         loadUserList();
         loadRoleList();
@@ -161,7 +167,9 @@ $(document).ready(function () {
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');
             upload_img.text("");
+            tmp = URL.createObjectURL(this.files[0])
             upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
+            $(this).val()
         });
         $('#upload-area').click(function (e) {
             $('#input-avatar').click();
@@ -229,7 +237,7 @@ $(document).ready(function () {
 });
 
 
-// Load group level datas
+// Load user datas
 $(document).on('change', '#select-box-user', function (e) {
     let sel = $(this)[0].options[$(this)[0].selectedIndex]
     let first_name = sel.getAttribute('data-first-name');
@@ -241,4 +249,34 @@ $(document).on('change', '#select-box-user', function (e) {
     $('#employee-last-name').val(last_name);
     $('#employee-email').val(email);
     $('#employee-phone').val(phone);
+});
+
+
+$(function () {
+    "use strict";
+
+    /* Single table*/
+    $('input[name="dob"]').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'), 10)
+    }, function (start, end, label) {
+        var years = moment().diff(start, 'years');
+    });
+
+    /* Single table*/
+    $('input[name="date_joined"]').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'), 10)
+    }, function (start, end, label) {
+        var years = moment().diff(start, 'years');
+    });
+
 });

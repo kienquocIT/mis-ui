@@ -199,44 +199,15 @@ class EmployeeByCompanyListOverviewDetailAPI(APIView):
         return {}, status.HTTP_404_NOT_FOUND
 
 
-class UserByCompanyListOverviewDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
+class CompanyUserNotMapEmployeeListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        company_id = kwargs.get('pk', None)
-        if company_id and TypeCheck.check_uuid(company_id):
-            resp = ServerAPI(
-                user=request.user,
-                url=ApiURL.USER_BY_COMPANY_OVERVIEW.fill_key(company_id=company_id)
-            ).get()
-            if resp.state:
-                return {'data_list': resp.result}, status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {}, status.HTTP_404_NOT_FOUND
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE).get()
+        if resp.state:
+            return {'company_user_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
-
-class CompanyOfUserForOverviewDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
-    def post(self, request, *args, **kwargs):
-        company_id = kwargs.get('pk', None)
-        user_id_list = request.data.get('user_id_list', [])
-        if user_id_list and company_id and TypeCheck.check_uuid(company_id):
-            resp = ServerAPI(
-                user=request.user,
-                url=ApiURL.COMPANY_OF_USER_OVERVIEW.fill_key(company_id=company_id)
-            ).post(
-                {'user_id_list': user_id_list}
-            )
-            if resp.state:
-                return {'data_list': resp.result}, status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {}, status.HTTP_404_NOT_FOUND

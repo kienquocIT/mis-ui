@@ -24,10 +24,14 @@ class ApiURL(object):
     refresh_token = StringUrl('auth/token-refresh')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
+    user_detail = StringUrl('account/user')
+
+    # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
-    GROUP_LEVEL_LIST = StringUrl('hr/levels')
+    EMPLOYEE_DETAIL = StringUrl('hr/employee')
 
     # organization/group
+    GROUP_LEVEL_LIST = StringUrl('hr/levels')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
     GROUP_PARENT = 'hr/group/parent'
@@ -36,6 +40,7 @@ class ApiURL(object):
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = 'company/list'
     COMPANY_OVERVIEW = StringUrl('company/overview')
+    COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user-available')
 
     # organization/role
     ROLE_LIST = StringUrl('hr/roles')

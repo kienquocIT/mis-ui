@@ -39,7 +39,8 @@
                 src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
             }
         </style>
-        {% block cssHeader %}{% endblock %}
+        {% block cssHeader %}
+        {% endblock %}
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
@@ -99,9 +100,9 @@
                         </header>
                         <div class="blog-body">
                             <div data-simplebar class="nicescroll-bar">
-
-                                {% block pageContent %}{% endblock %}
-
+                                {% block pageContent %}
+                                    dau xanh
+                                {% endblock %}
                             </div>
                         </div>
                     </div>
@@ -169,7 +170,7 @@
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-
+    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
     <script>
         $(document).ready(function () {
             let nav_data = $('#get-menu-active');
@@ -198,8 +199,8 @@
             return null;
         }
     </script>
-
-    {% block jsFooter %}{% endblock %}
+    {% block jsFooter %}
+    {% endblock %}
 {% endcompress %}
 </body>
 </html>

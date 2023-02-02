@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    let instanceData = {}
+
     function loadInstanceData() {
         let ele = $('#frm_employee_update');
         let url = ele.attr('data-url');
@@ -23,6 +26,9 @@ $(document).ready(function () {
                         if (data.employee.user.hasOwnProperty('full_name')) {
                             eleUser.text("");
                             eleUser.append(`<option value="` + data.employee.user.id + `" data-first-name="${data.employee.user.first_name}" data-last-name="${data.employee.user.last_name}" data-email="${data.employee.user.email}" data-phone="${data.employee.user.phone}">` + data.employee.user.full_name + `</option>`)
+                        } else {
+                            eleUser.text("");
+                            eleUser.append(`<option>` + `</option>`)
                         }
                         loadUserList();
 
@@ -34,6 +40,9 @@ $(document).ready(function () {
                         if (data.employee.group.hasOwnProperty('title')) {
                             eleDepartment.text("");
                             eleDepartment.append(`<option value="` + data.employee.group.id + `">` + data.employee.group.title + `</option>`)
+                        } else {
+                            eleDepartment.text("");
+                            eleDepartment.append(`<option>` + `</option>`)
                         }
                         loadGroupList();
 
@@ -45,8 +54,10 @@ $(document).ready(function () {
                             for (let r = 0; r < data.employee.role.length; r++) {
                                 dataRoleInstance.push(data.employee.role[r].id);
                             }
-                            eleRole.val(dataRoleInstance);
+                            // eleRole.val(dataRoleInstance);
+                            instanceData['role'] = dataRoleInstance;
                         }
+                        loadInstanceRoleData();
 
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
@@ -72,6 +83,11 @@ $(document).ready(function () {
                 }
             }
         )
+    }
+
+    function loadInstanceRoleData() {
+        let eleRole = $('#select-box-role-employee-update');
+        eleRole.val(instanceData['role']);
     }
 
     function loadUserList() {

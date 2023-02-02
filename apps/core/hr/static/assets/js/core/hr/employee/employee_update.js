@@ -23,6 +23,9 @@ $(document).ready(function () {
                         if (data.employee.user.hasOwnProperty('full_name')) {
                             eleUser.text("");
                             eleUser.append(`<option value="` + data.employee.user.id + `" data-first-name="${data.employee.user.first_name}" data-last-name="${data.employee.user.last_name}" data-email="${data.employee.user.email}" data-phone="${data.employee.user.phone}">` + data.employee.user.full_name + `</option>`)
+                        } else {
+                            eleUser.text("");
+                            eleUser.append(`<option>` + `</option>`)
                         }
                         loadUserList();
 
@@ -34,6 +37,9 @@ $(document).ready(function () {
                         if (data.employee.group.hasOwnProperty('title')) {
                             eleDepartment.text("");
                             eleDepartment.append(`<option value="` + data.employee.group.id + `">` + data.employee.group.title + `</option>`)
+                        } else {
+                            eleDepartment.text("");
+                            eleDepartment.append(`<option>` + `</option>`)
                         }
                         loadGroupList();
 
@@ -232,7 +238,7 @@ $(document).ready(function () {
 
         $('#select-box-role-employee-update').select2();
 
-        loadPlanAppList();
+        // loadPlanAppList();
         loadRoleList();
         // loadInstanceData();
         // loadUserList();

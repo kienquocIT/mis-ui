@@ -245,10 +245,12 @@ $(function () {
                     '<span href="" class="badge badge-secondary my-1 w-20">Personal (' + total10 + ')</span> ' +
                     '<span href="" class="badge badge-primary my-1 w-20">E-Office (' + total11 + ')</span> ');
 			},
-
         }
         $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
             let data = $.fn.switcherResp(resp);
+            if (data.company_list.length < 2) {
+                $("tfoot").prop('hidden', true);
+            };
             if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
                 config['data'] = resp.data['company_list'] ? resp.data['company_list'] : [];
             }

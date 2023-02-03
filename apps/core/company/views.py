@@ -28,6 +28,8 @@ class CompanyListAPI(APIView):
             return {'company_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
+        elif resp.status == 403:
+            return {}, status.HTTP_403_FORBIDDEN
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(auth_require=True, is_api=True)

@@ -39,7 +39,11 @@ $(document).ready(function () {
                         if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
                             let dataRoleEmp = ""
                             for (let r = 0; r < data.employee.role.length; r++) {
-                                dataRoleEmp += data.employee.role[r].title + ", "
+                                if (r !== (data.employee.role.length - 1)) {
+                                    dataRoleEmp += data.employee.role[r].title + ", "
+                                } else {
+                                    dataRoleEmp += data.employee.role[r].title
+                                }
                             }
                             eleRole.val(dataRoleEmp)
                         }
@@ -52,50 +56,50 @@ $(document).ready(function () {
                                 if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
                                     let appLength = data.employee.plan_app[t].application.length;
                                     for (let i = 0; i < appLength; i++) {
-                                        app_list += `<tr>
-                                                        <td style="width: 28%"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
-                                                        <td><input type="checkbox" checked disabled/></td>
-                                                        <td><input type="checkbox" checked disabled/></td>
-                                                        <td><input type="checkbox" checked disabled/></td>
-                                                        <td><input type="checkbox" checked disabled/></td>
-                                                        <td><input type="checkbox" checked disabled/></td>
-                                                        <td>User</td>
+                                        app_list += `<tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0; padding-bottom: 25px;">
+                                                        <td style="width: 28%; border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">User</td>
                                                     </tr>`
-                                        app_list_edit += `<tr>
-                                                        <td style="width: 28%"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
-                                                        <td><input type="checkbox" checked/></td>
-                                                        <td><input type="checkbox" checked/></td>
-                                                        <td><input type="checkbox" checked/></td>
-                                                        <td><input type="checkbox" checked/></td>
-                                                        <td><input type="checkbox" checked/></td>
-                                                        <td>User</td>
+                                        app_list_edit += `<tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
+                                                        <td style="width: 28%; border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
+                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">User</td>
                                                     </tr>`
                                     }
                                 }
-                                let tableApplication = `<table class="mt-3 ml-5" style="width: 60%">
+                                let tableApplication = `<table class="mt-3" style="width: 100%">
                                                         <thead>
-                                                        <tr>
-                                                            <th>Application</th>
-                                                            <th>View All</th>
-                                                            <th>Create</th>
-                                                            <th>View</th>
-                                                            <th>Edit</th>
-                                                            <th>Delete</th>
-                                                            <th>Permission Range</th>
+                                                        <tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Application</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View All</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Create</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Edit</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Delete</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Permission Range</th>
                                                         </tr>
                                                         <tbody>${app_list}</tbody>
                                                     </table>`
 
-                                let tableApplicationEdit = `<table class="mt-3 ml-5" style="width: 60%">
+                                let tableApplicationEdit = `<table class="mt-3" style="width: 100%">
                                                         <thead>
-                                                        <tr>
-                                                            <th>Application</th>
-                                                            <th>View All</th>
-                                                            <th>Create</th>
-                                                            <th>View</th>
-                                                            <th>Edit</th>
-                                                            <th>Delete</th>
-                                                            <th>Permission Range</th>
+                                                        <tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Application</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View All</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Create</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Edit</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Delete</th>
+                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Permission Range</th>
                                                         </tr>
                                                         <tbody>${app_list_edit}</tbody>
                                                     </table>`
@@ -105,7 +109,7 @@ $(document).ready(function () {
                                     <button
                                             class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 295px"
+                                            aria-controls="collapseExample${t}" style="width: 310px"
                                           
                                     >
                                         ${data.employee.plan_app[t].title}

@@ -47,12 +47,22 @@ $(document).ready(function () {
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
                             let listTypeBtn = ["primary", "success", "info", "danger", "warning",]
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
-                                let app_list = ``
+                                let app_list = ``;
+                                let app_list_edit = ``;
                                 if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
                                     let appLength = data.employee.plan_app[t].application.length;
                                     for (let i = 0; i < appLength; i++) {
                                         app_list += `<tr>
-                                                        <td style="width: 30%"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
+                                                        <td style="width: 28%"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
+                                                        <td><input type="checkbox" checked disabled/></td>
+                                                        <td><input type="checkbox" checked disabled/></td>
+                                                        <td><input type="checkbox" checked disabled/></td>
+                                                        <td><input type="checkbox" checked disabled/></td>
+                                                        <td><input type="checkbox" checked disabled/></td>
+                                                        <td>User</td>
+                                                    </tr>`
+                                        app_list_edit += `<tr>
+                                                        <td style="width: 28%"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
                                                         <td><input type="checkbox" checked/></td>
                                                         <td><input type="checkbox" checked/></td>
                                                         <td><input type="checkbox" checked/></td>
@@ -71,9 +81,23 @@ $(document).ready(function () {
                                                             <th>View</th>
                                                             <th>Edit</th>
                                                             <th>Delete</th>
-                                                            <th>Range</th>
+                                                            <th>Permission Range</th>
                                                         </tr>
                                                         <tbody>${app_list}</tbody>
+                                                    </table>`
+
+                                let tableApplicationEdit = `<table class="mt-3 ml-5" style="width: 60%">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Application</th>
+                                                            <th>View All</th>
+                                                            <th>Create</th>
+                                                            <th>View</th>
+                                                            <th>Edit</th>
+                                                            <th>Delete</th>
+                                                            <th>Permission Range</th>
+                                                        </tr>
+                                                        <tbody>${app_list_edit}</tbody>
                                                     </table>`
 
                                 $('#data-employee-plan-app-detail').append(`<div class="row mb-5">
@@ -89,6 +113,23 @@ $(document).ready(function () {
                                 </div>
                                 <div class="show" id="collapseExample${t}">
                                     ${tableApplication}
+                                </div>
+                            </div>`)
+
+
+                            $('#data-employee-plan-app-edit').append(`<div class="row mb-5">
+                                <div>
+                                    <button
+                                            class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseExample${t}" aria-expanded="false"
+                                            aria-controls="collapseExample${t}" style="width: 295px"
+                                          
+                                    >
+                                        ${data.employee.plan_app[t].title}
+                                    </button>
+                                </div>
+                                <div class="show" id="collapseExample${t}">
+                                    ${tableApplicationEdit}
                                 </div>
                             </div>`)
                             }
@@ -121,4 +162,10 @@ $(document).ready(function () {
         debug: true,
         success: "valid"
     });
+});
+
+
+$(document).on('click', '#btn-edit-emp-permission', function () {
+    $('#employee-permission-detail').attr("hidden", true);
+    $('#employee-permission-edit').attr("hidden", false);
 });

@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block pageContent %}
+    {% csrf_token %}
     <div class="mb-3">
         <div class="inline">
             <label for="company_overviewing" class="hidden"></label>
@@ -24,11 +25,14 @@
         </div>
         <br class="clearBoth"/>
     </div>
-    {{ data.company_list|json_script:"company_all_list" }}
     <table
             id="datable_company_overview_detail" class="table nowrap w-100 mb-5"
             data-url-detail="{% url "EmployeeUserByCompanyListOverviewDetailAPI" pk=1 %}"
             data-method="GET"
+
+            data-url-detail-employee="{% url "EmployeeByCompanyListOverviewDetailAPI" pk=1 %}"
+            data-url-detail-user="{% url "UserByCompanyListOverviewDetailAPI" pk=1 %}"
+            data-url-detail-company-of-user="{% url "CompanyOfUserForOverviewDetailAPI" pk=1 %}"
     >
         <thead>
         <tr>
@@ -81,205 +85,15 @@
             </div>
         </div>
     </div>
+    <div>
+        {{ data.company_list|json_script:"company_all_list" }}
+    </div>
 {% endblock %}
 
 
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script>
-        {#Data Sample#}
-        {#[#}
-        {#    {#}
-        {#        'id': 1,#}
-        {#        'full_name': 'Nguyen Van A',#}
-        {#        'code': 'A001',#}
-        {#        'user': {'full_name': 'Nguyen Van A'},#}
-        {#        'license': [{"id": 1, "code": "sale", "title": "Sale"}, {#}
-        {#            "id": 2,#}
-        {#            "code": "e-office",#}
-        {#            "title": "E-Office"#}
-        {#        }],#}
-        {#        'company_id_list': ["c46f4cec-6201-4132-84cb-a1201eef8316"],#}
-        {#    }#}
-        {#],#}
-        $(document).ready(function (event) {
-            // selected company select box
-            let company_overviewing_id = window.location.href.split("?")[0].split("#")[0].split("/").slice(-1)[0];
-            if (company_overviewing_id) {
-                $('#company_overviewing').find('option[value=' + company_overviewing_id + ']').attr('selected', 'selected')
-            }
-
-
-            // convert data company
-            let company_all_list = JSON.parse($('#company_all_list').html());
-            let company_by_id = company_all_list.convert_to_key();
-
-            // init table data
-            let tbl = $('#datable_company_overview_detail');
-            tbl.DataTable({
-                searching: false,
-                ordering: false,
-                paginate: false,
-                drawCallback: function () {
-                    feather.replace();
-                },
-                columns: [
-                    {
-                        visible: false,
-                        searchable: false,
-                        render: (data, type, row, meta) => {
-                            return String.format(
-                                `<script type="application/json">{0}<\/script>`,
-                                JSON.stringify(row)
-                            )
-                        }
-                    },
-                    {
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input"></div>`
-                        }
-                    },
-                    {
-                        render: (data, type, row, meta) => {
-                            return `<a href="#"><span class="badge badge-primary">{0}</span> {1}</a>`.format_by_idx(row.code, row.full_name);
-                        }
-                    },
-                    {
-                        data: 'license',
-                        className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            let html = '';
-                            data.map((item) => {
-                                html += `<span class="{3}" data-id="{0}" data-code="{1}">{2}</span>`.format_by_idx(
-                                    item.id,
-                                    item.code,
-                                    item.title,
-                                    "badge badge-indigo mr-1"
-                                )
-                            });
-                            return html;
-                        }
-                    },
-                    {
-                        data: 'user',
-                        render: (data, type, row, meta) => {
-                            let html = `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`;
-                            return html.format_by_idx(
-                                `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`.format_by_idx(
-                                    data.full_name ? data.full_name.split(" ").slice(-1)[0].charAt(0) : ''
-                                ),
-                                `<span class="d-block">{0}</span> `.format_by_idx(
-                                    `<a href="#">{0}</a>`.format_by_idx(
-                                        data.full_name ? data.full_name : ''
-                                    )
-                                )
-                            )
-                        }
-                    },
-                    {
-                        data: 'company_id_list',
-                        className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            let html = '';
-                            if (data && Array.isArray(data)) {
-                                data.map((item) => {
-                                    html += String.format(
-                                        `<span class="{1}">{0}</span> `,
-                                        company_by_id[item].title,
-                                        "badge badge-soft-primary mr-1"
-                                    )
-                                });
-                            }
-                            return html;
-                        }
-                    },
-                    {
-                        render: (data, type, row, meta) => {
-                            return `<div><a class="{0}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="{1}">{2}</a></div>`.format_by_idx(
-                                "btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button",
-                                row.id,
-                                `<span class="{0}" data-bs-toggle="modal" data-bs-target="#power_user_info">{1}</span></span>`.format_by_idx(
-                                    "btn-icon-wrap btn-open-power-user-info",
-                                    `<span class="feather-icon"><i data-feather="edit"></i>`
-                                ),
-                            )
-                        }
-                    }
-                ]
-            });
-
-            // multiple select company popup info
-            $('#company_list_choose').select2();
-
-            // event click open popup info
-            $(document).on('click', '.btn-open-power-user-info', function (event) {
-                event.preventDefault();
-                let data = get_data_row($(this), tbl);
-                load_power_user_to_modal(
-                    data.user ? data.user.full_name : data.full_name,
-                    "c46f4cec-6201-4132-84cb-a1201eef8316",
-                    data.company_id_list && Array.isArray(data.company_id_list) ? data.company_id_list : [],
-                    company_by_id ? company_by_id : null,
-                )
-            });
-
-            // filter_all_user_and_employee
-            let data_all_user_and_employee = [];
-            let data_employee_linked_user = [];
-            $(document).on('change', '#filter_data_employee_user', function (event) {
-                $(this).find('option:selected').each(async function () {
-                    let selected_val = $(this).attr('value');
-                    if (selected_val) {
-                        switch (selected_val) {
-                            case 'filter_all_user_and_employee':
-                                if (data_all_user_and_employee.length === 0) {
-                                    data_all_user_and_employee = await get_data(company_overviewing_id, {});
-                                    console.log('data_resp: ', data_all_user_and_employee);
-                                }
-                                data_all_user_and_employee = [
-                                    {
-                                        'id': 1,
-                                        'full_name': 'Nguyen Van B',
-                                        'code': 'B001',
-                                        'user': {'full_name': 'Nguyen Van B'},
-                                        'license': [
-                                            {"id": 1, "code": "sale", "title": "Sale"},
-                                        ],
-                                        'company_id_list': ["c46f4cec-6201-4132-84cb-a1201eef8316"],
-                                    }
-                                ]
-                                tbl.DataTable().clear().rows.add(data_all_user_and_employee).draw();
-                                break;
-                            case 'filter_employee_linked_to_user':
-                                if (data_all_user_and_employee.length === 0) {
-                                    data_employee_linked_user = await get_data(company_overviewing_id, {});
-                                    console.log('data_resp: ', data_employee_linked_user);
-                                }
-                                data_employee_linked_user = [
-                                    {
-                                        'id': 1,
-                                        'full_name': 'Nguyen Van C',
-                                        'code': 'C001',
-                                        'user': {'full_name': 'Nguyen Van C'},
-                                        'license': [
-                                            {"id": 2, "code": "e-office", "title": "E-Office"}
-                                        ],
-                                    }
-                                ]
-                                tbl.DataTable().clear().rows.add(data_employee_linked_user).draw();
-                                break;
-                        }
-                    }
-                });
-            });
-            $('#filter_data_employee_user').trigger('change');  // call change for load data
-        });
-
-        function get_data_row(row, tabl) {
-            let currentRow = $(row).closest("tr");
-            return tabl.DataTable().row(currentRow).data();
-        }
-
         function load_power_user_to_modal(user_full_name, company_id_default, company_id_list, company_data_obj) {
             // change title by user.full_name
             $('#power_user_title').html(
@@ -322,21 +136,189 @@
             mul_selected.select2();
         }
 
-        async function get_data(pk, filter) {
-            let frm = new SetupFormSubmit($('#datable_company_overview_detail'));
-            return $.fn.callAjax(
-                frm.appendFilter(frm.getUrlDetail(pk), filter),
-                frm.dataMethod
+        function get_data_row(row, tabl) {
+            let currentRow = $(row).closest("tr");
+            return tabl.DataTable().row(currentRow).data();
+        }
+
+        {#Data Sample#}
+        {#[#}
+        {#    {#}
+        {#        'id': 1,#}
+        {#        'full_name': 'Nguyen Van A',#}
+        {#        'code': 'A001',#}
+        {#        'user': {'full_name': 'Nguyen Van A'},#}
+        {#        'license': [{"id": 1, "code": "sale", "title": "Sale"}, {#}
+        {#            "id": 2,#}
+        {#            "code": "e-office",#}
+        {#            "title": "E-Office"#}
+        {#        }],#}
+        {#        'company_id_list': ["c46f4cec-6201-4132-84cb-a1201eef8316"],#}
+        {#    }#}
+        {#],#}
+        $(document).ready(function (event) {
+            // selected company select box
+            let company_overviewing_id = window.location.href.split("?")[0].split("#")[0].split("/").slice(-1)[0];
+            if (company_overviewing_id) {
+                $('#company_overviewing').find('option[value=' + company_overviewing_id + ']').attr('selected', 'selected')
+            }
+
+
+            // convert data company
+            let company_all_list = JSON.parse($('#company_all_list').html());
+            let company_by_id = company_all_list ? company_all_list.convert_to_key() : {};
+
+            // init table data
+            let tbl = $('#datable_company_overview_detail');
+            tbl.DataTable({
+                searching: false,
+                ordering: false,
+                paginate: false,
+                drawCallback: function () {
+                    feather.replace();
+                },
+                columns: [
+                    {
+                        visible: false,
+                        searchable: false,
+                        render: (data, type, row, meta) => {
+                            return String.format(
+                                `<script type="application/json">{0}<\/script>`,
+                                JSON.stringify(row)
+                            )
+                        }
+                    },
+                    {
+                        render: (data, type, row, meta) => {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input"></div>`
+                        }
+                    },
+                    {
+                        render: (data, type, row, meta) => {
+                            if (row.hasOwnProperty('code') && row.hasOwnProperty('full_name') && row.code && row.full_name) {
+                                return `<a href="#"><span class="badge badge-primary">{0}</span> {1}</a>`.format_by_idx(row.code, row.full_name);
+                            }
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'license',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            let html = '';
+                            data ? data.map((item) => {
+                                html += `<span class="{3}" data-id="{0}" data-code="{1}">{2}</span>`.format_by_idx(
+                                    item.id,
+                                    item.code,
+                                    item.title,
+                                    "badge badge-indigo mr-1 mb-1"
+                                )
+                            }) : '';
+                            return html;
+                        }
+                    },
+                    {
+                        data: 'user',
+                        render: (data, type, row, meta) => {
+                            if (data) {
+                                let html = `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`;
+                                return html.format_by_idx(
+                                    `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`.format_by_idx(
+                                        data.full_name ? data.full_name.split(" ").slice(-1)[0].charAt(0) : ''
+                                    ),
+                                    `<span class="d-block">{0}</span> `.format_by_idx(
+                                        `<a href="#">{0}</a>`.format_by_idx(
+                                            data.full_name ? data.full_name : ''
+                                        )
+                                    )
+                                )
+                            }
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'company_id_list',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            let html = '';
+                            if (data && Array.isArray(data)) {
+                                data.map((item) => {
+                                    html += String.format(
+                                        `<span class="{1}">{0}</span> `,
+                                        company_by_id[item] ? company_by_id[item].title : '',
+                                        "badge badge-soft-primary mr-1 mb-1"
+                                    )
+                                });
+                            }
+                            return html;
+                        }
+                    },
+                    {
+                        render: (data, type, row, meta) => {
+                            return `<div><a class="{0}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#" data-id="{1}">{2}</a></div>`.format_by_idx(
+                                "btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button",
+                                row.id,
+                                `<span class="{0}" data-bs-toggle="modal" data-bs-target="#power_user_info">{1}</span></span>`.format_by_idx(
+                                    "btn-icon-wrap btn-open-power-user-info",
+                                    `<span class="feather-icon"><i data-feather="edit"></i>`
+                                ),
+                            )
+                        }
+                    }
+                ]
+            });
+
+            // multiple select company popup info
+            $('#company_list_choose').select2();
+
+            // event click open popup info
+            $(document).on('click', '.btn-open-power-user-info', function (event) {
+                event.preventDefault();
+                let data = get_data_row($(this), tbl);
+                load_power_user_to_modal(
+                    data.user ? data.user.full_name : data.full_name,
+                    "4aa680ff-eaa4-48ad-9f63-b58ef6da059f",
+                    data.company_id_list && Array.isArray(data.company_id_list) ? data.company_id_list : [],
+                    company_by_id ? company_by_id : null,
+                )
+            });
+
+            // filter_all_user_and_employee
+            $(document).on('change', '#filter_data_employee_user', async function (event) {
+                $(this).find('option:selected').each(async function () {
+                    let selected_val = $(this).attr('value');
+                    if (selected_val) {
+                        switch (selected_val) {
+                            case 'filter_all_user_and_employee':
+                                break;
+                            case 'filter_employee_linked_to_user':
+                                break;
+                        }
+                    }
+                });
+            });
+            $('#filter_data_employee_user').trigger('change');  // call change for load data
+
+            get_employee_data(company_overviewing_id);
+        });
+
+        async function get_employee_data(company_current_id) {
+            <!-- filter = 0: all, 1: employee linked to user -->
+            let tbl = $('#datable_company_overview_detail');
+            let url_1 = tbl.attr('data-url-detail-employee');
+            let url_2 = tbl.attr('data-url-detail-user');
+            let url_3 = tbl.attr('data-url-detail-company-of-user');
+
+            return await $.fn.callAjax(
+                SetupFormSubmit.getUrlDetailWithID(url_1, company_current_id),
+                'GET',
             ).then(
                 (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('data_list')) {
-                        return data.data_list;
-                    }
+                    console.log(resp);
+                    return resp;
                 },
                 (errs) => {
-                    return []
-                },
+                }
             )
         }
     </script>

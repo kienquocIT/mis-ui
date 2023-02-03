@@ -1112,16 +1112,20 @@ jQuery.fn.callAjax = function (url, method, data, headers = {}) {
 // Simulate redirect path
 jQuery.fn.redirectUrl = function (redirectPath, timeout = 0, params = '') {
     setTimeout(() => {
-        window.location.href = redirectPath + '?' + params;
+        if (params && (params !== '' && params !== undefined)) {
+            window.location.href = redirectPath + '?' + params;
+        } else {
+            window.location.href = redirectPath;
+        }
     }, timeout);
 }
 jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
-    let redirectPath = '/auth/login';
-    let redirectParams = '';
-    if (location_to_next) {
-        redirectParams = 'next=' + window.location.pathname;
+    if (location_to_next === true) {
+        jQuery.fn.redirectUrl('/auth/login', timeout, 'next=' + window.location.pathname);
+    } else {
+        jQuery.fn.redirectUrl('/auth/login', timeout, '');
     }
-    jQuery.fn.redirectUrl(redirectPath, timeout, redirectParams);
+
 }
 jQuery.fn.cleanDataNotify = (data) => {
     ['status'].map((key) => {
@@ -1154,8 +1158,8 @@ jQuery.fn.switcherResp = function (resp) {
             case 401:
                 console.log(resp.data);
                 $.fn.notifyB({'description': resp.data}, 'failure');
-                // return jQuery.fn.redirectLogin(1000);
-                return {}
+                return jQuery.fn.redirectLogin(500);
+            // return {}
             case 403:
                 jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
                 return {};
@@ -1216,6 +1220,14 @@ class SetupFormSubmit {
     getUrlDetail(pk) {
         if (this.dataUrlDetail && pk) {
             return this.dataUrlDetail + pk.toString();
+        }
+        return null;
+    }
+
+    static getUrlDetailWithID(url, pk) {
+        url = url.split("/").slice(0, -1).join("/") + "/";
+        if (url && pk) {
+            return url + pk.toString();
         }
         return null;
     }

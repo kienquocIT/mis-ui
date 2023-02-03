@@ -48,12 +48,12 @@ $(function () {
                 return `<span>` + row.abbreviation + `</span>`;
             }
         }, {
-            'data': 'employees', render: (data, type, row, meta) => {
+            'data': 'holder', render: (data, type, row, meta) => {
                 let element = ''
-                for (let i = 0; i < row.employees.length; i++) {
-                    element += `<span class="badge badge-soft-primary w-20 mt-1 ml-1">` + row.employees[i].full_name + `</span>`;
+                for (let i = 0; i < row.holder.length; i++) {
+                    element += `<span class="badge badge-soft-primary w-20 mt-1 ml-1">` + row.holder[i].full_name + `</span>`;
                 }
-                if (row.employees.length > 4)
+                if (row.holder.length > 4)
                     return `<div class="row">` + element + `</div>`
                 else
                     return `<div class="row"><center>` + element + `</center></div>`

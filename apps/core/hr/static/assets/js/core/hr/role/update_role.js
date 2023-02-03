@@ -111,8 +111,8 @@ function loadRoleDetail() {
                     let indexList = table.rows().indexes();
                     for (let idx = 0; idx < indexList.length; idx++) {
                         let rowNode = table.rows(indexList[idx]).nodes()[0]
-                        for (let i = 0; i < data.role.employees.length; i++) {
-                            if (data.role.employees[i].id === rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id')) {
+                        for (let i = 0; i < data.role.holder.length; i++) {
+                            if (data.role.holder[i].id === rowNode.firstElementChild.children[0].firstElementChild.getAttribute('data-id')) {
                                 rowNode.classList.add('selected');
                                 rowNode.firstElementChild.children[0].firstElementChild.checked = true;
                             }

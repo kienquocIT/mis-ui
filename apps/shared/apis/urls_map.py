@@ -51,4 +51,6 @@ class ApiURL(object):
 
     TENANT = StringUrl('tenant/userlist')
     # HR
-    EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('hr/employee/company-overview')
+    EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
+    USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
+    COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')

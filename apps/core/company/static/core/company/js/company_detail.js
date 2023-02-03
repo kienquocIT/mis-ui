@@ -10,6 +10,7 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyPopup({description: resp.detail}, 'success')
                         setTimeout(location.reload.bind(location), 1000);
+                        window.location = '/company/list';
                     }
                 },
                 (errs) => {

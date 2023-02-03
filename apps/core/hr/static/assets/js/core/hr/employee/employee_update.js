@@ -54,10 +54,11 @@ $(document).ready(function () {
                             for (let r = 0; r < data.employee.role.length; r++) {
                                 dataRoleInstance.push(data.employee.role[r].id);
                             }
-                            // eleRole.val(dataRoleInstance);
+                            eleRole.val(dataRoleInstance);
                             instanceData['role'] = dataRoleInstance;
                         }
-                        loadInstanceRoleData();
+
+                        $('#select-box-role-employee-update').select2();
 
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
@@ -83,11 +84,6 @@ $(document).ready(function () {
                 }
             }
         )
-    }
-
-    function loadInstanceRoleData() {
-        let eleRole = $('#select-box-role-employee-update');
-        eleRole.val(instanceData['role']);
     }
 
     function loadUserList() {
@@ -246,7 +242,7 @@ $(document).ready(function () {
         // $("input[name='date_joined']").val(moment().format('DD-MM-YYYY'));
         // $("input[name='dob']").val(moment().format('DD-MM-YYYY'));
 
-        $('#select-box-role-employee-update').select2();
+        // $('#select-box-role-employee-update').select2();
 
         loadPlanAppList();
         loadRoleList();

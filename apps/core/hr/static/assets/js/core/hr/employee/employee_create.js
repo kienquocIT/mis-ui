@@ -74,22 +74,22 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('plan_list') && Array.isArray(data.plan_list)) {
-                        for (let t = 0; t < data.plan_list.length; t++) {
+                    if (data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
+                        for (let t = 0; t < data.tenant_plan_list.length; t++) {
                             let app_list = ``
-                            if (data.plan_list[t].application && Array.isArray(data.plan_list[t].application)) {
-                                let appLength = data.plan_list[t].application.length;
+                            if (data.tenant_plan_list[t].plan.application && Array.isArray(data.tenant_plan_list[t].plan.application)) {
+                                let appLength = data.tenant_plan_list[t].plan.application.length;
                                 for (let i = 0; i < appLength; i++) {
                                     app_list += `<li class="list-break mt-2 mb-2" style="display: inline">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
                                                     name="list-app-add-employee-${t}" class="form-check-input"
-                                                    data-plan-id="${data.plan_list[t].id}"
-                                                    data-app-id="${data.plan_list[t].application[i].id}"
+                                                    data-plan-id="${data.tenant_plan_list[t].plan.id}"
+                                                    data-app-id="${data.tenant_plan_list[t].plan.application[i].id}"
                                             />
                                             <label
                                                     for="list-app-add-employee" class="form-check-label"
-                                            >${data.plan_list[t].application[i].title}</label>
+                                            >${data.tenant_plan_list[t].plan.application[i].title}</label>
                                         </li>`
                                 }
                             }
@@ -105,7 +105,7 @@ $(document).ready(function () {
                                             aria-controls="collapseExample${t}" style="width: 295px; border-radius: 0; margin-left: -12px"
                                           
                                     >
-                                        ${data.plan_list[t].title}
+                                        ${data.tenant_plan_list[t].plan.title}
                                     </button>
 <!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
 <!--                                    <hr style="height:2px; border:none; color:#007D88; background-color:#007D88; margin-left: 250px; margin-top: -18px">-->

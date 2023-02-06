@@ -130,10 +130,11 @@ class CompanyListOverviewDetail(View):
         menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
+        # return {}, status.HTTP_200_OK
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
         if resp.state:
-            print('company_list:', resp.result)
-            return {'company_list': resp.result}, status.HTTP_200_OK
+            return {'company_list': resp.result, 'pk': kwargs.get('pk', None),
+                    'user_url': '/company/list/overview/employee-user'}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -169,9 +170,10 @@ class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
     def get(self, request, *args, **kwargs):
         company_id = kwargs.get('pk', None)
         if company_id and TypeCheck.check_uuid(company_id):
+
             resp = ServerAPI(
                 user=request.user,
-                url=ApiURL.EMPLOYEE_BY_COMPANY_OVERVIEW.fill_key(company_id=company_id)
+                url=ApiURL.COMPANY_OVERVIEW.push_id(company_id) + '/0'
             ).get()
             if resp.state:
                 return {'data_list': resp.result}, status.HTTP_200_OK
@@ -200,6 +202,14 @@ class EmployeeByCompanyListOverviewDetailAPI(APIView):
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
         return {}, status.HTTP_404_NOT_FOUND
 
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        user_id = kwargs.get('pk', None)
+        response = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_USER_COMPANY.push_id(user_id)).put(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        return response.errors, response.status
 
 class CompanyUserNotMapEmployeeListAPI(APIView):
     permission_classes = [IsAuthenticated]

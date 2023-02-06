@@ -26,6 +26,9 @@ class ApiURL(object):
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
 
+    # account
+    ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
+
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
@@ -41,6 +44,7 @@ class ApiURL(object):
     COMPANY_DETAIL = 'company/list'
     COMPANY_OVERVIEW = StringUrl('company/overview')
     COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user-available')
+    COMPANY_USER_COMPANY = StringUrl('company/user-company')
 
     # organization/role
     ROLE_LIST = StringUrl('hr/roles')

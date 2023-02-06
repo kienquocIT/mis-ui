@@ -26,6 +26,9 @@ class ApiURL(object):
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
 
+    # tenant
+    TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
+
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
 

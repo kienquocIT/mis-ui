@@ -133,7 +133,11 @@ $(document).ready(function () {
             let dataPlanList = {};
             let dataAppList = [];
             let plan_id = null;
-            let showRow = tablePlanApp.rows[s]
+            let showRow = tablePlanApp.rows[s];
+
+            let divRow = showRow.firstElementChild.firstElementChild;
+            let licenseUsed = Number(divRow.children[0].children[1].children[0].innerHTML);
+
             let app_list = showRow.children[0].children[0].children[1].children[0].children
             if (app_list) {
                 for (let i = 0; i < app_list.length; i++) {
@@ -147,6 +151,7 @@ $(document).ready(function () {
                 if (plan_id) {
                     dataPlanList['plan'] = plan_id;
                     dataPlanList['application'] = dataAppList;
+                    dataPlanList['license_used'] = licenseUsed;
                     dataPlanAppSubmit.push(dataPlanList)
                 }
             }
@@ -286,11 +291,22 @@ $(document).on('click', '.check-plan-application', function (e) {
     let divRow = $(this)[0].closest('.row');
     // checked ==> if user.val() ==> license + 1
     if ($(this)[0].checked === true) {
-        let ele = divRow.firstElementChild.children[1].children[0];
-        if (ele.innerHTML) {
-            if ($('#select-box-user').val()) {
-                let licenseUsed = Number(ele.innerHTML) + 1;
-                ele.innerHTML = licenseUsed.toString()
+        let checkAll = 0
+        let divUl = $(this)[0].closest('ul');
+        let eleDivAppList = divUl.children;
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].firstElementChild;
+            if (app.checked === true) {
+                checkAll += 1
+            }
+        }
+        if (checkAll === 1) {
+            let ele = divRow.firstElementChild.children[1].children[0];
+            if (ele.innerHTML) {
+                if ($('#select-box-user').val()) {
+                    let licenseUsed = Number(ele.innerHTML) + 1;
+                    ele.innerHTML = licenseUsed.toString()
+                }
             }
         }
     }

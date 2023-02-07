@@ -83,7 +83,7 @@ $(document).ready(function () {
                                     app_list += `<li class="list-break mt-2 mb-2" style="display: inline">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
-                                                    name="list-app-add-employee-${t}" class="form-check-input"
+                                                    name="list-app-add-employee-${t}" class="form-check-input check-plan-application"
                                                     data-plan-id="${data.tenant_plan_list[t].plan.id}"
                                                     data-app-id="${data.tenant_plan_list[t].plan.application[i].id}"
                                             />
@@ -107,8 +107,7 @@ $(document).ready(function () {
                                     >
                                         ${data.tenant_plan_list[t].plan.title}
                                     </button>
-<!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
-<!--                                    <hr style="height:2px; border:none; color:#007D88; background-color:#007D88; margin-left: 250px; margin-top: -18px">-->
+                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of ${data.tenant_plan_list[t].license_quantity}</span>
                                 </div>
                                 
                                 <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
@@ -191,7 +190,6 @@ $(document).ready(function () {
     })
     frm.submit(function (event) {
         let frm = new SetupFormSubmit($(this));
-        console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let dataPlanApp = setupDataPlanApp()
@@ -249,6 +247,8 @@ $(document).on('change', '#select-box-user', function (e) {
     $('#employee-last-name').val(last_name);
     $('#employee-email').val(email);
     $('#employee-phone').val(phone);
+
+    updateLicenseWhenChangeUser()
 });
 
 
@@ -280,3 +280,65 @@ $(function () {
     });
 
 });
+
+
+$(document).on('click', '.check-plan-application', function (e) {
+    let divRow = $(this)[0].closest('.row');
+    // checked ==> if user.val() ==> license + 1
+    if ($(this)[0].checked === true) {
+        let ele = divRow.firstElementChild.children[1].children[0];
+        if (ele.innerHTML) {
+            if ($('#select-box-user').val()) {
+                let licenseUsed = Number(ele.innerHTML) + 1;
+                ele.innerHTML = licenseUsed.toString()
+            }
+        }
+    }
+    // unchecked ==> if all apps unchecked ==> license - 1
+    else {
+        let checkAll = 0
+        let divUl = $(this)[0].closest('ul');
+        let eleDivAppList = divUl.children;
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].firstElementChild;
+            if (app.checked === false) {
+                checkAll += 1
+            }
+        }
+        if (checkAll === eleDivAppList.length) {
+            let eleLicenseUsed = divRow.children[0].children[1].children[0];
+            if (Number(eleLicenseUsed.innerHTML) !== 0) {
+                let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
+                eleLicenseUsed.innerHTML = licenseUsed.toString();
+            }
+        }
+    }
+});
+
+
+function updateLicenseWhenChangeUser() {
+    let tablePlanApp = document.getElementById("datable-employee-plan-app");
+    for (let r = 0; r < tablePlanApp.tBodies[0].rows.length; r++) {
+        let divRow = tablePlanApp.tBodies[0].rows[r].firstElementChild.firstElementChild;
+        let eleDivAppList = divRow.children[1].firstElementChild.children;
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].firstElementChild;
+            if (app.checked === true) {
+                if ($('#select-box-user').val()) {
+                    let eleLicenseUsed = divRow.children[0].children[1].children[0];
+                    let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
+                    eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    break
+                } else {
+                    let eleLicenseUsed = divRow.children[0].children[1].children[0];
+                    if (Number(eleLicenseUsed.innerHTML) !== 0) {
+                        let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    }
+                    break
+                }
+            }
+        }
+    }
+}
+

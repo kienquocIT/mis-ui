@@ -1,40 +1,39 @@
-$(document).ready(function () {
 
-    function loadUserDetail() {
-        let url = window.location.pathname.replace('edit', 'detail');
-        $.fn.callAjax(url + '/api', 'GET')
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $('#inp-company_current_id').val(data.user.company_current_id);
-                        $('#inp-first_name').val(data.user.first_name);
-                        $('#inp-last_name').val(data.user.last_name);
-                        $('#inp-full_name').val(data.user.full_name);
-                        $('#inp-email').val(data.user.email);
-                        $('#inp-phone').val(data.user.phone);
-                    }
-                },
-            )
-    }
+function loadUserDetail() {
+    let url = window.location.pathname.replace('edit', 'detail');
+    $.fn.callAjax(url + '/api', 'GET')
+        .then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $('#inp-company_current_id').val(data.user.company_current_id);
+                    $('#inp-first_name').val(data.user.first_name);
+                    $('#inp-last_name').val(data.user.last_name);
+                    $('#inp-full_name').val(data.user.full_name);
+                    $('#inp-email').val(data.user.email);
+                    $('#inp-phone').val(data.user.phone);
+                }
+            },
+        )
+}
 
-    loadUserDetail();
+loadUserDetail();
 
-    function getFullName() {
-        let first_name = $('#inp-first_name').val();
-        let last_name =$('#inp-last_name').val();
-        $('#inp-first_name').change(function () {
-            first_name = $(this).val();
-            $('#inp-full_name').val(last_name + ' ' + first_name);
-        });
+function getFullName() {
+    let first_name = $('#inp-first_name').val();
+    let last_name =$('#inp-last_name').val();
+    $('#inp-first_name').change(function () {
+        first_name = $(this).val();
+        $('#inp-full_name').val(last_name + ' ' + first_name);
+    });
 
-        $('#inp-last_name').change(function () {
-            last_name = $(this).val();
-            $('#inp-full_name').val(last_name + ' ' + first_name);
-        });
-    }
-    getFullName();
-
+    $('#inp-last_name').change(function () {
+        last_name = $(this).val();
+        $('#inp-full_name').val(last_name + ' ' + first_name);
+    });
+}
+getFullName();
+$(document).ready(function (){
     function loadCompanyList(ele) {
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');

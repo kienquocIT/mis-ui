@@ -22,27 +22,6 @@ $(document).ready(function () {
         )
     }
 
-    // load role list
-    function loadRoleList() {
-        let ele = $('#select-box-role');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('role_list') && Array.isArray(data.role_list)) {
-                        ele.append(`<option>` + `</option>`)
-                        data.role_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
-                }
-            }
-        )
-    }
-
     // load group list
     function loadGroupList() {
         let ele = $('#select-box-group-employee');
@@ -160,7 +139,6 @@ $(document).ready(function () {
         // $("input[name='dob']").val(moment().format('DD-MM-YYYY'));
 
         loadUserList();
-        loadRoleList();
         loadGroupList();
         loadPlanAppList();
 
@@ -174,8 +152,6 @@ $(document).ready(function () {
         $('#upload-area').click(function (e) {
             $('#input-avatar').click();
         });
-
-        $('#select-box-role').select2();
     }
 
     loadDefaultData();
@@ -188,10 +164,9 @@ $(document).ready(function () {
     frm.validate({
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',
-    })
+    });
     frm.submit(function (event) {
         let frm = new SetupFormSubmit($(this));
-        console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let dataPlanApp = setupDataPlanApp()

@@ -73755,7 +73755,9 @@ div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-n
 }
 /*Placehoder*/
 .placeholder {
-  border-radius: 0.25rem;
+    border-radius: 0.25rem;
+    background-color:inherit;
+    cursor: default;
 }
 
 /*Breadcrumb*/

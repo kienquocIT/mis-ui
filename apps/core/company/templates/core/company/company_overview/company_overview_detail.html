@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    {% csrf_token %}
     <div class="mb-3">
         <div class="inline">
             <label for="company_overviewing" class="hidden"></label>
@@ -25,14 +24,11 @@
         </div>
         <br class="clearBoth"/>
     </div>
+    {{ data.company_list|json_script:"company_all_list" }}
     <table
             id="datable_company_overview_detail" class="table nowrap w-100 mb-5"
-            data-url-detail="{% url "EmployeeUserByCompanyListOverviewDetailAPI" pk=1 %}"
+            data-url-detail="{% url "EmployeeUserByCompanyListOverviewDetailAPI" pk=data.pk %}"
             data-method="GET"
-
-            data-url-detail-employee="{% url "EmployeeByCompanyListOverviewDetailAPI" pk=1 %}"
-            data-url-detail-user="{% url "UserByCompanyListOverviewDetailAPI" pk=1 %}"
-            data-url-detail-company-of-user="{% url "CompanyOfUserForOverviewDetailAPI" pk=1 %}"
     >
         <thead>
         <tr>
@@ -57,36 +53,40 @@
     >
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="power_user_title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <label for="company_list_old">{% trans 'Company Selected' %}:</label>
-                    <ol id="company_list_old" data-text-empty="{% trans 'No records' %}"></ol>
-                    <label for="company_list_choose">{% trans 'Company Change' %}:</label>
-                    <select
-                            class="select2 select2-multiple" multiple="multiple" data-placeholder="Choose"
-                            id="company_list_choose"
-                    >
-                        {% for item in data.company_list %}
-                            <option value="{{ item.id }}">{{ item.title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        {% trans 'Cancel' %}
-                    </button>
-                </div>
+                <form
+                        id="modal_user_update" data-url="{{ data.user_url }}" data-method="put" method="post"
+                        novalidate
+                >
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="power_user_title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="user_id">
+                        <label for="company_list_old">{% trans 'Company Selected' %}:</label>
+                        <ol id="company_list_old" data-text-empty="{% trans 'No records' %}"></ol>
+                        <label for="company_list_choose">{% trans 'Company Change' %}:</label>
+                        <select
+                                class="select2 select2-multiple" multiple="multiple" data-placeholder="Choose"
+                                id="company_list_choose" name="company_list"
+                        >
+                            {% for item in data.company_list %}
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-submit">{% trans 'Save' %}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {% trans 'Cancel' %}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
-    <div>
-        {{ data.company_list|json_script:"company_all_list" }}
     </div>
 {% endblock %}
 
@@ -94,69 +94,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script>
-        function load_power_user_to_modal(user_full_name, company_id_default, company_id_list, company_data_obj) {
-            // change title by user.full_name
-            $('#power_user_title').html(
-                String.format(
-                    `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`,
-                    String.format(
-                        `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`,
-                        user_full_name ? user_full_name.charAt(0) : ''
-                    ),
-                    String.format(
-                        `<span class="d-block">{0}</span> `,
-                        user_full_name ? user_full_name : ''
-                    )
-                )
-            );
-
-            // show old company
-            let ul_company_old = $('#company_list_old');
-            ul_company_old.html("");
-            if (Array.isArray(company_id_list) && company_id_list.length > 0) {
-                company_id_list.map((id) => {
-                    ul_company_old.append(
-                        `<li>{0} {1}</li>`.format_by_idx(
-                            company_data_obj[id].title,
-                            (company_id_default && company_id_default === id ? `<span class="required"><span>` : "")
-                        )
-                    )
-                })
-            } else {
-                ul_company_old.append(`<p>{0}</p>`.format_by_idx(
-                    ul_company_old.attr('data-text-empty')
-                ))
-            }
-
-
-            // select company
-            let mul_selected = $('#company_list_choose');
-            mul_selected.val(null).trigger('change');
-            mul_selected.val(company_id_list);
-            mul_selected.select2();
-        }
-
-        function get_data_row(row, tabl) {
-            let currentRow = $(row).closest("tr");
-            return tabl.DataTable().row(currentRow).data();
-        }
-
-        {#Data Sample#}
-        {#[#}
-        {#    {#}
-        {#        'id': 1,#}
-        {#        'full_name': 'Nguyen Van A',#}
-        {#        'code': 'A001',#}
-        {#        'user': {'full_name': 'Nguyen Van A'},#}
-        {#        'license': [{"id": 1, "code": "sale", "title": "Sale"}, {#}
-        {#            "id": 2,#}
-        {#            "code": "e-office",#}
-        {#            "title": "E-Office"#}
-        {#        }],#}
-        {#        'company_id_list': ["c46f4cec-6201-4132-84cb-a1201eef8316"],#}
-        {#    }#}
-        {#],#}
-        $(document).ready(function (event) {
+        $(document).ready(function () {
             // selected company select box
             let company_overviewing_id = window.location.href.split("?")[0].split("#")[0].split("/").slice(-1)[0];
             if (company_overviewing_id) {
@@ -166,7 +104,7 @@
 
             // convert data company
             let company_all_list = JSON.parse($('#company_all_list').html());
-            let company_by_id = company_all_list ? company_all_list.convert_to_key() : {};
+            let company_by_id = company_all_list.convert_to_key();
 
             // init table data
             let tbl = $('#datable_company_overview_detail');
@@ -175,6 +113,7 @@
                 ordering: false,
                 paginate: false,
                 drawCallback: function () {
+                    {#render icon after table callback#}
                     feather.replace();
                 },
                 columns: [
@@ -195,60 +134,65 @@
                     },
                     {
                         render: (data, type, row, meta) => {
-                            if (row.hasOwnProperty('code') && row.hasOwnProperty('full_name') && row.code && row.full_name) {
-                                return `<a href="#"><span class="badge badge-primary">{0}</span> {1}</a>`.format_by_idx(row.code, row.full_name);
+                            let html = "";
+                            if (row['employee']) {
+                                let employee = row.employee
+                                if (employee && Object.keys(employee).length !== 0)
+                                    html = `<a href="javascript:void(0)"><span class="badge badge-primary">{0}</span> {1}</a>`.format_by_idx(
+                                        employee.code, employee.full_name);
                             }
-                            return '';
+                            return html
                         }
                     },
                     {
-                        data: 'license',
+                        data: 'employee',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             let html = '';
-                            data ? data.map((item) => {
-                                html += `<span class="{3}" data-id="{0}" data-code="{1}">{2}</span>`.format_by_idx(
-                                    item.id,
-                                    item.code,
-                                    item.title,
-                                    "badge badge-indigo mr-1 mb-1"
-                                )
-                            }) : '';
+                            if (data && Object.keys(data).length !== 0) {
+                                let licence = data.license_list;
+                                for (let item of licence) {
+                                    let txt_class_list = {
+                                        'e-office': 'primary',
+                                        'hrm': 'success',
+                                        'personal': 'info',
+                                        'sale': 'danger'
+                                    };
+                                    html += `<span class="{3}" data-id="{0}" data-code="{1}">{2}</span>`.format_by_idx(
+                                        item.id,
+                                        item.code,
+                                        item.title,
+                                        `badge badge-soft-${txt_class_list[item.code]} mr-1 mb-1`
+                                    )
+                                }
+                            }
                             return html;
                         }
                     },
                     {
                         data: 'user',
                         render: (data, type, row, meta) => {
-                            if (data) {
-                                let html = `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`;
-                                return html.format_by_idx(
-                                    `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`.format_by_idx(
-                                        data.full_name ? data.full_name.split(" ").slice(-1)[0].charAt(0) : ''
-                                    ),
-                                    `<span class="d-block">{0}</span> `.format_by_idx(
-                                        `<a href="#">{0}</a>`.format_by_idx(
-                                            data.full_name ? data.full_name : ''
-                                        )
+
+                            let html = `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`;
+                            return html.format_by_idx(
+                                `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`.format_by_idx(
+                                    data.full_name ? data.full_name.split(" ").slice(-1)[0].charAt(0) : ''
+                                ),
+                                `<span class="d-block">{0}</span> `.format_by_idx(
+                                    `<a href="#">{0}</a>`.format_by_idx(
+                                        data.full_name ? data.full_name : ''
                                     )
                                 )
-                            }
-                            return '';
+                            )
                         }
                     },
                     {
-                        data: 'company_id_list',
-                        className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             let html = '';
-                            if (data && Array.isArray(data)) {
-                                data.map((item) => {
-                                    html += String.format(
-                                        `<span class="{1}">{0}</span> `,
-                                        company_by_id[item] ? company_by_id[item].title : '',
-                                        "badge badge-soft-primary mr-1 mb-1"
-                                    )
-                                });
+                            if (Object.keys(row.user).length !== 0) {
+                                let company_list = row.user.company_list
+                                for (let item of company_list)
+                                    html += `<span class="badge badge-soft-primary mr-1">${item.title}</span> `;
                             }
                             return html;
                         }
@@ -275,51 +219,137 @@
             $(document).on('click', '.btn-open-power-user-info', function (event) {
                 event.preventDefault();
                 let data = get_data_row($(this), tbl);
-                load_power_user_to_modal(
-                    data.user ? data.user.full_name : data.full_name,
-                    "4aa680ff-eaa4-48ad-9f63-b58ef6da059f",
-                    data.company_id_list && Array.isArray(data.company_id_list) ? data.company_id_list : [],
-                    company_by_id ? company_by_id : null,
-                )
+                load_power_user_to_modal(data, $(this), tbl)
             });
 
             // filter_all_user_and_employee
+            let data_filter = [];
             $(document).on('change', '#filter_data_employee_user', async function (event) {
-                $(this).find('option:selected').each(async function () {
-                    let selected_val = $(this).attr('value');
-                    if (selected_val) {
-                        switch (selected_val) {
-                            case 'filter_all_user_and_employee':
-                                break;
-                            case 'filter_employee_linked_to_user':
-                                break;
-                        }
-                    }
-                });
+                let temp = await get_data(company_overviewing_id, {filter: this.value});
+                if (temp && temp['company_data'])
+                    data_filter = temp['company_data']
+                tbl.DataTable().clear().rows.add(data_filter).draw();
             });
             $('#filter_data_employee_user').trigger('change');  // call change for load data
-
-            get_employee_data(company_overviewing_id);
         });
 
-        async function get_employee_data(company_current_id) {
-            <!-- filter = 0: all, 1: employee linked to user -->
-            let tbl = $('#datable_company_overview_detail');
-            let url_1 = tbl.attr('data-url-detail-employee');
-            let url_2 = tbl.attr('data-url-detail-user');
-            let url_3 = tbl.attr('data-url-detail-company-of-user');
+        function get_data_row(row, tabl) {
+            let currentRow = $(row).closest("tr");
+            return tabl.DataTable().row(currentRow).data();
+        }
 
-            return await $.fn.callAjax(
-                SetupFormSubmit.getUrlDetailWithID(url_1, company_current_id),
-                'GET',
+        function load_power_user_to_modal(data_row, current_focus, tb) {
+            // change title by user.full_name
+            let user_full_name = '';
+            if (data_row && Object.keys(data_row.user).length !== 0)
+                user_full_name = data_row.user.full_name
+            $('#power_user_title').html(
+                String.format(
+                    `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`,
+                    String.format(
+                        `<div class="avatar avatar-xs avatar-primary avatar-rounded"><span class="initial-wrap">{0}</span></div>`,
+                        user_full_name.charAt(0)
+                    ),
+                    String.format(
+                        `<span class="d-block">{0}</span> `,
+                        user_full_name
+                    )
+                )
+            );
+
+            // show old company and select company
+            let mul_selected = $('#company_list_choose');
+            mul_selected.val(null).trigger('change');
+            let ul_company_old = $('#company_list_old');
+            ul_company_old.html("");
+
+            if (data_row.user.company_list && Array.isArray(data_row.user.company_list) && data_row.user.company_list.length > 0) {
+                let temp = '';
+                for (let item of data_row.user.company_list) {
+                    temp += `<li>${item.title} ${item.is_created_company ? '<span class="required"><span>' : ''}</li>`
+
+                    {#trigger item attribute for company list#}
+                    if (item.is_created_company) {
+                        mul_selected.find('option[value="' + item.id + '"]').prop('disabled', true)
+                        mul_selected.append('<input type="hidden" name="companies_default" data-name="' + item.title + '" value="' + item.id + '">');
+                    } else mul_selected.find('option[value="' + item.id + '"]').prop('selected', true)
+                }
+                ul_company_old.append(temp)
+            } else {
+                ul_company_old.append(`<p>${ul_company_old.attr('data-text-empty')}</p>`)
+            }
+
+            // select company
+            mul_selected.trigger('change');
+
+            if (data_row.user && Object.keys(data_row.user).length !== 0)
+                $('[name="user_id"]').val(JSON.stringify(data_row.user.id));
+            // handle event click update user
+            updateEmployee(current_focus, tb)
+        }
+
+        async function get_data(pk, filter) {
+            let frm = new SetupFormSubmit($('#datable_company_overview_detail'));
+            return $.fn.callAjax(
+                frm.appendFilter(frm.getUrlDetail(pk), filter),
+                frm.dataMethod
             ).then(
                 (resp) => {
-                    console.log(resp);
-                    return resp;
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('data_list')) {
+                        return data.data_list;
+                    }
                 },
                 (errs) => {
-                }
+                    return []
+                },
             )
+        }
+
+        function updateEmployee(current_focus, tb) {
+            $('#modal_user_update .btn-submit').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const $form = document.getElementById('modal_user_update');
+                const _form = new FormData($form);
+                let form_url = $($form).attr('data-url');
+                form_url = `${form_url}/${_form.get('user_id').replaceAll('"', '')}`;
+                let default_company = {
+                    title: $('[name="companies_default"]').attr('data-name'),
+                    id: $('[name="companies_default"]').val(),
+                    is_created_company: true,
+                }
+                let req = $.fn.callAjax(
+                    form_url,
+                    $($form).attr('data-method'),
+                    {'companies': _form.getAll('company_list').concat($('[name="companies_default"]').val())},
+                    _form.get('csrfmiddlewaretoken')
+                )
+
+                req.then(function (res) {
+                    let data = $.fn.switcherResp(res);
+                    if (data && data.status === 200) {
+                        $.fn.notifyPopup({description: data.detail}, 'success')
+
+                        {#after save#}
+                        let data_table_row = tb.DataTable().row(current_focus.closest("tr")).data();
+                        let company_change = $('[name="company_list"]').select2('data')
+                        data_table_row['user']['company_list'] = []
+                        if (company_change.length)
+                            for (let item of company_change) {
+                                data_table_row['user']['company_list'].push({
+                                    'id': item.id,
+                                    'title': item.text,
+                                    'is_created_company': false
+                                })
+                            }
+                        data_table_row['user']['company_list'].push(default_company)
+                        tb.DataTable().row(current_focus.closest("tr")).data(data_table_row).draw();
+
+                    } else $.fn.notifyPopup({description: data.detail}, 'error')
+                })
+                $(this).parents('.modal').modal('hide');
+            })
         }
     </script>
 {% endblock %}

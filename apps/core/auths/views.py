@@ -52,8 +52,8 @@ class AuthLogin(APIView):
 class AuthLogout(APIView):
     permission_classes = [IsAuthenticated]
 
-    @mask_view(auth_require=True, is_api=True)
-    def get(self, request):
+    @classmethod
+    def get(cls, request):
         logout(request)
         request.user = AnonymousUser
         return redirect(reverse('AuthLogin'))

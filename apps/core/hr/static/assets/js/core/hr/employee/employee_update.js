@@ -162,6 +162,13 @@ $(document).ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
                         for (let t = 0; t < data.tenant_plan_list.length; t++) {
+                            let licenseQuantity = null
+                            if (data.tenant_plan_list[t].license_quantity !== null) {
+                                licenseQuantity = data.tenant_plan_list[t].license_quantity;
+                            } else {
+                                licenseQuantity = "Unlimited"
+                            }
+
                             let app_list = ``
                             if (data.tenant_plan_list[t].plan.application && Array.isArray(data.tenant_plan_list[t].plan.application)) {
                                 let appLength = data.tenant_plan_list[t].plan.application.length;
@@ -192,7 +199,7 @@ $(document).ready(function () {
                                     >
                                         ${data.tenant_plan_list[t].plan.title}
                                     </button>
-                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of ${data.tenant_plan_list[t].license_quantity}</span>
+                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of ${licenseQuantity}</span>
                                 </div>
                                 <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
                                     <ul class="employee-application">

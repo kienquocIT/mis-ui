@@ -1,26 +1,14 @@
 $(document).ready(function () {
     /***
      * setup attribute in HTML:
-     * add class on DOM element "multi-select-filter"
-     * add data attribute url:
-     * add data attribute method:
-     * example:
-     * <select
-     *    class="form-control multi-select-filter"
-     *    data-placeholder="{% trans 'Choose' %}"
-     *    name="role"
-     *    id="select-box-role"
-     *    data-url="{% url 'RoleListAPI' %}"
-     *    data-method="GET">
-     * </select>
+     *
      * ***/
     // let $elements = document.querySelectorAll('.multi-select-filter');
     var $elements = document.querySelectorAll(".multi-select-filter");
     $elements.forEach(function (element) {
         let url = $(element).attr('data-url');
-        let method = $(element).attr('data-method');
         let first_data = $(element).attr('data-onload');
-        $.fn.callAjax(url, method)
+        $.fn.callAjax(url, 'get')
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -40,7 +28,7 @@ $(document).ready(function () {
 
                 $(element).filterMultiSelect({
                     // displayed when no options are selected
-                    // placeholderText: "nothing selected",
+                    placeholderText: $(element).attr('data-placeholder'),
 
                 });
             })

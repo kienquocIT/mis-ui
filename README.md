@@ -115,19 +115,34 @@ urlpatterns = [
 
 ---
 
-### title
-1. overview
+### Filter multi select plugin
+1. Description
 ```text
-1.1
+plugin using for combobox multi select.
+plugin is auto init after DOM ready, function handle in init-filter-select-multi.js file
 ```
 2. setup
 ```html
-<a></a>
+1.1 html file
++ include css file
+    <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>
++ include jquery file
+    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
+    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>
++ add attribute data for DOM element
+    class: multi-select-filter
+    data-url: url call data
+    data-onload:  json string data list
 ```
 3. example
-```js
-
+```html
+<select
+        class="form-control multi-select-filter"
+        data-placeholder="{% trans 'Nothing selected' %}"
+        name="role"
+        id="select-box-role"
+        data-url="{% url 'RoleListAPI' %}"
+        data-onload="{'id':'16b97ec7-f0a0-4ff3-955a-f71ef6832b2e', title:'Trưởng nhóm','abbreviation':'TeamLeader'}"
+></select>
 ```
-4. note
-
 ---

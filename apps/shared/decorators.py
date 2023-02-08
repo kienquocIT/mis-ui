@@ -93,6 +93,8 @@ def mask_view(**parent_kwargs):
             # check authenticated
             login_require = parent_kwargs.get('login_require', False)
             auth_require = parent_kwargs.get('auth_require', False)
+            if auth_require:
+                login_require = True
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)

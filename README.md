@@ -112,4 +112,22 @@ urlpatterns = [
 ### Tham khảo các thiết kế UI tại template đã mua: 
 1. Bản cứng: [Microsoft Team Group]
 2. Bản online: https://nubra-ui.hencework.com/index.html
-3. 
+
+---
+
+### title
+1. overview
+```text
+1.1
+```
+2. setup
+```html
+<a></a>
+```
+3. example
+```js
+
+```
+4. note
+
+---

@@ -199,7 +199,7 @@ $(document).ready(function () {
                                     >
                                         ${data.tenant_plan_list[t].plan.title}
                                     </button>
-                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of ${licenseQuantity}</span>
+                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of <span>${licenseQuantity}</span></span>
                                 </div>
                                 <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
                                     <ul class="employee-application">
@@ -228,6 +228,7 @@ $(document).ready(function () {
 
             let divRow = showRow.firstElementChild.firstElementChild;
             let licenseUsed = Number(divRow.children[0].children[1].children[0].innerHTML);
+            let licenseQuantity = Number(divRow.children[0].children[1].children[1].innerHTML);
 
             let app_list = showRow.children[0].children[0].children[1].children[0].children
             if (app_list) {
@@ -243,6 +244,7 @@ $(document).ready(function () {
                     dataPlanList['plan'] = plan_id;
                     dataPlanList['application'] = dataAppList;
                     dataPlanList['license_used'] = licenseUsed;
+                    dataPlanList['license_quantity'] = licenseQuantity;
                     dataPlanAppSubmit.push(dataPlanList)
                 }
             }

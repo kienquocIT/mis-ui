@@ -17,8 +17,6 @@
 
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>
-
     <!-- Customize -->
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_create.css' %}">
 
@@ -242,12 +240,13 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Role' %}</label>
                                 <select
-                                        class="form-control multi-select-filter"
-                                        data-placeholder="{% trans 'Nothing selected' %}"
+                                        class="form-control select2 select2-multiple"
+                                        multiple
+                                        data-placeholder="{% trans 'Choose' %}"
                                         name="role"
                                         id="select-box-role"
                                         data-url="{% url 'RoleListAPI' %}"
-{#                                        data-onload="{'id':'16b97ec7-f0a0-4ff3-955a-f71ef6832b2e', title:'Trưởng nhóm','abbreviation':'TeamLeader'}"#}
+                                        data-method="GET"
                                 >
                                 </select>
                             </div>
@@ -307,8 +306,6 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
-    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 

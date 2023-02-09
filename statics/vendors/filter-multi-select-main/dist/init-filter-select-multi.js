@@ -5,9 +5,11 @@ $(document).ready(function () {
      * ***/
     // let $elements = document.querySelectorAll('.multi-select-filter');
     var $elements = document.querySelectorAll(".multi-select-filter");
-    $elements.forEach(function (element) {
+    $elements.forEach(function (element, idx) {
         let url = $(element).attr('data-url');
         let first_data = $(element).attr('data-onload');
+        let elm_name = $(element).attr('name');
+        console.log(elm_name, idx)
         $.fn.callAjax(url, 'get')
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -31,6 +33,7 @@ $(document).ready(function () {
                     placeholderText: $(element).attr('data-placeholder'),
 
                 });
+                $(`#${$(element).attr('id')}`).attr('data-index', idx)
             })
     });
 });

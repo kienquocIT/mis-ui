@@ -1,11 +1,10 @@
 from django.urls import path
-from apps.core.company.views import CompanyList, CompanyListAPI, CompanyUserNotMapEmployeeListAPI
+from apps.core.company.views import CompanyUserNotMapEmployeeListAPI
 
 from apps.core.company.views import (
     CompanyList, CompanyListAPI,
     CompanyListOverviewList, CompanyListOverviewListAPI,
     CompanyListOverviewDetail, EmployeeUserByCompanyListOverviewDetailAPI,
-    EmployeeByCompanyListOverviewDetailAPI,
     CompanyDetailAPI,
     CompanyUpdateAPI,
     CompanyDeleteAPI

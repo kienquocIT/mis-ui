@@ -182,26 +182,6 @@ class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
         return {}, status.HTTP_404_NOT_FOUND
 
-
-class EmployeeByCompanyListOverviewDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
-    def get(self, request, *args, **kwargs):
-        company_id = kwargs.get('pk', None)
-        if company_id and TypeCheck.check_uuid(company_id):
-            resp = ServerAPI(
-                user=request.user,
-                url=ApiURL.EMPLOYEE_BY_COMPANY_OVERVIEW.fill_key(company_id=company_id)
-            ).get({'ordering': 'employee__first_name'})
-            if resp.state:
-                return resp.get_full_data(), status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {}, status.HTTP_404_NOT_FOUND
-
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
         data = request.data

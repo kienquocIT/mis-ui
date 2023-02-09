@@ -162,6 +162,13 @@ $(document).ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
                         for (let t = 0; t < data.tenant_plan_list.length; t++) {
+                            let licenseQuantity = null
+                            if (data.tenant_plan_list[t].license_quantity !== null) {
+                                licenseQuantity = data.tenant_plan_list[t].license_quantity;
+                            } else {
+                                licenseQuantity = "Unlimited"
+                            }
+
                             let app_list = ``
                             if (data.tenant_plan_list[t].plan.application && Array.isArray(data.tenant_plan_list[t].plan.application)) {
                                 let appLength = data.tenant_plan_list[t].plan.application.length;
@@ -169,7 +176,7 @@ $(document).ready(function () {
                                     app_list += `<li class="list-break mt-2 mb-2" style="display: inline" id="${data.tenant_plan_list[t].plan.application[i].id}">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
-                                                    name="list-app-add-employee-${t}" class="form-check-input"
+                                                    name="list-app-add-employee-${t}" class="form-check-input check-plan-application"
                                                     data-plan-id="${data.tenant_plan_list[t].plan.id}"
                                                     data-app-id="${data.tenant_plan_list[t].plan.application[i].id}"
                                             />
@@ -192,7 +199,7 @@ $(document).ready(function () {
                                     >
                                         ${data.tenant_plan_list[t].plan.title}
                                     </button>
-<!--                                    <span style="margin-left: 10px">License: 19 of 20</span>-->
+                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of <span>${licenseQuantity}</span></span>
                                 </div>
                                 <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
                                     <ul class="employee-application">
@@ -217,7 +224,12 @@ $(document).ready(function () {
             let dataPlanList = {};
             let dataAppList = [];
             let plan_id = null;
-            let showRow = tablePlanApp.rows[s]
+            let showRow = tablePlanApp.rows[s];
+
+            let divRow = showRow.firstElementChild.firstElementChild;
+            let licenseUsed = Number(divRow.children[0].children[1].children[0].innerHTML);
+            let licenseQuantity = Number(divRow.children[0].children[1].children[1].innerHTML);
+
             let app_list = showRow.children[0].children[0].children[1].children[0].children
             if (app_list) {
                 for (let i = 0; i < app_list.length; i++) {
@@ -231,6 +243,8 @@ $(document).ready(function () {
                 if (plan_id) {
                     dataPlanList['plan'] = plan_id;
                     dataPlanList['application'] = dataAppList;
+                    dataPlanList['license_used'] = licenseUsed;
+                    dataPlanList['license_quantity'] = licenseQuantity;
                     dataPlanAppSubmit.push(dataPlanList)
                 }
             }
@@ -337,6 +351,8 @@ $(document).on('change', '#select-box-user-update', function (e) {
     $('#employee-last-name-update').val(last_name);
     $('#employee-email-update').val(email);
     $('#employee-phone-update').val(phone);
+
+    updateLicenseWhenChangeUser()
 });
 
 
@@ -368,3 +384,75 @@ $(function () {
     });
 
 });
+
+
+$(document).on('click', '.check-plan-application', function (e) {
+    let divRow = $(this)[0].closest('.row');
+    // checked ==> if user.val() ==> license + 1
+    if ($(this)[0].checked === true) {
+        let checkAll = 0
+        let divUl = $(this)[0].closest('ul');
+        let eleDivAppList = divUl.children;
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].firstElementChild;
+            if (app.checked === true) {
+                checkAll += 1
+            }
+        }
+        if (checkAll === 1) {
+            let ele = divRow.firstElementChild.children[1].children[0];
+            if (ele.innerHTML) {
+                if ($('#select-box-user-update').val()) {
+                    let licenseUsed = Number(ele.innerHTML) + 1;
+                    ele.innerHTML = licenseUsed.toString()
+                }
+            }
+        }
+    }
+    // unchecked ==> if all apps unchecked ==> license - 1
+    else {
+        let checkAll = 0
+        let divUl = $(this)[0].closest('ul');
+        let eleDivAppList = divUl.children;
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].firstElementChild;
+            if (app.checked === false) {
+                checkAll += 1
+            }
+        }
+        if (checkAll === eleDivAppList.length) {
+            let eleLicenseUsed = divRow.children[0].children[1].children[0];
+            if (Number(eleLicenseUsed.innerHTML) !== 0) {
+                let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
+                eleLicenseUsed.innerHTML = licenseUsed.toString();
+            }
+        }
+    }
+});
+
+
+function updateLicenseWhenChangeUser() {
+    let tablePlanApp = document.getElementById("datable-employee-plan-app");
+    for (let r = 0; r < tablePlanApp.tBodies[0].rows.length; r++) {
+        let divRow = tablePlanApp.tBodies[0].rows[r].firstElementChild.firstElementChild;
+        let eleDivAppList = divRow.children[1].firstElementChild.children;
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].firstElementChild;
+            if (app.checked === true) {
+                if ($('#select-box-user-update').val()) {
+                    let eleLicenseUsed = divRow.children[0].children[1].children[0];
+                    let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
+                    eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    break
+                } else {
+                    let eleLicenseUsed = divRow.children[0].children[1].children[0];
+                    if (Number(eleLicenseUsed.innerHTML) !== 0) {
+                        let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    }
+                    break
+                }
+            }
+        }
+    }
+}

@@ -237,19 +237,20 @@ function updateEmployee(current_focus, tb) {
                 $.fn.notifyPopup({description: data.detail}, 'success')
 
                 // after save
-                let data_table_row = tb.DataTable().row(current_focus.closest("tr")).data();
-                let company_change = $('[name="company_list"]').select2('data')
-                data_table_row['user']['company_list'] = []
-                if (company_change.length)
-                    for (let item of company_change) {
-                        data_table_row['user']['company_list'].push({
-                            'id': item.id,
-                            'title': item.text,
-                            'is_created_company': false
-                        })
-                    }
-                data_table_row['user']['company_list'].push(default_company)
-                tb.DataTable().row(current_focus.closest("tr")).data(data_table_row).draw();
+                // let data_table_row = tb.DataTable().row(current_focus.closest("tr")).data();
+                // let company_change = $('[name="company_list"]').select2('data')
+                // data_table_row['user']['company_list'] = []
+                // if (company_change.length)
+                //     for (let item of company_change) {
+                //         data_table_row['user']['company_list'].push({
+                //             'id': item.id,
+                //             'title': item.text,
+                //             'is_created_company': false
+                //         })
+                //     }
+                // data_table_row['user']['company_list'].push(default_company)
+                // tb.DataTable().row(current_focus.closest("tr")).data(data_table_row).draw();
+                $.fn.redirectUrl(window.location, 1000);
 
             } else $.fn.notifyPopup({description: data.detail}, 'error')
         })

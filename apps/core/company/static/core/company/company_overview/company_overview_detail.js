@@ -20,6 +20,11 @@ $(document).ready(function () {
             // render icon after table callback
             feather.replace();
         },
+        rowCallback: function (row, data) {
+            $(row).find('.btn-open-power-user-info').on('click', function(){
+                load_power_user_to_modal(data, row, tbl)
+            });
+        },
         columns: [
             {
                 visible: false,
@@ -42,7 +47,7 @@ $(document).ready(function () {
                     if (row['employee']) {
                         let employee = row.employee
                         if (employee && Object.keys(employee).length !== 0)
-                            html = `<a href="javascript:void(0)"><span class="badge badge-primary">{0}</span> {1}</a>`.format_by_idx(
+                            html = `<a href="/hr/employee/detail/${employee.id}" target="_blank"><span class="badge badge-primary">{0}</span> {1}</a>`.format_by_idx(
                                 employee.code, employee.full_name);
                     }
                     return html
@@ -83,7 +88,7 @@ $(document).ready(function () {
                             data.full_name ? data.full_name.split(" ").slice(-1)[0].charAt(0) : ''
                         ),
                         `<span class="d-block">{0}</span> `.format_by_idx(
-                            `<a href="#">{0}</a>`.format_by_idx(
+                            `<a href="${data.id ? '/account/user/detail/' + data.id : '#'}" target="_blank">{0}</a>`.format_by_idx(
                                 data.full_name ? data.full_name : ''
                             )
                         )
@@ -120,11 +125,9 @@ $(document).ready(function () {
     $('#company_list_choose').select2();
 
     // event click open popup info
-    $(document).on('click', '.btn-open-power-user-info', function (event) {
-        event.preventDefault();
-        let data = get_data_row($(this), tbl);
-        load_power_user_to_modal(data, $(this), tbl)
-    });
+    // $(document).on('click', '.btn-open-power-user-info', function (event) {
+    //
+    // });
 
     // filter_all_user_and_employee
     let data_filter = [];
@@ -142,11 +145,11 @@ function get_data_row(row, tabl) {
     return tabl.DataTable().row(currentRow).data();
 }
 
-function load_power_user_to_modal(data_row, current_focus, tb) {
+function load_power_user_to_modal(row_data, row_elm, tb) {
     // change title by user.full_name
     let user_full_name = '';
-    if (data_row && Object.keys(data_row.user).length !== 0)
-        user_full_name = data_row.user.full_name
+    if (row_data && Object.keys(row_data.user).length !== 0)
+        user_full_name = row_data.user.full_name
     $('#power_user_title').html(
         String.format(
             `<div class="media align-items-center"><div class="media-head me-2">{0}</div><div class="media-body">{1}</div></div>`,
@@ -167,9 +170,9 @@ function load_power_user_to_modal(data_row, current_focus, tb) {
     let ul_company_old = $('#company_list_old');
     ul_company_old.html("");
 
-    if (data_row.user.company_list && Array.isArray(data_row.user.company_list) && data_row.user.company_list.length > 0) {
+    if (row_data.user.company_list && Array.isArray(row_data.user.company_list) && row_data.user.company_list.length > 0) {
         let temp = '';
-        for (let item of data_row.user.company_list) {
+        for (let item of row_data.user.company_list) {
             temp += `<li>${item.title} ${item.is_created_company ? '<span class="required"><span>' : ''}</li>`
 
             // trigger item attribute for company list
@@ -186,10 +189,15 @@ function load_power_user_to_modal(data_row, current_focus, tb) {
     // select company
     mul_selected.trigger('change');
 
-    if (data_row.user && Object.keys(data_row.user).length !== 0)
-        $('[name="user_id"]').val(JSON.stringify(data_row.user.id));
+    if (row_data.user && Object.keys(row_data.user).length !== 0)
+        $('[name="user_id"]').val(JSON.stringify(row_data.user.id));
     // handle event click update user
-    updateEmployee(current_focus, tb)
+    // updateEmployee(current_focus, tb)
+    //
+    $('#modal_user_update .btn-submit').off().on("click", function(){
+        updateEmployee(row_elm, tb, $(this))
+    })
+
 }
 
 async function get_data(pk, filter) {
@@ -210,50 +218,45 @@ async function get_data(pk, filter) {
     )
 }
 
-function updateEmployee(current_focus, tb) {
-    $('#modal_user_update .btn-submit').on('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const $form = document.getElementById('modal_user_update');
-        const _form = new FormData($form);
-        let form_url = $($form).attr('data-url');
-        form_url = `${form_url}/${_form.get('user_id').replaceAll('"', '')}`;
-        let $companies_detail = $('[name="companies_default"]')
-        let default_company = {
-            title: $companies_detail.attr('data-name'),
-            id: $companies_detail.val(),
-            is_created_company: true,
-        }
-        let req = $.fn.callAjax(
-            form_url,
-            $($form).attr('data-method'),
-            {'companies': _form.getAll('company_list').concat($companies_detail.val())},
-            _form.get('csrfmiddlewaretoken')
-        )
+function updateEmployee(row_elm, tb, $this) {
+    const $form = document.getElementById('modal_user_update');
+    const _form = new FormData($form);
+    let form_url = $($form).attr('data-url');
+    form_url = `${form_url}/${_form.get('user_id').replaceAll('"', '')}`;
+    let $companies_detail = $('[name="companies_default"]')
+    let default_company = {
+        title: $companies_detail.attr('data-name'),
+        id: $companies_detail.val(),
+        is_created_company: true,
+    }
+    let req = $.fn.callAjax(
+        form_url,
+        $($form).attr('data-method'),
+        {'companies': _form.getAll('company_list').concat($companies_detail.val())},
+        _form.get('csrfmiddlewaretoken')
+    )
 
-        req.then(function (res) {
-            let data = $.fn.switcherResp(res);
-            if (data && data.status === 200) {
-                $.fn.notifyPopup({description: data.detail}, 'success')
+    req.then(function (res) {
+        let data = $.fn.switcherResp(res);
+        if (data && data.status === 200) {
+            $.fn.notifyPopup({description: data.detail}, 'success')
 
-                // after save
-                // let data_table_row = tb.DataTable().row(current_focus.closest("tr")).data();
-                // let company_change = $('[name="company_list"]').select2('data')
-                // data_table_row['user']['company_list'] = []
-                // if (company_change.length)
-                //     for (let item of company_change) {
-                //         data_table_row['user']['company_list'].push({
-                //             'id': item.id,
-                //             'title': item.text,
-                //             'is_created_company': false
-                //         })
-                //     }
-                // data_table_row['user']['company_list'].push(default_company)
-                // tb.DataTable().row(current_focus.closest("tr")).data(data_table_row).draw();
-                $.fn.redirectUrl(window.location, 1000);
+            // after save
+            let data_table_row = tb.DataTable().row(row_elm).data();
+            let company_change = $('[name="company_list"]').select2('data')
+            data_table_row['user']['company_list'] = []
+            if (company_change.length)
+                for (let item of company_change) {
+                    data_table_row['user']['company_list'].push({
+                        'id': item.id,
+                        'title': item.text,
+                        'is_created_company': false
+                    })
+                }
+            data_table_row['user']['company_list'].push(default_company)
+            tb.DataTable().row(row_elm).data(data_table_row).draw();
 
-            } else $.fn.notifyPopup({description: data.detail}, 'error')
-        })
-        $(this).parents('.modal').modal('hide');
+        } else $.fn.notifyPopup({description: data.detail}, 'error')
     })
+    $this.parents('.modal').modal('hide');
 }

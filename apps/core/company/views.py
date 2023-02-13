@@ -116,7 +116,12 @@ class CompanyListOverviewListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_OVERVIEW).get()
         if resp.state:
-            return {'company_list': resp.result}, status.HTTP_200_OK
+            return {
+                       'company_list': resp.result,
+                       'total_user_summary': resp.result[0]['total_user_summary'],
+                       'power_user_summary': resp.result[0]['power_user_summary'],
+                   }, status.HTTP_200_OK
+
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

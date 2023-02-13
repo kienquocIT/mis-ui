@@ -1,6 +1,8 @@
 "use strict";
 $(function () {
     $(document).ready(function () {
+        let total_user_summary = 0;
+        let power_user_summary = 0;
         let dtb = $('#datable_company_overview_list');
         let frm = new SetupFormSubmit(dtb);
         let config = {
@@ -46,7 +48,7 @@ $(function () {
                 }
             }, {
                 data: 'employee_linked_user', width: '10%', render: (data, type, row, meta) => {
-                    return String.format(`<span class="badge badge-soft-indigo w-50">{0} / {1}</span>`, row['employee_linked_user'], row['employee'],)
+                    return String.format(`<span class="badge badge-soft-indigo w-100">{0} / {1}</span>`, row['employee_linked_user'], row['employee'],)
                 }
             },{
                 data: 'employee_linked_user', visible: false,  width: '10%', render: (data, type, row, meta) => {
@@ -60,22 +62,6 @@ $(function () {
 
             footerCallback: function (row, data, start, end, display) {
 				let api = this.api();
-
-				let total3 = api
-					.column(3)
-					.data()
-					.reduce(function(a, b)
-					{
-						return a + b;
-					});
-
-                let total4 = api
-					.column(4)
-					.data()
-					.reduce(function(a, b)
-					{
-						return a + b;
-					});
 
                 let total6 = api
 					.column(6)
@@ -93,9 +79,9 @@ $(function () {
 						return a + b;
 					});
 
-				$(api.column(3).footer()).html('<span class="badge badge-success w-50">' + total3 + '</span>');
-                $(api.column(4).footer()).html('<span class="badge badge-warning w-50">' + total4 + '</span>');
-                $(api.column(5).footer()).html('<span class="badge badge-indigo w-50">' + total6 + ' / ' + total7 + '</span>');
+				$(api.column(3).footer()).html('<span class="badge badge-success w-50">' + total_user_summary + '</span>');
+                $(api.column(4).footer()).html('<span class="badge badge-warning w-50">' + power_user_summary + '</span>');
+                $(api.column(5).footer()).html('<span class="badge badge-indigo w-100">' + total6 + ' / ' + total7 + '</span>');
 			},
         }
         $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
@@ -105,6 +91,8 @@ $(function () {
             };
             if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
                 config['data'] = resp.data['company_list'] ? resp.data['company_list'] : [];
+                total_user_summary = resp.data['total_user_summary'] ? resp.data['total_user_summary'] : [];
+                power_user_summary = resp.data['power_user_summary'] ? resp.data['power_user_summary'] : [];
             }
         }).then(() => dtb.DataTable(config));
     })

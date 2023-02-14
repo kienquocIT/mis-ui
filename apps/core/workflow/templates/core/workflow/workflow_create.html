@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    {% trans 'Workflow create' %}
+{% endblock %}
+
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href="WorkflowCreate"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Workflow' %}"
+       id="create_workflow_button"
+       data-bs-original-title="Add Workflow">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+    <button class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block"
+            type="submit" form="form-create-workflow" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Save Changes">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'WorkflowCreate' 1 %}"
+            data-url-redirect="{% url 'WorkflowList' %}"
+            data-method="PUT"
+            id="form-edit-company"
+            style="padding: 10px">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label"><b>{% trans 'Company Name' %}</b></label>
+                    <input class="form-control" type="text"
+                           name="title"
+                           id="form-create-title">
+                </div>
+            </div>
+
+        </div>
+
+        {#        add new node HTML here#}
+        {#        end add new node HTML here#}
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/workflow/workflow-create.js' %}"></script>
+{% endblock %}

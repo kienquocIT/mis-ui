@@ -61,3 +61,6 @@ class ApiURL(object):
     EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
     USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
     COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
+
+    # WORKFLOW
+    WORKFLOW_LIST = StringUrl('workflow/lists')

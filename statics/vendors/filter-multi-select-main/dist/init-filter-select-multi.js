@@ -9,14 +9,14 @@ $(document).ready(function () {
         let url = $(element).attr('data-url');
         let first_data = $(element).attr('data-onload');
         let elm_name = $(element).attr('name');
-        console.log(elm_name, idx)
+        let isMulti = $(element).attr('data-multiple')
         $.fn.callAjax(url, 'get')
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $(element).text("");
                     if (data.hasOwnProperty('role_list') && Array.isArray(data.role_list)) {
-                        $(element).prop('multiple', true)
+                        if (isMulti === 'true') $(element).prop('multiple', true)
                         let temp = '';
                         data.role_list.map(function (item) {
                             if (first_data && first_data.indexOf(item.id) !== -1)

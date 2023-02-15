@@ -1,33 +1,24 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
-    {% trans 'Workflow create' %}
+    <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    .dropdown-menu{
+        width: 100%;
+    }
+    </style>
 {% endblock %}
-
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href="WorkflowCreate"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Workflow' %}"
-       id="create_workflow_button"
-       data-bs-original-title="Add Workflow">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
-                </span>
-            </span>
-    </a>
-    <button class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block"
-            type="submit" form="form-create-workflow" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Save Changes">
+    <button class="btn btn-flush-primary flush-soft-hover"
+            type="text" id="btn-create_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Save' %}
             </span>
         </span>
     </button>
@@ -35,29 +26,241 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'WorkflowCreate' 1 %}"
+            data-url="{% url 'WorkflowCreateAPI' %}"
             data-url-redirect="{% url 'WorkflowList' %}"
-            data-method="PUT"
-            id="form-edit-company"
+            data-method="POST"
+            id="form-create_workflow"
             style="padding: 10px">
         {% csrf_token %}
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Company Name' %}</b></label>
+                    <label class="form-label"><b>{% trans 'Workflow name' %}</b></label>
                     <input class="form-control" type="text"
                            name="title"
                            id="form-create-title">
                 </div>
             </div>
-
         </div>
+        <br>
+        <div class="d-flex justify-content-center">
+            <ul class="nav nav-line nav-tabs nav-light">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_function">
+                        <span class="nav-link-text">{% trans 'Function and Zone' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_node">
+                        <span class="nav-link-text">{% trans 'Node' %}</span>
+                    </a>
+                </li>
 
-        {#        add new node HTML here#}
-        {#        end add new node HTML here#}
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="pill" href="#tab_next_node">
+                        <span class="nav-link-text badge-on-text">{% trans 'Exit/Next node condition' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_function">
+                <div class="row">
+                    <h5 class="h5 col-12">{% trans 'Select Function Applied' %}</h5>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <select
+                                class="form-control multi-select-filter"
+                                data-placeholder="{% trans 'Nothing selected' %}"
+                                name="code_application"
+                                id="select-box-features"
+                                data-multiple="false"
+                                data-url="{% url 'RoleListAPI' %}"
+                        ></select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-12 mb-1">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id-define_zone" name="define_zone">
+                            <label class="form-check-label" for="id-define_zone">{% trans 'Define zone' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-flush-success flush-soft-hover"
+                                type="button" title="{% trans 'Add new zone' %}"
+                                data-bs-original-title="Add zone"
+                                data-bs-toggle="modal" data-bs-target="#add_zone"
+                        >
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="plus"></i>
+                                </span>
+                                <span class="font-3 ml-1">
+                                    {% trans 'Add new zone' %}
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-12">
+                        <table id="table_workflow_zone" class="table nowrap w-100 mb-5">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input">
+                                    </div>
+                                </th>
+                                <th>{% trans 'Zone name' %}</th>
+                                <th>{% trans 'Description' %}</th>
+                                <th>{% trans 'Actions' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr class="bg-dark-40">
+                <br>
+                <div class="row">
+                    <div class="col-9">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id-is_multi_company" name="is_multi_company">
+                            <label class="form-check-label" for="id-is_multi_company">{% trans 'Collaborators in multi company' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-flush-success flush-soft-hover"
+                                type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Button rename' %}"
+                                data-bs-original-title="Button rename">
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="edit"></i>
+                                </span>
+                                <span class="font-3 ml-1">
+                                    {% trans 'Button rename' %}
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-flush-success flush-soft-hover"
+                                type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Add new node' %}"
+                                data-bs-original-title="Add node">
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="plus"></i>
+                                </span>
+                                <span class="font-3 ml-1">
+                                    {% trans 'Add new node' %}
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-12">
+                        <table id="table_workflow_node" class="table nowrap w-100 mb-5">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input">
+                                    </div>
+                                </th>
+                                <th>{% trans 'Node name' %}</th>
+                                <th>{% trans 'Description' %}</th>
+                                <th>{% trans 'Action type' %}</th>
+                                <th>{% trans 'Collaborators' %}</th>
+                                <th>{% trans 'Actions' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_node">
+                <p>Node</p>
+            </div>
+            <div class="tab-pane fade" id="tab_next_node">
+                <p>Exit/Next</p>
+            </div>
+        </div>
     </form>
+    <div class="modal fade"
+         id="add_zone"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form data-method="put"
+                      method="post"
+                      novalidate
+                >
+                    <div class="modal-header">
+                        <h6 class="modal-title">{% trans 'Zone information' %}</h6>
+                    </div>
+                    <div class="modal-body overflow-y-scroll h-300p">
+                        <div>
+                            <div class="h-600p">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label"><b>{% trans 'Name' %}</b></label>
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="title"
+                                                   id="form-create-zone-title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label"><b>{% trans 'Input description of zone' %}</b></label>
+                                            <textarea class="form-control" type="text" name="remark" id="form-create-zone-remark"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label for="company_list_choose">{% trans 'Select property' %}:</label>
+                                <select class="form-control multi-select-filter"
+                                        data-placeholder="{% trans 'Nothing selected' %}"
+                                        name="property_list"
+                                        id="property_list_choose"
+                                        data-multiple="true"
+                                        data-url="{% url 'RoleListAPI' %}"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btn-zone-submit">{% trans 'Save' %}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {% trans 'Cancel' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
+    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>
     <script src="{% static 'assets/js/core/workflow/workflow-create.js' %}"></script>
 {% endblock %}

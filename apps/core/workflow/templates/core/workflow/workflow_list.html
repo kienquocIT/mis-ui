@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% block title %}{% trans 'Workflow list' %}{% endblock %}
 {% block cssHeader %}
-    {% trans 'Workflow list' %}
 {% endblock %}
 
 {% block pageAction %}
     <a class="btn btn-outline-primary btn-animated btn-xs"
-       href="WorkflowCreate"
+       href="{% url 'WorkflowCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
        title="{% trans 'Create Workflow' %}"

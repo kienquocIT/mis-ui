@@ -64,3 +64,4 @@ class ApiURL(object):
 
     # WORKFLOW
     WORKFLOW_LIST = StringUrl('workflow/lists')
+    WORKFLOW_CREATE = StringUrl('workflow/create')

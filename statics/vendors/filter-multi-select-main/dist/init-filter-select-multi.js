@@ -9,7 +9,6 @@ $(document).ready(function () {
         let url = $(element).attr('data-url');
         let first_data = $(element).attr('data-onload');
         let elm_name = $(element).attr('name');
-        console.log(elm_name, idx)
         $.fn.callAjax(url, 'get')
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);

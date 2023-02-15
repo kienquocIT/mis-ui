@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    {% trans 'Workflow create' %}
+{% endblock %}
+
+{% block pageAction %}
+    <a
+            class="btn btn-outline-primary btn-animated btn-xs"
+            href="WorkflowCreate"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="{% trans 'Create Workflow' %}"
+            id="create_workflow_button"
+            data-bs-original-title="Add Workflow"
+    >
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+    <button
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block"
+            type="submit" form="form-create-workflow" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Save Changes"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            {#            data-url="{% url 'WorkflowCreate' 1 %}"#}
+            data-url-redirect="{% url 'WorkflowList' %}"
+            data-method="PUT"
+            id="form-edit-company"
+            style="padding: 10px"
+    >
+        {% csrf_token %}
+
+        {#        add new node HTML here#}
+        <div class="row">
+            <button
+                    type="button"
+                    class="btn btn-primary open-modal-node"
+                    data-bs-toggle="modal"
+                    data-bs-target="#nodeModalCreate"
+                    style="background: none; border: none; color: #007D88; float: left"
+            >
+                <div style="float: left">
+                    <i class="fas fa-plus-circle"></i>
+                    {% trans 'Add new node' %}
+                </div>
+            </button>
+
+            <div
+                    class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenter" aria-hidden="true"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add node</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    {% trans 'Node Name' %}
+                                    <span class="field-required">(*)</span>
+                                </label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="Node A"
+                                        id="modal-node-name-create"
+                                        required
+                                >
+                                <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    {% trans 'Description' %}
+                                </label>
+                                <textarea
+                                        class="form-control"
+                                        rows="4" cols="50"
+                                        name="description"
+                                        id="modal-node-description-create"
+                                >
+
+                                </textarea>
+                                <span class="form-text text-muted">{% trans 'Desciption of Node' %}</span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-add-new-node-create">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table
+                    id="datable-workflow-node-create"
+                    class="table nowrap w-100 mb-5"
+            >
+                <thead>
+                <tr>
+                    <th>Node name</th>
+                    <th>Description</th>
+                    <th>Node Actions</th>
+                    <th>Collaborators</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+
+        {#        end add new node HTML here#}
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/workflow/workflow_node.js' %}"></script>
+{% endblock %}

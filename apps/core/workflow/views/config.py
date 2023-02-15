@@ -21,7 +21,7 @@ class WorkflowListAPI(View):
 
     @mask_view(
         auth_require=True,
-        template='core/workflow/workflow_list.html',
+        is_api=True,
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get()
@@ -49,7 +49,7 @@ class WorkflowCreateAPI(View):
 
     @mask_view(
         auth_require=True,
-        template='core/workflow/workflow_create.html',
+        is_api=True,
     )
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -60,4 +60,3 @@ class WorkflowCreateAPI(View):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {}, status.HTTP_200_OK

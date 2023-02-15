@@ -11,7 +11,7 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
-            type="submit" form="form-create-workflow" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            type="text" id="btn-create_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
             data-bs-original-title="Save">
         <span class="icon">
             <span class="feather-icon">
@@ -26,10 +26,10 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'WorkflowCreateAPI' 1 %}"
+            data-url="{% url 'WorkflowCreateAPI' %}"
             data-url-redirect="{% url 'WorkflowList' %}"
-            data-method="PUT"
-            id="form-edit-company"
+            data-method="POST"
+            id="form-create_workflow"
             style="padding: 10px">
         {% csrf_token %}
         <div class="row">
@@ -75,6 +75,7 @@
                                 data-placeholder="{% trans 'Nothing selected' %}"
                                 name="code_application"
                                 id="select-box-features"
+                                data-multiple="false"
                                 data-url="{% url 'RoleListAPI' %}"
                         ></select>
                     </div>
@@ -240,6 +241,7 @@
                                         data-placeholder="{% trans 'Nothing selected' %}"
                                         name="property_list"
                                         id="property_list_choose"
+                                        data-multiple="true"
                                         data-url="{% url 'RoleListAPI' %}"
                                 ></select>
                             </div>

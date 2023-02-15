@@ -1,11 +1,6 @@
 "use strict";
 var ZONEINDEX = 0;
 $(function () {
-    function OnSaveBtnClick(btnElm) {
-        btnElm.off().on('click', function (e) {
-
-        })
-    };
 
     $(document).ready(function () {
         // init dataTable
@@ -76,7 +71,7 @@ $(function () {
             $('#btn-zone-submit').off().on('click', function(e){
                 let _form = new FormData($form[0])
                 let temp = {
-                    "id": ZONEINDEX + 1,
+                    "order": ZONEINDEX + 1,
                     "title": _form.get("title"),
                     "remark": _form.get("remark"),
                     "property_list": _form.getAll("property_list")
@@ -84,7 +79,35 @@ $(function () {
                 $('#table_workflow_zone').DataTable().row.add(temp).draw()
                 $form[0].reset();
                 ZONEINDEX = ZONEINDEX + 1
+                $(this).closest('.modal').modal('hide')
             })
-        })
+        });
+
+        // form submit
+        $('#btn-create_workflow').on('click', function (e) {
+            let $form = document.getElementById('form-create_workflow')
+            let _form = new FormData($form)
+            let zoneTableData = $('#table_workflow_zone').DataTable().data().toArray()
+            let _formData = {
+                title: _form.get('title'),
+                code_application: _form.get('code_application'),
+                zone: zoneTableData,
+                node: []
+            }
+            let csr = _form.get('csrfmiddlewaretoken')
+            // $.fn.callAjax($form.attr('data-url'), $form.attr('data-method'), _formData, csr)
+            //     .then(
+            //         (resp) => {
+            //             let data = $.fn.switcherResp(resp);
+            //             if (data) {
+                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
+                            // $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                        // }
+                    // },
+                    // (errs) => {
+                        // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                    // }
+                // )
+        });
     });
 });

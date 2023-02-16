@@ -86,28 +86,25 @@ $(function () {
         // form submit
         $('#btn-create_workflow').on('click', function (e) {
             let $form = document.getElementById('form-create_workflow')
-            let _form = new FormData($form)
+            let _form = new SetupFormSubmit($('#form-create_workflow'))
             let zoneTableData = $('#table_workflow_zone').DataTable().data().toArray()
-            let _formData = {
-                title: _form.get('title'),
-                code_application: _form.get('code_application'),
-                zone: zoneTableData,
-                node: []
-            }
-            let csr = _form.get('csrfmiddlewaretoken')
-            // $.fn.callAjax($form.attr('data-url'), $form.attr('data-method'), _formData, csr)
-            //     .then(
-            //         (resp) => {
-            //             let data = $.fn.switcherResp(resp);
-            //             if (data) {
+            _form.dataForm['zone'] = zoneTableData
+
+            let csr = $("[name=csrfmiddlewaretoken]").val()
+
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
                             // $.fn.notifyPopup({description: "Group is being created"}, 'success')
-                            // $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
-                        // }
-                    // },
-                    // (errs) => {
-                        // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
-                    // }
-                // )
+                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                    }
+                )
         });
     });
 });

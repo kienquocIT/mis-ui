@@ -1,6 +1,7 @@
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL
 
@@ -44,7 +45,7 @@ class WorkflowCreate(View):
         return {}, status.HTTP_200_OK
 
 
-class WorkflowCreateAPI(View):
+class WorkflowCreateAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(

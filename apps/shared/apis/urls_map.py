@@ -65,3 +65,4 @@ class ApiURL(object):
     # WORKFLOW
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
+    WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')

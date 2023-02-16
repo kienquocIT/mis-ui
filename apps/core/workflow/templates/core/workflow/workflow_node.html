@@ -49,85 +49,117 @@
 
         {#        add new node HTML here#}
         <div class="row">
-            <button
-                    type="button"
-                    class="btn btn-primary open-modal-node"
-                    data-bs-toggle="modal"
-                    data-bs-target="#nodeModalCreate"
-                    style="background: none; border: none; color: #007D88; float: left"
-            >
-                <div style="float: left">
-                    <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add new node' %}
+            <div class="col-12">
+                <div class="form-check">
+                    <input
+                            type="checkbox" class="form-check-input" id="id-is_multi_company"
+                            name="is_multi_company"
+                    >
+                    <label
+                            class="form-check-label" for="id-is_multi_company"
+                    >{% trans 'Collaborators in multi company' %}</label>
                 </div>
-            </button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12">
+                <button
+                        type="button"
+                        class="btn btn-flush-success flush-soft-hover open-modal-node"
+                        data-bs-toggle="modal"
+                        data-bs-target="#nodeModalCreate"
+                >
+                            <span class="icon">
+                                    <span class="feather-icon">
+                                        <i data-feather="plus"></i>
+                                    </span>
+                                    <span class="font-3 ml-1">
+                                        {% trans 'Add new node' %}
+                                    </span>
+                                </span>
+                </button>
 
-            <div
-                    class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalCenter" aria-hidden="true"
-            >
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add node</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="form-label">
-                                    {% trans 'Node Name' %}
-                                    <span class="field-required">(*)</span>
-                                </label>
-                                <input
-                                        type="text" class="form-control"
-                                        placeholder="Node A"
-                                        id="modal-node-name-create"
-                                        required
+                <div
+                        class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenter" aria-hidden="true"
+                >
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add node</h5>
+                                <button
+                                        type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"
                                 >
-                                <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Node Name' %}
+                                        <span class="field-required">(*)</span>
+                                    </label>
+                                    <input
+                                            type="text" class="form-control"
+                                            placeholder="Node A"
+                                            id="modal-node-name-create"
+                                            required
+                                    >
+                                    <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
+                                </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    {% trans 'Description' %}
-                                </label>
-                                <textarea
-                                        class="form-control"
-                                        rows="4" cols="50"
-                                        name="description"
-                                        id="modal-node-description-create"
-                                >
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Description' %}
+                                    </label>
+                                    <textarea
+                                            class="form-control"
+                                            rows="4" cols="50"
+                                            name="description"
+                                            id="modal-node-description-create"
+                                    >
 
                                 </textarea>
-                                <span class="form-text text-muted">{% trans 'Desciption of Node' %}</span>
+                                    <span class="form-text text-muted">{% trans 'Description of Node' %}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-add-new-node-create">Save changes</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                </button>
+                                <button
+                                        type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                        id="btn-add-new-node-create"
+                                >Save changes
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <input type="text" id="workflow-create-node-data" hidden>
             </div>
-
-            <table
-                    id="datable-workflow-node-create"
-                    class="table nowrap w-100 mb-5"
-            >
-                <thead>
-                <tr>
-                    <th>Node name</th>
-                    <th>Description</th>
-                    <th>Node Actions</th>
-                    <th>Collaborators</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table
+                        id="datable-workflow-node-create"
+                        class="table nowrap mb-5"
+                        style="width: 100%"
+                >
+                    <thead>
+                    <tr>
+                        <th>Node name</th>
+                        <th>Description</th>
+                        <th>Node Actions</th>
+                        <th>Collaborators</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
 

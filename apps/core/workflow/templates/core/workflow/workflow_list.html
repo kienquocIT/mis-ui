@@ -24,11 +24,15 @@
 {% endblock %}
 
 {% block pageContent %}
+    <input type="hidden" id="workflow-link"
+           data-link-update="{% url 'WorkflowDetail' 1 %}"
+           data-link-list="{% url 'WorkflowList' %}"
+    >
     <table
             id="table_workflow_list"
             class="table nowrap w-100 mb-5"
             data-url="{% url 'WorkflowListAPI' %}"
-            data-method="GET"
+            data-method="get"
     >
         <thead>
         <tr>

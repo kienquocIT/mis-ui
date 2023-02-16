@@ -12,12 +12,13 @@ class WorkflowList(View):
     @mask_view(
         auth_require=True,
         template='core/workflow/workflow_list.html',
+        menu_active='menu_workflow_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class WorkflowListAPI(View):
+class WorkflowListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
@@ -27,7 +28,7 @@ class WorkflowListAPI(View):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get()
         if resp.state:
-            return resp.result, status.HTTP_200_OK
+            return {'workflow_list': resp.result}, status.HTTP_200_OK
 
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
@@ -45,7 +46,7 @@ class WorkflowCreate(View):
         return {}, status.HTTP_200_OK
 
 
-class WorkflowCreateAPI(View):
+class WorkflowCreateAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
@@ -54,13 +55,24 @@ class WorkflowCreateAPI(View):
     )
     def post(self, request, *args, **kwargs):
         data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_CREATE).post(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
         if resp.state:
             return resp.result, status.HTTP_200_OK
 
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class WorkflowDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='core/workflow/workflow_create.html',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
 class NodeSystemListAPI(APIView):

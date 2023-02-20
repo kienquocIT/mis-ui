@@ -2,11 +2,12 @@
 {% load static i18n %}
 {% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>
+    {#    <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>#}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
-    .dropdown-menu{
-        width: 100%;
-    }
+        .dropdown-menu {
+            width: 100%;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}
@@ -44,20 +45,20 @@
         </div>
         <br>
         <div class="d-flex justify-content-center">
-            <ul class="nav nav-line nav-tabs nav-light">
+            <ul class="nav nav-line nav-tabs nav-light nav-workflow-form-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_function">
+                    <a class="nav-link active" data-href="#tab_function">
                         <span class="nav-link-text">{% trans 'Function and Zone' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_node">
+                    <a class="nav-link" data-href="#tab_node">
                         <span class="nav-link-text">{% trans 'Node' %}</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="pill" href="#tab_next_node">
+                    <a class="nav-link" data-href="#tab_next_node">
                         <span class="nav-link-text badge-on-text">{% trans 'Exit/Next node condition' %}</span>
                     </a>
                 </li>
@@ -66,17 +67,19 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_function">
                 <div class="row">
-                    <h5 class="h5 col-12">{% trans 'Select Function Applied' %}</h5>
+                    <h5 class="h5 col-12">{% trans 'Select Function Applied' %}
+                        <sup class="field-required">(*)</sup>
+                    </h5>
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <select
-                                class="form-control multi-select-filter"
+                        <select class="form-control multi-select-filter"
                                 data-placeholder="{% trans 'Nothing selected' %}"
                                 name="code_application"
                                 id="select-box-features"
                                 data-multiple="false"
-                                data-url="{% url 'RoleListAPI' %}"
+                                data-prefix="tenant_application_list"
+                                data-url="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'TenantApplicationListAPI' %}"
                         ></select>
                     </div>
                 </div>
@@ -126,8 +129,8 @@
                         </table>
                     </div>
                 </div>
-                <hr class="bg-dark-40">
-                <br>
+            </div>
+            <div class="tab-pane fade" id="tab_node">
                 <div class="row">
                     <div class="col-9">
                         <div class="form-check">
@@ -150,53 +153,14 @@
                         </button>
                     </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col-12">
-                        <button class="btn btn-flush-success flush-soft-hover"
-                                type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Add new node' %}"
-                                data-bs-original-title="Add node">
-                            <span class="icon">
-                                <span class="feather-icon">
-                                    <i data-feather="plus"></i>
-                                </span>
-                                <span class="font-3 ml-1">
-                                    {% trans 'Add new node' %}
-                                </span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-12">
-                        <table id="table_workflow_node" class="table nowrap w-100 mb-5">
-                            <thead>
-                            <tr>
-                                <th>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input">
-                                    </div>
-                                </th>
-                                <th>{% trans 'Node name' %}</th>
-                                <th>{% trans 'Description' %}</th>
-                                <th>{% trans 'Action type' %}</th>
-                                <th>{% trans 'Collaborators' %}</th>
-                                <th>{% trans 'Actions' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="tab_node">
-                <p>Node</p>
             </div>
             <div class="tab-pane fade" id="tab_next_node">
                 <p>Exit/Next</p>
             </div>
+        </div>
+        <div class="w-100 d-flex justify-content-center mt-2" id="nav-next-prev-step">
+            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev" disabled>{% trans 'Prev' %}</button>
+            <button class="btn btn btn-primary next-btn" type="button" data-nav-type="next" disabled>{% trans 'Next' %}</button>
         </div>
     </form>
     <div class="modal fade"
@@ -242,7 +206,8 @@
                                         name="property_list"
                                         id="property_list_choose"
                                         data-multiple="true"
-                                        data-url="{% url 'RoleListAPI' %}"
+                                        data-prefix="application_property_list"
+                                        data-url="{% url 'ApplicationPropertyListAPI' %}"
                                 ></select>
                             </div>
                         </div>
@@ -260,7 +225,8 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
-    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    {#    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>#}
+    {#    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>#}
     <script src="{% static 'assets/js/core/workflow/workflow-create.js' %}"></script>
 {% endblock %}

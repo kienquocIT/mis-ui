@@ -3,15 +3,43 @@ var ZONEINDEX = 0;
 $(function () {
 
     $(document).ready(function () {
+        // declare global scope variable
+        let $prev_btn = $('#nav-next-prev-step .prev-btn');
+        let $next_btn = $('#nav-next-prev-step .next-btn');
+
+        // init select function applied
+        let $select_box = $("#select-box-features");
+        let selectURL = $select_box.attr('data-url')
+        $select_box.select2({
+            ajax:{
+                url: selectURL,
+                processResults: function (res) {
+                    let data_original = res.data[$select_box.attr('data-prefix')];
+                    let data_convert = []
+                    if (data_original.length){
+                        for (let item of data_original){
+                            data_convert.push({...item, 'text': item.title})
+                        }
+                    }
+                    return {
+                        results: data_convert
+                    };
+                }
+            },
+            tags: true,
+            multiple: true,
+            tokenSeparators: [',', ' ']
+        })
+
         // init dataTable
         let $tables = $('.table');
-        $tables.each(function(){
+        $tables.each(function () {
             let $elm = $(this);
             $elm.DataTable({
                 searching: false,
                 ordering: false,
                 paginate: false,
-                info:false,
+                info: false,
                 drawCallback: function () {
                     // render icon after table callback
                     feather.replace();
@@ -27,19 +55,19 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        render:(data, type, row)=>{
+                        render: (data, type, row) => {
                             return `<p>${row.title}</p>`
                         }
                     },
                     {
                         targets: 2,
-                        render:(data, type, row)=>{
+                        render: (data, type, row) => {
                             return `<p>${row.remark}</p>`
                         }
                     },
                     {
                         targets: 3,
-                        render: (data, type, row) =>{
+                        render: (data, type, row) => {
                             let str_html = `<div>
                                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
                                                    data-bs-toggle="tooltip"
@@ -64,11 +92,10 @@ $(function () {
             });
         })
 
-
         // handle modal is show
         $('#add_zone').on('shown.bs.modal', function (e) {
             let $form = $(this).find('form')
-            $('#btn-zone-submit').off().on('click', function(e){
+            $('#btn-zone-submit').off().on('click', function (e) {
                 let _form = new FormData($form[0])
                 let temp = {
                     "order": ZONEINDEX + 1,
@@ -81,6 +108,38 @@ $(function () {
                 ZONEINDEX = ZONEINDEX + 1
                 $(this).closest('.modal').modal('hide')
             })
+        });
+
+        // handle event on click prev next btn
+        $("#nav-next-prev-step button").off().on('click', function (e) {
+            e.preventDefault()
+            let elmIsActive = $('.nav-workflow-form-tabs li a.active')
+            $('.tab-pane').removeClass('show active')
+            let btn_href = elmIsActive.parents('li').next().find('a').attr('data-href')
+            elmIsActive.removeClass('active')
+            if ($(this).attr('data-nav-type') === 'prev'){
+                elmIsActive.parents('li').prev().find('a').addClass('active')
+                btn_href = elmIsActive.parents('li').prev().find('a').attr('data-href')
+
+                // handle if button prev is last of list nav
+                if(btn_href === '#tab_function') $prev_btn.prop('disabled', true)
+                $next_btn.prop('disabled', false)
+            }
+            else {
+                elmIsActive.parents('li').next().find('a').addClass('active')
+                // handle if button next is last of list nav
+                if(btn_href === '#tab_next_node') $next_btn.prop('disabled', true)
+                else $next_btn.prop('disabled', false)
+            }
+            $(`${btn_href}`).addClass('show active')
+
+
+        })
+
+        //handle event on change function applied
+        $select_box.on("select2:select", function (e) {
+            $next_btn.prop('disabled', false);
+            $next_btn.on('click', (e) => $prev_btn.prop('disabled', false))
         });
 
         // form submit

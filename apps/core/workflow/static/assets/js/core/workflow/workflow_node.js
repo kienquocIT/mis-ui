@@ -92,16 +92,6 @@ $(document).ready(function () {
                                                             >
                                                                 <thead>
                                                                 <tr>
-                                                                    <th>
-                                                                        <span class="form-check">
-                                                                            <input
-                                                                                    type="checkbox"
-                                                                                    class="form-check-input check-select-all"
-                                                                                    id="customCheck1"
-                                                                            >
-                                                                            <label class="form-check-label" for="customCheck1"></label>
-                                                                        </span>
-                                                                    </th>
                                                                     <th>Collaborator</th>
                                                                     <th>Position</th>
                                                                     <th>Role</th>
@@ -110,6 +100,11 @@ $(document).ready(function () {
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
+                                                                <td>Creator</td>
+                                                                <td>Creator's position</td>
+                                                                <td>Creator's role</td>
+                                                                <td>Creator's role</td>
+                                                                <td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a></td>
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -142,7 +137,7 @@ $(document).ready(function () {
 });
 
 
-function loadAuditOutFormEmployee () {
+function loadAuditOutFormEmployee (tableId) {
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
@@ -193,7 +188,8 @@ function loadAuditOutFormEmployee () {
 
     function initDataTable(config) {
         /*DataTable Init*/
-        let dtb = $('#datable-audit-out-form-employee');
+        let Id = "#" + tableId;
+        let dtb = $(Id);
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
@@ -212,7 +208,8 @@ function loadAuditOutFormEmployee () {
     }
 
     function loadDataTable() {
-        let tb = $('#datable-audit-out-form-employee');
+        let Id = "#" + tableId;
+        let tb = $(Id);
         let url = "/hr/employee/api";
         let method = "GET";
         $.fn.callAjax(url, method).then(
@@ -248,7 +245,7 @@ function tableNodeAdd() {
     let tableShowBodyOffModal = $('#datable-workflow-node-create tbody');
     // let initialRow = $('#datable-workflow-node-create > tbody > tr').eq(0);
     let initialRow = tableShowBodyOffModal.find('.initial-row');
-    let initialCheckBox = tableShowBodyOffModal[0].children[0].getAttribute('data-initial-check-box');
+    let initialCheckBox = initialRow[0].getAttribute('data-initial-check-box');
     let newCheckBox = String(Number(initialCheckBox) + 1);
 
     let currentId = "chk_sel_" + newCheckBox;
@@ -276,6 +273,7 @@ function tableNodeAdd() {
             </li>`
         }
     }
+    let modalAuditId = "auditModalCreate" + newCheckBox
 
     initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span>${nodeName}</span></td><td><span>${nodeDescription}</span></td>
                                     <td style="background-color: #fffdeb">
@@ -291,9 +289,9 @@ function tableNodeAdd() {
                                         </div>
                                     </td>
                                     <td style="background-color: #fffdeb">
-                                    <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#auditModalCreate"><span style="padding-left: 20px">(select to done)</span></i>
+                                    <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"><span style="padding-left: 20px">(select to done)</span></i>
                                         <div
-                                            class="modal fade" id="auditModalCreate" tabindex="-1" role="dialog"
+                                            class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalCenter" aria-hidden="true"
                                         >
                                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -308,8 +306,7 @@ function tableNodeAdd() {
                                                         <div class="form-group">
                                                             <label class="form-label">List source</label>
                                                             <select
-                                                                    class="form-select" 
-                                                                    id="select-box-audit-option"
+                                                                    class="form-select select-box-audit-option" 
                                                             >
                                                                 <option></option>
                                                                 <option value="0">In form</option>
@@ -353,7 +350,15 @@ $(document).on('click', '.audit-in-workflow-del-button', function (e) {
 
 
 // Action on change audit option
-$(document).on('change', '#select-box-audit-option', function (e) {
+$(document).on('change', '.select-box-audit-option', function (e) {
+    let eleTrOrder = $(this)[0].closest('tr').getAttribute('data-initial-check-box');
+    let tableOutFormEmployeeId = "datable-audit-out-form-employee-" + eleTrOrder;
+    let tableInWorkflowEmployeeId = "datable-audit-in-workflow-employee-" + eleTrOrder;
+    let boxInWorkflowEmployeeId = "select-box-audit-in-workflow-employee-" + eleTrOrder;
+    let boxInWorkflowCompanyId = "select-box-audit-in-workflow-company-" + eleTrOrder;
+    let canvasId = "offcanvasRight" + eleTrOrder;
+    let canvasInWorkflowId = "offcanvasRightInWorkflow" + eleTrOrder;
+
     let tableZone = document.getElementById('table_workflow_zone');
     let optionZone = ``;
     let orderNum = 0;
@@ -377,25 +382,13 @@ $(document).on('change', '#select-box-audit-option', function (e) {
             </li>`
         }
     }
-    let defaultEle = `<div class="form-group">
-                                <label class="form-label">List source</label>
-                                <select
-                                        class="form-select" 
-                                        id="select-box-audit-option"
-                                >
-                                    <option></option>
-                                    <option value="0">In form</option>
-                                    <option value="1">Out form</option>
-                                    <option value="2">In workflow</option>
-                                </select>
-                            </div>`
     // init zone data
     let defaultZone = `<div class="form-group">
                                 <label class="form-label">Editing zone</label>
                                 <div class="input-group mb-3">
                                     <span class="input-affix-wrapper">
-                                    <input type="text" class="form-control zone-data-show" placeholder="Select zone" aria-label="Username" aria-describedby="basic-addon1" disabled>
-                                    <div class="row"></div>
+                                    <input type="text" class="form-control" placeholder="Select zone" aria-label="Username" aria-describedby="basic-addon1" disabled>
+                                    <div class="row zone-data-show"></div>
                                     <div class="btn-group dropdown">
                                         <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                             <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
@@ -416,7 +409,7 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                             type="button"
                                             class="btn btn-flush-success flush-soft-hover"
                                             data-bs-toggle="offcanvas" 
-                                            data-bs-target="#offcanvasRightAuditInWork"
+                                            data-bs-target="#${canvasInWorkflowId}"
                                             aria-controls="offcanvasExample"
                                             style="font-size: 60%"
                                     >
@@ -430,7 +423,7 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                         </span>
                                     </button>
                             <div
-                                class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightAuditInWork"
+                                class="offcanvas offcanvas-end" tabindex="-1" id="${canvasInWorkflowId}"
                                 aria-labelledby="offcanvasTopLabel"
                                 style="width: 50%; margin-top: 4em;"
                             >
@@ -441,8 +434,8 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                     <div class="form-group">
                                         <label class="form-label">Select company</label>
                                         <select
-                                                class="form-select" 
-                                                id="select-box-audit-in-workflow-company"
+                                                class="form-select select-box-audit-in-workflow-company" 
+                                                id="${boxInWorkflowCompanyId}"
                                         >
                                             <option></option>
                                         </select>
@@ -450,8 +443,8 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                     <div class="form-group">
                                         <label class="form-label">Select employee</label>
                                         <select
-                                                class="form-select" 
-                                                id="select-box-audit-in-workflow-employee"
+                                                class="form-select select-box-audit-in-workflow-employee" 
+                                                id="${boxInWorkflowEmployeeId}"
                                         >
                                             <option></option>
                                         </select>
@@ -476,7 +469,7 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                                 aria-label="Close" style="padding-left: 70px"
                                         >
                                             <span
-                                                    class="btn btn-primary" id="button-add-audit-in-workflow-employee"
+                                                    class="btn btn-primary button-add-audit-in-workflow-employee" id=""
                                             >Add</span>
                                         </div>
                                         <div
@@ -489,8 +482,8 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                 </div>
                             </div>
                                 <table
-                                    id="datable-audit-in-workflow"
-                                    class="table nowrap w-100 mb-5"
+                                    class="table nowrap w-100 mb-5 table-in-workflow-employee"
+                                    id="${tableInWorkflowEmployeeId}"
                                 >
                                     <thead>
                                     <tr>
@@ -516,15 +509,24 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                 </table>`
 
     let modalBody = $(this).closest('.modal-body');
-    let value = $('#select-box-audit-option').val();
+    let value = $(this).val();
     if (value === "0") {
         modalBody[0].innerHTML = "";
-        modalBody.append(defaultEle);
+        modalBody.append(`<div class="form-group">
+                                <label class="form-label">List source</label>
+                                <select
+                                        class="form-select select-box-audit-option"
+                                >
+                                    <option></option>
+                                    <option value="0" selected>In form</option>
+                                    <option value="1">Out form</option>
+                                    <option value="2">In workflow</option>
+                                </select>
+                            </div>`);
         modalBody.append(`<div class="form-group">
                                 <label class="form-label">Select field in form</label>
                                 <select
                                         class="form-select" 
-                                        id="select-box-audit-option"
                                 >
                                     <option></option>
                                     <option>In form</option>
@@ -533,22 +535,31 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                 </select>
                             </div>
                             ${defaultZone}`)
-        $('#select-box-audit-option').val("0");
     } else if (value === "1") {
         modalBody[0].innerHTML = "";
-        modalBody.append(defaultEle);
+        modalBody.append(`<div class="form-group">
+                                <label class="form-label">List source</label>
+                                <select
+                                        class="form-select select-box-audit-option"
+                                >
+                                    <option></option>
+                                    <option value="0">In form</option>
+                                    <option value="1" selected>Out form</option>
+                                    <option value="2">In workflow</option>
+                                </select>
+                            </div>`);
         modalBody.append(`<div class="form-group">
                                 <label class="form-label">Employee list</label>
                                 <div class="input-group mb-3">
                                     <span class="input-affix-wrapper">
-                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="Username" aria-describedby="basic-addon1" id="audit-out-form-employee-data" disabled>
+                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="Username" aria-describedby="basic-addon1" disabled>
                                     
-                                    <div class="row"></div>
+                                    <div class="row audit-out-form-employee-data-show"></div>
                                     
-                                    <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                                    <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
                                         aria-controls="offcanvasExample"></i></span>
                                     <div
-                                    class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                                    class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
                                     aria-labelledby="offcanvasTopLabel"
                                     style="width: 50%; margin-top: 4em;"
                             >
@@ -557,7 +568,7 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                 </div>
                                 <div class="offcanvas-body form-group">
                                     <table
-                                            id="datable-audit-out-form-employee" class="table nowrap w-100 mb-5"
+                                            id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
                                             data-url="{% url 'EmployeeListAPI' %}"
                                             data-method="GET"
                                     >
@@ -580,7 +591,7 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                                                 aria-label="Close" style="padding-left: 70px"
                                         >
                                             <span
-                                                    class="btn btn-primary" id="button-add-audit-out-form-employee"
+                                                    class="btn btn-primary button-add-audit-out-form-employee" id=""
                                             >Add</span>
                                         </div>
                                         <div
@@ -597,15 +608,23 @@ $(document).on('change', '#select-box-audit-option', function (e) {
                             </div>
                             
                             ${defaultZone}`)
-        $('#select-box-audit-option').val("1");
-        loadAuditOutFormEmployee();
+        loadAuditOutFormEmployee(tableOutFormEmployeeId);
     } else {
         modalBody[0].innerHTML = "";
-        modalBody.append(defaultEle);
+        modalBody.append(`<div class="form-group">
+                                <label class="form-label">List source</label>
+                                <select
+                                        class="form-select select-box-audit-option"
+                                >
+                                    <option></option>
+                                    <option value="0">In form</option>
+                                    <option value="1">Out form</option>
+                                    <option value="2" selected>In workflow</option>
+                                </select>
+                            </div>`);
         modalBody.append(tableEmployeeInWorkflow)
-        $('#select-box-audit-option').val("2");
-        loadCompanyAuditInWorkflow();
-        loadEmployeeAuditInWorkflow();
+        loadCompanyAuditInWorkflow(boxInWorkflowCompanyId);
+        loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
     }
 
     return false;
@@ -644,10 +663,11 @@ $(document).on('click', '.check-select-all', function () {
 });
 
 
-function loadCompanyAuditInWorkflow() {
+function loadCompanyAuditInWorkflow(boxId) {
     let url = '/company/list/api';
     let method = "GET"
-    let ele = $('#select-box-audit-in-workflow-company');
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
     $.fn.callAjax(url, method).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -663,10 +683,11 @@ function loadCompanyAuditInWorkflow() {
 }
 
 
-function loadEmployeeAuditInWorkflow() {
+function loadEmployeeAuditInWorkflow(boxId) {
     let url = '/hr/employee/api';
     let method = "GET"
-    let ele = $('#select-box-audit-in-workflow-employee');
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
     $.fn.callAjax(url, method).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -691,70 +712,73 @@ function loadEmployeeAuditInWorkflow() {
 
 
 // Action on add canvas employee out form
-$(document).on('click', '#button-add-audit-out-form-employee', function () {
-    tableAuditOutFormEmployeeAdd()
+$(document).on('click', '.button-add-audit-out-form-employee', function () {
+    let tableId = "#" + $(this)[0].closest('.modal-body').querySelector('.table-out-form-employee').id;
+    let eleDivInputWrapper = $(this)[0].closest('.input-affix-wrapper');
+    if (eleDivInputWrapper.children.length > 1) {
+        let auditOutFormEmployeeEle = eleDivInputWrapper.children[0];
+        let auditOutFormEmployeeShow = eleDivInputWrapper.children[1];
+        let employeeIDList = [];
+        let dataShow = ``;
+        let spanGroup = ``;
+
+        let table = $(tableId).DataTable();
+        let dataCheckedIndexes = table.rows('.selected').indexes();
+        let trSTT = 0;
+        for (let idx = 0; idx < dataCheckedIndexes.length; idx++) {
+            let dataChecked = table.rows(dataCheckedIndexes[idx]).data()[0];
+            let childID = dataChecked.id;
+            let childTitle = dataChecked.full_name;
+            trSTT++;
+            employeeIDList.push(childID);
+
+            if (trSTT !== 0 && trSTT % 5 === 0) {
+                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                dataShow += `<div class="col-8">${spanGroup}</div>`
+                spanGroup = ``
+            } else {
+                if (trSTT === dataCheckedIndexes.length) {
+                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                    dataShow += `<div class="col-8">${spanGroup}</div>`
+                } else {
+                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                }
+            }
+        }
+        auditOutFormEmployeeEle.value = employeeIDList;
+        auditOutFormEmployeeEle.setAttribute("hidden", true);
+        auditOutFormEmployeeShow.innerHTML = "";
+        auditOutFormEmployeeShow.innerHTML = dataShow
+    }
 });
 
 
-function tableAuditOutFormEmployeeAdd() {
-    let employeeIDList = [];
-    let dataShow = ``;
-    let spanGroup = ``;
-    let auditOutFormEmployeeEle = document.getElementById("audit-out-form-employee-data");
-    let auditOutFormEmployeeShow = auditOutFormEmployeeEle.nextElementSibling;
-
-    let table = $('#datable-audit-out-form-employee').DataTable();
-    let dataCheckedIndexes = table.rows('.selected').indexes();
-    let trSTT = 0;
-    for (let idx = 0; idx < dataCheckedIndexes.length; idx++) {
-        let dataChecked = table.rows(dataCheckedIndexes[idx]).data()[0];
-        let childID = dataChecked.id;
-        let childTitle = dataChecked.full_name;
-        trSTT++;
-        employeeIDList.push(childID);
-
-        if (trSTT !== 0 && trSTT % 5 === 0) {
-            spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-            dataShow += `<div class="col-8">${spanGroup}</div>`
-            spanGroup = ``
-        } else {
-            if (trSTT === dataCheckedIndexes.length) {
-                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-                dataShow += `<div class="col-8">${spanGroup}</div>`
-            } else {
-                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-            }
-        }
-    }
-    auditOutFormEmployeeEle.value = employeeIDList;
-    auditOutFormEmployeeEle.setAttribute("hidden", true);
-    auditOutFormEmployeeShow.innerHTML = "";
-    auditOutFormEmployeeShow.innerHTML = dataShow
-
-    return false;
-}
-
-
 // On click button add Employee Audit In Workflow
-$(document).on('click', '#button-add-audit-in-workflow-employee', function () {
-    let employeeVal = $('#select-box-audit-in-workflow-employee').val();
-    let empSelectBox = document.getElementById('select-box-audit-in-workflow-employee');
+$(document).on('click', '.button-add-audit-in-workflow-employee', function () {
+    let tableId = $(this)[0].closest('.modal-body').querySelector('.table-in-workflow-employee').id;
+    let jqueryId = "#" + tableId;
+    let table = $(jqueryId);
+    let tableLen = document.getElementById(tableId).tBodies[0].rows.length;
+    let employeeBoxId = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').id;
+    let employeeVal = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').value;
+    let empSelectBox = document.getElementById(employeeBoxId);
     let empSelected = empSelectBox.options[empSelectBox.selectedIndex];
     let empTitle = empSelected.text;
     let empRole = empSelected.nextElementSibling.innerHTML;
-    let zone = $('#select-box-audit-in-workflow-zone').val();
-    let zoneSelectBox = document.getElementById('select-box-audit-in-workflow-zone');
-    let zoneSelected = zoneSelectBox.options[zoneSelectBox.selectedIndex];
-    let zoneTitle = zoneSelected.text;
-    let table = $('#datable-audit-in-workflow tbody');
-    let tableLen = document.getElementById('datable-audit-in-workflow').tBodies[0].rows.length;
+    let zone = empSelectBox.closest('div').nextElementSibling.querySelector('.zone-data-show');
+    let zoneShow = ``;
+    if (zone.children.length > 0) {
+        for (let d = 0; d < zone.children.length; d++) {
+            zoneShow += zone.children[d].innerHTML;
+        }
+    }
     let currentId = "chk_sel_" + String(tableLen + 1)
     let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-group-employee" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
     let actionData = bt2 + bt3;
 
-    table.append(`<tr><td>${checkBox}</td><td>${empTitle}</td><td></td><td>${empRole}</td><td>${zoneTitle}</td><td>${actionData}</td></tr>`)
+    table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td>${zoneShow}</td><td>${actionData}</td></tr>`)
 
 });
 
@@ -787,12 +811,12 @@ $(document).on('click', '.check-zone-node', function (e) {
             trSTT++;
             if (trSTT !== 0 && trSTT % 5 === 0) {
                 spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-                dataShow += `<div class="col-12">${spanGroup}</div>`
+                dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                 spanGroup = ``
             } else {
                 if (trSTT === dataChecked) {
                     spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-                    dataShow += `<div class="col-12">${spanGroup}</div>`
+                    dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                 } else {
                     spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
                 }
@@ -848,18 +872,19 @@ function setupDataNode() {
     let tableNode = document.getElementById('datable-workflow-node-create');
     for (let idx = 0; idx < tableNode.tBodies[0].rows.length; idx++) {
         let dataAction = [];
-        let row = tableNode.rows[idx+2];
+        let row = tableNode.rows[idx+1];
         let rowChildren = row.children;
         for (let d = 0; d < rowChildren.length; d++) {
-            let col = rowChildren[d+1];
-            if ((d+1) === 1) {
+            let col = rowChildren[d + 1];
+            if ((d + 1) === 1) {
                 dataNode['title'] = col.children[0].innerHTML;
-            } else if ((d+1) === 2) {
+            } else if ((d + 1) === 2) {
                 dataNode['description'] = col.children[0].innerHTML;
-            } else if ((d+1) === 3) {
+            } else if ((d + 1) === 3) {
                 // set data workflow node actions submit
                 let eleUL = col.querySelector('.node-action-list');
-                for (let li = 0; li < eleUL.children.length; li++) {
+                if (eleUL) {
+                    for (let li = 0; li < eleUL.children.length; li++) {
                         let eleInput = eleUL.children[li].children[1].children[0];
                         let eleDataInput = eleUL.children[li].children[0].children[0].children[0].children[0];
                         if (eleInput.checked === true) {
@@ -868,29 +893,48 @@ function setupDataNode() {
                             }
                         }
                     }
+                }
                 dataNode['actions'] = dataAction;
-            } else if ((d+1) === 4) {
+            } else if ((d + 1) === 4) {
                 // set data workflow node collaborator submit
                 let modalBody = col.querySelector('.modal-body');
-                if (modalBody.children[0].children[1].value) {
-                    let optionCollab = Number(modalBody.children[0].children[1].value);
-                    dataNode['option_collaborator'] = optionCollab;
+                if (modalBody) {
+                    if (modalBody.children[0].children[1].value) {
+                        let optionCollab = Number(modalBody.children[0].children[1].value);
+                        dataNode['option_collaborator'] = optionCollab;
 
-                    if (optionCollab === 1) {
-                        let dataEmployeeList = [];
-                        let auditOutFormEmployeeEle = document.getElementById("audit-out-form-employee-data");
-                        let auditOutFormEmployeeShow = auditOutFormEmployeeEle.nextElementSibling.children[0].children;
-                        for (let s = 0; s < auditOutFormEmployeeShow.length; s++) {
-                            let empID = auditOutFormEmployeeShow[s].children[0].value;
-                            dataEmployeeList.push(empID);
+                        // if option audit === 1
+                        if (optionCollab === 1) {
+                            let dataEmployeeList = [];
+                            let dataZoneList = [];
+                            let auditOutFormEmployeeEle = modalBody.querySelector('.audit-out-form-employee-data-show');
+                            let eleDiv = auditOutFormEmployeeEle.children;
+                            if (eleDiv.length > 0) {
+                                for (let d = 0; d < eleDiv.length; d++) {
+                                    let auditOutFormEmployeeShow = eleDiv[d].children;
+                                    for (let s = 0; s < auditOutFormEmployeeShow.length; s++) {
+                                        let empID = auditOutFormEmployeeShow[s].children[0].value;
+                                        dataEmployeeList.push(empID);
+                                    }
+                                }
+                            }
+                            dataNode['employee_list'] = dataEmployeeList
+                            let zone = modalBody.children[2].querySelector('.zone-data-show');
+                            if (zone.children.length > 0) {
+                                for (let d = 0; d < zone.children.length; d++) {
+                                    if (zone.children[d].children.length > 0) {
+                                        for (let z = 0; z < zone.children[d].children.length; z++) {
+                                            dataZoneList.push(Number(zone.children[d].children[z].children[0].value));
+                                        }
+                                    }
+                                }
+                            }
+                            dataNode['zone'] = dataZoneList;
+
+                        } else if (optionCollab === 2) {
+                            let tableDataShow = modalBody.querySelector('.table-in-workflow-employee');
+                            let tmp = tableDataShow
                         }
-                        dataNode['employee_list'] = dataEmployeeList
-                        let zone = modalBody.children[2].children[1].value;
-                        dataNode['zone'] = zone;
-
-                    } else if (optionCollab === 2) {
-                        let zone = modalBody.children[2].children[1].value;
-                        let tmp = zone
                     }
                 }
             }

@@ -49,7 +49,8 @@ class ApplicationPropertyListAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.APPLICATION_PROPERTY_LIST, user=request.user).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(url=ApiURL.APPLICATION_PROPERTY_LIST, user=request.user).get(data)
         if resp.state:
             return {'application_property_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

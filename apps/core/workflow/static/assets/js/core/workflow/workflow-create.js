@@ -11,13 +11,13 @@ $(function () {
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
         $select_box.select2({
-            ajax:{
+            ajax: {
                 url: selectURL,
                 processResults: function (res) {
                     let data_original = res.data[$select_box.attr('data-prefix')];
                     let data_convert = []
-                    if (data_original.length){
-                        for (let item of data_original){
+                    if (data_original.length) {
+                        for (let item of data_original) {
                             data_convert.push({...item, 'text': item.title})
                         }
                     }
@@ -45,6 +45,10 @@ $(function () {
                     feather.replace();
                 },
                 rowCallback: function (row, data) {
+                    // handle onclick btn
+                    $('.actions-btn a', row).on('click', function (e) {
+                        actionsClick(row, data, e)
+                    })
                 },
                 columns: [
                     {
@@ -68,19 +72,24 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            let str_html = `<div>
+                            let str_html = `<div class="actions-btn">
                                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
-                                                   data-bs-toggle="tooltip"
-                                                   data-bs-placement="top"
-                                                   title=""
-                                                   data-bs-original-title="Edit"
+                                                   title="Edit"
                                                    href="#"
-                                                   data-id="${row.id}">
-                                                    <span class="btn-icon-wrap btn-open-power-user-info"
-                                                          data-bs-toggle="modal"
-                                                          data-bs-target="#power_user_info">
+                                                   data-id="${row.id}"
+                                                   data-action="edit">
+                                                    <span class="feather-icon">
+                                                        <i data-feather="edit"></i>
+                                                    </span>
+                                                </a>
+                                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
+                                                   title="Delete"
+                                                   href="#"
+                                                   data-id="${row.id}"
+                                                   data-action="delete">
+                                                    <span class="btn-icon-wrap">
                                                         <span class="feather-icon">
-                                                            <i data-feather="edit"></i>
+                                                            <i data-feather="trash-2"></i>
                                                         </span>
                                                     </span>
                                                 </a>
@@ -92,22 +101,37 @@ $(function () {
             });
         })
 
-        // handle modal is show
-        $('#add_zone').on('shown.bs.modal', function (e) {
-            let $form = $(this).find('form')
+        // handle btn in form submit
+        function modalFormSubmit($form) {
             $('#btn-zone-submit').off().on('click', function (e) {
                 let _form = new FormData($form[0])
                 let temp = {
-                    "order": ZONEINDEX + 1,
+                    "order": _form.get("order") ? _form.get("order") : ZONEINDEX + 1,
                     "title": _form.get("title"),
                     "remark": _form.get("remark"),
                     "property_list": _form.getAll("property_list")
                 }
-                $('#table_workflow_zone').DataTable().row.add(temp).draw()
+                if (_form.get("order") && _form.get("order") !== '' && _form.get("order") !== undefined) {
+                    let rowIdx = parseInt(_form.get("order")) - 1
+                    $('#table_workflow_zone').DataTable().row(rowIdx).data(temp).draw()
+                } else $('#table_workflow_zone').DataTable().row.add(temp).draw()
                 $form[0].reset();
+                $form.find('.dropdown-select_two').val(null).trigger('change');
                 ZONEINDEX = ZONEINDEX + 1
-                $(this).closest('.modal').modal('hide')
-            })
+                // $(this).closest('.modal').modal('hide')
+            });
+        }
+
+        // handle modal is show
+        $('[data-bs-target="#add_zone"]').on('click', function (e) {
+            let getApp = $select_box.select2('data')
+            if (getApp.length === 0) {
+                $.fn.notifyPopup({description: $(this).attr('data-required-text')}, 'failure');
+                return true
+            } else
+                $($(this).attr('data-bs-target')).modal('show')
+            let $form = $($(this).attr('data-bs-target')).find('form')
+            modalFormSubmit($form)
         });
 
         // handle event on click prev next btn
@@ -117,18 +141,17 @@ $(function () {
             $('.tab-pane').removeClass('show active')
             let btn_href = elmIsActive.parents('li').next().find('a').attr('data-href')
             elmIsActive.removeClass('active')
-            if ($(this).attr('data-nav-type') === 'prev'){
+            if ($(this).attr('data-nav-type') === 'prev') {
                 elmIsActive.parents('li').prev().find('a').addClass('active')
                 btn_href = elmIsActive.parents('li').prev().find('a').attr('data-href')
 
                 // handle if button prev is last of list nav
-                if(btn_href === '#tab_function') $prev_btn.prop('disabled', true)
+                if (btn_href === '#tab_function') $prev_btn.prop('disabled', true)
                 $next_btn.prop('disabled', false)
-            }
-            else {
+            } else {
                 elmIsActive.parents('li').next().find('a').addClass('active')
                 // handle if button next is last of list nav
-                if(btn_href === '#tab_next_node') $next_btn.prop('disabled', true)
+                if (btn_href === '#tab_next_node') $next_btn.prop('disabled', true)
                 else $next_btn.prop('disabled', false)
             }
             $(`${btn_href}`).addClass('show active')
@@ -140,7 +163,27 @@ $(function () {
         $select_box.on("select2:select", function (e) {
             $next_btn.prop('disabled', false);
             $next_btn.on('click', (e) => $prev_btn.prop('disabled', false))
+            $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id}))
         });
+
+        // handle event table actions on click
+        function actionsClick(elm, data, iEvent) {
+            let isACtion = $(iEvent.currentTarget).attr('data-action');
+            if (isACtion === 'edit') {
+                let $form = $('#add_zone').find('form')
+                $form.find('[name="title"]').val(data.title)
+                $form.find('[name="remark"]').val(data.remark)
+                $form.find('#property_list_choices').val(data.property_list).trigger('change')
+                $form.find('[name="order"]').val(data.order)
+                modalFormSubmit($form)
+                $('#add_zone').modal('show')
+            } else if (isACtion === 'delete') {
+                let isDataTableList = elm.parents('table.table').DataTable().data().toArray()
+                console.dir(isDataTableList)
+            }
+            // console.log(elm, '\n')
+            // console.dir(data)
+        }
 
         // form submit
         $('#btn-create_workflow').on('click', function (e) {

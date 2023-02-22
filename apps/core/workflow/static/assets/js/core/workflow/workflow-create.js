@@ -148,6 +148,8 @@ $(function () {
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             let zoneTableData = $('#table_workflow_zone').DataTable().data().toArray()
             _form.dataForm['zone'] = zoneTableData
+            let nodeTableData = setupDataNode();
+            _form.dataForm['node'] = nodeTableData
 
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
@@ -167,3 +169,117 @@ $(function () {
         });
     });
 });
+
+
+function setupDataNode() {
+    let dataNodeList = [];
+    let tableNode = document.getElementById('datable-workflow-node-create');
+    for (let idx = 0; idx < tableNode.tBodies[0].rows.length; idx++) {
+        let title = "";
+        let description = "";
+        let dataNode = {};
+        let dataActionList = [];
+        let dataEmployeeList = [];
+        let dataZoneList = [];
+        let dataCollaboratorList = [];
+        let row = tableNode.rows[idx+1];
+        let rowChildren = row.children;
+        for (let d = 0; d < rowChildren.length; d++) {
+            let col = rowChildren[d + 1];
+            if ((d + 1) === 1) {
+                title = col.children[0].innerHTML;
+            } else if ((d + 1) === 2) {
+                description = col.children[0].innerHTML;
+            } else if ((d + 1) === 3) {
+                // set data workflow node actions submit
+                let eleUL = col.querySelector('.node-action-list');
+                if (eleUL) {
+                    for (let li = 0; li < eleUL.children.length; li++) {
+                        let eleInput = eleUL.children[li].children[1].children[0];
+                        let eleDataInput = eleUL.children[li].children[0].children[0].children[0].children[0];
+                        if (eleInput.checked === true) {
+                            if (eleDataInput.getAttribute('data-action')) {
+                                dataActionList.push(Number(eleDataInput.getAttribute('data-action')));
+                            }
+                        }
+                    }
+                }
+                dataNode['actions'] = dataActionList;
+            } else if ((d + 1) === 4) {
+                // set data workflow node collaborator submit
+                let modalBody = col.querySelector('.modal-body');
+                if (modalBody) {
+                    if (modalBody.children[0].children[1].value) {
+                        let optionCollab = Number(modalBody.children[0].children[1].value);
+                        dataNode['option_collaborator'] = optionCollab;
+
+                        // if option audit === 1
+                        if (optionCollab === 1) {
+                            let auditOutFormEmployeeEle = modalBody.querySelector('.audit-out-form-employee-data-show');
+                            let eleDiv = auditOutFormEmployeeEle.children;
+                            if (eleDiv.length > 0) {
+                                for (let d = 0; d < eleDiv.length; d++) {
+                                    let auditOutFormEmployeeShow = eleDiv[d].children;
+                                    for (let s = 0; s < auditOutFormEmployeeShow.length; s++) {
+                                        let empID = auditOutFormEmployeeShow[s].children[0].value;
+                                        dataEmployeeList.push(empID);
+                                    }
+                                }
+                            }
+                            dataNode['employee_list'] = dataEmployeeList
+                            let zone = modalBody.children[2].querySelector('.zone-data-show');
+                            if (zone.children.length > 0) {
+                                for (let d = 0; d < zone.children.length; d++) {
+                                    if (zone.children[d].children.length > 0) {
+                                        for (let z = 0; z < zone.children[d].children.length; z++) {
+                                            dataZoneList.push(Number(zone.children[d].children[z].children[0].value));
+                                        }
+                                    }
+                                }
+                            }
+                            dataNode['node_zone'] = dataZoneList;
+
+                        } else if (optionCollab === 2) {
+                            let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
+                            let table = document.getElementById(tableDataShowId);
+                            for (let r = 0; r < table.tBodies[0].rows.length; r++) {
+                                let dataCollaborator = {};
+                                let dataZoneInWorkflowList = []
+                                let row = table.rows[r+1];
+                                let employee = row.querySelector('.data-in-workflow-employee').value;
+                                dataCollaborator['employee'] = employee;
+
+                                let zoneTd = row.querySelector('.data-in-workflow-zone');
+                                if (zoneTd.children.length > 0) {
+                                    for (let col = 0; col < zoneTd.children.length; col++) {
+                                        if (zoneTd.children[col].children.length > 0) {
+                                            for (let s = 0; s < zoneTd.children[col].children.length; s++) {
+                                                let zoneVal = zoneTd.children[col].children[s].children[0].value;
+                                                dataZoneInWorkflowList.push(Number(zoneVal))
+                                            }
+                                        }
+                                    }
+                                    dataCollaborator['zone'] = dataZoneInWorkflowList;
+                                }
+                                dataCollaboratorList.push({
+                                    'employee': employee,
+                                    'zone': dataZoneInWorkflowList,
+                                });
+                            }
+                            dataNode['collaborator'] = dataCollaboratorList;
+                        }
+                    }
+                }
+            }
+        }
+        dataNodeList.push({
+                'title': title,
+                'description': description,
+                'actions': dataActionList,
+                'employee_list': dataEmployeeList,
+                'node_zone': dataZoneList,
+                'collaborator': dataCollaboratorList
+            });
+    }
+    return dataNodeList
+}

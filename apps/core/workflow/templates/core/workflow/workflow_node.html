@@ -117,7 +117,6 @@
                                     <textarea
                                             class="form-control"
                                             rows="4" cols="50"
-                                            name="description"
                                             id="modal-node-description-create"
                                     >
 
@@ -144,8 +143,8 @@
             <div class="col-12">
                 <table
                         id="datable-workflow-node-create"
-                        class="table nowrap mb-5"
-                        style="width: 100%"
+                        class="table nowrap w-100 mb-5"
+                        width="100%"
                 >
                     <thead>
                     <tr>
@@ -159,11 +158,11 @@
                                 <label class="form-check-label" for="customCheck1"></label>
                             </span>
                         </th>
-                        <th>Node name</th>
-                        <th>Description</th>
-                        <th>Node Actions</th>
-                        <th>Collaborators</th>
-                        <th>Actions</th>
+                        <th>{% trans 'Node name' %}</th>
+                        <th>{% trans 'Description' %}</th>
+                        <th>{% trans 'Node Actions' %}</th>
+                        <th>{% trans 'Collaborators' %}</th>
+                        <th>{% trans 'Actions' %}</th>
                     </tr>
                     </thead>
                     <tbody>

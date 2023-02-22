@@ -59,9 +59,9 @@ $(document).ready(function () {
                                 currentId = "check_sel_1";
                                 checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-workflow-node" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
                                 nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span>${title}</span></td><td><span>${description}</span></td>
-                                        <td style="background-color: #ebf9ff">
+                                        <td>
                                         <div class="btn-group dropdown">
-                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"></i>
+                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>
                                             <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                 <ul class="node-action-list p-0">
                                                     ${actionEle}
@@ -71,7 +71,7 @@ $(document).ready(function () {
                                             </div>
                                         </div>
                                         </td>
-                                        <td style="background-color: #ebf9ff">
+                                        <td>
                                         <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
                                         <div
                                             class="modal fade" id="auditModalCreateInitial" tabindex="-1" role="dialog"
@@ -115,16 +115,16 @@ $(document).ready(function () {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
                                         </td>
                                         <td>${actionData}</td></tr>`
                             } else {
                                 nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span>${title}</span></td><td><span>${description}</span></td>
-                                                                <td style="background-color: #ebf9ff"><i class="fas fa-align-justify" style="color: #cccccc"></i></td>
-                                                                <td style="background-color: #ebf9ff"><i class="fas fa-align-justify" style="color: #cccccc"></i></td>
+                                                                <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
+                                                                <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 260px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
                                                                 <td>${actionData}</td>
                                                             </tr>`
                             }
-
                             ele.append(nodeHTML)
                         })
                     }
@@ -132,9 +132,15 @@ $(document).ready(function () {
             }
         )
     }
-
     loadSystemNode()
 });
+
+
+$(document).on('click', '.next-btn', function (e) {
+    let table = $('#datable-workflow-node-create').DataTable();
+    table.columns.adjust();
+});
+
 
 
 function loadAuditOutFormEmployee (tableId) {
@@ -255,7 +261,7 @@ function tableNodeAdd() {
     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
     let actionData = bt2 + bt3;
-    let actionEle = ``
+    let actionEle = ``;
     for (let a = 0; a < nodeAction.length; a++) {
         for (let key in nodeAction[a]) {
             actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
@@ -276,9 +282,9 @@ function tableNodeAdd() {
     let modalAuditId = "auditModalCreate" + newCheckBox
 
     initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span>${nodeName}</span></td><td><span>${nodeDescription}</span></td>
-                                    <td style="background-color: #fffdeb">
+                                    <td>
                                         <div class="btn-group dropdown">
-                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span style="padding-left: 20px">(select to done)</span></i>
+                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="check-done-action" style="padding-left: 255px"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span></i>
                                             <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                 <ul class="node-action-list p-0">
                                                     ${actionEle}
@@ -288,8 +294,8 @@ function tableNodeAdd() {
                                             </div>
                                         </div>
                                     </td>
-                                    <td style="background-color: #fffdeb">
-                                    <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"><span style="padding-left: 20px">(select to done)</span></i>
+                                    <td>
+                                    <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
                                         <div
                                             class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalCenter" aria-hidden="true"
@@ -297,7 +303,7 @@ function tableNodeAdd() {
                                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Add audit</h5>
+                                                        <h5 class="modal-title">Add Collaborator</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -322,6 +328,7 @@ function tableNodeAdd() {
                                                 </div>
                                             </div>
                                         </div>
+                                        <span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-times" style="color: red; font-size: 20px"</span>
                                         <input type="text" class="workflow-node-audit-submit" hidden>
                                     </td>
                                     <td>${actionData}</td></tr>`);
@@ -466,7 +473,7 @@ $(document).on('change', '.select-box-audit-option', function (e) {
                                         <div class="col-8"></div>
                                         <div
                                                 class="col-2" data-bs-dismiss="offcanvas"
-                                                aria-label="Close" style="padding-left: 70px"
+                                                aria-label="" style="padding-left: 70px"
                                         >
                                             <span
                                                     class="btn btn-primary button-add-audit-in-workflow-employee" id=""
@@ -715,6 +722,8 @@ function loadEmployeeAuditInWorkflow(boxId) {
 $(document).on('click', '.button-add-audit-out-form-employee', function () {
     let tableId = "#" + $(this)[0].closest('.modal-body').querySelector('.table-out-form-employee').id;
     let eleDivInputWrapper = $(this)[0].closest('.input-affix-wrapper');
+    let eleTd = $(this)[0].closest('td');
+    let eleSpan = eleTd.querySelector('.check-done-audit');
     if (eleDivInputWrapper.children.length > 1) {
         let auditOutFormEmployeeEle = eleDivInputWrapper.children[0];
         let auditOutFormEmployeeShow = eleDivInputWrapper.children[1];
@@ -749,6 +758,10 @@ $(document).on('click', '.button-add-audit-out-form-employee', function () {
         auditOutFormEmployeeEle.setAttribute("hidden", true);
         auditOutFormEmployeeShow.innerHTML = "";
         auditOutFormEmployeeShow.innerHTML = dataShow
+        if (dataShow) {
+            eleSpan.innerHTML = ``;
+            eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+        }
     }
 });
 
@@ -759,14 +772,22 @@ $(document).on('click', '.button-add-audit-in-workflow-employee', function () {
     let jqueryId = "#" + tableId;
     let table = $(jqueryId);
     let tableLen = document.getElementById(tableId).tBodies[0].rows.length;
+    let companySelectBox = document.getElementById($(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-company').id);
+    let companySelected = companySelectBox.options[companySelectBox.selectedIndex];
     let employeeBoxId = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').id;
     let employeeVal = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').value;
     let empSelectBox = document.getElementById(employeeBoxId);
     let empSelected = empSelectBox.options[empSelectBox.selectedIndex];
     let empTitle = empSelected.text;
-    let empRole = empSelected.nextElementSibling.innerHTML;
+    let empRole = ``;
+    let eleTd = $(this)[0].closest('td');
+    let eleSpan = eleTd.querySelector('.check-done-audit');
+    if (empSelected.innerHTML) {
+        empRole = empSelected.nextElementSibling.innerHTML;
+    }
     let zone = empSelectBox.closest('div').nextElementSibling.querySelector('.zone-data-show');
-    let zoneShow = zone.innerHTML;
+    let zoneInput = zone.previousElementSibling;
+    let zoneDataList = zone.nextElementSibling.querySelector('.node-zone-list');
     let zoneShowLen = 0;
     let trSTT = 0;
     let spanGroup = ``;
@@ -803,12 +824,35 @@ $(document).on('click', '.button-add-audit-in-workflow-employee', function () {
     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
     let actionData = bt2 + bt3;
 
-    table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${actionData}</td></tr>`)
+    if (empTitle) {
+        table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${actionData}</td></tr>`)
+        if (tableLen === 0) {
+            eleSpan.innerHTML = ``;
+            eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+        }
+    }
 
+    // reset canvas
+    companySelected.selected = false;
+    empSelected.selected = false;
+    zone.innerHTML = ``;
+
+    zoneInput.removeAttribute('hidden');
+    zone.classList.remove("col-11");
+    zone.classList.add("row");
+    zone.style.removeProperty('margin-right');
+    if (zoneDataList.children.length > 0) {
+        for (let li = 0; li < zoneDataList.children.length; li++) {
+            if (zoneDataList.children[li].children.length > 1) {
+                let input = zoneDataList.children[li].children[1].children[0];
+                input.checked = false;
+            }
+        }
+    }
 });
 
 
-// On check zone of node
+// On check zone of node to change status
 $(document).on('click', '.check-zone-node', function (e) {
     let eleUL = $(this)[0].closest('ul');
     let dataShow = ``;
@@ -862,14 +906,14 @@ $(document).on('click', '.check-zone-node', function (e) {
 // On check action node
 $(document).on('click', '.check-action-node', function (e) {
     let eleTd = $(this)[0].closest('td');
-    let eleSpan = eleTd.children[0].children[0].children[0];
+    // let eleSpan = eleTd.children[0].children[0].children[0];
+    let eleSpan = eleTd.querySelector('.check-done-action');
     let eleUL = $(this)[0].closest('ul');
 
     // checked
     if ($(this)[0].checked === true) {
-        eleTd.style.background = "#ebf9ff";
-        eleSpan.innerHTML = ""
-
+        eleSpan.innerHTML = ``;
+        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
     }
     // unchecked
     else {
@@ -881,110 +925,121 @@ $(document).on('click', '.check-action-node', function (e) {
             }
         }
         if (allUnCheck === eleUL.children.length) {
-            eleTd.style.background = "#fffdeb";
-            eleSpan.innerHTML = "(select to done)"
+            eleSpan.innerHTML = ``;
+            eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
         }
     }
-
-
-    setupDataNode()
 });
 
 
-function setupDataNode() {
-    let dataNodeList = [];
-    let dataNode = {};
-    let tableNode = document.getElementById('datable-workflow-node-create');
-    for (let idx = 0; idx < tableNode.tBodies[0].rows.length; idx++) {
-        let dataAction = [];
-        let row = tableNode.rows[idx+1];
-        let rowChildren = row.children;
-        for (let d = 0; d < rowChildren.length; d++) {
-            let col = rowChildren[d + 1];
-            if ((d + 1) === 1) {
-                dataNode['title'] = col.children[0].innerHTML;
-            } else if ((d + 1) === 2) {
-                dataNode['description'] = col.children[0].innerHTML;
-            } else if ((d + 1) === 3) {
-                // set data workflow node actions submit
-                let eleUL = col.querySelector('.node-action-list');
-                if (eleUL) {
-                    for (let li = 0; li < eleUL.children.length; li++) {
-                        let eleInput = eleUL.children[li].children[1].children[0];
-                        let eleDataInput = eleUL.children[li].children[0].children[0].children[0].children[0];
-                        if (eleInput.checked === true) {
-                            if (eleDataInput.getAttribute('data-action')) {
-                                dataAction.push(Number(eleDataInput.getAttribute('data-action')));
-                            }
-                        }
-                    }
-                }
-                dataNode['actions'] = dataAction;
-            } else if ((d + 1) === 4) {
-                // set data workflow node collaborator submit
-                let modalBody = col.querySelector('.modal-body');
-                if (modalBody) {
-                    if (modalBody.children[0].children[1].value) {
-                        let optionCollab = Number(modalBody.children[0].children[1].value);
-                        dataNode['option_collaborator'] = optionCollab;
-
-                        // if option audit === 1
-                        if (optionCollab === 1) {
-                            let dataEmployeeList = [];
-                            let dataZoneList = [];
-                            let auditOutFormEmployeeEle = modalBody.querySelector('.audit-out-form-employee-data-show');
-                            let eleDiv = auditOutFormEmployeeEle.children;
-                            if (eleDiv.length > 0) {
-                                for (let d = 0; d < eleDiv.length; d++) {
-                                    let auditOutFormEmployeeShow = eleDiv[d].children;
-                                    for (let s = 0; s < auditOutFormEmployeeShow.length; s++) {
-                                        let empID = auditOutFormEmployeeShow[s].children[0].value;
-                                        dataEmployeeList.push(empID);
-                                    }
-                                }
-                            }
-                            dataNode['employee_list'] = dataEmployeeList
-                            let zone = modalBody.children[2].querySelector('.zone-data-show');
-                            if (zone.children.length > 0) {
-                                for (let d = 0; d < zone.children.length; d++) {
-                                    if (zone.children[d].children.length > 0) {
-                                        for (let z = 0; z < zone.children[d].children.length; z++) {
-                                            dataZoneList.push(Number(zone.children[d].children[z].children[0].value));
-                                        }
-                                    }
-                                }
-                            }
-                            dataNode['zone'] = dataZoneList;
-
-                        } else if (optionCollab === 2) {
-                            let dataCollaboratorList = [];
-                            let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
-                            let table = document.getElementById(tableDataShowId);
-                            for (let r = 0; r < table.tBodies[0].rows.length; r++) {
-                                let dataCollaborator = {};
-                                let dataZoneInWorkflowList = []
-                                let row = table.rows[r+1];
-                                let employee = row.querySelector('.data-in-workflow-employee').value;
-                                dataCollaborator['employee'] = employee;
-
-                                let zoneTd = row.querySelector('.data-in-workflow-zone');
-                                if (zoneTd.children.length > 0) {
-                                    for (let col = 0; col < zoneTd.children.length; col++) {
-                                        if (zoneTd.children[col].children.length > 0) {
-                                            for (let s = 0; s < zoneTd.children[col].children.length; s++) {
-                                                let zoneVal = zoneTd.children[col].children[s].children[0].value;
-                                                dataZoneInWorkflowList.push(Number(zoneVal))
-                                            }
-                                        }
-                                    }
-                                    dataCollaborator['zone'] = dataZoneInWorkflowList
-                                }
-                                dataCollaboratorList.push(dataCollaborator)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+// function setupDataNode() {
+//     let dataNodeList = [];
+//     let tableNode = document.getElementById('datable-workflow-node-create');
+//     for (let idx = 0; idx < tableNode.tBodies[0].rows.length; idx++) {
+//         let title = "";
+//         let description = "";
+//         let dataNode = {};
+//         let dataActionList = [];
+//         let dataEmployeeList = [];
+//         let dataZoneList = [];
+//         let dataCollaboratorList = [];
+//         let row = tableNode.rows[idx+1];
+//         let rowChildren = row.children;
+//         for (let d = 0; d < rowChildren.length; d++) {
+//             let col = rowChildren[d + 1];
+//             if ((d + 1) === 1) {
+//                 title = col.children[0].innerHTML;
+//             } else if ((d + 1) === 2) {
+//                 description = col.children[0].innerHTML;
+//             } else if ((d + 1) === 3) {
+//                 // set data workflow node actions submit
+//                 let eleUL = col.querySelector('.node-action-list');
+//                 if (eleUL) {
+//                     for (let li = 0; li < eleUL.children.length; li++) {
+//                         let eleInput = eleUL.children[li].children[1].children[0];
+//                         let eleDataInput = eleUL.children[li].children[0].children[0].children[0].children[0];
+//                         if (eleInput.checked === true) {
+//                             if (eleDataInput.getAttribute('data-action')) {
+//                                 dataActionList.push(Number(eleDataInput.getAttribute('data-action')));
+//                             }
+//                         }
+//                     }
+//                 }
+//                 dataNode['actions'] = dataActionList;
+//             } else if ((d + 1) === 4) {
+//                 // set data workflow node collaborator submit
+//                 let modalBody = col.querySelector('.modal-body');
+//                 if (modalBody) {
+//                     if (modalBody.children[0].children[1].value) {
+//                         let optionCollab = Number(modalBody.children[0].children[1].value);
+//                         dataNode['option_collaborator'] = optionCollab;
+//
+//                         // if option audit === 1
+//                         if (optionCollab === 1) {
+//                             let auditOutFormEmployeeEle = modalBody.querySelector('.audit-out-form-employee-data-show');
+//                             let eleDiv = auditOutFormEmployeeEle.children;
+//                             if (eleDiv.length > 0) {
+//                                 for (let d = 0; d < eleDiv.length; d++) {
+//                                     let auditOutFormEmployeeShow = eleDiv[d].children;
+//                                     for (let s = 0; s < auditOutFormEmployeeShow.length; s++) {
+//                                         let empID = auditOutFormEmployeeShow[s].children[0].value;
+//                                         dataEmployeeList.push(empID);
+//                                     }
+//                                 }
+//                             }
+//                             dataNode['employee_list'] = dataEmployeeList
+//                             let zone = modalBody.children[2].querySelector('.zone-data-show');
+//                             if (zone.children.length > 0) {
+//                                 for (let d = 0; d < zone.children.length; d++) {
+//                                     if (zone.children[d].children.length > 0) {
+//                                         for (let z = 0; z < zone.children[d].children.length; z++) {
+//                                             dataZoneList.push(Number(zone.children[d].children[z].children[0].value));
+//                                         }
+//                                     }
+//                                 }
+//                             }
+//                             dataNode['node_zone'] = dataZoneList;
+//
+//                         } else if (optionCollab === 2) {
+//                             let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
+//                             let table = document.getElementById(tableDataShowId);
+//                             for (let r = 0; r < table.tBodies[0].rows.length; r++) {
+//                                 let dataCollaborator = {};
+//                                 let dataZoneInWorkflowList = []
+//                                 let row = table.rows[r+1];
+//                                 let employee = row.querySelector('.data-in-workflow-employee').value;
+//                                 dataCollaborator['employee'] = employee;
+//
+//                                 let zoneTd = row.querySelector('.data-in-workflow-zone');
+//                                 if (zoneTd.children.length > 0) {
+//                                     for (let col = 0; col < zoneTd.children.length; col++) {
+//                                         if (zoneTd.children[col].children.length > 0) {
+//                                             for (let s = 0; s < zoneTd.children[col].children.length; s++) {
+//                                                 let zoneVal = zoneTd.children[col].children[s].children[0].value;
+//                                                 dataZoneInWorkflowList.push(Number(zoneVal))
+//                                             }
+//                                         }
+//                                     }
+//                                     dataCollaborator['zone'] = dataZoneInWorkflowList;
+//                                 }
+//                                 dataCollaboratorList.push({
+//                                     'employee': employee,
+//                                     'zone': dataZoneInWorkflowList,
+//                                 });
+//                             }
+//                             dataNode['collaborator'] = dataCollaboratorList;
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//         dataNodeList.push({
+//                 'title': title,
+//                 'description': description,
+//                 'actions': dataActionList,
+//                 'employee_list': dataEmployeeList,
+//                 'node_zone': dataZoneList,
+//                 'collaborator': dataCollaboratorList
+//             });
+//     }
+// }

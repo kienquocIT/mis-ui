@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n workflowtags %}
 {% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
-    {#    <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>#}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         .dropdown-menu {
@@ -26,17 +25,18 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form
-            data-url="{% url 'WorkflowCreateAPI' %}"
-            data-url-redirect="{% url 'WorkflowList' %}"
-            data-method="POST"
-            id="form-create_workflow"
-            style="padding: 10px" method="post">
+    <form data-url="{% url 'WorkflowCreateAPI' %}"
+          data-url-redirect="{% url 'WorkflowList' %}"
+          data-method="POST"
+          id="form-create_workflow"
+          style="padding: 10px"
+          method="post">
         {% csrf_token %}
+
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Workflow name' %}</b></label>
+                    <label class="form-label">{% trans 'Workflow name' %}</label>
                     <input class="form-control" type="text"
                            name="title"
                            id="form-create-title">
@@ -67,12 +67,12 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_function">
                 <div class="row">
-                    <h5 class="h5 col-12">{% trans 'Select Function Applied' %}
-                        <sup class="field-required">(*)</sup>
-                    </h5>
-                </div>
-                <div class="row">
                     <div class="col-6">
+                        <div class="form-group">
+                            <label for="" class="form-label">{% trans 'Select Function Applied' %}
+                                <sup class="field-required">(*)</sup>
+                            </label>
+                        </div>
                         <select class="form-control multi-select-filter"
                                 data-placeholder="{% trans 'Nothing selected' %}"
                                 name="code_application"
@@ -93,9 +93,12 @@
                     </div>
                     <div class="col-12">
                         <button class="btn btn-flush-success flush-soft-hover"
-                                type="button" title="{% trans 'Add new zone' %}"
-                                data-bs-original-title="Add zone"
-                                data-bs-toggle="modal" data-bs-target="#add_zone"
+                                type="button"
+                                title="{% trans 'Add new zone' %}"
+{#                                data-bs-original-title="Add zone"#}
+{#                                data-bs-toggle="modal"#}
+                                data-bs-target="#add_zone"
+                                data-required-text="{% trans 'Please select Function Applied first' %}"
                         >
                             <span class="icon">
                                 <span class="feather-icon">
@@ -175,47 +178,44 @@
                       method="post"
                       novalidate
                 >
+                    <input type="hidden" name="order">
                     <div class="modal-header">
                         <h6 class="modal-title">{% trans 'Zone information' %}</h6>
                     </div>
-                    <div class="modal-body overflow-y-scroll h-300p">
-                        <div>
-                            <div class="h-600p">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label"><b>{% trans 'Name' %}</b></label>
-                                            <input class="form-control"
-                                                   type="text"
-                                                   name="title"
-                                                   id="form-create-zone-title">
-                                        </div>
-                                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label"><b>{% trans 'Name' %}</b></label>
+                                    <input class="form-control"
+                                           type="text"
+                                           name="title"
+                                           id="form-create-zone-title">
                                 </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label"><b>{% trans 'Input description of zone' %}</b></label>
-                                            <textarea class="form-control" type="text" name="remark" id="form-create-zone-remark"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <label for="company_list_choose">{% trans 'Select property' %}:</label>
-                                <select class="form-control multi-select-filter"
-                                        data-placeholder="{% trans 'Nothing selected' %}"
-                                        name="property_list"
-                                        id="property_list_choose"
-                                        data-multiple="true"
-                                        data-prefix="application_property_list"
-                                        data-url="{% url 'ApplicationPropertyListAPI' %}"
-                                ></select>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label"><b>{% trans 'Input description of zone' %}</b></label>
+                                    <textarea class="form-control" type="text" name="remark" id="form-create-zone-remark"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <label for="company_list_choose">{% trans 'Select property' %}:</label>
+                        <select class="form-control dropdown-select_two"
+                                data-placeholder="{% trans 'Nothing selected' %}"
+                                name="property_list"
+                                id="property_list_choices"
+                                data-multiple="true"
+                                data-prefix="application_property_list"
+                                data-url="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'ApplicationPropertyListAPI' %}"
+                        ></select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="btn-zone-submit">{% trans 'Save' %}</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            {% trans 'Cancel' %}
+                            {% trans 'Close' %}
                         </button>
                     </div>
                 </form>
@@ -226,6 +226,7 @@
 
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     {#    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>#}
     {#    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>#}
     <script src="{% static 'assets/js/core/workflow/workflow-create.js' %}"></script>

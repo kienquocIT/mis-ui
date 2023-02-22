@@ -210,6 +210,22 @@ $(function () {
             let nodeTableData = setupDataNode();
             _form.dataForm['node'] = nodeTableData
 
+            let submitFields = [
+                'title',
+                'code_application',
+                'node',
+                'zone',
+                'is_multi_company',
+                'is_define_zone',
+            ]
+            if (_form.dataForm) {
+                for (let key in _form.dataForm) {
+                    if (!submitFields.includes(key)) {
+                        delete _form.dataForm[key]
+                    }
+                }
+            }
+
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
@@ -237,11 +253,12 @@ function setupDataNode() {
     for (let idx = 0; idx < tableNode.tBodies[0].rows.length; idx++) {
         let title = "";
         let description = "";
-        let dataNode = {};
+        let optionCollab = 0;
         let dataActionList = [];
         let dataEmployeeList = [];
         let dataZoneList = [];
         let dataCollaboratorList = [];
+        let isSystem = false;
         let row = tableNode.rows[idx+1];
         let rowChildren = row.children;
         for (let d = 0; d < rowChildren.length; d++) {
@@ -264,16 +281,14 @@ function setupDataNode() {
                         }
                     }
                 }
-                dataNode['actions'] = dataActionList;
             } else if ((d + 1) === 4) {
                 // set data workflow node collaborator submit
                 let modalBody = col.querySelector('.modal-body');
                 if (modalBody) {
                     if (modalBody.children[0].children[1].value) {
-                        let optionCollab = Number(modalBody.children[0].children[1].value);
-                        dataNode['option_collaborator'] = optionCollab;
+                        optionCollab = Number(modalBody.children[0].children[1].value);
 
-                        // if option audit === 1
+                        // if option out form
                         if (optionCollab === 1) {
                             let auditOutFormEmployeeEle = modalBody.querySelector('.audit-out-form-employee-data-show');
                             let eleDiv = auditOutFormEmployeeEle.children;
@@ -286,7 +301,6 @@ function setupDataNode() {
                                     }
                                 }
                             }
-                            dataNode['employee_list'] = dataEmployeeList
                             let zone = modalBody.children[2].querySelector('.zone-data-show');
                             if (zone.children.length > 0) {
                                 for (let d = 0; d < zone.children.length; d++) {
@@ -297,17 +311,14 @@ function setupDataNode() {
                                     }
                                 }
                             }
-                            dataNode['node_zone'] = dataZoneList;
-
+                        // option in workflow
                         } else if (optionCollab === 2) {
                             let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
                             let table = document.getElementById(tableDataShowId);
                             for (let r = 0; r < table.tBodies[0].rows.length; r++) {
-                                let dataCollaborator = {};
                                 let dataZoneInWorkflowList = []
                                 let row = table.rows[r+1];
                                 let employee = row.querySelector('.data-in-workflow-employee').value;
-                                dataCollaborator['employee'] = employee;
 
                                 let zoneTd = row.querySelector('.data-in-workflow-zone');
                                 if (zoneTd.children.length > 0) {
@@ -319,14 +330,12 @@ function setupDataNode() {
                                             }
                                         }
                                     }
-                                    dataCollaborator['zone'] = dataZoneInWorkflowList;
                                 }
                                 dataCollaboratorList.push({
                                     'employee': employee,
-                                    'zone': dataZoneInWorkflowList,
+                                    'collaborator_zone': dataZoneInWorkflowList,
                                 });
                             }
-                            dataNode['collaborator'] = dataCollaboratorList;
                         }
                     }
                 }
@@ -336,6 +345,7 @@ function setupDataNode() {
                 'title': title,
                 'description': description,
                 'actions': dataActionList,
+                'option_collaborator': optionCollab,
                 'employee_list': dataEmployeeList,
                 'node_zone': dataZoneList,
                 'collaborator': dataCollaboratorList

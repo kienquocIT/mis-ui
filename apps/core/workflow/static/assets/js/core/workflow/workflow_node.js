@@ -264,19 +264,23 @@ function tableNodeAdd() {
     let actionEle = ``;
     for (let a = 0; a < nodeAction.length; a++) {
         for (let key in nodeAction[a]) {
+            let eleInput = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6">`;
+            if (key === "0") {
+                eleInput = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
+            }
             actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
-            <div class="media d-flex align-items-center">
-            <div class="media-body">
-            <div>
-            <div class="node-action" data-action="${key}">${nodeAction[a][key]}</div>
-            </div>
-            </div>
-            </div>
-            <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-action-node" id="customCheck6">
-            <label class="form-check-label" for="customCheck6"></label>
-            </div>
-            </li>`
+                            <div class="media d-flex align-items-center">
+                            <div class="media-body">
+                            <div>
+                            <div class="node-action" data-action="${key}">${nodeAction[a][key]}</div>
+                            </div>
+                            </div>
+                            </div>
+                            <div class="form-check form-check-theme ms-3">
+                            ${eleInput}
+                            <label class="form-check-label" for="customCheck6"></label>
+                            </div>
+                        </li>`
         }
     }
     let modalAuditId = "auditModalCreate" + newCheckBox

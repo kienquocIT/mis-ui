@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n workflowtags %}
 {% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -32,10 +32,11 @@
           style="padding: 10px"
           method="post">
         {% csrf_token %}
+
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Workflow name' %}</b></label>
+                    <label class="form-label">{% trans 'Workflow name' %}</label>
                     <input class="form-control" type="text"
                            name="title"
                            id="form-create-title">
@@ -66,12 +67,12 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_function">
                 <div class="row">
-                    <h5 class="h5 col-12">{% trans 'Select Function Applied' %}
-                        <sup class="field-required">(*)</sup>
-                    </h5>
-                </div>
-                <div class="row">
                     <div class="col-6">
+                        <div class="form-group">
+                            <label for="" class="form-label">{% trans 'Select Function Applied' %}
+                                <sup class="field-required">(*)</sup>
+                            </label>
+                        </div>
                         <select class="form-control multi-select-filter"
                                 data-placeholder="{% trans 'Nothing selected' %}"
                                 name="code_application"

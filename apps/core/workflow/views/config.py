@@ -1,3 +1,5 @@
+import json
+
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -43,7 +45,16 @@ class WorkflowCreate(View):
         template='core/workflow/workflow_create.html',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        xx = {"isform": json.dumps({
+                "id": "bfe7a5cb-defe-4ab8-81b3-da563bc30e43",
+                "title": "Title",
+                "code": "role_title",
+                "type": "text",
+                "content_type": "",
+                "properties": {},
+                "remark": "lorem ipsum dolor sit amet.."
+            })}
+        return xx, status.HTTP_200_OK
 
 
 class WorkflowCreateAPI(APIView):

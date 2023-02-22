@@ -7,6 +7,7 @@ $(function () {
      * - data: data-multiple="true" => set combobox is multiple
      *         data-prefix="application_property_list" => object key of response return
      *         data-url="{% url 'ApplicationPropertyListAPI' %}" => UI url
+     *         data-params="{name: value}"
      *
      */
     $(document).ready(function () {

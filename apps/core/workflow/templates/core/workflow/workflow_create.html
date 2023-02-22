@@ -32,7 +32,7 @@
           style="padding: 10px"
           method="post">
         {% csrf_token %}
-
+        <input type="hidden" name="workflow_action">
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
@@ -95,8 +95,8 @@
                         <button class="btn btn-flush-success flush-soft-hover"
                                 type="button"
                                 title="{% trans 'Add new zone' %}"
-{#                                data-bs-original-title="Add zone"#}
-{#                                data-bs-toggle="modal"#}
+                                {#                                data-bs-original-title="Add zone"#}
+                                {#                                data-bs-toggle="modal"#}
                                 data-bs-target="#add_zone"
                                 data-required-text="{% trans 'Please select Function Applied first' %}"
                         >
@@ -135,125 +135,28 @@
             </div>
             <div class="tab-pane fade" id="tab_node">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-9">
                         <div class="form-check">
-                            <input
-                                    type="checkbox" class="form-check-input" id="id-is_multi_company"
-                                    name="is_multi_company"
-                            >
-                            <label
-                                    class="form-check-label" for="id-is_multi_company"
-                            >{% trans 'Collaborators in multi company' %}</label>
+                            <input type="checkbox" class="form-check-input" id="id-is_multi_company" name="is_multi_company">
+                            <label class="form-check-label" for="id-is_multi_company">{% trans 'Collaborators in multi company' %}</label>
                         </div>
                     </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-12">
-                        <button
+                    <div class="col-3">
+                        <button class="btn btn-flush-success flush-soft-hover"
                                 type="button"
-                                class="btn btn-flush-success flush-soft-hover open-modal-node"
                                 data-bs-toggle="modal"
-                                data-bs-target="#nodeModalCreate"
+                                title="{% trans 'Button rename' %}"
+                                data-bs-target="#change_btn"
                         >
                             <span class="icon">
-                                    <span class="feather-icon">
-                                        <i data-feather="plus"></i>
-                                    </span>
-                                    <span class="font-3 ml-1">
-                                        {% trans 'Add new node' %}
-                                    </span>
+                                <span class="feather-icon">
+                                    <i data-feather="edit"></i>
                                 </span>
-                        </button>
-
-                        <div
-                                class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalCenter" aria-hidden="true"
-                        >
-                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Add node</h5>
-                                        <button
-                                                type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"
-                                        >
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                {% trans 'Node Name' %}
-                                                <span class="field-required">(*)</span>
-                                            </label>
-                                            <input
-                                                    type="text" class="form-control"
-                                                    placeholder="Node A"
-                                                    id="modal-node-name-create"
-                                                    required
-                                            >
-                                            <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                {% trans 'Description' %}
-                                            </label>
-                                            <textarea
-                                                    class="form-control"
-                                                    rows="4" cols="50"
-                                                    id="modal-node-description-create"
-                                            >
-
-                                </textarea>
-                                            <span class="form-text text-muted">{% trans 'Description of Node' %}</span>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button
-                                                type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                                id="btn-add-new-node-create"
-                                        >Save changes
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="text" id="workflow-create-node-data" hidden>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <table
-                                id="datable-workflow-node-create"
-                                class="table nowrap w-100 mb-5"
-                                width="100%"
-                        >
-                            <thead>
-                            <tr>
-                                <th>
-                            <span class="form-check">
-                                <input
-                                        type="checkbox"
-                                        class="form-check-input check-select-all"
-                                        id="customCheck1"
-                                >
-                                <label class="form-check-label" for="customCheck1"></label>
+                                <span class="font-3 ml-1">
+                                    {% trans 'Button rename' %}
+                                </span>
                             </span>
-                                </th>
-                                <th>{% trans 'Node name' %}</th>
-                                <th>{% trans 'Description' %}</th>
-                                <th>{% trans 'Node Actions' %}</th>
-                                <th>{% trans 'Collaborators' %}</th>
-                                <th>{% trans 'Actions' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -322,6 +225,98 @@
             </div>
         </div>
     </div>
+    <div class="modal fade"
+         id="change_btn"
+         tabindex="-1"
+         role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">{% trans 'Button rename' %}</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <table id="table_workflow_rename" class="table">
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Action' %}</th>
+                                    <th>{% trans 'Default name' %}</th>
+                                    <th>{% trans 'Rename' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="center">
+                                    <td>{% trans 'Create' %}</td>
+                                    <td>{% trans 'Next' %}</td>
+                                    <td>
+                                        <input class="form-control" type="text" name="btn_create" data-key="0"
+                                               placeholder="{% trans 'Chuyển' %}">
+                                    </td>
+                                </tr>
+                                <tr class="center">
+                                    <td>{% trans 'Approved' %}</td>
+                                    <td>{% trans 'Next' %}</td>
+                                    <td>
+                                        <input class="form-control" type="text" name="btn_approved" data-key="1"
+                                               placeholder="{% trans 'Duyệt' %}">
+                                    </td>
+                                </tr>
+                                <tr class="center">
+                                    <td>{% trans 'Reject' %}</td>
+                                    <td>{% trans 'Reject' %}</td>
+                                    <td>
+                                        <input class="form-control" type="text" name="btn_reject" data-key="2"
+                                               placeholder="{% trans 'Từ chối' %}">
+                                    </td>
+                                </tr>
+                                <tr class="center">
+                                    <td>{% trans 'Return' %}</td>
+                                    <td>{% trans 'Return' %}</td>
+                                    <td>
+                                        <input class="form-control" type="text" name="btn_return" data-key="3"
+                                               placeholder="{% trans 'Trả về' %}">
+                                    </td>
+                                </tr>
+                                <tr class="center">
+                                    <td>{% trans 'Receive' %}</td>
+                                    <td>{% trans 'Retceived' %}</td>
+                                    <td>
+                                        <input class="form-control" type="text" name="btn_receive" data-key="4"
+                                               placeholder="{% trans 'Đã nhận' %}">
+                                    </td>
+                                </tr>
+                                <tr class="center">
+                                    <td>{% trans 'To do' %}</td>
+                                    <td>{% trans 'Done' %}</td>
+                                    <td>
+                                        <input class="form-control" type="text" name="btn_todo" data-key="5"
+                                               placeholder="{% trans 'Đã làm' %}">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-1">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="id-restore_default" name="restore_default">
+                                <label class="form-check-label" for="id-restore_default">{% trans 'Restore default' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary float-left" id="btn-rename">{% trans 'Save' %}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% trans 'Cancel' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
@@ -330,5 +325,4 @@
     {#    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>#}
     {#    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>#}
     <script src="{% static 'assets/js/core/workflow/workflow-create.js' %}"></script>
-    <script src="{% static 'assets/js/core/workflow/workflow_node.js' %}"></script>
 {% endblock %}

@@ -32,7 +32,7 @@ $(function () {
         })
 
         // init dataTable
-        let $tables = $('.table');
+        let $tables = $('.table_workflow_zone');
         $tables.each(function () {
             let $elm = $(this);
             $elm.DataTable({
@@ -200,6 +200,30 @@ $(function () {
             // console.log(elm, '\n')
             // console.dir(data)
         }
+
+        // action reset default of modal
+        $('#id-restore_default').on('change', function(){
+            let isChecked = $(this).prop('checked')
+            if (isChecked){
+               $('#table_workflow_rename [name*="btn_"]').val('')
+            }
+        });
+
+        $('#change_btn').on('shown.bs.modal', function(){
+            let $this = $(this)
+            $('#btn-rename').on('click', function(){
+                let btn_data_list = []
+                $('#table_workflow_rename [name*="btn_"]').each(function(idx, elm){
+                    if ($(elm).val() !== ''){
+                        let temp = {}
+                        temp[$(elm).attr('data-key')] = $(elm).val()
+                        btn_data_list.push(temp)
+                    }
+                })
+                $('[name="workflow_action"]').val(JSON.stringify(btn_data_list))
+                $this.modal('hide')
+            });
+        })
 
         // form submit
         $('#btn-create_workflow').on('click', function (e) {

@@ -47,7 +47,7 @@ $(function () {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<p>${row.code_application}</p>`
+                        return `<p>${row.application.title}</p>`
                     }
                 },
                 {

@@ -45,6 +45,7 @@ $(function () {
                     url: $thisURL,
                     data: function (params) {
                         let query = params
+                        query['is_ajax'] = true
                         if ($this.attr('data-params')){
                             let data_params = JSON.parse($this.attr('data-params'));
                             query = {...query,...data_params}

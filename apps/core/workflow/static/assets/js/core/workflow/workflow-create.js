@@ -283,12 +283,19 @@ function setupDataNode() {
         let dataZoneList = [];
         let dataCollaboratorList = [];
         let isSystem = false;
+        let codeNodeSystem = "";
         let row = tableNode.rows[idx+1];
         let rowChildren = row.children;
         for (let d = 0; d < rowChildren.length; d++) {
             let col = rowChildren[d + 1];
             if ((d + 1) === 1) {
                 title = col.children[0].innerHTML;
+                if (col.children[0].getAttribute('data-is-system')) {
+                    if (col.children[0].getAttribute('data-is-system') === "true") {
+                         isSystem = true;
+                         codeNodeSystem = col.children[0].getAttribute('data-system-code')
+                    }
+                }
             } else if ((d + 1) === 2) {
                 description = col.children[0].innerHTML;
             } else if ((d + 1) === 3) {
@@ -372,7 +379,9 @@ function setupDataNode() {
                 'option_collaborator': optionCollab,
                 'employee_list': dataEmployeeList,
                 'node_zone': dataZoneList,
-                'collaborator': dataCollaboratorList
+                'collaborator': dataCollaboratorList,
+                'is_system': isSystem,
+                'code_node_system': codeNodeSystem
             });
     }
     return dataNodeList

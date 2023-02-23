@@ -44,11 +44,15 @@ $(document).ready(function () {
                             let initialCheckBox = "";
                             let title = "";
                             let description = "";
+                            let codeSystem = "";
                             if (item.title !== null) {
                                 title = item.title
                             }
                             if (item.remark !== null) {
                                 description = item.remark
+                            }
+                            if (item.code !== null) {
+                                codeSystem = item.code
                             }
                             let currentId = "";
                             let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-workflow-node" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
@@ -58,7 +62,7 @@ $(document).ready(function () {
                                 initialCheckBox = "1"
                                 currentId = "check_sel_1";
                                 checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-workflow-node" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
-                                nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span>${title}</span></td><td><span>${description}</span></td>
+                                nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span data-is-system="true" data-system-code="${codeSystem}">${title}</span></td><td><span>${description}</span></td>
                                         <td>
                                         <div class="btn-group dropdown">
                                         <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>
@@ -88,7 +92,7 @@ $(document).ready(function () {
                                                         <div class="modal-body">
                                                             <table
                                                                 id=""
-                                                                class="table nowrap w-100 mb-5"
+                                                                class="table nowrap w-100 mb-5 table-initial-node-collaborator"
                                                             >
                                                                 <thead>
                                                                 <tr>
@@ -103,7 +107,7 @@ $(document).ready(function () {
                                                                 <td>Creator</td>
                                                                 <td>Creator's position</td>
                                                                 <td>Creator's role</td>
-                                                                <td>Creator's role</td>
+                                                                <td>All</td>
                                                                 <td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a></td>
                                                                 </tbody>
                                                             </table>
@@ -119,7 +123,7 @@ $(document).ready(function () {
                                         </td>
                                         <td>${actionData}</td></tr>`
                             } else {
-                                nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span>${title}</span></td><td><span>${description}</span></td>
+                                nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span data-is-system="true" data-system-code="${codeSystem}">${title}</span></td><td><span>${description}</span></td>
                                                                 <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
                                                                 <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 260px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
                                                                 <td>${actionData}</td>
@@ -498,7 +502,7 @@ $(document).on('change', '.select-box-audit-option', function (e) {
                                 >
                                     <thead>
                                     <tr>
-                                        <th>
+                                        <th data-orderable="false">
                                             <span class="form-check">
                                                 <input
                                                         type="checkbox"
@@ -508,11 +512,11 @@ $(document).on('change', '.select-box-audit-option', function (e) {
                                                 <label class="form-check-label" for="customCheck1"></label>
                                             </span>
                                         </th>
-                                        <th>Collaborator</th>
-                                        <th>Position</th>
-                                        <th>Role</th>
-                                        <th>Editing Zone</th>
-                                        <th>Actions</th>
+                                        <th data-orderable="false">Collaborator</th>
+                                        <th data-orderable="false">Position</th>
+                                        <th data-orderable="false">Role</th>
+                                        <th data-orderable="false">Editing Zone</th>
+                                        <th data-orderable="false">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -636,6 +640,10 @@ $(document).on('change', '.select-box-audit-option', function (e) {
         modalBody.append(tableEmployeeInWorkflow)
         loadCompanyAuditInWorkflow(boxInWorkflowCompanyId);
         loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
+
+        let jqueryId = "#" + tableInWorkflowEmployeeId;
+        let tableInWorkflow = $(jqueryId).DataTable();
+        tableInWorkflow.columns.adjust();
     }
 
     return false;

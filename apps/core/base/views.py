@@ -25,7 +25,7 @@ class PlanListAPI(APIView):
 class TenantApplicationListAPI(APIView):
     @mask_view(
         auth_require=True,
-        is_api=True
+        is_api=True,
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.TENANT_APPLICATION_LIST, user=request.user).get()

@@ -11,7 +11,19 @@ $(function () {
             // info:false,
             ajax: {
                 url: LISTURL,
-                dataSrc: 'data.workflow_list'
+                type: "GET",
+                dataSrc: 'data.workflow_list',
+                data:function(params){
+                    params['is_ajax'] = true;
+                    return params
+                },
+                error: function(jqXHR, ajaxOptions, thrownError) {
+                    $table.find('.dataTables_empty').text(jqXHR.responseJSON.data.errors)
+                }
+            },
+            onFieldError: function (editor, error) {
+                errorbox(error.name + ': ' + error.status);
+                // Now how do I prevent the error shown inside the table row?
             },
             drawCallback: function () {
                 // render icon after table callback

@@ -329,6 +329,17 @@ function setupDataNode() {
                             if (tableInitialNodeCollaborator.tBodies[0].rows.length === 1) {
                                 let rowInitialCollab = tableInitialNodeCollaborator.tBodies[0].rows[0];
                                 let zoneTd = rowInitialCollab.querySelector('.initial-node-collaborator-zone');
+                                if (zoneTd) {
+                                    let eleSpanZoneShow = zoneTd.querySelector('.zone-node-initial-show');
+                                    if (eleSpanZoneShow.children.length > 0) {
+                                        for (let d = 0; d < eleSpanZoneShow.children.length; d++) {
+                                            let eleInput = eleSpanZoneShow.children[d].children[0].children[0].value;
+                                            if (eleInput) {
+                                                dataZoneList.push(Number(eleInput));
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {

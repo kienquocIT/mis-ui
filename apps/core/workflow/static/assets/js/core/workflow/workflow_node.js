@@ -167,14 +167,14 @@ $(document).on('click', '.btn-initial-node-collaborator', function (e) {
             </div>
             </div>
             <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+            <input type="checkbox" class="form-check-input check-zone-node-initial" id="customCheck6">
             <label class="form-check-label" for="customCheck6"></label>
             </div>
             </li>`
         }
     }
     actionDropDown = `<div class="btn-group dropdown">
-            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+            <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                 <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                     <ul class="node-zone-list p-0">
                         ${optionZone}
@@ -183,7 +183,8 @@ $(document).on('click', '.btn-initial-node-collaborator', function (e) {
                 </div>
                 </div>
             </div>`
-    zoneTd.innerHtml = actionDropDown
+    zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
+
 });
 
 
@@ -908,7 +909,7 @@ $(document).on('click', '.button-add-audit-in-workflow-employee', function () {
 });
 
 
-// On check zone of node to change status
+// On check zone of node
 $(document).on('click', '.check-zone-node', function (e) {
     let eleUL = $(this)[0].closest('ul');
     let dataShow = ``;
@@ -959,7 +960,34 @@ $(document).on('click', '.check-zone-node', function (e) {
 });
 
 
-// On check action node
+// On check zone of node initial
+$(document).on('click', '.check-zone-node-initial', function (e) {
+    let eleUL = $(this)[0].closest('ul');
+    let eleDivRow = eleUL.closest('.row');
+    let eleSpan = eleDivRow.querySelector('.zone-node-initial-show');
+    let dataShow = ``;
+    let span = ``;
+    if (eleUL.children.length > 0) {
+        for (let li = 0; li < eleUL.children.length; li++) {
+            let eleLi = eleUL.children[li];
+            let input = eleLi.querySelector('.check-zone-node-initial');
+            let eleDivData = eleLi.querySelector('.node-zone');
+            if (input.checked === true) {
+            let childID = eleDivData.getAttribute('data-node-zone');
+            let childTitle = eleDivData.innerHTML;
+            span = `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+            dataShow += `<div class="col-12" style="margin-left: -30px">${span}</div>`
+            }
+        }
+    }
+
+    eleSpan.innerHTML = "";
+    eleSpan.innerHTML = dataShow;
+
+});
+
+
+// On check action node & change status
 $(document).on('click', '.check-action-node', function (e) {
     let eleTd = $(this)[0].closest('td');
     // let eleSpan = eleTd.children[0].children[0].children[0];

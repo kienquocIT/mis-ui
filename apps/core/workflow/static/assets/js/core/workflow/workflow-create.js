@@ -227,7 +227,7 @@ $(function () {
                         btn_data_list.push(temp)
                     }
                 })
-                $('[name="workflow_action"]').val(JSON.stringify(btn_data_list))
+                $('[name="actions_rename"]').val(JSON.stringify(btn_data_list))
                 $this.modal('hide')
             });
         })
@@ -248,14 +248,16 @@ $(function () {
                 'zone',
                 'is_multi_company',
                 'is_define_zone',
+                'actions_rename'
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
-                    if (!submitFields.includes(key)) {
-                        delete _form.dataForm[key]
-                    }
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
+            let temp = _form.dataForm['actions_rename']
+            if (temp) _form.dataForm['actions_rename'] = JSON.parse(temp)
+            else _form.dataForm['actions_rename'] = []
 
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
@@ -264,13 +266,13 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
+                            $.fn.notifyPopup({description: data.message}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                        $.fn.notifyPopup({description: "Workflow create fail"}, 'failure')
                     }
                 )
         });

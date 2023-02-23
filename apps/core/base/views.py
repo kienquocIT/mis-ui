@@ -8,8 +8,6 @@ from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
 
 # Subscription Plan
 class PlanListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         is_api=True
@@ -25,8 +23,6 @@ class PlanListAPI(APIView):
 
 # Tenant application list
 class TenantApplicationListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         is_api=True
@@ -42,10 +38,8 @@ class TenantApplicationListAPI(APIView):
 
 # Tenant application list
 class ApplicationPropertyListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
-        auth_require=True,
+        login_require=True,
         is_api=True
     )
     def get(self, request, *args, **kwargs):

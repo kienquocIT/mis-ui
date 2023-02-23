@@ -32,7 +32,7 @@ $(function () {
         })
 
         // init dataTable
-        let $tables = $('.table_workflow_zone');
+        let $tables = $('#table_workflow_zone');
         $tables.each(function () {
             let $elm = $(this);
             $elm.DataTable({
@@ -40,7 +40,6 @@ $(function () {
                 ordering: false,
                 paginate: false,
                 info: false,
-                order: [[1, 'asc']],
                 drawCallback: function (row, data) {
                     // render icon after table callback
                     feather.replace();
@@ -79,11 +78,14 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
+                            let _id = row.order
+                            if (row.hasOwnProperty('id') && row.id)
+                                _id = row.id
                             return `<div class="actions-btn">
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
                                            title="Edit"
                                            href="#"
-                                           data-id="${row.id}"
+                                           data-id="${_id}"
                                            data-action="edit">
                                             <span class="feather-icon">
                                                 <i data-feather="edit"></i>
@@ -92,7 +94,7 @@ $(function () {
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
                                            title="Delete"
                                            href="#"
-                                           data-id="${row.id}"
+                                           data-id="${_id}"
                                            data-action="delete">
                                             <span class="btn-icon-wrap">
                                                 <span class="feather-icon">
@@ -107,7 +109,7 @@ $(function () {
             });
         })
 
-        // handle btn in form submit
+        // handle btn modal zone save
         function modalFormSubmit($form) {
             $('#btn-zone-submit').off().on('click', function (e) {
                 e.preventDefault();
@@ -119,10 +121,13 @@ $(function () {
                     "remark": _form.get("remark"),
                     "property_list": _form.getAll("property_list")
                 }
-                if (_form.get("order") && _form.get("order") !== '' && _form.get("order") !== undefined) {
+                if (_form.get('zone_id'))
+                    temp['id'] = _form.get('zone_id')
+                if (_form.get("order") && _form.get("order") !== undefined) {
                     let rowIdx = form_order - 1
                     $('#table_workflow_zone').DataTable().row(rowIdx).data(temp).draw()
-                } else $('#table_workflow_zone').DataTable().row.add(temp).draw()
+                }
+                else $('#table_workflow_zone').DataTable().row.add(temp).draw()
                 $form[0].reset();
                 $form.find('.dropdown-select_two').val(null).trigger('change');
                 ZONE_INDEX = ZONE_INDEX + 1
@@ -130,7 +135,7 @@ $(function () {
             });
         }
 
-        // handle modal is show
+        // show modal add zone
         $('[data-bs-target="#add_zone"]').on('click', function (e) {
             e.preventDefault();
             let getApp = $select_box.select2('data')
@@ -175,18 +180,20 @@ $(function () {
             $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id}))
         });
 
-        // handle event table actions on click
+        // handle event table zone actions on click
         function actionsClick(elm, data, iEvent) {
             let isACtion = $(iEvent.currentTarget).attr('data-action');
             if (isACtion === 'edit') {
-                let $add_zone = $('#add_zone')
-                let $form = $add_zone.find('form')
+                let $add_zone_modal = $('#add_zone')
+                let $form = $add_zone_modal.find('form')
                 $form.find('[name="title"]').val(data.title)
                 $form.find('[name="remark"]').val(data.remark)
                 $form.find('#property_list_choices').val(data.property_list).trigger('change')
                 $form.find('[name="order"]').val(data.order)
+                if (data.hasOwnProperty('id'))
+                    $form.find('[name="zone_id"]').val(data.id)
                 modalFormSubmit($form)
-                $add_zone.modal('show')
+                $add_zone_modal.modal('show')
             } else if (isACtion === 'delete') {
                 let table_elm = $(elm).parents('table.table');
                 $(table_elm).DataTable().rows(elm).remove().draw();
@@ -197,8 +204,6 @@ $(function () {
                 }
                 $(table_elm).DataTable().data(isDataTableList).draw(false)
             }
-            // console.log(elm, '\n')
-            // console.dir(data)
         }
 
         // action reset default of modal
@@ -209,6 +214,7 @@ $(function () {
             }
         });
 
+        // modal rename button action
         $('#change_btn').on('shown.bs.modal', function(){
             let $this = $(this)
             $('#btn-rename').on('click', function(){

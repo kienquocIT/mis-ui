@@ -882,7 +882,7 @@ $(document).on('click', '.button-add-audit-in-workflow-employee', function () {
 
     if (empTitle) {
         table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${actionData}</td></tr>`)
-        if (tableLen === 0) {
+        if (tableCheckEmpty) {
             eleSpan.innerHTML = ``;
             eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
         }

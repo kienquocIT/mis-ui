@@ -4,6 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL
 
@@ -15,14 +16,13 @@ class WorkflowList(View):
         auth_require=True,
         template='core/workflow/workflow_list.html',
         menu_active='menu_workflow_list',
+        breadcrumb='WORKFLOW_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class WorkflowListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -34,7 +34,7 @@ class WorkflowListAPI(APIView):
 
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
 
 class WorkflowCreate(View):
@@ -43,18 +43,10 @@ class WorkflowCreate(View):
     @mask_view(
         auth_require=True,
         template='core/workflow/workflow_create.html',
+        breadcrumb='WORKFLOW_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        xx = {"isform": json.dumps({
-                "id": "bfe7a5cb-defe-4ab8-81b3-da563bc30e43",
-                "title": "Title",
-                "code": "role_title",
-                "type": "text",
-                "content_type": "",
-                "properties": {},
-                "remark": "lorem ipsum dolor sit amet.."
-            })}
-        return xx, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class WorkflowCreateAPI(APIView):

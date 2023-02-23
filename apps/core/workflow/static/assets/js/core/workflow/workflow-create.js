@@ -43,6 +43,7 @@ $(function () {
                 drawCallback: function (row, data) {
                     // render icon after table callback
                     feather.replace();
+                    // reorder from index to order
                     if (data){
                         let api = this.api()
                         let newIndex = api.row(row).index()
@@ -242,7 +243,7 @@ $(function () {
 
             let submitFields = [
                 'title',
-                'code_application',
+                'application',
                 'node',
                 'zone',
                 'is_multi_company',

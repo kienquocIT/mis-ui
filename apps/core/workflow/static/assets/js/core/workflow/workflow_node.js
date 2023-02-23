@@ -16,9 +16,9 @@ $(document).ready(function () {
                         for (let a = 0; a < nodeAction.length; a++) {
                             for (let key in nodeAction[a]) {
                                 if (key === "0") {
-                                    inputEle = `<input type="checkbox" className="check-action-node" id="customCheck6" checked disabled>`;
+                                    inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" checked disabled>`;
                                 } else {
-                                    inputEle = `<input type="checkbox" className="check-action-node" id="customCheck6" disabled>`;
+                                    inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" disabled>`;
                                 }
                                 actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                                                 <div class="media d-flex align-items-center">
@@ -65,7 +65,7 @@ $(document).ready(function () {
                                 nodeHTML = `<tr class="${initialRow}" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span data-is-system="true" data-system-code="${codeSystem}">${title}</span></td><td><span>${description}</span></td>
                                         <td>
                                         <div class="btn-group dropdown">
-                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>
+                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"><span class="" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>
                                             <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                 <ul class="node-action-list p-0">
                                                     ${actionEle}
@@ -76,7 +76,7 @@ $(document).ready(function () {
                                         </div>
                                         </td>
                                         <td>
-                                        <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
+                                        <i class="fas fa-align-justify btn-initial-node-collaborator" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
                                         <div
                                             class="modal fade" id="auditModalCreateInitial" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalCenter" aria-hidden="true"
@@ -107,7 +107,7 @@ $(document).ready(function () {
                                                                 <td>Creator</td>
                                                                 <td>Creator's position</td>
                                                                 <td>Creator's role</td>
-                                                                <td>All</td>
+                                                                <td class="initial-node-collaborator-zone"></td>
                                                                 <td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a></td>
                                                                 </tbody>
                                                             </table>
@@ -145,6 +145,46 @@ $(document).on('click', '.next-btn', function (e) {
     table.columns.adjust();
 });
 
+
+$(document).on('click', '.btn-initial-node-collaborator', function (e) {
+    let modalBody = $(this)[0].closest('tr').querySelector('.modal-body');
+    let zoneTd = modalBody.querySelector('.initial-node-collaborator-zone');
+    let tableZone = document.getElementById('table_workflow_zone');
+    let actionDropDown = ``;
+    let optionZone = ``;
+    let orderNum = 0;
+    for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
+        let row = tableZone.rows[z+1];
+        if (row.children[1]) {
+            let childTitle = row.children[1].children[0].innerHTML;
+            orderNum++;
+            optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+            <div class="media d-flex align-items-center">
+            <div class="media-body">
+            <div>
+            <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
+            </div>
+            </div>
+            </div>
+            <div class="form-check form-check-theme ms-3">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+            <label class="form-check-label" for="customCheck6"></label>
+            </div>
+            </li>`
+        }
+    }
+    actionDropDown = `<div class="btn-group dropdown">
+            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
+                    <ul class="node-zone-list p-0">
+                        ${optionZone}
+                    </ul>
+                </div>
+                </div>
+                </div>
+            </div>`
+    zoneTd.innerHtml = actionDropDown
+});
 
 
 function loadAuditOutFormEmployee (tableId) {
@@ -784,6 +824,10 @@ $(document).on('click', '.button-add-audit-in-workflow-employee', function () {
     let jqueryId = "#" + tableId;
     let table = $(jqueryId);
     let tableLen = document.getElementById(tableId).tBodies[0].rows.length;
+    let tableCheckEmpty = document.getElementById(tableId).tBodies[0].querySelector('.dataTables_empty');
+    if (tableCheckEmpty) {
+        document.getElementById(tableId).tBodies[0].innerHTML = ``;
+    }
     let companySelectBox = document.getElementById($(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-company').id);
     let companySelected = companySelectBox.options[companySelectBox.selectedIndex];
     let employeeBoxId = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').id;

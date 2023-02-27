@@ -7,7 +7,7 @@ $(function () {
         let $prev_btn = $('#nav-next-prev-step .prev-btn');
         let $next_btn = $('#nav-next-prev-step .next-btn');
 
-        // init select function applied ---> chưa viết docs cho select2
+        // init select function applied ---> chua vi?t docs cho select2
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
         $select_box.select2({
@@ -293,7 +293,7 @@ $(function () {
 });
 
 
-function setupDataNode() {
+function setupDataNode(is_submit = false) {
     let dataNodeList = [];
     let tableNode = document.getElementById('datable-workflow-node-create');
     for (let idx = 0; idx < tableNode.tBodies[0].rows.length; idx++) {
@@ -306,7 +306,12 @@ function setupDataNode() {
         let dataCollaboratorList = [];
         let isSystem = false;
         let codeNodeSystem = "";
+        let total_collaborator = 1;
+        let orderNode = 0;
         let row = tableNode.rows[idx + 1];
+        if (row.getAttribute('data-initial-check-box')) {
+            orderNode = Number(row.getAttribute('data-initial-check-box'))
+        }
         let rowChildren = row.children;
         for (let d = 0; d < rowChildren.length; d++) {
             let col = rowChildren[d + 1];
@@ -344,11 +349,28 @@ function setupDataNode() {
                             if (tableInitialNodeCollaborator.tBodies[0].rows.length === 1) {
                                 let rowInitialCollab = tableInitialNodeCollaborator.tBodies[0].rows[0];
                                 let zoneTd = rowInitialCollab.querySelector('.initial-node-collaborator-zone');
+                                if (zoneTd) {
+                                    let eleSpanZoneShow = zoneTd.querySelector('.zone-node-initial-show');
+                                    if (eleSpanZoneShow) {
+                                        if (eleSpanZoneShow.children.length > 0) {
+                                            for (let d = 0; d < eleSpanZoneShow.children.length; d++) {
+                                                let eleInput = eleSpanZoneShow.children[d].children[0].children[0].value;
+                                                if (eleInput) {
+                                                    dataZoneList.push(Number(eleInput));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {
                         if (modalBody.children[0].children[1].value) {
                             optionCollab = Number(modalBody.children[0].children[1].value);
+
+                            // if option in form
+                            if (optionCollab === 1) {
+                            }
 
                             // if option out form
                             if (optionCollab === 1) {
@@ -373,7 +395,7 @@ function setupDataNode() {
                                         }
                                     }
                                 }
-                                // option in workflow
+                                // if option in workflow
                             } else if (optionCollab === 2) {
                                 let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
                                 let table = document.getElementById(tableDataShowId);
@@ -398,24 +420,41 @@ function setupDataNode() {
                                         'collaborator_zone': dataZoneInWorkflowList,
                                     });
                                 }
+                                total_collaborator = dataCollaboratorList.length;
                             }
                         }
                     }
                 }
             }
         }
-        dataNodeList.push({
-            'title': title,
-            'description': description,
-            'actions': dataActionList,
-            'option_collaborator': optionCollab,
-            'collaborator_list': dataEmployeeList,
-            'node_zone': dataZoneList,
-            'collaborator': dataCollaboratorList,
-            'is_system': isSystem,
-            'code_node_system': codeNodeSystem
-        });
+        if (is_submit === true) {
+            dataNodeList.push({
+                'title': title,
+                'description': description,
+                'actions': dataActionList,
+                'option_collaborator': optionCollab,
+                'collaborator_list': dataEmployeeList,
+                'node_zone': dataZoneList,
+                'collaborator': dataCollaboratorList,
+                'is_system': isSystem,
+                'code_node_system': codeNodeSystem,
+                'order': orderNode
+            });
+        } else {
+            dataNodeList.push({
+                'order': orderNode,
+                'title': title,
+                'remark': description,
+                'action': dataActionList,
+                'collaborators': {
+                    'option': optionCollab,
+                    'total': total_collaborator,
+                },
+                'is_system': isSystem,
+                'code_node_system': codeNodeSystem,
+            });
+        }
     }
     return dataNodeList
-}
 
+}

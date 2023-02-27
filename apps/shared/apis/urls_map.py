@@ -55,9 +55,16 @@ class ApiURL(object):
 
     # base
     PLAN_LIST = StringUrl('base/plans')
+    TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
+    APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
 
     TENANT = StringUrl('tenant/userlist')
     # HR
     EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
     USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
     COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
+
+    # WORKFLOW
+    WORKFLOW_LIST = StringUrl('workflow/lists')
+    WORKFLOW_CREATE = StringUrl('workflow/create')
+    WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')

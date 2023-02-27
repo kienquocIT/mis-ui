@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg
 
 
 class WorkflowList(View):
@@ -60,6 +60,7 @@ class WorkflowCreateAPI(APIView):
         data = request.data
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
         if resp.state:
+            resp.result['message'] = WorkflowMsg.WORKFLOW_CREATE
             return resp.result, status.HTTP_200_OK
 
         elif resp.status == 401:

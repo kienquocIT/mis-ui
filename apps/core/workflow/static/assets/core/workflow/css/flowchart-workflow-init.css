@@ -1,0 +1,64 @@
+.dropdown-menu {
+    width: 100%;
+}
+
+#flowchart_workflow {
+    position: relative;
+}
+#tab_next_node .wrap-flowchart{
+    display: flex;
+    justify-content: space-between;
+}
+
+#tab_next_node #node_dragbox {
+    width: 30%;
+    border: solid 1px #cdcdcd;
+    height: 90vh;
+    border-radius: 10px;
+}
+
+#node_dragbox {
+    padding: 10px;
+}
+
+#node_dragbox .control {
+    background: #d5ddf8;
+    padding: 12px 10px;
+    margin-bottom: 20px;
+    border-left: solid 18px #9aadec;
+    border-bottom: solid 1px #cdd6f5;
+    border-radius: 10px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
+    position: relative;
+    cursor: pointer;
+}
+
+#node_dragbox .control:before {
+    content: '::::';
+    position: absolute;
+    top: 10px;
+    left: -19px;
+    transform: rotate(90deg);
+    letter-spacing: 2px;
+    font-size: 20px;
+    color: #7e96e8;
+}
+
+#node_dragbox .control p {
+    color: #374986;
+}
+
+#node_dragbox .control .drag-title {
+    font-weight: 500;
+    width: 50%;
+}
+
+#tab_next_node #flowchart_workflow{
+    width: calc(70% - 12px);
+    border:solid 1px #cdcdcd;
+    border-radius: 10px;
+    height:90vh;
+}

@@ -7,7 +7,7 @@ $(function () {
         let $prev_btn = $('#nav-next-prev-step .prev-btn');
         let $next_btn = $('#nav-next-prev-step .next-btn');
 
-        // init select function applied
+        // init select function applied ---> chua vi?t docs cho select2
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
         $select_box.select2({
@@ -44,7 +44,7 @@ $(function () {
                     // render icon after table callback
                     feather.replace();
                     // reorder from index to order
-                    if (data){
+                    if (data) {
                         let api = this.api()
                         let newIndex = api.row(row).index()
                         data['order'] = newIndex + 1
@@ -127,8 +127,7 @@ $(function () {
                 if (_form.get("order") && _form.get("order") !== undefined) {
                     let rowIdx = form_order - 1
                     $('#table_workflow_zone').DataTable().row(rowIdx).data(temp).draw()
-                }
-                else $('#table_workflow_zone').DataTable().row.add(temp).draw()
+                } else $('#table_workflow_zone').DataTable().row.add(temp).draw()
                 $form[0].reset();
                 $form.find('.dropdown-select_two').val(null).trigger('change');
                 ZONE_INDEX = ZONE_INDEX + 1
@@ -151,6 +150,8 @@ $(function () {
 
         // handle event on click prev next btn
         $("#nav-next-prev-step button").off().on('click', function (e) {
+
+            // display show hide content of tabs
             e.preventDefault()
             let elmIsActive = $('.nav-workflow-form-tabs li a.active')
             $('.tab-pane').removeClass('show active')
@@ -171,7 +172,12 @@ $(function () {
             }
             $(`${btn_href}`).addClass('show active')
 
-
+            // catch if next tab is display config condition
+            if (btn_href === '#tab_next_node') {
+                $('#node_dragbox').empty();
+                let jsplumb = new JSPlumbsHandle();
+                jsplumb.renderAndRerenderDrag();
+            }
         })
 
         //handle event on change function applied
@@ -200,7 +206,7 @@ $(function () {
                 $(table_elm).DataTable().rows(elm).remove().draw();
                 // .row(elm).index()
                 let isDataTableList = $(table_elm).DataTable().data().toArray()
-                for(let [idx, item] of isDataTableList.entries()){
+                for (let [idx, item] of isDataTableList.entries()) {
                     item['order'] = idx + 1
                 }
                 $(table_elm).DataTable().data(isDataTableList).draw(false)
@@ -208,29 +214,34 @@ $(function () {
         }
 
         // action reset default of modal
-        $('#id-restore_default').on('change', function(){
+        $('#id-restore_default').on('change', function () {
             let isChecked = $(this).prop('checked')
-            if (isChecked){
-               $('#table_workflow_rename [name*="btn_"]').val('')
+            if (isChecked) {
+                $('#table_workflow_rename [name*="btn_"]').val('')
             }
         });
 
         // modal rename button action
-        $('#change_btn').on('shown.bs.modal', function(){
+        $('#change_btn').on('shown.bs.modal', function () {
             let $this = $(this)
-            $('#btn-rename').on('click', function(){
+            $('#btn-rename').on('click', function () {
                 let btn_data_list = []
-                $('#table_workflow_rename [name*="btn_"]').each(function(idx, elm){
-                    if ($(elm).val() !== ''){
+                $('#table_workflow_rename [name*="btn_"]').each(function (idx, elm) {
+                    if ($(elm).val() !== '') {
                         let temp = {}
                         temp[$(elm).attr('data-key')] = $(elm).val()
                         btn_data_list.push(temp)
                     }
                 })
-                $('[name="workflow_action"]').val(JSON.stringify(btn_data_list))
+                $('[name="actions_rename"]').val(JSON.stringify(btn_data_list))
                 $this.modal('hide')
             });
         })
+
+
+        // init FlowChart
+        const JSPlumbsInit = new JSPlumbsHandle();
+        JSPlumbsInit.init();
 
         // form submit
         $('#btn-create_workflow').on('click', function (e) {
@@ -248,14 +259,16 @@ $(function () {
                 'zone',
                 'is_multi_company',
                 'is_define_zone',
+                'actions_rename'
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
-                    if (!submitFields.includes(key)) {
-                        delete _form.dataForm[key]
-                    }
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
+            let temp = _form.dataForm['actions_rename']
+            if (temp) _form.dataForm['actions_rename'] = JSON.parse(temp)
+            else _form.dataForm['actions_rename'] = []
 
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
@@ -264,16 +277,18 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
+                            $.fn.notifyPopup({description: data.message}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                        $.fn.notifyPopup({description: "Workflow create fail"}, 'failure')
                     }
                 )
         });
+
+
     });
 });
 

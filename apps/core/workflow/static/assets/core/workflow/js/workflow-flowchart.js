@@ -65,9 +65,12 @@ class JSPlumbsHandle {
     initJSPlumbs() {
         var instance = jsPlumb.getInstance({});
 
-        $("#node_dragbox .control").each(function(){
-            $(this).draggable();
-        })
+        $("#node_dragbox .control").draggable({
+            // helper: "clone",
+            containment: "body",
+            appendTo: "#flowchart_workflow"
+        });
+
         // instance.makeTarget($("#node_dragbox"), {
         //     anchor: "Continuous"
         // });

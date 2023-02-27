@@ -3,11 +3,9 @@
 {% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        .dropdown-menu {
-            width: 100%;
-        }
-    </style>
+    <link href="{% static 'vendors/JSPlumb/css/jsplumbtoolkit-defaults.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/core/workflow/css/flowchart-workflow-init.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
@@ -65,7 +63,7 @@
             </ul>
         </div>
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab_function">
+            <div class="tab-pane fade " id="tab_function">
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
@@ -269,8 +267,12 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_next_node">
-                <p>Exit/Next</p>
+            <div class="tab-pane fade show active" id="tab_next_node">
+                <div class="wrap-flowchart">
+                    <div id="node_dragbox">
+                        <p class="text-center pt-3">{% trans 'No content available' %}</p></div>
+                    <div id="flowchart_workflow"></div>
+                </div>
             </div>
         </div>
         <div class="w-100 d-flex justify-content-center mt-2" id="nav-next-prev-step">
@@ -435,8 +437,9 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
-    {#    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>#}
-    {#    <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>#}
-    <script src="{% static 'assets/js/core/workflow/workflow-create.js' %}"></script>
-    <script src="{% static 'assets/js/core/workflow/workflow_node.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'vendors/JSPlumb/js/jsplumb.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow-flowchart.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow-create.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow_node.js' %}"></script>
 {% endblock %}

@@ -35,6 +35,7 @@ class ApiURL(object):
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
+    EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')

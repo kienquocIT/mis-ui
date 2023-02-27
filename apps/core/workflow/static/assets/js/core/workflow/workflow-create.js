@@ -291,7 +291,8 @@ function setupDataNode(is_submit = false) {
         let dataCollaboratorList = [];
         let isSystem = false;
         let codeNodeSystem = "";
-        let total_collaborator = 1;
+        let total_collaborator_in_process = 1;
+        let total_collaborator_config = 1;
         let orderNode = 0;
         let row = tableNode.rows[idx + 1];
         if (row.getAttribute('data-initial-check-box')) {
@@ -354,7 +355,7 @@ function setupDataNode(is_submit = false) {
                             optionCollab = Number(modalBody.children[0].children[1].value);
 
                             // if option in form
-                            if (optionCollab === 1) {
+                            if (optionCollab === 0) {
                             }
 
                             // if option out form
@@ -380,6 +381,7 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                 }
+                                total_collaborator_config = dataEmployeeList.length
                                 // if option in workflow
                             } else if (optionCollab === 2) {
                                 let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
@@ -405,7 +407,8 @@ function setupDataNode(is_submit = false) {
                                         'collaborator_zone': dataZoneInWorkflowList,
                                     });
                                 }
-                                total_collaborator = dataCollaboratorList.length;
+                                total_collaborator_in_process = dataCollaboratorList.length;
+                                total_collaborator_config = dataCollaboratorList.length;
                             }
                         }
                     }
@@ -433,7 +436,8 @@ function setupDataNode(is_submit = false) {
                 'action': dataActionList,
                 'collaborators': {
                     'option': optionCollab,
-                    'total': total_collaborator,
+                    'total_in_process': total_collaborator_in_process,
+                    'total_config': total_collaborator_config,
                 },
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,

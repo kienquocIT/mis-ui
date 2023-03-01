@@ -159,6 +159,19 @@ $(document).on('click', '.btn-initial-node-collaborator', function (e) {
     let actionDropDown = ``;
     let optionZone = ``;
     let orderNum = 0;
+    optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+            <div class="media d-flex align-items-center">
+            <div class="media-body">
+            <div>
+            <div class="node-zone" data-node-zone="all">All</div>
+            </div>
+            </div>
+            </div>
+            <div class="form-check form-check-theme ms-3">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true">
+            <label class="form-check-label" for="customCheck6"></label>
+            </div>
+            </li>`
     for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
         let row = tableZone.rows[z+1];
         if (row.children[1]) {
@@ -173,7 +186,7 @@ $(document).on('click', '.btn-initial-node-collaborator', function (e) {
             </div>
             </div>
             <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node-initial" id="customCheck6">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true">
             <label class="form-check-label" for="customCheck6"></label>
             </div>
             </li>`
@@ -423,12 +436,28 @@ $(document).on('change', '.select-box-audit-option', function (e) {
     let tableInWorkflowEmployeeId = "datable-audit-in-workflow-employee-" + eleTrOrder;
     let boxInWorkflowEmployeeId = "select-box-audit-in-workflow-employee-" + eleTrOrder;
     let boxInWorkflowCompanyId = "select-box-audit-in-workflow-company-" + eleTrOrder;
+    let boxInFormPropertyId = "select-box-audit-in-form-property-" + eleTrOrder;
     let canvasId = "offcanvasRight" + eleTrOrder;
     let canvasInWorkflowId = "offcanvasRightInWorkflow" + eleTrOrder;
 
     let tableZone = document.getElementById('table_workflow_zone');
     let optionZone = ``;
     let orderNum = 0;
+
+    optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+            <div class="media d-flex align-items-center">
+            <div class="media-body">
+            <div>
+            <div class="node-zone" data-node-zone="all">All</div>
+            </div>
+            </div>
+            </div>
+            <div class="form-check form-check-theme ms-3">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+            <label class="form-check-label" for="customCheck6"></label>
+            </div>
+            </li>`
+
     for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
         let row = tableZone.rows[z+1];
         if (row.children[1]) {
@@ -593,15 +622,14 @@ $(document).on('change', '.select-box-audit-option', function (e) {
         modalBody.append(`<div class="form-group">
                                 <label class="form-label">Select field in form</label>
                                 <select
-                                        class="form-select" 
+                                        class="form-select slect-box-audit-in-form-property"
+                                        id="${boxInFormPropertyId}"
                                 >
                                     <option></option>
-                                    <option>In form</option>
-                                    <option>Out form</option>
-                                    <option>In workflow</option>
                                 </select>
                             </div>
                             ${defaultZone}`)
+        loadPropertyAuditInFrom(boxInFormPropertyId);
     } else if (value === "1") {
         modalBody[0].innerHTML = "";
         modalBody.append(`<div class="form-group">
@@ -734,6 +762,35 @@ $(document).on('click', '.check-select-all', function () {
 });
 
 
+$(document).on('change', '.select-box-audit-in-workflow-company', function () {
+    let companyId = $(this).val();
+    let eleSelectEmp = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee');
+    if (eleSelectEmp) {
+        loadEmployeeCompanyAuditInWorkflow(eleSelectEmp.id, companyId);
+    }
+});
+
+
+function loadPropertyAuditInFrom(boxId) {
+    let url = '/base/application-property/api';
+    let method = "GET"
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
+                    data.application_property_list.map(function (item) {
+                        ele.append(`<option value="${item.id}">${item.title}</option>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
+
 function loadCompanyAuditInWorkflow(boxId) {
     let url = '/company/list/api';
     let method = "GET"
@@ -772,8 +829,36 @@ function loadEmployeeAuditInWorkflow(boxId) {
                             }
                         }
                         ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
-                                    <div hidden>${spanRole}</div>
-                                    `)
+                                    <div hidden>${spanRole}</div>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
+
+function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
+    let url = '/hr/employee/company/' + company_id;
+    let method = "GET"
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
+                    ele.text("");
+                    ele.append(`<option>` + `</option>`);
+                    data.employee_company_list.map(function (item) {
+                        let spanRole = ``;
+                        if (item.role && Array.isArray(item.role)) {
+                            for (let r = 0; r < item.role.length; r++) {
+                                spanRole += `<span class="badge badge-soft-primary">${item.role[r].title}</span>`
+                            }
+                        }
+                        ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
+                                    <div hidden>${spanRole}</div>`)
                     })
                 }
             }
@@ -923,78 +1008,115 @@ $(document).on('click', '.button-add-audit-in-workflow-employee', function () {
 // On check zone of node
 $(document).on('click', '.check-zone-node', function (e) {
     let eleUL = $(this)[0].closest('ul');
-    let dataShow = ``;
-    let spanGroup = ``;
-    let zoneEle = $(this)[0].closest('span');
-    let zoneInput = zoneEle.children[0];
-    let zoneShow = zoneEle.children[1];
-
-    let trSTT = 0;
     let dataChecked = 0;
-    for (let li = 0; li < eleUL.children.length; li++) {
-        let eleInput = eleUL.children[li].children[1].children[0];
-        if (eleInput.checked === true) {
-            dataChecked++
-        }
-    }
 
-    for (let li = 0; li < eleUL.children.length; li++) {
-        let eleLi = eleUL.children[li];
-        let eleDivData = eleLi.querySelector('.node-zone');
-        let eleInput = eleUL.children[li].children[1].children[0];
-        if (eleInput.checked === true) {
-            let childID = eleDivData.getAttribute('data-node-zone');
-            let childTitle = eleDivData.innerHTML;
-            trSTT++;
-            if (trSTT !== 0 && trSTT % 5 === 0) {
-                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-                dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
-                spanGroup = ``
-            } else {
-                if (trSTT === dataChecked) {
-                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-                    dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
-                } else {
-                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+    // check option all
+    let eleDivDataCheck = $(this)[0].closest('li').querySelector('.node-zone');
+    if (eleDivDataCheck.getAttribute('data-node-zone') === "all") {
+        if ($(this)[0].checked === true) {
+            for (let li = 0; li < eleUL.children.length; li++) {
+                let eleInput = eleUL.children[li + 1].querySelector('.check-zone-node');
+                if (eleInput) {
+                    eleInput.checked = true;
+                    dataChecked++
+                }
+                if ((li + 1) === (eleUL.children.length - 1)) {
+                    break
+                }
+            }
+        } else {
+            for (let li = 0; li < eleUL.children.length; li++) {
+                let eleInput = eleUL.children[li + 1].querySelector('.check-zone-node');
+                if (eleInput) {
+                    eleInput.checked = false;
+                }
+                if ((li + 1) === (eleUL.children.length - 1)) {
+                    break
                 }
             }
         }
-    }
-
-    zoneInput.setAttribute("hidden", true);
-    zoneShow.innerHTML = "";
-    zoneShow.innerHTML = dataShow;
-    zoneShow.classList.remove("row");
-    zoneShow.classList.add("col-11");
-    zoneShow.style.marginRight = "38px"
-
-});
-
-
-// On check zone of node initial
-$(document).on('click', '.check-zone-node-initial', function (e) {
-    let eleUL = $(this)[0].closest('ul');
-    let eleDivRow = eleUL.closest('.row');
-    let eleSpan = eleDivRow.querySelector('.zone-node-initial-show');
-    let dataShow = ``;
-    let span = ``;
-    if (eleUL.children.length > 0) {
+    } else {
         for (let li = 0; li < eleUL.children.length; li++) {
-            let eleLi = eleUL.children[li];
-            let input = eleLi.querySelector('.check-zone-node-initial');
-            let eleDivData = eleLi.querySelector('.node-zone');
-            if (input.checked === true) {
-            let childID = eleDivData.getAttribute('data-node-zone');
-            let childTitle = eleDivData.innerHTML;
-            span = `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
-            dataShow += `<div class="col-12" style="margin-left: -30px">${span}</div>`
+            let eleInput = eleUL.children[li].querySelector('.check-zone-node');
+            if (li === 0) {
+                eleInput.checked = false;
+                continue;
+            }
+            if (eleInput.checked === true) {
+                dataChecked++
             }
         }
     }
 
-    eleSpan.innerHTML = "";
-    eleSpan.innerHTML = dataShow;
+    // append data show
+    let checkInitial = $(this)[0].getAttribute('data-node-initial');
+    if (checkInitial === "true") {
+        let eleDivRow = eleUL.closest('.row');
+        let eleSpan = eleDivRow.querySelector('.zone-node-initial-show');
+        let dataShow = ``;
+        let span = ``;
+        if (eleUL.children.length > 0) {
+            for (let li = 0; li < eleUL.children.length; li++) {
+                let eleLi = eleUL.children[li];
+                let input = eleLi.querySelector('.check-zone-node');
+                let eleDivData = eleLi.querySelector('.node-zone');
+                if (input.checked === true) {
+                    let childID = eleDivData.getAttribute('data-node-zone');
+                    if (childID === "all") {
+                        continue;
+                    }
+                    let childTitle = eleDivData.innerHTML;
+                    span = `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                    dataShow += `<div class="col-12" style="margin-left: -30px">${span}</div>`
+                }
+            }
+        }
 
+        eleSpan.innerHTML = "";
+        eleSpan.innerHTML = dataShow;
+    } else {
+        let dataShow = ``;
+        let spanGroup = ``;
+        let zoneEle = $(this)[0].closest('span');
+        let zoneInput = zoneEle.children[0];
+        let zoneShow = zoneEle.children[1];
+
+        let trSTT = 0;
+        for (let li = 0; li < eleUL.children.length; li++) {
+            let eleLi = eleUL.children[li];
+            let eleDivData = eleLi.querySelector('.node-zone');
+            let childID = eleDivData.getAttribute('data-node-zone');
+            if (childID === "all") {
+                continue;
+            }
+            let eleInput = eleUL.children[li].querySelector('.check-zone-node')
+            if (eleInput) {
+                if (eleInput.checked === true) {
+                    let childTitle = eleDivData.innerHTML;
+                    trSTT++;
+                    if (trSTT !== 0 && trSTT % 5 === 0) {
+                        spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                        dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
+                        spanGroup = ``
+                    } else {
+                        if (trSTT === dataChecked) {
+                            spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                            dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
+                        } else {
+                            spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                        }
+                    }
+                }
+            }
+        }
+
+        zoneInput.setAttribute("hidden", true);
+        zoneShow.innerHTML = "";
+        zoneShow.innerHTML = dataShow;
+        zoneShow.classList.remove("row");
+        zoneShow.classList.add("col-11");
+        zoneShow.style.marginRight = "38px"
+    }
 });
 
 
@@ -1008,6 +1130,7 @@ $(document).on('click', '.check-action-node', function (e) {
 
     // checked
     if ($(this)[0].checked === true) {
+        // change node's status
         eleSpan.innerHTML = ``;
         eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
 
@@ -1058,19 +1181,6 @@ $(document).on('click', '.check-action-node', function (e) {
     }
     // unchecked
     else {
-        let allUnCheck = 0;
-        for (let li = 0; li < eleUL.children.length; li++) {
-            let eleInput = eleUL.children[li].querySelector('.check-action-node');
-            if (eleInput.checked === false) {
-                allUnCheck++;
-            }
-        }
-        if (allUnCheck === eleUL.children.length) {
-            eleSpan.innerHTML = ``;
-            eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
-        }
-
-
         // check group actions
         if (dataAction === "1") {
             for (let li = 0; li < eleUL.children.length; li++) {
@@ -1113,6 +1223,19 @@ $(document).on('click', '.check-action-node', function (e) {
                     eleInput.removeAttribute('disabled')
                 }
             }
+        }
+
+        // change node's status
+        let allUnCheck = 0;
+        for (let li = 0; li < eleUL.children.length; li++) {
+            let eleInput = eleUL.children[li].querySelector('.check-action-node');
+            if (eleInput.checked === false) {
+                allUnCheck++;
+            }
+        }
+        if (allUnCheck === eleUL.children.length) {
+            eleSpan.innerHTML = ``;
+            eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
         }
     }
 

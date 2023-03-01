@@ -8,6 +8,14 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg
 
+WORKFLOW_ACTION = {
+    0: _("Create"),
+    1: _("Approve"),
+    2: _("Reject"),
+    3: _("Return"),
+    4: _("Receive"),
+    5: _("To do"),
+}
 
 class WorkflowList(View):
     permission_classes = [IsAuthenticated]
@@ -46,7 +54,7 @@ class WorkflowCreate(View):
         breadcrumb='WORKFLOW_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'wf_actions': WORKFLOW_ACTION}, status.HTTP_200_OK
 
 
 class WorkflowCreateAPI(APIView):

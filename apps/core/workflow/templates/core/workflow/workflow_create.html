@@ -432,6 +432,13 @@
             </div>
         </div>
     </div>
+
+    <!--- modal exit node--->
+    {% include 'core/workflow/extends/modal-exit-node.html' %}
+    {{ data.wf_actions|json_script:'wf_action' }}
+    <template>
+    p.
+    </template>
 {% endblock %}
 
 {% block jsFooter %}

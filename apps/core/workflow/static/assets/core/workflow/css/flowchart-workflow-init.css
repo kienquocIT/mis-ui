@@ -1,3 +1,20 @@
+
+.window {
+    z-index: 20;
+}
+
+.jtk-connector {
+    z-index: 4;
+}
+
+.jtk-endpoint {
+    z-index: 5;
+}
+
+.jtk-overlay {
+    z-index: 6;
+}
+
 .dropdown-menu {
     width: 100%;
 }
@@ -5,7 +22,8 @@
 #flowchart_workflow {
     position: relative;
 }
-#tab_next_node .wrap-flowchart{
+
+#tab_next_node .wrap-flowchart {
     display: flex;
     justify-content: space-between;
 }
@@ -21,7 +39,14 @@
     padding: 10px;
 }
 
-#node_dragbox .control {
+.wrap-flowchart .control{
+    user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.wrap-flowchart .control,
+.wrap-flowchart .clone{
     background: #d5ddf8;
     padding: 12px 10px;
     margin-bottom: 20px;
@@ -29,14 +54,17 @@
     border-bottom: solid 1px #cdd6f5;
     border-radius: 10px;
     display: flex;
-    width: 100%;
+    width: 150px;
+    height: 150px;
     align-items: center;
+    justify-content: center;
     box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
     position: relative;
-    cursor: pointer;
+    cursor: grab;
+
 }
 
-#node_dragbox .control:before {
+.wrap-flowchart .control:before {
     content: '::::';
     position: absolute;
     top: 10px;
@@ -47,18 +75,34 @@
     color: #7e96e8;
 }
 
-#node_dragbox .control p {
+.wrap-flowchart .control .drag-title,
+.wrap-flowchart .clone .drag-title{
+    font-weight: 500;
     color: #374986;
 }
 
-#node_dragbox .control .drag-title {
-    font-weight: 500;
-    width: 50%;
+#tab_next_node #flowchart_workflow {
+    width: calc(70% - 12px);
+    border: solid 1px #cdcdcd;
+    border-radius: 10px;
+    height: 90vh;
 }
 
-#tab_next_node #flowchart_workflow{
-    width: calc(70% - 12px);
-    border:solid 1px #cdcdcd;
-    border-radius: 10px;
-    height:90vh;
+.custom-menu {
+    z-index: 1000;
+    position: absolute;
+    background: #8d90e2;
+    border: solid 1px #cdcdcd;
+
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.custom-menu a {
+    color: #fff !important;
+}
+
+.control.ui-draggable-disabled {
+    opacity: .5;
+    cursor: no-drop;
 }

@@ -41,7 +41,7 @@ class ApiURL(object):
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
-    GROUP_PARENT = 'hr/group/parent'
+    GROUP_PARENT = StringUrl('hr/group/parent')
 
     # home/company
     COMPANY_LIST = StringUrl('company/list')

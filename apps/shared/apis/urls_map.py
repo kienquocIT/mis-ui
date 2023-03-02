@@ -63,21 +63,21 @@ class ApiURL(object):
     COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
 
     # crm/contact
-    CONTACT_LIST = StringUrl('sale/saledata/contacts')
-    CONTACT_DETAIL = StringUrl('sale/saledata/contact')
-    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('sale/saledata/listnotmapaccount')
+    CONTACT_LIST = StringUrl('saledata/contacts')
+    CONTACT_DETAIL = StringUrl('saledata/contact')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
 
 
     # masterdata/lookup/contact
-    SALUTATION_LIST = StringUrl('sale/saledata/salutations')
-    INTERESTS_LIST = StringUrl('sale/saledata/interests')
+    SALUTATION_LIST = StringUrl('saledata/salutations')
+    INTERESTS_LIST = StringUrl('saledata/interests')
 
     # masterdata/lookup/account
-    INDUSTRY_LIST = StringUrl('sale/saledata/industries')
-    ACCOUNT_TYPE_LIST = StringUrl('sale/saledata/accounttypes')
+    INDUSTRY_LIST = StringUrl('saledata/industries')
+    ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
 
     # crm/account
-    ACCOUNT_LIST = StringUrl('sale/saledata/accounts')
-    ACCOUNT_DETAIL = StringUrl('sale/saledata/account')
-    ACCOUNTNAME_LIST = StringUrl('sale/saledata/employee_map_account_list')
+    ACCOUNT_LIST = StringUrl('saledata/accounts')
+    ACCOUNT_DETAIL = StringUrl('saledata/account')
+    ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
 

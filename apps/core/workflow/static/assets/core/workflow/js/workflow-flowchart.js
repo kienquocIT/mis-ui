@@ -165,9 +165,23 @@ class JSPlumbsHandle {
 
                     // handle event on click node
                     $('#' + is_id).off().on("click", function (evt) {
-                        // console.log('click on event', evt)
                         eventNodeClick(evt)
-                    },)
+                    })
+                    // $('#' + is_id).off().on("mousedown", function (evt) {
+                    //     // console.log('click on event', evt)
+                    //     window.addEventListener("mousemove", drag);
+                    //     window.addEventListener("mouseup", lift);
+                    //     var didDrag = false;
+                    //     function drag() {
+                    //         didDrag = true;
+                    //     }
+                    //     function lift() {
+                    //         if (!didDrag) eventNodeClick(evt)
+                    //         window.removeEventListener("mousemove", drag)
+                    //         window.removeEventListener("mouseup", this)
+                    //     }
+                    //
+                    // },)
                 }
 
             });

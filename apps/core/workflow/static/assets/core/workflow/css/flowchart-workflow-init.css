@@ -33,10 +33,14 @@
     border: solid 1px #cdcdcd;
     height: 90vh;
     border-radius: 10px;
-}
-
-#node_dragbox {
     padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+}
+#node_dragbox .control {
+    flex: 0 0 auto;
 }
 
 .wrap-flowchart .control{
@@ -49,7 +53,7 @@
 .wrap-flowchart .clone{
     background: #d5ddf8;
     padding: 12px 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-left: solid 18px #9aadec;
     border-bottom: solid 1px #cdd6f5;
     border-radius: 10px;

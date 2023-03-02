@@ -394,7 +394,7 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                 }
-                                total_collaborator_config = dataEmployeeList.length
+                                total_collaborator_in_process = dataEmployeeList.length
                                 // if option in workflow
                             } else if (optionCollab === 2) {
                                 let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;

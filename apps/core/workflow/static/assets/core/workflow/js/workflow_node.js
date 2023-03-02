@@ -305,7 +305,7 @@ $(function () {
 
 
 // Action on open modal node
-        $('#add-new-node-workflow-create').on('click', '.workflow-node-del-button', function (e) {
+        $('#add-new-node-workflow-create').on('click', '.open-modal-node', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
             $('#modal-node-name-create').val("");

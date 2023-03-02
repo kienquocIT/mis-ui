@@ -338,12 +338,10 @@ function setupDataNode(is_submit = false) {
                 let eleUL = col.querySelector('.node-action-list');
                 if (eleUL) {
                     for (let li = 0; li < eleUL.children.length; li++) {
-                        let eleInput = eleUL.children[li].children[1].children[0];
-                        let eleDataInput = eleUL.children[li].children[0].children[0].children[0].children[0];
+                        let eleInput = eleUL.children[li].querySelector('.check-action-node');
+                        let eleDataInput = eleUL.children[li].querySelector('.node-action').getAttribute('data-action');
                         if (eleInput.checked === true) {
-                            if (eleDataInput.getAttribute('data-action')) {
-                                dataActionList.push(Number(eleDataInput.getAttribute('data-action')));
-                            }
+                            dataActionList.push(Number(eleDataInput));
                         }
                     }
                 }
@@ -403,7 +401,7 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                 }
-                                total_collaborator_config = dataEmployeeList.length
+                                total_collaborator_in_process = dataEmployeeList.length
                                 // if option in workflow
                             } else if (optionCollab === 2) {
                                 let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;

@@ -61,3 +61,23 @@ class ApiURL(object):
     EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
     USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
     COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
+
+    # crm/contact
+    CONTACT_LIST = StringUrl('sale/saledata/contacts')
+    CONTACT_DETAIL = StringUrl('sale/saledata/contact')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('sale/saledata/listnotmapaccount')
+
+
+    # masterdata/lookup/contact
+    SALUTATION_LIST = StringUrl('sale/saledata/salutations')
+    INTERESTS_LIST = StringUrl('sale/saledata/interests')
+
+    # masterdata/lookup/account
+    INDUSTRY_LIST = StringUrl('sale/saledata/industries')
+    ACCOUNT_TYPE_LIST = StringUrl('sale/saledata/accounttypes')
+
+    # crm/account
+    ACCOUNT_LIST = StringUrl('sale/saledata/accounts')
+    ACCOUNT_DETAIL = StringUrl('sale/saledata/account')
+    ACCOUNTNAME_LIST = StringUrl('sale/saledata/employee_map_account_list')
+

@@ -250,6 +250,14 @@ $(function () {
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode();
+            // get exit node condition for node list
+            if (COMMIT_NODE_LIST)
+                for (let item of nodeTableData){
+                    if (COMMIT_NODE_LIST.hasOwnProperty(item.order))
+                        item.condition = COMMIT_NODE_LIST[item.order]
+                }
+            debugger
+            console.log('nodeTableData', nodeTableData)
             _form.dataForm['node'] = nodeTableData
 
             let submitFields = [
@@ -287,7 +295,6 @@ $(function () {
                     }
                 )
         });
-
 
     });
 });

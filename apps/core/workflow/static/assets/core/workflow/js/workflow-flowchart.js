@@ -1,143 +1,87 @@
-function eventNodeClick(event, nodedata) {
+/***
+ * list of node user has declare and default system node
+ * ***/
+let DEFAULT_NODE_LIST = {};
+let COMMIT_NODE_LIST = []
+let RED_FLAG = false
+/***
+ * function handle user on click into Node
+ * @param event: element of Node
+ * @action on save: get data of modal and store data to MODE_LIST
+ */
+function eventNodeClick(event) {
     let $Elm = $(event.currentTarget)
-    let data = NODE_LIST[$Elm.attr('data-drag')]
+    let data = DEFAULT_NODE_LIST[$Elm.attr('data-drag')]
     let $modal = $('#exit-node')
-    $modal.find('form').reset();
-    let action_name = $('#wf_action').text()
+    let action_name = JSON.parse($('#wf_action').text())
+
     let html = ``;
-    let templateAction = {
-        1: `<input type="text" name="action_with_input">`,
-        2: `<select>`
-            +`<option value=""></option>`
-            +`<option value="0">max-1-x</option>`
-            +`<option value="1">else</option>`
-            +`</select>`,
-    }
-    for (let item in data.action){
-        let midd = templateAction[1]
-        if (item > 0 && item < 4) midd = templateAction[2]
-        let nexttext = 'Rejeact node' ? item === 2 : '1st node' ? item === 3 : 'Completed node' ? item >= 4 : ''
+
+    for (let item of data.action) {
+        // set if node type is in-form/out-form max user is 1
+        let midd = `<input class="form-control formula-input" type="text" value="1" readonly>`;
+        if (data.collaborators.option === "in_workflow") // else in workflow min user 1 and max user is total in node
+            midd = `<input class="form-control formula-input" type="text" minlength="1" value="1" `
+                + `maxlength="${data.collaborators.total_config}">`;
+
+        if (item > 0 && item < 4) midd = `<select class="form-select">`
+            + `<option value=""></option>`
+            + `<option value="0">max+1-x</option>`
+            + `<option value="1">else</option>`
+            + `</select>`;
+        let nexttext = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
         html += `<tr>`
-                + `<td>${action_name[item]}</td>`
-                + `<td>${midd}</td>`
-                + `<td>${nexttext}</td>`
-                +`</tr>`;
+            + `<td>${action_name[item]}<input type="hidden" name="node-${item}" value="${item}"></td>`
+            + `<td>${midd}</td>`
+            + `<td>${nexttext}</td>`
+            + `</tr>`;
     }
     $modal.find('table tbody').html(html);
-    $modal.modal('show')
-    console.log('node data', data);
-    console.log('----end node click------')
-
+    $modal.modal('show');
     // call btn click action
-    //     ....
+    $('#btn-save-exit-node').off().on("click", () => {
+        let condition = []
+        $modal.find('table tbody tr').each(function () {
+            let temp = $(this).find('select option:selected').val()
+            if ($(this).find('.formula-input').length)
+                temp = $(this).find('.formula-input').val()
+            condition.push({
+                node: parseInt($(this).find('[name*="node-"]').val()),
+                formula: temp,
+            })
+        });
+        COMMIT_NODE_LIST[data.order] = condition
+        $modal.modal('hide');
+    })
 }
 
-let NODE_LIST = {
-    1: {
-        order: 1,
-        title: "Node 001",
-        remark: "lorem ipsum",
-        action: [1, 2, 3],
-        collaborators: {
-            option: "in_workflow",
-            total: 1,
-        }
-    },
-    2: {
-        order: 2,
-        title: "Node 002",
-        remark: "lorem ipsum",
-        action: [4],
-        collaborators: {
-            option: "out_form",
-            total: 3,
-        }
-    },
-    3: {
-        order: 3,
-        title: "Node 003",
-        remark: "lorem ipsum",
-        action: [5],
-        collaborators: {
-            option: "in_form",
-            total: 2,
-        }
-    },
-};
-
 class JSPlumbsHandle {
-    constructor() {
-        this.defaultNodeList = [];
-        this.dataAssociateList = [];
-    }
 
     set setNodeList(strData) {
-        if (strData && typeof strData === 'string') {
-            try {
-                strData = JSON.parse(strData)
-                NODE_LIST = strData.reduce((item, idx) =>{
-                    return item[idx.key] = idx.val
-                })
-            } catch (e) {
-                console.error('setNodeList parse data is errors: ', e)
-                strData = []
-            }
-        }
-        this.defaultNodeList = strData
-    }
-
-    get getAssociate() {
-        return this.dataAssociateList
-    }
+        if (strData)
+            DEFAULT_NODE_LIST = strData
+    };
 
     htmlDragRender() {
-        this.defaultNodeList = [
-            {
-                order: 1,
-                title: "Node 001",
-                remark: "lorem ipsum",
-                action: [1, 2, 3],
-                collaborators: {
-                    option: "in_workflow",
-                    total: 1,
-                }
-            },
-            {
-                order: 2,
-                title: "Node 002",
-                remark: "lorem ipsum",
-                action: [4],
-                collaborators: {
-                    option: "out_form",
-                    total: 3,
-                }
-            },
-            {
-                order: 3,
-                title: "Node 003",
-                remark: "lorem ipsum",
-                action: [5],
-                collaborators: {
-                    option: "in_form",
-                    total: 2,
-                }
-            },
-        ]
         let strHTMLDrapNode = '';
-        if (this.defaultNodeList.length) {
-            for (let item of this.defaultNodeList) {
+        if (DEFAULT_NODE_LIST.length) {
+            for (let item of DEFAULT_NODE_LIST) {
                 strHTMLDrapNode += `<div class="control" data-drag="${item.order}">`
                     + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
         }
-        // $('#node_dragbox').html(strHTMLDrapNode)
         $('#node_dragbox').html(strHTMLDrapNode)
     };
 
 
     renderAndRerenderDrag() {
-        this.setNodeList = $('#datatable_node_list').val();
+        // function 'setupDataNode' has call form workflow-create.js
+        this.setNodeList = setupDataNode()
         this.htmlDragRender();
+        if (!RED_FLAG){
+            this.initJSPlumbs();
+            RED_FLAG = !RED_FLAG
+        }
     };
 
     initJSPlumbs() {
@@ -159,9 +103,8 @@ class JSPlumbsHandle {
             // init drag node
             $('#node_dragbox .control').draggable({
                 helper: function () {
-                    let html = $(`<div class="clone" data-drag="${$(this).attr('data-drag')}">`
-                        + `${$(this).find('.drag-title').text()}</div>`);
-                    return html;
+                    return `<div class="clone" data-drag="${$(this).attr('data-drag')}">`
+                        + `${$(this).find('.drag-title').text()}</div>`;
                 },
                 containment: "body",
                 appendTo: "#flowchart_workflow",
@@ -187,16 +130,16 @@ class JSPlumbsHandle {
                                     location: 0.5,
                                     cssClass: "cssAssociateLabel",
                                     events: {
-                                        click: function (labelOverlay, originalEvent) {
+                                        click: function (labelOverlay) {
                                             $(".change-txt").show();
                                             $("#label").value = labelOverlay.getLabel();
-                                            if (document.getElementById("label").value == "")
+                                            if (document.getElementById("label").value === "")
                                                 labelOverlay.setLabel("label");
                                             else
                                                 labelOverlay.setLabel(document.getElementById("label").value);
                                             $('#label').val("");
                                         },
-                                        dblclick: function (labelOverlay, originalEvent) {
+                                        dblclick: function (labelOverlay) {
                                             labelOverlay.setLabel("");
                                         }
                                     },
@@ -219,10 +162,12 @@ class JSPlumbsHandle {
                         isTarget: true,
                         connectionType: "pink-connection",
                     });
-                    $('#'+is_id).off().on("click", function(evt){
+
+                    // handle event on click node
+                    $('#' + is_id).off().on("click", function (evt) {
                         // console.log('click on event', evt)
                         eventNodeClick(evt)
-                    }, )
+                    },)
                 }
 
             });
@@ -251,7 +196,7 @@ class JSPlumbsHandle {
     };
 
     init() {
-        this.setNodeList = $('#datatable_node_list').val();
+        this.setNodeList = setupDataNode();
         this.htmlDragRender();
         this.initJSPlumbs();
     }

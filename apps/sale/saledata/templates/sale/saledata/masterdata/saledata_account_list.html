@@ -97,7 +97,7 @@
     <form id="form-create-lookup" data-method="POST" data-lookup="account_type"
           data-url-account-type="{% url "AccountTypeCreateAPI" %} "
           data-url-industry="{% url "IndustryCreateAPI" %} "
-          data-url-redirect="{% url "AccountLookUpDataList" %}">
+          data-url-redirect="{% url "AccountMasterDataList" %}">
         {% csrf_token %}
         <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
              aria-hidden="true">

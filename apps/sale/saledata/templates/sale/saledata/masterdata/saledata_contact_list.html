@@ -97,7 +97,7 @@
     <form id="form-create-lookup" data-method="POST" data-lookup="salutation"
           data-url-salutation="{% url "SalutationCreateAPI" %} "
           data-url-interests="{% url "InterestCreateAPI" %} "
-          data-url-redirect="{% url "ContactLookUpDataList" %}">
+          data-url-redirect="{% url "ContactMasterDataList" %}">
         {% csrf_token %}
         <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
              aria-hidden="true">

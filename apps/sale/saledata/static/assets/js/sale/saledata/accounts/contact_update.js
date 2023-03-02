@@ -195,12 +195,20 @@ $(document).ready(function () {
             'home_address': $('#home_address_id').val(),
         };
 
+        if (frm.dataForm['account_name'] === '') {
+            delete frm.dataForm['account_name'];
+        }
+
+        if (frm.dataForm['report_to'] === '') {
+            delete frm.dataForm['report_to'];
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     $.fn.notifyPopup({description: resp.detail}, 'success');
                     setTimeout(location.reload.bind(location), 1000);
-                    window.location.replace("/sale/crm/contact/list");
+                    window.location.replace("/saledata/contacts");
                 }, (err) => {
                     $.fn.notifyPopup({description: err.detail}, 'failure');
                 }

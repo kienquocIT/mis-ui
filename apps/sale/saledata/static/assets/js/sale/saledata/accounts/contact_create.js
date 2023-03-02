@@ -176,6 +176,14 @@ $(document).ready(function () {
             'home_address': $('#home_address_id').val(),
         };
 
+        if (frm.dataForm['account_name'] === '') {
+            delete frm.dataForm['account_name'];
+        }
+
+        if (frm.dataForm['report_to'] === '') {
+            delete frm.dataForm['report_to'];
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

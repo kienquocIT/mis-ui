@@ -12,7 +12,7 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('account_manager_list') && Array.isArray(data.account_manager_list)) {
                         data.account_manager_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" account-name-id="` + item.account_name_id + `" account-name="` + item.account_name + `">` + item.full_name + `</option>`)
+                            ele.append(`<option value="` + item.id + `" account-name-id="` + item.account.id + `" account-name="` + item.account.name + `">` + item.full_name + `</option>`)
                         })
                     }
                 }
@@ -324,8 +324,10 @@ $(document).ready(function () {
             let list_account_name_id = $(this).attr('account-name-id').split(',');
             for (let i = 0; i < list_account_name_id.length; i++) {
                 if (!acc_name_id.includes(list_account_name_id[i])) {
-                    acc_name_id.push(list_account_name_id[i])
-                    acc_name.push(list_account_name[i])
+                    if(list_account_name_id[i] !== ''){
+                        acc_name_id.push(list_account_name_id[i])
+                        acc_name.push(list_account_name[i])
+                    }
                 }
             }
         });
@@ -335,6 +337,7 @@ $(document).ready(function () {
         $('#inp-email-address').val($('#inp-email').val());
         $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
 
+        console.log(acc_name_id)
         if (acc_name_id) {
             for (let i = 0; i < acc_name_id.length; i++)
                 select_box_acc_name.append(`<option value="` + acc_name_id[i] + `">` + acc_name[i] + `</option>`)

@@ -199,35 +199,6 @@ $(document).ready(function () {
                 }
             )
     })
-
-    $('#save-contact-draft').on('click', function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($('#form-create-contact'));
-        frm.dataForm['additional_infor'] = {
-            'facebook': $('#facebook_id').val(),
-            'twitter': $('#twitter_id').val(),
-            'linkedln': $('#linkedln_id').val(),
-            'gmail': $('#gmail_id').val(),
-            'interests': $('#select-box-interests').val(),
-            'tags': $('#tag_id').val(),
-        };
-
-        frm.dataForm['address_infor'] = {
-            'work_address': $('#work_address_id').val(),
-            'home_address': $('#home_address_id').val(),
-        };
-        $.fn.callAjax('/crm/contact/draft/create/api', frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    $.fn.notifyPopup({description: resp.detail}, 'success');
-                    setTimeout(location.reload.bind(location), 1000);
-                    window.location.replace("/crm/contact/list");
-                }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
-                }
-            )
-    })
 })
 
 

@@ -39,7 +39,7 @@
 {% endblock %}
 {% block pageContent %}
     <input id="contact_id" value="{{ data.contact.id }}" hidden>
-    <form id="form-create-contact" data-method="PUT" data-url="{% url "ContactUpdateAPI" pk=0 %}"
+    <form id="form-create-contact" data-method="PUT" data-url="{% url "ContactUpdateAPI" pk=data.contact.id %}"
             data-url-redirect="{% url 'ContactList' %}">
         {% csrf_token %}
         <!-- Contact Information -->
@@ -79,7 +79,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Salutation" %}</label>
-                        <input id="salutation_current" value="" hidden>
+                        <input id="salutation_current" value="{{ data.contact.salutation.id }}" hidden>
                         <select id="select-box-salutation" class="form-select" data-url="{% url "SalutationListAPI" %}"
                                 data-method="GET" name="salutation" required>
                         </select>
@@ -91,14 +91,14 @@
                                 class="field-required"
                         >(*)</span></label>
                         <input type="text" class="form-control" placeholder="Nguyen Van" name="first_name" id="first_name_id"
-                                required value="">
+                                required value="{{ data.contact.fullname.first_name }}">
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Lastname" %}<span class="field-required">(*)</span></label>
                         <input type="text" class="form-control" placeholder="A" name="last_name" id="last_name_id"
-                                required value="">
+                                required value="{{ data.contact.fullname.last_name }}">
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Full Name" %}<span class="field-required">(*)</span></label>
-                        <input type="text" class="form-control" name="fullname" value=""
+                        <input type="text" class="form-control" name="fullname" value="{{ data.contact.fullname.fullname }}"
                                id="full_name_id" readonly>
                     </div>
                 </div>
@@ -137,19 +137,19 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Email" %}</label>
-                        <input type="text" class="form-control" name="email" value="">
+                        <input type="text" class="form-control" name="email" value="{{ data.contact.email }}">
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Job Title" %}</label>
-                        <input type="text" class="form-control" name="job_title" value="">
+                        <input type="text" class="form-control" name="job_title" value="{{ data.contact.job_title }}">
                     </div>
                 </div>
                 <div class="col-8">
                     <div class="form-group">
                         <label class="form-label">{% trans "Report To" %}</label>
-                        <input id="report_to_current" value="" hidden>
+                        <input id="report_to_current" value="{{ data.contact.report_to.id }}" hidden>
                         <select id="select-box-report-to" class="form-select" data-method="GET"
                                 data-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to">
                             <option>{{ data.contact.report_to.fullname }}</option>

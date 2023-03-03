@@ -184,6 +184,10 @@ $(document).ready(function () {
             frm.dataForm['report_to'] = null;
         }
 
+        if (frm.dataForm['owner'] === '') {
+            frm.dataForm['owner'] = null;
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

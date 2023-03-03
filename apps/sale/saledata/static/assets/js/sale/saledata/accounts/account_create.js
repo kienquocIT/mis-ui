@@ -137,8 +137,8 @@ $(document).ready(function () {
                         return `<span>` + row.job_title + `</span>`
                     }
                 }, {
-                    'render': (data, type, row, meta) => {
-                        return `<span>` + "123" + `</span>`
+                    'data': 'owner', render: (data, type, row, meta) => {
+                        return `<span>` + row.owner.fullname + `</span>`
                     }
                 }, {
                     'data': 'mobile', 'render': (data, type, row, meta) => {
@@ -649,8 +649,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                }
-                )
+                })
     // table.append(`<tr><td><span class="contact-create">` + contact_name + `</span><span class="text-success ml-2">(new)</span></td><td><span>` + job_title + `</span></td></td><td><span>` + contact_phone + `</span></td></td><td><span>` + contact_email + `</span></td></tr>`)
     // list_new_contact_create.push({
     //     'name': contact_name,

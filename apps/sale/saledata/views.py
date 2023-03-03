@@ -260,7 +260,11 @@ class ContactDetail(View):
 class ContactDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
-    @mask_view(auth_require=True, is_api=True)
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/accounts/contact_detail.html',
+        breadcrumb='CONTACT_UPDATE_PAGE'
+    )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).get()
         if resp.state:

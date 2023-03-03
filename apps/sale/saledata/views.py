@@ -271,17 +271,16 @@ class ContactDetailAPI(APIView):
         return {}, status.HTTP_401_UNAUTHORIZED
 
 
-class ContactUpdateAPI(APIView):
+class ContactUpdate(View):
     @mask_view(
         auth_require=True, template='sale/saledata/accounts/contact_update.html',
         breadcrumb='CONTACT_UPDATE_PAGE'
     )
-    def get(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).get()
-        if response.state:
-            return {'contact': response.result}, status.HTTP_200_OK
-        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
+
+class ContactUpdateAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
         data = request.data

@@ -212,7 +212,7 @@ $(document).ready(function () {
             let rowNode = table.rows(dataCheckedIndexes[idx]).nodes()[0];
             if (rowNode.lastElementChild.children[0].firstElementChild.getAttribute('data-owner') === '1') {
                 let trData = `<td><span>` + dataChecked.fullname + `</span><span class="field-required">*</span></td><td><span>` + dataChecked.job_title + `</span></td><td><span>` + dataChecked.phone + `</span></td><td><span>` + dataChecked.email + `</span></td>`;
-                tableShowBodyOffModal.prepend(`<tr class="contact_primary"> value="` + dataChecked.id + `"` + trData + `</tr>`);
+                tableShowBodyOffModal.prepend(`<tr class="contact_primary" value="` + dataChecked.id + `">` + trData + `</tr>`);
             } else {
                 let trData = `<td><span>` + dataChecked.fullname + `</span></td><td><span>` + dataChecked.job_title + `</span></td><td><span>` + dataChecked.phone + `</span></td><td><span>` + dataChecked.email + `</span></td>`;
                 tableShowBodyOffModal.append(`<tr class="contact_selected" value="` + dataChecked.id + `">` + trData + `</tr>`);
@@ -257,7 +257,7 @@ $(document).ready(function () {
                             if ($('.contact_selected').length > 0 && $('.contact_selected').filter(`[value="` + newValue + `"]`))
                                 $('.contact_selected').filter(`[value="` + newValue + `"]`).remove();
                             $('.contact_primary').remove();
-                            tableShowBodyOffModal.prepend(`<tr class="contact_primary"><td><span>` + data.contact_detail.fullname.fullname + `</span><span class="field-required">*</span></td><td><span>` + data.contact_detail.job_title + `</span></td><td><span>` + data.contact_detail.phone + `</span></td><td><span>` + data.contact_detail.email + `</span></td></tr>`);
+                            tableShowBodyOffModal.prepend(`<tr class="contact_primary" value="` + newValue + `"><td><span>` + data.contact_detail.fullname.fullname + `</span><span class="field-required">*</span></td><td><span>` + data.contact_detail.job_title + `</span></td><td><span>` + data.contact_detail.phone + `</span></td><td><span>` + data.contact_detail.email + `</span></td></tr>`);
                             for (let idx = 0; idx < indexList.length; idx++) {
                                 let rowNode = table.rows(indexList[idx]).nodes()[0]
                                 if (data.contact_detail.id === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
@@ -521,9 +521,7 @@ $(document).ready(function () {
         }
 
 
-        if (values.length > 0) {
-            frm.dataForm['contact_selected'] = values;
-        }
+
 
         let is_customer_selected = $('#select-box-acc-type option:selected').filter(function () {
             return $(this).text().toLowerCase() == 'customer';
@@ -536,6 +534,12 @@ $(document).ready(function () {
                 frm.dataForm['customer_type'] = 'individual';
             }
         }
+
+        let contact_selected_list = $('.contact_selected').map(function () {
+            return $(this).attr('value'); // Lấy giá trị của thuộc tính value của từng phần tử
+        }).get();
+        frm.dataForm['contact_select_list'] = contact_selected_list;
+        frm.dataForm['contact_primary'] = $('.contact_primary').attr('value');
 
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
@@ -621,20 +625,55 @@ $(document).ready(function () {
     })
 
     $('#save-modal-add-new-contact').on('click', function () {
-            let table = $('#datatable_contact_list');
-            let contact_name = $('#inp-fullname').val();
-            let contact_owner = $('#select-box-contact-owner').val();
-            let job_title = $('#inp-jobtitle').val();
-            let contact_email = $('#inp-email-contact').val();
-            let contact_mobile = $('#inp-mobile').val();
-            let contact_phone = $('#inp-phone').val();
-            let data = {
-                'owner': contact_owner,
-                'fullname': contact_name,
-                'job_title': job_title,
-                'email': contact_email,
-                'phone': contact_phone,
-                'mobile': contact_mobile
+        let table = $('#datatable_contact_list');
+        let contact_name = $('#inp-fullname').val();
+        let contact_owner = $('#select-box-contact-owner').val();
+        let job_title = $('#inp-jobtitle').val();
+        let contact_email = $('#inp-email-contact').val();
+        let contact_mobile = $('#inp-mobile').val();
+        let contact_phone = $('#inp-phone').val();
+        let data = {
+            'owner': contact_owner,
+            'fullname': contact_name,
+            'job_title': job_title,
+            'email': contact_email,
+            'phone': contact_phone,
+            'mobile': contact_mobile
+        }
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    loadAccountOwner();
+                    let table_offcavas = $('#datatable-add-contact').DataTable();
+                    table_offcavas.destroy();
+                    loadTableContact();
+                    let indexList = table_offcavas.rows().indexes();
+                    $('.contact_selected').each(function () {
+                        let rowValue = $(this).attr('value');
+                        for (let idx = 0; idx < indexList.length; idx++) {
+                            let rowNode = table_offcavas.rows(indexList[idx]).nodes()[0]
+                            if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
+                                if ($(this).hasClass('contact_primary')) {
+                                    rowNode.classList.add('data-owner', '1')
+                                    rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
+                                } else {
+                                    rowNode.classList.add('data-owner', '0')
+                                    rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
+                                }
+                                console.log(rowNode.classList)
+                                rowNode.classList.add('selected');
+                                rowNode.lastElementChild.children[0].firstElementChild.checked = true;
+                            }
+                        }
+                    })
+                    $('#modal-add-new-contact').hide();
+                    $('#offcanvasRight').offcanvas('show');
+                }
+            },
+            (errs) => {
+                $.fn.notifyPopup({description: errs.data.errors}, 'failure');
             }
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
@@ -660,7 +699,6 @@ $(document).ready(function () {
     //     'mobile': contact_mobile
     // });
 
-
-})
+    })
 })
 ;

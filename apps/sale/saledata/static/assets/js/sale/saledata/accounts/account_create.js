@@ -254,8 +254,8 @@ $(document).ready(function () {
                     if (data) {
                         if (data.hasOwnProperty('contact_detail')) {
                             $('#job_title').val(data.contact_detail.job_title);
-                            if($('.contact_selected').length > 0 && $('.contact_selected').filter(`[value="`+ newValue +`"]`))
-                                $('.contact_selected').filter(`[value="`+ newValue +`"]`).remove();
+                            if ($('.contact_selected').length > 0 && $('.contact_selected').filter(`[value="` + newValue + `"]`))
+                                $('.contact_selected').filter(`[value="` + newValue + `"]`).remove();
                             $('.contact_primary').remove();
                             tableShowBodyOffModal.prepend(`<tr class="contact_primary"><td><span>` + data.contact_detail.fullname.fullname + `</span><span class="field-required">*</span></td><td><span>` + data.contact_detail.job_title + `</span></td><td><span>` + data.contact_detail.phone + `</span></td><td><span>` + data.contact_detail.email + `</span></td></tr>`);
                             for (let idx = 0; idx < indexList.length; idx++) {
@@ -324,7 +324,7 @@ $(document).ready(function () {
             let list_account_name_id = $(this).attr('account-name-id').split(',');
             for (let i = 0; i < list_account_name_id.length; i++) {
                 if (!acc_name_id.includes(list_account_name_id[i])) {
-                    if(list_account_name_id[i] !== ''){
+                    if (list_account_name_id[i] !== '') {
                         acc_name_id.push(list_account_name_id[i])
                         acc_name.push(list_account_name[i])
                     }
@@ -520,10 +520,6 @@ $(document).ready(function () {
             frm.dataForm['billing_address'] = billing_address_list;
         }
 
-        let values = [];
-        $('span.contact_selected').each(function () {
-            values.push($(this).attr('value'));
-        });
 
         if (values.length > 0) {
             frm.dataForm['contact_selected'] = values;
@@ -540,6 +536,7 @@ $(document).ready(function () {
                 frm.dataForm['customer_type'] = 'individual';
             }
         }
+
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
@@ -624,21 +621,47 @@ $(document).ready(function () {
     })
 
     $('#save-modal-add-new-contact').on('click', function () {
-        let table = $('#datatable_contact_list');
-        let contact_name = $('#inp-fullname').val();
-        let contact_owner = $('#select-box-contact-owner');
-        let job_title = $('#inp-jobtitle').val();
-        let contact_email = $('#inp-email-contact').val();
-        let contact_mobile = $('#inp-mobile').val();
-        let contact_phone = $('#inp-phone').val();
-        table.append(`<tr><td><span class="contact-create">` + contact_name + `</span><span class="text-success ml-2">(new)</span></td><td><span>` + job_title + `</span></td></td><td><span>` + contact_phone + `</span></td></td><td><span>` + contact_email + `</span></td></tr>`)
-        list_new_contact_create.push({
-            'name': contact_name,
-            'owner': contact_owner.val(),
-            'job_title': job_title,
-            'email': contact_email,
-            'phone': contact_phone,
-            'mobile': contact_mobile
-        });
-    })
-});
+            let table = $('#datatable_contact_list');
+            let contact_name = $('#inp-fullname').val();
+            let contact_owner = $('#select-box-contact-owner').val();
+            let job_title = $('#inp-jobtitle').val();
+            let contact_email = $('#inp-email-contact').val();
+            let contact_mobile = $('#inp-mobile').val();
+            let contact_phone = $('#inp-phone').val();
+            let data = {
+                'owner': contact_owner,
+                'fullname': contact_name,
+                'job_title': job_title,
+                'email': contact_email,
+                'phone': contact_phone,
+                'mobile': contact_mobile
+            }
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        loadAccountOwner();
+                        // loadTableContact();
+                        $('#datatable-add-contact').DataTable().remove();
+                        $('#modal-add-new-contact').hide();
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+                )
+    // table.append(`<tr><td><span class="contact-create">` + contact_name + `</span><span class="text-success ml-2">(new)</span></td><td><span>` + job_title + `</span></td></td><td><span>` + contact_phone + `</span></td></td><td><span>` + contact_email + `</span></td></tr>`)
+    // list_new_contact_create.push({
+    //     'name': contact_name,
+    //     'owner': contact_owner.val(),
+    //     'job_title': job_title,
+    //     'email': contact_email,
+    //     'phone': contact_phone,
+    //     'mobile': contact_mobile
+    // });
+
+
+})
+})
+;

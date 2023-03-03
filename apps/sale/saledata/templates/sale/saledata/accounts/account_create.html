@@ -496,7 +496,8 @@
                     aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <table id="datatable-add-contact" class="table nowrap w-100 mb-5"
+            <div id="table-offcanvas">
+                <table id="datatable-add-contact" class="table nowrap w-100 mb-5"
                    data-url="{% url "ContactListNotMapAccountAPI" %}"
                    data-method="GET">
                 <thead>
@@ -515,6 +516,7 @@
                 </th>
                 </thead>
             </table>
+            </div>
             <div class="row mt-7">
                 <div class="text-right">
                     <button type="button" class="btn btn-soft-info mr-5" id="btn-add-contact"

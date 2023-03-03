@@ -1,5 +1,59 @@
 $(document).ready(function () {
     let list_new_contact_create = [];
+    let ele_table_offcanvas = $('#table-offcanvas').html()
+    let config = {
+        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        ordering: false,
+        scrollY: "400px",
+        scrollCollapse: true,
+        paging: false,
+        columnDefs: [{
+            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+        }],
+        order: [2, 'asc'],
+        language: {
+            search: "",
+            searchPlaceholder: "Search",
+            info: "_START_ - _END_ of _TOTAL_",
+            sLengthMenu: "View  _MENU_",
+            paginate: {
+                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+            }
+        },
+        drawCallback: function () {
+            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
+            feather.replace();
+        },
+        data: [],
+        columns: [{
+            'data': 'fullname', render: (data, type, row, meta) => {
+                return `<a href="#"><span><b>` + row.fullname + `</b></span></a>`
+            }
+        }, {
+            'data': 'job_title', render: (data, type, row, meta) => {
+                return `<span>` + row.job_title + `</span>`
+            }
+        }, {
+            'data': 'owner', render: (data, type, row, meta) => {
+                return `<span>` + row.owner.fullname + `</span>`
+            }
+        }, {
+            'data': 'mobile', 'render': (data, type, row, meta) => {
+                return `<span>` + row.mobile + `</span>`
+            }
+        }, {
+            'data': 'email', 'render': (data, type, row, meta) => {
+                return `<span>` + row.email + `</span>`
+            }
+        }, {
+            'render': (data, type, row, meta) => {
+                let currentId = "chk_sel_" + String(meta.row + 1)
+                return `<span class="form-check mb-0"><input type="checkbox" class="contact-added form-check-input check-select" id="${currentId}" value=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+            }
+        }]
+    }
+
 
     function loadEmployee() {
         let ele = $('#select-box-acc-manager');
@@ -103,59 +157,6 @@ $(document).ready(function () {
     function loadTableContact() {
         "use strict";
         $(function () {
-            let config = {
-                dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-                ordering: false,
-                scrollY: "400px",
-                scrollCollapse: true,
-                paging: false,
-                columnDefs: [{
-                    "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-                }],
-                order: [2, 'asc'],
-                language: {
-                    search: "",
-                    searchPlaceholder: "Search",
-                    info: "_START_ - _END_ of _TOTAL_",
-                    sLengthMenu: "View  _MENU_",
-                    paginate: {
-                        next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                        previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-                    }
-                },
-                drawCallback: function () {
-                    $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-                    feather.replace();
-                },
-                data: [],
-                columns: [{
-                    'data': 'fullname', render: (data, type, row, meta) => {
-                        return `<a href="#"><span><b>` + row.fullname + `</b></span></a>`
-                    }
-                }, {
-                    'data': 'job_title', render: (data, type, row, meta) => {
-                        return `<span>` + row.job_title + `</span>`
-                    }
-                }, {
-                    'data': 'owner', render: (data, type, row, meta) => {
-                        return `<span>` + row.owner.fullname + `</span>`
-                    }
-                }, {
-                    'data': 'mobile', 'render': (data, type, row, meta) => {
-                        return `<span>` + row.mobile + `</span>`
-                    }
-                }, {
-                    'data': 'email', 'render': (data, type, row, meta) => {
-                        return `<span>` + row.email + `</span>`
-                    }
-                }, {
-                    'render': (data, type, row, meta) => {
-                        let currentId = "chk_sel_" + String(meta.row + 1)
-                        return `<span class="form-check mb-0"><input type="checkbox" class="contact-added form-check-input check-select" id="${currentId}" value=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-                    }
-                }]
-            }
-
             function initDataTable(config, id_table) {
                 /*DataTable Init*/
                 let dtb = $(id_table);
@@ -521,8 +522,6 @@ $(document).ready(function () {
         }
 
 
-
-
         let is_customer_selected = $('#select-box-acc-type option:selected').filter(function () {
             return $(this).text().toLowerCase() == 'customer';
         })
@@ -624,8 +623,36 @@ $(document).ready(function () {
         )
     })
 
+    function initDataTableOffCanvas(config) {
+        let dtb = $('#datatable-add-contact');
+        if (dtb.length > 0) {
+            var targetDt = dtb.DataTable(config);
+            /*Checkbox Add*/
+            let indexList = targetDt.rows().indexes();
+            $('#datatable_contact_list tr').each(function () {
+                let rowValue = $(this).attr('value');
+                for (let idx = 0; idx < indexList.length; idx++) {
+                    let rowNode = targetDt.rows(indexList[idx]).nodes()[0]
+                    if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
+                        console.log(rowValue)
+                        if ($(this).hasClass('contact_primary')) {
+                            rowNode.classList.add('data-owner', '1')
+                            rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
+                        } else {
+                            rowNode.classList.add('data-owner', '0')
+                            rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
+                        }
+                        rowNode.classList.add('selected');
+                        rowNode.lastElementChild.children[0].firstElementChild.checked = true;
+                    }
+                }
+            })
+            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
+            dtb.parent().addClass('table-responsive');
+        }
+    }
+
     $('#save-modal-add-new-contact').on('click', function () {
-        let table = $('#datatable_contact_list');
         let contact_name = $('#inp-fullname').val();
         let contact_owner = $('#select-box-contact-owner').val();
         let job_title = $('#inp-jobtitle').val();
@@ -646,27 +673,22 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     loadAccountOwner();
-                    let table_offcavas = $('#datatable-add-contact').DataTable();
-                    table_offcavas.destroy();
-                    loadTableContact();
-                    let indexList = table_offcavas.rows().indexes();
-                    $('.contact_selected').each(function () {
-                        let rowValue = $(this).attr('value');
-                        for (let idx = 0; idx < indexList.length; idx++) {
-                            let rowNode = table_offcavas.rows(indexList[idx]).nodes()[0]
-                            if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                                if ($(this).hasClass('contact_primary')) {
-                                    rowNode.classList.add('data-owner', '1')
-                                    rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
-                                } else {
-                                    rowNode.classList.add('data-owner', '0')
-                                    rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
-                                }
-                                rowNode.classList.add('selected');
-                                rowNode.lastElementChild.children[0].firstElementChild.checked = true;
+                    $('#table-offcanvas').empty();
+                    $('#table-offcanvas').append(ele_table_offcanvas);
+
+                    let table = $('#datatable-add-contact')
+                    $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list_not_map_account')) {
+                                config['data'] = resp.data.contact_list_not_map_account;
                             }
+                            initDataTableOffCanvas(config, '#datatable-add-contact');
                         }
-                    })
+                    }, (errs) => {
+                        initDataTableOffCanvas(config, '#datatable-add-contact');
+                    },)
+
                     $('#modal-add-new-contact').hide();
                     $('#offcanvasRight').offcanvas('show');
                 }

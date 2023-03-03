@@ -262,8 +262,7 @@ class ContactDetailAPI(APIView):
 
     @mask_view(
         auth_require=True,
-        template='sale/saledata/accounts/contact_detail.html',
-        breadcrumb='CONTACT_UPDATE_PAGE'
+        is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).get()

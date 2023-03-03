@@ -334,7 +334,7 @@ $(function () {
             let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
             let nodeName = $('#modal-node-name-create').val();
             let nodeDescription = $('#modal-node-description-create').val();
-            let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
+            let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
             let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
             let actionData = bt2 + bt3;
             let actionEle = ``;
@@ -361,7 +361,7 @@ $(function () {
             }
             let modalAuditId = "auditModalCreate" + newCheckBox
 
-            initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span>${nodeName}</span></td><td><span>${nodeDescription}</span></td>
+            initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span class="node-title-col-show">${nodeName}</span><input type="text" class="node-title-col-edit" hidden></td><td><span class="node-remark-col-show">${nodeDescription}</span><input type="text" class="node-remark-col-edit" hidden></td>
                                     <td>
                                         <div class="btn-group dropdown">
                                         <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="check-done-action" style="padding-left: 255px"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span></i>
@@ -418,6 +418,43 @@ $(function () {
             completedRow.attr('data-initial-check-box', completedRowOrder);
             return false;
         }
+
+
+// Action on click btn edit row node
+        tableNode.on('click', '.workflow-node-edit-button', function (e) {
+            let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
+            let titleInput = $(this)[0].closest('tr').querySelector('.node-title-col-edit');
+            let remarkShow = $(this)[0].closest('tr').querySelector('.node-remark-col-show');
+            let remarkInput = $(this)[0].closest('tr').querySelector('.node-remark-col-edit');
+            titleShow.setAttribute("hidden", true);
+            titleInput.removeAttribute('hidden');
+            titleInput.value = titleShow.innerHTML;
+            remarkShow.setAttribute("hidden", true);
+            remarkInput.removeAttribute('hidden');
+            remarkInput.value = remarkShow.innerHTML;
+        });
+
+
+// Action on change node title
+        tableNode.on('change', '.node-title-col-edit', function (e) {
+            let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
+            let titleInputVal = $(this).val();
+            titleShow.innerHTML = ``;
+            titleShow.innerHTML = String(titleInputVal);
+            $(this)[0].setAttribute("hidden", true);
+            titleShow.removeAttribute('hidden');
+        });
+
+
+// Action on change node description
+        tableNode.on('change', '.node-remark-col-edit', function (e) {
+            let remarkShow = $(this)[0].closest('tr').querySelector('.node-remark-col-show');
+            let remarkInputVal = $(this).val();
+            remarkShow.innerHTML = ``;
+            remarkShow.innerHTML = String(remarkInputVal);
+            $(this)[0].setAttribute("hidden", true);
+            remarkShow.removeAttribute('hidden');
+        });
 
 
 // Action on delete row node
@@ -575,8 +612,7 @@ $(function () {
                                         <textarea
                                                 class="form-control"
                                                 rows="4" cols="50"
-                                        >
-                                        </textarea>
+                                        ></textarea>
                                         <span class="form-text text-muted">Description what to do</span>
                                     </div>
                                     <br><br>

@@ -78,31 +78,6 @@ $(document).ready(function () {
         )
     }
 
-    function loadEmployeeForReportTo() {
-        let ele = $('#select-box-report-to');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        ele.append(`<option>` + `</option>`)
-                        data.employee_list.map(function (item) {
-                            if (item.id === $('#report_to_current').val()) {
-                                ele.append(`<option value="` + item.id + `" selected>` + item.full_name + `</option>`)
-                            }
-                            else {
-                                ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
-                            }
-                        })
-                    }
-                }
-            }
-        )
-    }
-
     function loadAccountName() {
         let ele = $('#select-box-account_name');
         let url = ele.attr('data-url');
@@ -145,11 +120,39 @@ $(document).ready(function () {
         loadSalutationList();
         loadInterestList();
         loadEmployee();
-        loadEmployeeForReportTo();
         loadAccountName();
     }
 
     loadDefaultData();
+
+    //load report to while change select box account name
+    $('#select-box-account_name').on('change', function () {
+        let account_id = $(this).find('option:selected').val();
+        let ele = $('#select-box-report-to');
+        ele.empty();
+        if (account_id !== '') {
+            ele.attr('disabled', false);
+            let url = ele.attr('data-url').replace('0', account_id);
+            let method = ele.attr('data-method');
+            console.log(url);
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        resp.data.account_detail.owner.map(function (item) {
+                        })
+                        ele.text("");
+                        ele.append(`<option selected>` + `</option>`)
+                        data.account_detail.owner.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
+                        })
+                    }
+                }
+            )
+        } else {
+            ele.attr('disabled', true);
+        }
+    })
 
     // remove employee in report to (selected in owner)
     $('#select-box-emp').on('change', function () {

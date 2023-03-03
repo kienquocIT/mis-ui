@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let list_new_contact_create = [];
     let ele_table_offcanvas = $('#table-offcanvas').html()
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
@@ -53,7 +52,6 @@ $(document).ready(function () {
             }
         }]
     }
-
 
     function loadEmployee() {
         let ele = $('#select-box-acc-manager');
@@ -190,13 +188,13 @@ $(document).ready(function () {
 
     $('#select-box-acc-type').select2();
     $('#select-box-acc-manager').select2();
+
     loadEmployee();
     loadAccountType();
     loadIndustry();
     loadAccountOwner();
     loadParentAccount();
     loadTableContact();
-
 
     //button add contact in offCanvas
     function tableContactAdd() {
@@ -279,7 +277,6 @@ $(document).ready(function () {
         }
         $(this).data('oldValue', newValue);
     }).each(function () {
-        // Lưu giá trị ban đầu vào thuộc tính data
         $(this).data('oldValue', $(this).val());
     });
 
@@ -492,7 +489,7 @@ $(document).ready(function () {
                 shipping_address_list.push(shipping_address)
             }
         });
-        //
+
         let billing_address_list = [];
         $('#list-billing-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
@@ -603,7 +600,7 @@ $(document).ready(function () {
         }
     })
 
-
+    //show modal add new contact
     $('#btn-add-new-contact').on('click', function () {
         let ele = $('#select-box-contact-owner');
         let url = ele.attr('data-url');
@@ -624,11 +621,11 @@ $(document).ready(function () {
         )
     })
 
+    // function reload table add contact after add contact
     function initDataTableOffCanvas(config) {
         let dtb = $('#datatable-add-contact');
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
-            /*Checkbox Add*/
             let indexList = targetDt.rows().indexes();
             $('#datatable_contact_list tr').each(function () {
                 let rowValue = $(this).attr('value');
@@ -673,10 +670,12 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    //reload select box account owner
                     loadAccountOwner();
                     $('#table-offcanvas').empty();
                     $('#table-offcanvas').append(ele_table_offcanvas);
 
+                    // reload datatable contact in offCanvas
                     let table = $('#datatable-add-contact')
                     $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                         let data = $.fn.switcherResp(resp);

@@ -151,7 +151,7 @@
                         <label class="form-label">{% trans "Report To" %}</label>
                         <input id="report_to_current" value="{{ data.contact.report_to.id }}" hidden>
                         <select id="select-box-report-to" class="form-select" data-method="GET"
-                                data-url="{% url "EmployeeListAPI" %}" name="report_to"></select>
+                                data-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to"></select>
                     </div>
                 </div>
             </div>

@@ -196,11 +196,11 @@ $(document).ready(function () {
         };
 
         if (frm.dataForm['account_name'] === '') {
-            delete frm.dataForm['account_name'];
+            frm.dataForm['account_name'] = null;
         }
 
         if (frm.dataForm['report_to'] === '') {
-            delete frm.dataForm['report_to'];
+            frm.dataForm['report_to'] = null;
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

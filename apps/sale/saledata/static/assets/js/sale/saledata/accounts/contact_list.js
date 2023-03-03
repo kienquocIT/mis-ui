@@ -33,7 +33,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'full_name', render: (data, type, row, meta) => {
                         // return `<a href="/sale/crm/contact/detail/` + row.id + `"><span><b>` + row.fullname + `</b></span></a>`
-                        return `<a href="/saledata/contact/` + row.id + `"><span><b>` + row.fullname + `</b></span></a>`
+                        return `<a href="#"><span><b>` + row.fullname + `</b></span></a>`
                     }
                 }, {
                     'data': 'job_title', render: (data, type, row, meta) => {

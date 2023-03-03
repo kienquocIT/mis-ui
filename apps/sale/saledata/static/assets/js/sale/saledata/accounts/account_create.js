@@ -662,7 +662,6 @@ $(document).ready(function () {
                                     rowNode.classList.add('data-owner', '0')
                                     rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
                                 }
-                                console.log(rowNode.classList)
                                 rowNode.classList.add('selected');
                                 rowNode.lastElementChild.children[0].firstElementChild.checked = true;
                             }

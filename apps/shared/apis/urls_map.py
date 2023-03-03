@@ -68,3 +68,23 @@ class ApiURL(object):
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
+
+    # crm/contact
+    CONTACT_LIST = StringUrl('saledata/contacts')
+    CONTACT_DETAIL = StringUrl('saledata/contact')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
+
+
+    # masterdata/lookup/contact
+    SALUTATION_LIST = StringUrl('saledata/salutations')
+    INTERESTS_LIST = StringUrl('saledata/interests')
+
+    # masterdata/lookup/account
+    INDUSTRY_LIST = StringUrl('saledata/industries')
+    ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
+
+    # crm/account
+    ACCOUNT_LIST = StringUrl('saledata/accounts')
+    ACCOUNT_DETAIL = StringUrl('saledata/account')
+    ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
+

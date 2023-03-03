@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'assets/css/sale/saledata/accounts/contact_create.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="save-contact" type="submit" form="form-create-contact" style="background: none; border: none">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+                href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                data-bs-original-title="Save">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="save"></i>
+                </span>
+            </span>
+        </a>
+    </button>
+
+    <button id="save-contact-draft" type="submit" style="background: none; border: none">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+                href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                data-bs-original-title="Save Draft">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i class="bi bi-save2"></i>
+                </span>
+            </span>
+        </a>
+    </button>
+
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <form
+            id="form-create-contact" data-method="POST" data-url="{% url "ContactCreateAPI" %}"
+            data-url-redirect="{% url 'ContactList' %}"
+    >
+        {% csrf_token %}
+        <!-- Contact Information -->
+        <div class="w-100 p-1 bg-light">
+            <h5>{% trans "Contact Information" %}</h5>
+        </div>
+        <div class="row mt-3">
+            <div class="row">
+                <div class="col-8">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Contact Owner" %}<span
+                                    class="field-required"
+                            >(*)</span></label>
+                            <select id="select-box-emp" name="owner" class="form-select"
+                                    data-method="GET" required
+                                    data-url="{% url "EmployeeListAPI" %}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Biography" %}</label>
+                            <textarea class="form-control" name="bio" placeholder="bio"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Avatar" %}</label>
+                        <div id="upload-area" class="form-control">{% trans "Click here to upload image" %}</div>
+                        <input id="input-avatar" type="file" class="hidden" name="avatar">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Salutation" %}</label>
+                        <select id="select-box-salutation" class="form-select" data-url="{% url "SalutationListAPI" %}"
+                                data-method="GET" name="salutation" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Firstname" %}<span
+                                class="field-required"
+                        >(*)</span></label>
+                        <input type="text" class="form-control" name="first_name" id="first_name_id" required
+                        placeholder="Nguyen Van">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Lastname" %}<span class="field-required">(*)</span></label>
+                        <input type="text" class="form-control" name="last_name" id="last_name_id" required
+                        placeholder="A">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Full Name" %}<span class="field-required">(*)</span></label>
+                        <input type="text" class="form-control" name="fullname" id="full_name_id" readonly
+                        placeholder="Nguyen Van A">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Phone" %}</label>
+                        <input type="text" class="form-control" name="phone" placeholder="(+84)984312765">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Mobile" %}</label>
+                        <input type="text" class="form-control" name="mobile" placeholder="(+84)984312765">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Account Name" %}</label>
+                        <select id="select-box-account_name" name="account_name" class="form-select"
+                                data-url="{% url "AccountListAPI" %}"
+                                data-method="GET" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Email" %}</label>
+                        <input type="text" class="form-control" name="email" placeholder="abc@gmail.com">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Job Title" %}</label>
+                        <input type="text" class="form-control" name="job_title">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Report To" %}</label>
+                        <select id="select-box-report-to" class="form-select" data-method="GET"
+                                data-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Contact Information -->
+
+        <!-- Address Information -->
+        <div class="w-100 p-1 bg-light">
+            <h5>{% trans "Address Information" %}</h5>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-label">{% trans "Work address" %}</div>
+                            </div>
+                            <div class="col-7"></div>
+                            <div class="col-2 text-right">
+                                <button data-bs-toggle="modal" data-bs-target="#modal-work-address"
+                                        type="button" style="background: none;border: none; color: #007D88" >
+                                    <span class="btn-add-tenant" id="work-address-btn" data-bs-toggle="tooltip"
+                                          data-bs-placement="bottom"
+                                          title="{% trans 'Edit Work address' %}">
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Edit' %}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea class="form-control" name="work_address" id="work_address_id"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-label">{% trans "Home address" %}</div>
+                            </div>
+                            <div class="col-7"></div>
+                            <div class="col-2 text-right">
+                                <button data-bs-toggle="modal" data-bs-target="#modal-home-address" type="button"
+                                        style="background: none;border: none; color: #007D88">
+                                    <span class="btn-add-tenant" id="home-address-btn" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            title="{% trans 'Edit Home address' %}">
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Edit' %}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea class="form-control" name="home_address" id="home_address_id"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Address Information -->
+
+        <!-- Additional Information -->
+        <div class="w-100 p-1 bg-light">
+            <h5>{% trans "Additional Information" %}</h5>
+        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Facebook" %}</label>
+                    <input type="text" class="form-control" name="facebook" id="facebook_id" placeholder="https://www.facebook.com/mtsolution">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Twitter" %}</label>
+                    <input type="text" class="form-control" name="twitter" id="twitter_id" placeholder="https://twitter.com/mtsolution">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Linkedln" %}</label>
+                    <input type="text" class="form-control" name="linkedln" id="linkedln_id" placeholder="https://www.linkedin.com/in/mtsolution">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Gmail" %}</label>
+                    <input type="text" class="form-control" name="gmail" id="gmail_id" placeholder="mtsolution@gmail.com">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Interests" %}</label>
+                    <select id="select-box-interests"
+                            class="form-control select2 select2-multiple"
+                            multiple name="interests"
+                            id="select-box-interests" data-url="{% url "InterestListAPI" %}" data-method="GET" >
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Tag" %}</label>
+                    <input type="text" class="form-control" name="tags" id="tag_id">
+                </div>
+            </div>
+        </div>
+        <!-- End Additional Information -->
+
+        <!-- Modal Work Address -->
+        <div class="modal fade" id="modal-work-address" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter" aria-hidden="true" >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Work Address</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Address" %}</label>
+                                    <input class="form-control" type="text" id="detail-modal-work-address"
+                                            placeholder="Number 20, 22 street, Him Lam residential area" >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Province" %}</label>
+                                    <select class="form-select" id="workcity" aria-label=".form-select-sm">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "District" %}</label>
+                                    <select class="form-select" id="workdistrict" aria-label=".form-select-sm">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Ward" %}</label>
+                                    <select class="form-select" id="workward" aria-label=".form-select-sm">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="save-changes-modal-work-address">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal Work Address-->
+
+        <!-- Modal Home Address -->
+        <div class="modal fade" id="modal-home-address" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true" >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Home Address</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Address" %}</label>
+                                <input class="form-control" type="text" id="detail-modal-home-address"
+                                        placeholder="Number 20, 22 street, Him Lam residential area" >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Province" %}</label>
+                                <select class="form-select" id="homecity" aria-label=".form-select-sm">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "District" %}</label>
+                                <select class="form-select" id="homedistrict" aria-label=".form-select-sm">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Ward" %}</label>
+                                <select class="form-select" id="homeward" aria-label=".form-select-sm">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="save-changes-modal-home-address">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal Home Address-->
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/sale/saledata/accounts/contact_create.js' %}"></script>
+    <script src="{% static 'assets/js/sale/saledata/accounts/contact_address.js' %}"></script>
+{% endblock %}

@@ -48,7 +48,7 @@ INSTALLED_APPS = \
         'apps.core.base',
         'apps.core.workflow',
     ] + [  # Another Application
-
+        'apps.sale.saledata',
     ]
 
 MIDDLEWARE = [

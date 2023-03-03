@@ -25,7 +25,7 @@ urlpatterns = [
     path('contact/create', ContactCreate.as_view(), name='ContactCreate'),
     path('contact/create/api', ContactCreateAPI.as_view(), name='ContactCreateAPI'),
     path('contact/update/<str:pk>', ContactUpdateAPI.as_view(), name='ContactUpdateAPI'),
-    path('contact/<str:pk>', ContactDetailAPI.as_view(), name='ContactDetailAPI'),
+    path('contact/api/<str:pk>', ContactDetailAPI.as_view(), name='ContactDetailAPI'),
 
 ] + [
     path('accounts', AccountList.as_view(), name='AccountList'),

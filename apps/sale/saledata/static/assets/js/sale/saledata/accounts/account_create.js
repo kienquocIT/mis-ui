@@ -662,7 +662,6 @@ $(document).ready(function () {
                                     rowNode.classList.add('data-owner', '0')
                                     rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
                                 }
-                                console.log(rowNode.classList)
                                 rowNode.classList.add('selected');
                                 rowNode.lastElementChild.children[0].firstElementChild.checked = true;
                             }
@@ -674,31 +673,6 @@ $(document).ready(function () {
             },
             (errs) => {
                 $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-            }
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        loadAccountOwner();
-                        // loadTableContact();
-                        $('#datatable-add-contact').DataTable().remove();
-                        $('#modal-add-new-contact').hide();
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                })
-    // table.append(`<tr><td><span class="contact-create">` + contact_name + `</span><span class="text-success ml-2">(new)</span></td><td><span>` + job_title + `</span></td></td><td><span>` + contact_phone + `</span></td></td><td><span>` + contact_email + `</span></td></tr>`)
-    // list_new_contact_create.push({
-    //     'name': contact_name,
-    //     'owner': contact_owner.val(),
-    //     'job_title': job_title,
-    //     'email': contact_email,
-    //     'phone': contact_phone,
-    //     'mobile': contact_mobile
-    // });
-
+            })
     })
-})
-;
+});

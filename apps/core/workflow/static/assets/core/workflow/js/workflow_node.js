@@ -175,7 +175,7 @@ $(function () {
             </div>
             </div>
             <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
             <label class="form-check-label" for="customCheck6"></label>
             </div>
             </li>`
@@ -193,7 +193,7 @@ $(function () {
             </div>
             </div>
             <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
             <label class="form-check-label" for="customCheck6"></label>
             </div>
             </li>`

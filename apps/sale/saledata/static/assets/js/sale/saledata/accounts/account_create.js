@@ -137,8 +137,8 @@ $(document).ready(function () {
                         return `<span>` + row.job_title + `</span>`
                     }
                 }, {
-                    'render': (data, type, row, meta) => {
-                        return `<span>` + "123" + `</span>`
+                    'data': 'owner', render: (data, type, row, meta) => {
+                        return `<span>` + row.owner.fullname + `</span>`
                     }
                 }, {
                     'data': 'mobile', 'render': (data, type, row, meta) => {
@@ -673,9 +673,6 @@ $(document).ready(function () {
             },
             (errs) => {
                 $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-            }
-        )
-
+            })
     })
-})
-;
+});

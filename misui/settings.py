@@ -48,7 +48,7 @@ INSTALLED_APPS = \
         'apps.core.base',
         'apps.core.workflow',
     ] + [  # Another Application
-
+        'apps.sale.saledata',
     ]
 
 MIDDLEWARE = [
@@ -85,12 +85,7 @@ WSGI_APPLICATION = 'misui.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+DATABASES = {}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -262,6 +257,9 @@ CACHES = {
 # LOGIN
 LOGIN_URL = 'auth/login'
 
+# option database
+USE_DATABASE_CONFIG_OPTION = 0  # choices: 0=None,1=dev,2=online_site
+
 # another import
 
 try:
@@ -272,3 +270,56 @@ except ImportError:
 # Replace API DOMAIN
 if not API_DOMAIN:
     API_DOMAIN = f'{protocol}://{domain}/{prefix}'
+
+# Database configurations
+if not DATABASES or (isinstance(DATABASES, dict) and 'default' not in DATABASES):
+    match USE_DATABASE_CONFIG_OPTION:
+        case 1:
+            DATABASES.update(
+                {
+                    'default': {
+                        'ENGINE': 'django.db.backends.mysql',
+                        'NAME': 'my_db_ui',
+                        'USER': 'my_user',
+                        'PASSWORD': 'my_password',
+                        'HOST': '127.0.0.1',
+                        'PORT': '3307',
+                    }
+                }
+            )
+        case 2:
+            DATABASES.update(
+                {
+                    'default': {
+                        'ENGINE': 'django.db.backends.mysql',
+                        'NAME': os.environ.get('DB_NAME'),
+                        'USER': os.environ.get('DB_USER'),
+                        'PASSWORD': os.environ.get('DB_PASSWORD'),
+                        'HOST': os.environ.get('DB_HOST'),
+                        'PORT': os.environ.get('DB_PORT'),
+                    }
+                }
+            )
+            API_DOMAIN_ENV = os.environ.get('API_DOMAIN')
+            if API_DOMAIN_ENV:
+                API_DOMAIN = f'{API_DOMAIN_ENV}/{prefix}'
+        case _:
+            DATABASES['default'] = {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+
+if DEBUG is True:
+    from colorama import Fore
+
+    db_option = 'DOCKER-DEV' if USE_DATABASE_CONFIG_OPTION == 1 else 'DOCKER-PROD' if USE_DATABASE_CONFIG_OPTION == 2 else 'DB SERVICE'
+    print(Fore.CYAN, '### SETTINGS CONFIG VERBOSE ----------------------------------------------------#', '\033[0m')
+    match USE_DATABASE_CONFIG_OPTION:
+        case 1:
+            print(Fore.BLUE, '#  1. DATABASES:          [DOCKER-DEV]:          ', DATABASES, '\033[0m')
+        case 2:
+            print(Fore.BLUE, '#  1. DATABASES:          [DOCKER-PROD]:         ', DATABASES, '\033[0m')
+        case _:
+            print(Fore.BLUE, '#  1. DATABASES:          [LOCAL]:               ', DATABASES, '\033[0m')
+    print(Fore.YELLOW, '#  2. API_DOMAIN:                                ', API_DOMAIN, '\033[0m')
+    print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')

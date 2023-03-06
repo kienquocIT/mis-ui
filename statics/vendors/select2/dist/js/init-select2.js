@@ -21,7 +21,7 @@ function initSelectbox(selectBoxElement = null) {
     if (selectBoxElement === null)
         $select_box = $(".dropdown-select_two");
 
-    $select_box.each(function (e) {
+    $select_box.each(function () {
         let $this = $(this)
 
         // check if element has default data

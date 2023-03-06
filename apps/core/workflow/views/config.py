@@ -1,5 +1,3 @@
-import json
-
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -62,8 +60,8 @@ WORKFLOW_TYPE = {
         {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
     ],
 
-
 }
+
 
 class WorkflowList(View):
     permission_classes = [IsAuthenticated]

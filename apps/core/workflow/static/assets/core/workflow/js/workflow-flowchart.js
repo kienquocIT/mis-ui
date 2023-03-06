@@ -76,11 +76,11 @@ function eventNodeClick(event) {
     })
 }
 
-function clickConnection(connect) {
+function clickConnection() {
     // console.log(connect)
-    let node_in = parseInt(connect.component.source.dataset.drag);
-    let node_out = parseInt(connect.component.target.dataset.drag);
-    let condition = [];
+    // let node_in = parseInt(connect.component.source.dataset.drag);
+    // let node_out = parseInt(connect.component.target.dataset.drag);
+    // let condition = [];
     $("#next-node-association .formsets").html('')
     $("#next-node-association").modal('show');
 

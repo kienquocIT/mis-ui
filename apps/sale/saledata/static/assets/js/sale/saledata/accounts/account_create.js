@@ -335,7 +335,6 @@ $(document).ready(function () {
         $('#inp-email-address').val($('#inp-email').val());
         $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
 
-        console.log(acc_name_id)
         if (acc_name_id) {
             for (let i = 0; i < acc_name_id.length; i++)
                 select_box_acc_name.append(`<option value="` + acc_name_id[i] + `">` + acc_name[i] + `</option>`)
@@ -632,7 +631,6 @@ $(document).ready(function () {
                 for (let idx = 0; idx < indexList.length; idx++) {
                     let rowNode = targetDt.rows(indexList[idx]).nodes()[0]
                     if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                        console.log(rowValue)
                         if ($(this).hasClass('contact_primary')) {
                             rowNode.classList.add('data-owner', '1')
                             rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');

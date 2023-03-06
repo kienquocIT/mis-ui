@@ -169,6 +169,15 @@ $(document).ready(function () {
         } else if (lookup === 'industry') {
             data_url = $('#form-create-lookup').attr('data-url-industry');
         }
+
+        if (frm_data['code'] === '') {
+            frm_data['code'] = null;
+        }
+
+        if (frm_data['title'] === '') {
+            frm_data['title'] = null;
+        }
+
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
@@ -295,12 +304,22 @@ $(document).ready(function () {
                 'title': inp_name.val(),
                 'description': inp_des.val(),
             }
+
+            if (data_form['code'] === '') {
+                data_form['code'] = null;
+            }
+
+            if (data_form['title'] === '') {
+                data_form['title'] = null;
+            }
+
             $.fn.callAjax(data_url, 'PUT', data_form, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            console.log(data)
+                            $.fn.notifyPopup({description: "Cập nhập"}, 'success')
+                            $('#modal-update-data').hide();
                         }
                     },
                 ).then(
@@ -338,7 +357,6 @@ $(document).ready(function () {
                     }
                 }
             )
-            $('#modal-update-data').hide();
         });
     });
 });

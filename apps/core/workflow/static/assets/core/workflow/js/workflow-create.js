@@ -1,5 +1,21 @@
 "use strict";
 let ZONE_INDEX = 0;
+let WF_DATATYPE = [];
+
+/***
+ *
+ * @param value Object key of data type
+ * @param elm element per row of formset
+ */
+function changeParameter(value, elm){
+    let temphtml = '';
+    elm.find('[name*="-math"]').html('');
+    for (let item of WF_DATATYPE[value]){
+        temphtml += `<option value="${item.value}">${item.text}</option>`;
+    }
+    elm.find('[name*="-math"]').append(temphtml);
+}
+
 $(function () {
 
     $(document).ready(function () {
@@ -7,6 +23,8 @@ $(function () {
         let $prev_btn = $('#nav-next-prev-step .prev-btn');
         let $next_btn = $('#nav-next-prev-step .next-btn');
 
+
+        WF_DATATYPE = JSON.parse($('#wf_data_type').text())
         // init select function applied ---> chua vi?t docs cho select2
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
@@ -176,7 +194,7 @@ $(function () {
             if (btn_href === '#tab_next_node') {
                 $('#node_dragbox').empty();
                 let jsplumb = new JSPlumbsHandle();
-                jsplumb.renderAndRerenderDrag();
+                jsplumb.init();
             }
         })
 
@@ -238,11 +256,6 @@ $(function () {
             });
         })
 
-
-        // init FlowChart
-        const JSPlumbsInit = new JSPlumbsHandle();
-        JSPlumbsInit.init();
-
         // form submit
         $('#btn-create_workflow').on('click', function (e) {
             e.preventDefault()
@@ -250,7 +263,17 @@ $(function () {
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode();
+            // get exit node condition for node list
+            if (COMMIT_NODE_LIST)
+                for (let item of nodeTableData) {
+                    if (COMMIT_NODE_LIST.hasOwnProperty(item.order))
+                        item.condition = COMMIT_NODE_LIST[item.order]
+                }
             _form.dataForm['node'] = nodeTableData
+
+            // convert associate to json
+            let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
+            _form.dataForm['associate'] = JSON.parse(associate_temp)
 
             let submitFields = [
                 'title',
@@ -259,7 +282,8 @@ $(function () {
                 'zone',
                 'is_multi_company',
                 'is_define_zone',
-                'actions_rename'
+                'actions_rename',
+                'associate'
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
@@ -288,7 +312,6 @@ $(function () {
                 )
         });
 
-
     });
 });
 
@@ -306,7 +329,8 @@ function setupDataNode(is_submit = false) {
         let dataCollaboratorList = [];
         let isSystem = false;
         let codeNodeSystem = "";
-        let total_collaborator = 1;
+        let total_collaborator_in_process = 1;
+        let total_collaborator_config = 1;
         let orderNode = 0;
         let row = tableNode.rows[idx + 1];
         if (row.getAttribute('data-initial-check-box')) {
@@ -330,12 +354,10 @@ function setupDataNode(is_submit = false) {
                 let eleUL = col.querySelector('.node-action-list');
                 if (eleUL) {
                     for (let li = 0; li < eleUL.children.length; li++) {
-                        let eleInput = eleUL.children[li].children[1].children[0];
-                        let eleDataInput = eleUL.children[li].children[0].children[0].children[0].children[0];
+                        let eleInput = eleUL.children[li].querySelector('.check-action-node');
+                        let eleDataInput = eleUL.children[li].querySelector('.node-action').getAttribute('data-action');
                         if (eleInput.checked === true) {
-                            if (eleDataInput.getAttribute('data-action')) {
-                                dataActionList.push(Number(eleDataInput.getAttribute('data-action')));
-                            }
+                            dataActionList.push(Number(eleDataInput));
                         }
                     }
                 }
@@ -369,7 +391,7 @@ function setupDataNode(is_submit = false) {
                             optionCollab = Number(modalBody.children[0].children[1].value);
 
                             // if option in form
-                            if (optionCollab === 1) {
+                            if (optionCollab === 0) {
                             }
 
                             // if option out form
@@ -395,6 +417,7 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                 }
+                                total_collaborator_in_process = dataEmployeeList.length
                                 // if option in workflow
                             } else if (optionCollab === 2) {
                                 let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
@@ -420,7 +443,8 @@ function setupDataNode(is_submit = false) {
                                         'collaborator_zone': dataZoneInWorkflowList,
                                     });
                                 }
-                                total_collaborator = dataCollaboratorList.length;
+                                total_collaborator_in_process = dataCollaboratorList.length;
+                                total_collaborator_config = dataCollaboratorList.length;
                             }
                         }
                     }
@@ -448,7 +472,8 @@ function setupDataNode(is_submit = false) {
                 'action': dataActionList,
                 'collaborators': {
                     'option': optionCollab,
-                    'total': total_collaborator,
+                    'total_in_process': total_collaborator_in_process,
+                    'total_config': total_collaborator_config,
                 },
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,

@@ -1,9 +1,6 @@
-from django.views import View
 from rest_framework import status
-
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
+from apps.shared import mask_view, ServerAPI, ApiURL
 
 
 # Subscription Plan
@@ -36,7 +33,7 @@ class TenantApplicationListAPI(APIView):
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
-# Tenant application list
+# Application properties list
 class ApplicationPropertyListAPI(APIView):
     @mask_view(
         login_require=True,

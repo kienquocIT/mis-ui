@@ -1,12 +1,66 @@
-import json
-
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
-from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset
+
+WORKFLOW_ACTION = {
+    0: WorkflowMsg.ACTION_CREATE,
+    1: WorkflowMsg.ACTION_APPROVED,
+    2: WorkflowMsg.ACTION_REJECT,
+    3: WorkflowMsg.ACTION_RETURN,
+    4: WorkflowMsg.ACTION_RECEIVE,
+    5: WorkflowMsg.ACTION_TODO,
+}
+
+WORKFLOW_TYPE = {
+
+    1: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+        {"value": "contains", "text": WorkflowMsg.MATH_TYPE_CONTAINS},
+        {"value": "not_contains", "text": WorkflowMsg.MATH_TYPE_NOT_CONTAINS},
+    ],
+    2: [
+        {"value": "==", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "<", "text": WorkflowMsg.MATH_TYPE_BEFORE},
+        {"value": ">", "text": WorkflowMsg.MATH_TYPE_AFTER},
+        {"value": "<=", "text": WorkflowMsg.MATH_TYPE_ON_BEFORE},
+        {"value": ">=", "text": WorkflowMsg.MATH_TYPE_ON_AFTER},
+        {"value": "range", "text": WorkflowMsg.MATH_TYPE_WITHIN},
+        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+    ],
+    3: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+        {"value": "contains", "text": WorkflowMsg.MATH_TYPE_CONTAINS},
+        {"value": "not_contains", "text": WorkflowMsg.MATH_TYPE_NOT_CONTAINS},
+    ],
+    4: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+    ],
+    5: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+    ],
+    6: [
+        {"value": "=", "text": "="},
+        {"value": "!=", "text": "≠"},
+        {"value": ">", "text": ">"},
+        {"value": "<", "text": "<"},
+        {"value": ">=", "text": "≥"},
+        {"value": "<=", "text": "≤"},
+        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+    ],
+
+}
 
 
 class WorkflowList(View):
@@ -46,7 +100,11 @@ class WorkflowCreate(View):
         breadcrumb='WORKFLOW_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+                   'wf_actions': WORKFLOW_ACTION,
+                   'form': ConditionFormset(),
+                   'wf_data_type': WORKFLOW_TYPE
+               }, status.HTTP_200_OK
 
 
 class WorkflowCreateAPI(APIView):

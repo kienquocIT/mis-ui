@@ -4,10 +4,10 @@
  * init dropdown with select2
  * @required_html_data:
  * - class: dropdown-select_two
- * - data: data-multiple="true" => set combobox is multiple
- *         data-prefix="application_property_list" => object key of response return
- *         data-url="{% url 'ApplicationPropertyListAPI' %}" => UI url
- *         data-params="{name: value}"
+ * - data: multiple="true" => set combobox is multiple
+ *         prefix="application_property_list" => object key of response return
+ *         url="{% url 'ApplicationPropertyListAPI' %}" => UI url
+ *         params="{name: value}"
  * handle event on change example:
  *     selectbox.on("select2:select", function (e) {
  *          // do action here
@@ -38,8 +38,8 @@ function initSelectbox(selectBoxElement = null) {
             if (Object.keys(default_data).length !== 0) {
                 for (let item of default_data) {
                     if (item.id)
-                        temp.append(item.id)
-                    else temp.append(item)
+                        temp.push(item.id)
+                    else temp.push(item)
                 }
                 default_data = temp
             }
@@ -67,6 +67,10 @@ function initSelectbox(selectBoxElement = null) {
                                 data_convert.push({...item, 'text': item.title, 'selected': true})
                             else data_convert.push({...item, 'text': item.title})
                         }
+                        if ($this.attr('data-virtual') !== undefined
+                            && $this.attr('data-virtual') !== ''
+                            && $this.attr('data-virtual') !== "[]")
+                            data_convert.push(JSON.parse($this.attr('data-virtual')))
                     }
                     return {
                         results: data_convert

@@ -13,13 +13,21 @@ LOGIC_CONDITION = [
 class ParameterFrom(forms.Form):
     left_cond = forms.ChoiceField(label="Left condition", required=False)
     math = forms.ChoiceField(label="Math condition", required=False)
-    right_cond = forms.CharField(label="Right condition", required=False)
+    right_cond = forms.ChoiceField(label="Right condition", required=False)
     type = forms.ChoiceField(label="Type condition", required=False, choices=LOGIC_CONDITION)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['left_cond'].widget.attrs.update(
+            {
+                'class': 'dropdown-select_two',
+                'data-multiple': 'false',
+                'data-prefix': 'application_property_list',
+                'data-url': reverse("ApplicationPropertyListAPI"),
+            }
+        )
+        self.fields['right_cond'].widget.attrs.update(
             {
                 'class': 'dropdown-select_two',
                 'data-multiple': 'false',

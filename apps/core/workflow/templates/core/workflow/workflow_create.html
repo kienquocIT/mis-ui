@@ -7,6 +7,7 @@
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'assets/core/workflow/css/flowchart-workflow-init.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
@@ -444,6 +445,7 @@
 
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>

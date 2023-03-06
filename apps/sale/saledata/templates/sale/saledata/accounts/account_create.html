@@ -319,18 +319,6 @@
                 </span>
                 </button>
             </div>
-            <div class="col-6 text-right">
-                <button type="button" data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
-                        id="btn-add-new-contact"
-                        style="background: none;border: none; color: #007D88">
-                <span class="btn-add-tenant" id="add-contact-btn"
-                      data-bs-placement="bottom"
-                      title="{% trans 'Add New Contact' %}">
-                    <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add New Contact' %}
-                </span>
-                </button>
-            </div>
         </div>
         <div class="container">
             <table id="datatable_contact_list" class="table nowrap mb-5 mt-3" data-url=""
@@ -498,27 +486,32 @@
         <div class="offcanvas-body">
             <div id="table-offcanvas">
                 <table id="datatable-add-contact" class="table nowrap w-100 mb-5"
-                   data-url="{% url "ContactListNotMapAccountAPI" %}"
-                   data-method="GET">
-                <thead>
-                <th style="width: 25%">{% trans "Name" %}</th>
-                <th style="width: 15%">{% trans "Job title" %}</th>
-                <th style="width: 25%">{% trans "Contact owner" %}</th>
-                <th style="width: 15%">{% trans "Mobile" %}</th>
-                <th style="width: 15%">{% trans "Email" %}</th>
-                <th style="width: 5%" class="w-5">
+                       data-url="{% url "ContactListNotMapAccountAPI" %}"
+                       data-method="GET">
+                    <thead>
+                    <th style="width: 25%">{% trans "Name" %}</th>
+                    <th style="width: 15%">{% trans "Job title" %}</th>
+                    <th style="width: 25%">{% trans "Contact owner" %}</th>
+                    <th style="width: 15%">{% trans "Mobile" %}</th>
+                    <th style="width: 15%">{% trans "Email" %}</th>
+                    <th style="width: 5%" class="w-5">
                     <span class="form-check">
                         <input type="checkbox"
                                class="form-check-input check-select-all"
                                id="customCheck1">
                         <label class="form-check-label" for="customCheck1"></label>
                     </span>
-                </th>
-                </thead>
-            </table>
+                    </th>
+                    </thead>
+                </table>
             </div>
             <div class="row mt-7">
-                <div class="text-right">
+                <div class="text-left col-5">
+                    <button type="button" class="btn btn-soft-primary mr-5" id="btn-add-new-contact"
+                            data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
+                            aria-label="Close">{% trans "Add New Contact" %}</button>
+                </div>
+                <div class="text-right col-7">
                     <button type="button" class="btn btn-soft-info mr-5" id="btn-add-contact"
                             data-bs-dismiss="offcanvas"
                             aria-label="Close">{% trans "Add" %}</button>
@@ -528,7 +521,7 @@
             </div>
         </div>
     </div>
-    <!--/ Offcanvas Add Contact-->
+    <!-- Offcanvas Add Contact-->
 
     <!-- Modal Add new Contact -->
     <div class="modal fade" id="modal-add-new-contact" tabindex="-1" role="dialog"
@@ -596,7 +589,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="save-modal-add-new-contact" data-url="{% url "ContactCreateAPI" %}" data-method="POST">
+                    <button type="submit" class="btn btn-primary" id="save-modal-add-new-contact"
+                            data-url="{% url "ContactCreateAPI" %}" data-method="POST">
                         Save
                     </button>
                 </div>

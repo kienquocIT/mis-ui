@@ -65,7 +65,7 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('account_manager_list') && Array.isArray(data.account_manager_list)) {
                         data.account_manager_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" account-name-id="` + item.account.id + `" account-name="` + item.account.name + `">` + item.full_name + `</option>`)
+                            ele.append(`<option value="` + item.id + `" data-account-name-id="` + item.account.id + `" data-account-name="` + item.account.name + `">` + item.full_name + `</option>`)
                         })
                     }
                 }
@@ -215,10 +215,10 @@ $(document).ready(function () {
             let rowNode = table.rows(dataCheckedIndexes[idx]).nodes()[0];
             if (rowNode.lastElementChild.children[0].firstElementChild.getAttribute('data-owner') === '1') {
                 let trData = `<td><span>` + dataChecked.fullname + `</span><span class="field-required">*</span></td><td><span>` + dataChecked.job_title + `</span></td><td><span>` + dataChecked.phone + `</span></td><td><span>` + dataChecked.email + `</span></td>`;
-                tableShowBodyOffModal.prepend(`<tr class="contact_primary" value="` + dataChecked.id + `">` + trData + `</tr>`);
+                tableShowBodyOffModal.prepend(`<tr class="contact_primary" data-value="` + dataChecked.id + `">` + trData + `</tr>`);
             } else {
                 let trData = `<td><span>` + dataChecked.fullname + `</span></td><td><span>` + dataChecked.job_title + `</span></td><td><span>` + dataChecked.phone + `</span></td><td><span>` + dataChecked.email + `</span></td>`;
-                tableShowBodyOffModal.append(`<tr class="contact_selected" value="` + dataChecked.id + `">` + trData + `</tr>`);
+                tableShowBodyOffModal.append(`<tr class="contact_selected" data-value="` + dataChecked.id + `">` + trData + `</tr>`);
             }
         }
         return false;
@@ -261,17 +261,17 @@ $(document).ready(function () {
                     if (data) {
                         if (data.hasOwnProperty('contact_detail')) {
                             $('#job_title').val(data.contact_detail.job_title);
-                            if ($('.contact_selected').length > 0 && $('.contact_selected').filter(`[value="` + newValue + `"]`))
-                                $('.contact_selected').filter(`[value="` + newValue + `"]`).remove();
+                            if ($('.contact_selected').length > 0 && $('.contact_selected').filter(`[data-value="` + newValue + `"]`))
+                                $('.contact_selected').filter(`[data-value="` + newValue + `"]`).remove();
                             $('.contact_primary').remove();
-                            tableShowBodyOffModal.prepend(`<tr class="contact_primary" value="` + newValue + `"><td><span>` + data.contact_detail.fullname.fullname + `</span><span class="field-required">*</span></td><td><span>` + data.contact_detail.job_title + `</span></td><td><span>` + data.contact_detail.phone + `</span></td><td><span>` + data.contact_detail.email + `</span></td></tr>`);
+                            tableShowBodyOffModal.prepend(`<tr class="contact_primary" data-value="` + newValue + `"><td><span>` + data.contact_detail.fullname.fullname + `</span><span class="field-required">*</span></td><td><span>` + data.contact_detail.job_title + `</span></td><td><span>` + data.contact_detail.phone + `</span></td><td><span>` + data.contact_detail.email + `</span></td></tr>`);
                             for (let idx = 0; idx < indexList.length; idx++) {
                                 let rowNode = table.rows(indexList[idx]).nodes()[0]
                                 if (data.contact_detail.id === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
                                     rowNode.classList.add('selected');
                                     rowNode.lastElementChild.children[0].firstElementChild.checked = true;
                                     rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
-                                } else if (oldValue == rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
+                                } else if (oldValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
                                     rowNode.classList.remove('selected');
                                     rowNode.lastElementChild.children[0].firstElementChild.checked = false;
                                     rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0');
@@ -290,7 +290,7 @@ $(document).ready(function () {
     //Conditions for choosing a parent account
     $('#select-box-acc-type').on('change', function () {
         let selected_acc_type = $('#select-box-acc-type option:selected').filter(function () {
-            return $(this).text().toLowerCase() == 'customer'
+            return $(this).text().toLowerCase() === 'customer'
         })
 
         if (selected_acc_type.length > 0) {
@@ -325,8 +325,8 @@ $(document).ready(function () {
         let acc_name = [];
         let acc_name_id = [];
         $('#select-box-acc-manager').find('option:selected').each(function () {
-            let list_account_name = $(this).attr('account-name').split(',');
-            let list_account_name_id = $(this).attr('account-name-id').split(',');
+            let list_account_name = $(this).attr('data-account-name').split(',');
+            let list_account_name_id = $(this).attr('data-account-name-id').split(',');
             for (let i = 0; i < list_account_name_id.length; i++) {
                 if (!acc_name_id.includes(list_account_name_id[i])) {
                     if (list_account_name_id[i] !== '') {
@@ -347,15 +347,14 @@ $(document).ready(function () {
                 select_box_acc_name.append(`<option value="` + acc_name_id[i] + `">` + acc_name[i] + `</option>`)
         }
 
-
-        if ($('#list-billing-address input').length == 0)
+        if ($('#list-billing-address input').length === 0)
             $('#make-default-billing-address').prop('checked', true);
 
         let select_box = $('#select-box-address')
         select_box.empty();
         select_box.append(`<option value="0" selected></option>`)
         $('#list-shipping-address').children().each(function () {
-            if ($(this).find('input').prop('checked') == true)
+            if ($(this).find('input').prop('checked') === true)
                 select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
             else
                 select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
@@ -376,7 +375,7 @@ $(document).ready(function () {
             $('#inp-email-address').val($('#inp-email').val());
 
             $('#list-shipping-address').children().each(function () {
-                if ($(this).find('input').prop('checked') == true)
+                if ($(this).find('input').prop('checked') === true)
                     select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
                 else
                     select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
@@ -404,7 +403,7 @@ $(document).ready(function () {
 
     //Button add shipping address
     $('#edit-shipping-address-btn').on('click', function () {
-        if ($('#list-shipping-address input').length == 0)
+        if ($('#list-shipping-address input').length === 0)
             $('#make-default-shipping-address').prop('checked', true);
     })
 
@@ -431,7 +430,7 @@ $(document).ready(function () {
             if (billing_address !== '') {
                 let num = $('#list-billing-address input').length
                 let is_default = '';
-                if ($('#make-default-billing-address').prop('checked') == true) {
+                if ($('#make-default-billing-address').prop('checked') === true) {
                     is_default = 'checked';
                 }
                 $('#list-billing-address').append(
@@ -524,9 +523,8 @@ $(document).ready(function () {
             frm.dataForm['billing_address'] = billing_address_list;
         }
 
-
         let is_customer_selected = $('#select-box-acc-type option:selected').filter(function () {
-            return $(this).text().toLowerCase() == 'customer';
+            return $(this).text().toLowerCase() === 'customer';
         })
 
         if (is_customer_selected.length > 0) {
@@ -537,11 +535,10 @@ $(document).ready(function () {
             }
         }
 
-        let contact_selected_list = $('.contact_selected').map(function () {
-            return $(this).attr('value'); // Lấy giá trị của thuộc tính value của từng phần tử
+        frm.dataForm['contact_select_list'] = $('.contact_selected').map(function () {
+            return $(this).attr('data-value');
         }).get();
-        frm.dataForm['contact_select_list'] = contact_selected_list;
-        frm.dataForm['contact_primary'] = $('.contact_primary').attr('value');
+        frm.dataForm['contact_primary'] = $('.contact_primary').attr('data-value');
 
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
@@ -611,6 +608,11 @@ $(document).ready(function () {
         let ele = $('#select-box-contact-owner');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
+        $('#inp-jobtitle').val('');
+        $('#inp-fullname').val('');
+        $('#inp-email-contact').val('');
+        $('#inp-phone').val('');
+        $('#inp-mobile').val('');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -634,7 +636,7 @@ $(document).ready(function () {
             var targetDt = dtb.DataTable(config);
             let indexList = targetDt.rows().indexes();
             $('#datatable_contact_list tr').each(function () {
-                let rowValue = $(this).attr('value');
+                let rowValue = $(this).attr('data-value');
                 for (let idx = 0; idx < indexList.length; idx++) {
                     let rowNode = targetDt.rows(indexList[idx]).nodes()[0]
                     if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
@@ -676,7 +678,7 @@ $(document).ready(function () {
                     //reload select box account owner
                     let id_contact_primary = null;
                     if ($('#datatable_contact_list .contact_primary').length !== 0) {
-                        id_contact_primary = $('#datatable_contact_list .contact_primary').attr('value');
+                        id_contact_primary = $('#datatable_contact_list .contact_primary').attr('data-value');
                     }
 
                     loadAccountOwner(id_contact_primary);

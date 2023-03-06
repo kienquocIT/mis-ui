@@ -39,7 +39,7 @@ $(document).ready(function () {
                         let list_class_badge = ['badge-soft-success', 'badge-soft-danger', 'badge-soft-warning', 'badge-soft-light', 'badge-soft-dark', 'badge-soft-info', 'badge-soft-primary', 'badge-soft-secondary']
                         let element = ''
                         for (let i = 0; i < row.account_type.length; i++) {
-                            element += `<span class="badge ` + list_class_badge[i] + ` mt-1 ml-1">` + row.account_type[i] + `</span>`;
+                            element += `<span class="badge ` + list_class_badge[i] + ` badge-outline mt-1 ml-1">` + row.account_type[i] + `</span>`;
                         }
                         return `<div class="row">` + element + `</div>`
                     }
@@ -48,22 +48,27 @@ $(document).ready(function () {
                         return `<span><center>` + row.industry + `</center></span>`
                     }
                 }, {
+                    'data': 'website', 'render': (data, type, row, meta) => {
+                        return `<span><center>` + row.website + `</center></span>`
+                    }
+                }, {
                     'data': 'owner', 'render': (data, type, row, meta) => {
-                        return `<span class="badge badge-info badge-outline"><center>` + row.owner.fullname + `</center></span>`
+                        if (row.owner.fullname) {
+                            return `<div class="row"><span class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></div>`
+                        }
+                        else {
+                            return ``
+                        }
                     }
                 },{
                     'data': 'phone', 'render': (data, type, row, meta) => {
                         return `<span><center>` + row.phone + `</center></span>`
                     }
                 }, {
-                    'data': 'website', 'render': (data, type, row, meta) => {
-                        return `<span><center>` + row.website + `</center></span>`
-                    }
-                }, {
                     'data': 'manager', 'render': (data, type, row, meta) => {
                         let element = ''
                         for (let i = 0; i < row.manager.length; i++) {
-                            element += `<span class="badge badge-soft-primary mt-1 ml-1">` + row.manager[i] + `</span>`;
+                            element += `<span class="badge badge-soft-secondary badge-outline mt-1 ml-1">` + row.manager[i] + `</span>`;
                         }
                         return `<div class="row">` + element + `</div>`
                     }

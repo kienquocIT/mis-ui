@@ -188,6 +188,18 @@ $(document).ready(function () {
             frm.dataForm['owner'] = null;
         }
 
+        if (frm.dataForm['email'] === '') {
+            frm.dataForm['email'] = null;
+        }
+
+        if (frm.dataForm['phone'] === '') {
+            frm.dataForm['phone'] = null;
+        }
+
+        if (frm.dataForm['mobile'] === '') {
+            frm.dataForm['mobile'] = null;
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

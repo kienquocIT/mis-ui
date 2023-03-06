@@ -103,7 +103,6 @@ $(document).ready(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
                         config['data'] = resp.data.account_list;
-                        console.log(resp.data.account_list)
                     }
                     initDataTable(config, '#datatable_account_list');
                 }

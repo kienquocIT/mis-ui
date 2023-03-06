@@ -114,7 +114,6 @@ $(document).ready(function () {
         }
     }
 
-
     let tb_salutation = $('#datatable_salutation_list');
     $.fn.callAjax(tb_salutation.attr('data-url'), tb_salutation.attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);

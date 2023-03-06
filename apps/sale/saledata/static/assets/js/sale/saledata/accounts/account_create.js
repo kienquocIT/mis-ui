@@ -608,11 +608,7 @@ $(document).ready(function () {
         let ele = $('#select-box-contact-owner');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $('#inp-jobtitle').val('');
-        $('#inp-fullname').val('');
-        $('#inp-email-contact').val('');
-        $('#inp-phone').val('');
-        $('#inp-mobile').val('');
+        $('#modal-add-new-contact input').val('');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);

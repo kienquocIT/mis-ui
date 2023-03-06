@@ -243,7 +243,20 @@ $(document).ready(function () {
             frm.dataForm['owner'] = null;
         }
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        if (frm.dataForm['email'] === '') {
+            frm.dataForm['email'] = null;
+        }
+
+        if (frm.dataForm['phone'] === '') {
+            frm.dataForm['phone'] = null;
+        }
+
+        if (frm.dataForm['mobile'] === '') {
+            frm.dataForm['mobile'] = null;
+        }
+
+        let pk = window.location.pathname.split('/').pop();
+        $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     $.fn.notifyPopup({description: resp.detail}, 'success');

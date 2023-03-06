@@ -223,8 +223,8 @@ class AccountTypeDetailAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def put(self, request, p_k, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + p_k).put(request.data)
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + pk).put(request.data)
         if resp.state:
             return {'account_type': resp.result}, status.HTTP_200_OK
         if resp.errors:

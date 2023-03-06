@@ -91,6 +91,54 @@ class InterestListAPI(APIView):
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
+class SalutationDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SALUTATION_DETAIL + pk).get()
+        if resp.state:
+            return {'salutation': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SALUTATION_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'salutation': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class InterestDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INTEREST_DETAIL + pk).get()
+        if resp.state:
+            return {'interest': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INTEREST_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'interest': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
 class AccountMasterDataList(View):
     permission_classes = [IsAuthenticated]
 
@@ -118,6 +166,30 @@ class AccountTypeListAPI(APIView):
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
+class AccountTypeDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + pk).get()
+        if resp.state:
+            return {'account_type': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'account_type': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
 class IndustryListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -129,6 +201,30 @@ class IndustryListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_LIST).get()
         if resp.state:
             return {'industry_list': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class IndustryDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL + pk).get()
+        if resp.state:
+            return {'industry': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'industry': resp.result}, status.HTTP_200_OK
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
@@ -271,16 +367,16 @@ class ContactDetailAPI(APIView):
         return {}, status.HTTP_401_UNAUTHORIZED
 
 
-class ContactUpdateAPI(APIView):
+class ContactUpdate(View):
     @mask_view(
         auth_require=True, template='sale/saledata/accounts/contact_update.html',
         breadcrumb='CONTACT_UPDATE_PAGE'
     )
-    def get(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).get()
-        if response.state:
-            return {'contact': response.result}, status.HTTP_200_OK
-        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ContactUpdateAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):

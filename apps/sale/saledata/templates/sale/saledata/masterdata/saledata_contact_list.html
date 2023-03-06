@@ -139,6 +139,51 @@
     </form>
     <!-- End Modal Create Lookup Data-->
 
+    <!-- Modal Update Master Data>-->
+    <form id="form-update-masterdata" data-method="POST" data-lookup="salutation"
+          data-url-salutation="{% url "SalutationDetailAPI" pk=0 %} "
+          data-url-interests="{% url "InterestDetailAPI" pk=0    %} "
+          >
+        <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Edit Salutation" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Code" %}</label>
+                                <input id="code-update" class="form-control" type="text" name="code"
+                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title" id="name-update"
+                                       placeholder="Input name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <input class="form-control" type="text" name="description"
+                                       id="description-update"
+                                       placeholder="Input text">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary edit-button">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Modal Update Master Data>-->
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/sale/saledata/masterdata/saledata_contact_create.js' %}"></script>

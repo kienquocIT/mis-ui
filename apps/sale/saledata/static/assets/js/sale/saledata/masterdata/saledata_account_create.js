@@ -164,24 +164,34 @@ $(document).ready(function () {
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
         let data_url = ''
-        if (lookup == 'account_type') {
+        if (lookup === 'account_type') {
             data_url = $('#form-create-lookup').attr('data-url-account-type');
-        } else if (lookup == 'industry') {
+        } else if (lookup === 'industry') {
             data_url = $('#form-create-lookup').attr('data-url-industry');
         }
+
+        if (frm_data['code'] === '') {
+            frm_data['code'] = null;
+        }
+
+        if (frm_data['title'] === '') {
+            frm_data['title'] = null;
+        }
+
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $('#modal-lookup-data').hide();
                     }
                 },
                 (errs) => {
                 }
             ).then(
             (rep) => { // reload dataTalbe after create
-                if (lookup == 'account_type') {
+                if (lookup === 'account_type') {
                     $('#section-account-type').empty();
                     $('#section-account-type').append(ele_account_type);
                     let tb_account_type = $('#datatable-account-type-list');
@@ -214,7 +224,6 @@ $(document).ready(function () {
                 }
             }
         )
-        $('#modal-lookup-data').hide();
     })
 
 // Select checkbox in table
@@ -295,11 +304,22 @@ $(document).ready(function () {
                 'title': inp_name.val(),
                 'description': inp_des.val(),
             }
+
+            if (data_form['code'] === '') {
+                data_form['code'] = null;
+            }
+
+            if (data_form['title'] === '') {
+                data_form['title'] = null;
+            }
+
             $.fn.callAjax(data_url, 'PUT', data_form, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
+                            $.fn.notifyPopup({description: "Cập nhập"}, 'success')
+                            $('#modal-update-data').hide();
                         }
                     },
                     (errs)=>{
@@ -340,7 +360,6 @@ $(document).ready(function () {
                     }
                 }
             )
-            $('#modal-update-data').hide();
         });
     });
 });

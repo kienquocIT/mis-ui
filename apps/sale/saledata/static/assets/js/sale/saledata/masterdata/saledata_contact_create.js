@@ -164,24 +164,34 @@ $(document).ready(function () {
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
         let data_url = ''
-        if (lookup == 'salutation') {
+        if (lookup === 'salutation') {
             data_url = $('#form-create-lookup').attr('data-url-salutation');
-        } else if (lookup == 'interests') {
+        } else if (lookup === 'interests') {
             data_url = $('#form-create-lookup').attr('data-url-interests');
         }
+
+        if (frm_data['code'] === '') {
+            frm_data['code'] = null;
+        }
+
+        if (frm_data['title'] === '') {
+            frm_data['title'] = null;
+        }
+
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $('#modal-lookup-data').hide();
                     }
                 },
                 (errs) => {
                 }
             ).then(
             (rep) => {// reload dataTable after create
-                if (lookup == 'salutation') {
+                if (lookup === 'salutation') {
                     $('#section-salutation').empty();
                     $('#section-salutation').append(ele_salutation);
                     let tb_salutation = $('#datatable_salutation_list');
@@ -214,7 +224,6 @@ $(document).ready(function () {
                 }
             }
         )
-        $('#modal-lookup-data').hide();
     })
 
     // Select checkbox in table
@@ -281,7 +290,6 @@ $(document).ready(function () {
                             $('#code-update').val(data.interest.code);
                             $('#description-update').val(data.interest.description);
                         }
-
                     }
                 }
             }, (errs) => {
@@ -298,14 +306,26 @@ $(document).ready(function () {
                 'title': inp_name.val(),
                 'description': inp_des.val(),
             }
+
+            if (data_form['code'] === '') {
+                data_form['code'] = null;
+            }
+
+            if (data_form['title'] === '') {
+                data_form['title'] = null;
+            }
+
             $.fn.callAjax(data_url, 'PUT', data_form, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            console.log(data);
+                            $.fn.notifyPopup({description: "Cập nhập"}, 'success')
+                            $('#modal-update-data').hide();
                         }
                     },
+                    (errs) => {
+                    }
                 ).then(
                 (resp) => { // reload table after save edit
                     if (check_type) {
@@ -339,9 +359,8 @@ $(document).ready(function () {
                             initDataTable(config_interest, '#datatable_interests_list');
                         },)
                     }
-                }
+                },
             )
-            $('#modal-update-data').hide();
         });
     })
 });

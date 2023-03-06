@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     let ele_table_offcanvas = $('#table-offcanvas').html()
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
@@ -72,7 +73,7 @@ $(document).ready(function () {
         )
     }
 
-    function loadAccountOwner() {
+    function loadAccountOwner(id) {
         let ele = $('#select-box-contact');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -84,7 +85,10 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
                         ele.append(`<option selected></option>`)
                         data.contact_list_not_map_account.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
+                            if (item.id === id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
+                            } else
+                                ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
                         })
                     }
                 }
@@ -192,7 +196,7 @@ $(document).ready(function () {
     loadEmployee();
     loadAccountType();
     loadIndustry();
-    loadAccountOwner();
+    loadAccountOwner(null);
     loadParentAccount();
     loadTableContact();
 
@@ -223,6 +227,10 @@ $(document).ready(function () {
     // button add Contact in table Contact
     $('#btn-add-contact').on('click', function () {
         tableContactAdd();
+        if ($('#datatable_contact_list tr').filter('.contact_primary').length === 0) {
+            $('#select-box-contact option:eq(0)').prop('selected', true);
+            $('#job_title').val('');
+        }
     })
 
     //Change  Account Owner
@@ -260,7 +268,6 @@ $(document).ready(function () {
                             for (let idx = 0; idx < indexList.length; idx++) {
                                 let rowNode = table.rows(indexList[idx]).nodes()[0]
                                 if (data.contact_detail.id === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                                    rowNode.classList.add('data-owner', '1')
                                     rowNode.classList.add('selected');
                                     rowNode.lastElementChild.children[0].firstElementChild.checked = true;
                                     rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
@@ -335,7 +342,6 @@ $(document).ready(function () {
         $('#inp-email-address').val($('#inp-email').val());
         $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
 
-        console.log(acc_name_id)
         if (acc_name_id) {
             for (let i = 0; i < acc_name_id.length; i++)
                 select_box_acc_name.append(`<option value="` + acc_name_id[i] + `">` + acc_name[i] + `</option>`)
@@ -632,12 +638,9 @@ $(document).ready(function () {
                 for (let idx = 0; idx < indexList.length; idx++) {
                     let rowNode = targetDt.rows(indexList[idx]).nodes()[0]
                     if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                        console.log(rowValue)
                         if ($(this).hasClass('contact_primary')) {
-                            rowNode.classList.add('data-owner', '1')
                             rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
                         } else {
-                            rowNode.classList.add('data-owner', '0')
                             rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
                         }
                         rowNode.classList.add('selected');
@@ -671,7 +674,12 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     //reload select box account owner
-                    loadAccountOwner();
+                    let id_contact_primary = null;
+                    if ($('#datatable_contact_list .contact_primary').length !== 0) {
+                        id_contact_primary = $('#datatable_contact_list .contact_primary').attr('value');
+                    }
+
+                    loadAccountOwner(id_contact_primary);
                     $('#table-offcanvas').empty();
                     $('#table-offcanvas').append(ele_table_offcanvas);
 

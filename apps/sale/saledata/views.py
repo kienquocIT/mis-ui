@@ -2,10 +2,9 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
+from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg
 
 
-# Master Data
 class ContactMasterDataList(View):
     permission_classes = [IsAuthenticated]
 

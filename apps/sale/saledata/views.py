@@ -47,8 +47,8 @@ class SalutationCreateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -79,8 +79,8 @@ class SalutationDetailAPI(APIView):
         if resp.errors:
             if isinstance(resp.errors, dict):
                 err_msg = ""
-                for _, value in resp.errors.items():
-                    err_msg += str(value)
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -116,8 +116,8 @@ class InterestCreateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -148,8 +148,8 @@ class InterestDetailAPI(APIView):
         if resp.errors:
             if isinstance(resp.errors, dict):
                 err_msg = ""
-                for _, value in resp.errors.items():
-                    err_msg += str(value)
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -198,8 +198,8 @@ class AccountTypeCreateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -230,8 +230,8 @@ class AccountTypeDetailAPI(APIView):
         if resp.errors:
             if isinstance(resp.errors, dict):
                 err_msg = ""
-                for _, value in resp.errors.items():
-                    err_msg += str(value)
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -267,8 +267,8 @@ class IndustryCreateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -299,8 +299,8 @@ class IndustryDetailAPI(APIView):
         if resp.errors:
             if isinstance(resp.errors, dict):
                 err_msg = ""
-                for _, value in resp.errors.items():
-                    err_msg += str(value)
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -364,8 +364,8 @@ class ContactCreateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, response.status
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -419,8 +419,8 @@ class ContactUpdateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, response.status
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -489,8 +489,8 @@ class AccountCreateAPI(APIView):
         if response.errors:
             if isinstance(response.errors, dict):
                 err_msg = ""
-                for _, value in response.errors.items():
-                    err_msg += str(value)
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

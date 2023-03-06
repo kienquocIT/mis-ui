@@ -348,7 +348,6 @@ class GetAccountNameAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNTNAME_LIST).get()
         if resp.state:
-            print(resp.result)
             return {'account_manager_list': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_401_UNAUTHORIZED
 

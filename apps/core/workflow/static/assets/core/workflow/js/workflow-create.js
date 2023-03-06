@@ -1,5 +1,21 @@
 "use strict";
 let ZONE_INDEX = 0;
+let WF_DATATYPE = [];
+
+/***
+ *
+ * @param value Object key of data type
+ * @param elm element per row of formset
+ */
+function changeParameter(value, elm){
+    let temphtml = '';
+    elm.find('[name*="-math"]').html('');
+    for (let item of WF_DATATYPE[value]){
+        temphtml += `<option value="${item.value}">${item.text}</option>`;
+    }
+    elm.find('[name*="-math"]').append(temphtml);
+}
+
 $(function () {
 
     $(document).ready(function () {
@@ -7,6 +23,8 @@ $(function () {
         let $prev_btn = $('#nav-next-prev-step .prev-btn');
         let $next_btn = $('#nav-next-prev-step .next-btn');
 
+
+        WF_DATATYPE = JSON.parse($('#wf_data_type').text())
         // init select function applied ---> chua vi?t docs cho select2
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
@@ -176,7 +194,7 @@ $(function () {
             if (btn_href === '#tab_next_node') {
                 $('#node_dragbox').empty();
                 let jsplumb = new JSPlumbsHandle();
-                jsplumb.renderAndRerenderDrag();
+                jsplumb.init();
             }
         })
 
@@ -238,11 +256,6 @@ $(function () {
             });
         })
 
-
-        // init FlowChart
-        const JSPlumbsInit = new JSPlumbsHandle();
-        JSPlumbsInit.init();
-
         // form submit
         $('#btn-create_workflow').on('click', function (e) {
             e.preventDefault()
@@ -252,13 +265,15 @@ $(function () {
             let nodeTableData = setupDataNode();
             // get exit node condition for node list
             if (COMMIT_NODE_LIST)
-                for (let item of nodeTableData){
+                for (let item of nodeTableData) {
                     if (COMMIT_NODE_LIST.hasOwnProperty(item.order))
                         item.condition = COMMIT_NODE_LIST[item.order]
                 }
-            debugger
-            console.log('nodeTableData', nodeTableData)
             _form.dataForm['node'] = nodeTableData
+
+            // convert associate to json
+            let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
+            _form.dataForm['associate'] = JSON.parse(associate_temp)
 
             let submitFields = [
                 'title',
@@ -267,7 +282,8 @@ $(function () {
                 'zone',
                 'is_multi_company',
                 'is_define_zone',
-                'actions_rename'
+                'actions_rename',
+                'associate'
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

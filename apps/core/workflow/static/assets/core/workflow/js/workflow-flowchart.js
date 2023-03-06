@@ -3,7 +3,8 @@
  * ***/
 let DEFAULT_NODE_LIST = {};
 let COMMIT_NODE_LIST = []
-let RED_FLAG = false
+let _MOUSE_POSITION = 0
+
 /***
  * function handle user on click into Node
  * @param event: element of Node
@@ -14,30 +15,50 @@ function eventNodeClick(event) {
     let data = DEFAULT_NODE_LIST[$Elm.attr('data-drag')]
     let $modal = $('#exit-node')
     let action_name = JSON.parse($('#wf_action').text())
-
     let html = ``;
 
     for (let item of data.action) {
-        // set if node type is in-form/out-form max user is 1
-        let midd = `<input class="form-control formula-input" type="text" value="1" readonly>`;
-        if (data.collaborators.option === "in_workflow") // else in workflow min user 1 and max user is total in node
-            midd = `<input class="form-control formula-input" type="text" minlength="1" value="1" `
-                + `maxlength="${data.collaborators.total_config}">`;
-
-        if (item > 0 && item < 4) midd = `<select class="form-select">`
-            + `<option value=""></option>`
-            + `<option value="0">max+1-x</option>`
-            + `<option value="1">else</option>`
-            + `</select>`;
+        let midd = ``
+        // set if node type is approved/create and collab option is in-form/out-form
+        if (item <= 1 && data.collaborators.option < 2 || item >= 4)
+            midd = `<input class="form-control formula-input" type="text" `
+                + `value="${item >= 4 ? data.collaborators.total_config : 1}" readonly>`;
+        else if (item <= 1 && data.collaborators.option === 2)
+            // else node type is approved/create and collab option is in workflow
+            midd = `<input class="form-control formula-input" type="number" min="1" value="1" `
+                + `max="${data.collaborators.total_config}">`;
+        else if (item > 1 && item < 4) {
+            let num = data.collaborators.total_config + 1 - 1;
+            midd = `<select class="form-select">`
+                + `<option value=""></option>`
+                + `<option class="formular_opt" value="${num}">${num}</option>`
+                + `<option class="formular_opt_else" value="else">else</option>`
+                + `</select>`;
+        }
         let nexttext = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
         html += `<tr>`
-            + `<td>${action_name[item]}<input type="hidden" name="node-${item}" value="${item}"></td>`
+            + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>`
             + `<td>${midd}</td>`
             + `<td>${nexttext}</td>`
             + `</tr>`;
     }
     $modal.find('table tbody').html(html);
     $modal.modal('show');
+
+    // input form on change
+    $modal.find('.formula-input').off().on('change', function () {
+        let _val = parseInt(this.value);
+        let calc = data.collaborators.total_config + 1 - _val;
+        $modal.find('.form-select .formular_opt').val(calc).text(calc);
+    })
+    // select option on change
+    $modal.find('.form-select').off().on('change', function (event) {
+        let $this_elm = $(event.currentTarget)
+        let is_class = this.value === 'else' ? '.formular_opt' : '.formular_opt_else'
+        let is_index = $this_elm.parents('tr').index() === 1 ? 3 : 2;
+
+        $this_elm.parents('table').find('tr').eq(is_index).find('.form-select ' + is_class).prop('selected', true)
+    });
     // call btn click action
     $('#btn-save-exit-node').off().on("click", () => {
         let condition = []
@@ -46,8 +67,8 @@ function eventNodeClick(event) {
             if ($(this).find('.formula-input').length)
                 temp = $(this).find('.formula-input').val()
             condition.push({
-                node: parseInt($(this).find('[name*="node-"]').val()),
-                formula: temp,
+                action: parseInt($(this).find('[name*="node-action_"]').val()),
+                min_collaborator: temp,
             })
         });
         COMMIT_NODE_LIST[data.order] = condition
@@ -55,17 +76,32 @@ function eventNodeClick(event) {
     })
 }
 
+function clickConnection(connect) {
+    // console.log(connect)
+    let node_in = parseInt(connect.component.source.dataset.drag);
+    let node_out = parseInt(connect.component.target.dataset.drag);
+    let condition = [];
+    $("#next-node-association").modal('show');
+
+}
+
 class JSPlumbsHandle {
 
     set setNodeList(strData) {
-        if (strData)
-            DEFAULT_NODE_LIST = strData
+        let temp = {}
+        if (strData) {
+            for (let item of strData) {
+                temp[item.order] = item
+            }
+            DEFAULT_NODE_LIST = temp
+        }
     };
 
     htmlDragRender() {
         let strHTMLDrapNode = '';
-        if (DEFAULT_NODE_LIST.length) {
-            for (let item of DEFAULT_NODE_LIST) {
+        if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
+            for (let val in DEFAULT_NODE_LIST) {
+                let item = DEFAULT_NODE_LIST[val];
                 strHTMLDrapNode += `<div class="control" data-drag="${item.order}">`
                     + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
@@ -73,16 +109,6 @@ class JSPlumbsHandle {
         $('#node_dragbox').html(strHTMLDrapNode)
     };
 
-
-    renderAndRerenderDrag() {
-        // function 'setupDataNode' has call form workflow-create.js
-        this.setNodeList = setupDataNode()
-        this.htmlDragRender();
-        if (!RED_FLAG){
-            this.initJSPlumbs();
-            RED_FLAG = !RED_FLAG
-        }
-    };
 
     initJSPlumbs() {
         const instance = jsPlumb.getInstance({
@@ -124,33 +150,24 @@ class JSPlumbsHandle {
 
                     instance.addEndpoint(is_id, {
                         connectorOverlays: [
-                            [
-                                "Label",
+                            ["Label",
                                 {
+                                    label: '',
                                     location: 0.5,
                                     cssClass: "cssAssociateLabel",
                                     events: {
                                         click: function (labelOverlay) {
-                                            $(".change-txt").show();
-                                            $("#label").value = labelOverlay.getLabel();
-                                            if (document.getElementById("label").value === "")
-                                                labelOverlay.setLabel("label");
-                                            else
-                                                labelOverlay.setLabel(document.getElementById("label").value);
-                                            $('#label').val("");
-                                        },
-                                        dblclick: function (labelOverlay) {
-                                            labelOverlay.setLabel("");
+                                            clickConnection(labelOverlay)
                                         }
                                     },
                                 },
-                            ],
+                            ]
                         ],
                         maxConnections: -1,
                         connectionsDetachable: true,
                         endpoint: ["Dot", {radius: 4}],
                         HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                        anchor: ["TopRight", "BottomRight", "BottomLeft", "TopLeft"],
+                        anchor: ["Bottom", "BottomRight", "BottomLeft"],
                         isSource: true,
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],
@@ -158,30 +175,28 @@ class JSPlumbsHandle {
                     //
                     instance.addEndpoint(is_id, {
                         endpoint: ["Rectangle", {width: 8, height: 8}],
-                        anchor: ["Top", "Right", "Bottom", "Left"],
+                        anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                         isTarget: true,
                         connectionType: "pink-connection",
                     });
-
+                    // instance.bind('connection', function (info, originalEvent){
+                    //     info.connection.click(function(conn, originalEvent){
+                    //         console.log('is click', conn)
+                    //     })
+                    // })
+                    // instance.bind('click', function (connection, originalEvent){
+                    //     originalEvent.stopPropagation();
+                    //     console.log('connection click', connection, originalEvent)
+                    // })
                     // handle event on click node
-                    $('#' + is_id).off().on("click", function (evt) {
-                        eventNodeClick(evt)
+                    $('#' + is_id).off().on("mousedown", function (evt) {
+                        _MOUSE_POSITION = evt.pageX + evt.pageY
+                    }).on("mouseup", function (evt) {
+                        let temp = evt.pageX + evt.pageY;
+                        if (_MOUSE_POSITION === temp) {
+                            eventNodeClick(evt)
+                        }
                     })
-                    // $('#' + is_id).off().on("mousedown", function (evt) {
-                    //     // console.log('click on event', evt)
-                    //     window.addEventListener("mousemove", drag);
-                    //     window.addEventListener("mouseup", lift);
-                    //     var didDrag = false;
-                    //     function drag() {
-                    //         didDrag = true;
-                    //     }
-                    //     function lift() {
-                    //         if (!didDrag) eventNodeClick(evt)
-                    //         window.removeEventListener("mousemove", drag)
-                    //         window.removeEventListener("mouseup", this)
-                    //     }
-                    //
-                    // },)
                 }
 
             });

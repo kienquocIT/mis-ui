@@ -1,4 +1,10 @@
+/*custom css  */
 
+.modal-xlg {
+    max-width: 1280px;
+}
+
+/*end custom css*/
 .window {
     z-index: 20;
 }
@@ -39,18 +45,20 @@
     gap: 10px;
     align-content: flex-start;
 }
+
 #node_dragbox .control {
     flex: 0 0 auto;
 }
 
-.wrap-flowchart .control{
+.wrap-flowchart .control {
     user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
+
 .wrap-flowchart .control,
-.wrap-flowchart .clone{
+.wrap-flowchart .clone {
     background: #d5ddf8;
     padding: 12px 10px;
     margin-bottom: 10px;
@@ -80,7 +88,7 @@
 }
 
 .wrap-flowchart .control .drag-title,
-.wrap-flowchart .clone .drag-title{
+.wrap-flowchart .clone .drag-title {
     font-weight: 500;
     color: #374986;
 }
@@ -109,4 +117,16 @@
 .control.ui-draggable-disabled {
     opacity: .5;
     cursor: no-drop;
+}
+
+.cssAssociateLabel {
+    width: 10px;
+    height: 10px;
+    background: #7e96e8;
+    transition: transform .5s ease-in;
+    border-radius:5px;
+}
+
+.jtk-connector path:hover + .cssAssociateLabel {
+    transform: scale(1.3);
 }

@@ -48,14 +48,10 @@ $(document).ready(function () {
                         return `<span><center>` + row.industry + `</center></span>`
                     }
                 }, {
-                    'data': 'manager', 'render': (data, type, row, meta) => {
-                        let element = ''
-                        for (let i = 0; i < row.manager.length; i++) {
-                            element += `<span class="badge badge-soft-primary mt-1 ml-1">` + row.manager[i] + `</span>`;
-                        }
-                        return `<div class="row">` + element + `</div>`
+                    'data': 'owner', 'render': (data, type, row, meta) => {
+                        return `<span class="badge badge-info badge-outline"><center>` + row.owner.fullname + `</center></span>`
                     }
-                }, {
+                },{
                     'data': 'phone', 'render': (data, type, row, meta) => {
                         return `<span><center>` + row.phone + `</center></span>`
                     }
@@ -64,10 +60,18 @@ $(document).ready(function () {
                         return `<span><center>` + row.website + `</center></span>`
                     }
                 }, {
+                    'data': 'manager', 'render': (data, type, row, meta) => {
+                        let element = ''
+                        for (let i = 0; i < row.manager.length; i++) {
+                            element += `<span class="badge badge-soft-primary mt-1 ml-1">` + row.manager[i] + `</span>`;
+                        }
+                        return `<div class="row">` + element + `</div>`
+                    }
+                }, {
                     'className': 'action-center', 'render': (data, type, row, meta) => {
-                        let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></center>`;
-                        return bt2 + bt3;
+                        // let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></center>`;
+                        return '';
                     }
                 },]
             }
@@ -94,6 +98,7 @@ $(document).ready(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
                         config['data'] = resp.data.account_list;
+                        console.log(resp.data.account_list)
                     }
                     initDataTable(config, '#datatable_account_list');
                 }
@@ -155,9 +160,9 @@ $(document).ready(function () {
                     }
                 }, {
                     'className': 'action-center', 'render': (data, type, row, meta) => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href=""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt2 + bt3;
+                        // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href=""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                        // return bt2 + bt3;
                     }
                 },]
             }

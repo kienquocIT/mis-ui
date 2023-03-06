@@ -2,10 +2,9 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
+from apps.shared import mask_view, ApiURL, ServerAPI
 
 
-# Master Data
 class ContactMasterDataList(View):
     permission_classes = [IsAuthenticated]
 
@@ -30,7 +29,7 @@ class SalutationListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.SALUTATION_LIST).get()
         if resp.state:
             return {'salutation_list': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_401_UNAUTHORIZED
 
 
 class SalutationCreateAPI(APIView):
@@ -45,14 +44,15 @@ class SalutationCreateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.SALUTATION_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class SalutationDetailAPI(APIView):
@@ -66,7 +66,7 @@ class SalutationDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.SALUTATION_DETAIL + pk).get()
         if resp.state:
             return {'salutation': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+        return {}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(
         auth_require=True,
@@ -76,14 +76,15 @@ class SalutationDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.SALUTATION_DETAIL + pk).put(request.data)
         if resp.state:
             return {'salutation': resp.result}, status.HTTP_200_OK
-        else:
-            if resp.errors:
-                if isinstance(resp.errors, dict):
-                    err_msg = ""
-                    for key, value in resp.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for _, value in resp.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class InterestListAPI(APIView):
@@ -97,7 +98,7 @@ class InterestListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INTERESTS_LIST).get()
         if resp.state:
             return {'interests_list': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_401_UNAUTHORIZED
 
 
 class InterestCreateAPI(APIView):
@@ -112,14 +113,15 @@ class InterestCreateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.INTERESTS_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class InterestDetailAPI(APIView):
@@ -133,7 +135,7 @@ class InterestDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INTEREST_DETAIL + pk).get()
         if resp.state:
             return {'interest': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+        return {}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(
         auth_require=True,
@@ -143,14 +145,15 @@ class InterestDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INTEREST_DETAIL + pk).put(request.data)
         if resp.state:
             return {'interest': resp.result}, status.HTTP_200_OK
-        else:
-            if resp.errors:
-                if isinstance(resp.errors, dict):
-                    err_msg = ""
-                    for key, value in resp.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for _, value in resp.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class AccountMasterDataList(View):
@@ -177,14 +180,7 @@ class AccountTypeListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_LIST).get()
         if resp.state:
             return {'account_type_list': resp.result}, status.HTTP_200_OK
-        else:
-            if resp.errors:
-                if isinstance(resp.errors, dict):
-                    err_msg = ""
-                    for key, value in resp.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_401_UNAUTHORIZED
 
 
 class AccountTypeCreateAPI(APIView):
@@ -199,14 +195,15 @@ class AccountTypeCreateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class AccountTypeDetailAPI(APIView):
@@ -220,7 +217,7 @@ class AccountTypeDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + pk).get()
         if resp.state:
             return {'account_type': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+        return {}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(
         auth_require=True,
@@ -230,14 +227,15 @@ class AccountTypeDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + p_k).put(request.data)
         if resp.state:
             return {'account_type': resp.result}, status.HTTP_200_OK
-        else:
-            if resp.errors:
-                if isinstance(resp.errors, dict):
-                    err_msg = ""
-                    for key, value in resp.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for _, value in resp.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class IndustryListAPI(APIView):
@@ -251,14 +249,7 @@ class IndustryListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_LIST).get()
         if resp.state:
             return {'industry_list': resp.result}, status.HTTP_200_OK
-        else:
-            if resp.errors:
-                if isinstance(resp.errors, dict):
-                    err_msg = ""
-                    for key, value in resp.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_401_UNAUTHORIZED
 
 
 class IndustryCreateAPI(APIView):
@@ -273,14 +264,15 @@ class IndustryCreateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class IndustryDetailAPI(APIView):
@@ -294,7 +286,7 @@ class IndustryDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL + pk).get()
         if resp.state:
             return {'industry': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_401_UNAUTHORIZED
+        return {}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(
         auth_require=True,
@@ -304,14 +296,15 @@ class IndustryDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL + pk).put(request.data)
         if resp.state:
             return {'industry': resp.result}, status.HTTP_200_OK
-        else:
-            if resp.errors:
-                if isinstance(resp.errors, dict):
-                    err_msg = ""
-                    for key, value in resp.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for _, value in resp.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 # Contact
@@ -368,14 +361,15 @@ class ContactCreateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, response.status
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, response.status
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class ContactDetail(View):
@@ -422,14 +416,15 @@ class ContactUpdateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).put(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, response.status
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, response.status
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class ContactListNotMapAccountAPI(APIView):
@@ -490,14 +485,16 @@ class AccountCreateAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(value)
-                        break
-                    return {'errors': err_msg}, response.status
+
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for _, value in response.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class AccountDetailAPI(APIView):

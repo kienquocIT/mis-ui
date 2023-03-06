@@ -113,7 +113,7 @@ $(document).ready(function () {
                     ele.text("");
                     ele.append(`<option selected>` + `</option>`)
                     data.account_detail.owner.map(function (item) {
-                        if (item.id == id_report_to) {
+                        if (item.id === id_report_to) {
                             ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
                         } else {
                             ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
@@ -126,14 +126,14 @@ $(document).ready(function () {
     }
 
     function loadDefaultData() {
-        $('#input-avatar').on('change', function (ev) {
+        $('#input-avatar').on('change', function () {
             let upload_img = $('#upload-area');
             upload_img.text("");
             tmp = URL.createObjectURL(this.files[0])
             upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
             $(this).val()
         });
-        $('#upload-area').click(function (e) {
+        $('#upload-area').click(function () {
             $('#input-avatar').click();
         });
 
@@ -159,7 +159,7 @@ $(document).ready(function () {
                     $('#inp-jobtitle').val(data.contact_detail.job_title);
                     $('#work_address_id').val(data.contact_detail.address_infor.work_address);
                     $('#home_address_id').val(data.contact_detail.address_infor.home_address);
-                    loadInterestList(data.contact_detail.additional_infor.interests.map(obj => obj.id));
+                    loadInterestList(data.contact_detail.additional_infor.map(obj => obj.id));
                     $('#tag_id').val(data.contact_detail.additional_infor.tags);
                     $('#facebook_id').val(data.contact_detail.additional_infor.facebook);
                     $('#gmail_id').val(data.contact_detail.additional_infor.gmail);

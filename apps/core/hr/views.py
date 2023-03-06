@@ -3,7 +3,27 @@ from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg, HRMsg
+
+
+def create_hr_application(request, url, msg):
+    resp = ServerAPI(user=request.user, url=url).post(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    elif resp.status == 401:
+        return {}, status.HTTP_401_UNAUTHORIZED
+    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+def update_hr_application(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url + '/' + pk).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_200_OK
+    elif resp.status == 401:
+        return {}, status.HTTP_401_UNAUTHORIZED
+    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class EmployeeList(View):
@@ -34,20 +54,11 @@ class EmployeeListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            data = request.data
-            response = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).post(data)
-            if response.state:
-                return response.result, status.HTTP_200_OK
-            else:
-                if response.errors:
-                    if isinstance(response.errors, dict):
-                        err_msg = ""
-                        for key, value in response.errors.items():
-                            err_msg += str(key) + ": " + str(value)
-                            break
-                        return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return create_hr_application(
+            request=request,
+            url=ApiURL.EMPLOYEE_LIST,
+            msg=HRMsg.EMPLOYEE_CREATE
+        )
 
 
 class EmployeeCreate(View):
@@ -98,11 +109,28 @@ class EmployeeDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_DETAIL + '/' + pk).put(data)
+        return update_hr_application(
+            request=request,
+            url=ApiURL.EMPLOYEE_DETAIL,
+            pk=pk,
+            msg=HRMsg.EMPLOYEE_UPDATE
+        )
+
+
+class EmployeeCompanyListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, company_id, *args, **kwargs):
+        resp = ServerAPI(url=(ApiURL.EMPLOYEE_COMPANY + '/' + company_id), user=request.user).get()
         if resp.state:
-            return resp.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return {'employee_company_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 # Role
@@ -218,12 +246,11 @@ class GroupLevelListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            data = request.data
-            response = ServerAPI(user=request.user, url=ApiURL.GROUP_LEVEL_LIST).post(data)
-            if response.state:
-                return response.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return create_hr_application(
+            request=request,
+            url=ApiURL.GROUP_LEVEL_LIST,
+            msg=HRMsg.GROUP_LEVEL_CREATE
+        )
 
 
 # Group
@@ -269,20 +296,20 @@ class GroupListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            data = request.data
-            response = ServerAPI(user=request.user, url=ApiURL.GROUP_LIST).post(data)
-            if response.state:
-                return response.result, status.HTTP_200_OK
-            else:
-                if response.errors:
-                    if isinstance(response.errors, dict):
-                        err_msg = ""
-                        for key, value in response.errors.items():
-                            err_msg += str(key) + ": " + str(value)
-                            break
-                        return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return create_hr_application(
+            request=request,
+            url=ApiURL.GROUP_LIST,
+            msg=HRMsg.GROUP_CREATE
+        )
+
+        # data = request.data
+        # resp = ServerAPI(user=request.user, url=ApiURL.GROUP_LIST).post(data)
+        # if resp.state:
+        #     resp.result['message'] = HRMsg.GROUP_CREATE
+        #     return resp.result, status.HTTP_200_OK
+        # elif resp.status == 401:
+        #     return {}, status.HTTP_401_UNAUTHORIZED
+        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class GroupDetail(View):

@@ -164,9 +164,9 @@ $(document).ready(function () {
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
         let data_url = ''
-        if (lookup == 'account_type') {
+        if (lookup === 'account_type') {
             data_url = $('#form-create-lookup').attr('data-url-account-type');
-        } else if (lookup == 'industry') {
+        } else if (lookup === 'industry') {
             data_url = $('#form-create-lookup').attr('data-url-industry');
         }
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
@@ -175,13 +175,14 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $('#modal-lookup-data').hide();
                     }
                 },
                 (errs) => {
                 }
             ).then(
             (rep) => { // reload dataTalbe after create
-                if (lookup == 'account_type') {
+                if (lookup === 'account_type') {
                     $('#section-account-type').empty();
                     $('#section-account-type').append(ele_account_type);
                     let tb_account_type = $('#datatable-account-type-list');
@@ -214,7 +215,6 @@ $(document).ready(function () {
                 }
             }
         )
-        $('#modal-lookup-data').hide();
     })
 
 // Select checkbox in table

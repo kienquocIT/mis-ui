@@ -164,9 +164,9 @@ $(document).ready(function () {
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
         let data_url = ''
-        if (lookup == 'salutation') {
+        if (lookup === 'salutation') {
             data_url = $('#form-create-lookup').attr('data-url-salutation');
-        } else if (lookup == 'interests') {
+        } else if (lookup === 'interests') {
             data_url = $('#form-create-lookup').attr('data-url-interests');
         }
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
@@ -175,13 +175,14 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $('#modal-lookup-data').hide();
                     }
                 },
                 (errs) => {
                 }
             ).then(
             (rep) => {// reload dataTable after create
-                if (lookup == 'salutation') {
+                if (lookup === 'salutation') {
                     $('#section-salutation').empty();
                     $('#section-salutation').append(ele_salutation);
                     let tb_salutation = $('#datatable_salutation_list');
@@ -214,7 +215,6 @@ $(document).ready(function () {
                 }
             }
         )
-        $('#modal-lookup-data').hide();
     })
 
     // Select checkbox in table

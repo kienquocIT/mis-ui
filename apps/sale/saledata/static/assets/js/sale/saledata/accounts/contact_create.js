@@ -192,10 +192,6 @@ $(document).ready(function () {
             frm.dataForm['email'] = null;
         }
 
-        if (frm.dataForm['phone'] === '') {
-            frm.dataForm['phone'] = null;
-        }
-
         if (frm.dataForm['mobile'] === '') {
             frm.dataForm['mobile'] = null;
         }

@@ -243,6 +243,14 @@ $(document).ready(function () {
             frm.dataForm['owner'] = null;
         }
 
+        if (frm.dataForm['email'] === '') {
+            frm.dataForm['email'] = null;
+        }
+
+        if (frm.dataForm['mobile'] === '') {
+            frm.dataForm['mobile'] = null;
+        }
+
         let pk = window.location.pathname.split('/').pop();
 
         $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)

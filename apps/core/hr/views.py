@@ -170,7 +170,15 @@ class RoleListAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).post(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
+        if role.errors:
+            if isinstance(role.errors, dict):
+                err_msg = ""
+                for _, value in role.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, role.status
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class RoleDetailAPI(APIView):
@@ -192,7 +200,15 @@ class RoleDetailAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).put(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
+        if role.errors:
+            if isinstance(role.errors, dict):
+                err_msg = ""
+                for _, value in role.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, role.status
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):

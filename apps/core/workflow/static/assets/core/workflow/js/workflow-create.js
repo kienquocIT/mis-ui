@@ -8,12 +8,12 @@ let WF_DATATYPE = [];
  * @param elm element per row of formset
  */
 function changeParameter(value, elm){
-    let temphtml = '';
+    let tempHtml = '';
     elm.find('[name*="-math"]').html('');
     for (let item of WF_DATATYPE[value]){
-        temphtml += `<option value="${item.value}">${item.text}</option>`;
+        tempHtml += `<option value="${item.value}">${item.text}</option>`;
     }
-    elm.find('[name*="-math"]').append(temphtml);
+    elm.find('[name*="-math"]').append(tempHtml);
 }
 
 $(function () {
@@ -207,8 +207,8 @@ $(function () {
 
         // handle event table zone actions on click
         function actionsClick(elm, data, iEvent) {
-            let isACtion = $(iEvent.currentTarget).attr('data-action');
-            if (isACtion === 'edit') {
+            let isAction = $(iEvent.currentTarget).attr('data-action');
+            if (isAction === 'edit') {
                 let $add_zone_modal = $('#add_zone')
                 let $form = $add_zone_modal.find('form')
                 $form.find('[name="title"]').val(data.title)
@@ -219,7 +219,7 @@ $(function () {
                     $form.find('[name="zone_id"]').val(data.id)
                 modalFormSubmit($form)
                 $add_zone_modal.modal('show')
-            } else if (isACtion === 'delete') {
+            } else if (isAction === 'delete') {
                 let table_elm = $(elm).parents('table.table');
                 $(table_elm).DataTable().rows(elm).remove().draw();
                 // .row(elm).index()

@@ -1,4 +1,12 @@
 /*custom css  */
+:root {
+    --primary-color: #9aadec;
+    --secondary-color: #d5ddf8;
+    --3nd-color: #7e96e8;
+    --4th-color: #374986;
+    --5th-color: #f3c6f2;
+    --6th-color: #efa6b6;
+}
 
 .modal-xlg {
     max-width: 1280px;
@@ -59,15 +67,14 @@
 
 .wrap-flowchart .control,
 .wrap-flowchart .clone {
-    background: #d5ddf8;
+    background: var(--secondary-color);
     padding: 12px 10px;
     margin-bottom: 10px;
-    border-left: solid 18px #9aadec;
     border-bottom: solid 1px #cdd6f5;
     border-radius: 10px;
     display: flex;
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     align-items: center;
     justify-content: center;
     box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
@@ -76,21 +83,10 @@
 
 }
 
-.wrap-flowchart .control:before {
-    content: '::::';
-    position: absolute;
-    top: 10px;
-    left: -19px;
-    transform: rotate(90deg);
-    letter-spacing: 2px;
-    font-size: 20px;
-    color: #7e96e8;
-}
-
 .wrap-flowchart .control .drag-title,
 .wrap-flowchart .clone .drag-title {
     font-weight: 500;
-    color: #374986;
+    color: var(--4th-color);
 }
 
 #tab_next_node #flowchart_workflow {
@@ -105,7 +101,6 @@
     position: absolute;
     background: #8d90e2;
     border: solid 1px #cdcdcd;
-
     padding: 5px 10px;
     border-radius: 4px;
 }
@@ -124,7 +119,7 @@
     height: 10px;
     background: #7e96e8;
     transition: transform .5s ease-in;
-    border-radius:5px;
+    border-radius: 5px;
 }
 
 .jtk-connector path:hover + .cssAssociateLabel {

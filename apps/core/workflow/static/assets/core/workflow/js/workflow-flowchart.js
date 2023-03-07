@@ -35,11 +35,11 @@ function eventNodeClick(event) {
                 + `<option class="formular_opt_else" value="else">else</option>`
                 + `</select>`;
         }
-        let nexttext = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
+        let next_text = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
         html += `<tr>`
             + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>`
             + `<td>${midd}</td>`
-            + `<td>${nexttext}</td>`
+            + `<td>${next_text}</td>`
             + `</tr>`;
     }
     $modal.find('table tbody').html(html);
@@ -99,15 +99,15 @@ class JSPlumbsHandle {
     };
 
     htmlDragRender() {
-        let strHTMLDrapNode = '';
+        let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
-                strHTMLDrapNode += `<div class="control" data-drag="${item.order}">`
+                strHTMLDragNode += `<div class="control" data-drag="${item.order}">`
                     + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
         }
-        $('#node_dragbox').html(strHTMLDrapNode)
+        $('#node_dragbox').html(strHTMLDragNode)
     };
 
 
@@ -131,7 +131,7 @@ class JSPlumbsHandle {
             $('#node_dragbox .control').draggable({
                 helper: function () {
                     return `<div class="clone" data-drag="${$(this).attr('data-drag')}">`
-                        + `${$(this).find('.drag-title').text()}</div>`;
+                        + `<p class="drag-title">${$(this).find('.drag-title').text()}</p></div>`;
                 },
                 containment: "body",
                 appendTo: "#flowchart_workflow",
@@ -148,55 +148,75 @@ class JSPlumbsHandle {
                     let $this_elm = ui.draggable;
                     $this_elm.draggable("disable");
                     instance.draggable(is_id, {containment: true})
-
-                    instance.addEndpoint(is_id, {
-                        connectorOverlays: [
-                            ["Label",
-                                {
-                                    label: '',
-                                    location: 0.5,
-                                    cssClass: "cssAssociateLabel",
-                                    events: {
-                                        click: function (labelOverlay) {
-                                            clickConnection(labelOverlay)
-                                        }
+                    let sys_code = "";
+                    // check default system node
+                    for (let idx in DEFAULT_NODE_LIST){
+                        let item = DEFAULT_NODE_LIST[idx]
+                        if (item.order === parseInt(ui.draggable.attr('data-drag'))){
+                            if (item.hasOwnProperty('code_node_system'))
+                                sys_code = item.code_node_system.toLowerCase()
+                            break;
+                        }
+                    }
+                    if (sys_code !== 'completed')
+                        instance.addEndpoint(is_id, {
+                            connectorOverlays: [
+                                ["Label",
+                                    {
+                                        label: '',
+                                        location: 0.5,
+                                        cssClass: "cssAssociateLabel",
+                                        events: {
+                                            click: function (labelOverlay) {
+                                                clickConnection(labelOverlay)
+                                            }
+                                        },
                                     },
-                                },
-                            ]
-                        ],
-                        maxConnections: -1,
-                        connectionsDetachable: true,
-                        endpoint: ["Dot", {radius: 4}],
-                        HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                        anchor: ["Bottom", "BottomRight", "BottomLeft"],
-                        isSource: true,
-                        connectionType: "pink-connection",
-                        connector: ["Flowchart", {cornerRadius: 5}],
-                    });
+                                ]
+                            ],
+                            maxConnections: -1,
+                            connectionsDetachable: true,
+                            endpoint: ["Dot", {radius: 4}],
+                            endpointStyle:{ fill: "#374986" },
+                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                            anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                            isSource: true,
+                            connectionType: "pink-connection",
+                            connector: ["Flowchart", {cornerRadius: 5}],
+                        });
                     //
-                    instance.addEndpoint(is_id, {
-                        endpoint: ["Rectangle", {width: 8, height: 8}],
-                        anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                        isTarget: true,
-                        connectionType: "pink-connection",
-                    });
-                    // instance.bind('connection', function (info, originalEvent){
-                    //     info.connection.click(function(conn, originalEvent){
-                    //         console.log('is click', conn)
-                    //     })
-                    // })
-                    // instance.bind('click', function (connection, originalEvent){
-                    //     originalEvent.stopPropagation();
-                    //     console.log('connection click', connection, originalEvent)
-                    // })
+                    if (sys_code !== 'initial')
+                        instance.addEndpoint(is_id, {
+                            connectorOverlays: [
+                                ["Label",
+                                    {
+                                        label: '',
+                                        location: 0.5,
+                                        cssClass: "cssAssociateLabel",
+                                        events: {
+                                            click: function (labelOverlay) {
+                                                clickConnection(labelOverlay)
+                                            }
+                                        },
+                                    },
+                                ]
+                            ],
+                            maxConnections: -1,
+                            connectionsDetachable: true,
+                            endpoint: ["Rectangle", {width: 8, height: 8}],
+                            endpointStyle:{ fill: "#374986" },
+                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                            anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
+                            isTarget: true,
+                            connectionType: "pink-connection",
+                            connector: ["Flowchart", {cornerRadius: 5}]
+                        });
                     // handle event on click node
                     $('#' + is_id).off().on("mousedown", function (evt) {
                         _MOUSE_POSITION = evt.pageX + evt.pageY
                     }).on("mouseup", function (evt) {
                         let temp = evt.pageX + evt.pageY;
-                        if (_MOUSE_POSITION === temp) {
-                            eventNodeClick(evt)
-                        }
+                        if (_MOUSE_POSITION === temp) eventNodeClick(evt)
                     })
                 }
 

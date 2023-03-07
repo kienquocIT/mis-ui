@@ -46,6 +46,7 @@ INSTALLED_APPS = \
         'apps.core.hr',
         'apps.core.company',
         'apps.core.base',
+        'apps.core.workflow',
     ] + [  # Another Application
         'apps.sale.saledata',
     ]

@@ -1,10 +1,9 @@
 $(document).ready(function () {
-
     let ele_table_offcanvas = $('#table-offcanvas').html()
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
-        scrollY: "400px",
+        scrollY: $(window).height() * 0.45,
         scrollCollapse: true,
         paging: false,
         columnDefs: [{
@@ -551,7 +550,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     });

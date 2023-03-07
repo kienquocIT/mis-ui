@@ -252,7 +252,7 @@ $(document).ready(function () {
                     setTimeout(location.reload.bind(location), 1000);
                     window.location.replace("/saledata/contacts");
                 }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
+                    // $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     })

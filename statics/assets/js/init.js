@@ -1289,9 +1289,16 @@ String.prototype.format_by_idx = function () {
     // Return ==> `<a href="http://...">Tag A</a>`
     let s = this.toString();
     for (let i = 0; i < arguments.length; i++) {
-        let reg = new RegExp("\\{" + i + "\\}", "gm");
+        let reg = new RegExp(/([0-9])$/, "gm");
         s = s.replace(reg, arguments[i]);
     }
+    return s;
+}
+
+String.prototype.format_url_with_uuid = function (uuid) {
+    let s = this.toString();
+    let reg = new RegExp(/([0-9])$/, "gm");
+    s = s.replace(reg, uuid);
     return s;
 }
 

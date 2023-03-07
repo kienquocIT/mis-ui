@@ -106,7 +106,6 @@ function loadRoleDetail() {
                 if (data) {
                     $('#abbreviation').val(data.role.abbreviation)
                     $('#role_name').val(data.role.title)
-                    $('#code').val(data.role.code)
                     let table = $("#datatable_employee_list").DataTable();
                     let indexList = table.rows().indexes();
                     for (let idx = 0; idx < indexList.length; idx++) {

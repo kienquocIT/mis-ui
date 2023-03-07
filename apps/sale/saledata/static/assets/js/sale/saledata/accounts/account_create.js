@@ -556,37 +556,7 @@ $(document).ready(function () {
             )
     });
 
-    // select all checkbox in offCanvas
-    $(document).on('click', '#datatable-add-contact .check-select', function () {
-        if ($(this).is(":checked")) {
-            $(this).closest('tr').addClass('selected');
-        } else {
-            $(this).closest('tr').removeClass('selected');
-            $('.check-select-all').prop('checked', false);
-        }
-    });
-    $('#datatable-add-contact .check-select-all').on('click', function () {
-        $('.check-select').attr('checked', true);
-        let table = $('#datatable-add-contact').DataTable();
-        let indexList = table.rows().indexes();
-        if ($(this).is(":checked")) {
-            for (let idx = 0; idx < indexList.length; idx++) {
-                let rowNode = table.rows(indexList[idx]).nodes()[0];
-                rowNode.classList.add('selected');
-                rowNode.lastElementChild.children[0].firstElementChild.checked = true;
-            }
-            $('.check-select').prop('checked', true);
-        } else {
-            for (let idx = 0; idx < indexList.length; idx++) {
-                let rowNode = table.rows(indexList[idx]).nodes()[0];
-                rowNode.classList.remove("selected");
-                rowNode.firstElementChild.children[0].firstElementChild.checked = false;
-            }
-            $('.check-select').prop('checked', false);
-        }
-    });
-
-    //
+    // process address
     $('#select-box-address').on('change', function () {
         $('#edited-billing-address').val($(this).find('option:selected').text());
     })
@@ -703,4 +673,34 @@ $(document).ready(function () {
                 $.fn.notifyPopup({description: errs.data.errors}, 'failure');
             })
     })
+
+    // select all checkbox in offCanvas
+    $(document).on('click', '#datatable-add-contact .check-select', function () {
+        if ($(this).is(":checked")) {
+            $(this).closest('tr').addClass('selected');
+        } else {
+            $(this).closest('tr').removeClass('selected');
+            $('.check-select-all').prop('checked', false);
+        }
+    });
+    $('#datatable-add-contact .check-select-all').on('click', function () {
+        $('.check-select').attr('checked', true);
+        let table = $('#datatable-add-contact').DataTable();
+        let indexList = table.rows().indexes();
+        if ($(this).is(":checked")) {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.add('selected');
+                rowNode.lastElementChild.children[0].firstElementChild.checked = true;
+            }
+            $('.check-select').prop('checked', true);
+        } else {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.remove("selected");
+                rowNode.firstElementChild.children[0].firstElementChild.checked = false;
+            }
+            $('.check-select').prop('checked', false);
+        }
+    });
 });

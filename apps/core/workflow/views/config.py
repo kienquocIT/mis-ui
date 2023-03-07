@@ -1,5 +1,3 @@
-import json
-
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -18,33 +16,14 @@ WORKFLOW_ACTION = {
 }
 
 WORKFLOW_TYPE = {
-    "request": [
-        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
-        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
-        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
-        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
-    ],
-    "text": [
+
+    1: [
         {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
         {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
         {"value": "contains", "text": WorkflowMsg.MATH_TYPE_CONTAINS},
         {"value": "not_contains", "text": WorkflowMsg.MATH_TYPE_NOT_CONTAINS},
     ],
-    "number": [
-        {"value": "=", "text": "="},
-        {"value": "!=", "text": "≠"},
-        {"value": ">", "text": ">"},
-        {"value": "<", "text": "<"},
-        {"value": ">=", "text": "≥"},
-        {"value": "<=", "text": "≤"},
-        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
-        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
-    ],
-    "boolean": [
-        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
-        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
-    ],
-    "date": [
+    2: [
         {"value": "==", "text": WorkflowMsg.MATH_TYPE_IS},
         {"value": "<", "text": WorkflowMsg.MATH_TYPE_BEFORE},
         {"value": ">", "text": WorkflowMsg.MATH_TYPE_AFTER},
@@ -54,7 +33,35 @@ WORKFLOW_TYPE = {
         {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
         {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
     ],
+    3: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+        {"value": "contains", "text": WorkflowMsg.MATH_TYPE_CONTAINS},
+        {"value": "not_contains", "text": WorkflowMsg.MATH_TYPE_NOT_CONTAINS},
+    ],
+    4: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+    ],
+    5: [
+        {"value": "=", "text": WorkflowMsg.MATH_TYPE_IS},
+        {"value": "!=", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
+        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+    ],
+    6: [
+        {"value": "=", "text": "="},
+        {"value": "!=", "text": "≠"},
+        {"value": ">", "text": ">"},
+        {"value": "<", "text": "<"},
+        {"value": ">=", "text": "≥"},
+        {"value": "<=", "text": "≤"},
+        {"value": "false", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        {"value": "true", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+    ],
+
 }
+
 
 class WorkflowList(View):
     permission_classes = [IsAuthenticated]

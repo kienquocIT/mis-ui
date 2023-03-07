@@ -237,12 +237,13 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
+                            $.fn.notifyPopup({description: data.message}, 'success')
                             $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
                         }
                     },
                     (errs) => {
-                        // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                        console.log(errs)
+                        $.fn.notifyPopup({description: "Employee create fail"}, 'failure')
                     }
                 )
     });

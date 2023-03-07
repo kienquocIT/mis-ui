@@ -41,7 +41,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'owner', 'render': (data, type, row, meta) => {
-                        return `<div class="row"><center><span style="width: 80%" class="badge badge-soft-indigo badge-outline">` + row.owner.fullname + `</span></center></div>`
+                        return `<div class="row"><center><span style="width: 90%" class="badge badge-soft-indigo badge-outline">` + row.owner.fullname + `</span></center></div>`
                     }
                 }, {
                     'data': 'account_name', 'render': (data, type, row, meta) => {

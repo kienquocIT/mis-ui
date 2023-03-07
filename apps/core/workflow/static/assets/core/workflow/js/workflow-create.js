@@ -262,7 +262,7 @@ $(function () {
             let $form = document.getElementById('form-create_workflow')
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
-            let nodeTableData = setupDataNode();
+            let nodeTableData = setupDataNode(true);
             // get exit node condition for node list
             if (COMMIT_NODE_LIST)
                 for (let item of nodeTableData) {

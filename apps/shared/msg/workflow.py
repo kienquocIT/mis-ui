@@ -1,7 +1,9 @@
+"""system module."""
 from django.utils.translation import gettext_lazy as _
 
 
 class WorkflowMsg:
+    """Workflow message translations"""
     WORKFLOW_CREATE = _('Workflow create successfully')
     ACTION_CREATE = _("Create")
     ACTION_APPROVED = _("Approve")

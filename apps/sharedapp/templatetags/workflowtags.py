@@ -1,5 +1,5 @@
+"""system module."""
 import json
-import ast
 
 from django import template
 from django.template.defaultfilters import stringfilter
@@ -18,29 +18,27 @@ register = template.Library()
 
 @register.filter(needs_autoescape=True)
 @stringfilter
-def workflow_field(value, autoescape=True):
+def workflow_field(value):
+    """workflow tags convert field to html tag variavle params => autoescape=True"""
     result = ''
     try:
-        # value = ast.literal_eval(value)
-        if not isinstance(value, dict):
-            value = json.loads(value)
-    except Exception as e:
-        print('Template tags workflow_field has some error: ', e)
-        return {}
+        value = json.loads(value)
+    except json.JSONDecodeError as json_load_error:
+        print('Template tags workflow_field: %r', json_load_error)
 
-    doc_id = value.get('id', '')
-    title = conditional_escape(value.get('title', ''))
-    remark = conditional_escape(value.get('remark', ''))
-    code = value.get('code', '')
-    type = value.get('type', '')
-    content_type = value.get('content_type', '')
-    properties = value.get('properties', '')
+    # doc_id = value.get('id', '')
+    field_title = conditional_escape(value.get('title', ''))
+    # field_remark = conditional_escape(value.get('remark', ''))
+    field_code = value.get('code', '')
+    field_type = value.get('type', '')
+    # field_content_type = value.get('content_type', '')
+    # field_properties = value.get('properties', '')
 
-    match type:
+    match field_type:
         case 'text':
             result = (f"<div class=\"form-group\">"
-                      f"<label class=\"form-label\">{title}</label>"
-                      f"<input type=\"text\" class=\"form-control\" name=\"{code}\">"
+                      f"<label class=\"form-label\">{field_title}</label>"
+                      f"<input type=\"text\" class=\"form-control\" name=\"{field_code}\">"
                       f"</div>"
                       )
         case 'text_area':

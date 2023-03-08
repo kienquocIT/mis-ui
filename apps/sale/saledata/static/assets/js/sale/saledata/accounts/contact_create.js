@@ -220,4 +220,3 @@ $("#last_name_id").on('change', function () {
         $("#full_name_id").val($("#first_name_id").val() + ' ' + $(this).val())
     }
 })
-

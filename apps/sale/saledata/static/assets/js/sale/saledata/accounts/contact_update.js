@@ -159,7 +159,7 @@ $(document).ready(function () {
                     $('#inp-jobtitle').val(data.contact_detail.job_title);
                     $('#work_address_id').val(data.contact_detail.address_infor.work_address);
                     $('#home_address_id').val(data.contact_detail.address_infor.home_address);
-                    loadInterestList(data.contact_detail.additional_infor.map(obj => obj.id));
+                    loadInterestList(data.contact_detail.additional_infor.interests.map(obj => obj.id));
                     $('#tag_id').val(data.contact_detail.additional_infor.tags);
                     $('#facebook_id').val(data.contact_detail.additional_infor.facebook);
                     $('#gmail_id').val(data.contact_detail.additional_infor.gmail);

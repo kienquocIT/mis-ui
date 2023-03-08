@@ -846,7 +846,7 @@ $(function () {
 
 
         function loadPropertyAuditInFrom(boxId) {
-            let url = '/base/application-property/api';
+            let url = '/base/application-property-employee/api';
             let method = "GET"
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
@@ -854,8 +854,8 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-                            data.application_property_list.map(function (item) {
+                        if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
+                            data.property_employee_list.map(function (item) {
                                 ele.append(`<option value="${item.id}">${item.title}</option>`)
                             })
                         }

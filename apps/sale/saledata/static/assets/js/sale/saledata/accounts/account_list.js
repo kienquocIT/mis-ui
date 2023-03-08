@@ -54,7 +54,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'owner', 'render': (data, type, row, meta) => {
                         if (row.owner.fullname) {
-                            return `<div class="row"><center><span style="width: 80%" class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></center></div>`
+                            return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></center></div>`
                         }
                         else {
                             return ``

@@ -271,8 +271,22 @@
             <div class="tab-pane fade " id="tab_next_node">
                 <div class="wrap-flowchart">
                     <div id="node_dragbox">
-                        <p class="text-center pt-3">{% trans 'No content available' %}</p></div>
-                    <div id="flowchart_workflow"></div>
+                        <p class="text-center pt-3">{% trans 'No content available' %}</p>
+                    </div>
+                    <div class="wrap-flowchart_wf">
+                        <div id="flowchart_workflow"></div>
+                    </div>
+                    <div class="wrap-btn_extend">
+                        <button type="button" class="btn btn-extend_space" data-btn-type="minus">
+                            <span class="feather-icon">
+                                <i data-feather="minus"></i>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-extend_space" data-btn-type="plus">
+                            <span class="feather-icon">
+                                <i data-feather="plus"></i>
+                            </span></button>
+                    </div>
                 </div>
             </div>
         </div>

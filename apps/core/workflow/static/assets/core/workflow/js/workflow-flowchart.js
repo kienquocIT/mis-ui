@@ -76,14 +76,49 @@ function eventNodeClick(event) {
     })
 }
 
-function clickConnection() {
-    // console.log(connect)
-    // let node_in = parseInt(connect.component.source.dataset.drag);
-    // let node_out = parseInt(connect.component.target.dataset.drag);
-    // let condition = [];
+/***
+ * on click in connection of JSPlumbs open modal config associate
+ */
+function clickConnection(connect) {
+    let node_in = parseInt(connect.component.source.dataset.drag);
+    let node_out = parseInt(connect.component.target.dataset.drag);
     $("#next-node-association .formsets").html('')
+    $('#form-create-condition [name="node_in"]').val(node_in)
+    $('#form-create-condition [name="node_out"]').val(node_out)
     $("#next-node-association").modal('show');
 
+}
+
+/*** plus/minus button increase/decrease size of drop space
+ * if size of space is less than default size -> do nothing
+ */
+function extendDropSpace(){
+    let target_elm = $('#flowchart_workflow')
+    let default_h = target_elm.height();
+    let default_w = target_elm.width();
+    $('.btn-extend_space').off().on('click', function (e){
+        e.preventDefault();
+        e.stopPropagation();
+        let current_h = target_elm.height();
+        let current_w = target_elm.width();
+        if ($(this).attr('data-btn-type') === 'plus'){
+            // plus space
+            target_elm.css({
+                'height': current_h + 300,
+                'width': current_w + 300
+            })
+        }
+        else{
+            // minus space
+            if (!(current_h - 300) < default_w || !(current_h - 300) < default_h){
+                target_elm.css({
+                    "height": current_h - 300,
+                    "width": current_w - 300
+                })
+            }
+        }
+
+    })
 }
 
 class JSPlumbsHandle {
@@ -103,7 +138,7 @@ class JSPlumbsHandle {
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
-                strHTMLDragNode += `<div class="control" data-drag="${item.order}">`
+                strHTMLDragNode += `<div class="control" data-drag="${item.order}" title="${item.title}">`
                     + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
         }
@@ -130,10 +165,10 @@ class JSPlumbsHandle {
             // init drag node
             $('#node_dragbox .control').draggable({
                 helper: function () {
-                    return `<div class="clone" data-drag="${$(this).attr('data-drag')}">`
+                    return `<div class="clone" data-drag="${$(this).attr('data-drag')}" `
+                        +`title="${$(this).find('.drag-title').text()}">`
                         + `<p class="drag-title">${$(this).find('.drag-title').text()}</p></div>`;
                 },
-                containment: "body",
                 appendTo: "#flowchart_workflow",
             });
             // init drop node
@@ -182,7 +217,8 @@ class JSPlumbsHandle {
                             anchor: ["Bottom", "BottomRight", "BottomLeft"],
                             isSource: true,
                             connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 5}],
+                            connector: ["Bezier", {curviness: 100}],
+                            // connector: ["Flowchart", {cornerRadius: 5}],
                         });
                     //
                     if (sys_code !== 'initial')
@@ -209,7 +245,8 @@ class JSPlumbsHandle {
                             anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                             isTarget: true,
                             connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 5}]
+                            connector: ["Bezier", {curviness: 100}]
+                            // connector: ["Flowchart", {cornerRadius: 5}]
                         });
                     // handle event on click node
                     $('#' + is_id).off().on("mousedown", function (evt) {
@@ -249,5 +286,6 @@ class JSPlumbsHandle {
         this.setNodeList = setupDataNode();
         this.htmlDragRender();
         this.initJSPlumbs();
+        extendDropSpace()
     }
 }

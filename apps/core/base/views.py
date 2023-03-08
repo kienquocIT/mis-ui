@@ -1,5 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from django.utils.translation import gettext_lazy as _
+
 from apps.shared import mask_view, ServerAPI, ApiURL
 
 
@@ -47,3 +49,17 @@ class ApplicationPropertyListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class ApplicationPropertyEmployeeListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_EMPLOYEE_LIST).get()
+        if resp.state:
+            return {'property_employee_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

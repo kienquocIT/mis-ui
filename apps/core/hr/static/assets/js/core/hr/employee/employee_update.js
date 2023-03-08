@@ -322,8 +322,9 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    console.log(errs)
-                    $.fn.notifyPopup({description: "Employee update fail"}, 'failure')
+                    if (errs.data.errors.hasOwnProperty('detail')) {
+                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    }
                 }
             )
     });

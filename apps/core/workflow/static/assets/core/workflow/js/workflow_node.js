@@ -665,7 +665,7 @@ $(function () {
                 modalBody.append(`<div class="form-group">
                                 <label class="form-label">Select field in form</label>
                                 <select
-                                        class="form-select slect-box-audit-in-form-property"
+                                        class="form-select select-box-audit-in-form-property"
                                         id="${boxInFormPropertyId}"
                                 >
                                     <option></option>
@@ -846,7 +846,7 @@ $(function () {
 
 
         function loadPropertyAuditInFrom(boxId) {
-            let url = '/base/application-property/api';
+            let url = '/base/application-property-employee/api';
             let method = "GET"
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
@@ -854,9 +854,9 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-                            data.application_property_list.map(function (item) {
-                                ele.append(`<option value="${item.id}">${item.title}</option>`)
+                        if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
+                            data.property_employee_list.map(function (item) {
+                                ele.append(`<option value="${item.code}">${item.title}</option>`)
                             })
                         }
                     }
@@ -1318,10 +1318,21 @@ $(function () {
             let eleSpan = $(this)[0].closest('td').querySelector('.check-done-audit');
 
             let eleModal = $(this)[0].closest('td');
+            let employeeInForm = eleModal.querySelector('.select-box-audit-in-form-property');
             let employeeOutForm = eleModal.querySelector('.audit-out-form-employee-data-show');
             let employeeInWorkflow = eleModal.querySelector('.table-in-workflow-employee');
 
-            if (employeeOutForm) {
+            if (employeeInForm) {
+                if (employeeInForm) {
+                    if (employeeInForm.value) {
+                        eleSpan.innerHTML = ``;
+                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                    } else {
+                        eleSpan.innerHTML = ``;
+                        eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    }
+                }
+            } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
@@ -1342,7 +1353,6 @@ $(function () {
                 }
             }
         });
-
     });
 
 });

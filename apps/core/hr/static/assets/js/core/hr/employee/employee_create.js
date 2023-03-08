@@ -233,19 +233,20 @@ $(document).ready(function () {
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                        $.fn.notifyPopup({description: "Employee create fail"}, 'failure')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
                     }
-                )
+                },
+                (errs) => {
+                    if (errs.data.errors.hasOwnProperty('detail')) {
+                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    }
+                }
+            )
     });
 });
 

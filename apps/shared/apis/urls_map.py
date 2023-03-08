@@ -58,6 +58,7 @@ class ApiURL(object):
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
+    APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
 
     TENANT = StringUrl('tenant/userlist')
     # HR

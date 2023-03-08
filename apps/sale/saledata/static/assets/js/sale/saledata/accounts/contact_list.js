@@ -53,12 +53,22 @@ $(document).ready(function () {
                         }
                     }
                 }, {
-                    'data': 'mobie', 'render': (data, type, row, meta) => {
-                        return `<span>` + row.mobile + `</span>`
+                    'data': 'mobile', 'render': (data, type, row, meta) => {
+                        if (row.mobile) {
+                            return `<span>` + row.mobile + `</span>`
+                        }
+                        else {
+                            return ``
+                        }
                     }
                 }, {
                     'data': 'email', 'render': (data, type, row, meta) => {
-                        return `<span>` + row.email + `</span>`
+                        if (row.email) {
+                            return `<span>` + row.email + `</span>`
+                        }
+                        else {
+                            return ``
+                        }
                     }
                 }, {
                     'className': 'action-center', 'render': (data, type, row, meta) => {

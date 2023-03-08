@@ -349,6 +349,8 @@ function setupDataNode(is_submit = false) {
         let total_collaborator_in_process = 1;
         let total_collaborator_config = 1;
         let orderNode = 0;
+        let fieldSelectCollaborator = "";
+
         let row = tableNode.rows[idx + 1];
         if (row.getAttribute('data-initial-check-box')) {
             orderNode = Number(row.getAttribute('data-initial-check-box'))
@@ -398,6 +400,10 @@ function setupDataNode(is_submit = false) {
                             if (optionCollab === 0) {
                                 let zoneList = modalBody.children[2].querySelector('.node-zone-list');
                                 dataZoneList = getZone(zoneList);
+                                let eleProperty = modalBody.querySelector('.select-box-audit-in-form-property');
+                                if (eleProperty) {
+                                    fieldSelectCollaborator = eleProperty.value;
+                                }
                             }
 
                             // if option out form
@@ -457,6 +463,7 @@ function setupDataNode(is_submit = false) {
                 'description': description,
                 'actions': dataActionList,
                 'option_collaborator': optionCollab,
+                'field_select_collaborator': fieldSelectCollaborator,
                 'collaborator_list': dataEmployeeList,
                 'node_zone': dataZoneList,
                 'collaborator': dataCollaboratorList,

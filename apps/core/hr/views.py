@@ -151,7 +151,7 @@ class RoleDetail(View):
         template='core/hr/role/update_role.html',
         menu_active='menu_role_list',
     )
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 

@@ -1,8 +1,10 @@
+"""system module"""
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
 
 
-class BreadcrumbChildren(object):
+class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
+    """prepare url breadcrumbs"""
     def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None):
         self.title = title
         self.url = url if url else ''
@@ -11,18 +13,24 @@ class BreadcrumbChildren(object):
 
     @property
     def data(self):
+        """template data"""
         return {
             'title': self.title if self.title else '#',
             'url': reverse(self.url, kwargs=self.kw_pattern) if self.url else '#',
         }
 
 
-class BreadcrumbItem(object):
+class BreadcrumbItem:  # pylint: disable=too-few-public-methods
+    """prepare text menu line"""
     # home
     HOME_PAGE = BreadcrumbChildren(
         _('Home Page'), 'HomeView'
     )
-    HOME_VIEW_SPACE = BreadcrumbChildren(_('Employee List'), 'HomeViewSpace', kw_pattern={'space_code': 'e-office'})
+    HOME_VIEW_SPACE = BreadcrumbChildren(
+        _('Employee List'),
+        'HomeViewSpace',
+        kw_pattern={'space_code': 'e-office'}
+    )
 
     # hr
     HR_PAGE = BreadcrumbChildren(_('HR'))
@@ -56,6 +64,7 @@ class BreadcrumbItem(object):
 
 
 class BreadcrumbView:
+    """menu vertical item view"""
     @staticmethod
     def check_view_name():
         """
@@ -83,16 +92,17 @@ class BreadcrumbView:
                     view_errs[att] = str(err)
 
         if view_errs:
-            msg = f'''Some view was used in Breadcrumb does not exist. It is: \n'''
+            msg = 'Some view was used in Breadcrumb does not exist. It is: \n'
             msg += '************************************************************\n'
-            for k, v in view_errs.items():
-                msg += f'* {k}: {v}\n'
+            for k, value in view_errs.items():
+                msg += f'* {k}: {value}\n'
             msg += '************************************************************\n'
             raise NoReverseMatch(msg)
         return True
 
     @classmethod
     def parsed(cls, name: str) -> list:
+        """method parsed data custom"""
         data = getattr(cls, name, [])
         if data and isinstance(data, list):
             return [item.data for item in data]

@@ -1,7 +1,9 @@
+"""system module"""
 from uuid import UUID
 
 
-class TypeCheck(object):
+class TypeCheck(object):  # pylint: disable=too-few-public-methods
+    """check type of str is uuid"""
     @staticmethod
     def check_uuid(data: any, return_data=False) -> (True or False) or (UUID or None):
         # check

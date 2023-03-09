@@ -1,5 +1,5 @@
 """
-WSGI config for misui project.
+WSGI config for mis-ui project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

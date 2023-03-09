@@ -1,3 +1,4 @@
+"""register filter custom"""
 from django import template
 
 register = template.Library()

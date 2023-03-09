@@ -1,4 +1,6 @@
-class StringUrl(str):
+"""not need import module"""
+class StringUrl(str):  # pylint: disable=too-few-public-methods
+    """convert str url"""
     def push_id(self, _id):
         return f'{self}/{_id}'
 
@@ -13,7 +15,8 @@ class StringUrl(str):
         return self.format(*args)
 
 
-class ApiURL(object):
+class ApiURL:
+    """API link BE"""
     @staticmethod
     def push_id(url, _id):
         return f'{url}/{_id}'

@@ -1,6 +1,6 @@
+"""share all popular class function for use together purpose"""
+from typing import Callable, TypedDict
 import requests
-
-from typing import Callable, Dict, TypedDict
 
 from django.db.models import Model
 from django.conf import settings
@@ -11,8 +11,11 @@ from .urls_map import ApiURL
 
 api_url_refresh_token = ApiURL.refresh_token
 
+REQUEST_TIMEOUT = 1 + 60
+
 
 class RespDict(TypedDict, total=False):
+    """response dictionary type"""
     state: Callable[[bool or None], bool or None]
     status: Callable[[int or None], int or None]
     result: Callable[[list or dict], list or dict]
@@ -164,6 +167,8 @@ class RespData(object):
 
 
 class DictFillResp(dict):
+    """fill data for response request"""
+
     def fill_state(self, resp: RespData):
         self[settings.UI_RESP_KEY_STATE] = resp.state
         return self
@@ -208,6 +213,7 @@ class DictFillResp(dict):
 
 
 class APIUtil:
+    """class with all method and default setup for request API calling"""
     key_auth = settings.API_KEY_AUTH
     prefix_token = settings.API_PREFIX_TOKEN
     key_response_data = settings.API_KEY_RESPONSE_DATA
@@ -308,14 +314,14 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.get(url=safe_url, headers=headers)
+        resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
                 headers_upgrade = self.refresh_token(user_obj=self.user_obj)
                 if headers_upgrade:
                     headers.update(headers_upgrade)
-                    resp = requests.get(url=safe_url, headers=headers)
+                    resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
         return self.get_data_from_resp(resp)
 
     def call_post(self, safe_url: str, headers: dict, data: dict) -> RespData:
@@ -331,7 +337,7 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.post(url=safe_url, headers=headers, json=data)
+        resp = requests.post(url=safe_url, headers=headers, json=data, timeout=REQUEST_TIMEOUT)
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
@@ -463,5 +469,9 @@ class ServerAPI:
         Returns: APIUtil --> call_delete()
         """
         if isinstance(data, dict):
-            return APIUtil(user_obj=self.user).call_delete(safe_url=self.url, headers=self.headers, data=data)
+            return APIUtil(user_obj=self.user).call_delete(
+                safe_url=self.url,
+                headers=self.headers,
+                data=data
+            )
         raise ValueError('Body data for POST request must be dictionary')

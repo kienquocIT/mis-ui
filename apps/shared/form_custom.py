@@ -1,22 +1,24 @@
+"""system module"""
 import json
 import uuid
 import datetime
 import ast
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
-from django.forms.utils import ErrorList
-from django.utils.safestring import mark_safe
-from six.moves import reduce
 from operator import add
-
 from collections import OrderedDict
 from itertools import chain
 from copy import deepcopy
 
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.forms.utils import ErrorList
+from django.utils.safestring import mark_safe
 
-class MultiForm(object):
+from six.moves import reduce
+
+
+class MultiForm:
     form_classes = {}
 
-    def __init__(self, data=None, files=None, *args, **kwargs):
+    def __init__(self, *args, data=None, files=None, **kwargs):
         self.data, self.files = data, files
         kwargs.update(data=data, files=files)
 
@@ -176,6 +178,7 @@ def convert_data(data):
     else:
         return convert_data_format(data)
 
+
 def get_data_transition(payload, self, name):
     transitions = convert_data(self.cleaned_data.get(name))
     for transition in transitions:
@@ -196,7 +199,7 @@ def get_data_transition(payload, self, name):
                 transition['routing_audit'] = temp
         else:
             transition['routing_audit'] = []
-        # condition = [] if len(condition) == 0 else ast.literal_eval(condition)
+
         condition = [] if len(condition) == 0 else json.loads(condition)
         transition.update({'condition': condition})
     payload.update({name: transitions})

@@ -116,19 +116,6 @@ class WorkflowCreateAPI(APIView):
     )
     def post(self, request, *args, **kwargs):
         data = request.data
-        associate = {}
-        if 'associate' in data:
-            associate = data['associate']
-            del data['associate']
-        data.update({
-            'association': [
-                {
-                    'node_in': 1,
-                    'node_out': 2,
-                    'condition': [associate]
-                }
-            ]
-        })
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
         if resp.state:
             resp.result['message'] = WorkflowMsg.WORKFLOW_CREATE

@@ -16,6 +16,7 @@ from six.moves import reduce
 
 
 class MultiForm:
+    """multi form class"""
     form_classes = {}
 
     def __init__(self, *args, data=None, files=None, **kwargs):

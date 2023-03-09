@@ -1,3 +1,4 @@
+"""needed module import"""
 from functools import wraps
 
 from django.contrib.auth.models import AnonymousUser
@@ -14,6 +15,7 @@ from .caches import CacheController, CacheKeyCollect
 
 
 class ArgumentDecorator:
+    """argument decorator"""
     def __init__(self, login_require, auth_require, **kwargs):
         self.login_require = login_require
         self.auth_require = auth_require
@@ -23,6 +25,7 @@ class ArgumentDecorator:
         self.real_path = kwargs.get('real_path', None)
 
     def activate_auth_require(self, user) -> True or Response or redirect:
+        """active authentication request"""
         if self.login_require:
             if not user or isinstance(user, AnonymousUser):
                 if self.is_api:
@@ -33,6 +36,7 @@ class ArgumentDecorator:
         return True
 
     def parse_breadcrumb(self):
+        """parse menu breadcrumbs"""
         data = []
         if self.breadcrumb_name:
             c_key = f'breadcrumb_{self.breadcrumb_name}'
@@ -45,14 +49,28 @@ class ArgumentDecorator:
 
     @staticmethod
     def parse_spaces(space_code: str) -> (dict, list):
+        """default parse space list"""
         space_list = {
-            'sale': {'name': 'Sale', 'code': 'sale', 'icon': '<i class="fas fa-user-astronaut"></i>'},
-            'e-office': {'name': 'E-Office', 'code': 'e-office', 'icon': '<i class="fas fa-rocket"></i>'},
-            'hrm': {'name': 'HRM', 'code': 'hrm', 'icon': '<i class="fas fa-satellite"></i>'},
+            'sale': {
+                'name': 'Sale',
+                'code': 'sale',
+                'icon': '<i class="fas fa-user-astronaut"></i>'
+            },
+            'e-office': {
+                'name': 'E-Office',
+                'code': 'e-office',
+                'icon': '<i class="fas fa-rocket"></i>'
+            },
+            'hrm': {
+                'name': 'HRM',
+                'code': 'hrm',
+                'icon': '<i class="fas fa-satellite"></i>'
+            },
         }
 
         space_selected = {}
-        if space_code and space_code in space_list.keys():
+        # if space_code and space_code in space_list.keys():
+        if space_code and space_code in space_list:
             space_all_list = []
             space_selected = space_list[space_code]
             for key, value in space_list.items():
@@ -64,6 +82,7 @@ class ArgumentDecorator:
 
     @classmethod
     def parse_base(cls, user, cls_kwargs):
+        """parse base link"""
         c_key = f'space_{str(user.id)}_{".".join([f"{k}:{v}" for k, v in cls_kwargs.items()])}'
         data = CacheController.get(c_key)
         if not data:
@@ -81,12 +100,15 @@ class ArgumentDecorator:
 
 
 def mask_view(**parent_kwargs):
+    """mask func before api method call form client to UI"""
     # is_api: default False
     # auth_require: default False
     if not isinstance(parent_kwargs, dict):
         parent_kwargs = {}
 
     def decorated(func_view):
+
+        # pylint: disable=R0911
         def wrapper(self, request, *args, **kwargs):
             ctx = {}
 
@@ -121,8 +143,12 @@ def mask_view(**parent_kwargs):
 
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
+            ''' issue R1705
+            Lỗi này xuất hiện khi một đoạn mã sử dụng toán tử is hoặc is not để so sánh
+            một đối tượng với None, 
+            nhưng không sử dụng từ khóa is hoặc is not để so sánh với True hoặc False.'''
             view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
-            if isinstance(view_return, HttpResponse):
+            if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return
             else:
                 # parse data
@@ -138,21 +164,33 @@ def mask_view(**parent_kwargs):
                     match http_status:
                         case status.HTTP_401_UNAUTHORIZED:
                             return Response(
-                                {'data': AuthMsg.AUTH_EXPIRE, 'status': status.HTTP_401_UNAUTHORIZED},
+                                {
+                                    'data': AuthMsg.AUTH_EXPIRE,
+                                    'status': status.HTTP_401_UNAUTHORIZED
+                                },
                                 status=status.HTTP_401_UNAUTHORIZED
                             )
                         case status.HTTP_500_INTERNAL_SERVER_ERROR:
                             return Response(
-                                {'data': ServerMsg.SERVER_ERR, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+                                {
+                                    'data': ServerMsg.SERVER_ERR,
+                                    'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+                                },
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
                             )
                         case status.HTTP_400_BAD_REQUEST:
                             return Response(
-                                {'data': data, 'status': status.HTTP_400_BAD_REQUEST},
+                                {
+                                    'data': data,
+                                    'status': status.HTTP_400_BAD_REQUEST
+                                },
                                 status=status.HTTP_400_BAD_REQUEST
                             )
                         case _:
-                            return Response({'data': data, 'status': http_status}, status=http_status)
+                            return Response({
+                                'data': data,
+                                'status': http_status
+                            }, status=http_status)
                 elif cls_check.template_path:
                     if request.user and not isinstance(request.user, AnonymousUser):
                         match http_status:
@@ -173,7 +211,8 @@ def mask_view(**parent_kwargs):
                                 return render(request, cls_check.template_path, ctx)
                     return redirect(reverse('AuthLogin'))
             raise ValueError(
-                f'Return not map happy case. Over with: is_api={cls_check.is_api},template={cls_check.template_path}'
+                f'Return not map happy case. Over with: is_api={cls_check.is_api},'
+                f'template={cls_check.template_path}'
             )
 
         return wraps(func_view)(wrapper)

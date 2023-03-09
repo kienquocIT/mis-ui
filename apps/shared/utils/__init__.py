@@ -70,6 +70,9 @@ class RandomGenerate:
             return tmp
         return 0
 
+    # pylint: disable=R0912
+    # pylint: disable=R0913
+    # pylint: disable=R0914
     @classmethod
     def get_string(
             cls,

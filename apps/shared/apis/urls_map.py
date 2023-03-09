@@ -77,3 +77,27 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
+
+    # crm/contact
+    CONTACT_LIST = StringUrl('saledata/contacts')
+    CONTACT_DETAIL = StringUrl('saledata/contact')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
+
+
+    # masterdata/lookup/contact
+    SALUTATION_LIST = StringUrl('saledata/salutations')
+    INTERESTS_LIST = StringUrl('saledata/interests')
+    SALUTATION_DETAIL = StringUrl('saledata/salutation/')
+    INTEREST_DETAIL = StringUrl('saledata/interest/')
+
+    # masterdata/lookup/account
+    INDUSTRY_LIST = StringUrl('saledata/industries')
+    ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
+    ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    INDUSTRY_DETAIL = StringUrl('saledata/industry/')
+
+    # crm/account
+    ACCOUNT_LIST = StringUrl('saledata/accounts')
+    ACCOUNT_DETAIL = StringUrl('saledata/account')
+    ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
+

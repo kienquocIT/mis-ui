@@ -506,6 +506,11 @@ $(document).ready(function () {
         });
 
         let frm = new SetupFormSubmit($(this));
+
+        if (frm.dataForm['code'] === '') {
+            frm.dataForm['code'] = null;
+        }
+
         if ($('#select-box-acc-manager').val().length > 0) {
             frm.dataForm['manager'] = $('#select-box-acc-manager').val();
         }

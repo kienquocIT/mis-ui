@@ -73,8 +73,10 @@
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Account Code" %}</label>
-                                <input class="form-control" placeholder="{% trans "CODE" %}" name="code"
+                                <label class="form-label">{% trans "Account Code" %}
+                                    <span class="field-required">(*)</span>
+                                </label>
+                                <input id="inp-account-code" class="form-control" placeholder="{% trans "CODE" %}" name="code"
                                        oninput="this.value=this.value.toUpperCase()">
                             </div>
                         </div>

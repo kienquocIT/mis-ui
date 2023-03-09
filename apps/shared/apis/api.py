@@ -1,6 +1,6 @@
+"""share all popular class function for use together purpose"""
+from typing import Callable, TypedDict
 import requests
-
-from typing import Callable, Dict, TypedDict
 
 from django.db.models import Model
 from django.conf import settings
@@ -11,8 +11,11 @@ from .urls_map import ApiURL
 
 api_url_refresh_token = ApiURL.refresh_token
 
+REQUEST_TIMEOUT = 1 + 60
+
 
 class RespDict(TypedDict, total=False):
+    """response dictionary type"""
     state: Callable[[bool or None], bool or None]
     status: Callable[[int or None], int or None]
     result: Callable[[list or dict], list or dict]
@@ -24,7 +27,8 @@ class RespDict(TypedDict, total=False):
     all: Callable[[dict], dict]
 
 
-class RespData(object):
+# pylint: disable=R0902
+class RespData:
     """
     Object convert response data
         state: bool : state call API
@@ -41,8 +45,10 @@ class RespData(object):
         Properties will keep type of attribute that is always correct
         Args: attribute of Http Response
             _state: status_code | success: 200 - 200 | fail: others
-            _result: .json()['result'] | 'result' is default | You can custom key - confirm with API Docs
-            _errors: .json()['errors'] | 'errors' is default | You can custom key - confirm with API Docs
+            _result: .json()['result'] | 'result' is default
+                     | You can custom key - confirm with API Docs
+            _errors: .json()['errors'] | 'errors' is default
+                     | You can custom key - confirm with API Docs
         """
         self._state = _state if _state is not None else False
         self._result = _result if _result is not None else {}
@@ -55,6 +61,7 @@ class RespData(object):
 
     @property
     def state(self) -> bool:
+        """property state"""
         if isinstance(self._state, int):
             if 200 <= self._state < 300:
                 return True
@@ -63,95 +70,111 @@ class RespData(object):
             return False
         raise AttributeError(
             f'[Response Data Parser][STATE] '
-            f'convert process is incorrect when it return {type(self._state)}({str(self._state)[:30]}) '
+            f'convert process is incorrect when it return {type(self._state)}'
+            f'({str(self._state)[:30]}) '
             f'instead of BOOLEAN types.'
         )
 
     @property
     def result(self) -> dict or list:
+        """result property"""
         if isinstance(self._result, (dict, list)):
             return self._result
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return {}
         raise AttributeError(
             f'[Response Data Parser][RESULT] '
-            f'convert process is incorrect when it return {type(self._result)}({str(self._result)[:30]}) '
+            f'convert process is incorrect when it return {type(self._result)}'
+            f'({str(self._result)[:30]}) '
             f'instead of LIST or DICT types.'
         )
 
     @property
     def errors(self) -> dict:
+        """property errors"""
         if isinstance(self._errors, dict):
             return self._errors
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return {}
         raise AttributeError(
             f'[Response Data Parser][ERRORS] '
-            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'convert process is incorrect when it return {type(self._errors)}'
+            f'({str(self._errors)[:30]}) '
             f'instead of DICT types.'
         )
 
     @property
     def status(self) -> int:
+        """property status"""
         if isinstance(self._status, int):
             return self._status
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return status.HTTP_500_INTERNAL_SERVER_ERROR
         raise AttributeError(
             f'[Response Data Parser][STATUS] '
-            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'convert process is incorrect when it return {type(self._errors)}'
+            f'({str(self._errors)[:30]}) '
             f'instead of INTEGER types.'
         )
 
     @property
     def page_size(self) -> int:
+        """property page size"""
         if isinstance(self._page_size, int):
             return self._page_size
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return 0
         raise AttributeError(
             f'[Response Data Parser][PAGE_SIZE] '
-            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'convert process is incorrect when it return {type(self._errors)}'
+            f'({str(self._errors)[:30]}) '
             f'instead of INTEGER types.'
         )
 
     @property
     def page_count(self) -> int:
+        """property page count"""
         if isinstance(self._page_count, int):
             return self._page_count
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return 0
         raise AttributeError(
             f'[Response Data Parser][PAGE_COUNT] '
-            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'convert process is incorrect when it return {type(self._errors)}'
+            f'({str(self._errors)[:30]}) '
             f'instead of INTEGER types.'
         )
 
     @property
     def page_next(self) -> int:
+        """property next"""
         if isinstance(self._page_next, int):
             return self._page_next
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return 0
         raise AttributeError(
             f'[Response Data Parser][PAGE_NEXT] '
-            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'convert process is incorrect when it return {type(self._errors)}'
+            f'({str(self._errors)[:30]}) '
             f'instead of INTEGER types.'
         )
 
     @property
     def page_previous(self) -> int:
+        """property page prev"""
         if isinstance(self._page_previous, int):
             return self._page_previous
         if settings.RAISE_EXCEPTION_DEBUG is False:
             return 0
         raise AttributeError(
             f'[Response Data Parser][PAGE_PREVIOUS] '
-            f'convert process is incorrect when it return {type(self._errors)}({str(self._errors)[:30]}) '
+            f'convert process is incorrect when it return {type(self._errors)}'
+            f'({str(self._errors)[:30]}) '
             f'instead of INTEGER types.'
         )
 
     def get_full_data(self, func_change_data: RespDict = None) -> dict:
+        """get all record API"""
         data_all = DictFillResp({}).fill_full(self)  # call fill data to dict
         allow_change_keys = data_all.keys()
         if func_change_data:
@@ -164,39 +187,50 @@ class RespData(object):
 
 
 class DictFillResp(dict):
+    """fill data for response request"""
+
     def fill_state(self, resp: RespData):
+        """get state"""
         self[settings.UI_RESP_KEY_STATE] = resp.state
         return self
 
     def fill_status(self, resp: RespData):
+        """get status"""
         self[settings.UI_RESP_KEY_STATUS] = resp.status
         return self
 
     def fill_result(self, resp: RespData):
+        """get result"""
         self[settings.UI_RESP_KEY_RESULT] = resp.result
         return self
 
     def fill_errors(self, resp: RespData):
+        """get errors"""
         self[settings.UI_RESP_KEY_ERRORS] = resp.errors
         return self
 
     def fill_page_size(self, resp: RespData):
+        """get page size"""
         self[settings.UI_RESP_KEY_PAGE_SIZE] = resp.page_size
         return self
 
     def fill_page_count(self, resp: RespData):
+        """get page count"""
         self[settings.UI_RESP_KEY_PAGE_COUNT] = resp.page_count
         return self
 
     def fill_page_next(self, resp: RespData):
+        """get page next"""
         self[settings.UI_RESP_KEY_PAGE_NEXT] = resp.page_next
         return self
 
     def fill_page_previous(self, resp: RespData):
+        """get page prev"""
         self[settings.UI_RESP_KEY_PAGE_PREVIOUS] = resp.page_previous
         return self
 
     def fill_full(self, resp):
+        """add all method"""
         self.fill_state(resp)
         self.fill_status(resp)
         self.fill_result(resp)
@@ -208,6 +242,7 @@ class DictFillResp(dict):
 
 
 class APIUtil:
+    """class with all method and default setup for request API calling"""
     key_auth = settings.API_KEY_AUTH
     prefix_token = settings.API_PREFIX_TOKEN
     key_response_data = settings.API_KEY_RESPONSE_DATA
@@ -257,7 +292,8 @@ class APIUtil:
         """
         Call get refresh token after update access_token to User Model
         Args:
-            user_obj: (User Model) : get refresh_token from user -> call -> update access_token -> save
+            user_obj: (User Model) : get refresh_token from user -> call
+            -> update access_token -> save
 
         Returns: (dict) : it for update to headers before call API
 
@@ -308,19 +344,20 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.get(url=safe_url, headers=headers)
+        resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
                 headers_upgrade = self.refresh_token(user_obj=self.user_obj)
                 if headers_upgrade:
                     headers.update(headers_upgrade)
-                    resp = requests.get(url=safe_url, headers=headers)
+                    resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
         return self.get_data_from_resp(resp)
 
     def call_post(self, safe_url: str, headers: dict, data: dict) -> RespData:
         """
-        Support ServerAPI call to server with POST method. (refresh token after recall if token is expires)
+        Support ServerAPI call to server with POST method.
+        (refresh token after recall if token is expires)
         Args:
             safe_url: (string) url parsed
             headers: (dict) headers add to request
@@ -331,19 +368,28 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.post(url=safe_url, headers=headers, json=data)
+        resp = requests.post(
+            url=safe_url,
+            headers=headers,
+            json=data,
+            timeout=REQUEST_TIMEOUT
+        )
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
                 headers_upgrade = self.refresh_token(user_obj=self.user_obj)
                 if headers_upgrade:
                     headers.update(headers_upgrade)
-                    resp = requests.post(url=safe_url, headers=headers, json=data)
+                    resp = requests.post(
+                        url=safe_url, headers=headers, json=data,
+                        timeout=REQUEST_TIMEOUT
+                    )
         return self.get_data_from_resp(resp)
 
     def call_put(self, safe_url: str, headers: dict, data: dict) -> RespData:
         """
-        Support ServerAPI call to server with PUT method. (refresh token after recall if token is expires)
+        Support ServerAPI call to server with PUT method.
+        (refresh token after recall if token is expires)
         Args:
             safe_url: (string) url parsed
             headers: (dict) headers add to request
@@ -354,19 +400,26 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.put(url=safe_url, headers=headers, json=data)
+        resp = requests.put(
+            url=safe_url, headers=headers, json=data,
+            timeout=REQUEST_TIMEOUT
+        )
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
                 headers_upgrade = self.refresh_token(user_obj=self.user_obj)
                 if headers_upgrade:
                     headers.update(headers_upgrade)
-                    resp = requests.put(url=safe_url, headers=headers, json=data)
+                    resp = requests.put(
+                        url=safe_url, headers=headers, json=data,
+                        timeout=REQUEST_TIMEOUT
+                    )
         return self.get_data_from_resp(resp)
 
     def call_delete(self, safe_url: str, headers: dict, data: dict) -> RespData:
         """
-        Support ServerAPI call to server with DELETE method. (refresh token after recall if token is expires)
+        Support ServerAPI call to server with DELETE method.
+        (refresh token after recall if token is expires)
         Args:
             safe_url: (string) url parsed
             headers: (dict) headers add to request
@@ -377,14 +430,20 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.delete(url=safe_url, headers=headers, json=data)
+        resp = requests.delete(
+            url=safe_url, headers=headers, json=data,
+            timeout=REQUEST_TIMEOUT
+        )
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
                 headers_upgrade = self.refresh_token(user_obj=self.user_obj)
                 if headers_upgrade:
                     headers.update(headers_upgrade)
-                    resp = requests.delete(url=safe_url, headers=headers, json=data)
+                    resp = requests.delete(
+                        url=safe_url, headers=headers, json=data,
+                        timeout=REQUEST_TIMEOUT
+                    )
         return self.get_data_from_resp(resp)
 
 
@@ -439,7 +498,11 @@ class ServerAPI:
         Returns: APIUtil --> call_post()
         """
         if isinstance(data, dict):
-            return APIUtil(user_obj=self.user).call_post(safe_url=self.url, headers=self.headers, data=data)
+            return APIUtil(user_obj=self.user).call_post(
+                safe_url=self.url,
+                headers=self.headers,
+                data=data
+            )
         raise ValueError('Body data for POST request must be dictionary')
 
     def put(self, data) -> RespData:
@@ -451,7 +514,11 @@ class ServerAPI:
         Returns: APIUtil --> call_put()
         """
         if isinstance(data, dict):
-            return APIUtil(user_obj=self.user).call_put(safe_url=self.url, headers=self.headers, data=data)
+            return APIUtil(user_obj=self.user).call_put(
+                safe_url=self.url,
+                headers=self.headers,
+                data=data
+            )
         raise ValueError('Body data for POST request must be dictionary')
 
     def delete(self, data) -> RespData:
@@ -463,5 +530,9 @@ class ServerAPI:
         Returns: APIUtil --> call_delete()
         """
         if isinstance(data, dict):
-            return APIUtil(user_obj=self.user).call_delete(safe_url=self.url, headers=self.headers, data=data)
+            return APIUtil(user_obj=self.user).call_delete(
+                safe_url=self.url,
+                headers=self.headers,
+                data=data
+            )
         raise ValueError('Body data for POST request must be dictionary')

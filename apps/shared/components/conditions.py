@@ -51,13 +51,24 @@ class ConditionForm(forms.Form):
         self.fields['logic'].widget.attrs.update({'title': 'Logic'})
 
 
-class ConditionFormset(MultiForm):
+class ConditionFormset(forms.Form):
+    """params and condition formset"""
     """use for condition formset"""
     form_classes = {
-        'condition': formset_factory(ConditionForm, can_order=True, can_delete=True, min_num=1,
-            extra=0),
-        'parameter': formset_factory(ParameterFrom, can_order=True, can_delete=True, min_num=1,
-            extra=0)
+        'condition': formset_factory(
+            ConditionForm,
+            can_order=True,
+            can_delete=True,
+            min_num=1,
+            extra=0
+        ),
+        'parameter': formset_factory(
+            ParameterFrom,
+            can_order=True,
+            can_delete=True,
+            min_num=1,
+            extra=0
+        )
     }
 
     def __init__(self, *args, **kwargs):

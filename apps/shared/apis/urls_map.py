@@ -1,21 +1,28 @@
-class StringUrl(str):
+"""not need import module"""
+class StringUrl(str):  # pylint: disable=too-few-public-methods
+    """convert str url"""
     def push_id(self, _id):
+        """return url with id"""
         return f'{self}/{_id}'
 
     def fill_key(self, **kwargs):
+        """return kwargs with format"""
         # 'abc/{a1}/{b1}/{c1}' + kwargs={"a1": "1", "b1": 2, "c1": 3}
         # Return ==> 'abc/1/2/3'
         return self.format(**kwargs)
 
     def fill_idx(self, *args):
+        """return str with format"""
         # 'abc/{}/{}/{}' + args=[1, 2, 3]
         # Return ==> 'abc/1/2/3'
         return self.format(*args)
 
 
-class ApiURL(object):
+class ApiURL:  # pylint: disable=too-few-public-methods
+    """API link BE"""
     @staticmethod
     def push_id(url, _id):
+        """return str with url format"""
         return f'{url}/{_id}'
 
     login = StringUrl('auth/sign-in')

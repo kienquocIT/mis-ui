@@ -143,10 +143,6 @@ def mask_view(**parent_kwargs):
 
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
-            ''' issue R1705
-            Lỗi này xuất hiện khi một đoạn mã sử dụng toán tử is hoặc is not để so sánh
-            một đối tượng với None, 
-            nhưng không sử dụng từ khóa is hoặc is not để so sánh với True hoặc False.'''
             view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
             if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return

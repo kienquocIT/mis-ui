@@ -317,6 +317,24 @@ $(function () {
 });
 
 
+
+function getZone(zoneList) {
+    let dataZoneList = [];
+    if (zoneList) {
+        for (let z = 0; z < zoneList.children.length; z++) {
+            let dataZone = zoneList.children[z].querySelector('.node-zone').getAttribute('data-node-zone');
+            let inputCheck = zoneList.children[z].querySelector('.check-zone-node');
+            if (inputCheck.checked === true && dataZone) {
+                if (dataZone !== "all") {
+                    dataZoneList.push(Number(dataZone))
+                }
+            }
+        }
+    }
+    return dataZoneList;
+}
+
+
 function setupDataNode(is_submit = false) {
     let dataNodeList = [];
     let tableNode = document.getElementById('datable-workflow-node-create');
@@ -369,24 +387,11 @@ function setupDataNode(is_submit = false) {
                 let modalBody = col.querySelector('.modal-body');
                 if (modalBody) {
                     if (isSystem === true) {
-                        let tableInitialNodeCollaborator = modalBody.querySelector('.table-initial-node-collaborator');
-                        if (tableInitialNodeCollaborator) {
-                            if (tableInitialNodeCollaborator.tBodies[0].rows.length === 1) {
-                                let rowInitialCollab = tableInitialNodeCollaborator.tBodies[0].rows[0];
-                                let zoneTd = rowInitialCollab.querySelector('.initial-node-collaborator-zone');
-                                if (zoneTd) {
-                                    let eleSpanZoneShow = zoneTd.querySelector('.zone-node-initial-show');
-                                    if (eleSpanZoneShow) {
-                                        if (eleSpanZoneShow.children.length > 0) {
-                                            for (let d = 0; d < eleSpanZoneShow.children.length; d++) {
-                                                let eleInput = eleSpanZoneShow.children[d].children[0].children[0].value;
-                                                if (eleInput) {
-                                                    dataZoneList.push(Number(eleInput));
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                        let tableInitialNodeCollab = modalBody.querySelector('.table-initial-node-collaborator');
+                        if (tableInitialNodeCollab) {
+                            if (tableInitialNodeCollab.tBodies[0].rows.length > 0) {
+                                let zoneList = tableInitialNodeCollab.tBodies[0].rows[0].querySelector('.node-zone-list');
+                                dataZoneList = getZone(zoneList)
                             }
                         }
                     } else {
@@ -395,6 +400,8 @@ function setupDataNode(is_submit = false) {
 
                             // if option in form
                             if (optionCollab === 0) {
+                                let zoneList = modalBody.children[2].querySelector('.node-zone-list');
+                                dataZoneList = getZone(zoneList);
                                 let eleProperty = modalBody.querySelector('.select-box-audit-in-form-property');
                                 if (eleProperty) {
                                     fieldSelectCollaborator = eleProperty.value;
@@ -414,16 +421,10 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                 }
-                                let zone = modalBody.children[2].querySelector('.zone-data-show');
-                                if (zone.children.length > 0) {
-                                    for (let d = 0; d < zone.children.length; d++) {
-                                        if (zone.children[d].children.length > 0) {
-                                            for (let z = 0; z < zone.children[d].children.length; z++) {
-                                                dataZoneList.push(Number(zone.children[d].children[z].children[0].value));
-                                            }
-                                        }
-                                    }
-                                }
+
+                                let zoneList = modalBody.children[2].querySelector('.node-zone-list');
+                                dataZoneList = getZone(zoneList);
+
                                 total_collaborator_in_process = dataEmployeeList.length
                                 // if option in workflow
                             } else if (optionCollab === 2) {

@@ -80,10 +80,14 @@ class ApiURL(object):
     # masterdata/lookup/contact
     SALUTATION_LIST = StringUrl('saledata/salutations')
     INTERESTS_LIST = StringUrl('saledata/interests')
+    SALUTATION_DETAIL = StringUrl('saledata/salutation/')
+    INTEREST_DETAIL = StringUrl('saledata/interest/')
 
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
+    ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    INDUSTRY_DETAIL = StringUrl('saledata/industry/')
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')

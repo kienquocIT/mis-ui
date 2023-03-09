@@ -38,9 +38,9 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <input id="contact_id" value="{{ data.contact.id }}" hidden>
-    <form id="form-create-contact" data-method="PUT" data-url="{% url "ContactUpdateAPI" pk=data.contact.id %}"
-            data-url-redirect="{% url 'ContactList' %}">
+    <input id="contact_id" value="" hidden>
+    <form id="form-create-contact" data-method="PUT" data-url="{% url "ContactUpdateAPI" pk=0 %}"
+            data-url-redirect="{% url 'ContactList' %}" data-url-loaded="{% url "ContactDetailAPI" pk=0 %}">
         {% csrf_token %}
         <!-- Contact Information -->
         <div class="w-100 p-1 bg-light">
@@ -54,7 +54,6 @@
                         <div class="form-group">
                             <label class="form-label">{% trans "Contact Owner" %}<span
                                     class="field-required">(*)</span></label>
-                            <input id="owner_current" value="{{ data.contact.owner.id }}" hidden>
                             <select id="select-box-emp" name="owner" class="form-select" data-method="GET" required
                                     data-url="{% url "EmployeeListAPI" %}">
                             </select>
@@ -63,7 +62,8 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Biography" %}</label>
-                            <textarea class="form-control" name="bio">{{ data.contact.bio }}</textarea>
+                            <textarea class="form-control" name="bio"
+                            id="text-bio"></textarea>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Salutation" %}</label>
-                        <input id="salutation_current" value="{{ data.contact.salutation.id }}" hidden>
+                        <input id="salutation_current" value="" hidden>
                         <select id="select-box-salutation" class="form-select" data-url="{% url "SalutationListAPI" %}"
                                 data-method="GET" name="salutation" required>
                         </select>
@@ -91,14 +91,14 @@
                                 class="field-required"
                         >(*)</span></label>
                         <input type="text" class="form-control" placeholder="Nguyen Van" name="first_name" id="first_name_id"
-                                required value="{{ data.contact.fullname.first_name }}">
+                                required value="">
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Lastname" %}<span class="field-required">(*)</span></label>
                         <input type="text" class="form-control" placeholder="A" name="last_name" id="last_name_id"
-                                required value="{{ data.contact.fullname.last_name }}">
+                                required value="">
                     </div>
                 </div>
             </div>
@@ -106,20 +106,20 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Full Name" %}<span class="field-required">(*)</span></label>
-                        <input type="text" class="form-control" name="fullname" value="{{ data.contact.fullname.fullname }}"
+                        <input type="text" class="form-control" name="fullname" value=""
                                id="full_name_id" readonly>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Phone" %}</label>
-                        <input type="text" class="form-control" name="phone" value="{{ data.contact.phone }}">
+                        <input type="text" class="form-control" name="phone" value="" id="inp-phone">
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Mobile" %}</label>
-                        <input type="text" class="form-control" name="mobile" value="{{ data.contact.mobile }}">
+                        <input type="text" class="form-control" name="mobile" value="" id="inp-mobile">
                     </div>
                 </div>
             </div>
@@ -127,7 +127,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Account Name" %}</label>
-                        <input id='account_name_id' value="{{ data.contact.account_name.id }}" hidden>
+                        <input id='account_name_id' value="" hidden>
                         <select id="select-box-account_name" name="account_name" class="form-select"
                                 data-url="{% url "AccountListAPI" %}"
                                 data-method="GET" required>
@@ -137,22 +137,22 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Email" %}</label>
-                        <input type="text" class="form-control" name="email" value="{{ data.contact.email }}">
+                        <input type="text" class="form-control" name="email" value="" id="inp-email">
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Job Title" %}</label>
-                        <input type="text" class="form-control" name="job_title" value="{{ data.contact.job_title }}">
+                        <input type="text" class="form-control" name="job_title" value="" id="inp-jobtitle">
                     </div>
                 </div>
                 <div class="col-8">
                     <div class="form-group">
                         <label class="form-label">{% trans "Report To" %}</label>
-                        <input id="report_to_current" value="{{ data.contact.report_to.id }}" hidden>
+                        <input id="report_to_current" value="" hidden>
                         <select id="select-box-report-to" class="form-select" data-method="GET"
                                 data-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to">
-                            <option>{{ data.contact.report_to.fullname }}</option>
+                            <option></option>
                         </select>
                     </div>
                 </div>
@@ -185,7 +185,7 @@
                                 </button>
                             </div>
                         </div>
-                        <textarea class="form-control" name="work_address" id="work_address_id">{{ data.contact.address_infor.work_address }}</textarea>
+                        <textarea class="form-control" name="work_address" id="work_address_id"></textarea>
                     </div>
                 </div>
             </div>
@@ -209,7 +209,7 @@
                                 </button>
                             </div>
                         </div>
-                        <textarea class="form-control" name="home_address" id="home_address_id">{{ data.contact.address_infor.home_address }}</textarea>
+                        <textarea class="form-control" name="home_address" id="home_address_id"></textarea>
                     </div>
                 </div>
             </div>
@@ -225,14 +225,14 @@
                 <div class="form-group">
                     <label class="form-label">{% trans "Facebook" %}</label>
                     <input type="text" class="form-control" name="facebook" id="facebook_id"
-                           value="{{ data.contact.additional_infor.facebook }}">
+                           value="">
                 </div>
             </div>
             <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Twitter" %}</label>
                     <input type="text" class="form-control" name="twitter"
-                           value="{{ data.contact.additional_infor.twitter }}"
+                           value=""
                            id="twitter_id">
                 </div>
             </div>
@@ -240,7 +240,7 @@
                 <div class="form-group">
                     <label class="form-label">{% trans "Linkedln" %}</label>
                     <input type="text" class="form-control" name="linkedln" id="linkedln_id"
-                           value="{{ data.contact.additional_infor.linkedln }}">
+                           value="">
                 </div>
             </div>
         </div>
@@ -249,13 +249,13 @@
                 <div class="form-group">
                     <label class="form-label">{% trans "Gmail" %}</label>
                     <input type="text" class="form-control" name="gmail" id="gmail_id"
-                           value="{{ data.contact.additional_infor.gmail }}">
+                           value="">
                 </div>
             </div>
             <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Interests" %}</label>
-                    <input id="interests_current" value="{{ data.contact.additional_infor.interests }}" hidden>
+                    <input id="interests_current" value="" hidden>
                     <select class="form-control select2 select2-multiple"
                             multiple name="interests"
                             id="select-box-interests" data-url="{% url "InterestListAPI" %}" data-method="GET">
@@ -266,7 +266,7 @@
                 <div class="form-group">
                     <label class="form-label">{% trans "Tag" %}</label>
                     <input type="text" class="form-control" name="tags" id="tag_id"
-                           value="{{ data.contact.additional_infor.tags }}">
+                           value="">
                 </div>
             </div>
         </div>

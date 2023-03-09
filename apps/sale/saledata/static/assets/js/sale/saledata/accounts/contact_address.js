@@ -50,7 +50,7 @@ $(document).ready(function () {
                 d.add(od);
                 let ow = document.createElement("option"); ow.text=wardText; ow.value=""; ow.disabled = hidePlaceHolderOption; ow.selected = true;ow.hidden = hidePlaceHolderOption;
                 w.add(ow);
-                for (let i = 0; i < data.length-1; i++){
+                for (let i = 0; i < data.length; i++){
                     let o = document.createElement("option"); o.text= (provincePrefix ? data[i].t +" " : "") + data[i].n; o.value =data[i][s];
                     if(levelAsAttribute) o.setAttribute(levelAttributeName,data[i].t);
                     p.add(o);
@@ -64,7 +64,7 @@ $(document).ready(function () {
                     w.add(ow);
                     let l = p.selectedIndex-1;
                     n = l;
-                    for (let i = 0; i< data[l].c.length-1;i++){
+                    for (let i = 0; i< data[l].c.length;i++){
                         let o = document.createElement("option"); o.text= (districtPrefix ? data[l].c[i].t +" " : "") + data[l].c[i].n; o.value = data[l].c[i][s];
                         if(levelAsAttribute) o.setAttribute(levelAttributeName,data[l].c[i].t);
                         d.add(o);
@@ -80,7 +80,7 @@ $(document).ready(function () {
                     else{
                         let o = document.createElement("option"); o.text=wardText; o.value=""; o.disabled = hidePlaceHolderOption; o.selected = true;o.hidden = hidePlaceHolderOption;
                         w.add(o);
-                        for (let i = 0; i< data[n].c[l].c.length-1;i++){
+                        for (let i = 0; i < data[n].c[l].c.length;i++){
                             let o = document.createElement("option"); o.text= (districtPrefix ? data[n].c[l].c[i].t + " " : "") + data[n].c[l].c[i].n; o.value = data[n].c[l].c[i][s];
                             if(levelAsAttribute) o.setAttribute(levelAttributeName,data[n].c[l].c[i].t);
                             w.add(o);

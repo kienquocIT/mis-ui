@@ -1,7 +1,7 @@
 $(document).ready(function () {
     let option_emp = [{'val': '', 'text': ''}];
 
-    function loadSalutationList() {
+    function loadSalutationList(id) {
         let ele = $('#select-box-salutation');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -13,10 +13,9 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('salutation_list') && Array.isArray(data.salutation_list)) {
                         ele.append(`<option>` + `</option>`)
                         data.salutation_list.map(function (item) {
-                            if (item.id === $('#salutation_current').val()) {
+                            if (item.id === id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
-                            }
-                            else {
+                            } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                             }
                         })
@@ -26,7 +25,7 @@ $(document).ready(function () {
         )
     }
 
-    function loadInterestList() {
+    function loadInterestList(list_id) {
         let ele = $('#select-box-interests');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -37,12 +36,10 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
                         ele.append(`<option>` + `</option>`)
-                        let array = $('#interests_current').val();
                         data.interests_list.map(function (item) {
-                            if (array.includes(item.id)) {
+                            if (list_id.includes(item.id)) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
-                            }
-                            else {
+                            } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                             }
                         })
@@ -52,7 +49,7 @@ $(document).ready(function () {
         )
     }
 
-    function loadEmployee() {
+    function loadEmployee(id) {
         let ele = $('#select-box-emp');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -64,13 +61,12 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
                         ele.append(`<option>` + `</option>`)
                         data.employee_list.map(function (item) {
-                            if (item.id === $('#owner_current').val()) {
+                            if (item.id === id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.full_name + `</option>`)
-                            }
-                            else {
+                            } else {
                                 ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                             }
-                            option_emp.push({'val':item.id, 'text': item.full_name })
+                            option_emp.push({'val': item.id, 'text': item.full_name})
                         })
                     }
                 }
@@ -78,7 +74,7 @@ $(document).ready(function () {
         )
     }
 
-    function loadAccountName() {
+    function loadAccountName(id, id_report_to) {
         let ele = $('#select-box-account_name');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -88,12 +84,12 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
-                        ele.append(`<option selected>` + `</option>`)
+                        ele.append(`<option>` + `</option>`)
                         data.account_list.map(function (item) {
-                            if (item.id === $('#account_name_id').val()) {
+                            if (item.id === id) {
+                                loadReportTo(id, id_report_to);
                                 ele.append(`<option selected value="` + item.id + `">` + item.name + `</option>`)
-                            }
-                            else {
+                            } else {
                                 ele.append(`<option value="` + item.id + `">` + item.name + `</option>`)
                             }
                         })
@@ -103,24 +99,77 @@ $(document).ready(function () {
         )
     }
 
+    function loadReportTo(id, id_report_to) {
+        let ele = $('#select-box-report-to');
+        ele.attr('disabled', false);
+        let url = ele.attr('data-url').replace('0', id);
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    resp.data.account_detail.owner.map(function (item) {
+                    })
+                    ele.text("");
+                    ele.append(`<option selected>` + `</option>`)
+                    data.account_detail.owner.map(function (item) {
+                        if (item.id === id_report_to) {
+                            ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
+                        } else {
+                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
+                        }
+
+                    })
+                }
+            }
+        )
+    }
+
     function loadDefaultData() {
-        $('#input-avatar').on('change', function (ev) {
+        $('#input-avatar').on('change', function () {
             let upload_img = $('#upload-area');
             upload_img.text("");
             tmp = URL.createObjectURL(this.files[0])
             upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
             $(this).val()
         });
-        $('#upload-area').click(function (e) {
+        $('#upload-area').click(function () {
             $('#input-avatar').click();
         });
 
         $('#select-box-interests').select2();
 
-        loadSalutationList();
-        loadInterestList();
-        loadEmployee();
-        loadAccountName();
+        let pk = window.location.pathname.split('/').pop();
+        let url_loaded = $('#form-create-contact').attr('data-url-loaded').replace(0, pk);
+
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    loadEmployee(data.contact_detail.owner.id);
+                    loadSalutationList(data.contact_detail.salutation.id);
+                    loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to.id);
+                    $('#first_name_id').val(data.contact_detail.fullname.first_name);
+                    $('#last_name_id').val(data.contact_detail.fullname.last_name);
+                    $('#full_name_id').val(data.contact_detail.fullname.fullname);
+                    $('#text-bio').val(data.contact_detail.bio);
+                    $('#inp-phone').val(data.contact_detail.phone);
+                    $('#inp-mobile').val(data.contact_detail.mobile);
+                    $('#inp-email').val(data.contact_detail.email);
+                    $('#inp-jobtitle').val(data.contact_detail.job_title);
+                    $('#work_address_id').val(data.contact_detail.address_infor.work_address);
+                    $('#home_address_id').val(data.contact_detail.address_infor.home_address);
+                    loadInterestList(data.contact_detail.additional_infor.interests.map(obj => obj.id));
+                    $('#tag_id').val(data.contact_detail.additional_infor.tags);
+                    $('#facebook_id').val(data.contact_detail.additional_infor.facebook);
+                    $('#gmail_id').val(data.contact_detail.additional_infor.gmail);
+                    $('#linkedln_id').val(data.contact_detail.additional_infor.linkedln);
+                    $('#twitter_id').val(data.contact_detail.additional_infor.twitter);
+
+                }
+            }
+        )
+
     }
 
     loadDefaultData();
@@ -132,23 +181,7 @@ $(document).ready(function () {
         ele.empty();
         if (account_id !== '') {
             ele.attr('disabled', false);
-            let url = ele.attr('data-url').replace('0', account_id);
-            let method = ele.attr('data-method');
-            console.log(url);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        resp.data.account_detail.owner.map(function (item) {
-                        })
-                        ele.text("");
-                        ele.append(`<option selected>` + `</option>`)
-                        data.account_detail.owner.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
-                        })
-                    }
-                }
-            )
+            loadReportTo(account_id);
         } else {
             ele.attr('disabled', true);
         }
@@ -210,14 +243,24 @@ $(document).ready(function () {
             frm.dataForm['owner'] = null;
         }
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        if (frm.dataForm['email'] === '') {
+            frm.dataForm['email'] = null;
+        }
+
+        if (frm.dataForm['mobile'] === '') {
+            frm.dataForm['mobile'] = null;
+        }
+
+        let pk = window.location.pathname.split('/').pop();
+
+        $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     $.fn.notifyPopup({description: resp.detail}, 'success');
                     setTimeout(location.reload.bind(location), 1000);
                     window.location.replace("/saledata/contacts");
                 }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
+                    // $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     })

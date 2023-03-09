@@ -30,18 +30,11 @@ $(function () {
             }
         }, {
             'data': 'title', 'render': (data, type, row, meta) => {
-
-                return `<div class="media">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                        <span class="initial-wrap">` + row.title.charAt(0).toUpperCase() + `</span>
-                                    </div>                                      
-                                </div>
-                                <div class="media-body">
-                                        <span class="d-block">` + row.title + `</span>  
-                                </div>
+                return `<div class="text-center">
+                                <a href="#">
+                                        <span class=""><b>` + row.title + `</b></span>  
+                                </a>
                             </div>`;
-
             }
         }, {
             'data': 'abbreviation', render: (data, type, row, meta) => {
@@ -51,12 +44,12 @@ $(function () {
             'data': 'holder', render: (data, type, row, meta) => {
                 let element = ''
                 for (let i = 0; i < row.holder.length; i++) {
-                    element += `<span class="badge badge-soft-primary w-20 mt-1 ml-1">` + row.holder[i].full_name + `</span>`;
+                    element += `<span class="badge badge-soft-primary w-30 mt-1 ml-1">` + row.holder[i].full_name + `</span>`;
                 }
-                if (row.holder.length > 4)
-                    return `<div class="row">` + element + `</div>`
+                if (row.holder.length > 3)
+                    return `<div class="row text-center">` + element + `</div>`
                 else
-                    return `<div class="row"><center>` + element + `</center></div>`
+                    return `<div class="row text-center"><center>` + element + `</center></div>`
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {

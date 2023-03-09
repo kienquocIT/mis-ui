@@ -188,6 +188,14 @@ $(document).ready(function () {
             frm.dataForm['owner'] = null;
         }
 
+        if (frm.dataForm['email'] === '') {
+            frm.dataForm['email'] = null;
+        }
+
+        if (frm.dataForm['mobile'] === '') {
+            frm.dataForm['mobile'] = null;
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -195,7 +203,7 @@ $(document).ready(function () {
                     setTimeout(location.reload.bind(location), 1000);
                     window.location.replace(frm.dataUrlRedirect);
                 }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
+                    // $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     })
@@ -212,4 +220,3 @@ $("#last_name_id").on('change', function () {
         $("#full_name_id").val($("#first_name_id").val() + ' ' + $(this).val())
     }
 })
-

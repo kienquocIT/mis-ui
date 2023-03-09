@@ -186,11 +186,16 @@ $(document).on('click', '.btn-save-group-level', function (e) {
     let crf_token = $("input[name=csrfmiddlewaretoken]").val();
     $.fn.callAjax('/hr/level/api', "POST", groupLevelSave, crf_token)
         .then(
-            (res) => {
-                $.fn.notifyPopup({description: res.detail}, 'success');
-                location.reload();
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: data.message}, 'success')
+                    setTimeout(location.reload.bind(location), 1000);
+                }
             },
-            (err) => {
-                $.fn.notifyPopup({description: err.detail}, 'failure');
-            })
+            (errs) => {
+                console.log(errs)
+                $.fn.notifyPopup({description: "Group level create fail"}, 'failure')
+            }
+        )
 });

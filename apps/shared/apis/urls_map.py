@@ -35,12 +35,13 @@ class ApiURL(object):
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
+    EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
-    GROUP_PARENT = 'hr/group/parent'
+    GROUP_PARENT = StringUrl('hr/group/parent')
 
     # home/company
     COMPANY_LIST = StringUrl('company/list')
@@ -55,12 +56,20 @@ class ApiURL(object):
 
     # base
     PLAN_LIST = StringUrl('base/plans')
+    TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
+    APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
+    APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
 
     TENANT = StringUrl('tenant/userlist')
     # HR
     EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
     USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
     COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
+
+    # WORKFLOW
+    WORKFLOW_LIST = StringUrl('workflow/lists')
+    WORKFLOW_CREATE = StringUrl('workflow/create')
+    WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')

@@ -75692,7 +75692,7 @@ div.dataTables_wrapper .dataTables_length select {
 }
 div.dataTables_wrapper div.dataTables_filter input {
   margin-left: 0 !important;
-  width: 100% !important;
+  width: auto;
 }
 div.dataTables_wrapper .dataTables_scrollBody {
   border-left: 0 !important;

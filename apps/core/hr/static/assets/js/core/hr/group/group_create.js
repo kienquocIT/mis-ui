@@ -131,18 +131,20 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            // $.fn.notifyPopup({description: "Group is being created"}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
                     }
-                )
+                },
+                (errs) => {
+                    if (errs.data.errors.hasOwnProperty('detail')) {
+                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    }
+                }
+            )
     });
 });
 
@@ -231,11 +233,6 @@ $(function () {
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
-            var tdCnt = 0;
-            // $('table tr').each(function () {
-            //     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-group-employee" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:last-child"));
-            //     tdCnt++;
-            // });
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
@@ -243,27 +240,6 @@ $(function () {
             $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
             dtb.parent().addClass('table-responsive');
 
-
-            /*Select all using checkbox*/
-            var DT1 = dtb.DataTable();
-            // $(".check-select-all").on("click", function (e) {
-            //     $('.check-select').attr('checked', true);
-            //     if ($(this).is(":checked")) {
-            //         DT1.rows().select();
-            //         $('.check-select').prop('checked', true);
-            //     } else {
-            //         DT1.rows().deselect();
-            //         $('.check-select').prop('checked', false);
-            //     }
-            // });
-            // $(".check-select").on("click", function (e) {
-            //     if ($(this).is(":checked")) {
-            //         $(this).closest('tr').addClass('selected');
-            //     } else {
-            //         $(this).closest('tr').removeClass('selected');
-            //         $('.check-select-all').prop('checked', false);
-            //     }
-            // });
         }
     }
 

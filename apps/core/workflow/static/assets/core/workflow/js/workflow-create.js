@@ -317,7 +317,6 @@ $(function () {
 });
 
 
-
 function getZone(zoneList) {
     let dataZoneList = [];
     if (zoneList) {

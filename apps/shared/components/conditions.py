@@ -1,4 +1,4 @@
-"""system module"""
+"""System module."""
 from django import forms
 from django.forms import formset_factory
 from django.urls import reverse
@@ -51,7 +51,7 @@ class ConditionForm(forms.Form):
         self.fields['logic'].widget.attrs.update({'title': 'Logic'})
 
 
-class ConditionFormset(forms.Form):
+class ConditionFormset(MultiForm):
     """params and condition formset"""
     """use for condition formset"""
     form_classes = {

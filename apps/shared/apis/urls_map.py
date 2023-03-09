@@ -100,4 +100,3 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account')
     ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
-

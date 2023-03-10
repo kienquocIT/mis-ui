@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let option_emp = [{'val': '', 'text': ''}];
 
     function loadSalutationList(id) {
         let ele = $('#select-box-salutation');
@@ -35,7 +34,6 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.interests_list.map(function (item) {
                             if (list_id.includes(item.id)) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
@@ -66,7 +64,6 @@ $(document).ready(function () {
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                             }
-                            option_emp.push({'val': item.id, 'text': item.full_name})
                         })
                     }
                 }
@@ -146,6 +143,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    console.log(data);
                     loadEmployee(data.contact_detail.owner.id);
                     loadSalutationList(data.contact_detail.salutation.id);
                     loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to.id);
@@ -165,7 +163,6 @@ $(document).ready(function () {
                     $('#gmail_id').val(data.contact_detail.additional_infor.gmail);
                     $('#linkedln_id').val(data.contact_detail.additional_infor.linkedln);
                     $('#twitter_id').val(data.contact_detail.additional_infor.twitter);
-
                 }
             }
         )
@@ -186,32 +183,6 @@ $(document).ready(function () {
             ele.attr('disabled', true);
         }
     })
-
-    // remove employee in report to (selected in owner)
-    $('#select-box-emp').on('change', function () {
-        let id_emp = $(this).val();
-        let ele = $('#select-box-report-to');
-        let selected = ele.val()
-        ele.empty();
-        option_emp.map(function (item) {
-            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
-        })
-        ele.val(selected)
-        $(`#select-box-report-to option[value="` + id_emp + `"]`).remove();
-    });
-
-    // remove employee in onwer (selected in report to)
-    $('#select-box-report-to').on('change', function () {
-        let id_emp = $(this).val()
-        let ele = $('#select-box-emp');
-        let selected = ele.val()
-        ele.empty();
-        option_emp.map(function (item) {
-            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
-        })
-        ele.val(selected)
-        $(`#select-box-emp option[value="` + id_emp + `"]`).remove();
-    });
 
     $('#save-contact').on('click', function (event) {
         event.preventDefault();

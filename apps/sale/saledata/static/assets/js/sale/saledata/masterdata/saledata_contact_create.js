@@ -141,6 +141,9 @@ $(document).ready(function () {
         initDataTable(config_interest, '#datatable_interests_list');
     },)
 
+    $('#btn-show-modal-create').on('click', function (){
+        $('.modal-body input').val('');
+    })
 
     //Switch view table
     $("#tab-select-table a").on("click", function () {
@@ -264,7 +267,6 @@ $(document).ready(function () {
     //show modal edit
     $(document).on('click', '#datatable_salutation_list .edit-button, #datatable_interests_list .edit-button', function () {
         let frm_update = $('#form-update-masterdata')
-
         let check_type = false;
         let data_url;
         if ($(this).attr('data-type') === 'salutation') {

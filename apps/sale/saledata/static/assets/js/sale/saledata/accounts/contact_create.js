@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let option_emp = [{'val': '', 'text': ''}];
 
     function loadSalutationList() {
         let ele = $('#select-box-salutation');
@@ -54,7 +53,6 @@ $(document).ready(function () {
                         ele.append(`<option selected></option>`)
                         data.employee_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
-                            option_emp.push({'val': item.id, 'text': item.full_name})
                         })
                     }
                 }
@@ -131,32 +129,6 @@ $(document).ready(function () {
             ele.attr('disabled', true);
         }
     })
-
-    // remove employee in report to (selected in owner)
-    $('#select-box-emp').on('change', function () {
-        let id_emp = $(this).val();
-        let ele = $('#select-box-report-to');
-        let selected = ele.val()
-        ele.empty();
-        option_emp.map(function (item) {
-            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
-        })
-        ele.val(selected)
-        $(`#select-box-report-to option[value="` + id_emp + `"]`).remove();
-    });
-
-    // remove employee in onwer (selected in report to)
-    $('#select-box-report-to').on('change', function () {
-        let id_emp = $(this).val()
-        let ele = $('#select-box-emp');
-        let selected = ele.val()
-        ele.empty();
-        option_emp.map(function (item) {
-            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
-        })
-        ele.val(selected)
-        $(`#select-box-emp option[value="` + id_emp + `"]`).remove();
-    });
 
     $('#save-contact').on('click', function (event) {
         event.preventDefault();

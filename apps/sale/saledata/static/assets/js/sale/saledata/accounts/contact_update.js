@@ -34,7 +34,6 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.interests_list.map(function (item) {
                             if (list_id.includes(item.id)) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)

@@ -143,6 +143,11 @@ $(document).ready(function () {
     },)
 
 
+    $('#btn-show-modal-create').on('click', function (){
+        $('.modal-body input').val('');
+    })
+
+
 //Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')

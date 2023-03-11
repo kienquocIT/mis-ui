@@ -20,7 +20,7 @@ class AuthLogin(APIView):
     @classmethod
     def get(cls, request, template='auths/login.html'):
         if request.user and not isinstance(request.user, AnonymousUser):
-            resp_data = ServerAPI(user=request.user, url=ApiURL.my_profile).get()
+            resp_data = ServerAPI(user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp_data.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()

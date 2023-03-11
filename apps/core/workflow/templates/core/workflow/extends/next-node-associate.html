@@ -10,7 +10,9 @@
             </div>
             <div class="modal-body">
                 <form id="form-create-condition">
-                    <input type="text" class="hidden" id="home-condition">
+                    <input type="hidden" id="home-condition">
+                    <input type="hidden" name="node_in">
+                    <input type="hidden" name="node_out">
                     {% csrf_token %}
                     {% with formset=data.form.condition %}
                         {% with sub_formset=data.form.parameter %}

@@ -1,26 +1,38 @@
-class StringUrl(str):
+"""not need import module"""
+
+
+class StringUrl(str):  # pylint: disable=too-few-public-methods
+    """convert str url"""
+
     def push_id(self, _id):
+        """return url with id"""
         return f'{self}/{_id}'
 
     def fill_key(self, **kwargs):
+        """return kwargs with format"""
         # 'abc/{a1}/{b1}/{c1}' + kwargs={"a1": "1", "b1": 2, "c1": 3}
         # Return ==> 'abc/1/2/3'
         return self.format(**kwargs)
 
     def fill_idx(self, *args):
+        """return str with format"""
         # 'abc/{}/{}/{}' + args=[1, 2, 3]
         # Return ==> 'abc/1/2/3'
         return self.format(*args)
 
 
-class ApiURL(object):
+class ApiURL:  # pylint: disable=too-few-public-methods
+    """API link BE"""
+
     @staticmethod
     def push_id(url, _id):
+        """return str with url format"""
         return f'{url}/{_id}'
 
     login = StringUrl('auth/sign-in')
     logout = StringUrl('auth/logout')
     my_profile = StringUrl('auth/profile')
+    ALIVE_CHECK = StringUrl('auth/alive-check')
     refresh_token = StringUrl('auth/token-refresh')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
@@ -58,6 +70,7 @@ class ApiURL(object):
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
+    APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
 
     TENANT = StringUrl('tenant/userlist')
     # HR
@@ -75,7 +88,6 @@ class ApiURL(object):
     CONTACT_DETAIL = StringUrl('saledata/contact')
     CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
 
-
     # masterdata/lookup/contact
     SALUTATION_LIST = StringUrl('saledata/salutations')
     INTERESTS_LIST = StringUrl('saledata/interests')
@@ -92,4 +104,3 @@ class ApiURL(object):
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account')
     ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
-

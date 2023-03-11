@@ -1,15 +1,18 @@
+"""system module"""
 import string
 
 import random
 
 
 class RandomGenerate:
+    """general random"""
     REPEAT_TIME_MAX = 10
 
     @classmethod
     def check_uppercase(
             cls, data: str, replace_random: bool = False, exclude_replace_idx: list = None
     ) -> (str or None, int):
+        """check and return uppercase"""
         if isinstance(exclude_replace_idx, list):
             exclude_replace_idx = []
         if not any(x.isupper() for x in data):
@@ -25,6 +28,7 @@ class RandomGenerate:
     def check_lowercase(
             cls, data: str, replace_random: bool = False, exclude_replace_idx: list = None
     ) -> (str or None, int):
+        """check and return lowercase"""
         if isinstance(exclude_replace_idx, list):
             exclude_replace_idx = []
         if not any(x.isupper() for x in data):
@@ -40,6 +44,7 @@ class RandomGenerate:
     def check_digits(
             cls, data: str, replace_random: bool = False, exclude_replace_idx: list = None
     ) -> (str or None, int):
+        """check digit"""
         if isinstance(exclude_replace_idx, list):
             exclude_replace_idx = []
         if not any(x.isupper() for x in data):
@@ -55,6 +60,7 @@ class RandomGenerate:
     def get_int(
             cls, max_int: int, start_with=0, excludes=None, repeat_times=0
     ) -> int:
+        """check number Int"""
         if repeat_times < cls.REPEAT_TIME_MAX:
             if not isinstance(excludes, list):
                 excludes = []
@@ -64,6 +70,9 @@ class RandomGenerate:
             return tmp
         return 0
 
+    # pylint: disable=R0912
+    # pylint: disable=R0913
+    # pylint: disable=R0914
     @classmethod
     def get_string(
             cls,

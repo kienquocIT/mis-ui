@@ -1,3 +1,4 @@
+"""system module"""
 from django import template
 
 register = template.Library()

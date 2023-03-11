@@ -1,3 +1,4 @@
+"""System module."""
 from django import forms
 from django.forms import formset_factory
 from django.urls import reverse
@@ -11,6 +12,7 @@ LOGIC_CONDITION = [
 
 
 class ParameterFrom(forms.Form):
+    """use for condition formset"""
     left_cond = forms.ChoiceField(label="Left condition", required=False)
     math = forms.ChoiceField(label="Math condition", required=False)
     right_cond = forms.ChoiceField(label="Right condition", required=False)
@@ -39,6 +41,7 @@ class ParameterFrom(forms.Form):
 
 
 class ConditionForm(forms.Form):
+    """use for condition formset"""
     name = forms.CharField(label='Condition name', max_length=80, required=False)
     logic = forms.ChoiceField(label='Logic', choices=LOGIC_CONDITION, required=False)
 
@@ -49,9 +52,22 @@ class ConditionForm(forms.Form):
 
 
 class ConditionFormset(MultiForm):
+    """params and condition formset"""
     form_classes = {
-        'condition': formset_factory(ConditionForm, can_order=True, can_delete=True, min_num=1, extra=0),
-        'parameter': formset_factory(ParameterFrom, can_order=True, can_delete=True, min_num=1, extra=0)
+        'condition': formset_factory(
+            ConditionForm,
+            can_order=True,
+            can_delete=True,
+            min_num=1,
+            extra=0
+        ),
+        'parameter': formset_factory(
+            ParameterFrom,
+            can_order=True,
+            can_delete=True,
+            min_num=1,
+            extra=0
+        )
     }
 
     def __init__(self, *args, **kwargs):

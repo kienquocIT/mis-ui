@@ -8,12 +8,12 @@ let WF_DATATYPE = [];
  * @param elm element per row of formset
  */
 function changeParameter(value, elm){
-    let temphtml = '';
+    let tempHtml = '';
     elm.find('[name*="-math"]').html('');
     for (let item of WF_DATATYPE[value]){
-        temphtml += `<option value="${item.value}">${item.text}</option>`;
+        tempHtml += `<option value="${item.value}">${item.text}</option>`;
     }
-    elm.find('[name*="-math"]').append(temphtml);
+    elm.find('[name*="-math"]').append(tempHtml);
 }
 
 $(function () {
@@ -193,6 +193,7 @@ $(function () {
             // catch if next tab is display config condition
             if (btn_href === '#tab_next_node') {
                 $('#node_dragbox').empty();
+                $('#flowchart_workflow').empty();
                 let jsplumb = new JSPlumbsHandle();
                 jsplumb.init();
             }
@@ -207,8 +208,8 @@ $(function () {
 
         // handle event table zone actions on click
         function actionsClick(elm, data, iEvent) {
-            let isACtion = $(iEvent.currentTarget).attr('data-action');
-            if (isACtion === 'edit') {
+            let isAction = $(iEvent.currentTarget).attr('data-action');
+            if (isAction === 'edit') {
                 let $add_zone_modal = $('#add_zone')
                 let $form = $add_zone_modal.find('form')
                 $form.find('[name="title"]').val(data.title)
@@ -219,7 +220,7 @@ $(function () {
                     $form.find('[name="zone_id"]').val(data.id)
                 modalFormSubmit($form)
                 $add_zone_modal.modal('show')
-            } else if (isACtion === 'delete') {
+            } else if (isAction === 'delete') {
                 let table_elm = $(elm).parents('table.table');
                 $(table_elm).DataTable().rows(elm).remove().draw();
                 // .row(elm).index()
@@ -262,7 +263,7 @@ $(function () {
             let $form = document.getElementById('form-create_workflow')
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
-            let nodeTableData = setupDataNode();
+            let nodeTableData = setupDataNode(true);
             // get exit node condition for node list
             if (COMMIT_NODE_LIST)
                 for (let item of nodeTableData) {
@@ -273,7 +274,7 @@ $(function () {
 
             // convert associate to json
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
-            _form.dataForm['associate'] = JSON.parse(associate_temp)
+            _form.dataForm['association'] = JSON.parse(associate_temp)
 
             let submitFields = [
                 'title',
@@ -283,7 +284,7 @@ $(function () {
                 'is_multi_company',
                 'is_define_zone',
                 'actions_rename',
-                'associate'
+                'association'
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
@@ -316,6 +317,23 @@ $(function () {
 });
 
 
+function getZone(zoneList) {
+    let dataZoneList = [];
+    if (zoneList) {
+        for (let z = 0; z < zoneList.children.length; z++) {
+            let dataZone = zoneList.children[z].querySelector('.node-zone').getAttribute('data-node-zone');
+            let inputCheck = zoneList.children[z].querySelector('.check-zone-node');
+            if (inputCheck.checked === true && dataZone) {
+                if (dataZone !== "all") {
+                    dataZoneList.push(Number(dataZone))
+                }
+            }
+        }
+    }
+    return dataZoneList;
+}
+
+
 function setupDataNode(is_submit = false) {
     let dataNodeList = [];
     let tableNode = document.getElementById('datable-workflow-node-create');
@@ -332,6 +350,8 @@ function setupDataNode(is_submit = false) {
         let total_collaborator_in_process = 1;
         let total_collaborator_config = 1;
         let orderNode = 0;
+        let fieldSelectCollaborator = "";
+
         let row = tableNode.rows[idx + 1];
         if (row.getAttribute('data-initial-check-box')) {
             orderNode = Number(row.getAttribute('data-initial-check-box'))
@@ -366,24 +386,11 @@ function setupDataNode(is_submit = false) {
                 let modalBody = col.querySelector('.modal-body');
                 if (modalBody) {
                     if (isSystem === true) {
-                        let tableInitialNodeCollaborator = modalBody.querySelector('.table-initial-node-collaborator');
-                        if (tableInitialNodeCollaborator) {
-                            if (tableInitialNodeCollaborator.tBodies[0].rows.length === 1) {
-                                let rowInitialCollab = tableInitialNodeCollaborator.tBodies[0].rows[0];
-                                let zoneTd = rowInitialCollab.querySelector('.initial-node-collaborator-zone');
-                                if (zoneTd) {
-                                    let eleSpanZoneShow = zoneTd.querySelector('.zone-node-initial-show');
-                                    if (eleSpanZoneShow) {
-                                        if (eleSpanZoneShow.children.length > 0) {
-                                            for (let d = 0; d < eleSpanZoneShow.children.length; d++) {
-                                                let eleInput = eleSpanZoneShow.children[d].children[0].children[0].value;
-                                                if (eleInput) {
-                                                    dataZoneList.push(Number(eleInput));
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                        let tableInitialNodeCollab = modalBody.querySelector('.table-initial-node-collaborator');
+                        if (tableInitialNodeCollab) {
+                            if (tableInitialNodeCollab.tBodies[0].rows.length > 0) {
+                                let zoneList = tableInitialNodeCollab.tBodies[0].rows[0].querySelector('.node-zone-list');
+                                dataZoneList = getZone(zoneList)
                             }
                         }
                     } else {
@@ -392,6 +399,12 @@ function setupDataNode(is_submit = false) {
 
                             // if option in form
                             if (optionCollab === 0) {
+                                let zoneList = modalBody.children[2].querySelector('.node-zone-list');
+                                dataZoneList = getZone(zoneList);
+                                let eleProperty = modalBody.querySelector('.select-box-audit-in-form-property');
+                                if (eleProperty) {
+                                    fieldSelectCollaborator = eleProperty.value;
+                                }
                             }
 
                             // if option out form
@@ -407,16 +420,10 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                 }
-                                let zone = modalBody.children[2].querySelector('.zone-data-show');
-                                if (zone.children.length > 0) {
-                                    for (let d = 0; d < zone.children.length; d++) {
-                                        if (zone.children[d].children.length > 0) {
-                                            for (let z = 0; z < zone.children[d].children.length; z++) {
-                                                dataZoneList.push(Number(zone.children[d].children[z].children[0].value));
-                                            }
-                                        }
-                                    }
-                                }
+
+                                let zoneList = modalBody.children[2].querySelector('.node-zone-list');
+                                dataZoneList = getZone(zoneList);
+
                                 total_collaborator_in_process = dataEmployeeList.length
                                 // if option in workflow
                             } else if (optionCollab === 2) {
@@ -457,6 +464,7 @@ function setupDataNode(is_submit = false) {
                 'description': description,
                 'actions': dataActionList,
                 'option_collaborator': optionCollab,
+                'field_select_collaborator': fieldSelectCollaborator,
                 'collaborator_list': dataEmployeeList,
                 'node_zone': dataZoneList,
                 'collaborator': dataCollaboratorList,

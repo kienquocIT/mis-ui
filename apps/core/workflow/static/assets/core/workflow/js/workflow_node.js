@@ -16,7 +16,6 @@ $(function () {
                             let nodeAction = [{"0": "Create"}, {"1": "Approve"}, {"2": "Reject"}, {"3": "Return"}, {"4": "Receive"}, {"5": "To do"}]
                             let actionEle = ``;
                             let inputEle = ``;
-                            let tableLen = 1;
                             for (let a = 0; a < nodeAction.length; a++) {
                                 for (let key in nodeAction[a]) {
                                     if (key === "0") {
@@ -127,12 +126,14 @@ $(function () {
                                             </td>
                                             <td>${actionData}</td></tr>`
                                 } else if (item.order === 2) {
+                                    initialCheckBox = "2";
                                     nodeHTML = `<tr class="approved-row" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span data-is-system="true" data-system-code="${codeSystem}">${title}</span></td><td><span>${description}</span></td>
                                                                     <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
                                                                     <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 260px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
                                                                     <td>${actionData}</td>
                                                                 </tr>`
                                 } else if (item.order === 3) {
+                                    initialCheckBox = "3";
                                     nodeHTML = `<tr class="completed-row" data-initial-check-box="${initialCheckBox}"><td>${checkBox}</td><td><span data-is-system="true" data-system-code="${codeSystem}">${title}</span></td><td><span>${description}</span></td>
                                                                     <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
                                                                     <td><i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 260px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i></td>
@@ -175,7 +176,7 @@ $(function () {
             </div>
             </div>
             <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
             <label class="form-check-label" for="customCheck6"></label>
             </div>
             </li>`
@@ -193,7 +194,7 @@ $(function () {
             </div>
             </div>
             <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true">
+            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
             <label class="form-check-label" for="customCheck6"></label>
             </div>
             </li>`
@@ -268,25 +269,18 @@ $(function () {
                 let Id = "#" + tableId;
                 let dtb = $(Id);
                 if (dtb.length > 0) {
-                    var targetDt = dtb.DataTable(config);
+                    let targetDt = dtb.DataTable(config);
                     /*Checkbox Add*/
-                    var tdCnt = 0;
                     $(document).on('click', '.del-button', function () {
                         targetDt.rows('.selected').remove().draw(false);
                         return false;
                     });
                     $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
                     dtb.parent().addClass('table-responsive');
-
-
-                    /*Select all using checkbox*/
-                    var DT1 = dtb.DataTable();
                 }
             }
 
             function loadDataTable() {
-                let Id = "#" + tableId;
-                let tb = $(Id);
                 let url = "/hr/employee/api";
                 let method = "GET";
                 $.fn.callAjax(url, method).then(
@@ -671,7 +665,7 @@ $(function () {
                 modalBody.append(`<div class="form-group">
                                 <label class="form-label">Select field in form</label>
                                 <select
-                                        class="form-select slect-box-audit-in-form-property"
+                                        class="form-select select-box-audit-in-form-property"
                                         id="${boxInFormPropertyId}"
                                 >
                                     <option></option>
@@ -852,7 +846,7 @@ $(function () {
 
 
         function loadPropertyAuditInFrom(boxId) {
-            let url = '/base/application-property/api';
+            let url = '/base/application-property-employee/api';
             let method = "GET"
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
@@ -860,9 +854,9 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-                            data.application_property_list.map(function (item) {
-                                ele.append(`<option value="${item.id}">${item.title}</option>`)
+                        if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
+                            data.property_employee_list.map(function (item) {
+                                ele.append(`<option value="${item.code}">${item.title}</option>`)
                             })
                         }
                     }
@@ -1324,10 +1318,21 @@ $(function () {
             let eleSpan = $(this)[0].closest('td').querySelector('.check-done-audit');
 
             let eleModal = $(this)[0].closest('td');
+            let employeeInForm = eleModal.querySelector('.select-box-audit-in-form-property');
             let employeeOutForm = eleModal.querySelector('.audit-out-form-employee-data-show');
             let employeeInWorkflow = eleModal.querySelector('.table-in-workflow-employee');
 
-            if (employeeOutForm) {
+            if (employeeInForm) {
+                if (employeeInForm) {
+                    if (employeeInForm.value) {
+                        eleSpan.innerHTML = ``;
+                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                    } else {
+                        eleSpan.innerHTML = ``;
+                        eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    }
+                }
+            } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
@@ -1348,7 +1353,6 @@ $(function () {
                 }
             }
         });
-
     });
 
 });

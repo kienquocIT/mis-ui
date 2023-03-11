@@ -1,6 +1,7 @@
+"""declare all app in shared folder"""
 from .apis import ServerAPI, ApiURL
 from .decorators import mask_view
-from .msg import *
+from .msg import AuthMsg, ServerMsg, HRMsg, WorkflowMsg
 from .breadcrumb import BreadcrumbView
 from .caches import CacheController, CacheKeyCollect
 from .type_check import TypeCheck

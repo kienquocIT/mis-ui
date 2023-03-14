@@ -62,6 +62,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # base
     PLAN_LIST = StringUrl('base/plans')
+    APPLICATION_LIST = StringUrl('base/applications')
 
     TENANT = StringUrl('tenant/userlist')
     # HR

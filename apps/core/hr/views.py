@@ -12,6 +12,8 @@ BELONG_LIST = [
     {'value': 3, "name": PermsMsg.ALL_STAFF},
     {'value': 4, "name": PermsMsg.ALL_USER},
 ]
+
+
 def create_hr_application(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
@@ -91,7 +93,8 @@ class EmployeeDetail(View):
                        'doc_id': pk,
                        'belong_list': BELONG_LIST,
                        'app_list': {
-                           'url': reverse('')
+                           'url': reverse('ApplicationListAPI'),
+                           'prefix': 'app_list',
                        }
                    }
                }, status.HTTP_200_OK

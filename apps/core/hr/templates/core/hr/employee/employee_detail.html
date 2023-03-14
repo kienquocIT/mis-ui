@@ -195,8 +195,8 @@
                 <hr style="height:1px;border:none;color:#007D88;background-color:#007D88; margin-top: -1px">
 
                 <div class="row mt-3" id="employee-permission-detail">
-                    <div>
-                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                    <div class="col-lg-2 offset-lg-10">
+                        <a class="btn btn-icon btn-flush-dark flush-soft-hover"
                            id="btn-edit-emp-permission"
                            data-bs-toggle="tooltip"
                            data-bs-placement="top"
@@ -206,33 +206,30 @@
                             <span class="btn-icon-wrap">
                                 <span class="feather-icon">
                                     <i data-feather="edit"></i>
-                                </span>{% trans 'Set Permission' %}</span></a>
-                    </div>
-                    <div class="mt-3" id="data-employee-plan-app-detail"></div>
-                </div>
+                                </span>&nbsp;&nbsp;{% trans 'Set Permission' %}</span></a>
 
-
-                <div class="row mt-3" id="employee-permission-edit" hidden>
-                    <div>
-                    <a href="{% url 'EmployeeList' %}">
-                        <span
-                            class="btn btn-primary"
-                            id="button-save-employee-permission"
-                            style="float: right; margin-right: 50px; width: 100px;"
-                    >{% trans "Update" %}</span>
-                    </a>
+                        <a class="btn btn-primary float-right hidden" href="{% url 'EmployeeList' %}"
+                           id="button-save-employee-permission">
+                            {% trans "Update" %}
+                        </a>
                     </div>
-                    <div class="mt-3" id="data-employee-plan-app-edit"></div>
+                    <div class="mt-3" id="employee-perm-detail"></div>
                 </div>
             </div>
         </div>
     </div>
-    <templete class="belong-to-combobox">
-    <select>
-        {% for item in data.belong_list %}
-            <option value="{{ item.value }}">{{ item.name }}</option>
-        {% endfor %}
-    </select>
+    <templete class="template-factory" hidden>
+        <div class="belong-to">
+            <select>
+                {% for item in data.belong_list %}
+                    <option value="{{ item.value }}">{{ item.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="app-list">
+            <select class="form-control dropdown-select_two" data-url="{{ data.app_list.url }}"
+                    data-prefix="{{ data.app_list.prefix }}" data-multiple="false" disabled></select>
+        </div>
     </templete>
     <input data-application="{% trans 'Application' %}" type="hidden" class="hidden table-translate"
            data-view_all="{% trans 'All' %}"
@@ -242,6 +239,7 @@
            data-delete="{% trans 'Delete' %}"
            data-permission_range="{% trans 'Permission range' %}"
            data-empty="{% trans 'Permission list is empty' %}"
+           data-add="{% trans 'Add new permission' %}"
     >
 {% endblock %}
 
@@ -254,6 +252,8 @@
 
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
 
     <!-- Moment JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
@@ -263,7 +263,7 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-
+    <script src="{% static 'assets/js/core/hr/employee/employee_permission.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
 
 {% endblock %}

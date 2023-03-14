@@ -1,7 +1,8 @@
+"""system module"""
 from django import forms
 from django.forms import formset_factory
 
-from ..form_custom import MultiForm, convert_data
+# from ..form_custom import MultiForm, convert_data
 
 LEFT_COND = (
     ('req_type', 'Request type'),
@@ -25,6 +26,7 @@ LOGIC_CONDITION = [
 
 
 class ParameterFrom(forms.Form):
+    """params form"""
     left_cond = forms.ChoiceField(label="Left condition", required=False, choices=LEFT_COND)
     math = forms.ChoiceField(label="Math condition", required=False, choices=MATH)
     right_cond = forms.ChoiceField(label="Right condition", required=False, choices=RIGHT_COND)
@@ -35,6 +37,7 @@ class ParameterFrom(forms.Form):
 
 
 class ConditionForm(forms.Form):
+    """condition form"""
     name = forms.CharField(label='Condition name', max_length=80, required=False)
     logic = forms.ChoiceField(label='Logic', choices=LOGIC_CONDITION, required=False)
 
@@ -44,10 +47,23 @@ class ConditionForm(forms.Form):
         self.fields['logic'].widget.attrs.update({'title': 'Logic'})
 
 
-class ConditionFormset(MultiForm):
+class ConditionFormset(forms.Form):
+    """params and condition formset"""
     form_classes = {
-        'condition': formset_factory(ConditionForm, can_order=True, can_delete=True, min_num=1, extra=0),
-        'parameter': formset_factory(ParameterFrom, can_order=True, can_delete=True, min_num=1, extra=0)
+        'condition': formset_factory(
+            ConditionForm,
+            can_order=True,
+            can_delete=True,
+            min_num=1,
+            extra=0
+        ),
+        'parameter': formset_factory(
+            ParameterFrom,
+            can_order=True,
+            can_delete=True,
+            min_num=1,
+            extra=0
+        )
     }
 
     def __init__(self, *args, **kwargs):

@@ -1,7 +1,9 @@
+"""system module"""
 from django.utils.translation import gettext_lazy as _
 
 
-class AuthMsg(object):
+class AuthMsg:  # pylint: disable=too-few-public-methods
+    """authentication translation"""
     login_exc = _('Setup login return exception')
     login_success = _('Login successfully')
     KEY_TENANT_CODE = _('tenant_code')

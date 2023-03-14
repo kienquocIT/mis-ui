@@ -64,7 +64,6 @@ $(document).ready(function () {
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
                                 let planCode = "#" + data.employee.plan_app[t].code
                                 let instancePlan = $(planCode)
-
                                 if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
                                     let appLength = data.employee.plan_app[t].application.length;
                                     for (let i = 0; i < appLength; i++) {
@@ -293,7 +292,6 @@ $(document).ready(function () {
     })
     frm.submit(function (event) {
         let frm = new SetupFormSubmit($(this));
-        console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let dataPlanApp = setupDataPlanApp()

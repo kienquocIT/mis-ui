@@ -17,3 +17,8 @@
     float: left;
     list-style: none;
 }
+.permission-table tr,
+.permission-table tr th{
+    border: 0;
+    border-bottom: solid 1px #007D88;
+}

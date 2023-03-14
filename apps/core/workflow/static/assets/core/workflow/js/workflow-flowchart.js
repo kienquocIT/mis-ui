@@ -273,12 +273,69 @@ class JSPlumbsHandle {
                 }
             })
 
+            // update association data when connect 2 nodes, LHPHUC
+            instance.bind("connection", function(connection){
+                // Check approved
+                let data_node = DEFAULT_NODE_LIST;
+                let elm_focus = $('#node-associate');
+
+                let end_result = {
+                    'node_in': '',
+                    'node_out': '',
+                    'condition': [],
+                }
+                let key = "";
+                let connect = connection;
+                if (connect.source.dataset.drag && connect.target.dataset.drag) {
+                    // Check Approved and Update "before"/"after" status
+                    let check = checkApprovedNodeWhenConnectNode(data_node, connect, elm_focus);
+                    if (check === false) {
+                        instance.deleteConnection(connect.connection);
+                        return false
+                    }
+                    end_result['node_in'] = parseInt(connect.source.dataset.drag);
+                    end_result['node_out'] = parseInt(connect.target.dataset.drag);
+                    key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
+                }
+                if (key) {
+                    let before_data = elm_focus.val();
+                    if (before_data) {
+                        before_data = JSON.parse(before_data);
+                        before_data[key] = end_result;
+                        end_result = before_data
+                    } else {
+                        let temp = {}
+                        temp[key] = end_result;
+                        end_result = temp
+                    }
+                    elm_focus.val(JSON.stringify(end_result))
+                }
+            })
+
+            // update association data when disconnect 2 nodes, LHPHUC
+            instance.bind("connectionDetached", function (connection) {
+                let key = "";
+                let connect = connection;
+                if (connect.source.dataset.drag && connect.target.dataset.drag) {
+                    key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
+                    let elm_focus = $('#node-associate');
+                    let current_data = elm_focus.val();
+                    if (current_data && key) {
+                        current_data = JSON.parse(current_data)
+                        if (current_data.hasOwnProperty(key)) {
+                            delete current_data[key];
+                            elm_focus.val(JSON.stringify(current_data))
+                        }
+                    }
+                }
+            });
+
+
             // declare event on click for context menu
             $("body").on("click", ".delete-connect", function () {
                 instance.deleteConnection(window.selectedConnection)
                 $(this).parent('.custom-menu').remove();
             });
-
         });
     };
 
@@ -288,4 +345,67 @@ class JSPlumbsHandle {
         this.initJSPlumbs();
         extendDropSpace()
     }
+}
+
+
+function checkApprovedNodeWhenConnectNode(data_node, connect, elm_focus) {
+    let current_data = elm_focus.val();
+    let source = connect.source.dataset.drag;
+    let target = connect.target.dataset.drag;
+    if (source && target) {
+        if (data_node.hasOwnProperty(parseInt(source)) && data_node.hasOwnProperty(parseInt(target))) {
+            // update node associate check when target is Approved Node
+            if (data_node[parseInt(target)].code_node_system === "approved") {
+                let data_source = data_node[parseInt(source)];
+                data_source['check_approved'] = 'before';
+                if (current_data) {
+                    let current_data_json = JSON.parse(current_data);
+                    for (let key in current_data_json) {
+                        if (parseInt(source) === current_data_json[key].node_out) {
+                            if (data_node[current_data_json[key].node_in].code_node_system !== "approved") {
+                                data_node[current_data_json[key].node_in]['check_approved'] = 'before'
+                            }
+                        } else if (parseInt(source) === current_data_json[key].node_in) {
+                            if (data_node[current_data_json[key].node_out].code_node_system !== "approved") {
+                                data_node[current_data_json[key].node_out]['check_approved'] = 'before'
+                            }
+                        }
+                    }
+                }
+            } else {
+                // update node associate check when source is Approved Node
+                if (data_node[parseInt(source)].code_node_system === "approved") {
+                    let data_target = data_node[parseInt(target)];
+                    data_target['check_approved'] = 'after';
+                    if (current_data) {
+                        let current_data_json = JSON.parse(current_data);
+                        for (let key in current_data_json) {
+                            if (parseInt(target) === current_data_json[key].node_out) {
+                                if (data_node[current_data_json[key].node_in].code_node_system !== "approved") {
+                                    data_node[current_data_json[key].node_in]['check_approved'] = 'after'
+                                }
+                            } else if (parseInt(target) === current_data_json[key].node_in) {
+                                if (data_node[current_data_json[key].node_out].code_node_system !== "approved") {
+                                    data_node[current_data_json[key].node_out]['check_approved'] = 'after'
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (data_node[parseInt(source)].check_approved) {
+                        if (data_node[parseInt(target)].check_approved) {
+                            // Check Approved
+                            if (data_node[parseInt(target)].check_approved !== data_node[parseInt(source)].check_approved) {
+                                $.fn.notifyPopup({description: "Can't connect node before Approved and node after Approved."}, 'failure');
+                                return false
+                            }
+                        } else {
+                            data_node[parseInt(target)]['check_approved'] = data_node[parseInt(source)].check_approved
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true
 }

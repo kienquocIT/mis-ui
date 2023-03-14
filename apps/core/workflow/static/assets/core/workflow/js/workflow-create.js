@@ -501,6 +501,7 @@ function setupDataNode(is_submit = false) {
                 },
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,
+                'check_approved': '',
             });
         }
     }

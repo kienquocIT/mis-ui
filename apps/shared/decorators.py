@@ -129,10 +129,22 @@ def mask_view(**parent_kwargs):
                 real_path=request.path,
             )
 
+            # is_ajax in request._meta
+            # check is_ajax vs view config
+            #   if is_ajax = True
+            #       if is_api = True ==> pass
+            #       else return Response 403 (http status 200, msg = 'View dont support call ajax)
+            #   else
+            #       if is_api = False ==> pass
+            #       else return Response 403 (http status 200, msg = 'View dont support call render)
+
             if login_require:
                 if not request.user or isinstance(request.user, AnonymousUser):
                     if is_api:
-                        return Response({'detail': 'Authentication is not credentials.'})
+                        return Response(
+                            {'data': AuthMsg.AUTH_EXPIRE, 'status': status.HTTP_401_UNAUTHORIZED},
+                            status=status.HTTP_200_OK
+                        )
 
                     path_redirect = reverse('AuthLogin')
                     if cls_check.real_path:
@@ -154,6 +166,10 @@ def mask_view(**parent_kwargs):
                 else:
                     data = view_return
                 data['status'] = http_status
+
+                # [], 200 <--- accept
+                # {'results': [], 'status_tmp': 201} <--- accept
+                # [] <--- error
 
                 # handle return HTTP
                 if cls_check.is_api:

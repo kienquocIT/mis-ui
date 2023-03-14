@@ -199,7 +199,15 @@ class RoleListAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_LIST).post(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
+        if role.errors:
+            if isinstance(role.errors, dict):
+                err_msg = ""
+                for _, value in role.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, role.status
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class RoleDetailAPI(APIView):
@@ -221,7 +229,15 @@ class RoleDetailAPI(APIView):
         role = ServerAPI(user=request.user, url=ApiURL.ROLE_DETAIL + '/' + pk).put(data)
         if role.state:
             return role.result, status.HTTP_200_OK
-        return {'errors': role.errors}, status.HTTP_400_BAD_REQUEST
+        if role.errors:
+            if isinstance(role.errors, dict):
+                err_msg = ""
+                for _, value in role.errors.items():
+                    err_msg += str(value)
+                    break
+                return {'errors': err_msg}, role.status
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
@@ -318,6 +334,15 @@ class GroupListAPI(APIView):
             url=ApiURL.GROUP_LIST,
             msg=HRMsg.GROUP_CREATE
         )
+
+        # data = request.data
+        # resp = ServerAPI(user=request.user, url=ApiURL.GROUP_LIST).post(data)
+        # if resp.state:
+        #     resp.result['message'] = HRMsg.GROUP_CREATE
+        #     return resp.result, status.HTTP_200_OK
+        # elif resp.status == 401:
+        #     return {}, status.HTTP_401_UNAUTHORIZED
+        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class GroupDetail(View):

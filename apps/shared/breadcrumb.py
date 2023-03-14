@@ -58,6 +58,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # components
     COMPONENTS_PAGE = BreadcrumbChildren(_('Component'), 'ComponentCollections')
 
+    # Workflow
+    WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow list'), 'WorkflowList')
+    WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -160,3 +164,10 @@ class BreadcrumbView:
     ]
 
     ROLE_CREATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.ROLE_CREATE_PAGE]
+
+    # TENANT_INFORMATION_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.TENANT_INFORMATION_PAGE]
+    WORKFLOW_LIST_PAGE = [
+        BreadcrumbItem.WORKFLOW_LIST_PAGE
+    ]
+
+    WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_CREATE_PAGE]

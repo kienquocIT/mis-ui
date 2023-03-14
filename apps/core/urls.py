@@ -7,6 +7,7 @@ urlpatterns = [
     path('company/', include('apps.core.company.urls')),
     path('base/', include('apps.core.base.urls')),
     path('tenant/', include('apps.core.tenant.urls')),
+    path('workflow/', include('apps.core.workflow.urls')),
 
     path('', include('apps.core.home.urls')),  # home page
 ]

@@ -130,8 +130,8 @@
                     <ul id="menu_process_management" class="nav flex-column collapse  nav-children">
                         <li class="nav-item">
                             <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                <li class="nav-item" id="menu_workflow_list">
+                                    <a class="nav-link" href="{% url 'WorkflowList' %}">
                                         <span class="nav-icon-wrap">
                                             <span class="svg-icon menu-child-icon">
                                                 <i class="fas fa-shapes"></i>
@@ -201,16 +201,76 @@
                         </li>
                     </ul>
                 </li>
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link" href="{% url 'TenantInformation' %}">#}
-{#                        <span class="nav-icon-wrap">#}
-{#                            <span class="svg-icon menu-child-icon">#}
-{#                                <i class="bi bi-info-circle-fill"></i>#}
-{#                            </span>#}
-{#                        </span>#}
-{#                        <span class="nav-link-text">{% trans 'Tenant Information' %}</span>#}
-{#                    </a>#}
-{#                </li>#}
+            </ul>
+        </div>
+    </div>
+    <div class="menu-content-wrap">
+        <div class="menu-group">
+            <div class="nav-header">
+                    <span>CRM</span>
+            </div>
+            <ul class="navbar-nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ContactList' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="bi bi-journal-bookmark-fill"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Contact' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'AccountList' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="bi bi-person-rolodex"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Account' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                            data-bs-target="#menu_masterdata" >
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="bi bi-bar-chart-fill"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Master data' %}</span>
+                    </a>
+                    <ul id="menu_masterdata" class="nav flex-column collapse  nav-children">
+                        <li class="nav-item">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "ContactMasterDataList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="bi bi-journal-bookmark-fill"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Contact' %}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "AccountMasterDataList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="bi bi-person-rolodex"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Account' %}
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

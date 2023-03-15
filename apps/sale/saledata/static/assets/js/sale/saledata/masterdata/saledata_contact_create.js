@@ -308,10 +308,6 @@ $(document).ready(function () {
                 'description': inp_des.val(),
             }
 
-            if (data_form['code'] === '') {
-                data_form['code'] = null;
-            }
-
             if (data_form['title'] === '') {
                 data_form['title'] = null;
             }

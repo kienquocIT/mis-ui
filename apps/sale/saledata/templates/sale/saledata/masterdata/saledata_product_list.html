@@ -136,6 +136,7 @@
             <div class="lookup-data" id="section-unit-measure" style="display: none">
                 <table id="datatable-unit-measure-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "UnitOfMeasureListAPI" %}"
+                       data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -303,7 +304,7 @@
             </div>
         </div>
     </form>
-    <!-- Modal Create Unit Of Measure-->
+    <!-- End Modal Create Unit Of Measure-->
 
     <!-- Modal Create Unit Of Measure Group -->
     <form id="form-create-unit-measure-group" data-method="POST"
@@ -338,53 +339,91 @@
             </div>
         </div>
     </form>
-    <!-- Modal Create Unit Of Measure Group -->
+    <!-- End Modal Create Unit Of Measure Group -->
 
-    {#    <!-- Modal Update Master Data>-->#}
-    {#    <form id="form-update-masterdata" data-method="POST" data-lookup="salutation"#}
-    {#          data-url-salutation="{% url "SalutationDetailAPI" pk=0 %} "#}
-    {#          data-url-interests="{% url "InterestDetailAPI" pk=0 %} "#}
-    {#    >#}
-    {#        <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"#}
-    {#             aria-hidden="true">#}
-    {#            <div class="modal-dialog modal-dialog-centered" role="document">#}
-    {#                <div class="modal-content">#}
-    {#                    <div class="modal-header">#}
-    {#                        <h5 class="modal-title">{% trans "Edit Salutation" %}</h5>#}
-    {#                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">#}
-    {#                            <span aria-hidden="true">&times;</span>#}
-    {#                        </button>#}
-    {#                    </div>#}
-    {#                    <div class="modal-body">#}
-    {#                        <div class="row">#}
-    {#                            <div class="form-group">#}
-    {#                                <label class="form-label">{% trans "Code" %}</label>#}
-    {#                                <input id="code-update" class="form-control" type="text" name="code"#}
-    {#                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()" required>#}
-    {#                            </div>#}
-    {#                            <div class="form-group">#}
-    {#                                <label class="form-label">{% trans "Name" %}</label>#}
-    {#                                <input class="form-control" type="text" name="title" id="name-update"#}
-    {#                                       placeholder="Input name" required>#}
-    {#                            </div>#}
-    {#                            <div class="form-group">#}
-    {#                                <label class="form-label">{% trans "Description" %}</label>#}
-    {#                                <input class="form-control" type="text" name="description"#}
-    {#                                       id="description-update"#}
-    {#                                       placeholder="Input text">#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {##}
-    {#                        <div class="modal-footer">#}
-    {#                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
-    {#                            <button type="button" class="btn btn-primary edit-button">Save</button>#}
-    {#                        </div>#}
-    {#                    </div>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </form>#}
-    {#    <!-- Modal Update Master Data>-->#}
+    <!-- Modal Create Unit Of Measure -->
+    <form id="form-edit-unit-measure" data-method="PUT"
+          data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %} "
+    >
+        <div class="modal fade" id="modal-detail-unit-measure" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Unit Of Measure Deatail" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Code" %}</label>
+                                    <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
+                                           placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check mt-5 inp-can-edit" data-toggle="tooltip" title="Click to edit">
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit" name="is_referenced_unit" disabled>
+                                    <label class="form-check-label" for="check-edit-unit">
+                                        {% trans "is referenced for ratio from other unit" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Name" %}</label>
+                                    <input class="form-control inp-can-edit" type="text" name="title"
+                                           placeholder="Input name" id="inp-edit-name-unit" readonly data-toggle="tooltip" title="Click to edit">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Ratio" %}</label>
+                                            <input class="form-control inp-can-edit" type="text" name="ratio"
+                                                   placeholder="Input ratio" id="inp-ratio-unit" readonly data-toggle="tooltip" title="Click to edit">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group mt-5">
+                                            <label class="form-label mt-1" id="label-edit-referenced-unit">* Reference Unit</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group inp-can-edit" data-toggle="tooltip" title="Click to edit">
+                                    <label class="form-label">{% trans "Select Group" %}</label>
+                                    <select id="select-box-edit-uom-group" class="form-select" data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group" disabled></select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Rounding" %}</label>
+                                    <input class="form-control inp-can-edit" type="text" name="rounding"
+                                           placeholder="Input rounding" id="inp-rounding" readonly data-toggle="tooltip" title="Click to edit">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary btn-edit-unit-measure">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- End Modal Create Unit Of Measure-->
+
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/sale/saledata/masterdata/saledata_product.js' %}"></script>

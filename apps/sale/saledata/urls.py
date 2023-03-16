@@ -7,7 +7,7 @@ from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI,
     AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI, \
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI, ProductList, \
-    ProductCreate
+    ProductCreate, UnitOfMeasureDetailAPI
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -55,6 +55,7 @@ urlpatterns = [
         'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
         name='UnitOfMeasureGroupListAPI'
     ),
+    path('masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(), name='UnitOfMeasureDetailAPI')
 ] + [
     path('products', ProductList.as_view(), name='ProductList'),
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),

@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let data_url_detail_uom = $('#datatable-unit-measure-list').attr('data-url-detail')
     let ele_product_type = $('#section-product-type').html()
     let ele_product_category = $('#section-product-category').html()
     let ele_expense_type = $('#section-expense-type').html()
@@ -147,7 +148,8 @@ $(document).ready(function () {
             }
         }, {
             'data': 'code', render: (data, type, row, meta) => {
-                return `<a href="#">
+                return `<a class="btn-detail" data-url="` + data_url_detail_uom.replace(0, row.id) + `" href="#" data-bs-toggle="modal"
+            data-bs-target="#modal-detail-unit-measure" data-id="` + row.id + `">
                     <span><b>` + row.code + `</b></span>
                 </a>`
             }
@@ -270,8 +272,7 @@ $(document).ready(function () {
         },)
     }
 
-    function loadSelectBoxUnitMeasureGroup() {
-        let ele = $('#select-box-unit-measure-group');
+    function loadSelectBoxUnitMeasureGroup(ele, id) {
         ele.html('');
         ele.append(`<option></option>`)
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
@@ -279,6 +280,9 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     data.unit_of_measure_group.map(function (item) {
+                        if (item.id === id) {
+                            ele.append(`<option selected value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
+                        }
                         ele.append(`<option value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
                     })
                 }
@@ -291,31 +295,29 @@ $(document).ready(function () {
     loadProDuctCategory();
     loadProductType();
     loadUnitOfMeasureGroup();
-    loadSelectBoxUnitMeasureGroup();
+    loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
     loadUnitOfMeasure();
 
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
-        if (data_referenced === 'undefined'){
+        if (data_referenced === 'undefined') {
             $('#check-referenced-unit').prop('disabled', false);
             $('#label-referenced-unit').text('');
-        }
-        else{
+        } else {
             $('#ratio-unit').prop('disabled', false);
             $('#check-referenced-unit').prop('disabled', true);
-            $('#label-referenced-unit').text(`* `+ data_referenced);
+            $('#label-referenced-unit').text(`* ` + data_referenced);
             $('#label-referenced-unit').prop('hidden', false);
         }
     })
 
-    $('#check-referenced-unit').on('change', function (){
-        if(this.checked){
-            $('#label-referenced-unit').text(`* `+ $('#name-unit').val());
+    $('#check-referenced-unit').on('change', function () {
+        if (this.checked) {
+            $('#label-referenced-unit').text(`* ` + $('#name-unit').val());
             $('#label-referenced-unit').prop('hidden', false);
             $('#ratio-unit').val('1');
-        }
-        else{
+        } else {
             $('#label-referenced-unit').prop('hidden', true);
             $('#ratio-unit').prop('disabled', true);
             $('#ratio-unit').val('');
@@ -424,6 +426,76 @@ $(document).ready(function () {
             }
         )
     })
+
+    // load detail uom
+    $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
+        $('#modal-detail-unit-measure .inp-can-edit').tooltip();
+        $('#form-edit-unit-measure').attr('data-url', $('#form-edit-unit-measure').attr('data-url').replace(0, $(this).attr('data-id')) )
+        $.fn.callAjax($(this).attr('data-url'), 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
+                            $('#inp-code-uom').val(data.unit_of_measure.code);
+                            $('#inp-edit-name-unit').val(data.unit_of_measure.title);
+                            $('#inp-rounding').val(data.unit_of_measure.rounding);
+                            $('#inp-ratio-unit').val(data.unit_of_measure.ratio);
+                            $('#label-edit-referenced-unit').text(`* ` + data.unit_of_measure.group.referenced_unit_title);
+                            loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group.id);
+                            if (data.unit_of_measure.group.is_referenced_unit === 1) {
+                                $('#check-edit-unit').prop('checked', true);
+                            }
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+    })
+
+
+    $('#modal-detail-unit-measure .inp-can-edit').on('click', function () {
+        if ($(this).is('input')) {
+            $(this).removeAttr('readonly');
+        } else if ($(this).is('div')) {
+            $(this).find('select').removeAttr('disabled');
+            $(this).find('input').removeAttr('disabled');
+        }
+    })
+
+    //submit form edit uom
+    let frm_edit_uom = $('#form-edit-unit-measure')
+    frm_edit_uom.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let frm_data = frm.dataForm;
+        let data_url = frm.dataUrl;
+        if($('#check-edit-unit').prop('checked') === true){
+            frm_data['is_referenced_unit'] = 'on';
+        }
+        frm_data['group'] = $('#select-box-edit-uom-group').val();
+        $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $('#modal-unit-measure').hide();
+                    }
+                },
+                (errs) => {
+                }
+            ).then(
+            (rep) => {// reload dataTable after edit
+                $('#section-unit-measure').empty();
+                $('#section-unit-measure').append(ele_unit_of_measure);
+                loadUnitOfMeasure();
+            }
+        )
+    })
+
 })
 
 

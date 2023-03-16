@@ -111,3 +111,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
     UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
     UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
+    UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/')

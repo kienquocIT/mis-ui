@@ -665,6 +665,36 @@ class UnitOfMeasureListAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class UnitOfMeasureDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL + pk).get()
+        if resp.state:
+            return {'unit_of_measure': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'unit_of_measure': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class UnitOfMeasureGroupListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

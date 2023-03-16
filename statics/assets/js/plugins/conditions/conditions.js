@@ -47,21 +47,23 @@ class Conditions {
                 node_out: parseInt(element_formset.parent('form').find('[name="node_out"]').val()),
                 condition: result,
             }
-            if (elm_focus) {
-                let before_data = elm_focus.val()
-                if (before_data !== ''){
-                    // if before data has property
-                    before_data = JSON.parse(before_data)
-                    before_data.push(end_result)
+
+            // update condition for association data when edit condition, LHPHUC
+            let key = element_formset.parent('form').find('[name="node_in"]').val() + "_" + element_formset.parent('form').find('[name="node_out"]').val();
+            if (key && elm_focus) {
+                let before_data = elm_focus.val();
+                if (before_data) {
+                    before_data = JSON.parse(before_data);
+                    before_data[key] = end_result;
                     end_result = before_data
-                }
-                else{
-                    let temp = []
-                    temp.push(end_result)
+                } else {
+                    let temp = {}
+                    temp[key] = end_result;
                     end_result = temp
                 }
                 elm_focus.val(JSON.stringify(end_result))
             } else return end_result
+
         });
     }
 

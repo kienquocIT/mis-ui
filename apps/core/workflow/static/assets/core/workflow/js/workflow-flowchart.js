@@ -288,11 +288,12 @@ class JSPlumbsHandle {
                 let connect = connection;
                 if (connect.source.dataset.drag && connect.target.dataset.drag) {
                     // Check Approved and Update "before"/"after" status
-                    let check = checkApprovedNodeWhenConnectNode(data_node, connect, before_data);
-                    if (check === false) {
-                        instance.deleteConnection(connect.connection);
-                        return false
-                    }
+                    // let check = checkApprovedNodeWhenConnectNode(data_node, connect, before_data);
+                    // if (check === false) {
+                    //     instance.deleteConnection(connect.connection);
+                    //     return false
+                    // }
+
                     end_result['node_in'] = parseInt(connect.source.dataset.drag);
                     end_result['node_out'] = parseInt(connect.target.dataset.drag);
                     key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
@@ -320,7 +321,8 @@ class JSPlumbsHandle {
                 let current_data = elm_focus.val();
                 if (connect.source.dataset.drag && connect.target.dataset.drag) {
                     // Update "before"/"after" status
-                    checkApprovedNodeWhenConnectNode(data_node, connect, current_data, true)
+                    // checkApprovedNodeWhenConnectNode(data_node, connect, current_data, true);
+
                     key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
                     if (current_data && key) {
                         current_data = JSON.parse(current_data)

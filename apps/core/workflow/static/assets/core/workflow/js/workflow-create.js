@@ -274,7 +274,14 @@ $(function () {
 
             // convert associate to json
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
-            _form.dataForm['association'] = JSON.parse(associate_temp)
+            if (associate_temp) {
+                let associate_data_submit = [];
+               let associate_data_json =  JSON.parse(associate_temp);
+               for (let key in associate_data_json) {
+                   associate_data_submit.push(associate_data_json[key]);
+               }
+               _form.dataForm['association'] = associate_data_submit;
+            }
 
             let submitFields = [
                 'title',

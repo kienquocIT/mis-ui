@@ -299,25 +299,26 @@ $(document).ready(function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
         if (data_referenced === 'undefined'){
             $('#check-referenced-unit').prop('disabled', false);
+            $('#label-referenced-unit').text('');
         }
         else{
             $('#ratio-unit').prop('disabled', false);
-            $('#label-referenced-unit').text(`* `+ data_referenced)
+            $('#check-referenced-unit').prop('disabled', true);
+            $('#label-referenced-unit').text(`* `+ data_referenced);
             $('#label-referenced-unit').prop('hidden', false);
-            $('#ratio-unit').prop('disabled', false);
-
         }
     })
 
     $('#check-referenced-unit').on('change', function (){
         if(this.checked){
-            $('#label-referenced-unit').text(`* `+ $('#name-unit').val())
+            $('#label-referenced-unit').text(`* `+ $('#name-unit').val());
             $('#label-referenced-unit').prop('hidden', false);
             $('#ratio-unit').val('1');
         }
         else{
             $('#label-referenced-unit').prop('hidden', true);
             $('#ratio-unit').prop('disabled', true);
+            $('#ratio-unit').val('');
         }
     })
 

@@ -162,9 +162,9 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
 
-                if (row.hasOwnProperty('is_referenced_unit')) {
-                    if (row.is_referenced_unit === 1) {
-                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                if (row.group.hasOwnProperty('is_referenced_unit')) {
+                    if (row.group.is_referenced_unit === 1) {
+                        return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
                     } else {
                         return ``;
                     }
@@ -299,19 +299,19 @@ $(document).ready(function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
         if (data_referenced === 'undefined'){
             $('#check-referenced-unit').prop('disabled', false);
+            $('#label-referenced-unit').text('');
         }
         else{
             $('#ratio-unit').prop('disabled', false);
-            $('#label-referenced-unit').text(`* `+ data_referenced)
+            $('#check-referenced-unit').prop('disabled', true);
+            $('#label-referenced-unit').text(`* `+ data_referenced);
             $('#label-referenced-unit').prop('hidden', false);
-            $('#ratio-unit').prop('disabled', false);
-
         }
     })
 
     $('#check-referenced-unit').on('change', function (){
         if(this.checked){
-            $('#label-referenced-unit').text(`* `+ $('#name-unit').val())
+            $('#label-referenced-unit').text(`* `+ $('#name-unit').val());
             $('#label-referenced-unit').prop('hidden', false);
             $('#ratio-unit').val('1');
         }

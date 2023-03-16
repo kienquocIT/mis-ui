@@ -157,15 +157,16 @@ $(document).ready(function () {
             }
         }, {
             'data': 'group', render: (data, type, row, meta) => {
-                return `<span>` + row.group + `</span>`
+                return `<span>` + row.group.title + `</span>`
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('is_referenced_unit') && typeof row.is_referenced_unit === 'boolean') {
-                    if (row.is_referenced_unit) {
+
+                if (row.hasOwnProperty('is_referenced_unit')) {
+                    if (row.is_referenced_unit === 1) {
                         return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
                     } else {
-                        return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
+                        return ``;
                     }
                 }
                 return '';
@@ -261,7 +262,6 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                     config_unit_measure['data'] = resp.data.unit_of_measure;
-                    console.log(data)
                 }
                 initDataTable(config_unit_measure, '#datatable-unit-measure-list');
             }

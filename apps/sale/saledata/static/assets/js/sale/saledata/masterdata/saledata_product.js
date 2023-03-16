@@ -282,8 +282,9 @@ $(document).ready(function () {
                     data.unit_of_measure_group.map(function (item) {
                         if (item.id === id) {
                             ele.append(`<option selected value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
+                        } else {
+                            ele.append(`<option value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
                         }
-                        ele.append(`<option value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
                     })
                 }
             }
@@ -430,7 +431,7 @@ $(document).ready(function () {
     // load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
         $('#modal-detail-unit-measure .inp-can-edit').tooltip();
-        $('#form-edit-unit-measure').attr('data-url', $('#form-edit-unit-measure').attr('data-url').replace(0, $(this).attr('data-id')) )
+        $('#form-edit-unit-measure').attr('data-url', $('#form-edit-unit-measure').attr('data-url').replace(0, $(this).attr('data-id')))
         $.fn.callAjax($(this).attr('data-url'), 'GET')
             .then(
                 (resp) => {
@@ -472,7 +473,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
         let data_url = frm.dataUrl;
-        if($('#check-edit-unit').prop('checked') === true){
+        if ($('#check-edit-unit').prop('checked') === true) {
             frm_data['is_referenced_unit'] = 'on';
         }
         frm_data['group'] = $('#select-box-edit-uom-group').val();

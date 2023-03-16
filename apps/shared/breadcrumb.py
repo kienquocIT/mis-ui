@@ -62,6 +62,23 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow list'), 'WorkflowList')
     WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')
 
+    # Contact, Account
+    CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact list'), 'ContactList')
+    CONTACT_CREATE_PAGE = BreadcrumbChildren(_('Contact create'), 'ContactCreate')
+    CONTACT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
+    ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
+
+    # Product
+    PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product list'), 'ProductList')
+    PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
+
+    # Master Data
+    CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
+    ACCOUNT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Account'), 'AccountMasterDataList')
+    PRODUCT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Product'), 'ProductMasterDataList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -171,3 +188,29 @@ class BreadcrumbView:
     ]
 
     WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_CREATE_PAGE]
+
+    CONTACT_LIST_PAGE = [
+        BreadcrumbItem.CONTACT_LIST_PAGE
+    ]
+    CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
+    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
+
+    ACCOUNT_LIST_PAGE = [
+        BreadcrumbItem.ACCOUNT_LIST_PAGE
+    ]
+    ACCOUNT_CREATE_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_CREATE_PAGE]
+
+    PRODUCT_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_LIST_PAGE
+    ]
+    PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
+
+    CONTACT_MASTER_DATA_LIST_PAGE = [
+        BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
+    ]
+    ACCOUNT_MASTER_DATA_LIST_PAGE = [
+        BreadcrumbItem.ACCOUNT_MASTER_DATA_LIST_PAGE
+    ]
+    PRODUCT_MASTER_DATA_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_MASTER_DATA_LIST_PAGE
+    ]

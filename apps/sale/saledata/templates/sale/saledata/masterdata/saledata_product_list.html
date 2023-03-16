@@ -89,7 +89,7 @@
             <!-- Section product category-->
             <div class="lookup-data" id="section-product-category" style="display: none">
                 <table id="datatable-product-category-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "ProductCategoryAPI" %}"
+                       data-url="{% url "ProductCategoryListAPI" %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -184,7 +184,7 @@
     <!-- Modal Create Product, Expense -->
     <form id="form-create-product-and-expense" data-method="POST" data-lookup="section-product-type"
           data-url-product-type="{% url "ProductTypeListAPI" %} "
-          data-url-product-category="{% url "ProductCategoryAPI" %} "
+          data-url-product-category="{% url "ProductCategoryListAPI" %} "
           data-url-expense-type="{% url "ExpenseTypeListAPI" %} ">
         {% csrf_token %}
         <div class="modal fade" id="modal-product-and-expense" tabindex="-1" role="dialog"
@@ -247,7 +247,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="gridCheck" name="is_referenced_unit">
+                                    <input class="form-check-input mt-1" type="checkbox" id="gridCheck" name="is_referenced_unit" disabled>
                                     <label class="form-check-label" for="gridCheck">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>

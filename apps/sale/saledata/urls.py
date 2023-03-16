@@ -6,7 +6,8 @@ from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI,
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, \
     AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI, \
-    ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI
+    ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI, ProductList, \
+    ProductCreate
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -47,12 +48,14 @@ urlpatterns = [
 ] + [
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
-    path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(),name='ProductCategoryAPI'),
+    path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(),name='ProductCategoryListAPI'),
     path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
     path('masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'),
     path(
         'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
         name='UnitOfMeasureGroupListAPI'
     ),
-
+] + [
+    path('products', ProductList.as_view(), name='ProductList'),
+    path('product/create', ProductCreate.as_view(), name='ProductCreate'),
 ]

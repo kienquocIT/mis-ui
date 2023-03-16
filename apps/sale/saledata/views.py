@@ -11,7 +11,7 @@ class ContactMasterDataList(View):
     @mask_view(
         auth_require=True,
         template='sale/saledata/masterdata/saledata_contact_list.html',
-        breadcrumb='CONTACT_LIST_PAGE',
+        breadcrumb='CONTACT_MASTER_DATA_LIST_PAGE',
         menu_active='menu_contact_list',
     )
     def get(self, request, *args, **kwargs):
@@ -162,7 +162,7 @@ class AccountMasterDataList(View):
     @mask_view(
         auth_require=True,
         template='sale/saledata/masterdata/saledata_account_list.html',
-        breadcrumb='ACCOUNT_LOOKUP_DATA_LIST_PAGE',
+        breadcrumb='ACCOUNT_MASTER_DATA_LIST_PAGE',
         menu_active='menu_contact_list',
     )
     def get(self, request, *args, **kwargs):
@@ -526,7 +526,7 @@ class ProductMasterDataList(View):
     @mask_view(
         auth_require=True,
         template='sale/saledata/masterdata/saledata_product_list.html',
-        breadcrumb='',
+        breadcrumb='PRODUCT_MASTER_DATA_LIST_PAGE',
         menu_active='menu_account_list',
     )
     def get(self, request, *args, **kwargs):
@@ -696,3 +696,30 @@ class UnitOfMeasureGroupListAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+# Product
+class ProductList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/product/product_list.html',
+        breadcrumb='PRODUCT_LIST_PAGE',
+        menu_active='menu_account_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ProductCreate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/product/product_create.html',
+        breadcrumb='PRODUCT_CREATE_PAGE',
+        menu_active='menu_account_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

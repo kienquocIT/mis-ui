@@ -272,6 +272,7 @@ $(document).ready(function () {
 
     function loadSelectBoxUnitMeasureGroup() {
         let ele = $('#select-box-unit-measure-group');
+        ele.html('');
         ele.append(`<option></option>`)
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -374,7 +375,6 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
         let data_url = frm.dataUrl;
-        // frm_data['is_referenced_unit'] = 1;
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {

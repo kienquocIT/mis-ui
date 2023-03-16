@@ -1,12 +1,13 @@
 from django.urls import path
-from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI, \
-    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList, \
-    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList, \
-    ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI, \
-    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, \
-    AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
-    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI, \
-    ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI
+from apps.sale.saledata.views import (
+    ContactMasterDataList, SalutationCreateAPI,
+    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList,
+    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,
+    ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
+    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
+    AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI,
+    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
+)
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -44,15 +45,4 @@ urlpatterns = [
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
     path('getaccountname/api', GetAccountNameAPI.as_view(), name='GetAccountNameAPI'),
-] + [
-    path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
-    path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
-    path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(),name='ProductCategoryAPI'),
-    path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
-    path('masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'),
-    path(
-        'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
-        name='UnitOfMeasureGroupListAPI'
-    ),
-
 ]

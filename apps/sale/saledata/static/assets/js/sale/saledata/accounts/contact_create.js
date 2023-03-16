@@ -134,7 +134,7 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($('#form-create-contact'));
-        frm.dataForm['additional_infor'] = {
+        frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
             'linkedln': $('#linkedln_id').val(),
@@ -143,7 +143,7 @@ $(document).ready(function () {
             'tags': $('#tag_id').val(),
         };
 
-        frm.dataForm['address_infor'] = {
+        frm.dataForm['address_information'] = {
             'work_address': $('#work_address_id').val(),
             'home_address': $('#home_address_id').val(),
         };

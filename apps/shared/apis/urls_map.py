@@ -86,7 +86,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')
     CONTACT_DETAIL = StringUrl('saledata/contact')
-    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contact/not-map-account')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contacts-not-map-account')
 
     # masterdata/lookup/contact
     SALUTATION_LIST = StringUrl('saledata/salutations')
@@ -103,7 +103,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account')
-    ACCOUNTNAME_LIST = StringUrl('saledata/accounts/map-employee')
+    ACCOUNTNAME_LIST = StringUrl('saledata/accounts-map-employees')
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')

@@ -162,9 +162,9 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
 
-                if (row.hasOwnProperty('is_referenced_unit')) {
-                    if (row.is_referenced_unit === 1) {
-                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                if (row.group.hasOwnProperty('is_referenced_unit')) {
+                    if (row.group.is_referenced_unit === 1) {
+                        return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
                     } else {
                         return ``;
                     }

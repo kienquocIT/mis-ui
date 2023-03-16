@@ -287,13 +287,6 @@ class JSPlumbsHandle {
                 let key = "";
                 let connect = connection;
                 if (connect.source.dataset.drag && connect.target.dataset.drag) {
-                    // Check Approved and Update "before"/"after" status
-                    // let check = checkApprovedNodeWhenConnectNode(data_node, connect, before_data);
-                    // if (check === false) {
-                    //     instance.deleteConnection(connect.connection);
-                    //     return false
-                    // }
-
                     end_result['node_in'] = parseInt(connect.source.dataset.drag);
                     end_result['node_out'] = parseInt(connect.target.dataset.drag);
                     key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
@@ -320,9 +313,6 @@ class JSPlumbsHandle {
                 let elm_focus = $('#node-associate');
                 let current_data = elm_focus.val();
                 if (connect.source.dataset.drag && connect.target.dataset.drag) {
-                    // Update "before"/"after" status
-                    // checkApprovedNodeWhenConnectNode(data_node, connect, current_data, true);
-
                     key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
                     if (current_data && key) {
                         current_data = JSON.parse(current_data)
@@ -350,147 +340,3 @@ class JSPlumbsHandle {
         extendDropSpace()
     }
 }
-
-
-// check condition with Approved Node when have connection
-function checkApprovedNodeWhenConnectNode(data_node, connect, current_data, is_disconnect = false) {
-    let source = connect.source.dataset.drag;
-    let data_source = data_node[parseInt(source)];
-    let target = connect.target.dataset.drag;
-    let data_target = data_node[parseInt(target)];
-    if (source && target) {
-        if (data_node.hasOwnProperty(parseInt(source)) && data_node.hasOwnProperty(parseInt(target))) {
-            // update node associate check when target is Approved Node
-            if (data_node[parseInt(target)].code_node_system === "approved") {
-                if (is_disconnect === false) {
-                    data_source['check_approved'] = 'before';
-                    recursiveUpdateBeforeApprovedWhenConnect(source, data_node, current_data);
-                } else {
-                    data_source['check_approved'] = '';
-                    recursiveUpdateBeforeApprovedWhenDisConnect(source, data_node, current_data);
-                }
-
-            } else {
-                // update node associate check when source is Approved Node
-                if (data_node[parseInt(source)].code_node_system === "approved") {
-                    if (is_disconnect === false) {
-                        data_target['check_approved'] = 'after';
-                    } else {
-                        data_target['check_approved'] = '';
-                    }
-                    recursiveUpdateAfterApprovedWhenConnect(target, data_node, current_data);
-                } else {
-                    if (data_node[parseInt(source)].check_approved) {
-                        if (data_node[parseInt(target)].check_approved) {
-                            if (is_disconnect === false) {
-                                // Check Approved
-                                if (data_node[parseInt(target)].check_approved !== data_node[parseInt(source)].check_approved) {
-                                    alertErrorCondition();
-                                    return false
-                                }
-                            }
-                        } else {
-                            if (is_disconnect === false) {
-                                data_node[parseInt(target)]['check_approved'] = data_node[parseInt(source)].check_approved
-                            } else {
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true
-}
-
-
-function recursiveUpdateBeforeApprovedWhenConnect(source, data_node, current_data) {
-    if (current_data) {
-        let current_data_json = JSON.parse(current_data);
-        for (let key in current_data_json) {
-            if (parseInt(source) === current_data_json[key].node_out) {
-                data_node[current_data_json[key].node_in]['check_approved'] = 'before';
-                recursiveUpdateBeforeApprovedWhenConnect(String(current_data_json[key].node_in), data_node, current_data)
-            }
-        }
-    }
-    return true
-}
-
-
-function recursiveUpdateBeforeApprovedWhenDisConnect(source, data_node, current_data) {
-    if (current_data) {
-        let current_data_json = JSON.parse(current_data);
-        for (let key in current_data_json) {
-            if (parseInt(source) === current_data_json[key].node_out) {
-                let check = checkIfConnectToApproved(current_data_json[key].node_in, current_data_json, data_node);
-                if (check === false) {
-                    data_node[current_data_json[key].node_in]['check_approved'] = '';
-                }
-                recursiveUpdateBeforeApprovedWhenDisConnect(String(current_data_json[key].node_in), data_node, current_data)
-            }
-        }
-    }
-    return true
-}
-
-
-function checkIfConnectToApproved(node_check, current_data_json, data_node) {
-    for (let key_item in current_data_json) {
-        if (node_check === current_data_json[key_item].node_in) {
-            if (data_node[current_data_json[key_item].node_in].check_approved) {
-                return true
-            }
-        }
-    }
-    return false
-}
-
-
-
-function recursiveUpdateAfterApprovedWhenConnect(target, data_node, current_data) {
-    if (current_data) {
-        let current_data_json = JSON.parse(current_data);
-        for (let key in current_data_json) {
-            if (parseInt(target) === current_data_json[key].node_in) {
-                data_node[current_data_json[key].node_out]['check_approved'] = 'after';
-                recursiveUpdateAfterApprovedWhenConnect(String(current_data_json[key].node_out), data_node, current_data)
-            }
-        }
-    }
-}
-
-
-// Popup Modal Error Association
-let tabAssociation = $('#tab_next_node');
-
-
-function alertErrorCondition() {
-    let modelError = document.getElementById('modal-association-error');
-    let body = modelError.querySelector('.modal-body');
-    body.innerHTML = ``;
-    body.innerHTML = `<div class="avatar avatar-icon avatar-soft-danger mb-3"><span
-                        class="initial-wrap rounded-8"
-                        ><i class="ri-close-circle-fill"></i></span>
-                        </div>
-                        <div>
-                            <h4 class="text-danger">Oops! Set Association Failed</h4>
-                            <p class=" mt-2">Can't connect node before Approved with node after Approved.</p>
-                        </div>`
-    modelError.classList.add("show");
-    modelError.style.display = "block";
-    modelError.setAttribute('aria-modal', "true");
-    modelError.setAttribute('role', "dialog");
-    modelError.removeAttribute('aria-hidden');
-}
-
-
-tabAssociation.on('click', '#close-modal-association-error', function (e) {
-    let modelError = document.getElementById('modal-association-error');
-    modelError.classList.remove("show");
-    modelError.style.display = "none";
-    modelError.removeAttribute('aria-modal');
-    modelError.removeAttribute('role');
-    modelError.setAttribute('aria-hidden', "true");
-});

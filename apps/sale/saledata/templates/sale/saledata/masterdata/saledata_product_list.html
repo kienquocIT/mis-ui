@@ -247,8 +247,8 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="gridCheck" name="is_referenced_unit" disabled>
-                                    <label class="form-check-label" for="gridCheck">
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit" disabled>
+                                    <label class="form-check-label" for="check-referenced-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
                                 </div>
@@ -259,7 +259,7 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Name" %}</label>
                                     <input class="form-control" type="text" name="title"
-                                           placeholder="Input name">
+                                           placeholder="Input name" id="name-unit">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -268,12 +268,12 @@
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}</label>
                                             <input class="form-control" type="text" name="ratio"
-                                                   placeholder="Input ratio">
+                                                   placeholder="Input ratio" id="ratio-unit" disabled>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group mt-5">
-                                            <label class="form-label mt-1">* Reference Unit</label>
+                                            <label class="form-label mt-1" id="label-referenced-unit" hidden>* Reference Unit</label>
                                         </div>
                                     </div>
                                 </div>

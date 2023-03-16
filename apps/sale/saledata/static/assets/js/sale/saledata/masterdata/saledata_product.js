@@ -148,7 +148,7 @@ $(document).ready(function () {
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 return `<a href="#">
-                    <span><b>`+ row.code +`</b></span>
+                    <span><b>` + row.code + `</b></span>
                 </a>`
             }
         }, {
@@ -279,7 +279,7 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     data.unit_of_measure_group.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        ele.append(`<option value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
                     })
                 }
             }
@@ -293,6 +293,33 @@ $(document).ready(function () {
     loadUnitOfMeasureGroup();
     loadSelectBoxUnitMeasureGroup();
     loadUnitOfMeasure();
+
+    // change select box unit measure group
+    $('#select-box-unit-measure-group').on('change', function () {
+        let data_referenced = $(this).find('option:selected').attr('data-referenced');
+        if (data_referenced === 'undefined'){
+            $('#check-referenced-unit').prop('disabled', false);
+        }
+        else{
+            $('#ratio-unit').prop('disabled', false);
+            $('#label-referenced-unit').text(`* `+ data_referenced)
+            $('#label-referenced-unit').prop('hidden', false);
+            $('#ratio-unit').prop('disabled', false);
+
+        }
+    })
+
+    $('#check-referenced-unit').on('change', function (){
+        if(this.checked){
+            $('#label-referenced-unit').text(`* `+ $('#name-unit').val())
+            $('#label-referenced-unit').prop('hidden', false);
+            $('#ratio-unit').val('1');
+        }
+        else{
+            $('#label-referenced-unit').prop('hidden', true);
+            $('#ratio-unit').prop('disabled', true);
+        }
+    })
 
     // submit form product and expense
     let form_create = $('#form-create-product-and-expense');
@@ -340,6 +367,7 @@ $(document).ready(function () {
         )
     })
 
+    // commit form create unit measure group
     let frm_unit_measure_group = $('#form-create-unit-measure-group');
     frm_unit_measure_group.submit(function (event) {
         event.preventDefault();
@@ -368,6 +396,7 @@ $(document).ready(function () {
         )
     })
 
+    // commit form unit measure
     let frm_unit_measure = $('#form-create-unit-measure');
     frm_unit_measure.submit(function (event) {
         event.preventDefault();
@@ -381,7 +410,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: "Tạo mới"}, 'success')
-                        $('#modal-unit-measure-group').hide();
+                        $('#modal-unit-measure').hide();
                     }
                 },
                 (errs) => {

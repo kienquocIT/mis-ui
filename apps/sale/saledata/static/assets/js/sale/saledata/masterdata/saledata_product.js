@@ -318,6 +318,7 @@ $(document).ready(function () {
         else{
             $('#label-referenced-unit').prop('hidden', true);
             $('#ratio-unit').prop('disabled', true);
+            $('#ratio-unit').val('');
         }
     })
 

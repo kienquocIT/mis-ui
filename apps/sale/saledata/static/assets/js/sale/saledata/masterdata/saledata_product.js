@@ -533,8 +533,8 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
-                        $('#modal-unit-measure').hide();
+                        $.fn.notifyPopup({description: "Cập nhập."}, 'success')
+                        $('#modal-detail-unit-measure').hide();
                     }
                 },
                 (errs) => {
@@ -547,7 +547,6 @@ $(document).ready(function () {
             }
         )
     })
-
 })
 
 

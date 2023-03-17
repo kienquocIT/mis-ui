@@ -474,15 +474,22 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(data)
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                             $('#inp-code-uom').val(data.unit_of_measure.code);
                             $('#inp-edit-name-unit').val(data.unit_of_measure.title);
-                            $('#inp-rounding').val(data.unit_of_measure.rounding);
+                            $('#inp-rounding-edit').val(data.unit_of_measure.rounding);
                             $('#inp-ratio-unit').val(data.unit_of_measure.ratio);
                             $('#label-edit-referenced-unit').text(`* ` + data.unit_of_measure.group.referenced_unit_title);
                             loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group.id);
                             if (data.unit_of_measure.group.is_referenced_unit === 1) {
                                 $('#check-edit-unit').prop('checked', true);
+                                $('#check-edit-unit').prop('hidden', false);
+                                $('#check-edit-unit-label').prop('hidden', false);
+                            }
+                            else {
+                                $('#check-edit-unit').prop('hidden', true);
+                                $('#check-edit-unit-label').prop('hidden', true);
                             }
                         }
                     }
@@ -493,14 +500,23 @@ $(document).ready(function () {
     })
 
 
-    $('#modal-detail-unit-measure .inp-can-edit').on('click', function () {
-        if ($(this).is('input')) {
-            $(this).removeAttr('readonly');
-        } else if ($(this).is('div')) {
-            $(this).find('select').removeAttr('disabled');
-            $(this).find('input').removeAttr('disabled');
-        }
-    })
+    // $('#modal-detail-unit-measure .inp-can-edit').on('click', function () {
+    //     if ($(this).is('input')) {
+    //         $(this).removeAttr('readonly');
+    //     } else if ($(this).is('div')) {
+    //         $(this).find('select').removeAttr('disabled');
+    //         $(this).find('input').removeAttr('disabled');
+    //     }
+    // })
+
+    $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
+        $(this).removeAttr("readonly");
+        $(this).find('select').prop("disabled", false);
+    });
+    $('#modal-detail-unit-measure .inp-can-edit').mouseleave(function() {
+        $(this).prop("readonly", true);
+        $(this).find('select').prop("disabled", true);
+    });
 
     //submit form edit uom
     let frm_edit_uom = $('#form-edit-unit-measure')

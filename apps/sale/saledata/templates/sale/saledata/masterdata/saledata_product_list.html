@@ -350,7 +350,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Unit Of Measure Deatail" %}</h5>
+                        <h5 class="modal-title">{% trans "Unit Of Measure Detail" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -365,9 +365,9 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-check mt-5 inp-can-edit" data-toggle="tooltip" title="Click to edit">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit" name="is_referenced_unit" disabled>
-                                    <label class="form-check-label">
+                                <div class="form-check mt-5">
+                                    <input class="form-check-input mt-1 inp-can-edit" type="checkbox" id="check-edit-unit" name="is_referenced_unit">
+                                    <label id="check-edit-unit-label">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
                                 </div>
@@ -377,8 +377,8 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Name" %}</label>
-                                    <input class="form-control inp-can-edit" type="text" name="title"
-                                           placeholder="Input name" id="inp-edit-name-unit" readonly data-toggle="tooltip" title="Click to edit">
+                                    <input class="form-control inp-can-edit" type="text" name="title" readonly
+                                           placeholder="Input name" id="inp-edit-name-unit">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -386,8 +386,8 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}</label>
-                                            <input class="form-control inp-can-edit" type="text" name="ratio"
-                                                   placeholder="Input ratio" id="inp-ratio-unit" readonly data-toggle="tooltip" title="Click to edit">
+                                            <input class="form-control inp-can-edit" type="text" name="ratio" readonly
+                                                   placeholder="Input ratio" id="inp-ratio-unit">
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -399,17 +399,20 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
-                                <div class="form-group inp-can-edit" data-toggle="tooltip" title="Click to edit">
+                            <div class="col-6 inp-can-edit">
+                                <div class="form-group">
                                     <label class="form-label">{% trans "Select Group" %}</label>
-                                    <select id="select-box-edit-uom-group" class="form-select" data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group" disabled></select>
+                                    <select id="select-box-edit-uom-group" class="form-select"
+                                            data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
+                                            name="group" disabled>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
-                                    <input class="form-control inp-can-edit" type="text" name="rounding"
-                                           placeholder="Input rounding" id="inp-rounding" readonly data-toggle="tooltip" title="Click to edit">
+                                    <input class="form-control inp-can-edit" type="text" name="rounding" readonly
+                                           placeholder="Input rounding" id="inp-rounding-edit">
                                 </div>
                             </div>
                         </div>

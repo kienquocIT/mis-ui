@@ -361,7 +361,7 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Code" %}</label>
                                     <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
-                                    style="border: None; font-weight: bold">
+                                    style="border: None">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -400,12 +400,16 @@
                         </div>
                         <div class="row">
                             <div class="col-6 inp-can-edit">
-                                <div class="form-group">
+                                <div class="form-group" id="select-group-div">
                                     <label class="form-label">{% trans "Select Group" %}</label>
+                                    <input id="group-edit-id" hidden>
                                     <select id="select-box-edit-uom-group" class="form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             name="group" disabled>
                                     </select>
+                                    <input class="form-control" type="text" name="group" readonly
+                                           style="border: None"
+                                           id="inp-edit-uom-group" hidden>
                                 </div>
                             </div>
                             <div class="col-3">

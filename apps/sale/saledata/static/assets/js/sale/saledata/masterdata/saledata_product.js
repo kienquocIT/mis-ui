@@ -455,13 +455,13 @@ $(document).ready(function () {
 
 // load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
-        $('#modal-detail-unit-measure .inp-can-edit').tooltip();
         pk_update_uom = $(this).attr('data-id')
         $.fn.callAjax($(this).attr('data-url'), 'GET')
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(data)
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                             $('#inp-code-uom').val(data.unit_of_measure.code);
                             $('#inp-edit-name-unit').val(data.unit_of_measure.title);
@@ -471,10 +471,19 @@ $(document).ready(function () {
                             loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group.id);
                             if (data.unit_of_measure.group.is_referenced_unit === 1) {
                                 $('#check-edit-unit').prop('checked', true);
-                                $('div .inp-can-edit').attr('data-bs-original-title', 'Click to edit');
+                                $('#group-edit-id').val(data.unit_of_measure.group.id);
+                                $('#select-box-edit-uom-group').prop('hidden', true);
+                                $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
+                                $('#inp-edit-uom-group').prop('hidden', false);
+                                $('#check-edit-unit').prop('disabled', true);
                             }
                             else {
                                 $('#check-edit-unit').prop('checked', false);
+                                $('#group-edit-id').val('')
+                                $('#select-box-edit-uom-group').prop('hidden', false);
+                                $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
+                                $('#inp-edit-uom-group').prop('hidden', true);
+                                $('#check-edit-unit').prop('disabled', false);
                             }
                         }
                     }
@@ -510,14 +519,29 @@ $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
     });
 // change select UoM Group in modal detail
     $('#select-box-edit-uom-group').on('change', function () {
+        if ($(this).find('option:selected').val() === $('#group-edit-id').val()) {
+            $('#check-edit-unit').prop('checked', true);
+        }
+        else {
+            $('#check-edit-unit').prop('checked', false);
+        }
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
-        $('#check-edit-unit').prop('checked', false);
-        if (data_referenced === 'undefined') {
+        if (data_referenced) {
+            if (data_referenced === 'undefined') {
+                $('#label-edit-referenced-unit').text('')
+                $('#check-edit-unit').prop('checked', true);
+                $('#check-edit-unit').prop('disabled', true);
+            } else {
+                $('#ratio-unit').prop('disabled', true);
+                $('#label-edit-referenced-unit').text(`* ` + data_referenced)
+                $('#check-edit-unit').prop('checked', false);
+                $('#check-edit-unit').prop('disabled', false);
+            }
+        }
+        else {
             $('#label-edit-referenced-unit').text('')
-            $('div .inp-can-edit').attr('data-bs-original-title', 'Click to edit');
-        } else {
-            $('#ratio-unit').prop('disabled', true);
-            $('#label-edit-referenced-unit').text(data_referenced)
+            $('#check-edit-unit').prop('checked', false);
+            $('#check-edit-unit').prop('disabled', true);
         }
     })
 

@@ -325,14 +325,28 @@ $(document).ready(function () {
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
-        if (data_referenced === 'undefined') {
-            $('#check-referenced-unit').prop('disabled', false);
-            $('#label-referenced-unit').text('');
-        } else {
+        if (data_referenced) {
+            $('#inp-code').prop('disabled', false);
+            $('#name-unit').prop('disabled', false);
+            $('#inp-rounding').prop('disabled', false);
             $('#ratio-unit').prop('disabled', false);
+            if (data_referenced === 'undefined') {
+                $('#check-referenced-unit').prop('disabled', false);
+                $('#label-referenced-unit').text('');
+            } else {
+                $('#ratio-unit').prop('disabled', false);
+                $('#check-referenced-unit').prop('disabled', true);
+                $('#label-referenced-unit').text(`* ` + data_referenced);
+                $('#label-referenced-unit').prop('hidden', false);
+            }
+        }
+        else {
             $('#check-referenced-unit').prop('disabled', true);
-            $('#label-referenced-unit').text(`* ` + data_referenced);
-            $('#label-referenced-unit').prop('hidden', false);
+            $('#inp-code').prop('disabled', true);
+            $('#name-unit').prop('disabled', true);
+            $('#inp-rounding').prop('disabled', true);
+            $('#ratio-unit').prop('disabled', true);
+            $('#label-referenced-unit').text('');
         }
     })
 

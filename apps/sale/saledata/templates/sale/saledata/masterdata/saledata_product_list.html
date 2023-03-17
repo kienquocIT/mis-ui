@@ -242,7 +242,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Code" %}</label>
-                                    <input id="inp-code" class="form-control" type="text" name="code"
+                                    <input id="inp-code" class="form-control" type="text" name="code" disabled
                                            placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
@@ -259,7 +259,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Name" %}</label>
-                                    <input class="form-control" type="text" name="title"
+                                    <input class="form-control" type="text" name="title" disabled
                                            placeholder="Input name" id="name-unit">
                                 </div>
                             </div>
@@ -290,8 +290,8 @@
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
-                                    <input class="form-control" type="text" name="rounding"
-                                           placeholder="Input rounding">
+                                    <input class="form-control" type="text" name="rounding" id="inp-rounding"
+                                           placeholder="Input rounding" disabled>
                                 </div>
                             </div>
                         </div>

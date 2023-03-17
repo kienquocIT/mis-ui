@@ -77,6 +77,13 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
 
 class User(AuthUser):
+    tenant_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
+    company_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
+    space_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
+    employee_current_data = models.JSONField(
+        default=dict, help_text='{"id": "", "first_name": "", "last_name": "", "email": "", "phone": ""}'
+    )
+    companies_data = models.JSONField(default=list, help_text='[{...company detail...},]')
     is_admin_tenant = models.BooleanField(default=False)
 
     class Meta:
@@ -112,6 +119,11 @@ class User(AuthUser):
                 user.language = api_result.get('language', settings.LANGUAGE_CODE)
                 user.avatar = api_result.get('avatar', None)
                 user.is_admin_tenant = api_result.get('is_admin_tenant', False)
+                user.tenant_current_data = api_result.get('tenant_current', {})
+                user.company_current_data = api_result.get('company_current', {})
+                user.space_current_data = api_result.get('space_current', {})
+                user.employee_current_data = api_result.get('employee_current', {})
+                user.companies_data = api_result.get('companies', [])
                 user.save()
             except User.DoesNotExist:
                 user = User.objects.create(

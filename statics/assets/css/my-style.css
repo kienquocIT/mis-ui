@@ -126,3 +126,13 @@ div.inline { float:left; margin-right: 10px;}
 [type="search"] {
     outline: none;
 }
+
+/* show - hidden code company */
+#span-code-company {
+    font-size: 0.9em;
+    margin-left: 1em;
+    display: none;
+}
+.hk-menu:hover #span-code-company {
+    display: inline-block !important;
+}

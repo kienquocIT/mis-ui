@@ -119,13 +119,16 @@ $(document).ready(function () {
             }
         },]
     }
+
+    let groupColumn = 3;
     let config_unit_measure = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
         columnDefs: [{
             "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
+        },
+        { visible: false, targets: groupColumn }
+        ],
         language: {
             search: "",
             searchPlaceholder: "Search",
@@ -136,7 +139,27 @@ $(document).ready(function () {
                 previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
             }
         },
-        drawCallback: function () {
+        order: [[groupColumn, 'asc']],
+        drawCallback: function (settings) {
+            let api = this.api();
+            let rows = api.rows({ page: 'current' }).nodes();
+            let last = null;
+            api
+                .column(groupColumn, { page: 'current' })
+                .data()
+                .each(function (group, i) {
+                    if (last !== group.title) {
+                        $(rows)
+                            .eq(i)
+                            .before(
+                                '<tr class="group">' +
+                                '<td><span class="badge badge-outline badge-soft-primary w-100">' + group.title + '</span></td>' +
+                                '</tr>'
+                            );
+                        last = group.title;
+                    }
+                });
+
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
             feather.replace();
         },
@@ -179,7 +202,7 @@ $(document).ready(function () {
                 let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                 return bt3;
             }
-        },]
+        },],
     }
 
     function initDataTable(config, id_table) {

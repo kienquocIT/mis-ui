@@ -562,7 +562,6 @@ $(document).ready(function () {
         )
     })
 
-
     let url_detail_product_expense
     $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
         $('#modal-detail-product-and-expense h5').text('Edit Product Type');

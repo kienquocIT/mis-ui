@@ -127,7 +127,7 @@ $(document).ready(function () {
         columnDefs: [{
             "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
         },
-        { visible: false, targets: groupColumn }
+            {visible: false, targets: groupColumn}
         ],
         language: {
             search: "",
@@ -142,10 +142,10 @@ $(document).ready(function () {
         order: [[groupColumn, 'asc']],
         drawCallback: function (settings) {
             let api = this.api();
-            let rows = api.rows({ page: 'current' }).nodes();
+            let rows = api.rows({page: 'current'}).nodes();
             let last = null;
             api
-                .column(groupColumn, { page: 'current' })
+                .column(groupColumn, {page: 'current'})
                 .data()
                 .each(function (group, i) {
                     if (last !== group.title) {
@@ -325,28 +325,15 @@ $(document).ready(function () {
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
-        if (data_referenced) {
-            $('#inp-code').prop('disabled', false);
-            $('#name-unit').prop('disabled', false);
-            $('#inp-rounding').prop('disabled', false);
-            $('#ratio-unit').prop('disabled', false);
-            if (data_referenced === 'undefined') {
-                $('#check-referenced-unit').prop('disabled', false);
-                $('#label-referenced-unit').text('');
-            } else {
-                $('#ratio-unit').prop('disabled', false);
-                $('#check-referenced-unit').prop('disabled', true);
-                $('#label-referenced-unit').text(`* ` + data_referenced);
-                $('#label-referenced-unit').prop('hidden', false);
-            }
-        }
-        else {
-            $('#check-referenced-unit').prop('disabled', true);
-            $('#inp-code').prop('disabled', true);
-            $('#name-unit').prop('disabled', true);
-            $('#inp-rounding').prop('disabled', true);
-            $('#ratio-unit').prop('disabled', true);
+        if (data_referenced === 'undefined') {
+            $('#check-referenced-unit').prop('disabled', false);
             $('#label-referenced-unit').text('');
+        } else {
+            $('#ratio-unit').prop('disabled', false);
+            $('#check-referenced-unit').prop('disabled', true);
+            $('#check-referenced-unit').prop('checked', false);
+            $('#label-referenced-unit').text(`* ` + data_referenced);
+            $('#label-referenced-unit').prop('hidden', false);
         }
     })
 
@@ -362,7 +349,7 @@ $(document).ready(function () {
         }
     })
 
-    // submit form product and expense
+// submit form product and expense
     let form_create = $('#form-create-product-and-expense');
     form_create.submit(function (event) {
         event.preventDefault();
@@ -408,7 +395,7 @@ $(document).ready(function () {
         )
     })
 
-    // commit form create unit measure group
+// commit form create unit measure group
     let frm_unit_measure_group = $('#form-create-unit-measure-group');
     frm_unit_measure_group.submit(function (event) {
         event.preventDefault();
@@ -437,7 +424,7 @@ $(document).ready(function () {
         )
     })
 
-    // commit form unit measure
+// commit form unit measure
     let frm_unit_measure = $('#form-create-unit-measure');
     frm_unit_measure.submit(function (event) {
         event.preventDefault();
@@ -465,7 +452,7 @@ $(document).ready(function () {
         )
     })
 
-    // load detail uom
+// load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
         $('#modal-detail-unit-measure .inp-can-edit').tooltip();
         $('#form-edit-unit-measure').attr('data-url', $('#form-edit-unit-measure').attr('data-url').replace(0, $(this).attr('data-id')))
@@ -483,6 +470,7 @@ $(document).ready(function () {
                             loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group.id);
                             if (data.unit_of_measure.group.is_referenced_unit === 1) {
                                 $('#check-edit-unit').prop('checked', true);
+                                $('div .inp-can-edit').attr('data-bs-original-title', 'Click to edit');
                             }
                         }
                     }
@@ -498,11 +486,46 @@ $(document).ready(function () {
             $(this).removeAttr('readonly');
         } else if ($(this).is('div')) {
             $(this).find('select').removeAttr('disabled');
-            $(this).find('input').removeAttr('disabled');
+            if ($(this).find('input').is(':checked')) {
+                $(this).find('input').removeAttr('disabled');
+            }
+            if ($('#select-box-edit-uom-group').find('option:selected').attr('data-referenced') === 'undefined') {
+                $(this).find('input').removeAttr('disabled');
+            }
         }
     })
 
-    //submit form edit uom
+
+// change select UoM Group in modal detail
+    $('#select-box-edit-uom-group').on('change', function () {
+        let data_referenced = $(this).find('option:selected').attr('data-referenced');
+        $('#check-edit-unit').prop('checked', false);
+        if (data_referenced === 'undefined') {
+            $('#label-edit-referenced-unit').text('')
+            $('div .inp-can-edit').attr('data-bs-original-title', 'Click to edit');
+        } else {
+            $('#ratio-unit').prop('disabled', true);
+            $('#label-edit-referenced-unit').text(data_referenced)
+        }
+    })
+
+    $('#inp-edit-name-unit').on('input', function () {
+        if ($('#select-box-edit-uom-group').find('option:selected').attr('data-referenced') === 'undefined') {
+            if ($('#check-edit-unit').is(':checked')) {
+                let inputValue = $(this).val();
+                $('#label-edit-referenced-unit').text(inputValue);
+            }
+        }
+    })
+
+    $('#check-edit-unit').on('click', function () {
+        if (this.checked) {
+            $('#label-edit-referenced-unit').text($('#inp-edit-name-unit').val());
+            $('#inp-ratio-unit').val('1');
+        }
+    })
+
+//submit form edit uom
     let frm_edit_uom = $('#form-edit-unit-measure')
     frm_edit_uom.submit(function (event) {
         event.preventDefault();
@@ -536,15 +559,5 @@ $(document).ready(function () {
 
 })
 
-
-// $('.btn-save-product-and-expense').on('click', function () {
-//     let frm = $('#form-create-product-and-expense');
-//     let data_lookup = frm.attr('data-look');
-//     if ((data_lookup) === 'product-type'){
-//         let table = $('#datatable-product-type-list');
-//     }
-//     table.append(`<tr><td><span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select"><label class="form-check-label"></label></span></td><td><span><b>123</b></span></td><td><span><b></b></span></td><td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td></tr>`);
-//     feather.replace();
-// })
 
 

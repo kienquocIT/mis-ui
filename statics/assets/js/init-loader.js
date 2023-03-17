@@ -65,5 +65,14 @@ $(document).ready(function () {
         if (frm_id) {
             $('#' + frm_id).submit();
         }
-    })
+    });
+
+
+    $.fn.switch_company = function (current_company_id){
+        let company_id_selected = $("input[name='switch_current_company']:checked").val();
+        alert(company_id_selected);
+        if (company_id_selected !== current_company_id){
+
+        }
+    }
 })

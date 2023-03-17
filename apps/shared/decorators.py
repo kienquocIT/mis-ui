@@ -16,6 +16,7 @@ from .caches import CacheController, CacheKeyCollect
 
 class ArgumentDecorator:
     """argument decorator"""
+
     def __init__(self, login_require, auth_require, **kwargs):
         self.login_require = login_require
         self.auth_require = auth_require
@@ -92,7 +93,12 @@ class ArgumentDecorator:
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,
                 'space_selected': space_selected,
-                'space_list': space_list
+                'space_list': space_list,
+                'tenant_current_data': user.tenant_current_data,
+                'company_current_data': user.company_current_data,
+                'space_current_data': user.space_current_data,
+                'employee_current_data': user.employee_current_data,
+                'companies_data': user.companies_data,
             }
             CacheController.set(c_key, data)
             CacheController().append_by_all(CacheKeyCollect.SPACES, c_key)
@@ -199,10 +205,12 @@ def mask_view(**parent_kwargs):
                                 status=status.HTTP_400_BAD_REQUEST
                             )
                         case _:
-                            return Response({
-                                'data': data,
-                                'status': http_status
-                            }, status=http_status)
+                            return Response(
+                                {
+                                    'data': data,
+                                    'status': http_status
+                                }, status=http_status
+                            )
                 elif cls_check.template_path:
                     if request.user and not isinstance(request.user, AnonymousUser):
                         match http_status:

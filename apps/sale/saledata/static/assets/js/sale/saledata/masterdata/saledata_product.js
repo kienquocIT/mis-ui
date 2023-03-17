@@ -5,6 +5,7 @@ $(document).ready(function () {
     let ele_expense_type = $('#section-expense-type').html()
     let ele_unit_of_measure = $('#section-unit-measure').html()
     let ele_unit_of_measure_group = $('#section-unit-measure-group').html()
+    let pk_update_uom = 0
 
     //Switch view table
     $("#tab-select-table a.product-and-expense").on("click", function () {
@@ -455,7 +456,7 @@ $(document).ready(function () {
 // load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
         $('#modal-detail-unit-measure .inp-can-edit').tooltip();
-        $('#form-edit-unit-measure').attr('data-url', $('#form-edit-unit-measure').attr('data-url').replace(0, $(this).attr('data-id')))
+        pk_update_uom = $(this).attr('data-id')
         $.fn.callAjax($(this).attr('data-url'), 'GET')
             .then(
                 (resp) => {
@@ -543,17 +544,17 @@ $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
-        let data_url = frm.dataUrl;
+        let data_url = frm.dataUrl.replace('0', pk_update_uom);
         if ($('#check-edit-unit').prop('checked') === true) {
             frm_data['is_referenced_unit'] = 'on';
         }
-        frm_data['group'] = $('#select-box-edit-uom-group').val();
+        frm_data['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Cập nhập."}, 'success')
+                        $.fn.notifyPopup({description: "Cập nhật"}, 'success')
                         $('#modal-detail-unit-measure').hide();
                     }
                 },

@@ -474,7 +474,6 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.log(data)
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                             $('#inp-code-uom').val(data.unit_of_measure.code);
                             $('#inp-edit-name-unit').val(data.unit_of_measure.title);
@@ -488,8 +487,7 @@ $(document).ready(function () {
                                 $('#check-edit-unit-label').prop('hidden', false);
                             }
                             else {
-                                $('#check-edit-unit').prop('hidden', true);
-                                $('#check-edit-unit-label').prop('hidden', true);
+                                $('#check-edit-unit').prop('checked', false);
                             }
                         }
                     }

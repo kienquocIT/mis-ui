@@ -566,6 +566,36 @@ class ProductTypeListAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class ProductTypeDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL + pk).get()
+        if resp.state:
+            return {'product_type': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'product_type': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class ProductCategoryListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -599,6 +629,36 @@ class ProductCategoryListAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class ProductCategoryDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL + pk).get()
+        if resp.state:
+            return {'product_category': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'product_category': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class ExpenseTypeListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -625,6 +685,36 @@ class ExpenseTypeListAPI(APIView):
             if isinstance(response.errors, dict):
                 err_msg = ""
                 for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class ExpenseTypeDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).get()
+        if resp.state:
+            return {'expense_type': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'expense_type': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
                     err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
@@ -721,6 +811,36 @@ class UnitOfMeasureGroupListAPI(APIView):
             if isinstance(response.errors, dict):
                 err_msg = ""
                 for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class UnitOfMeasureGroupDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL + pk).get()
+        if resp.state:
+            return {'uom_group': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_401_UNAUTHORIZED
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'uom_group': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
                     err_msg += str(key) + ': ' + str(value)
                     break
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST

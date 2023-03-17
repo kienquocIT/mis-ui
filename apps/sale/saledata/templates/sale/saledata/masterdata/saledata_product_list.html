@@ -67,6 +67,7 @@
             <div class="lookup-data" id="section-product-type" style="display: block">
                 <table id="datatable-product-type-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "ProductTypeListAPI" %}"
+                       data-url-detail="{% url "ProductTypeDetailAPI" pk=0%}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -90,6 +91,7 @@
             <div class="lookup-data" id="section-product-category" style="display: none">
                 <table id="datatable-product-category-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "ProductCategoryListAPI" %}"
+                       data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -113,6 +115,7 @@
             <div class="lookup-data" id="section-expense-type" style="display: none">
                 <table id="datatable-expense-type-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "ExpenseTypeListAPI" %}"
+                       data-url-detail="{% url "ExpenseTypeDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -162,6 +165,7 @@
             <div class="lookup-data" id="section-unit-measure-group" style="display: none">
                 <table id="datatable-unit-measure-group-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                       data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -341,7 +345,7 @@
     </form>
     <!-- End Modal Create Unit Of Measure Group -->
 
-    <!-- Modal Create Unit Of Measure -->
+    <!-- Modal Edit Unit Of Measure -->
     <form id="form-edit-unit-measure" data-method="PUT"
           data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %} "
     >
@@ -429,7 +433,83 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Create Unit Of Measure-->
+    <!-- End Modal Edit Unit Of Measure-->
+
+    <!-- Modal Edit Product, Expense -->
+    <form id="form-edit-product-and-expense" data-method="PUT"
+          data-url-product-type="{% url "ProductTypeDetailAPI" pk=0 %} "
+          data-url-product-category="{% url "ProductCategoryDetailAPI" pk=0 %} "
+          data-url-expense-type="{% url "ExpenseTypeDetailAPI" pk=0 %}">
+        {% csrf_token %}
+        <div class="modal fade" id="modal-detail-product-and-expense" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Product Type" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name" id="inp-edit-name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <textarea class="form-control" type="text" name="description" id="inp-edit-description"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary btn-edit-product-and-expense">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- End Modal Edit Product, Expense-->
+
+    <!-- Modal Edit Unit Of Measure Group -->
+    <form id="form-edit-unit-measure-group" data-method="PUT"
+          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %} ">
+        {% csrf_token %}
+        <div class="modal fade" id="modal-detail-unit-measure-group" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Edit Unit Of Measure Group" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title" id="inp-edit-name-uom-group"
+                                       placeholder="Input name">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- End Modal Edit Unit Of Measure Group -->
 
 {% endblock %}
 {% block jsFooter %}

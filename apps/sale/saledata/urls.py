@@ -7,7 +7,8 @@ from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI,
     AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI, \
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI, ProductList, \
-    ProductCreate, UnitOfMeasureDetailAPI
+    ProductCreate, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI, \
+    UnitOfMeasureGroupDetailAPI
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -48,12 +49,18 @@ urlpatterns = [
 ] + [
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
+    path('masterdata/product-type/api<str:pk>', ProductTypeDetailAPI.as_view(), name='ProductTypeDetailAPI'),
     path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(),name='ProductCategoryListAPI'),
+    path('masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),name='ProductCategoryDetailAPI'),
     path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
+    path('masterdata/expense-type/api/<str:pk>', ExpenseTypeDetailAPI.as_view(), name='ExpenseTypeDetailAPI'),
     path('masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'),
     path(
         'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
         name='UnitOfMeasureGroupListAPI'
+    ),path(
+        'masterdata/unit-of-measure-group/api/<str:pk>', UnitOfMeasureGroupDetailAPI.as_view(),
+        name='UnitOfMeasureGroupDetailAPI'
     ),
     path('masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(), name='UnitOfMeasureDetailAPI')
 ] + [

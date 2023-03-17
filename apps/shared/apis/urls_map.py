@@ -107,8 +107,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
+    PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/')
     PRODUCT_CATEGORY_LIST = StringUrl('saledata/product-categories')
+    PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/')
     EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
+    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/')
     UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
+    UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/')
     UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
     UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/')

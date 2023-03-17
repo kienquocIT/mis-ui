@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    let data_url_detail_uom = $('#datatable-unit-measure-list').attr('data-url-detail')
     let ele_product_type = $('#section-product-type').html()
     let ele_product_category = $('#section-product-category').html()
     let ele_expense_type = $('#section-expense-type').html()
     let ele_unit_of_measure = $('#section-unit-measure').html()
     let ele_unit_of_measure_group = $('#section-unit-measure-group').html()
-    let pk_update_uom = 0
+    let pk_update_uom
+    let pk_update_product_expense
 
     //Switch view table
     $("#tab-select-table a.product-and-expense").on("click", function () {
@@ -67,7 +67,10 @@ $(document).ready(function () {
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
+                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+            data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
+                    <span><b>` + row.title + `</b></span>
+                </a>`
             }
         }, {
             'data': 'description', render: (data, type, row, meta) => {
@@ -110,7 +113,10 @@ $(document).ready(function () {
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
+                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+            data-bs-target="#modal-detail-unit-measure-group" data-id="` + row.id + `">
+                    <span><b>` + row.title + `</b></span>
+                </a>`
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
@@ -172,7 +178,7 @@ $(document).ready(function () {
             }
         }, {
             'data': 'code', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" data-url="` + data_url_detail_uom.replace(0, row.id) + `" href="#" data-bs-toggle="modal"
+                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
             data-bs-target="#modal-detail-unit-measure" data-id="` + row.id + `">
                     <span><b>` + row.code + `</b></span>
                 </a>`
@@ -456,7 +462,8 @@ $(document).ready(function () {
 // load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
         pk_update_uom = $(this).attr('data-id')
-        $.fn.callAjax($(this).attr('data-url'), 'GET')
+        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
+        $.fn.callAjax(url_detail, 'GET')
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -476,8 +483,7 @@ $(document).ready(function () {
                                 $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
                                 $('#inp-edit-uom-group').prop('hidden', false);
                                 $('#check-edit-unit').prop('disabled', true);
-                            }
-                            else {
+                            } else {
                                 $('#check-edit-unit').prop('checked', false);
                                 $('#group-edit-id').val('')
                                 $('#select-box-edit-uom-group').prop('hidden', false);
@@ -493,30 +499,16 @@ $(document).ready(function () {
             )
     })
 
-
-$('#modal-detail-unit-measure .inp-can-edit').on('click', function () {
-        if ($(this).is('input')) {
-            $(this).removeAttr('readonly');
-        } else if ($(this).is('div')) {
-            $(this).find('select').removeAttr('disabled');
-            if ($(this).find('input').is(':checked')) {
-                $(this).find('input').removeAttr('disabled');
-            }
-            if ($('#select-box-edit-uom-group').find('option:selected').attr('data-referenced') === 'undefined') {
-                $(this).find('input').removeAttr('disabled');
-            }
-        }
-    })
-
-
-$('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
+// mouse enter to edit
+    $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function () {
         $(this).removeAttr("readonly");
         $(this).find('select').prop("disabled", false);
     });
-    $('#modal-detail-unit-measure .inp-can-edit').mouseleave(function() {
+    $('#modal-detail-unit-measure .inp-can-edit').mouseleave(function () {
         $(this).prop("readonly", true);
         $(this).find('select').prop("disabled", true);
     });
+
 // change select UoM Group in modal detail
     $('#select-box-edit-uom-group').on('change', function () {
         if ($(this).find('option:selected').val() === $('#group-edit-id').val()) {
@@ -545,6 +537,7 @@ $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
         }
     })
 
+// oninput Input Name Modal edit UoM
     $('#inp-edit-name-unit').on('input', function () {
         if ($('#select-box-edit-uom-group').find('option:selected').attr('data-referenced') === 'undefined') {
             if ($('#check-edit-unit').is(':checked')) {
@@ -554,6 +547,7 @@ $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
         }
     })
 
+// checkbox in Modal edit UOM
     $('#check-edit-unit').on('click', function () {
         if (this.checked) {
             $('#label-edit-referenced-unit').text($('#inp-edit-name-unit').val());
@@ -591,6 +585,83 @@ $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function() {
                 loadUnitOfMeasure();
             }
         )
+    })
+
+// load detail Product Type
+    let url_detail_product_expense
+    $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
+        $('#modal-detail-product-and-expense h5').text('Edit Product Type');
+        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
+        $.fn.callAjax(url_detail, 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type')) {
+                            $('#inp-edit-name').val(data.product_type.title);
+                            $('#inp-edit-description').val(data.product_type.description);
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+    })
+
+    // load Product Category
+    $(document).on('click', '#datatable-product-category-list .btn-detail', function () {
+        $('#modal-detail-product-and-expense h5').text('Edit Product Category')
+        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
+        $.fn.callAjax(url_detail, 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category')) {
+                            $('#inp-edit-name').val(data.product_category.title);
+                            $('#inp-edit-description').val(data.product_category.description);
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+    })
+
+    $(document).on('click', '#datatable-expense-type-list .btn-detail', function () {
+        $('#modal-detail-product-and-expense h5').text('Edit Expense Type');
+        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
+        $.fn.callAjax(url_detail, 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_type')) {
+                            $('#inp-edit-name').val(data.expense_type.title);
+                            $('#inp-edit-description').val(data.expense_type.description);
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+    })
+
+    $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
+        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
+        $.fn.callAjax(url_detail, 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                            $('#inp-edit-name-uom-group').val(data.uom_group.title);
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
     })
 })
 

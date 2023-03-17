@@ -700,7 +700,7 @@ class ExpenseTypeDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).get()
         if resp.state:
-            return {'expense_detail': resp.result}, status.HTTP_200_OK
+            return {'expense_type': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_401_UNAUTHORIZED
 
     @mask_view(
@@ -710,7 +710,7 @@ class ExpenseTypeDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).put(request.data)
         if resp.state:
-            return {'expense_detail': resp.result}, status.HTTP_200_OK
+            return {'expense_type': resp.result}, status.HTTP_200_OK
         if resp.errors:
             if isinstance(resp.errors, dict):
                 err_msg = ""

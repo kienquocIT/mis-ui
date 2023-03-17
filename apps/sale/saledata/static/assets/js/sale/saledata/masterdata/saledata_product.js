@@ -562,6 +562,7 @@ $(document).ready(function () {
         )
     })
 
+// load detail Product Type
     let url_detail_product_expense
     $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
         $('#modal-detail-product-and-expense h5').text('Edit Product Type');
@@ -582,6 +583,7 @@ $(document).ready(function () {
             )
     })
 
+    // load Product Category
     $(document).on('click', '#datatable-product-category-list .btn-detail', function () {
         $('#modal-detail-product-and-expense h5').text('Edit Product Category')
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))

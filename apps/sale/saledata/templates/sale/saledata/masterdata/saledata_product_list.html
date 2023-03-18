@@ -229,8 +229,8 @@
 
     <!-- Modal Create Unit Of Measure -->
     <form id="form-create-unit-measure" data-method="POST"
-          data-url="{% url "UnitOfMeasureListAPI" %} "
-    >
+          data-url="{% url "UnitOfMeasureListAPI" %}">
+        {% csrf_token %}
         <div class="modal fade" id="modal-unit-measure" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -294,7 +294,7 @@
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
-                                    <input class="form-control" type="number" name="rounding" id="inp-rounding" value="0"
+                                    <input class="form-control" type="number" name="rounding" id="inp-rounding"
                                            placeholder="Input rounding" min="0" readonly>
                                 </div>
                             </div>
@@ -354,8 +354,8 @@
 
     <!-- Modal Edit Unit Of Measure -->
     <form id="form-edit-unit-measure" data-method="PUT"
-          data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %} "
-    >
+          data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}">
+        {% csrf_token %}
         <div class="modal fade" id="modal-detail-unit-measure" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

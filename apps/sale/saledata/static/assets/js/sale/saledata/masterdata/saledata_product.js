@@ -348,7 +348,9 @@ $(document).ready(function () {
                 $('#notify-area-label').text('');
                 $('#notify-area').prop('hidden', true);
             } else {
+                $('#ratio-unit').val('');
                 $('#ratio-unit').prop('readonly', false);
+                $('#inp-rounding').val('');
                 $('#inp-rounding').prop('readonly', false);
                 $('#label-referenced-unit').text(`* ` + data_referenced);
                 $('#label-referenced-unit').prop('hidden', false);

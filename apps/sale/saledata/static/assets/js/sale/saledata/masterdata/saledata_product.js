@@ -333,14 +333,18 @@ $(document).ready(function () {
     $('#select-box-unit-measure-group').on('change', function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
         let group_name = $(this).find('option:selected').attr('group-name');
+        let name = $('#name-unit').val()
         if (data_referenced) {
             if (data_referenced === 'undefined') {
-                $('#ratio-unit').prop('readonly', false);
+                $('#ratio-unit').val(1);
+                $('#ratio-unit').prop('readonly', true);
                 $('#inp-rounding').prop('readonly', false);
-                $('#label-referenced-unit').text('');
-                $('#label-referenced-unit').prop('hidden', true);
-                $('#check-referenced-unit').prop('checked', false);
-                $('#check-referenced-unit').prop('disabled', false);
+                if (name) {
+                    $('#label-referenced-unit').text('* ' + name);
+                    $('#label-referenced-unit').prop('hidden', false);
+                }
+                $('#check-referenced-unit').prop('checked', true);
+                $('#check-referenced-unit').prop('disabled', true);
                 $('#notify-area-label').text('');
                 $('#notify-area').prop('hidden', true);
             } else {
@@ -365,6 +369,17 @@ $(document).ready(function () {
             $('#check-referenced-unit').prop('disabled', true);
             $('#notify-area-label').text('');
             $('#notify-area').prop('hidden', true);
+        }
+    })
+
+    $('#name-unit').on('change', function () {
+        if ($(this).val()) {
+            $('#label-referenced-unit').text('* ' + $(this).val());
+            $('#label-referenced-unit').prop('hidden', false);
+        }
+        else {
+            $('#label-referenced-unit').text('');
+            $('#label-referenced-unit').prop('hidden', true);
         }
     })
 

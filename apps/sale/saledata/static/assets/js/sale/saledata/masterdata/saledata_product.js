@@ -334,15 +334,23 @@ $(document).ready(function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
         let group_name = $(this).find('option:selected').attr('group-name');
         let name = $('#name-unit').val()
+        $('#inp-rounding').val('0');
         if (data_referenced) {
             if (data_referenced === 'undefined') {
                 $('#ratio-unit').val(1);
                 $('#ratio-unit').prop('readonly', true);
+                $('#ratio-area').prop('hidden', true);
                 $('#inp-rounding').prop('readonly', false);
+
                 if (name) {
                     $('#label-referenced-unit').text('* ' + name);
                     $('#label-referenced-unit').prop('hidden', false);
                 }
+                else {
+                    $('#label-referenced-unit').text('');
+                    $('#label-referenced-unit').prop('hidden', true);
+                }
+
                 $('#check-referenced-unit').prop('checked', true);
                 $('#check-referenced-unit').prop('disabled', true);
                 $('#notify-area-label').text('');
@@ -350,7 +358,8 @@ $(document).ready(function () {
             } else {
                 $('#ratio-unit').val('');
                 $('#ratio-unit').prop('readonly', false);
-                $('#inp-rounding').val('');
+                $('#ratio-area').prop('hidden', false);
+
                 $('#inp-rounding').prop('readonly', false);
                 $('#label-referenced-unit').text(`* ` + data_referenced);
                 $('#label-referenced-unit').prop('hidden', false);
@@ -363,7 +372,8 @@ $(document).ready(function () {
         else {
             $('#ratio-unit').val('');
             $('#ratio-unit').prop('readonly', true);
-            $('#inp-rounding').val('');
+            $('#ratio-area').prop('hidden', false);
+
             $('#inp-rounding').prop('readonly', true);
             $('#label-referenced-unit').text('');
             $('#label-referenced-unit').prop('hidden', true);
@@ -516,10 +526,19 @@ $(document).ready(function () {
                             $('#inp-ratio-unit').val(data.unit_of_measure.ratio);
                             $('#label-edit-referenced-unit').text(`* ` + data.unit_of_measure.group.referenced_unit_title);
                             loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group.id);
+
+                            $('#inp-edit-name-unit').addClass('inp-can-edit');
+                            $('#inp-rounding-edit').addClass('inp-can-edit');
+
                             if (data.unit_of_measure.group.is_referenced_unit === 1) {
                                 $('#check-edit-unit').prop('checked', true);
                                 $('#group-edit-id').val(data.unit_of_measure.group.id);
                                 $('#select-box-edit-uom-group').prop('hidden', true);
+                                $('#select-group-div').removeClass('inp-can-edit');
+
+                                $('#ratio-edit-area').prop('hidden', true);
+                                $('#inp-ratio-unit').removeClass('inp-can-edit');
+
                                 $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
                                 $('#inp-edit-uom-group').prop('hidden', false);
                                 $('#check-edit-unit').prop('disabled', true);
@@ -527,36 +546,44 @@ $(document).ready(function () {
                                 $('#check-edit-unit').prop('checked', false);
                                 $('#group-edit-id').val('')
                                 $('#select-box-edit-uom-group').prop('hidden', false);
+                                $('#select-group-div').addClass('inp-can-edit');
+
+                                $('#ratio-edit-area').prop('hidden', false);
+                                $('#inp-ratio-unit').addClass('inp-can-edit');
+
                                 $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
                                 $('#inp-edit-uom-group').prop('hidden', true);
                                 $('#check-edit-unit').prop('disabled', false);
                             }
                         }
                     }
+
+                    // mouse enter to edit
+                    $('.inp-can-edit').mouseenter(function () {
+                        $(this).prop("readonly", false);
+                        $(this).find('select').prop("disabled", false);
+                    });
+                    $('.inp-can-edit').mouseleave(function () {
+                        $(this).prop("readonly", true);
+                        $(this).find('select').prop("disabled", true);
+                    });
                 },
                 (errs) => {
                 }
             )
     })
 
-// mouse enter to edit
-    $('#modal-detail-unit-measure .inp-can-edit').mouseenter(function () {
-        $(this).removeAttr("readonly");
-        $(this).find('select').prop("disabled", false);
-    });
-    $('#modal-detail-unit-measure .inp-can-edit').mouseleave(function () {
-        $(this).prop("readonly", true);
-        $(this).find('select').prop("disabled", true);
-    });
-
 // change select UoM Group in modal detail
     $('#select-box-edit-uom-group').on('change', function () {
         if ($(this).find('option:selected').val() === $('#group-edit-id').val()) {
             $('#check-edit-unit').prop('checked', true);
+            $('#inp-ratio-unit').prop('readonly', true);
         }
         else {
             $('#check-edit-unit').prop('checked', false);
+            $('#inp-ratio-unit').prop('readonly', false);
         }
+
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
         if (data_referenced) {
             if (data_referenced === 'undefined') {

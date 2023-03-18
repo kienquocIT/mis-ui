@@ -268,7 +268,7 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row">
+                                <div class="row" id="ratio-area">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}</label>
@@ -294,7 +294,7 @@
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
-                                    <input class="form-control" type="number" name="rounding" id="inp-rounding"
+                                    <input class="form-control" type="number" name="rounding" id="inp-rounding" value="0"
                                            placeholder="Input rounding" min="0" readonly>
                                 </div>
                             </div>
@@ -377,7 +377,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1 inp-can-edit" type="checkbox" id="check-edit-unit" name="is_referenced_unit">
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit" name="is_referenced_unit">
                                     <label id="check-edit-unit-label">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
@@ -388,16 +388,16 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Name" %}</label>
-                                    <input class="form-control inp-can-edit" type="text" name="title" readonly
+                                    <input class="form-control" type="text" name="title" readonly
                                            placeholder="Input name" id="inp-edit-name-unit">
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row">
+                                <div class="row" id="ratio-edit-area">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}</label>
-                                            <input class="form-control inp-can-edit" type="text" name="ratio" readonly
+                                            <input class="form-control" type="text" name="ratio" readonly
                                                    placeholder="Input ratio" id="inp-ratio-unit">
                                         </div>
                                     </div>
@@ -410,7 +410,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 inp-can-edit">
+                            <div class="col-6">
                                 <div class="form-group" id="select-group-div">
                                     <label class="form-label">{% trans "Select Group" %}</label>
                                     <input id="group-edit-id" hidden>
@@ -426,7 +426,7 @@
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
-                                    <input class="form-control inp-can-edit" type="number" name="rounding" readonly
+                                    <input class="form-control" type="number" name="rounding" readonly
                                            placeholder="Input rounding" id="inp-rounding-edit" min="0">
                                 </div>
                             </div>

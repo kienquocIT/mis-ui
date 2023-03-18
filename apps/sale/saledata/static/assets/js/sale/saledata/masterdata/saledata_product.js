@@ -397,7 +397,7 @@ $(document).ready(function () {
         }
     })
 
-// submit form product and expense
+// Submit form product and expense
     let form_create = $('#form-create-product-and-expense');
     form_create.submit(function (event) {
         event.preventDefault();

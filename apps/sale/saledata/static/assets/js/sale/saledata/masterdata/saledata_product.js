@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+
+
     let ele_product_type = $('#section-product-type').html()
     let ele_product_category = $('#section-product-category').html()
     let ele_expense_type = $('#section-expense-type').html()
@@ -384,17 +387,6 @@ $(document).ready(function () {
         }
     })
 
-    $('#name-unit').on('change', function () {
-        if ($(this).val()) {
-            $('#label-referenced-unit').text('* ' + $(this).val());
-            $('#label-referenced-unit').prop('hidden', false);
-        }
-        else {
-            $('#label-referenced-unit').text('');
-            $('#label-referenced-unit').prop('hidden', true);
-        }
-    })
-
     $('#check-referenced-unit').on('change', function () {
         let data_referenced = $('#select-box-unit-measure-group').find('option:selected').attr('data-referenced');
         $('#label-referenced-unit').text(`* ` + data_referenced);
@@ -529,29 +521,28 @@ $(document).ready(function () {
 
                             $('#inp-edit-name-unit').addClass('inp-can-edit');
                             $('#inp-rounding-edit').addClass('inp-can-edit');
+                            $('#group-referenced-unit-name').val(data.unit_of_measure.ratio);
+                            $('#group-id').val(data.unit_of_measure.group.id);
+                            $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
 
                             if (data.unit_of_measure.group.is_referenced_unit === 1) {
                                 $('#check-edit-unit').prop('checked', true);
-                                $('#group-edit-id').val(data.unit_of_measure.group.id);
                                 $('#select-box-edit-uom-group').prop('hidden', true);
                                 $('#select-group-div').removeClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', true);
                                 $('#inp-ratio-unit').removeClass('inp-can-edit');
 
-                                $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
                                 $('#inp-edit-uom-group').prop('hidden', false);
                                 $('#check-edit-unit').prop('disabled', true);
                             } else {
                                 $('#check-edit-unit').prop('checked', false);
-                                $('#group-edit-id').val('')
                                 $('#select-box-edit-uom-group').prop('hidden', false);
                                 $('#select-group-div').addClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', false);
                                 $('#inp-ratio-unit').addClass('inp-can-edit');
 
-                                $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
                                 $('#inp-edit-uom-group').prop('hidden', true);
                                 $('#check-edit-unit').prop('disabled', false);
                             }
@@ -575,26 +566,36 @@ $(document).ready(function () {
 
 // change select UoM Group in modal detail
     $('#select-box-edit-uom-group').on('change', function () {
-        if ($(this).find('option:selected').val() === $('#group-edit-id').val()) {
-            $('#check-edit-unit').prop('checked', true);
-            $('#inp-ratio-unit').prop('readonly', true);
-        }
-        else {
-            $('#check-edit-unit').prop('checked', false);
-            $('#inp-ratio-unit').prop('readonly', false);
+        $('#ratio-edit-area').prop('hidden', false);
+        $('#inp-ratio-unit').val('');
+        if ($(this).find('option:selected').val() === $('#group-id').val()) {
+            $('#inp-ratio-unit').val($('#group-referenced-unit-name').val());
         }
 
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
+
         if (data_referenced) {
             if (data_referenced === 'undefined') {
                 $('#label-edit-referenced-unit').text('')
                 $('#check-edit-unit').prop('checked', true);
                 $('#check-edit-unit').prop('disabled', true);
+                $('#notify-area-edit-label').text('');
+                $('#notify-area-edit').prop('hidden', true);
             } else {
-                $('#ratio-unit').prop('disabled', true);
-                $('#label-edit-referenced-unit').text(`* ` + data_referenced)
-                $('#check-edit-unit').prop('checked', false);
-                $('#check-edit-unit').prop('disabled', false);
+                if ($(this).find('option:selected').val() !== $('#group-id').val()) {
+                    $('#label-edit-referenced-unit').text(`* ` + data_referenced)
+                    $('#check-edit-unit').prop('checked', false);
+                    $('#check-edit-unit').prop('disabled', true);
+                    $('#notify-area-edit-label').text('* Can not set referenced unit from another group.');
+                    $('#notify-area-edit').prop('hidden', false);
+                }
+                else {
+                    $('#label-edit-referenced-unit').text(`* ` + data_referenced)
+                    $('#check-edit-unit').prop('checked', false);
+                    $('#check-edit-unit').prop('disabled', false);
+                    $('#notify-area-edit-label').text('');
+                    $('#notify-area-edit').prop('hidden', true);
+                }
             }
         }
         else {
@@ -617,8 +618,12 @@ $(document).ready(function () {
 // checkbox in Modal edit UOM
     $('#check-edit-unit').on('click', function () {
         if (this.checked) {
-            $('#label-edit-referenced-unit').text($('#inp-edit-name-unit').val());
             $('#inp-ratio-unit').val('1');
+            $('#ratio-edit-area').prop('hidden', true);
+        }
+        else {
+            $('#inp-ratio-unit').val($('#group-referenced-unit-name').val());
+            $('#ratio-edit-area').prop('hidden', false);
         }
     })
 

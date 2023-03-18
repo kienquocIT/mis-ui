@@ -378,7 +378,7 @@
                             <div class="col-6">
                                 <div class="form-check mt-5">
                                     <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit" name="is_referenced_unit">
-                                    <label id="check-edit-unit-label">
+                                    <label class="form-check-label" for="check-edit-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
                                 </div>
@@ -397,6 +397,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}</label>
+                                            <input id="group-referenced-unit-name" disabled hidden>
                                             <input class="form-control" type="text" name="ratio" readonly
                                                    placeholder="Input ratio" id="inp-ratio-unit">
                                         </div>
@@ -413,7 +414,7 @@
                             <div class="col-6">
                                 <div class="form-group" id="select-group-div">
                                     <label class="form-label">{% trans "Select Group" %}</label>
-                                    <input id="group-edit-id" hidden>
+                                    <input id="group-id" disabled hidden>
                                     <select id="select-box-edit-uom-group" class="form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             name="group" disabled>
@@ -428,6 +429,13 @@
                                     <label class="form-label">{% trans "Rounding" %}</label>
                                     <input class="form-control" type="number" name="rounding" readonly
                                            placeholder="Input rounding" id="inp-rounding-edit" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="notify-area-edit" hidden>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label style="color: red; font-style: italic; font-size: small" id="notify-area-edit-label"></label>
                                 </div>
                             </div>
                         </div>

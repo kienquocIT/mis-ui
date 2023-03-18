@@ -252,7 +252,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit">
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit" disabled>
                                     <label class="form-check-label" for="check-referenced-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
@@ -272,7 +272,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}</label>
-                                            <input class="form-control" type="text" name="ratio"
+                                            <input class="form-control" type="text" name="ratio" readonly
                                                    placeholder="Input ratio" id="ratio-unit">
                                         </div>
                                     </div>
@@ -295,7 +295,14 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
                                     <input class="form-control" type="number" name="rounding" id="inp-rounding"
-                                           placeholder="Input rounding">
+                                           placeholder="Input rounding" min="0" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="notify-area" hidden>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label style="color: red; font-style: italic; font-size: small" id="notify-area-label"></label>
                                 </div>
                             </div>
                         </div>
@@ -420,7 +427,7 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}</label>
                                     <input class="form-control inp-can-edit" type="number" name="rounding" readonly
-                                           placeholder="Input rounding" id="inp-rounding-edit">
+                                           placeholder="Input rounding" id="inp-rounding-edit" min="0">
                                 </div>
                             </div>
                         </div>

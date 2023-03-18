@@ -313,7 +313,7 @@ $(document).ready(function () {
                         if (item.id === id) {
                             ele.append(`<option selected value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
                         } else {
-                            ele.append(`<option value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `">` + item.title + `</option>`)
+                            ele.append(`<option value="` + item.id + `" data-referenced="` + item.referenced_unit.title + `" group-name="` + item.title + `">` + item.title + `</option>`)
                         }
                     })
                 }
@@ -332,27 +332,51 @@ $(document).ready(function () {
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
-        if (data_referenced === 'undefined') {
-            $('#check-referenced-unit').prop('disabled', false);
+        let group_name = $(this).find('option:selected').attr('group-name');
+        if (data_referenced) {
+            if (data_referenced === 'undefined') {
+                $('#ratio-unit').prop('readonly', false);
+                $('#inp-rounding').prop('readonly', false);
+                $('#label-referenced-unit').text('');
+                $('#label-referenced-unit').prop('hidden', true);
+                $('#check-referenced-unit').prop('checked', false);
+                $('#check-referenced-unit').prop('disabled', false);
+                $('#notify-area-label').text('');
+                $('#notify-area').prop('hidden', true);
+            } else {
+                $('#ratio-unit').prop('readonly', false);
+                $('#inp-rounding').prop('readonly', false);
+                $('#label-referenced-unit').text(`* ` + data_referenced);
+                $('#label-referenced-unit').prop('hidden', false);
+                $('#check-referenced-unit').prop('checked', false);
+                $('#check-referenced-unit').prop('disabled', true);
+                $('#notify-area-label').text('* Group ' + group_name + ' had referenced unit.');
+                $('#notify-area').prop('hidden', false);
+            }
+        }
+        else {
+            $('#ratio-unit').val('');
+            $('#ratio-unit').prop('readonly', true);
+            $('#inp-rounding').val('');
+            $('#inp-rounding').prop('readonly', true);
             $('#label-referenced-unit').text('');
-        } else {
-            $('#ratio-unit').prop('disabled', false);
-            $('#check-referenced-unit').prop('disabled', true);
+            $('#label-referenced-unit').prop('hidden', true);
             $('#check-referenced-unit').prop('checked', false);
-            $('#label-referenced-unit').text(`* ` + data_referenced);
-            $('#label-referenced-unit').prop('hidden', false);
+            $('#check-referenced-unit').prop('disabled', true);
+            $('#notify-area-label').text('');
+            $('#notify-area').prop('hidden', true);
         }
     })
 
     $('#check-referenced-unit').on('change', function () {
+        let data_referenced = $('#select-box-unit-measure-group').find('option:selected').attr('data-referenced');
+        $('#label-referenced-unit').text(`* ` + data_referenced);
         if (this.checked) {
-            $('#label-referenced-unit').text(`* ` + $('#name-unit').val());
-            $('#label-referenced-unit').prop('hidden', false);
             $('#ratio-unit').val('1');
+            $('#ratio-unit').prop('readonly', true);
         } else {
-            $('#label-referenced-unit').prop('hidden', true);
-            $('#ratio-unit').prop('disabled', true);
             $('#ratio-unit').val('');
+            $('#ratio-unit').prop('readonly', false);
         }
     })
 
@@ -468,7 +492,6 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.log(data)
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                             $('#inp-code-uom').val(data.unit_of_measure.code);
                             $('#inp-edit-name-unit').val(data.unit_of_measure.title);

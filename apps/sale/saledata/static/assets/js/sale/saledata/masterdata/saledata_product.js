@@ -154,6 +154,7 @@ $(document).ready(function () {
             let api = this.api();
             let rows = api.rows({page: 'current'}).nodes();
             let last = null;
+
             api
                 .column(groupColumn, {page: 'current'})
                 .data()
@@ -163,7 +164,7 @@ $(document).ready(function () {
                             .eq(i)
                             .before(
                                 '<tr class="group">' +
-                                '<td><span class="badge badge-outline badge-soft-primary w-100">' + group.title + '</span></td>' +
+                                '<td><span class="badge badge-outline badge-soft-success w-100">' + group.title + '</span></td>' +
                                 '</tr>'
                             );
                         last = group.title;

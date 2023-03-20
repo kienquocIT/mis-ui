@@ -6,7 +6,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIS - {% block title %}Management Information System{% endblock %}</title>
+    {% if base.tenant_current_data %}
+        <title>{{ base.tenant_current_data.code }}- {{ base.tenant_current_data.title }}</title>
+    {% else %}
+        <title>MIS - {% block title %}Management Information System{% endblock %}</title>
+    {% endif %}
     <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
 
     <!-- Favicon -->

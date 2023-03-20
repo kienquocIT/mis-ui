@@ -34,6 +34,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     my_profile = StringUrl('auth/profile')
     ALIVE_CHECK = StringUrl('auth/alive-check')
     refresh_token = StringUrl('auth/token-refresh')
+    SWITCH_COMPANY = StringUrl('auth/switch-company')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')

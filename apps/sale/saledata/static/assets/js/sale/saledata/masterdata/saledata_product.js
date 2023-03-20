@@ -820,6 +820,3 @@ $(document).ready(function () {
         $(this).prop("readonly", true);
     });
 })
-
-
-

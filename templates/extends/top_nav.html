@@ -267,6 +267,10 @@
                                                                     value="{{ item.id }}"
                                                                     checked="checked" type="radio"
                                                             >
+                                                            <b><label
+                                                                class="form-check-label"
+                                                                for="company_switch_id_{{ item.id }}"
+                                                            >{{ item.code }} - {{ item.title }}</label></b>
                                                         {% else %}
                                                             <input
                                                                     id="company_switch_id_{{ item.id }}"
@@ -275,11 +279,11 @@
                                                                     value="{{ item.id }}"
                                                                     type="radio"
                                                             >
-                                                        {% endif %}
-                                                        <label
+                                                            <label
                                                                 class="form-check-label"
                                                                 for="company_switch_id_{{ item.id }}"
                                                         >{{ item.code }} - {{ item.title }}</label>
+                                                        {% endif %}
                                                     </div>
                                                 {% endfor %}
                                             </div>

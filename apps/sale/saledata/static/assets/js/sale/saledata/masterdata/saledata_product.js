@@ -804,7 +804,7 @@ $(document).ready(function () {
         )
     })
 
-    // mouse enter to edit
+    // mouse enter to edit modal product and expense
     $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseenter(function () {
         $(this).prop("readonly", false);
     });
@@ -812,7 +812,7 @@ $(document).ready(function () {
         $(this).prop("readonly", true);
     });
 
-    // mouse enter to edit
+    // mouse enter to edit modal uom group
     $('#modal-detail-unit-measure-group input').mouseenter(function () {
         $(this).prop("readonly", false);
     });

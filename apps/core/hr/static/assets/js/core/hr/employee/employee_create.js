@@ -246,9 +246,9 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
-                    }
+                    // if (errs.data.errors.hasOwnProperty('detail')) {
+                    //     $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    // }
                 }
             )
     });

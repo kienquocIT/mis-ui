@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-11 10:14+0700\n"
+"POT-Creation-Date: 2023-03-17 17:19+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,96 +17,215 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: .\apps\core\account\templates\core\account\user_create.html:42
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:73
+#: .\apps\core\account\templates\core\account\user_create.html:35
+#: .\apps\core\account\templates\core\account\user_detail.html:24
+#: .\apps\core\account\templates\core\account\user_edit.html:37
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:96
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:67
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:98
 msgid "First Name"
 msgstr "Tên"
 
-#: .\apps\core\account\templates\core\account\user_create.html:45
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:77
+#: .\apps\core\account\templates\core\account\user_create.html:40
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:106
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:108
 msgid "Name of Person"
 msgstr "Tên của chủ thể"
 
-#: .\apps\core\account\templates\core\account\user_create.html:50
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:83
+#: .\apps\core\account\templates\core\account\user_create.html:45
+#: .\apps\core\account\templates\core\account\user_detail.html:31
+#: .\apps\core\account\templates\core\account\user_edit.html:44
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:112
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:82
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:114
 msgid "Last Name"
 msgstr "Họ của chủ thể"
 
-#: .\apps\core\account\templates\core\account\user_create.html:53
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:92
+#: .\apps\core\account\templates\core\account\user_create.html:50
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:122
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:124
 msgid "Surname and Middle Names"
 msgstr "Họ và Tên Lót"
 
-#: .\apps\core\account\templates\core\account\user_create.html:58
-#: .\apps\core\account\templates\core\account\user_detail.html:69
+#: .\apps\core\account\templates\core\account\user_create.html:55
+#: .\apps\core\account\templates\core\account\user_detail.html:37
+#: .\apps\core\account\templates\core\account\user_edit.html:50
 #: .\apps\core\account\templates\core\account\user_list.html:51
+#: .\apps\core\hr\templates\core\hr\role\create_role.html:69
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:68
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:561
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:121
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:63
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:108
 msgid "Full Name"
 msgstr "Tên Đầy Đủ"
 
-#: .\apps\core\account\templates\core\account\user_create.html:61
+#: .\apps\core\account\templates\core\account\user_create.html:58
 msgid "Full Name of Person"
 msgstr "Tên Đầy Đủ của chủ thể"
 
 #: .\apps\core\account\templates\core\account\user_create.html:66
-#: .\apps\core\company\templates\core\company\company_list.html:162
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:112
+#: .\apps\core\account\templates\core\account\user_edit.html:59
+#: .\apps\core\company\templates\core\company\company_detail.html:78
+#: .\apps\core\company\templates\core\company\company_list.html:143
+#: .\apps\core\company\templates\core\company\company_update.html:90
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:142
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:111
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:144
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:243
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:498
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:570
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:151
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:88
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:64
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:89
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:139
 msgid "Email"
 msgstr "Email"
 
-#: .\apps\core\account\templates\core\account\user_create.html:73
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:119
+#: .\apps\core\account\templates\core\account\user_create.html:75
 msgid "Contact to email address"
 msgstr "Địa chỉ email liên hệ"
 
-#: .\apps\core\account\templates\core\account\user_create.html:78
-#: .\apps\core\account\templates\core\account\user_detail.html:95
-#: .\apps\core\account\templates\core\account\user_detail.html:152
+#: .\apps\core\account\templates\core\account\user_create.html:80
 msgid "Select Company"
 msgstr "Chọn công ty"
 
-#: .\apps\core\account\templates\core\account\user_create.html:83
+#: .\apps\core\account\templates\core\account\user_create.html:89
 msgid "Select your company"
 msgstr "Chọn công ty của bạn"
 
-#: .\apps\core\account\templates\core\account\user_create.html:90
+#: .\apps\core\account\templates\core\account\user_create.html:94
+#: .\apps\core\account\templates\core\account\user_edit.html:78
+#: .\apps\core\company\templates\core\company\company_detail.html:70
+#: .\apps\core\company\templates\core\company\company_update.html:82
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:158
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:126
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:160
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:578
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:128
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:73
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:115
+msgid "Phone"
+msgstr "Số Điện Thoại"
+
+#: .\apps\core\account\templates\core\account\user_create.html:104
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:169
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:171
+msgid "Contact to phone number"
+msgstr "Số điện thoại liên lạc"
+
+#: .\apps\core\account\templates\core\account\user_create.html:111
 #: .\apps\core\account\templates\core\account\user_list.html:52
 #: .\apps\core\auths\templates\auths\login.html:70
 msgid "User Name"
 msgstr "Tên Đăng Nhập"
 
-#: .\apps\core\account\templates\core\account\user_create.html:92
+#: .\apps\core\account\templates\core\account\user_create.html:115
 msgid "Username to login "
 msgstr "Tên tài khoản để đăng nhập"
 
-#: .\apps\core\account\templates\core\account\user_create.html:96
+#: .\apps\core\account\templates\core\account\user_create.html:122
 msgid "Auto create password"
 msgstr "Tự động tạo mật khẩu"
 
-#: .\apps\core\account\templates\core\account\user_create.html:101
+#: .\apps\core\account\templates\core\account\user_create.html:127
 #: .\apps\core\auths\templates\auths\login.html:82
 msgid "Password"
 msgstr "Mật Khẩu"
 
-#: .\apps\core\account\templates\core\account\user_create.html:104
-#: .\apps\core\account\templates\core\account\user_create.html:112
+#: .\apps\core\account\templates\core\account\user_create.html:132
+#: .\apps\core\account\templates\core\account\user_create.html:142
 msgid "Password to login "
 msgstr "Mật Khẩu để đăng nhập"
 
-#: .\apps\core\account\templates\core\account\user_create.html:109
+#: .\apps\core\account\templates\core\account\user_create.html:137
 msgid "Confirm Password"
 msgstr "Xác Nhận Mật Khẩu"
 
-#: .\apps\core\account\templates\core\account\user_create.html:118
+#: .\apps\core\account\templates\core\account\user_create.html:149
 msgid "require change password when first sign in"
 msgstr "Bắt buộc thay đổi mật khẩu khi lần đầu đăng nhập"
 
-#: .\apps\core\account\templates\core\account\user_list.html:53
-msgid "Plan"
-msgstr "Gói dịch vụ"
+#: .\apps\core\account\templates\core\account\user_detail.html:10
+msgid "Refresh"
+msgstr ""
 
-#: .\apps\core\account\templates\core\account\user_list.html:54
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:47
-#: .\apps\core\hr\templates\core\hr\role\list_role.html:65
+#: .\apps\core\account\templates\core\account\user_detail.html:53
+#: .\apps\core\account\templates\core\account\user_edit.html:65
+#: .\apps\core\tenant\templates\core\tenant\tenant_information.html:38
+#: .\apps\shared\breadcrumb.py:52
+#: .\templates\extends\vertical_nav_main_menu.html:17
+msgid "Company"
+msgstr "Công Ty"
+
+#: .\apps\core\account\templates\core\account\user_detail.html:65
+msgid "Username"
+msgstr "Tên Đăng Nhập"
+
+#: .\apps\core\account\templates\core\account\user_detail.html:80
+#: .\apps\core\company\templates\core\company\company_detail.html:42
+#: .\apps\core\company\templates\core\company\company_list.html:34
+#: .\apps\core\company\templates\core\company\company_list.html:102
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:21
+#: .\apps\core\company\templates\core\company\company_update.html:51
+#: .\apps\core\hr\templates\core\hr\role\create_role.html:68
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:67
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:63
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:86
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:114
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:159
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:63
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:86
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:114
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:159
+msgid "Code"
+msgstr "Mã"
+
+#: .\apps\core\account\templates\core\account\user_detail.html:81
+#: .\apps\core\company\templates\core\company\company_list.html:70
+#: .\apps\core\company\templates\core\company\company_update.html:43
+msgid "Company Name"
+msgstr "Tên Công Ty"
+
+#: .\apps\core\account\templates\core\account\user_detail.html:82
+#: .\apps\core\company\templates\core\company\company_detail.html:50
+#: .\apps\core\company\templates\core\company\company_list.html:37
+#: .\apps\core\company\templates\core\company\company_list.html:131
+#: .\apps\core\company\templates\core\company\company_update.html:62
+msgid "Representative"
+msgstr "Người Đại Diện"
+
+#: .\apps\core\account\templates\core\account\user_detail.html:83
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:42
+msgid "License"
+msgstr "Giấy phép"
+
+#: .\apps\core\account\templates\core\account\user_edit.html:10
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:82
+#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:56
+#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:58
+#: .\apps\core\workflow\templates\core\workflow\extends\modal-exit-node.html:32
+#: .\apps\core\workflow\templates\core\workflow\extends\next-node-associate.html:62
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:21
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:347
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:442
+#: .\templates\extends\top_nav.html:298
+#: .\templates\plugins\condition\condition_component.html:67
+msgid "Save"
+msgstr "Lưu"
+
+#: .\apps\core\account\templates\core\account\user_edit.html:21
+msgid "Reset password"
+msgstr "Đặt lại mật khẩu"
+
+#: .\apps\core\account\templates\core\account\user_list.html:53
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:45
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:53
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:126
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:262
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:55
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:177
 msgid "Actions"
 msgstr "Thao tác"
 
@@ -134,68 +253,85 @@ msgstr "Đăng Nhập"
 msgid "Creat new account to MIS"
 msgstr "Tạo mới tài khoản trên MIS"
 
-#: .\apps\core\company\templates\core\company\company_list.html:10
-msgid "Add new"
-msgstr "Tạo mới"
+#: .\apps\core\base\views.py:65 .\apps\core\workflow\views\config.py:91
+msgid "Failed to load resource"
+msgstr ""
 
-#: .\apps\core\company\templates\core\company\company_list.html:39
-#: .\apps\core\company\templates\core\company\company_list.html:115
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:19
-#: .\apps\core\hr\templates\core\hr\role\update_role.html:49
-msgid "Code"
-msgstr "Mã"
-
-#: .\apps\core\company\templates\core\company\company_list.html:40
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:27
-msgid "Name"
-msgstr "Tên"
-
-#: .\apps\core\company\templates\core\company\company_list.html:41
-msgid "Created Date"
-msgstr "Ngày Tạo"
-
-#: .\apps\core\company\templates\core\company\company_list.html:42
-#: .\apps\core\company\templates\core\company\company_list.html:148
-msgid "Representative"
-msgstr "Người Đại Diện"
-
-#: .\apps\core\company\templates\core\company\company_list.html:43
-msgid "Action"
-msgstr "Thao tác"
-
-#: .\apps\core\company\templates\core\company\company_list.html:61
-msgid "Add Company"
-msgstr "Thêm Công Ty"
-
-#: .\apps\core\company\templates\core\company\company_list.html:79
-msgid "Company Name"
-msgstr "Tên Công Ty"
-
-#: .\apps\core\company\templates\core\company\company_list.html:88
-msgid "Name of new company"
-msgstr "Tên của công ty mới"
-
-#: .\apps\core\company\templates\core\company\company_list.html:94
-msgid "Parent Company"
-msgstr "Là công ty con của"
-
-#: .\apps\core\company\templates\core\company\company_list.html:102
-msgid "No selected"
-msgstr "Chưa chọn"
-
-#: .\apps\core\company\templates\core\company\company_list.html:107
-msgid "The new is subsidiary company or not"
-msgstr "Công ty mới là công ty con hoặc không"
-
-#: .\apps\core\company\templates\core\company\company_list.html:125
-msgid "Code new company"
-msgstr "Mã của công ty mới"
-
-#: .\apps\core\company\templates\core\company\company_list.html:131
+#: .\apps\core\company\templates\core\company\company_detail.html:60
+#: .\apps\core\company\templates\core\company\company_list.html:116
+#: .\apps\core\company\templates\core\company\company_update.html:72
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:354
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:296
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:350
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:293
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:349
 msgid "Address"
 msgstr "Địa Chỉ"
 
-#: .\apps\core\company\templates\core\company\company_list.html:137
+#: .\apps\core\company\templates\core\company\company_list.html:35
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:29
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:320
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:67
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:329
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:494
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:59
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:85
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:59
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:84
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:64
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:87
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:119
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:164
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:64
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:87
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:119
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:164
+msgid "Name"
+msgstr "Tên"
+
+#: .\apps\core\company\templates\core\company\company_list.html:36
+msgid "Created Date"
+msgstr "Ngày Tạo"
+
+#: .\apps\core\company\templates\core\company\company_list.html:38
+#: .\apps\core\workflow\templates\core\workflow\extends\modal-exit-node.html:20
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:374
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:66
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:92
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:65
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:90
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:66
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:89
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:66
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:89
+msgid "Action"
+msgstr "Thao tác"
+
+#: .\apps\core\company\templates\core\company\company_list.html:54
+msgid "Add Company"
+msgstr "Thêm Công Ty"
+
+#: .\apps\core\company\templates\core\company\company_list.html:77
+msgid "Name of new company"
+msgstr "Tên của công ty mới"
+
+#: .\apps\core\company\templates\core\company\company_list.html:83
+msgid "Parent Company"
+msgstr "Là công ty con của"
+
+#: .\apps\core\company\templates\core\company\company_list.html:89
+msgid "No selected"
+msgstr "Chưa chọn"
+
+#: .\apps\core\company\templates\core\company\company_list.html:94
+msgid "The new is subsidiary company or not"
+msgstr "Công ty mới là công ty con hoặc không"
+
+#: .\apps\core\company\templates\core\company\company_list.html:110
+msgid "Code new company"
+msgstr "Mã của công ty mới"
+
+#: .\apps\core\company\templates\core\company\company_list.html:121
 msgid ""
 "No.20, 22 Street, Him Lam Quarter, Binh Hung Ward, Binh Chanh District, HCM "
 "city, VN country"
@@ -203,38 +339,43 @@ msgstr ""
 "Số 20, Đường 22, Khu Dân Cư Him Lam, Phường Bình Hưng, Quận Bình Chánh, "
 "Thành Phố Hồ Chính Minh, Việt Nam"
 
-#: .\apps\core\company\templates\core\company\company_list.html:140
+#: .\apps\core\company\templates\core\company\company_list.html:123
 msgid "Address new company"
 msgstr "Địa chỉ của công ty mới"
 
-#: .\apps\core\company\templates\core\company\company_list.html:156
+#: .\apps\core\company\templates\core\company\company_list.html:137
 msgid "Full name of Representative"
 msgstr "Tên đầy đủ của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:171
+#: .\apps\core\company\templates\core\company\company_list.html:150
 msgid "Email of Representative"
 msgstr "Email của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:177
+#: .\apps\core\company\templates\core\company\company_list.html:156
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:237
 msgid "Phone Number"
 msgstr "Số Điện Thoại"
 
-#: .\apps\core\company\templates\core\company\company_list.html:186
+#: .\apps\core\company\templates\core\company\company_list.html:163
 msgid "Phone number of Representative"
 msgstr "Số điện thoại của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:194
+#: .\apps\core\company\templates\core\company\company_list.html:170
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:246
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:243
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:519
 msgid "Add"
 msgstr "Thêm"
 
-#: .\apps\core\company\templates\core\company\company_list.html:200
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:80
+#: .\apps\core\company\templates\core\company\company_list.html:174
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:84
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:252
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:249
-#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:74
-#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:76
+#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:64
+#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:66
+#: .\apps\core\workflow\templates\core\workflow\extends\modal-exit-node.html:34
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:444
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:521
 msgid "Cancel"
 msgstr "Hủy"
 
@@ -246,115 +387,136 @@ msgstr "Tất cả người dùng và nhân viên"
 msgid "Employee Linked To User"
 msgstr "Nhân viên đã liên kết người dùng"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:43
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:41
+#: .\apps\core\tenant\templates\core\tenant\tenant_information.html:42
 #: .\templates\extends\vertical_nav_main_menu.html:53
 msgid "Employee"
 msgstr "Nhân viên"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:44
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:43
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:54
 #: .\templates\extends\vertical_nav_main_menu.html:27
 msgid "User"
 msgstr "Người Dùng"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:45
-msgid "License"
-msgstr "Giấy phép"
-
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:46
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:44
 msgid "Company Allow Login"
 msgstr "Công Ty Cho Phép Đăng Nhập"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:65
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:69
 msgid "Company Selected"
 msgstr "Công Ty Đã Chọn"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:66
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:70
 msgid "No records"
 msgstr "Không có dữ liệu"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:67
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:71
 msgid "Company Change"
 msgstr "Công Ty Đã Thay Đổi"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_detail.html:78
-#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:66
-#: .\apps\core\hr\templates\core\hr\grouplevel\level_list.html:68
-msgid "Save"
-msgstr "Lưu"
-
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:24
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:26
 msgid "Press row here to open detail page."
 msgstr "Nhấn vào mã ở cột này để di chuyển đến trang chi tiết."
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:28
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:30
 msgid "License Used"
 msgstr "Giấy phép đã sử dụng"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:29
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:31
 msgid "Total User"
 msgstr "Tổng Số Người Dùng"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:30
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:32
 msgid "Power User"
 msgstr "Người Dùng Đa Công Ty"
 
-#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:31
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:33
 msgid "Employee Linked User / Total"
 msgstr "Nhân Viên Đã Liên Kết Người Dùng / Tổng"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:55
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:34
+msgid "Employee Linked User"
+msgstr "Nhân viên đã liên kết người dùng"
+
+#: .\apps\core\company\templates\core\company\company_overview\company_overview_list.html:35
+msgid "Total"
+msgstr "Tổng"
+
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:80
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:82
 msgid "Select User"
 msgstr "Chọn Người Dùng"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:66
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:89
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:91
 msgid "User link to the employee"
 msgstr "Người dùng liên kết với nhân viên"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:100
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:130
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:99
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:132
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:85
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:72
 msgid "Avatar"
 msgstr "Ảnh Đại Diện"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:105
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:135
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:104
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:137
 msgid "Avatar of emloyee"
 msgstr "Ảnh đại diện của nhân viên"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:125
-msgid "Phone"
-msgstr "Số Điện Thoại"
-
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:133
-msgid "Contact to phone number"
-msgstr "Số điện thoại liên lạc"
-
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:138
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:174
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:140
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:176
+#: .\apps\core\hr\templates\core\hr\role\create_role.html:70
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:69
 msgid "Department"
 msgstr "Phòng Ban"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:146
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:188
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:190
 msgid "Department of the employee"
 msgstr "Phòng ban của nhân viên"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:153
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:207
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:157
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:209
 msgid "Date of Birthday"
 msgstr "Ngày Sinh"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:165
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:230
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:169
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:233
 msgid "Date Joined"
 msgstr "Ngày Tham Gia"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:178
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:241
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:181
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:245
 #: .\templates\extends\vertical_nav_main_menu.html:65
 msgid "Role"
 msgstr "Role"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:182
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:245
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:249
 msgid "Choose"
 msgstr "Chọn"
 
-#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:199
+#: .\apps\core\hr\templates\core\hr\employee\employee_create.html:259
+#: .\apps\core\hr\templates\core\hr\employee\employee_update.html:263
 #: .\apps\core\hr\templates\core\hr\grouplevel\level_create.html:289
 msgid "Active the employee after created"
 msgstr "Kích hoạt nhân viên sau khi tạo"
+
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:195
+msgid "Permission"
+msgstr ""
+
+#: .\apps\core\hr\templates\core\hr\employee\employee_detail.html:213
+msgid "Update"
+msgstr ""
 
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:61
 #: .\apps\core\hr\templates\core\hr\group\group_detail.html:50
@@ -435,6 +597,19 @@ msgstr "Mã của Nhóm"
 #: .\apps\core\hr\templates\core\hr\group\group_detail.html:153
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:167
 #: .\apps\core\hr\templates\core\hr\grouplevel\level_create.html:122
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:125
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:214
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:259
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:127
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:174
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:65
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:88
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:124
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:169
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:65
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:88
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:124
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:169
 msgid "Description"
 msgstr "Mô Tả"
 
@@ -462,14 +637,14 @@ msgid "Add Employee"
 msgstr "Thêm nhân viên"
 
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:279
-#: .\apps\core\hr\templates\core\hr\group\group_detail.html:187
+#: .\apps\core\hr\templates\core\hr\group\group_detail.html:186
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:276
 #: .\apps\core\hr\templates\core\hr\grouplevel\level_create.html:172
 msgid "1st Manager System Title"
 msgstr "Tiêu Đề Của Quản lý hệ thống thứ nhất"
 
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:294
-#: .\apps\core\hr\templates\core\hr\group\group_detail.html:202
+#: .\apps\core\hr\templates\core\hr\group\group_detail.html:201
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:291
 #: .\apps\core\hr\templates\core\hr\grouplevel\level_create.html:188
 msgid "2nd Manager System Title"
@@ -500,7 +675,7 @@ msgid "Title of 2nd manager"
 msgstr "Tiêu Đề Của Quản Lý Thứ Hai"
 
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:344
-#: .\apps\core\hr\templates\core\hr\group\group_detail.html:250
+#: .\apps\core\hr\templates\core\hr\group\group_detail.html:249
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:339
 msgid "First Manager Assign To"
 msgstr "Quản Lý Đầu Tiên Chỉ Định Cho"
@@ -513,7 +688,7 @@ msgid "Assign to one employee"
 msgstr "Chỉ định cho một nhân viên"
 
 #: .\apps\core\hr\templates\core\hr\group\group_create.html:363
-#: .\apps\core\hr\templates\core\hr\group\group_detail.html:263
+#: .\apps\core\hr\templates\core\hr\group\group_detail.html:262
 #: .\apps\core\hr\templates\core\hr\group\group_update.html:355
 msgid "Second Manager Assign To"
 msgstr "Quản Lý Thứ Hai Chỉ Định Cho"
@@ -523,11 +698,11 @@ msgstr "Quản Lý Thứ Hai Chỉ Định Cho"
 msgid "Active organization group after created"
 msgstr "Kích hoạt nhóm tổ chức sau khi tạo"
 
-#: .\apps\core\hr\templates\core\hr\group\group_detail.html:220
+#: .\apps\core\hr\templates\core\hr\group\group_detail.html:219
 msgid "Display 1st Manager Title"
 msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
 
-#: .\apps\core\hr\templates\core\hr\group\group_detail.html:234
+#: .\apps\core\hr\templates\core\hr\group\group_detail.html:233
 msgid "Display 2nd Manager Title"
 msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
 
@@ -546,170 +721,961 @@ msgid "Assign To"
 msgstr "Chỉ Định"
 
 #: .\apps\core\hr\templates\core\hr\role\create_role.html:37
-#: .\apps\core\hr\templates\core\hr\role\update_role.html:37
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:38
 msgid "Role name"
 msgstr "Vai Trò"
 
 #: .\apps\core\hr\templates\core\hr\role\create_role.html:44
-#: .\apps\core\hr\templates\core\hr\role\list_role.html:62
-#: .\apps\core\hr\templates\core\hr\role\update_role.html:43
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:51
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:44
 msgid "Abbreviation"
 msgstr ""
 
-#: .\apps\core\hr\templates\core\hr\role\list_role.html:61
+#: .\apps\core\hr\templates\core\hr\role\create_role.html:71
+msgid "Active"
+msgstr "Kích hoạt"
+
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:50
 msgid "Role Name"
 msgstr "Tên Vai Trò"
 
-#: .\apps\core\hr\templates\core\hr\role\list_role.html:63
+#: .\apps\core\hr\templates\core\hr\role\list_role.html:52
 msgid "Holder"
 msgstr ""
 
-#: .\apps\shared\breadcrumb.py:22
+#: .\apps\core\hr\templates\core\hr\role\update_role.html:70
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:52
+msgid "Status"
+msgstr ""
+
+#: .\apps\core\tenant\templates\core\tenant\tenant_information.html:39
+msgid "License used"
+msgstr "Giấy phép đã sử dụng"
+
+#: .\apps\core\tenant\templates\core\tenant\tenant_information.html:40
+msgid "Total user"
+msgstr "Tổng số người dùng"
+
+#: .\apps\core\tenant\templates\core\tenant\tenant_information.html:41
+msgid "Power user"
+msgstr "Người dùng đa công ty"
+
+#: .\apps\core\tenant\templates\core\tenant\tenant_information.html:43
+msgid "Employee connected to user"
+msgstr "Nhân viên đã liên kết người dùng"
+
+#: .\apps\core\workflow\templates\core\workflow\extends\modal-exit-node.html:11
+msgid "Exit node"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\extends\modal-exit-node.html:21
+msgid "Min number of collaborator"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\extends\modal-exit-node.html:22
+msgid "Next node"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\extends\next-node-associate.html:6
+#: .\templates\plugins\condition\condition_component.html:57
+msgid "Next node conditions"
+msgstr "Điều kiện chuyển trạm"
+
+#: .\apps\core\workflow\templates\core\workflow\extends\next-node-associate.html:21
+#: .\templates\plugins\condition\condition_component.html:14
+msgid "Add Condition"
+msgstr "Thêm điều kiện"
+
+#: .\apps\core\workflow\templates\core\workflow\extends\next-node-associate.html:61
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:349
+#: .\templates\extends\top_nav.html:294
+#: .\templates\plugins\condition\condition_component.html:66
+msgid "Close"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:3
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:5
+#: .\apps\shared\breadcrumb.py:63
+msgid "Workflow create"
+msgstr "Tạo quy trình"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:40
+msgid "Workflow name"
+msgstr "Tên quy trình"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:52
+msgid "Function and Zone"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:57
+msgid "Node"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:63
+msgid "Exit/Next node condition"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:73
+msgid "Select Function Applied"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:78
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:338
+msgid "Nothing selected"
+msgstr "Chưa chọn"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:92
+msgid "Define zone"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:98
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:107
+msgid "Add new zone"
+msgstr "Tạo mới"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:100
+msgid "Please select Function Applied first"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:124
+msgid "Zone name"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:142
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:55
+msgid "Collaborators in multi company"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:149
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:157
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:366
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:62
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:70
+msgid "Button rename"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:177
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:90
+msgid "Add new node"
+msgstr "Tạo mới"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:200
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:113
+msgid "Node Name"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:209
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:122
+msgid "Name of Node"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:221
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:136
+msgid "Description of Node"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:258
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:173
+msgid "Node name"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:260
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:175
+msgid "Node Actions"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:261
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:176
+msgid "Collaborators"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:274
+msgid "No content available"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:294
+msgid "Prev"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:295
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:382
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:390
+msgid "Next"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:314
+msgid "Zone information"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:331
+#| msgid "Desciption of Group"
+msgid "Input description of zone"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:336
+msgid "Select property"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:375
+msgid "Default name"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:376
+msgid "Rename"
+msgstr "Đổi tên"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:381
+#: .\apps\shared\msg\workflow.py:8
+msgid "Create"
+msgstr "Tạo"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:385
+msgid "Chuyển"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:389
+msgid "Approved"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:393
+msgid "Duyệt"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:397
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:398
+#: .\apps\shared\msg\workflow.py:10
+msgid "Reject"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:401
+msgid "Từ chối"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:405
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:406
+#: .\apps\shared\msg\workflow.py:11
+msgid "Return"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:409
+msgid "Trả về"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:413
+#: .\apps\shared\msg\workflow.py:12
+msgid "Receive"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:414
+msgid "Retceived"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:417
+msgid "Đã nhận"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:421
+#: .\apps\shared\msg\workflow.py:13
+msgid "To do"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:422
+msgid "Done"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:425
+msgid "Đã làm"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_create.html:436
+msgid "Restore default"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:3
+#: .\apps\shared\breadcrumb.py:62
+msgid "Workflow list"
+msgstr "Danh sách quy trình"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:12
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:14
+msgid "Create Workflow"
+msgstr "Tạo quy trình"
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:20
+#: .\apps\core\workflow\templates\core\workflow\workflow_node.html:23
+msgid "New"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:49
+msgid "Flow name"
+msgstr ""
+
+#: .\apps\core\workflow\templates\core\workflow\workflow_list.html:50
+msgid "Function applied"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:60
+msgid "logo"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:71
+msgid "Company ABC"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:76
+msgid "Account Code"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:79
+msgid "CODE"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:85
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:62
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:90
+msgid "Website"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:86
+msgid "www.xyz.com"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:97
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:63
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:88
+msgid "Account Owner"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:107
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:555
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:157
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:93
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:145
+msgid "Job Title"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:114
+msgid "photo"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:124
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:106
+msgid "Account Type"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:137
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:65
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:91
+msgid "Account Manager"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:152
+msgid "Parent Account"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:167
+msgid "individual"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:174
+msgid "organization"
+msgstr "Tổ Chức"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:182
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:437
+msgid "Tax Code"
+msgstr "Tax Code"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:189
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:61
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:87
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:39
+msgid "Industry"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:202
+msgid "Annual Revenue"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:207
+msgid "1-10 billions"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:208
+msgid "10-20 billions"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:209
+msgid "20-50 billions"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:210
+msgid "50-200 billions"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:211
+msgid "200-1000 billions"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:212
+msgid "> 1000 billions"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:218
+msgid "Total Employees"
+msgstr "Số lượng nhân viên"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:225
+msgid "< 20 people"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:226
+msgid "20-50 people"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:227
+msgid "50-200 people"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:228
+msgid "200-500 people"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:229
+msgid "> 500 people"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:251
+msgid "Shipping Address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:270
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:274
+msgid "Add new shipping address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:284
+msgid "Billing/Invoice Address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:294
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:296
+msgid "Add new billing/invoice address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:308
+#: .\templates\extends\vertical_nav_main_menu.html:220
+#: .\templates\extends\vertical_nav_main_menu.html:254
+msgid "Contact"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:318
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:320
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:484
+msgid "Add Contact"
+msgstr "Thêm liên hệ"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:330
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:495
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:60
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:85
+msgid "Job title"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:331
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:64
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:89
+msgid "Phone number"
+msgstr "Số Điện Thoại"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:345
+msgid "Edit Shipping Address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:361
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:303
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:357
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:300
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:358
+msgid "Province"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:368
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:310
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:364
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:307
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:365
+msgid "District"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:375
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:317
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:371
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:314
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:372
+msgid "Ward"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:385
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:464
+msgid "Make default address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:409
+msgid "Edit Billing/Invoice Address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:417
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:142
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:83
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:129
+msgid "Account Name"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:429
+msgid "Email Address"
+msgstr "Địa Chỉ email"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:445
+msgid "Account Address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:496
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:61
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:86
+msgid "Contact owner"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:497
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:585
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:134
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:78
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:63
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:121
+msgid "Mobile"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:514
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:535
+msgid "Add New Contact"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_create.html:543
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:67
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:49
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:55
+msgid "Contact Owner"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:60
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\account_list.html:86
+msgid "Type"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:60
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:32
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:47
+msgid "Contact Information"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:78
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:57
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:64
+msgid "Biography"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:86
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:73
+msgid "Click here to upload image"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:94
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:68
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:81
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:34
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:106
+msgid "Salutation"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:102
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:90
+msgid "Firstname"
+msgstr "Tên"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:111
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:99
+msgid "Lastname"
+msgstr "Họ"
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:165
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:98
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:151
+msgid "Report To"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:177
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:110
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:165
+msgid "Address Information"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:185
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:116
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:173
+msgid "Work address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:193
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:181
+msgid "Edit Work address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:195
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:219
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:183
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:207
+msgid "Edit"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:209
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:124
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:197
+msgid "Home address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:217
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:205
+msgid "Edit Home address"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:233
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:135
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:221
+msgid "Additional Information"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:238
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:140
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:226
+msgid "Facebook"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:244
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:146
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:233
+msgid "Twitter"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:250
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:152
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:241
+msgid "Linkedln"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:258
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:160
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:250
+msgid "Gmail"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:264
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:166
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:257
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:39
+msgid "Interests"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_create.html:274
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_detail.html:173
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_update.html:267
+msgid "Tag"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:62
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:87
+msgid "Account name"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\accounts\contact_list.html:88
+msgid "Mobie"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:34
+msgid "AccountType"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_account_list.html:151
+msgid "Edit Account Type"
+msgstr ""
+
+#: .\apps\sale\saledata\templates\sale\saledata\masterdata\saledata_contact_list.html:151
+msgid "Edit Salutation"
+msgstr ""
+
+#: .\apps\shared\breadcrumb.py:27
 msgid "Home Page"
 msgstr ""
 
-#: .\apps\shared\breadcrumb.py:24
-msgid "HR"
-msgstr ""
-
-#: .\apps\shared\breadcrumb.py:25 .\apps\shared\breadcrumb.py:26
+#: .\apps\shared\breadcrumb.py:30 .\apps\shared\breadcrumb.py:37
 msgid "Employee List"
 msgstr "Danh Sách Nhân viên"
 
-#: .\apps\shared\breadcrumb.py:27
+#: .\apps\shared\breadcrumb.py:36
+msgid "HR"
+msgstr ""
+
+#: .\apps\shared\breadcrumb.py:38
 msgid "Employee Create"
 msgstr "Tạo Nhân Viên"
 
-#: .\apps\shared\breadcrumb.py:28
+#: .\apps\shared\breadcrumb.py:39
+msgid "Organization Level"
+msgstr "Cấp Bậc Tổ Chức"
+
+#: .\apps\shared\breadcrumb.py:40
+msgid "Organization Group"
+msgstr "Nhóm Tổ Chức"
+
+#: .\apps\shared\breadcrumb.py:41
+msgid "Role List"
+msgstr "Danh Sách Role"
+
+#: .\apps\shared\breadcrumb.py:42
+msgid "Create Role"
+msgstr "Tạo Role"
+
+#: .\apps\shared\breadcrumb.py:45
 #: .\templates\extends\vertical_nav_main_menu.html:40
 msgid "Organization"
 msgstr "Tổ Chức"
 
-#: .\apps\shared\breadcrumb.py:29
-msgid "Organization Level"
-msgstr "Cấp Bậc Tổ Chức"
-
-#: .\apps\shared\breadcrumb.py:30
-msgid "Group Level Create"
-msgstr "Tạo Cấp Nhóm"
-
-#: .\apps\shared\breadcrumb.py:32
+#: .\apps\shared\breadcrumb.py:48
 msgid "User List"
 msgstr "Danh Sách Người Dùng"
 
-#: .\apps\shared\breadcrumb.py:33
+#: .\apps\shared\breadcrumb.py:49
 msgid "User Create"
 msgstr "Tạo Người Dùng"
 
-#: .\apps\shared\breadcrumb.py:35
-msgid "Organization Group"
-msgstr "Nhóm Tổ Chức"
-
-#: .\apps\shared\breadcrumb.py:36
-#: .\templates\extends\vertical_nav_main_menu.html:17
-msgid "Company"
-msgstr "Công Ty"
-
-#: .\apps\shared\breadcrumb.py:37
-#: .\templates\extends\vertical_nav_main_menu.html:184
+#: .\apps\shared\breadcrumb.py:53
+#: .\templates\extends\vertical_nav_main_menu.html:196
 msgid "Company Overview"
 msgstr "Tổng Quan Công Ty"
 
-#: .\apps\shared\breadcrumb.py:38
+#: .\apps\shared\breadcrumb.py:54
 msgid "Detail"
 msgstr "Chi tiết"
 
-#: .\apps\shared\breadcrumb.py:40
-msgid "Role List"
-msgstr "Danh Sách Role"
+#: .\apps\shared\breadcrumb.py:59
+msgid "Component"
+msgstr ""
 
-#: .\apps\shared\breadcrumb.py:41
-msgid "Create Role"
-msgstr "Tạo Role"
-
-#: .\apps\shared\msg\auth.py:5
+#: .\apps\shared\msg\auth.py:7
 msgid "Setup login return exception"
 msgstr "Yêu cầu đăng nhập xử lý thất bại"
 
-#: .\apps\shared\msg\auth.py:6
+#: .\apps\shared\msg\auth.py:8
 msgid "Login successfully"
 msgstr "Đăng nhập thành công"
 
-#: .\apps\shared\msg\auth.py:7
+#: .\apps\shared\msg\auth.py:9
 msgid "tenant_code"
 msgstr "Mã Tenant"
 
-#: .\apps\shared\msg\auth.py:8
+#: .\apps\shared\msg\auth.py:10
 msgid "detail"
 msgstr "Chi tiết"
 
-#: .\apps\shared\msg\auth.py:9
+#: .\apps\shared\msg\auth.py:11
 msgid "The session login was expired."
 msgstr "Phiên đăng nhập đã hết hạn."
 
-#: .\apps\shared\msg\server.py:5
+#: .\apps\shared\msg\auth.py:13
+msgid "Username and password are incorrect."
+msgstr ""
+
+#: .\apps\shared\msg\auth.py:14
+msgid "A user with that username already exists."
+msgstr ""
+
+#: .\apps\shared\msg\auth.py:15
+msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr ""
+
+#: .\apps\shared\msg\client_js.py:7
+msgid "Successfully"
+msgstr "Thành công"
+
+#: .\apps\shared\msg\client_js.py:8
+msgid "Errors"
+msgstr "Lỗi"
+
+#: .\apps\shared\msg\client_js.py:9
+msgid "This field is required"
+msgstr "Trường này là bắt buộc"
+
+#: .\apps\shared\msg\hr.py:7
+msgid "Group level create successfully"
+msgstr "Tạo cấp nhóm thành công"
+
+#: .\apps\shared\msg\hr.py:8
+msgid "Group create successfully"
+msgstr "Tạo nhóm thành công"
+
+#: .\apps\shared\msg\hr.py:9
+msgid "Group update successfully"
+msgstr "Cập nhật nhóm thành công"
+
+#: .\apps\shared\msg\hr.py:10
+msgid "Employee create successfully"
+msgstr "Tạo nhân viên thành công"
+
+#: .\apps\shared\msg\hr.py:11
+msgid "Employee update successfully"
+msgstr "Cập nhật thông tin nhân viên thành công"
+
+#: .\apps\shared\msg\server.py:7
 msgid "Server errors"
 msgstr "Lỗi máy chủ"
+
+#: .\apps\shared\msg\workflow.py:7
+msgid "Workflow create successfully"
+msgstr "Tạo quy trình thành công"
+
+#: .\apps\shared\msg\workflow.py:9
+msgid "Approve"
+msgstr "Phê Duyệt"
+
+#: .\apps\shared\msg\workflow.py:14
+msgid "is"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:15
+msgid "is not"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:16
+msgid "is empty"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:17
+msgid "is not empty"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:18
+msgid "contains"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:19
+msgid "does not contains"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:20
+msgid "is before"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:21
+msgid "is after"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:22
+msgid "is on or before"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:23
+msgid "is on or after"
+msgstr ""
+
+#: .\apps\shared\msg\workflow.py:24
+msgid "is within"
+msgstr ""
 
 #: .\templates\extends\top_nav.html:193
 msgid "Notifications"
 msgstr "Thông báo"
 
-#: .\templates\extends\top_nav.html:260
-msgid "Sign Out"
-msgstr "Đăng Xuất"
+#: .\templates\extends\top_nav.html:252
+msgid "Switch Company"
+msgstr "Chuyển đổi công ty"
 
-#: .\templates\extends\top_nav.html:266
-msgid "Profile"
-msgstr "Tiểu Sử"
-
-#: .\templates\extends\top_nav.html:268
+#: .\templates\extends\top_nav.html:323
 msgid "Manage Account"
 msgstr "Quản Lý Tài Khoản"
 
-#: .\templates\extends\top_nav.html:273
-#: .\templates\extends\vertical_nav_main_menu.html:94
+#: .\templates\extends\top_nav.html:350 .\templates\extends\top_nav.html:360
+msgid "Profile"
+msgstr "Hồ Sơ"
+
+#: .\templates\extends\top_nav.html:367
 msgid "Settings"
 msgstr "Cài Đặt"
 
-#: .\templates\extends\top_nav.html:280
+#: .\templates\extends\top_nav.html:373
+msgid "Sign Out"
+msgstr "Đăng Xuất"
+
+#: .\templates\extends\top_nav.html:381
 msgid "Raise a ticket"
 msgstr "Xảy ra một vấn đề"
 
-#: .\templates\extends\top_nav.html:283
+#: .\templates\extends\top_nav.html:387
 msgid "Terms & Conditions"
 msgstr "Điều Khoản và Điều Kiện"
 
-#: .\templates\extends\top_nav.html:284
+#: .\templates\extends\top_nav.html:393
 msgid "Help & Support"
 msgstr "Trợ Giúp và Hỗ Trợ"
 
-#: .\templates\extends\vertical_nav_main_menu.html:80
+#: .\templates\extends\vertical_nav_main_menu.html:77
 msgid "Group"
 msgstr "Nhóm"
 
-#: .\templates\extends\vertical_nav_main_menu.html:116
+#: .\templates\extends\vertical_nav_main_menu.html:128
 msgid "Process Management"
 msgstr "Quản Lý Quy Trình"
 
-#: .\templates\extends\vertical_nav_main_menu.html:129
+#: .\templates\extends\vertical_nav_main_menu.html:141
 msgid "Workflow"
 msgstr "Quy Trình Làm Việc"
 
-#: .\templates\extends\vertical_nav_main_menu.html:141
+#: .\templates\extends\vertical_nav_main_menu.html:153
 msgid "Business Process"
 msgstr "Quy Trình Kinh Doanh"
 
-#: .\templates\extends\vertical_nav_main_menu.html:153
+#: .\templates\extends\vertical_nav_main_menu.html:165
 msgid "Automation"
 msgstr "Tự động"
 
-#: .\templates\extends\vertical_nav_main_menu.html:171
+#: .\templates\extends\vertical_nav_main_menu.html:183
 msgid "Tenant"
 msgstr ""
 
-#~ msgid "Employee Code"
-#~ msgstr "Mã Nhân Viên"
+#: .\templates\extends\vertical_nav_main_menu.html:230
+#: .\templates\extends\vertical_nav_main_menu.html:266
+msgid "Account"
+msgstr "Tài Khoản"
 
-#~ msgid "Select Parent Level"
-#~ msgstr "Chọn Cấp Cha"
+#: .\templates\extends\vertical_nav_main_menu.html:241
+msgid "Master data"
+msgstr ""
+
+#: .\templates\plugins\condition\condition_component.html:3
+msgid "Setup Condition"
+msgstr "Thiết lập điều kiện"
+
+#: .\templates\plugins\condition\extend\action.html:4
+msgid "Remove Item"
+msgstr ""
+
+#: .\templates\plugins\condition\extend\action.html:9
+msgid "Move Down"
+msgstr ""
+
+#: .\templates\plugins\condition\extend\action.html:12
+msgid "Move Up"
+msgstr ""
+
+#: .\templates\plugins\condition\extend\formset.html:11
+msgid "Add more"
+msgstr "Thêm"
+

@@ -1,7 +1,9 @@
 """needed module import"""
 from functools import wraps
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -16,6 +18,7 @@ from .caches import CacheController, CacheKeyCollect
 
 class ArgumentDecorator:
     """argument decorator"""
+
     def __init__(self, login_require, auth_require, **kwargs):
         self.login_require = login_require
         self.auth_require = auth_require
@@ -80,23 +83,49 @@ class ArgumentDecorator:
             space_all_list = [v for k, v in space_list.items()]
         return space_selected, space_all_list
 
+    @staticmethod
+    def msg_translate() -> dict:
+        return {
+            "successfully": _('Successfully'),
+            "errors": _('Errors'),
+            "field_required": _('This field is required'),
+            "required": _("This field is required"),
+            "remote": _("Please fix this field."),
+            "email": _("Please enter a valid email address."),
+            "url": _("Please enter a valid URL."),
+            "date": _("Please enter a valid date."),
+            "dateISO": _("Please enter a valid date (ISO)."),
+            "number": _("Please enter a valid number."),
+            "digits": _("Please enter only digits."),
+            "creditcard": _("Please enter a valid credit card number."),
+            "equalTo": _("Please enter the same value again."),
+            "accept": _("Please enter a value with a valid extension."),
+            "maxlength": _("Please enter no more than {0} characters."),
+            "minlength": _("Please enter at least {0} characters."),
+            "rangelength": _("Please enter a value between {0} and {1} characters long."),
+            "range": _("Please enter a value between {0} and {1}."),
+            "max": _("Please enter a value less than or equal to {0}."),
+            "min": _("Please enter a value greater than or equal to {0}."),
+        }
+
     @classmethod
-    def parse_base(cls, user, cls_kwargs):
+    def parse_base(cls, user, cls_kwargs) -> dict:
         """parse base link"""
-        c_key = f'space_{str(user.id)}_{".".join([f"{k}:{v}" for k, v in cls_kwargs.items()])}'
-        data = CacheController.get(c_key)
-        if not data:
+        if isinstance(user, get_user_model()):
             space_selected, space_list = cls.parse_spaces(cls_kwargs.get('space_code', None))
-            data = {
+            return {
                 'fullname': user.get_full_name(),
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,
                 'space_selected': space_selected,
-                'space_list': space_list
+                'space_list': space_list,
+                'tenant_current_data': user.tenant_current_data,
+                'company_current_data': user.company_current_data,
+                'space_current_data': user.space_current_data,
+                'employee_current_data': user.employee_current_data,
+                'companies_data': user.companies_data,
             }
-            CacheController.set(c_key, data)
-            CacheController().append_by_all(CacheKeyCollect.SPACES, c_key)
-        return data
+        return {}
 
 
 def mask_view(**parent_kwargs):
@@ -199,10 +228,12 @@ def mask_view(**parent_kwargs):
                                 status=status.HTTP_400_BAD_REQUEST
                             )
                         case _:
-                            return Response({
-                                'data': data,
-                                'status': http_status
-                            }, status=http_status)
+                            return Response(
+                                {
+                                    'data': data,
+                                    'status': http_status
+                                }, status=http_status
+                            )
                 elif cls_check.template_path:
                     if request.user and not isinstance(request.user, AnonymousUser):
                         match http_status:

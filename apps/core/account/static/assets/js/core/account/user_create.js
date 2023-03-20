@@ -32,7 +32,9 @@ $(document).ready(function () {
                 * str_num.length + 1);
             pass += str_num.charAt(char)
         }
-        pass = pass.split('').sort(function(){return 0.5-Math.random()}).join('');
+        pass = pass.split('').sort(function () {
+            return 0.5 - Math.random()
+        }).join('');
         return pass;
     }
 
@@ -95,7 +97,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Đang tạo user"}, 'success')
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },

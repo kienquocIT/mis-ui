@@ -1128,15 +1128,29 @@ jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
 
 }
 jQuery.fn.cleanDataNotify = (data) => {
-    ['status'].map((key) => {
-        delete data[key];
-    });
-    return data
+    if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
+        data = data.errors;
+        switch (typeof data) {
+            case 'object':
+                ['status'].map((key) => {
+                    delete data[key];
+                });
+                break;
+            default:
+                data = {'': data.toString()}
+        }
+    } else {
+        ['status'].map((key) => {
+            delete data[key];
+        });
+    }
+    return data;
 };
 jQuery.fn.notifyErrors = (errs) => {
     if (errs && typeof errs === 'object') {
-        Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
-            jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
+        let errors_converted = jQuery.fn.cleanDataNotify(errs);
+        Object.keys(errors_converted).map((key) => {
+            jQuery.fn.notifyB({'title': key, 'description': errors_converted[key]}, 'failure');
         });
     }
 }

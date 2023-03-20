@@ -15,7 +15,6 @@ $(document).ready(function () {
         let id_tag = `#` + section
         $('#modal-product-and-expense h5').text($(this).text());
         $(id_tag).show();
-        $('#modal-product-and-expense .form-control').val('');
         $('#form-create-product-and-expense').attr('data-lookup', $(this).attr('data-collapse'))
     })
 
@@ -35,7 +34,7 @@ $(document).ready(function () {
         let id_tag = `#` + section
         $('#modal-unit-measure-group h5').text($(this).text());
         $(id_tag).show();
-        $('#modal-unit-measure-group .form-control').val('');
+
     })
 
     let config_product_expense = {
@@ -304,7 +303,7 @@ $(document).ready(function () {
     }
 
     function loadSelectBoxUnitMeasureGroup(ele, id) {
-        ele.html('');
+        ele.empty();
         ele.append(`<option></option>`)
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -465,7 +464,7 @@ $(document).ready(function () {
                 $('#section-unit-measure-group').empty();
                 $('#section-unit-measure-group').append(ele_unit_of_measure_group);
                 loadUnitOfMeasureGroup();
-                loadSelectBoxUnitMeasureGroup();
+                loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
             }
         )
     })
@@ -597,16 +596,6 @@ $(document).ready(function () {
             $('#label-edit-referenced-unit').text('')
             $('#check-edit-unit').prop('checked', false);
             $('#check-edit-unit').prop('disabled', true);
-        }
-    })
-
-// oninput Input Name Modal edit UoM
-    $('#inp-edit-name-unit').on('input', function () {
-        if ($('#select-box-edit-uom-group').find('option:selected').attr('data-referenced') === 'undefined') {
-            if ($('#check-edit-unit').is(':checked')) {
-                let inputValue = $(this).val();
-                $('#label-edit-referenced-unit').text(inputValue);
-            }
         }
     })
 
@@ -800,6 +789,7 @@ $(document).ready(function () {
                 $('#section-unit-measure-group').empty();
                 $('#section-unit-measure-group').append(ele_unit_of_measure_group);
                 loadUnitOfMeasureGroup();
+                loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
             }
         )
     })
@@ -819,4 +809,15 @@ $(document).ready(function () {
     $('#modal-detail-unit-measure-group input').mouseleave(function () {
         $(this).prop("readonly", true);
     });
+
+    $('.btn-show-modal').on('click', function (){
+        $('#modal-product-and-expense .form-control').val('');
+        $('#modal-unit-measure-group .form-control').val('');
+
+        $('#modal-unit-measure .form-control').val('');
+        $('#modal-unit-measure .form-select').val('');
+        $('#label-referenced-unit').text('');
+        $('#notify-area').prop('hidden', true);
+        $('#check-referenced-unit').prop('checked', false);
+    })
 })

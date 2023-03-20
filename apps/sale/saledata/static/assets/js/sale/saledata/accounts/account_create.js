@@ -61,6 +61,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    console.log(data)
                     ele.text("");
                     if (data.hasOwnProperty('account_manager_list') && Array.isArray(data.account_manager_list)) {
                         data.account_manager_list.map(function (item) {

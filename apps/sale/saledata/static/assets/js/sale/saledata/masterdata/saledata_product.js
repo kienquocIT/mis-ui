@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-
-
     let ele_product_type = $('#section-product-type').html()
     let ele_product_category = $('#section-product-category').html()
     let ele_expense_type = $('#section-expense-type').html()
@@ -737,6 +735,3 @@ $(document).ready(function () {
             )
     })
 })
-
-
-

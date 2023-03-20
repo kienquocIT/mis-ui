@@ -1,14 +1,11 @@
 $(document).ready(function () {
 
-
-
     let ele_product_type = $('#section-product-type').html()
     let ele_product_category = $('#section-product-category').html()
     let ele_expense_type = $('#section-expense-type').html()
     let ele_unit_of_measure = $('#section-unit-measure').html()
     let ele_unit_of_measure_group = $('#section-unit-measure-group').html()
-    let pk_update_uom
-    let pk_update_product_expense
+    let url_update;
 
     //Switch view table
     $("#tab-select-table a.product-and-expense").on("click", function () {
@@ -349,8 +346,7 @@ $(document).ready(function () {
                 if (name) {
                     $('#label-referenced-unit').text('* ' + name);
                     $('#label-referenced-unit').prop('hidden', false);
-                }
-                else {
+                } else {
                     $('#label-referenced-unit').text('');
                     $('#label-referenced-unit').prop('hidden', true);
                 }
@@ -372,8 +368,7 @@ $(document).ready(function () {
                 $('#notify-area-label').text('* Group ' + group_name + ' had referenced unit.');
                 $('#notify-area').prop('hidden', false);
             }
-        }
-        else {
+        } else {
             $('#ratio-unit').val('');
             $('#ratio-unit').prop('readonly', true);
             $('#ratio-area').prop('hidden', false);
@@ -446,7 +441,7 @@ $(document).ready(function () {
         )
     })
 
-// commit form create unit measure group
+// submit form create unit measure group
     let frm_unit_measure_group = $('#form-create-unit-measure-group');
     frm_unit_measure_group.submit(function (event) {
         event.preventDefault();
@@ -475,7 +470,7 @@ $(document).ready(function () {
         )
     })
 
-// commit form unit measure
+// submit form unit measure
     let frm_unit_measure = $('#form-create-unit-measure');
     frm_unit_measure.submit(function (event) {
         event.preventDefault();
@@ -505,7 +500,8 @@ $(document).ready(function () {
 
 // load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
-        pk_update_uom = $(this).attr('data-id')
+        let url = $('#form-edit-unit-measure').attr('data-url')
+        url_update = url.replace(0, $(this).attr('data-id'))
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax(url_detail, 'GET')
             .then(
@@ -589,8 +585,7 @@ $(document).ready(function () {
                     $('#check-edit-unit').prop('disabled', true);
                     $('#notify-area-edit-label').text('* Can not set referenced unit from another group.');
                     $('#notify-area-edit').prop('hidden', false);
-                }
-                else {
+                } else {
                     $('#label-edit-referenced-unit').text(`* ` + data_referenced)
                     $('#check-edit-unit').prop('checked', false);
                     $('#check-edit-unit').prop('disabled', false);
@@ -598,8 +593,7 @@ $(document).ready(function () {
                     $('#notify-area-edit').prop('hidden', true);
                 }
             }
-        }
-        else {
+        } else {
             $('#label-edit-referenced-unit').text('')
             $('#check-edit-unit').prop('checked', false);
             $('#check-edit-unit').prop('disabled', true);
@@ -621,8 +615,7 @@ $(document).ready(function () {
         if (this.checked) {
             $('#inp-ratio-unit').val('1');
             $('#ratio-edit-area').prop('hidden', true);
-        }
-        else {
+        } else {
             $('#inp-ratio-unit').val($('#group-referenced-unit-name').val());
             $('#ratio-edit-area').prop('hidden', false);
         }
@@ -635,12 +628,11 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
-        let data_url = frm.dataUrl.replace('0', pk_update_uom);
         if ($('#check-edit-unit').prop('checked') === true) {
             frm_data['is_referenced_unit'] = 'on';
         }
         frm_data['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
-        $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
+        $.fn.callAjax(url_update, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -663,6 +655,9 @@ $(document).ready(function () {
 // load detail Product Type
     let url_detail_product_expense
     $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
+        let url = $('#form-edit-product-and-expense').attr('data-url-product-type')
+        url_update = url.replace(0, $(this).attr('data-id'));
+
         $('#modal-detail-product-and-expense h5').text('Edit Product Type');
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax(url_detail, 'GET')
@@ -681,8 +676,10 @@ $(document).ready(function () {
             )
     })
 
-    // load Product Category
+// load detail Product Category
     $(document).on('click', '#datatable-product-category-list .btn-detail', function () {
+        let url = $('#form-edit-product-and-expense').attr('data-url-product-category')
+        url_update = url.replace(0, $(this).attr('data-id'));
         $('#modal-detail-product-and-expense h5').text('Edit Product Category')
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax(url_detail, 'GET')
@@ -701,7 +698,10 @@ $(document).ready(function () {
             )
     })
 
+// load detail Expense Type
     $(document).on('click', '#datatable-expense-type-list .btn-detail', function () {
+        let url = $('#form-edit-product-and-expense').attr('data-url-expense-type')
+        url_update = url.replace(0, $(this).attr('data-id'));
         $('#modal-detail-product-and-expense h5').text('Edit Expense Type');
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax(url_detail, 'GET')
@@ -720,7 +720,10 @@ $(document).ready(function () {
             )
     })
 
+// load detail UoM Group
     $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
+        let url = $('#form-edit-unit-measure-group').attr('data-url')
+        url_update = url.replace(0, $(this).attr('data-id'));
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax(url_detail, 'GET')
             .then(
@@ -736,6 +739,86 @@ $(document).ready(function () {
                 }
             )
     })
+
+    // submit form update product and expense
+    let frm_edit_product_expense = $('#form-edit-product-and-expense')
+    frm_edit_product_expense.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let frm_data = frm.dataForm;
+        $.fn.callAjax(url_update, frm.dataMethod, frm_data, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Cập nhật"}, 'success')
+                        $('#modal-detail-product-and-expense').hide();
+                    }
+                },
+                (errs) => {
+                }
+            ).then(
+            (rep) => {// reload dataTable after edit
+                if ($('#tab-select-table li a.active').attr('data-collapse') === 'section-product-type') {
+                    $('#section-product-type').empty();
+                    $('#section-product-type').append(ele_product_type);
+                    loadProductType();
+                } else if ($('#tab-select-table li a.active').attr('data-collapse') === 'section-product-category') {
+                    $('#section-product-category').empty();
+                    $('#section-product-category').append(ele_product_category);
+                    loadProDuctCategory();
+                } else {
+                    $('#section-expense-type').empty();
+                    $('#section-expense-type').append(ele_expense_type);
+                    loadExpenseType();
+                }
+            }
+        )
+    })
+
+    // submit form update product and expense
+    let frm_edit_uom_group = $('#form-edit-unit-measure-group')
+    frm_edit_uom_group.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let frm_data = frm.dataForm;
+        $.fn.callAjax(url_update, frm.dataMethod, frm_data, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Cập nhật"}, 'success')
+                        $('#modal-detail-unit-measure-group').hide();
+                    }
+                },
+                (errs) => {
+                }
+            ).then(
+            (rep) => {// reload dataTable after edit
+                $('#section-unit-measure-group').empty();
+                $('#section-unit-measure-group').append(ele_unit_of_measure_group);
+                loadUnitOfMeasureGroup();
+            }
+        )
+    })
+
+    // mouse enter to edit
+    $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseenter(function () {
+        $(this).prop("readonly", false);
+    });
+    $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseleave(function () {
+        $(this).prop("readonly", true);
+    });
+
+    // mouse enter to edit
+    $('#modal-detail-unit-measure-group input').mouseenter(function () {
+        $(this).prop("readonly", false);
+    });
+    $('#modal-detail-unit-measure-group input').mouseleave(function () {
+        $(this).prop("readonly", true);
+    });
 })
 
 

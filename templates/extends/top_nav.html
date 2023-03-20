@@ -91,9 +91,7 @@
 											</span>
                                     </div>
                                 </div>
-                                <div class="media-body">
-                                    How to setup theme?
-                                </div>
+                                <div class="media-body"></div>
                             </div>
                         </a>
                         <a href="javascript:void(0);" class="dropdown-item">
@@ -131,9 +129,7 @@
                                         <img src="" alt="user" class="avatar-img">
                                     </div>
                                 </div>
-                                <div class="media-body">
-                                    Sarah Jone
-                                </div>
+                                <div class="media-body"></div>
                             </div>
                         </a>
                         <a href="javascript:void(0);" class="dropdown-item">
@@ -260,6 +256,7 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <div>
+                                                {% csrf_token %}
                                                 {% for item in base.companies_data %}
                                                     <div class="form-check">
                                                         {% if item.id == base.company_current_data.id %}
@@ -276,7 +273,7 @@
                                                                     name="switch_current_company"
                                                                     class="form-check-input"
                                                                     value="{{ item.id }}"
-                                                                    checked="" type="radio"
+                                                                    type="radio"
                                                             >
                                                         {% endif %}
                                                         <label
@@ -293,8 +290,10 @@
                                                 type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                         >{% trans 'Close' %}</button>
                                         <button
+                                                id="btn-call-switch-company"
+                                                data-url="{% url 'SwitchCompanyCurrentView' %}"
+                                                data-method="PUT"
                                                 type="button" class="btn btn-primary"
-                                                onclick="$.fn.switch_company({{ base.company_current_data.id }})"
                                         >{% trans 'Save' %}</button>
                                     </div>
                                 </div>
@@ -324,9 +323,11 @@
                             </h6>
                             {% if base.company_current_data %}
                                 <a
+                                        id="company-current-id"
                                         class="dropdown-item" href="#"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ base.company_current_data.title }}"
+                                        data-id="{{ base.company_current_data.id }}"
                                         style="max-width: 20em;overflow: hidden;text-overflow: ellipsis;"
                                 >
                                     <span
@@ -366,7 +367,7 @@
                                 </span>
                                 <span>{% trans 'Settings' %}</span>
                             </a>
-                            <a class="dropdown-item" href="{% url 'AuthLogout' %}">
+                            <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>
                                 </span>

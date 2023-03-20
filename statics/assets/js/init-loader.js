@@ -68,11 +68,26 @@ $(document).ready(function () {
     });
 
 
-    $.fn.switch_company = function (current_company_id){
+    $('#btn-call-switch-company').click(function () {
+        let current_company_id = $('#company-current-id').attr('data-id');
         let company_id_selected = $("input[name='switch_current_company']:checked").val();
-        alert(company_id_selected);
-        if (company_id_selected !== current_company_id){
-
+        if (current_company_id !== company_id_selected) {
+            $.fn.callAjax(
+                $(this).attr('data-url'),
+                $(this).attr('data-method'),
+                {
+                    'company': company_id_selected
+                 },
+                $('input[name=csrfmiddlewaretoken]').val(),
+            ).then((resp) => {
+                $.fn.notifyB({
+                    'description': resp.data.detail
+                }, 'success');
+                setTimeout(()=>{
+                    $('#link-logout')[0].click();
+                }, 1200);
+            });
         }
-    }
+        $('#switchMyCompany').modal('toggle');
+    });
 })

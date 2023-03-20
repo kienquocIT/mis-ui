@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.core.base.views import PlanListAPI, TenantApplicationListAPI, ApplicationPropertyListAPI, \
-    ApplicationPropertyEmployeeListAPI, ApplicationListAPI
+    ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI
 
 urlpatterns = [
     path('plan/api', PlanListAPI.as_view(), name='PlanListAPI'),
@@ -12,5 +12,5 @@ urlpatterns = [
         ApplicationPropertyEmployeeListAPI.as_view(),
         name='ApplicationPropertyEmployeeListAPI'
     ),
-    path('applications-list/api', ApplicationListAPI.as_view(), name='ApplicationListAPI'),
+    path('perm-per-app/api', ApplicationPermissionAPI.as_view(), name="ApplicationPermissionAPI"),
 ]

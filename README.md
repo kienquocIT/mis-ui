@@ -115,58 +115,15 @@ urlpatterns = [
 
 ---
 
-### Filter multi select plugin
+### Select2 how to use
 1. Description
 ```text
-plugin using for combobox multi select.
-plugin is auto init after DOM ready, function handle in init-filter-select-multi.js file
+plugin using for combobox with auto init and search real time
 ```
 2. setup
 ```html
-1.1 html file
-   + include css file
-       <link href="{% static 'vendors/filter-multi-select-main/dist/filter_multi_select.css' %}" rel="stylesheet" type="text/css"/>
-   + include jquery file
-       <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
-       <script src="{% static 'vendors/filter-multi-select-main/dist/init-filter-select-multi.js' %}"></script>
-   + add attribute data for DOM element
-       class: multi-select-filter
-       data-url: url call data
-       data-onload:  json string data list
+1.1 DOCS
+   + please follow path file bellow and good luck :D
 ```
-3. Example
-```html
-<select
-        class="form-control multi-select-filter"
-        data-placeholder="{% trans 'Nothing selected' %}"
-        name="role"
-        id="select-box-role"
-        data-url="{% url 'RoleListAPI' %}"
-        data-onload="{'id':'16b97ec7-f0a0-4ff3-955a-f71ef6832b2e', title:'Trưởng nhóm','abbreviation':'TeamLeader'}"
-></select>
-```
-4. Use
-```text
-plugin auto convert to json serialize when form submit
-if you want to get select data via javascript please follow there step bellow.
-1. get index of HTML element
-    <div id="select-box-role" class="filter-multi-select dropdown" multiple="" data-index="0" tabindex="0"></div
-    => now you can see this index of element is "0"
-2. call public function of filter multi select to get list of selected
-    $.fn.filterMultiSelect.applied[0].getSelectedOptionsAsJson(includeDisabled=true)
-    0 is index we got it in prev step
-3. format of data return is string like this.
-     {
-        "role": 
-        [
-            "2ab00802-7bc5-4459-96ad-01d2c5251017"
-        ]
-     }
-```
-4. Note
-```text
-if you run plugin without any setup, please add class 'filter-multi-select' only
-make sure select has option first
-```
+*[vendors/select2/dist/js/init-select2.js](/statics/vendors/select2/dist/js/init-select2.js)*
 
----

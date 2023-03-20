@@ -208,8 +208,9 @@
                                     <i data-feather="edit"></i>
                                 </span>&nbsp;&nbsp;{% trans 'Set Permission' %}</span></a>
 
-                        <a class="btn btn-primary float-right hidden" href="{% url 'EmployeeList' %}"
+                        <a class="btn btn-primary float-right hidden" href="#"
                            id="button-save-employee-permission">
+                            <span class="spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
                             {% trans "Update" %}
                         </a>
                     </div>
@@ -220,15 +221,11 @@
     </div>
     <templete class="template-factory" hidden>
         <div class="belong-to">
-            <select>
+            <select class="form-select select_range" disabled>
                 {% for item in data.belong_list %}
                     <option value="{{ item.value }}">{{ item.name }}</option>
                 {% endfor %}
             </select>
-        </div>
-        <div class="app-list">
-            <select class="form-control dropdown-select_two" data-url="{{ data.app_list.url }}"
-                    data-prefix="{{ data.app_list.prefix }}" data-multiple="false" disabled></select>
         </div>
     </templete>
     <input data-application="{% trans 'Application' %}" type="hidden" class="hidden table-translate"
@@ -240,7 +237,11 @@
            data-permission_range="{% trans 'Permission range' %}"
            data-empty="{% trans 'Permission list is empty' %}"
            data-add="{% trans 'Add new permission' %}"
+           data-actions="{% trans 'Actions' %}"
     >
+    <input class="url-factory" type="hidden" data-link-1="{% url 'ApplicationPermissionAPI' %}"
+    data-link-2="{% url 'EmployeeDetailAPI' data.data.doc_id %}"
+    data-link-3="{% url 'EmployeeUpdate' data.data.doc_id %}">
 {% endblock %}
 
 
@@ -258,10 +259,8 @@
     <!-- Moment JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <!-- Customize JS -->
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+    <script src="{% static 'assets/js/additional-methods.min.js' %}"></script>
 
-    <!-- Daterangepicker JS -->
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_permission.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>

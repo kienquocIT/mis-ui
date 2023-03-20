@@ -91,11 +91,11 @@ class EmployeeDetail(View):
         return {
                    'data': {
                        'doc_id': pk,
-                       'belong_list': BELONG_LIST,
-                       'app_list': {
-                           'url': reverse('ApplicationListAPI'),
-                           'prefix': 'app_list',
-                       }
+                   },
+                   'belong_list': BELONG_LIST,
+                   'app_list': {
+                       'url': reverse('TenantApplicationListAPI'),
+                       'prefix': 'tenant_application_list',
                    }
                }, status.HTTP_200_OK
 

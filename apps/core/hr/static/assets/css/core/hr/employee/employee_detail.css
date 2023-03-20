@@ -32,3 +32,6 @@
     height: 38px;
     max-width: 280px;
 }
+.select2-container{
+    max-width: 280px;
+}

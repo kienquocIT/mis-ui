@@ -1153,7 +1153,9 @@ jQuery.fn.switcherResp = function (resp) {
             case 201:
                 return resp.data
             case 400:
-                $.fn.notifyErrors(resp.data);
+                let mess = resp.data;
+                if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
+                $.fn.notifyErrors(mess);
                 return {};
             case 401:
                 console.log(resp.data);

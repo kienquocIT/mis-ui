@@ -65,15 +65,16 @@ class ApplicationPropertyEmployeeListAPI(APIView):
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
 
-class ApplicationListAPI(APIView):
+class ApplicationPermissionAPI(APIView):
     @mask_view(
         auth_require=True,
-        is_api=True
+        is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.APPLICATION_LIST, user=request.user).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PERMISSION).get(data)
         if resp.state:
-            return {'app_list': resp.result}, status.HTTP_200_OK
+            return {'perm_per_app': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

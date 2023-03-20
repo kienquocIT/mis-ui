@@ -1,4 +1,8 @@
 $(document).ready(function () {
+
+    /***
+     * @param {{first_name:string, last_name:string}} data
+     */
     // load instance data
     function loadDetailData() {
         let ele = $('#employee-detail-page');
@@ -51,7 +55,7 @@ $(document).ready(function () {
 
                         // load permission table
                         // call function handle permissions function
-                        PermissionsInit(data.employee.plan_app)
+                        PermissionsInit(data.employee.plan_app, data.employee.permission_by_configured)
                     }
                 } // end if data available
             } // end response
@@ -60,12 +64,12 @@ $(document).ready(function () {
 
     loadDetailData();
 
-    $('#input-avatar').on('change', function (ev) {
+    $('#input-avatar').on('change', function () {
         let upload_img = $('#upload-area');
         upload_img.text("");
         upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
     });
-    $('#upload-area').click(function (e) {
+    $('#upload-area').click(function () {
         $('#input-avatar').click();
     });
 
@@ -84,8 +88,9 @@ $(document).ready(function () {
         $(this).addClass("hidden")
         $('#button-save-employee-permission').removeClass('hidden');
         $('#employee-perm-detail input').attr('disabled', false);
-        $('#employee-perm-detail select').attr('disabled', false);
-        // $('#employee-permission-detail').attr("hidden", true);
-        // $('#employee-permission-edit').attr("hidden", false);
+        $('.select_range').prop("disabled", false);
+        $('.add-new-perm').removeClass("hidden");
+        addNewPermission();
+        PermUpdateBtn();
     })
 });

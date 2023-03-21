@@ -5,7 +5,7 @@ from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI,
     ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI, \
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, \
     AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
-    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
+    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductList, ProductCreate
 
 
 urlpatterns = [
@@ -44,4 +44,7 @@ urlpatterns = [
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
     path('getaccountname/api', GetAccountNameAPI.as_view(), name='GetAccountNameAPI'),
+] + [
+    path('products', ProductList.as_view(), name='ProductList'),
+    path('product/create', ProductCreate.as_view(), name='ProductCreate'),
 ]

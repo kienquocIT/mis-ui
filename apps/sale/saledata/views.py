@@ -517,3 +517,30 @@ class GetAccountNameAPI(APIView):
         if resp.state:
             return {'account_manager_list': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_401_UNAUTHORIZED
+
+
+# Product
+class ProductList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/product/product_list.html',
+        breadcrumb='PRODUCT_LIST_PAGE',
+        menu_active='menu_account_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ProductCreate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/product/product_create.html',
+        breadcrumb='PRODUCT_CREATE_PAGE',
+        menu_active='menu_account_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

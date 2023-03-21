@@ -9,7 +9,7 @@ $(document).ready(function () {
                 if (data) {
                     $("#owner_id").val(data.contact_detail.owner.fullname);
                     $('#full_name_id').val(data.contact_detail.fullname.fullname);
-                    $('#bio_id').val(data.contact_detail.bio);
+                    $('#bio_id').val(data.contact_detail.biography);
                     $('#salutation_id').val(data.contact_detail.salutation.title);
                     $('#account_name_id').val(data.contact_detail.account_name.name);
                     $('#job_title_id').val(data.contact_detail.job_title);

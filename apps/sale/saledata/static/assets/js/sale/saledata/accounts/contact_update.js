@@ -151,7 +151,7 @@ $(document).ready(function () {
                     $('#first_name_id').val(data.contact_detail.fullname.first_name);
                     $('#last_name_id').val(data.contact_detail.fullname.last_name);
                     $('#full_name_id').val(data.contact_detail.fullname.fullname);
-                    $('#text-bio').val(data.contact_detail.bio);
+                    $('#text-bio').val(data.contact_detail.biography);
                     $('#inp-phone').val(data.contact_detail.phone);
                     $('#inp-mobile').val(data.contact_detail.mobile);
                     $('#inp-email').val(data.contact_detail.email);

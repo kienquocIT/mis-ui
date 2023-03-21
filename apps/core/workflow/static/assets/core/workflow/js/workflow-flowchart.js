@@ -275,7 +275,6 @@ class JSPlumbsHandle {
 
             // update association data when connect 2 nodes, LHPHUC
             instance.bind("connection", function(connection){
-                // Check approved
                 let data_node = DEFAULT_NODE_LIST;
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
@@ -286,10 +285,12 @@ class JSPlumbsHandle {
                 }
                 let key = "";
                 let connect = connection;
-                if (connect.source.dataset.drag && connect.target.dataset.drag) {
-                    end_result['node_in'] = parseInt(connect.source.dataset.drag);
-                    end_result['node_out'] = parseInt(connect.target.dataset.drag);
-                    key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
+                let node_in = connect.source.dataset.drag;
+                let node_out = connect.target.dataset.drag;
+                if (node_in && node_out) {
+                    end_result['node_in'] = parseInt(node_in);
+                    end_result['node_out'] = parseInt(node_out);
+                    key = node_in + "_" + node_out;
                 }
                 if (key) {
                     if (before_data) {
@@ -310,10 +311,12 @@ class JSPlumbsHandle {
                 let key = "";
                 let data_node = DEFAULT_NODE_LIST;
                 let connect = connection;
+                let node_in = connect.source.dataset.drag;
+                let node_out = connect.target.dataset.drag;
                 let elm_focus = $('#node-associate');
                 let current_data = elm_focus.val();
-                if (connect.source.dataset.drag && connect.target.dataset.drag) {
-                    key = connect.source.dataset.drag + "_" + connect.target.dataset.drag;
+                if (node_in && node_out) {
+                    key = node_in + "_" + node_out;
                     if (current_data && key) {
                         current_data = JSON.parse(current_data)
                         if (current_data.hasOwnProperty(key)) {
@@ -339,4 +342,20 @@ class JSPlumbsHandle {
         this.initJSPlumbs();
         extendDropSpace()
     }
+}
+
+
+// Function Check Rules When Connect/ Disconnect 2 Nodes
+function checkConnection(node_in, node_out, instance, connection) {
+    let check_result = true;
+    // code check connection rules begin here
+
+    // end.
+
+    if (check_result === false) {
+        // remove connection when fail rules
+        instance.deleteConnection(connection);
+        return false
+    }
+    return true
 }

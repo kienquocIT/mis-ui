@@ -11,7 +11,7 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
-            type="text" id="btn-create_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            type="button" id="btn-create_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
             data-bs-original-title="Save">
         <span class="icon">
             <span class="feather-icon">
@@ -403,23 +403,23 @@
                                 </thead>
                                 <tbody>
                                 <tr class="center">
+                                    <td>Create</td>
                                     <td>{% trans 'Create' %}</td>
-                                    <td>{% trans 'Next' %}</td>
                                     <td>
                                         <input class="form-control" type="text" name="btn_create" data-key="0"
                                                placeholder="{% trans 'Chuyển' %}">
                                     </td>
                                 </tr>
                                 <tr class="center">
+                                    <td>Approved</td>
                                     <td>{% trans 'Approved' %}</td>
-                                    <td>{% trans 'Next' %}</td>
                                     <td>
                                         <input class="form-control" type="text" name="btn_approved" data-key="1"
                                                placeholder="{% trans 'Duyệt' %}">
                                     </td>
                                 </tr>
                                 <tr class="center">
-                                    <td>{% trans 'Reject' %}</td>
+                                    <td>Reject</td>
                                     <td>{% trans 'Reject' %}</td>
                                     <td>
                                         <input class="form-control" type="text" name="btn_reject" data-key="2"
@@ -427,7 +427,7 @@
                                     </td>
                                 </tr>
                                 <tr class="center">
-                                    <td>{% trans 'Return' %}</td>
+                                    <td>Return</td>
                                     <td>{% trans 'Return' %}</td>
                                     <td>
                                         <input class="form-control" type="text" name="btn_return" data-key="3"
@@ -435,15 +435,15 @@
                                     </td>
                                 </tr>
                                 <tr class="center">
-                                    <td>{% trans 'Receive' %}</td>
-                                    <td>{% trans 'Retceived' %}</td>
+                                    <td>Receive</td>
+                                    <td>{% trans 'Received' %}</td>
                                     <td>
                                         <input class="form-control" type="text" name="btn_receive" data-key="4"
                                                placeholder="{% trans 'Đã nhận' %}">
                                     </td>
                                 </tr>
                                 <tr class="center">
-                                    <td>{% trans 'To do' %}</td>
+                                    <td>To do</td>
                                     <td>{% trans 'Done' %}</td>
                                     <td>
                                         <input class="form-control" type="text" name="btn_todo" data-key="5"

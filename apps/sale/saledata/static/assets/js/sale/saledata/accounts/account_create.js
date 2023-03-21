@@ -452,7 +452,6 @@ $(document).ready(function () {
         }
     })
 
-
     // Conditions for show offCanvas add Contact
     $('#add-contact-btn').on('click', function () {
         let allFieldsFilled = true;

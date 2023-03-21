@@ -303,7 +303,7 @@ $(document).ready(function () {
     }
 
     function loadSelectBoxUnitMeasureGroup(ele, id) {
-        ele.empty();
+        ele.html('');
         ele.append(`<option></option>`)
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -326,7 +326,6 @@ $(document).ready(function () {
     loadProDuctCategory();
     loadProductType();
     loadUnitOfMeasureGroup();
-    loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
     loadUnitOfMeasure();
 
     // change select box unit measure group
@@ -464,7 +463,6 @@ $(document).ready(function () {
                 $('#section-unit-measure-group').empty();
                 $('#section-unit-measure-group').append(ele_unit_of_measure_group);
                 loadUnitOfMeasureGroup();
-                loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
             }
         )
     })
@@ -766,7 +764,7 @@ $(document).ready(function () {
         )
     })
 
-    // submit form update product and expense
+    // submit form update uom group
     let frm_edit_uom_group = $('#form-edit-unit-measure-group')
     frm_edit_uom_group.submit(function (event) {
         event.preventDefault();
@@ -789,7 +787,6 @@ $(document).ready(function () {
                 $('#section-unit-measure-group').empty();
                 $('#section-unit-measure-group').append(ele_unit_of_measure_group);
                 loadUnitOfMeasureGroup();
-                loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
             }
         )
     })
@@ -810,14 +807,18 @@ $(document).ready(function () {
         $(this).prop("readonly", true);
     });
 
-    $('.btn-show-modal').on('click', function (){
+    $('.btn-show-modal').on('click', function () {
         $('#modal-product-and-expense .form-control').val('');
         $('#modal-unit-measure-group .form-control').val('');
 
-        $('#modal-unit-measure .form-control').val('');
-        $('#modal-unit-measure .form-select').val('');
-        $('#label-referenced-unit').text('');
-        $('#notify-area').prop('hidden', true);
-        $('#check-referenced-unit').prop('checked', false);
+        if ($(this).attr('data-bs-target') === '#modal-unit-measure') {
+            loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'), -1);
+            $('#modal-unit-measure .form-control').val('');
+            $('#modal-unit-measure .form-select').val('');
+            $('#label-referenced-unit').text('');
+            $('#notify-area').prop('hidden', true);
+            $('#check-referenced-unit').prop('checked', false);
+        }
+
     })
 })

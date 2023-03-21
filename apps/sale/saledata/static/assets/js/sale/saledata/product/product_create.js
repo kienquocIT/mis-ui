@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 
-    function disablesTab(check, link_tab, id_tab) {
+    function disabledTab(check, link_tab, id_tab) {
         if (!check) {
             $(link_tab).addClass('disabled');
             $(id_tab).removeClass('active show');
@@ -14,17 +14,17 @@ $(document).ready(function () {
     }
 
     $('#check-tab-inventory').change(function () {
-        disablesTab(this.checked, '#link-tab-inventory', '#tab_inventory');
+        disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');
     });
 
     $('#check-tab-sale').change(function () {
-        disablesTab(this.checked, '#link-tab-sale', '#tab_sale');
+        disabledTab(this.checked, '#link-tab-sale', '#tab_sale');
         $('#tab_sale select').val('');
     });
 
     $('#check-tab-purchasing').change(function () {
-        disablesTab(this.checked, '#link-tab-purchasing');
+        disabledTab(this.checked, '#link-tab-purchasing');
     });
 
     function loadProductType() {
@@ -105,4 +105,28 @@ $(document).ready(function () {
     loadProductType();
     loadUoMGroup();
     loadUnitOfMeasure();
+
+
+    //submit form create product
+    let form_create_product = $('#form-create-product');
+    form_create_product.submit(function (event){
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        console.log(frm.dataForm);
+
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Tạo mới product"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+            )
+    })
 })

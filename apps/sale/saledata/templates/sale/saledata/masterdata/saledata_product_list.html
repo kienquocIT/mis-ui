@@ -142,7 +142,7 @@
                        data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
+                    <th class="w-10">
                         <span class="form-check">
                             <input
                                     type="checkbox"
@@ -156,7 +156,7 @@
                     <th class="w-20">{% trans "Name" %}</th>
                     <th class="w-20">{% trans "Group" %}</th>
                     <th class="w-20">{% trans "Is referenced unit" %}</th>
-                    <th class="w-15">{% trans "Action" %}</th>
+                    <th class="w-10">{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
@@ -245,9 +245,8 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Code" %}</label>
-                                    <input id="inp-code" class="form-control" type="text" name="code"
-                                           placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
+                                    <label class="form-label">{% trans "Select Group" %}</label>
+                                    <select id="select-box-unit-measure-group" class="form-select" data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"></select>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -262,9 +261,9 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Name" %}</label>
-                                    <input class="form-control" type="text" name="title"
-                                           placeholder="Input name" id="name-unit">
+                                    <label class="form-label">{% trans "Code" %}</label>
+                                    <input id="inp-code" class="form-control" type="text" name="code" readonly
+                                           placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -287,8 +286,9 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Select Group" %}</label>
-                                    <select id="select-box-unit-measure-group" class="form-select" data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"></select>
+                                    <label class="form-label">{% trans "Name" %}</label>
+                                    <input class="form-control" type="text" name="title" readonly
+                                           placeholder="Input name" id="name-unit">
                                 </div>
                             </div>
                             <div class="col-3">
@@ -368,11 +368,17 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-6" id="select-group-div">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Code" %}</label>
-                                    <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
-                                    style="border: None">
+                                    <label class="form-label">{% trans "Select Group" %}</label>
+                                    <input id="group-id" disabled hidden>
+                                    <select id="select-box-edit-uom-group" class="form-select"
+                                            data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
+                                            name="group" disabled>
+                                    </select>
+                                    <input class="form-control" type="text" name="group" readonly
+                                           style="border: None"
+                                           id="inp-edit-uom-group" hidden>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -387,9 +393,9 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Name" %}</label>
-                                    <input class="form-control" type="text" name="title" readonly
-                                           placeholder="Input name" id="inp-edit-name-unit">
+                                    <label class="form-label">{% trans "Code" %}</label>
+                                    <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
+                                    style="border: None">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -411,17 +417,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6" id="select-group-div">
+                            <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Select Group" %}</label>
-                                    <input id="group-id" disabled hidden>
-                                    <select id="select-box-edit-uom-group" class="form-select"
-                                            data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
-                                            name="group" disabled>
-                                    </select>
-                                    <input class="form-control" type="text" name="group" readonly
-                                           style="border: None"
-                                           id="inp-edit-uom-group" hidden>
+                                    <label class="form-label">{% trans "Name" %}</label>
+                                    <input class="form-control" type="text" name="title" readonly
+                                           placeholder="Input name" id="inp-edit-name-unit">
                                 </div>
                             </div>
                             <div class="col-3">

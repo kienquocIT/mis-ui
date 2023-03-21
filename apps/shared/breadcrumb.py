@@ -70,10 +70,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
     ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
 
-    # Product
-    PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product list'), 'ProductList')
-    PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
-
     # Master Data
     CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
     ACCOUNT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Account'), 'AccountMasterDataList')
@@ -199,11 +195,6 @@ class BreadcrumbView:
         BreadcrumbItem.ACCOUNT_LIST_PAGE
     ]
     ACCOUNT_CREATE_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_CREATE_PAGE]
-
-    PRODUCT_LIST_PAGE = [
-        BreadcrumbItem.PRODUCT_LIST_PAGE
-    ]
-    PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE

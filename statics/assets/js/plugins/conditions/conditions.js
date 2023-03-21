@@ -7,6 +7,7 @@ class Conditions {
      * @param elm_target element of action on click
      * @param elm_focus element store data serializer, if null function return array instead
      * @param element_formset element of formset. for loop get data purpose
+     * @param {dropdown_list:string} data
      * @constructor
      */
     ElementAction(elm_target = null, elm_focus = null, element_formset = null) {
@@ -46,21 +47,23 @@ class Conditions {
                 node_out: parseInt(element_formset.parent('form').find('[name="node_out"]').val()),
                 condition: result,
             }
-            if (elm_focus) {
-                let before_data = elm_focus.val()
-                if (before_data !== ''){
-                    // if before data has property
-                    before_data = JSON.parse(before_data)
-                    before_data.push(end_result)
+
+            // update condition for association data when edit condition, LHPHUC
+            let key = element_formset.parent('form').find('[name="node_in"]').val() + "_" + element_formset.parent('form').find('[name="node_out"]').val();
+            if (key && elm_focus) {
+                let before_data = elm_focus.val();
+                if (before_data) {
+                    before_data = JSON.parse(before_data);
+                    before_data[key] = end_result;
                     end_result = before_data
-                }
-                else{
-                    let temp = []
-                    temp.push(end_result)
+                } else {
+                    let temp = {}
+                    temp[key] = end_result;
                     end_result = temp
                 }
                 elm_focus.val(JSON.stringify(end_result))
             } else return end_result
+
         });
     }
 
@@ -290,28 +293,29 @@ class Conditions {
                                     right_cond.parent().replaceWith(new_select)
                                 else right_cond.replaceWith(new_select)
 
-                                // get new element just replace
-                                right_cond = $(this).parents('[data-subformset-form]').find('[name*="-right_cond"]')
-                                right_cond.attr({
-                                    'data-virtual': JSON.stringify(virtual),
-                                    'data-onload': JSON.stringify([_data]),
-                                    'data-params': params,
-                                    'data-url': $(this).attr('data-url'),
-                                    'data-prefix': $(this).attr('data-prefix'),
-                                    'data-multiple': 'false'
-                                })
                             }
+                            // get new element just replace
+                            right_cond = $(this).parents('[data-subformset-form]').find('[name*="-right_cond"]')
+                            right_cond.attr({
+                                'data-virtual': JSON.stringify(virtual),
+                                'data-onload': JSON.stringify([_data]),
+                                'data-params': params,
+                                'data-url': $(this).attr('data-url'),
+                                'data-prefix': $(this).attr('data-prefix'),
+                                'data-multiple': 'false'
+                            })
                             initSelectbox(right_cond)
                             // on change right condition
                             right_cond.on("select2:select", function (e) {
                                 const right_data = e.params.data;
-                                if (right_data.id !== 5){
+                                if (right_data.type !== 5){
                                     let idx = right_data.type === 6 ? 1 : right_data.type
                                     if (right_data.id === 'default') idx = 1
                                     $(this).parent('.flex-row').html(html_temp[idx])
                                 }
                                 else if (right_data.type === 5){
-                                    let textHtml = right_data.properties.dropdownlist;
+                                    let textHtml = right_data.properties.dropdown_list;
+                                    $(this).attr('data-virtual', false)
                                     $(this).attr('data-url', textHtml.url)
                                     $(this).attr('data-prefix', textHtml.prefix)
                                     $(this).attr('data-multiple', textHtml.multiple)

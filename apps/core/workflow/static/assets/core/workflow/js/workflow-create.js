@@ -274,7 +274,14 @@ $(function () {
 
             // convert associate to json
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
-            _form.dataForm['association'] = JSON.parse(associate_temp)
+            if (associate_temp) {
+                let associate_data_submit = [];
+               let associate_data_json =  JSON.parse(associate_temp);
+               for (let key in associate_data_json) {
+                   associate_data_submit.push(associate_data_json[key]);
+               }
+               _form.dataForm['association'] = associate_data_submit;
+            }
 
             let submitFields = [
                 'title',
@@ -317,7 +324,6 @@ $(function () {
 });
 
 
-
 function getZone(zoneList) {
     let dataZoneList = [];
     if (zoneList) {
@@ -352,6 +358,10 @@ function setupDataNode(is_submit = false) {
         let total_collaborator_config = 1;
         let orderNode = 0;
         let fieldSelectCollaborator = "";
+
+        let collabInForm = {};
+        let collabOutForm = {};
+        let collabInWorkflow = [];
 
         let row = tableNode.rows[idx + 1];
         if (row.getAttribute('data-initial-check-box')) {
@@ -406,6 +416,8 @@ function setupDataNode(is_submit = false) {
                                 if (eleProperty) {
                                     fieldSelectCollaborator = eleProperty.value;
                                 }
+                                collabInForm['employee_field'] = fieldSelectCollaborator;
+                                collabInForm['zone'] = dataZoneList;
                             }
 
                             // if option out form
@@ -424,17 +436,20 @@ function setupDataNode(is_submit = false) {
 
                                 let zoneList = modalBody.children[2].querySelector('.node-zone-list');
                                 dataZoneList = getZone(zoneList);
-
                                 total_collaborator_in_process = dataEmployeeList.length
+                                collabOutForm['employee_list'] = dataEmployeeList;
+                                collabOutForm['zone'] = dataZoneList;
                                 // if option in workflow
                             } else if (optionCollab === 2) {
                                 let tableDataShowId = modalBody.querySelector('.table-in-workflow-employee').id;
                                 let table = document.getElementById(tableDataShowId);
                                 for (let r = 0; r < table.tBodies[0].rows.length; r++) {
-                                    let dataZoneInWorkflowList = []
+                                    let dataZoneInWorkflowList = [];
+                                    let employee = null;
                                     let row = table.rows[r + 1];
-                                    let employee = row.querySelector('.data-in-workflow-employee').value;
-
+                                    if (row.querySelector('.data-in-workflow-employee')) {
+                                        employee = row.querySelector('.data-in-workflow-employee').value;
+                                    }
                                     let zoneTd = row.querySelector('.data-in-workflow-zone');
                                     if (zoneTd.children.length > 0) {
                                         for (let col = 0; col < zoneTd.children.length; col++) {
@@ -446,10 +461,16 @@ function setupDataNode(is_submit = false) {
                                             }
                                         }
                                     }
-                                    dataCollaboratorList.push({
-                                        'employee': employee,
-                                        'collaborator_zone': dataZoneInWorkflowList,
-                                    });
+                                    if (employee) {
+                                        dataCollaboratorList.push({
+                                            'employee': employee,
+                                            'collaborator_zone': dataZoneInWorkflowList,
+                                        });
+                                        collabInWorkflow.push({
+                                            'employee': employee,
+                                            'zone': dataZoneInWorkflowList,
+                                        })
+                                    }
                                 }
                                 total_collaborator_in_process = dataCollaboratorList.length;
                                 total_collaborator_config = dataCollaboratorList.length;
@@ -465,10 +486,11 @@ function setupDataNode(is_submit = false) {
                 'description': description,
                 'actions': dataActionList,
                 'option_collaborator': optionCollab,
-                'field_select_collaborator': fieldSelectCollaborator,
-                'collaborator_list': dataEmployeeList,
-                'node_zone': dataZoneList,
+                'collab_in_form': collabInForm,
+                'collab_out_form': collabOutForm,
+                'collab_in_workflow': collabInWorkflow,
                 'collaborator': dataCollaboratorList,
+                'zone_initial_node': dataZoneList,
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,
                 'order': orderNode
@@ -486,6 +508,7 @@ function setupDataNode(is_submit = false) {
                 },
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,
+                'check_approved': '',
             });
         }
     }

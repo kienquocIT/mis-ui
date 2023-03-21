@@ -51,9 +51,8 @@ class ConditionForm(forms.Form):
         self.fields['logic'].widget.attrs.update({'title': 'Logic'})
 
 
-class ConditionFormset(forms.Form):
+class ConditionFormset(MultiForm):
     """params and condition formset"""
-    """use for condition formset"""
     form_classes = {
         'condition': formset_factory(
             ConditionForm,

@@ -273,12 +273,66 @@ class JSPlumbsHandle {
                 }
             })
 
+            // update association data when connect 2 nodes, LHPHUC
+            instance.bind("connection", function(connection){
+                let data_node = DEFAULT_NODE_LIST;
+                let elm_focus = $('#node-associate');
+                let before_data = elm_focus.val();
+                let end_result = {
+                    'node_in': '',
+                    'node_out': '',
+                    'condition': [],
+                }
+                let key = "";
+                let connect = connection;
+                let node_in = connect.source.dataset.drag;
+                let node_out = connect.target.dataset.drag;
+                if (node_in && node_out) {
+                    end_result['node_in'] = parseInt(node_in);
+                    end_result['node_out'] = parseInt(node_out);
+                    key = node_in + "_" + node_out;
+                }
+                if (key) {
+                    if (before_data) {
+                        before_data = JSON.parse(before_data);
+                        before_data[key] = end_result;
+                        end_result = before_data
+                    } else {
+                        let temp = {}
+                        temp[key] = end_result;
+                        end_result = temp
+                    }
+                    elm_focus.val(JSON.stringify(end_result))
+                }
+            })
+
+            // update association data when disconnect 2 nodes, LHPHUC
+            instance.bind("connectionDetached", function (connection) {
+                let key = "";
+                let data_node = DEFAULT_NODE_LIST;
+                let connect = connection;
+                let node_in = connect.source.dataset.drag;
+                let node_out = connect.target.dataset.drag;
+                let elm_focus = $('#node-associate');
+                let current_data = elm_focus.val();
+                if (node_in && node_out) {
+                    key = node_in + "_" + node_out;
+                    if (current_data && key) {
+                        current_data = JSON.parse(current_data)
+                        if (current_data.hasOwnProperty(key)) {
+                            delete current_data[key];
+                            elm_focus.val(JSON.stringify(current_data))
+                        }
+                    }
+                }
+            });
+
+
             // declare event on click for context menu
             $("body").on("click", ".delete-connect", function () {
                 instance.deleteConnection(window.selectedConnection)
                 $(this).parent('.custom-menu').remove();
             });
-
         });
     };
 
@@ -288,4 +342,20 @@ class JSPlumbsHandle {
         this.initJSPlumbs();
         extendDropSpace()
     }
+}
+
+
+// Function Check Rules When Connect/ Disconnect 2 Nodes
+function checkConnection(node_in, node_out, instance, connection) {
+    let check_result = true;
+    // code check connection rules begin here
+
+    // end.
+
+    if (check_result === false) {
+        // remove connection when fail rules
+        instance.deleteConnection(connection);
+        return false
+    }
+    return true
 }

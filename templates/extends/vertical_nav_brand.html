@@ -1,37 +1,41 @@
 {% load static %}
 <!-- Brand -->
 <div class="menu-header">
-				<span>
-					<a class="navbar-brand" href="/">
-						<img
-                                class="brand-img img-fluid"
-                                src="{% static 'assets/images/logo/logo-55x32.png' %}" alt="brand"
-                                style="width: 32px;"
-                        />
-{#						<img#}
-{#                                class="brand-img img-fluid"#}
-{#                                src="{% static 'assets/images/logo/logo-111x64.png' %}" alt="brand"#}
-{#                        />#}
-                        <span class="brand-img img-fluid"></span>
-					</a>
-					<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
-						<span class="icon">
-							<span class="svg-icon fs-5">
-								<svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24" height="24"
-                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                >
-									<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-									<line x1="10" y1="12" x2="20" y2="12"></line>
-									<line x1="10" y1="12" x2="14" y2="16"></line>
-									<line x1="10" y1="12" x2="14" y2="8"></line>
-									<line x1="4" y1="4" x2="4" y2="20"></line>
-								</svg>
-							</span>
-						</span>
-					</button>
-				</span>
+    <span>
+        <a class="navbar-brand" href="/">
+            <img
+                    class="brand-img img-fluid"
+                    src="{% static 'assets/images/logo/logo-55x32.png' %}" alt="brand"
+                    style="width: 32px;"
+            />
+            {% if base.company_current_data %}
+                <span
+                        id="span-code-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{{ base.company_current_data.title }}"
+                >{{ base.company_current_data.code }}</span>
+            {% endif %}
+            <span class="brand-img img-fluid"></span>
+        </a>
+        <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
+            <span class="icon">
+                <span class="svg-icon fs-5">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24" height="24"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round"
+                    >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <line x1="10" y1="12" x2="20" y2="12"></line>
+                        <line x1="10" y1="12" x2="14" y2="16"></line>
+                        <line x1="10" y1="12" x2="14" y2="8"></line>
+                        <line x1="4" y1="4" x2="4" y2="20"></line>
+                    </svg>
+                </span>
+            </span>
+        </button>
+    </span>
 </div>
 <!-- /Brand -->

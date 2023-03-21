@@ -1,6 +1,9 @@
 """not need import module"""
+
+
 class StringUrl(str):  # pylint: disable=too-few-public-methods
     """convert str url"""
+
     def push_id(self, _id):
         """return url with id"""
         return f'{self}/{_id}'
@@ -20,6 +23,7 @@ class StringUrl(str):  # pylint: disable=too-few-public-methods
 
 class ApiURL:  # pylint: disable=too-few-public-methods
     """API link BE"""
+
     @staticmethod
     def push_id(url, _id):
         """return str with url format"""
@@ -28,6 +32,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     login = StringUrl('auth/sign-in')
     logout = StringUrl('auth/logout')
     my_profile = StringUrl('auth/profile')
+    ALIVE_CHECK = StringUrl('auth/alive-check')
     refresh_token = StringUrl('auth/token-refresh')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
@@ -77,3 +82,25 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
+
+    # crm/contact
+    CONTACT_LIST = StringUrl('saledata/contacts')
+    CONTACT_DETAIL = StringUrl('saledata/contact')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
+
+    # masterdata/lookup/contact
+    SALUTATION_LIST = StringUrl('saledata/salutations')
+    INTERESTS_LIST = StringUrl('saledata/interests')
+    SALUTATION_DETAIL = StringUrl('saledata/salutation/')
+    INTEREST_DETAIL = StringUrl('saledata/interest/')
+
+    # masterdata/lookup/account
+    INDUSTRY_LIST = StringUrl('saledata/industries')
+    ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
+    ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    INDUSTRY_DETAIL = StringUrl('saledata/industry/')
+
+    # crm/account
+    ACCOUNT_LIST = StringUrl('saledata/accounts')
+    ACCOUNT_DETAIL = StringUrl('saledata/account')
+    ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')

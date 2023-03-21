@@ -315,36 +315,44 @@ $(document).ready(function () {
 
     // Button add billing address
     $('#edit-billing-address-btn').on('click', function () {
+        let ele = $('#select-box-account-name')
+        ele.html('');
         $('#edited-billing-address').val('');
         $('#button_add_new_billing_address').prop('hidden', true);
         $('#select-box-address').prop('hidden', false);
         $('#edited-billing-address').prop('hidden', true);
         $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
 
-        let acc_name = [];
-        let acc_name_id = [];
+        let list_emp = []
         $('#select-box-acc-manager').find('option:selected').each(function () {
-            let list_account_name = $(this).attr('data-account-name').split(',');
-            let list_account_name_id = $(this).attr('data-account-name-id').split(',');
-            for (let i = 0; i < list_account_name_id.length; i++) {
-                if (!acc_name_id.includes(list_account_name_id[i])) {
-                    if (list_account_name_id[i] !== '') {
-                        acc_name_id.push(list_account_name_id[i])
-                        acc_name.push(list_account_name[i])
+            list_emp.push($(this).val());
+        })
+
+        let list_acc_map_emp = []
+        let data_url = $('#select-box-acc-manager').attr('data-url-accounts')
+        let data_method = $('#select-box-acc-manager').attr('data-method')
+        $.fn.callAjax(data_url, data_method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('accounts_map_employee')) {
+                        data.accounts_map_employee.map(function (item) {
+                            if (list_emp.includes(item.employee.id)) {
+                                if (!list_acc_map_emp.includes(item.account.id)) {
+                                    console.log(item.account.id)
+                                    list_acc_map_emp.push(item.account.id)
+                                    ele.append(`<option value="` + item.account.id + `">` + item.account.name + `</option>`)
+                                }
+                            }
+                        })
                     }
                 }
             }
-        });
-        let select_box_acc_name = $('#select-box-account-name');
-        select_box_acc_name.empty();
+        )
+
         $('#inp-tax-code-address').val($('#inp-tax-code').val());
         $('#inp-email-address').val($('#inp-email').val());
         $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
-
-        if (acc_name_id) {
-            for (let i = 0; i < acc_name_id.length; i++)
-                select_box_acc_name.append(`<option value="` + acc_name_id[i] + `">` + acc_name[i] + `</option>`)
-        }
 
         if ($('#list-billing-address input').length === 0)
             $('#make-default-billing-address').prop('checked', true);

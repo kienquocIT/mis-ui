@@ -61,11 +61,10 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data)
                     ele.text("");
-                    if (data.hasOwnProperty('account_manager_list') && Array.isArray(data.account_manager_list)) {
-                        data.account_manager_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `" data-account-name-id="` + item.account.id + `" data-account-name="` + item.account.name + `">` + item.full_name + `</option>`)
+                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        data.employee_list.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                         })
                     }
                 }

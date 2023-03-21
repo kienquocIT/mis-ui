@@ -1,12 +1,13 @@
 from django.urls import path
-from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI,\
-    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList, \
-    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,\
-    ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI, \
-    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, \
-    AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
+from apps.sale.saledata.views import (
+    ContactMasterDataList, SalutationCreateAPI,
+    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList,
+    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,
+    ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
+    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
+    AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
-
+)
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -23,7 +24,7 @@ urlpatterns = [
     path('masterdata/industry/api/<str:pk>', IndustryDetailAPI.as_view(), name='IndustryDetailAPI'),
     path('masterdata/account-type/list/api', AccountTypeListAPI.as_view(), name='AccountTypeListAPI'),
     path('masterdata/account-type/create/api', AccountTypeCreateAPI.as_view(), name='AccountTypeCreateAPI'),
-    path('masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(), name='AccountTypeDetailAPI'),
+    path('masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(),name='AccountTypeDetailAPI'),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),
     path('contacts/api', ContactListAPI.as_view(), name='ContactListAPI'),
@@ -43,5 +44,5 @@ urlpatterns = [
     path('account/create', AccountCreate.as_view(), name='AccountCreate'),
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
-    path('getaccountname/api', GetAccountNameAPI.as_view(), name='GetAccountNameAPI'),
+    path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
 ]

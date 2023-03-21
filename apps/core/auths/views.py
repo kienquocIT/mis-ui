@@ -4,8 +4,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import logout
 from django.utils.translation import gettext_lazy as _
+from rest_framework import status
 
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -43,15 +44,15 @@ class AuthLogin(APIView):
                     return Response({'detail': AuthMsg.login_success, 'data': resp_data.result}, status=200)
                 return Response({'detail': AuthMsg.login_exc, 'data': resp_data.result}, status=400)
             case False:
-                return Response({
-                    'detail': [f'{_(key)}: {value}' for key, value in resp_data.errors.items()]}, status=400
+                return Response(
+                    {
+                        'detail': [f'{_(key)}: {value}' for key, value in resp_data.errors.items()]
+                    }, status=400
                 )
         return Response({'detail': ServerMsg.SERVER_ERR}, status=500)
 
 
 class AuthLogout(APIView):
-    permission_classes = [IsAuthenticated]
-
     @classmethod
     def get(cls, request):
         logout(request)
@@ -68,3 +69,13 @@ class TenantLoginChoice(APIView):
         if resp_data.state:
             return Response({'result': resp_data.result}, status=200)
         return Response({'detail': resp_data.errors}, status=400)
+
+
+class SwitchCompanyCurrentView(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.SWITCH_COMPANY).put(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR

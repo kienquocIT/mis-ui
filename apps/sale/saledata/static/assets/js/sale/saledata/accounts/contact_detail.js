@@ -18,17 +18,19 @@ $(document).ready(function () {
                     $('#mobile_id').val(data.contact_detail.mobile);
                     $('#email_id').val(data.contact_detail.email);
                     $('#jobtitle_id').val(data.contact_detail.job_title);
-                    $('#work_address_id').val(data.contact_detail.address_infor.work_address);
-                    $('#home_address_id').val(data.contact_detail.address_infor.home_address);
-                    $('#tag_id').val(data.contact_detail.additional_infor.tags);
-                    $('#facebook_id').val(data.contact_detail.additional_infor.facebook);
-                    $('#gmail_id').val(data.contact_detail.additional_infor.gmail);
-                    $('#linkedln_id').val(data.contact_detail.additional_infor.linkedln);
-                    $('#twitter_id').val(data.contact_detail.additional_infor.twitter);
-                    let list_interest = data.contact_detail.additional_infor.interests.map(obj => obj.title)
-                    list_interest.forEach(function (item) {
-                        $('#input_tags').append(`<option>` + item + `</option>`);
-                    })
+                    $('#work_address_id').val(data.contact_detail.address_information.work_address);
+                    $('#home_address_id').val(data.contact_detail.address_information.home_address);
+                    if (Object.keys(data.contact_detail.additional_information).length > 0) {
+                        $('#tag_id').val(data.contact_detail.additional_information.tags);
+                        $('#facebook_id').val(data.contact_detail.additional_information.facebook);
+                        $('#gmail_id').val(data.contact_detail.additional_information.gmail);
+                        $('#linkedln_id').val(data.contact_detail.additional_information.linkedln);
+                        $('#twitter_id').val(data.contact_detail.additional_information.twitter);
+                        let list_interest = data.contact_detail.additional_information.interests.map(obj => obj.title)
+                        list_interest.forEach(function (item) {
+                            $('#input_tags').append(`<option>` + item + `</option>`);
+                        })
+                    }
                 }
             }
         )

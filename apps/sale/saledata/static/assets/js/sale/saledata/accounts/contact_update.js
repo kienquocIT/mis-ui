@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let option_emp = [{'val': '', 'text': ''}];
 
     function loadSalutationList(id) {
         let ele = $('#select-box-salutation');
@@ -64,6 +65,7 @@ $(document).ready(function () {
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                             }
+                            option_emp.push({'val': item.id, 'text': item.full_name})
                         })
                     }
                 }
@@ -143,7 +145,6 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data);
                     loadEmployee(data.contact_detail.owner.id);
                     loadSalutationList(data.contact_detail.salutation.id);
                     loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to.id);
@@ -155,14 +156,19 @@ $(document).ready(function () {
                     $('#inp-mobile').val(data.contact_detail.mobile);
                     $('#inp-email').val(data.contact_detail.email);
                     $('#inp-jobtitle').val(data.contact_detail.job_title);
-                    $('#work_address_id').val(data.contact_detail.address_infor.work_address);
-                    $('#home_address_id').val(data.contact_detail.address_infor.home_address);
-                    loadInterestList(data.contact_detail.additional_infor.interests.map(obj => obj.id));
-                    $('#tag_id').val(data.contact_detail.additional_infor.tags);
-                    $('#facebook_id').val(data.contact_detail.additional_infor.facebook);
-                    $('#gmail_id').val(data.contact_detail.additional_infor.gmail);
-                    $('#linkedln_id').val(data.contact_detail.additional_infor.linkedln);
-                    $('#twitter_id').val(data.contact_detail.additional_infor.twitter);
+                    $('#work_address_id').val(data.contact_detail.address_information.work_address);
+                    $('#home_address_id').val(data.contact_detail.address_information.home_address);
+                    if (Object.keys(data.contact_detail.additional_information).length > 0) {
+                        loadInterestList(data.contact_detail.additional_information.interests.map(obj => obj.id));
+                        $('#tag_id').val(data.contact_detail.additional_information.tags);
+                        $('#facebook_id').val(data.contact_detail.additional_information.facebook);
+                        $('#gmail_id').val(data.contact_detail.additional_information.gmail);
+                        $('#linkedln_id').val(data.contact_detail.additional_information.linkedln);
+                        $('#twitter_id').val(data.contact_detail.additional_information.twitter);
+                    }
+                    else {
+                        loadInterestList([]);
+                    }
                 }
             }
         )
@@ -184,11 +190,37 @@ $(document).ready(function () {
         }
     })
 
+    // remove employee in report to (selected in owner)
+    $('#select-box-emp').on('change', function () {
+        let id_emp = $(this).val();
+        let ele = $('#select-box-report-to');
+        let selected = ele.val()
+        ele.empty();
+        option_emp.map(function (item) {
+            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
+        })
+        ele.val(selected)
+        $(`#select-box-report-to option[value="` + id_emp + `"]`).remove();
+    });
+
+    // remove employee in onwer (selected in report to)
+    $('#select-box-report-to').on('change', function () {
+        let id_emp = $(this).val()
+        let ele = $('#select-box-emp');
+        let selected = ele.val()
+        ele.empty();
+        option_emp.map(function (item) {
+            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
+        })
+        ele.val(selected)
+        $(`#select-box-emp option[value="` + id_emp + `"]`).remove();
+    });
+
     $('#save-contact').on('click', function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($('#form-create-contact'));
-        frm.dataForm['additional_infor'] = {
+        frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
             'linkedln': $('#linkedln_id').val(),
@@ -197,7 +229,7 @@ $(document).ready(function () {
             'tags': $('#tag_id').val(),
         };
 
-        frm.dataForm['address_infor'] = {
+        frm.dataForm['address_information'] = {
             'work_address': $('#work_address_id').val(),
             'home_address': $('#home_address_id').val(),
         };

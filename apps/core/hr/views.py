@@ -1,9 +1,17 @@
+from django.urls import reverse
 from django.views import View
 from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg, HRMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg, HRMsg, PermsMsg
+
+BELONG_LIST = [
+    {'value': 1, "name": PermsMsg.USER},
+    {'value': 2, "name": PermsMsg.USER_STAFF},
+    {'value': 3, "name": PermsMsg.ALL_STAFF},
+    {'value': 4, "name": PermsMsg.ALL_USER},
+]
 
 
 def create_hr_application(request, url, msg):
@@ -80,7 +88,16 @@ class EmployeeDetail(View):
         menu_active='menu_employee_list',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        return {
+                   'data': {
+                       'doc_id': pk,
+                   },
+                   'belong_list': BELONG_LIST,
+                   'app_list': {
+                       'url': reverse('TenantApplicationListAPI'),
+                       'prefix': 'tenant_application_list',
+                   }
+               }, status.HTTP_200_OK
 
 
 class EmployeeUpdate(View):

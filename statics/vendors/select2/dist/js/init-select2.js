@@ -1,5 +1,4 @@
 "use strict";
-
 /***
  * init dropdown with select2
  * @required_html_data:
@@ -13,9 +12,10 @@
  *          // do action here
  *          console.log(e.params.data)
  *     });
- *     @params selectbox: element of select
  *     @variable e.params.data: full data of select store
+ * @param selectBoxElement: element of select
  */
+
 function initSelectbox(selectBoxElement = null) {
     let $select_box = selectBoxElement
     if (selectBoxElement === null)

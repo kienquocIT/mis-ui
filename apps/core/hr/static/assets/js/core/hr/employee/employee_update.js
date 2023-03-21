@@ -64,7 +64,6 @@ $(document).ready(function () {
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
                                 let planCode = "#" + data.employee.plan_app[t].code
                                 let instancePlan = $(planCode)
-
                                 if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
                                     let appLength = data.employee.plan_app[t].application.length;
                                     for (let i = 0; i < appLength; i++) {
@@ -179,6 +178,8 @@ $(document).ready(function () {
                                                     name="list-app-add-employee-${t}" class="form-check-input check-plan-application"
                                                     data-plan-id="${data.tenant_plan_list[t].plan.id}"
                                                     data-app-id="${data.tenant_plan_list[t].plan.application[i].id}"
+                                                    data-app-label="${data.tenant_plan_list[t].plan.application[i].app_label}"
+                                                    data-app-title="${data.tenant_plan_list[t].plan.application[i].title}"
                                             />
                                             <label
                                                     for="list-app-add-employee" class="form-check-label"
@@ -283,13 +284,13 @@ $(document).ready(function () {
     })
     frm.submit(function (event) {
         let frm = new SetupFormSubmit($(this));
-        console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let dataPlanApp = setupDataPlanApp()
         if (dataPlanApp && frm.dataForm) {
             frm.dataForm['plan_app'] = dataPlanApp
         }
+
 
         if (frm.dataForm.hasOwnProperty('date_joined')) {
             frm.dataForm['date_joined'] = moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss')

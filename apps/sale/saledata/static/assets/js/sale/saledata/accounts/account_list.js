@@ -44,41 +44,36 @@ $(document).ready(function () {
                         return `<div class="row">` + element + `</div>`
                     }
                 }, {
-                    'data': 'industry', 'render': (data, type, row, meta) => {
-                        return `<span><center>` + row.industry + `</center></span>`
-                    }
-                }, {
-                    'data': 'website', 'render': (data, type, row, meta) => {
-                        return `<span><center>` + row.website + `</center></span>`
-                    }
-                }, {
                     'data': 'owner', 'render': (data, type, row, meta) => {
                         if (row.owner.fullname) {
                             return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></center></div>`
-                        }
-                        else {
+                        } else {
                             return ``
                         }
                     }
-                },{
+                }, {
                     'data': 'phone', 'render': (data, type, row, meta) => {
                         return `<span><center>` + row.phone + `</center></span>`
                     }
                 }, {
-                    'data': 'manager', 'render': (data, type, row, meta) => {
-                        let element = ''
-                        for (let i = 0; i < row.manager.length; i++) {
-                            element += `<span class="badge badge-soft-secondary badge-outline mt-1 ml-1">` + row.manager[i] + `</span>`;
+                        'data': 'website', 'render': (data, type, row, meta) => {
+                            return `<span><center>` + row.website + `</center></span>`
                         }
-                        return `<div class="row">` + element + `</div>`
-                    }
-                }, {
-                    'className': 'action-center', 'render': (data, type, row, meta) => {
-                        // let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></center>`;
-                        return '';
-                    }
-                },]
+                    }, {
+                        'data': 'manager', 'render': (data, type, row, meta) => {
+                            let element = ''
+                            for (let i = 0; i < row.manager.length; i++) {
+                                element += `<span class="badge badge-soft-secondary badge-outline mt-1 ml-1">` + row.manager[i] + `</span>`;
+                            }
+                            return `<div class="row">` + element + `</div>`
+                        }
+                    }, {
+                        'className': 'action-center', 'render': (data, type, row, meta) => {
+                            // let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                            // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></center>`;
+                            return '';
+                        }
+                    },]
             }
 
             function initDataTable(config, id_table) {

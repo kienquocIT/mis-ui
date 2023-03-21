@@ -24544,7 +24544,7 @@ $(document).ready(function () {
                 if (shipping_address !== '') {
                     let num = $('#list-shipping-address input').length
                     let is_default = '';
-                    if ($('#make-default-shipping-address').prop('checked') == true) {
+                    if ($('#make-default-shipping-address').prop('checked') === true) {
                         is_default = 'checked';
                     }
 

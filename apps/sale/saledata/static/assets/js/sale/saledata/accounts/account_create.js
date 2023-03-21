@@ -337,9 +337,8 @@ $(document).ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('accounts_map_employee')) {
                         data.accounts_map_employee.map(function (item) {
-                            if (list_emp.includes(item.employee.id)) {
+                            if (list_emp.includes(item.employee)) {
                                 if (!list_acc_map_emp.includes(item.account.id)) {
-                                    console.log(item.account.id)
                                     list_acc_map_emp.push(item.account.id)
                                     ele.append(`<option value="` + item.account.id + `">` + item.account.name + `</option>`)
                                 }
@@ -452,7 +451,6 @@ $(document).ready(function () {
             alert("No address information!");
         }
     })
-
 
     // Conditions for show offCanvas add Contact
     $('#add-contact-btn').on('click', function () {

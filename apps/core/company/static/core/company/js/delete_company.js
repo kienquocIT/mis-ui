@@ -9,7 +9,7 @@ $("tbody").on("click", "#del-company-button", function (event){
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: resp.detail}, 'success')
+                        $.fn.notifyB({'description': 'Successfully.'}, 'success');
                         setTimeout(location.reload.bind(location), 1000);
                     }
                 }, (errs) => {

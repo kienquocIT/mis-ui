@@ -1128,15 +1128,29 @@ jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
 
 }
 jQuery.fn.cleanDataNotify = (data) => {
-    ['status'].map((key) => {
-        delete data[key];
-    });
-    return data
+    if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
+        data = data.errors;
+        switch (typeof data) {
+            case 'object':
+                ['status'].map((key) => {
+                    delete data[key];
+                });
+                break;
+            default:
+                data = {'': data.toString()}
+        }
+    } else {
+        ['status'].map((key) => {
+            delete data[key];
+        });
+    }
+    return data;
 };
 jQuery.fn.notifyErrors = (errs) => {
     if (errs && typeof errs === 'object') {
-        Object.keys(jQuery.fn.cleanDataNotify(errs)).map((key) => {
-            jQuery.fn.notifyB({'title': key, 'description': errs[key]}, 'failure');
+        let errors_converted = jQuery.fn.cleanDataNotify(errs);
+        Object.keys(errors_converted).map((key) => {
+            jQuery.fn.notifyB({'title': key, 'description': errors_converted[key]}, 'failure');
         });
     }
 }
@@ -1288,11 +1302,7 @@ String.prototype.format_by_idx = function () {
     // `<a href="{0}">{1}</a>`.format("http://...", "Tag a")
     // Return ==> `<a href="http://...">Tag A</a>`
     let s = this.toString();
-    for (let i = 0; i < arguments.length; i++) {
-        let reg = new RegExp(/([0-9])$/, "gm");
-        s = s.replace(reg, arguments[i]);
-    }
-    return s;
+    return s.replace(/\{(\d)\}/gm, (match, index) => arguments[index]);
 }
 
 String.prototype.format_url_with_uuid = function (uuid) {

@@ -69,7 +69,7 @@ class EmployeeCreate(View):
         menu_active='menu_employee_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}
+        return {}, status.HTTP_200_OK
 
 
 class EmployeeDetail(View):

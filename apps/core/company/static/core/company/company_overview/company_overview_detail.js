@@ -132,7 +132,7 @@ $(document).ready(function () {
     // filter_all_user_and_employee
     let data_filter = [];
     $(document).on('change', '#filter_data_employee_user', async function () {
-        let temp = await get_data(company_overviewing_id, {filter: this.value});
+        let temp = await get_data(company_overviewing_id, {option: this.value});
         if (temp && temp['company_data'])
             data_filter = temp['company_data']
         tbl.DataTable().clear().rows.add(data_filter).draw();
@@ -202,8 +202,10 @@ function load_power_user_to_modal(row_data, row_elm, tb) {
 
 async function get_data(pk, filter) {
     let frm = new SetupFormSubmit($('#datable_company_overview_detail'));
+    let url = frm.appendFilter(frm.getUrlDetail(pk), filter);
+    console.log(url);
     return $.fn.callAjax(
-        frm.appendFilter(frm.getUrlDetail(pk), filter),
+        url,
         frm.dataMethod
     ).then(
         (resp) => {

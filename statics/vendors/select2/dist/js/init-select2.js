@@ -63,9 +63,15 @@ function initSelectbox(selectBoxElement = null) {
                     let data_convert = []
                     if (data_original.length) {
                         for (let item of data_original) {
+                            let text = 'title';
+                            if ($this.attr('data-format')){
+                                text = $this.attr('data-format')
+                            }else{
+                                if(item.hasOwnProperty('full_name')) text = 'full_name';
+                            }
                             if (default_data && default_data.includes(item.id))
-                                data_convert.push({...item, 'text': item.title, 'selected': true})
-                            else data_convert.push({...item, 'text': item.title})
+                                data_convert.push({...item, 'text': item[text], 'selected': true})
+                            else data_convert.push({...item, 'text': item[text]})
                         }
                         if ($this.attr('data-virtual') !== undefined
                             && $this.attr('data-virtual') !== ''

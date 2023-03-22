@@ -41,7 +41,8 @@ $(function () {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<p>${row.title}</p>`
+                        const link = $('#workflow-link').data('link-update').format_url_with_uuid(row.id)
+                        return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.title}</a>`
                     }
                 },
                 {
@@ -64,17 +65,7 @@ $(function () {
                     render: (data, type, row) => {
                         let urlUpdate = $('#workflow-link').attr('data-link-update').format_url_with_uuid(row.id)
                         let str_html = `<div>
-                                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                   data-bs-original-title="Edit"
-                                                   href="${urlUpdate}" target="_blank">
-                                                    <span class="btn-icon-wrap btn-open-power-user-info">
-                                                        <span class="feather-icon"><i data-feather="edit"></i></span>
-                                                    </span>
-                                                </a>
                                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" 
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                title="" 
                                                 data-bs-original-title="Delete" 
                                                 href="javascript:void(0)" 
                                                 data-url="${urlUpdate}" 

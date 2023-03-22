@@ -8,29 +8,31 @@
     <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'assets/core/workflow/css/flowchart-workflow-init.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/core/workflow/css/wf_detail.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-primary flush-soft-hover"
-            type="button" id="btn-create_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+    <button class="btn btn-flush-primary flush-soft-hover hidden"
+            type="button" id="btn-detail_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
             data-bs-original-title="Save">
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
             </span>
+            <span class="loading-icon spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
             <span class="font-3 ml-1">
-                {% trans 'Save' %}
+                {% trans 'Update' %}
             </span>
         </span>
     </button>
 {% endblock %}
 
 {% block pageContent %}
-    <form data-url="{% url 'WorkflowCreateAPI' %}"
+    <form data-url="{% url 'WorkflowDetailAPI' data.data.doc_id %}"
           data-url-redirect="{% url 'WorkflowList' %}"
-          data-method="POST"
-          id="form-create_workflow"
-          style="padding: 10px"
-          method="post">
+          data-method="PUT"
+          id="form-detail_workflow"
+          method="post"
+          readonly>
         {% csrf_token %}
         <input type="hidden" name="actions_rename">
         <input type="hidden" name="associate" id="node-associate">
@@ -40,7 +42,7 @@
                     <label class="form-label">{% trans 'Workflow name' %}</label>
                     <input class="form-control" type="text"
                            name="title"
-                           id="form-create-title">
+                           id="form-create-title" readonly value="">
                 </div>
             </div>
         </div>
@@ -81,6 +83,7 @@
                                 data-multiple="false"
                                 data-prefix="tenant_application_list"
                                 data-url="{% url 'TenantApplicationListAPI' %}"
+                                disabled
                         ></select>
                     </div>
                 </div>
@@ -88,12 +91,15 @@
                 <div class="row">
                     <div class="col-12 mb-1">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="id-define_zone" name="define_zone">
+                            <input type="checkbox" class="form-check-input"
+                                   id="id-dhtmlefine_zone" name="define_zone"
+                                   disabled
+                            >
                             <label class="form-check-label" for="id-define_zone">{% trans 'Define zone' %}</label>
                         </div>
                     </div>
                     <div class="col-12">
-                        <button class="btn btn-flush-success flush-soft-hover"
+                        <button class="btn btn-flush-success flush-soft-hover mb-2"
                                 type="button"
                                 title="{% trans 'Add new zone' %}"
                                 data-bs-target="#add_zone"
@@ -101,9 +107,9 @@
                         >
                             <span class="icon">
                                 <span class="feather-icon">
-                                    <i data-feather="plus"></i>
+                                    <i data-feather="plus-square"></i>
                                 </span>
-                                <span class="font-3 ml-1">
+                                <span class="font-3 ml-2 ">
                                     {% trans 'Add new zone' %}
                                 </span>
                             </span>
@@ -118,7 +124,7 @@
                             <tr>
                                 <th>
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input">
+                                        <input type="checkbox" class="form-check-input" >
                                     </div>
                                 </th>
                                 <th>{% trans 'Zone name' %}</th>
@@ -132,12 +138,12 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade " id="tab_node">
+            <div class="tab-pane fade" id="tab_node">
                 <div class="row">
                     <div class="col-9">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="id-is_multi_company"
-                                   name="is_multi_company">
+                                   name="is_multi_company" disabled>
                             <label class="form-check-label" for="id-is_multi_company">
                                 {% trans 'Collaborators in multi company' %}</label>
                         </div>
@@ -171,7 +177,7 @@
                         >
                             <span class="icon">
                                     <span class="feather-icon">
-                                        <i data-feather="plus"></i>
+                                        <i data-feather="plus-square"></i>
                                     </span>
                                     <span class="font-3 ml-1">
                                         {% trans 'Add new node' %}
@@ -179,8 +185,7 @@
                                 </span>
                         </button>
 
-                        <div
-                                class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
+                        <div class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalCenter" aria-hidden="true"
                         >
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -268,7 +273,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade " id="tab_next_node">
+            <div class="tab-pane fade" id="tab_next_node">
                 <div class="wrap-flowchart">
                     <div id="node_dragbox">
                         <p class="text-center pt-3">{% trans 'No content available' %}</p>
@@ -306,7 +311,8 @@
                                         id="close-modal-association-error"
                                         class="btn btn-primary"
                                         data-bs-dismiss="modal"
-                                >OK</button>
+                                >OK
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -316,8 +322,13 @@
             </div>
         </div>
         <div class="w-100 d-flex justify-content-center mt-2" id="nav-next-prev-step">
-            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev" disabled>{% trans 'Prev' %}</button>
-            <button class="btn btn btn-primary next-btn" type="button" data-nav-type="next" disabled>{% trans 'Next' %}</button>
+            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev"
+                    disabled>{% trans 'Prev' %}</button>
+            <button class="btn btn btn-primary next-btn"
+                    type="button"
+                    data-nav-type="next">
+                {% trans 'Next' %}
+            </button>
         </div>
     </form>
     <!--- modal add and edit zone--->
@@ -354,7 +365,8 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label"><b>{% trans 'Input description of zone' %}</b></label>
-                                    <textarea class="form-control" type="text" name="remark" id="form-create-zone-remark"></textarea>
+                                    <textarea class="form-control" type="text" name="remark"
+                                              id="form-create-zone-remark"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -457,8 +469,10 @@
                     <div class="row">
                         <div class="col mb-1">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="id-restore_default" name="restore_default">
-                                <label class="form-check-label" for="id-restore_default">{% trans 'Restore default' %}</label>
+                                <input type="checkbox" class="form-check-input" id="id-restore_default"
+                                       name="restore_default">
+                                <label class="form-check-label"
+                                       for="id-restore_default">{% trans 'Restore default' %}</label>
                             </div>
                         </div>
                     </div>
@@ -486,13 +500,14 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'vendors/JSPlumb/js/jsplumb.js' %}"></script>
+
     <script src="{% static 'assets/core/workflow/js/workflow-flowchart.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_common.js' %}"></script>
-    <script src="{% static 'assets/core/workflow/js/workflow-create.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/workflow_node.js' %}"></script>
-    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
 {% endblock %}

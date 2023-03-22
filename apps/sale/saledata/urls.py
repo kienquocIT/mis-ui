@@ -1,13 +1,14 @@
 from django.urls import path
-from apps.sale.saledata.views import (
-    ContactMasterDataList, SalutationCreateAPI,
-    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList,
-    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,
-    ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
-    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
-    AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
-    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
-)
+from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI, \
+    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList, \
+    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList, \
+    ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI, \
+    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, \
+    AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI, \
+    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI, \
+    ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI, \
+    UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI, \
+    UnitOfMeasureGroupDetailAPI
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -24,7 +25,7 @@ urlpatterns = [
     path('masterdata/industry/api/<str:pk>', IndustryDetailAPI.as_view(), name='IndustryDetailAPI'),
     path('masterdata/account-type/list/api', AccountTypeListAPI.as_view(), name='AccountTypeListAPI'),
     path('masterdata/account-type/create/api', AccountTypeCreateAPI.as_view(), name='AccountTypeCreateAPI'),
-    path('masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(),name='AccountTypeDetailAPI'),
+    path('masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(), name='AccountTypeDetailAPI'),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),
     path('contacts/api', ContactListAPI.as_view(), name='ContactListAPI'),
@@ -45,4 +46,22 @@ urlpatterns = [
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
+] + [
+    path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
+    path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
+    path('masterdata/product-type/api<str:pk>', ProductTypeDetailAPI.as_view(), name='ProductTypeDetailAPI'),
+    path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(),name='ProductCategoryListAPI'),
+    path('masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),name='ProductCategoryDetailAPI'),
+    path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
+    path('masterdata/expense-type/api/<str:pk>', ExpenseTypeDetailAPI.as_view(), name='ExpenseTypeDetailAPI'),
+    path('masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'),
+    path(
+        'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
+        name='UnitOfMeasureGroupListAPI'
+    ),
+    path(
+        'masterdata/unit-of-measure-group/api/<str:pk>', UnitOfMeasureGroupDetailAPI.as_view(),
+        name='UnitOfMeasureGroupDetailAPI'
+    ),
+    path('masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(), name='UnitOfMeasureDetailAPI')
 ]

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let option_emp = [{'val': '', 'text': ''}];
 
     function loadSalutationList() {
         let ele = $('#select-box-salutation');
@@ -54,7 +53,6 @@ $(document).ready(function () {
                         ele.append(`<option selected></option>`)
                         data.employee_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
-                            option_emp.push({'val': item.id, 'text': item.full_name})
                         })
                     }
                 }
@@ -132,37 +130,11 @@ $(document).ready(function () {
         }
     })
 
-    // remove employee in report to (selected in owner)
-    $('#select-box-emp').on('change', function () {
-        let id_emp = $(this).val();
-        let ele = $('#select-box-report-to');
-        let selected = ele.val()
-        ele.empty();
-        option_emp.map(function (item) {
-            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
-        })
-        ele.val(selected)
-        $(`#select-box-report-to option[value="` + id_emp + `"]`).remove();
-    });
-
-    // remove employee in onwer (selected in report to)
-    $('#select-box-report-to').on('change', function () {
-        let id_emp = $(this).val()
-        let ele = $('#select-box-emp');
-        let selected = ele.val()
-        ele.empty();
-        option_emp.map(function (item) {
-            ele.append(`<option value="` + item.val + `">` + item.text + `</option>`)
-        })
-        ele.val(selected)
-        $(`#select-box-emp option[value="` + id_emp + `"]`).remove();
-    });
-
     $('#save-contact').on('click', function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($('#form-create-contact'));
-        frm.dataForm['additional_infor'] = {
+        frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
             'linkedln': $('#linkedln_id').val(),
@@ -171,7 +143,7 @@ $(document).ready(function () {
             'tags': $('#tag_id').val(),
         };
 
-        frm.dataForm['address_infor'] = {
+        frm.dataForm['address_information'] = {
             'work_address': $('#work_address_id').val(),
             'home_address': $('#home_address_id').val(),
         };

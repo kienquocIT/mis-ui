@@ -130,6 +130,9 @@ $(document).ready(function () {
     let config_unit_measure = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
+        // scrollY: $(window).height() * 0.6,
+        // scrollCollapse: true,
+        // paging: false,
         columnDefs: [{
             "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
         },
@@ -333,9 +336,12 @@ $(document).ready(function () {
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
         let group_name = $(this).find('option:selected').attr('group-name');
         let name = $('#name-unit').val()
-        $('#inp-rounding').val('0');
+        $('#inp-rounding').val('5');
         if (data_referenced) {
             if (data_referenced === 'undefined') {
+                $('#inp-code').prop('readonly', false);
+                $('#name-unit').prop('readonly', false);
+
                 $('#ratio-unit').val(1);
                 $('#ratio-unit').prop('readonly', true);
                 $('#ratio-area').prop('hidden', true);
@@ -354,6 +360,9 @@ $(document).ready(function () {
                 $('#notify-area-label').text('');
                 $('#notify-area').prop('hidden', true);
             } else {
+                $('#inp-code').prop('readonly', false);
+                $('#name-unit').prop('readonly', false);
+
                 $('#ratio-unit').val('');
                 $('#ratio-unit').prop('readonly', false);
                 $('#ratio-area').prop('hidden', false);
@@ -367,6 +376,9 @@ $(document).ready(function () {
                 $('#notify-area').prop('hidden', false);
             }
         } else {
+            $('#inp-code').prop('readonly', true);
+            $('#name-unit').prop('readonly', true);
+
             $('#ratio-unit').val('');
             $('#ratio-unit').prop('readonly', true);
             $('#ratio-area').prop('hidden', false);

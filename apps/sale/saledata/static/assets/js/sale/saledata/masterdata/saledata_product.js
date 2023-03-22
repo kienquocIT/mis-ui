@@ -198,7 +198,7 @@ $(document).ready(function () {
             'className': 'action-center', 'render': (data, type, row, meta) => {
 
                 if (row.group.hasOwnProperty('is_referenced_unit')) {
-                    if (row.group.is_referenced_unit === 1) {
+                    if (row.group.is_referenced_unit === true) {
                         return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
                     } else {
                         return ``;
@@ -487,6 +487,14 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
         let data_url = frm.dataUrl;
+
+        if ($('#check-referenced-unit').is(':checked')) {
+            frm_data['is_referenced_unit'] = true;
+        }
+        else {
+            frm_data['is_referenced_unit'] = false;
+        }
+
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
@@ -531,7 +539,7 @@ $(document).ready(function () {
                             $('#group-id').val(data.unit_of_measure.group.id);
                             $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
 
-                            if (data.unit_of_measure.group.is_referenced_unit === 1) {
+                            if (data.unit_of_measure.group.is_referenced_unit === true) {
                                 $('#check-edit-unit').prop('checked', true);
                                 $('#select-box-edit-uom-group').prop('hidden', true);
                                 $('#select-group-div').removeClass('inp-can-edit');

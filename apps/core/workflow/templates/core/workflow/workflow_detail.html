@@ -331,6 +331,10 @@
             </button>
         </div>
     </form>
+    <input type="hidden" id="url-factory"
+           data-employees="{% url 'EmployeeListAPI' %}"
+           data-node="{% url 'NodeSystemListAPI' %}"
+    >
     <!--- modal add and edit zone--->
     <div class="modal fade"
          id="add_zone"
@@ -501,7 +505,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'vendors/JSPlumb/js/jsplumb.js' %}"></script>
 
@@ -510,4 +513,6 @@
     <script src="{% static 'assets/core/workflow/js/workflow_node.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
+
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 {% endblock %}

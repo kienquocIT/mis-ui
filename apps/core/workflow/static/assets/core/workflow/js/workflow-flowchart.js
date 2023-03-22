@@ -110,7 +110,7 @@ function extendDropSpace(){
         }
         else{
             // minus space
-            if (!(current_h - 300) < default_w || !(current_h - 300) < default_h){
+            if (!((current_h - 300) < default_h) || !((current_w - 300) < default_w)){
                 target_elm.css({
                     "height": current_h - 300,
                     "width": current_w - 300

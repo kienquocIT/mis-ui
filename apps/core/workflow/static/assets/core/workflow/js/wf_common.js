@@ -232,6 +232,112 @@ function addZoneBtn(ElmSelectbox) {
     });
 }
 
+// handle event table zone actions on click
+function actionsClick(elm, data, iEvent) {
+    let isAction = $(iEvent.currentTarget).attr('data-action');
+    if (isAction === 'edit') {
+        let $add_zone_modal = $('#add_zone');
+        let $form = $add_zone_modal.find('form');
+        $form.find('[name="title"]').val(data.title)
+        $form.find('[name="remark"]').val(data.remark)
+        $form.find('#property_list_choices').val(data.property_list).trigger('change')
+        $form.find('[name="order"]').val(data.order)
+        if (data.hasOwnProperty('id'))
+            $form.find('[name="zone_id"]').val(data.id)
+        modalFormSubmit($form)
+        $add_zone_modal.modal('show')
+    } else if (isAction === 'delete') {
+        let table_elm = $(elm).parents('table.table');
+        $(table_elm).DataTable().rows(elm).remove().draw();
+        // .row(elm).index()
+        let isDataTableList = $(table_elm).DataTable().data().toArray()
+        for (let [idx, item] of isDataTableList.entries()) {
+            item['order'] = idx + 1
+        }
+        $(table_elm).DataTable().data(isDataTableList).draw(false)
+    }
+}
+
+function initTableZone(data) {
+    // init dataTable
+    let listData = data ? data : []
+    let $tables = $('#table_workflow_zone');
+    $tables.DataTable({
+        data: listData,
+        searching: false,
+        ordering: false,
+        paginate: false,
+        info: false,
+        drawCallback: function (row, data) {
+            // render icon after table callback
+            feather.replace();
+            // reorder from index to order
+            if (data) {
+                let api = this.api()
+                let newIndex = api.row(row).index()
+                data['order'] = newIndex + 1
+            }
+        },
+        rowCallback: function (row, data) {
+            // handle onclick btn
+            $('.actions-btn a', row).off().on('click', function (e) {
+                e.stopPropagation();
+                actionsClick(row, data, e)
+            })
+        },
+        columns: [
+            {
+                targets: 0,
+                render: () => {
+                    return `<div class="form-check"><input type="checkbox" class="form-check-input"></div>`
+                }
+            },
+            {
+                targets: 1,
+                render: (data, type, row) => {
+                    return `<p>${row.title}</p>`
+                }
+            },
+            {
+                targets: 2,
+                render: (data, type, row) => {
+                    return `<p>${row.remark}</p>`
+                }
+            },
+            {
+                targets: 3,
+                render: (data, type, row) => {
+                    let _id = row.order
+                    if (row.hasOwnProperty('id') && row.id)
+                        _id = row.id
+                    return `<div class="actions-btn">
+                                    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
+                                       title="Edit"
+                                       href="#"
+                                       data-id="${_id}"
+                                       data-action="edit">
+                                        <span class="feather-icon">
+                                            <i data-feather="edit"></i>
+                                        </span>
+                                    </a>
+                                    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
+                                       title="Delete"
+                                       href="#"
+                                       data-id="${_id}"
+                                       data-action="delete">
+                                        <span class="btn-icon-wrap">
+                                            <span class="feather-icon">
+                                                <i data-feather="trash-2"></i>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>`;
+                },
+            }
+        ],
+    });
+}
+
 $(document).ready(function () {
     // declare global scope variable
     let $prev_btn = $('#nav-next-prev-step .prev-btn');

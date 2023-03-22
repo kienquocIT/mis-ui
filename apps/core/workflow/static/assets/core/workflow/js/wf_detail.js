@@ -2,9 +2,20 @@ $(function () {
     /***
      * get data received form ajax and parse value to HTML
      * @param res response data of workflow detail
+     * @param {{is_define_zone:string}} data
      */
     function prepareDataAndRenderHTML(res){
-        if(res.title) $('[name="title"]').val(res.title)
+        if(res.title) $('[name="title"]').val(res.title);
+        if(res.application){
+            const elmApp = $('[name="application"]');
+            elmApp.attr('data-onload', JSON.stringify(res.application));
+            initSelectbox(elmApp)
+        }
+        if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
+        if (res.zone) initTableZone(res.zone);
+        if (res.node){
+
+        }
     }
 
     /***
@@ -69,6 +80,7 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.dir(data)
                         prepareDataAndRenderHTML(data);
                         clickOnOffEditForm();
                         UpdateFormSubmit();

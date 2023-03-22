@@ -4,10 +4,11 @@
  * init dropdown with select2
  * @required_html_data:
  * - class: dropdown-select_two
- * - data: multiple="true" => set combobox is multiple
- *         prefix="application_property_list" => object key of response return
- *         url="{% url 'ApplicationPropertyListAPI' %}" => UI url
- *         params="{name: value}"
+ * - data: -multiple="true" => set combobox is multiple
+ *         -prefix="application_property_list" => object key of response return
+ *         -url="{% url 'ApplicationPropertyListAPI' %}"
+ *         -params="{name: value}"
+ *         -onload={id="", title="asdad"}
  * handle event on change example:
  *     selectbox.on("select2:select", function (e) {
  *          // do action here
@@ -27,7 +28,6 @@ function initSelectbox(selectBoxElement = null) {
         // check if element has default data
         let default_data = $this.attr('data-onload')
         if (default_data && default_data.length) {
-            let temp = []
             if (typeof default_data === 'string') {
                 try {
                     default_data = JSON.parse(default_data)
@@ -35,13 +35,15 @@ function initSelectbox(selectBoxElement = null) {
                     console.log('Warning: ', $this.attr('id'), ' parse data onload is error with this error', e)
                 }
             }
-            if (Object.keys(default_data).length !== 0) {
-                for (let item of default_data) {
-                    if (item.id)
-                        temp.push(item.id)
-                    else temp.push(item)
+            if (default_data){
+                if (Array.isArray(default_data)){
+                    let htmlTemp = ''
+                    for (let item of default_data){
+                        htmlTemp += `<option value="${item.id}" selected>${item.title}</option>`
+                    }
+                    $this.html(htmlTemp)
                 }
-                default_data = temp
+                else $this.html(`<option value="${default_data.id}" selected>${default_data.title}</option>`)
             }
         }
         let $thisURL = $this.attr('data-url')

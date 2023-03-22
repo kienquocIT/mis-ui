@@ -179,13 +179,13 @@ $(document).ready(function () {
         if (frm_data['title'] === '') {
             frm_data['title'] = null;
         }
-        
+
         $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
                         $('#modal-lookup-data').hide();
                     }
                 },
@@ -317,7 +317,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Cập nhập"}, 'success')
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
                             $('#modal-update-data').hide();
                         }
                     },

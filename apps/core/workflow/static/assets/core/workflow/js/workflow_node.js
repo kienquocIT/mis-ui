@@ -1,20 +1,19 @@
 $(function () {
-    /***
-     * get data list of default node
-     */
-    function renderAction() {
+
+    function renderAction(is_system_node = true) {
         let actionEle = ``;
         let nodeActionRaw = $('#wf_action').text();
         if (nodeActionRaw) {
             let nodeAction = JSON.parse(nodeActionRaw);
             let inputEle = ``;
-            for (let key in nodeAction) {
-                if (String(key) === "0") {
-                    inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" checked disabled>`;
-                } else {
-                    inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" disabled>`;
-                }
-                actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
+            if (is_system_node === true) {
+                for (let key in nodeAction) {
+                    if (String(key) === "0") {
+                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" checked disabled>`;
+                    } else {
+                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" disabled>`;
+                    }
+                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                             <div class="media d-flex align-items-center">
                                 <div class="media-body">
                                     <div>
@@ -27,12 +26,37 @@ $(function () {
                                 <label class="form-check-label" for="customCheck6"></label>
                             </div>
                         </li>`
+                }
+            } else {
+                for (let key in nodeAction) {
+                    if (String(key) === "0") {
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
+                    } else {
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6">`;
+                    }
+                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="media d-flex align-items-center">
+                                <div class="media-body">
+                                    <div>
+                                        <div class="node-action" data-action="${String(key)}">${nodeAction[key]}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-check-theme ms-3">
+                                ${inputEle}
+                                <label class="form-check-label" for="customCheck6"></label>
+                            </div>
+                        </li>`
+                }
             }
         }
         return actionEle
     }
 
 
+    /***
+     * get data list of default node
+     */
     function initTableNode(data) {
         // init dataTable
         let listData = data ? data : []
@@ -246,30 +270,30 @@ $(function () {
                     let childTitle = row.children[1].children[0].innerHTML;
                     orderNum++;
                     optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-            <div class="media d-flex align-items-center">
-            <div class="media-body">
-            <div>
-            <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
-            </div>
-            </div>
-            </div>
-            <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-            <label class="form-check-label" for="customCheck6"></label>
-            </div>
-            </li>`
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
+                                            <label class="form-check-label" for="customCheck6"></label>
+                                        </div>
+                                    </li>`
                 }
             }
             actionDropDown = `<div class="btn-group dropdown">
-            <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
-                    <ul class="node-zone-list p-0">
-                        ${optionZone}
-                    </ul>
-                </div>
-                </div>
-                </div>
-            </div>`
+                                    <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
+                                        <ul class="node-zone-list p-0">
+                                            ${optionZone}
+                                        </ul>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>`
             zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
 
         });
@@ -356,7 +380,6 @@ $(function () {
                     },
                 )
             }
-
             loadDataTable();
         }
 
@@ -377,7 +400,6 @@ $(function () {
 
 
         function tableNodeAdd() {
-            let nodeAction = [{"0": "Create"}, {"1": "Approve"}, {"2": "Reject"}, {"3": "Return"}, {"4": "Receive"}, {"5": "To do"}]
             let tableShowBodyOffModal = $('#datable-workflow-node-create tbody');
             let initialRow = tableShowBodyOffModal.find('.initial-row');
             let approvedRow = tableShowBodyOffModal.find('.approved-row');
@@ -394,28 +416,7 @@ $(function () {
             let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
             let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
             let actionData = bt2 + bt3;
-            let actionEle = ``;
-            for (let a = 0; a < nodeAction.length; a++) {
-                for (let key in nodeAction[a]) {
-                    let eleInput = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6">`;
-                    if (key === "0") {
-                        eleInput = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
-                    }
-                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="media d-flex align-items-center">
-                            <div class="media-body">
-                            <div>
-                            <div class="node-action" data-action="${key}">${nodeAction[a][key]}</div>
-                            </div>
-                            </div>
-                            </div>
-                            <div class="form-check form-check-theme ms-3">
-                            ${eleInput}
-                            <label class="form-check-label" for="customCheck6"></label>
-                            </div>
-                        </li>`
-                }
-            }
+            let actionEle = renderAction(false);
             let modalAuditId = "auditModalCreate" + newCheckBox
 
             initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span class="node-title-col-show node-title">${nodeName}</span><input type="text" class="node-title-col-edit" hidden></td><td><span class="node-remark-col-show node-description">${nodeDescription}</span><input type="text" class="node-remark-col-edit" hidden></td>

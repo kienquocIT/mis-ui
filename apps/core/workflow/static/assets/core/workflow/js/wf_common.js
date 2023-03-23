@@ -27,6 +27,7 @@ function setupDataNode(is_submit = false) {
         let dataActionList = [];
         let dataEmployeeList = [];
         let dataZoneList = [];
+        let dataInitialZoneList = [];
         let dataCollaboratorList = [];
         let isSystem = false;
         let codeNodeSystem = "";
@@ -47,7 +48,7 @@ function setupDataNode(is_submit = false) {
         for (let d = 0; d < rowChildren.length; d++) {
             let col = rowChildren[d + 1];
             if ((d + 1) === 1) {
-                title = col.children[0].innerHTML;
+                title = col.querySelector('.node-title').innerHTML;
                 if (col.children[0].getAttribute('data-is-system')) {
                     if (col.children[0].getAttribute('data-is-system') === "true") {
                         isSystem = true;
@@ -55,7 +56,7 @@ function setupDataNode(is_submit = false) {
                     }
                 }
             } else if ((d + 1) === 2) {
-                description = col.children[0].innerHTML;
+                description = col.querySelector('.node-description').innerHTML;
             } else if ((d + 1) === 3) {
                 // set data workflow node actions submit
                 let eleUL = col.querySelector('.node-action-list');
@@ -77,7 +78,7 @@ function setupDataNode(is_submit = false) {
                         if (tableInitialNodeCollab) {
                             if (tableInitialNodeCollab.tBodies[0].rows.length > 0) {
                                 let zoneList = tableInitialNodeCollab.tBodies[0].rows[0].querySelector('.node-zone-list');
-                                dataZoneList = getZone(zoneList)
+                                dataInitialZoneList = getZone(zoneList)
                             }
                         }
                     } else {
@@ -166,7 +167,7 @@ function setupDataNode(is_submit = false) {
                 'collab_out_form': collabOutForm,
                 'collab_in_workflow': collabInWorkflow,
                 'collaborator': dataCollaboratorList,
-                'zone_initial_node': dataZoneList,
+                'zone_initial_node': dataInitialZoneList,
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,
                 'order': orderNode

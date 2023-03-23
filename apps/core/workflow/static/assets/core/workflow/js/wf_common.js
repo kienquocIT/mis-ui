@@ -47,7 +47,7 @@ function setupDataNode(is_submit = false) {
         for (let d = 0; d < rowChildren.length; d++) {
             let col = rowChildren[d + 1];
             if ((d + 1) === 1) {
-                title = col.children[0].innerHTML;
+                title = col.querySelector('.node-title').innerHTML;
                 if (col.children[0].getAttribute('data-is-system')) {
                     if (col.children[0].getAttribute('data-is-system') === "true") {
                         isSystem = true;
@@ -55,7 +55,7 @@ function setupDataNode(is_submit = false) {
                     }
                 }
             } else if ((d + 1) === 2) {
-                description = col.children[0].innerHTML;
+                description = col.querySelector('.node-description').innerHTML;
             } else if ((d + 1) === 3) {
                 // set data workflow node actions submit
                 let eleUL = col.querySelector('.node-action-list');

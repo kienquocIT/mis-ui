@@ -43,7 +43,7 @@
 
 
     <div id="section-product-list" class="mt-5">
-        <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "AccountListAPI" %}"
+        <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "ProductListAPI" %}"
                data-method="GET">
             <thead>
             <th class="w-5">
@@ -68,4 +68,5 @@
 
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/sale/saledata/product/product_list.js' %}"></script>
 {% endblock %}

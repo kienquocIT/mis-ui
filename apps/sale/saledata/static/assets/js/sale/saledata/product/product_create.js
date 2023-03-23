@@ -90,13 +90,15 @@ $(document).ready(function () {
         let data_method = $(this).attr('data-method');
         let select_box_default_uom = $('#select-box-default-uom');
         let select_box_uom_name = $('#select-box-uom-name');
+        select_box_default_uom.html('');
+        select_box_uom_name.html('');
 
         $.fn.callAjax(data_url, data_method).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                    select_box_default_uom.append(`<option value="null"></option>`);
-                    select_box_uom_name.append(`<option value="null" data-code=""></option>`);
+                    select_box_default_uom.append(`<option></option>`);
+                    select_box_uom_name.append(`<option data-code=""></option>`);
                     data.uom_group.uom.map(function (item) {
                         select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
                         select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
@@ -123,7 +125,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới product"}, 'success')
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },

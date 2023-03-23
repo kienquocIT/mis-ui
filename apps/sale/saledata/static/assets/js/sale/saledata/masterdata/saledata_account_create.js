@@ -93,8 +93,8 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt2 + bt3;
+                // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                return bt2;
             }
         },]
     }
@@ -143,6 +143,11 @@ $(document).ready(function () {
     },)
 
 
+    $('#btn-show-modal-create').on('click', function (){
+        $('.modal-body input').val('');
+    })
+
+
 //Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')
@@ -159,7 +164,7 @@ $(document).ready(function () {
     let frm = $('#form-create-lookup');
     frm.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let csr = $("input[name=csrfmiddlewaretoken]").last().val();
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
@@ -295,7 +300,7 @@ $(document).ready(function () {
             },)
         // save edit
         $('#modal-update-data .edit-button').off().on('click', function () {
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let csr = $("input[name=csrfmiddlewaretoken]").last().val();
             let inp_name = $('#name-update');
             let inp_code = $('#code-update');
             let inp_des = $('#description-update');

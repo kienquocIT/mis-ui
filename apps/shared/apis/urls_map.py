@@ -87,7 +87,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')
     CONTACT_DETAIL = StringUrl('saledata/contact')
-    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contacts-not-map-account')
 
     # masterdata/lookup/contact
     SALUTATION_LIST = StringUrl('saledata/salutations')
@@ -104,4 +104,16 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account')
-    ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
+    ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
+
+    # masterdata/product
+    PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
+    PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/')
+    PRODUCT_CATEGORY_LIST = StringUrl('saledata/product-categories')
+    PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/')
+    EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
+    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/')
+    UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
+    UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/')
+    UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
+    UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/')

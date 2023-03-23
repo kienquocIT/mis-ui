@@ -49,7 +49,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-create-product" data-method="POST" data-url="" data-url-redirect="{% url "ProductList" %}">
+    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}" data-url-redirect="{% url "ProductList" %}">
     {% csrf_token %}
         <div class="row">
             <div class="col-6">

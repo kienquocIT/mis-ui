@@ -73,10 +73,10 @@ $(function () {
             },
             rowCallback: function (row, data) {
                 // handle onclick btn
-                $('.actions-btn a', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    actionsClick(row, data, e)
-                })
+                // $('.actions-btn a', row).off().on('click', function (e) {
+                //     e.stopPropagation();
+                //     actionsClick(row, data, e)
+                // })
 
                 let systemRowClass = "";
                 let initialCheckBox = "";
@@ -562,18 +562,18 @@ $(function () {
             let orderNum = 0;
 
             optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-            <div class="media d-flex align-items-center">
-            <div class="media-body">
-            <div>
-            <div class="node-zone" data-node-zone="all">All</div>
-            </div>
-            </div>
-            </div>
-            <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
-            <label class="form-check-label" for="customCheck6"></label>
-            </div>
-            </li>`
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <div class="node-zone" data-node-zone="all">All</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+                                    <label class="form-check-label" for="customCheck6"></label>
+                                </div>
+                            </li>`
 
             for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
                 let row = tableZone.rows[z + 1];
@@ -581,18 +581,18 @@ $(function () {
                     let childTitle = row.children[1].children[0].innerHTML;
                     orderNum++;
                     optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-            <div class="media d-flex align-items-center">
-            <div class="media-body">
-            <div>
-            <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
-            </div>
-            </div>
-            </div>
-            <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
-            <label class="form-check-label" for="customCheck6"></label>
-            </div>
-            </li>`
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                    <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+                                            <label class="form-check-label" for="customCheck6"></label>
+                                        </div>
+                                    </li>`
                 }
             }
             // init zone data

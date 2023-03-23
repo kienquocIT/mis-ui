@@ -70,9 +70,10 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                    ele.append(`<option value="null"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.unit_of_measure_group.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                        if (Object.keys(item.referenced_unit).length !== 0)
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
@@ -85,32 +86,34 @@ $(document).ready(function () {
     loadUoMGroup();
 
     // change select box UoM group tab general
-    $('#select-box-umo-group').on('change', function (){
-        let data_url = $(this).attr('data-url-detail').replace(0,$(this).val());
-        let data_method = $(this).attr('data-method');
-        let select_box_default_uom = $('#select-box-default-uom');
-        let select_box_uom_name = $('#select-box-uom-name');
-        select_box_default_uom.html('');
-        select_box_uom_name.html('');
-
-        $.fn.callAjax(data_url, data_method).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                    select_box_default_uom.append(`<option></option>`);
-                    select_box_uom_name.append(`<option data-code=""></option>`);
-                    data.uom_group.uom.map(function (item) {
-                        select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
-                    })
+    $('#select-box-umo-group').on('change', function () {
+        if ($(this).val()) {
+            let data_url = $(this).attr('data-url-detail').replace(0, $(this).val());
+            let data_method = $(this).attr('data-method');
+            let select_box_default_uom = $('#select-box-default-uom');
+            let select_box_uom_name = $('#select-box-uom-name');
+            select_box_default_uom.html('');
+            select_box_uom_name.html('');
+            $.fn.callAjax(data_url, data_method).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                        select_box_default_uom.append(`<option></option>`);
+                        select_box_uom_name.append(`<option data-code=""></option>`);
+                        data.uom_group.uom.map(function (item) {
+                            select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                            select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                        })
+                    }
                 }
-            }
-        }, (errs) => {
-        },)
+            }, (errs) => {
+            },)
+        }
+
     })
 
     // change select box UoM Name in tab inventory
-    $('#select-box-uom-name').on('change', function (){
+    $('#select-box-uom-name').on('change', function () {
         $('#uom-code').val($(this).find(":selected").attr('data-code'));
     })
 

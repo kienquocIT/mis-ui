@@ -320,6 +320,10 @@
             <button class="btn btn btn-primary next-btn" type="button" data-nav-type="next" disabled>{% trans 'Next' %}</button>
         </div>
     </form>
+    <input type="hidden" id="url-factory"
+           data-employees="{% url 'EmployeeListAPI' %}"
+           data-node="{% url 'NodeSystemListAPI' %}"
+    >
     <!--- modal add and edit zone--->
     <div class="modal fade"
          id="add_zone"

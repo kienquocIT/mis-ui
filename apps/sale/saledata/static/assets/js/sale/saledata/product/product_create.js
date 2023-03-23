@@ -1,6 +1,4 @@
 $(document).ready(function () {
-
-
     function disabledTab(check, link_tab, id_tab) {
         if (!check) {
             $(link_tab).addClass('disabled');
@@ -118,6 +116,30 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
+
+        frm.dataForm['general_information'] = {
+            'product_type': $('#select-box-product-type').val(),
+            'product_category': $('#select-box-product-category').val(),
+            'uom_group': $('#select-box-umo-group').val()
+        }
+
+        console.log($('#check-tab-inventory').is(':checked'));
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            frm.dataForm['inventory_information'] = {
+                'uom': $('#select-box-uom-name').val(),
+                'inventory_level_min': $('#inventory-level-min').val(),
+                'inventory_level_max': $('#inventory-level-max').val()
+            }
+        }
+
+        console.log($('#check-tab-sale').is(':checked'));
+        if ($('#check-tab-sale').is(':checked') === true) {
+            frm.dataForm['sale_information'] = {
+                'default_uom': $('#select-box-default-uom').val()
+            }
+        }
+
+        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

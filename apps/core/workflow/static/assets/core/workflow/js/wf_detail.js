@@ -13,15 +13,16 @@ $(function () {
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone) initTableZone(res.zone);
-        if (res.node){
-
+        if (res.node) console.log(res.node)
+        if (res.association){
+            $('#associate-connect').val(JSON.stringify(res.association))
         }
     }
 
     /***
      * show save button and turn on edit mode of Form
      */
-    function clickOnOffEditForm(){
+    function clickEditForm(){
         $('form').off().on('dblclick', function(){
             const $form = $(this).closest('form');
             if (!$form.attr('readonly')) return false
@@ -82,7 +83,7 @@ $(function () {
                     if (data) {
                         console.dir(data)
                         prepareDataAndRenderHTML(data);
-                        clickOnOffEditForm();
+                        clickEditForm();
                         UpdateFormSubmit();
                     }
                 }

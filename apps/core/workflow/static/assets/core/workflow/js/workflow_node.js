@@ -242,6 +242,8 @@ $(function () {
             table.columns.adjust();
         });
 
+
+// Action on click collaborator of initial node
         tableNode.on('click', '.btn-initial-node-collaborator', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -252,18 +254,18 @@ $(function () {
             let optionZone = ``;
             let orderNum = 0;
             optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-            <div class="media d-flex align-items-center">
-            <div class="media-body">
-            <div>
-            <div class="node-zone" data-node-zone="all">All</div>
-            </div>
-            </div>
-            </div>
-            <div class="form-check form-check-theme ms-3">
-            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-            <label class="form-check-label" for="customCheck6"></label>
-            </div>
-            </li>`
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <div class="node-zone" data-node-zone="all">All</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
+                                    <label class="form-check-label" for="customCheck6"></label>
+                                </div>
+                            </li>`
             for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
                 let row = tableZone.rows[z + 1];
                 if (row.children[1]) {

@@ -67,6 +67,7 @@ $(document).ready(function () {
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     ele.append(`<option value="null"></option>`);
                     resp.data.unit_of_measure_group.map(function (item) {

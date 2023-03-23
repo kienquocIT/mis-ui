@@ -34,7 +34,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
-                    ele.append(`<option value="null"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.product_type_list.map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
@@ -51,7 +51,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
-                    ele.append(`<option value="null"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.product_category_list.map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })

@@ -165,7 +165,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'account.User'
 
-SESSION_COOKIE_AGE = 3 * 60 * 60  # 3 days expires
+SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 3 days expires
 
 # call API Config
 API_IP_OR_ADDR = '127.0.0.1'

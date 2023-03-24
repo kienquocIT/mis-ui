@@ -177,8 +177,7 @@ $(document).ready(function () {
                             'border-color': '#00D67F',
                             'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
                         })
-                    }
-                    else {
+                    } else {
                         $(this).find('select').css({
                             'border-color': '#00D67F',
                             'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
@@ -194,13 +193,14 @@ $(document).ready(function () {
 
     // change select box UoM group tab general
     $('#select-box-uom-group').on('change', function () {
+        $('#uom-code').val('');
+        let select_box_default_uom = $('#select-box-default-uom');
+        let select_box_uom_name = $('#select-box-uom-name');
+        select_box_default_uom.html('');
+        select_box_uom_name.html('');
         if ($(this).val()) {
             let data_url = $(this).attr('data-url-detail').replace(0, $(this).val());
             let data_method = $(this).attr('data-method');
-            let select_box_default_uom = $('#select-box-default-uom');
-            let select_box_uom_name = $('#select-box-uom-name');
-            select_box_default_uom.html('');
-            select_box_uom_name.html('');
             $.fn.callAjax(data_url, data_method).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -243,8 +243,7 @@ $(document).ready(function () {
                 'inventory_level_min': $('#inventory-level-min').val(),
                 'inventory_level_max': $('#inventory-level-max').val()
             }
-        }
-        else {
+        } else {
             frm.dataForm['inventory_information'] = {}
         }
 
@@ -252,8 +251,7 @@ $(document).ready(function () {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val()
             }
-        }
-        else {
+        } else {
             frm.dataForm['sale_information'] = {}
         }
 

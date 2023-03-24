@@ -75,6 +75,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ACCOUNT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Account'), 'AccountMasterDataList')
     PRODUCT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Product'), 'ProductMasterDataList')
 
+    # Product
+    PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product list'), 'ProductList')
+    PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
+    PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -205,3 +210,9 @@ class BreadcrumbView:
     PRODUCT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.PRODUCT_MASTER_DATA_LIST_PAGE
     ]
+
+    PRODUCT_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_LIST_PAGE
+    ]
+    PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
+    PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]

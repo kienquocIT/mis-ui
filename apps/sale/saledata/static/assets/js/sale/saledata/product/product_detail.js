@@ -119,47 +119,38 @@ $(document).ready(function () {
                     sale_active = false
                 }
 
-                if (sale_active || inventory_active) {
-                    let ele = $('#select-box-umo-group')
-                    let data_url = ele.attr('data-url-detail').replace(0, data.product.general_information.uom_group);
-                    let data_method = ele.attr('data-method');
-                    let select_box_default_uom = $('#select-box-default-uom');
-                    let select_box_uom_name = $('#select-box-uom-name');
-                    select_box_default_uom.html('');
-                    select_box_uom_name.html('');
-                    $.fn.callAjax(data_url, data_method).then((resp) => {
-                        let data_uom_gr = $.fn.switcherResp(resp);
-                        if (data_uom_gr) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                                if (sale_active) {
-                                    select_box_default_uom.append(`<option></option>`);
-                                    data_uom_gr.uom_group.uom.map(function (item) {
-                                        if (item.uom_id === data.product.sale_information.default_uom)
-                                            select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
-                                        else
-                                            select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                                    })
-                                }
-                                if (inventory_active) {
-                                    select_box_uom_name.append(`<option data-code=""></option>`);
-                                    data_uom_gr.uom_group.uom.map(function (item) {
-                                        if (item.uom_id === data.product.inventory_information.uom) {
-                                            select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
-                                            $('#uom-code').val(item.uom_code);
-                                        }
-                                        else
-                                            select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
-                                    })
-                                    $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
-                                    $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
-                                }
+                let ele = $('#select-box-umo-group')
+                let data_url = ele.attr('data-url-detail').replace(0, data.product.general_information.uom_group);
+                let data_method = ele.attr('data-method');
+                let select_box_default_uom = $('#select-box-default-uom');
+                let select_box_uom_name = $('#select-box-uom-name');
+                select_box_default_uom.html('');
+                select_box_uom_name.html('');
+                $.fn.callAjax(data_url, data_method).then((resp) => {
+                    let data_uom_gr = $.fn.switcherResp(resp);
+                    if (data_uom_gr) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                            select_box_uom_name.append(`<option data-code=""></option>`);
+                            select_box_default_uom.append(`<option></option>`);
+                            data_uom_gr.uom_group.uom.map(function (item) {
+                                if (item.uom_id === data.product.sale_information.default_uom)
+                                    select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
+                                else
+                                    select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
 
-                            }
+                                if (item.uom_id === data.product.inventory_information.uom) {
+                                    select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
+                                    $('#uom-code').val(item.uom_code);
+                                } else
+                                    select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                            })
+
+                            $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
+                            $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
                         }
-                    }, (errs) => {
-                    },)
-                }
-
+                    }
+                }, (errs) => {
+                },)
             }
         }
     }, (errs) => {

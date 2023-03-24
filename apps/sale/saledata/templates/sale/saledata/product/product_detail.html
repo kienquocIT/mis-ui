@@ -49,7 +49,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}">
+    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}" data-url-redirect="{% url "ProductList" %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-6">

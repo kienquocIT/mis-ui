@@ -98,20 +98,17 @@ $(document).ready(function () {
         let data = $.fn.switcherResp(resp);
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                console.log(data)
-                let sale_active = true;
-                let inventory_active = true;
                 $('#product-code').val(data.product.code);
                 $('#product-title').val(data.product.title);
 
-                $('#product-title').addClass('inp-can-edit');
+                $('#product-title-div').addClass('inp-can-edit');
                 $('#select-box-product-type-div').addClass('inp-can-edit');
                 $('#select-box-product-category-div').addClass('inp-can-edit');
                 $('#select-box-uom-group-div').addClass('inp-can-edit');
                 $('#select-box-default-uom-div').addClass('inp-can-edit');
                 $('#select-box-uom-name-div').addClass('inp-can-edit');
-                $('#inventory-level-min').addClass('inp-can-edit');
-                $('#inventory-level-max').addClass('inp-can-edit');
+                $('#inventory-level-min-div').addClass('inp-can-edit');
+                $('#inventory-level-max-div').addClass('inp-can-edit');
 
                 loadProductCategory(data.product.general_information.product_category);
                 loadProductType(data.product.general_information.product_type);
@@ -120,13 +117,11 @@ $(document).ready(function () {
                     $('#link-tab-inventory').addClass('disabled');
                     $('#tab_inventory').removeClass('active show');
                     $('#check-tab-inventory').prop('checked', false);
-                    inventory_active = false
                 }
                 if (Object.keys(data.product.sale_information).length === 0) {
                     $('#link-tab-sale').addClass('disabled');
                     $('#tab_sale').removeClass('active show');
                     $('#check-tab-sale').prop('checked', false);
-                    sale_active = false
                 }
 
                 let ele = $('#select-box-uom-group')
@@ -163,26 +158,23 @@ $(document).ready(function () {
                 },)
 
                 // mouse enter to edit
-                $('.inp-can-edit').mouseenter(function () {
-                    $(this).prop("readonly", false);
+                $('.inp-can-edit').on('click', function () {
+                    $(this).find('input').prop("readonly", false);
                     $(this).find('select').prop("disabled", false);
                 });
                 $('.inp-can-edit').mouseleave(function () {
-                    $(this).prop("readonly", true);
+                    $(this).find('input').prop("readonly", true);
                     $(this).find('select').prop("disabled", true);
                 });
                 $('.inp-can-edit').on('change', function () {
-                    if ($(this).is(':input')) {
-                        $(this).css({
-                            'border-color': '#00D67F',
-                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                        })
-                    } else {
-                        $(this).find('select').css({
-                            'border-color': '#00D67F',
-                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                        })
-                    }
+                    $(this).find('input').css({
+                        'border-color': '#00D67F',
+                        'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                    })
+                    $(this).find('select').css({
+                        'border-color': '#00D67F',
+                        'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                    })
                 })
 
             }

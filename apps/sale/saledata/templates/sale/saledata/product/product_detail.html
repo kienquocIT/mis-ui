@@ -9,7 +9,7 @@
             type="text/css"
     />
     <style>
-    select, input {
+    select, input, textarea {
         margin-bottom: 10px;
     }
     </style>
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-10">
+                    <div class="form-group col-10" id="product-title-div">
                         <label class="form-label">{% trans "Product Name" %}</label>
                         <input type="text" name="title" placeholder="Input Name" class="form-control" id="product-title"
                                readonly>
@@ -253,12 +253,12 @@
 
                 </div>
                 <div class="row">
-                    <div class="form-group col-3">
+                    <div class="form-group col-3" id="inventory-level-min-div">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
                         <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
                                placeholder="Input" readonly>
                     </div>
-                    <div class="form-group col-3">
+                    <div class="form-group col-3" id="inventory-level-max-div">
                         <label class="form-label">{% trans "Inventory Level Max" %}</label>
                         <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
                                placeholder="Input" readonly>

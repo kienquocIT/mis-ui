@@ -135,11 +135,17 @@ $(document).ready(function () {
                 'inventory_level_max': $('#inventory-level-max').val()
             }
         }
+        else {
+            frm.dataForm['inventory_information'] = {}
+        }
 
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val()
             }
+        }
+        else {
+            frm.dataForm['sale_information'] = {}
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

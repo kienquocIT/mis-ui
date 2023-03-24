@@ -224,7 +224,7 @@ $(document).ready(function () {
         $('#uom-code').val($(this).find(":selected").attr('data-code'));
     })
 
-    //submit form create product
+    //submit form edit product
     let form_update_product = $('#form-update-product');
     form_update_product.submit(function (event) {
         event.preventDefault();
@@ -244,11 +244,17 @@ $(document).ready(function () {
                 'inventory_level_max': $('#inventory-level-max').val()
             }
         }
+        else {
+            frm.dataForm['inventory_information'] = {}
+        }
 
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val()
             }
+        }
+        else {
+            frm.dataForm['sale_information'] = {}
         }
 
         $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)

@@ -10,7 +10,7 @@
     />
     <style>
     select, input {
-        margin: 8px;
+        margin-bottom: 10px;
     }
     </style>
 {% endblock %}
@@ -146,7 +146,7 @@
                                 data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                     </div>
                     <div class="form-group col-3" id="select-box-manager-div">
-                        <label class="form-label">{% trans "Management By" %}</label>
+                        <label class="form-label"><s>{% trans "Management By" %}</s></label>
                         <select id="select-box-manager" class="form-select" data-method="GET" data-url=""
                                 disabled name="management"></select>
                     </div>
@@ -160,7 +160,7 @@
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
                     </div>
                     <div class="form-group col-3" id="select-box-tax-code-div">
-                        <label class="form-label">{% trans "Tax Code" %}</label>
+                        <label class="form-label"><s>{% trans "Tax Code" %}</s></label>
                         <select id="select-box-tax-code" class="form-select" data-method="GET" data-url=""
                                 disabled name="tax_code"></select>
                     </div>
@@ -168,7 +168,7 @@
 
                 <div class="row">
                     <div class="col-3 form-group">
-                        <label class="form-label">{% trans "Price List" %}</label>
+                        <label class="form-label"><s>{% trans "Price List" %}</s></label>
                         <input type="submit" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
                                data-bs-display="static" aria-expanded="false" value="" disabled>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100">
@@ -246,7 +246,7 @@
                         </select>
                     </div>
                     <div class="form-group col-3" id="select-box-valuation-method-div">
-                        <label class="form-label">{% trans "Valuation Method" %}</label>
+                        <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
                         <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
                                 disabled name="valuation_method"></select>
                     </div>
@@ -265,18 +265,22 @@
                     </div>
                 </div>
                 <div class="row mt-5">
-                    <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
-                           data-url="{% url "AccountListAPI" %}"
-                           data-method="GET">
-                        <thead>
-                        <th class="w-15">{% trans "Warehouse Code" %}</th>
-                        <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "Avalable" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
-                        </thead>
-                    </table>
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
+                               data-url="{% url "AccountListAPI" %}"
+                               data-method="GET">
+                            <thead>
+                            <th class="w-15">{% trans "Warehouse Code" %}</th>
+                            <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "Avalable" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col-1"></div>
                 </div>
             </div>
         </div>

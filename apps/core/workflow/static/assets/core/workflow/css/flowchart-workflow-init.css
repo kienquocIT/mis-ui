@@ -78,7 +78,10 @@
     box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
     position: relative;
     cursor: grab;
+}
 
+.wrap-flowchart .clone {
+    position: absolute;
 }
 
 .wrap-flowchart .control .drag-title,

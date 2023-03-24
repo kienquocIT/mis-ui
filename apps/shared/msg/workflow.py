@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 class WorkflowMsg:  # pylint: disable=too-few-public-methods
     """Workflow message translations"""
     WORKFLOW_CREATE = _('Workflow create successfully')
+    WORKFLOW_UPDATE = _('Workflow update successfully')
     ACTION_CREATE = _("Create")
     ACTION_APPROVED = _("Approve")
     ACTION_REJECT = _("Reject")

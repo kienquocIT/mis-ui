@@ -2,8 +2,9 @@
  * list of node user has declare and default system node
  * ***/
 let DEFAULT_NODE_LIST = {};
-let COMMIT_NODE_LIST = []
-let _MOUSE_POSITION = 0
+let COMMIT_NODE_LIST = [];
+let _MOUSE_POSITION = 0;
+let ASSOCIATION = [];
 
 /***
  * function handle user on click into Node
@@ -93,7 +94,7 @@ function extendDropSpace() {
             })
         } else {
             // minus space
-            if (!(current_h - 300) < default_w || !(current_h - 300) < default_h) {
+            if (!((current_h - 300) < default_h) || !((current_w - 300) < default_w)){
                 target_elm.css({
                     "height": current_h - 300, "width": current_w - 300
                 })
@@ -118,8 +119,12 @@ class JSPlumbsHandle {
             this.nodeData = temp;
         }
     };
+    set setAssociateList(strData) {
+         strData = strData ? JSON.parse(strData) : []
+        ASSOCIATION = strData
+    };
 
-    htmlDragRender() {
+    htmlDragRender(target_elm) {
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -127,9 +132,39 @@ class JSPlumbsHandle {
                 strHTMLDragNode += `<div class="control" data-drag="${item.order}" title="${item.title}">` + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
         }
-        $('#node_dragbox').html(strHTMLDragNode)
+        if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
+        else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
+    createNodeAndConnection(){
+        this.setAssociateList = $('#associate-connect').val()
+        let $wrapWF = $('#flowchart_workflow')
+        let wrap_w = $wrapWF.width(),
+            wrap_h = $wrapWF.height(),
+            top_coord = 100,
+            left_coord = 100;
+        // loop in DEFAULT_NODE_LIST and render to chart
+        let HTML_temp = ''
+        for (let val in DEFAULT_NODE_LIST) {
+            let item = DEFAULT_NODE_LIST[val];
+            // $(`#node_dragbox .control[data-drag="${val}"]`).draggable( "disable" )
+            // check if node coord larger than wrap workflow node
+            if ((top_coord + 90) > wrap_h){
+                wrap_h  = wrap_h + 300
+                $wrapWF.css("height", wrap_h);
+            }
+            if ((left_coord + 90) > wrap_w){
+                wrap_w = wrap_w + 300
+                $wrapWF.css("width", wrap_w);
+            }
+            HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
+                +`style="left:${left_coord}px;top:${top_coord}px">`
+                + `<p class="drag-title">${item.title}</p></div>`;
+            left_coord = left_coord + 80
+            top_coord = top_coord + 80
+        }
+        $wrapWF.html(HTML_temp)
+    }
 
     initJSPlumbs() {
         const instance = jsPlumb.getInstance({
@@ -154,7 +189,6 @@ class JSPlumbsHandle {
                 }, appendTo: "#flowchart_workflow",
             });
             // init drop node
-
             $('#flowchart_workflow').droppable({
                 drop: function (event, ui) {
                     // when user drag to space clone and disable main node
@@ -212,6 +246,7 @@ class JSPlumbsHandle {
                         connector: ["Bezier", {curviness: 100}]
                         // connector: ["Flowchart", {cornerRadius: 5}]
                     });
+
                     // handle event on click node
                     $('#' + is_id).off().on("mousedown", function (evt) {
                         _MOUSE_POSITION = evt.pageX + evt.pageY
@@ -222,6 +257,13 @@ class JSPlumbsHandle {
                 }
 
             });
+
+            if ($('#form-detail_workflow').length){
+                $('#flowchart_workflow .clone').each(function(){
+                    let is_id = $(this).attr('id')
+                    instance.draggable(is_id, {containment: true})
+                })
+            }
 
             // append context menu for R-Click
             instance.bind("contextmenu", function (component, event) {
@@ -240,7 +282,6 @@ class JSPlumbsHandle {
             instance.bind("connection", function (connection) {
                 // add value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
-                let data_node = DEFAULT_NODE_LIST;
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
                 let end_result = {
@@ -284,7 +325,6 @@ class JSPlumbsHandle {
                 // remove value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
                 let key = "";
-                let data_node = DEFAULT_NODE_LIST;
                 let connect = connection;
                 let node_in = connect.source.dataset.drag;
                 let node_out = connect.target.dataset.drag;
@@ -315,6 +355,8 @@ class JSPlumbsHandle {
         this.setNodeList = setupDataNode();
         this.setNodeState = this.nodeData;
         this.htmlDragRender();
+        // if window is detail page render flow chart
+        if (!$('#form-create_workflow').length) this.createNodeAndConnection()
         this.initJSPlumbs();
         extendDropSpace();
     }
@@ -361,25 +403,25 @@ class JSPlumbsHandle {
 // #################################################################################
 // | INPUT      OUTPUT	    ALLOW	ACTION THEN ALLOWED		                       |
 // |###############################################################################|
-// | NULL		NULL	 	✔		...                                            |
-// | NULL		LEFT	 	✔	 	REPLACE NULL TO LEFT		                   |
-// | NULL		RIGHT	 	✔	 	REPLACE NULL TO RIGHT		                   |
-// | NULL		MIDDLE	 	✔		REPLACE NULL TO LEFT		                   |
+// | NULL		NULL	 	?		...                                            |
+// | NULL		LEFT	 	?	 	REPLACE NULL TO LEFT		                   |
+// | NULL		RIGHT	 	?	 	REPLACE NULL TO RIGHT		                   |
+// | NULL		MIDDLE	 	?		REPLACE NULL TO LEFT		                   |
 // |-------------------------------------------------------------------------------|
-// | MIDDLE	    NULL		✔		REPLACE NULL TO RIGHT		                   |
-// | MIDDLE	    LEFT		❌		...				                               |
-// | MIDDLE	    RIGHT		✔		...				                               |
-// | MIDDLE	    MIDDLE		❌		... (ONLY ONE MIDDLE NODE)	                   |
+// | MIDDLE	    NULL		?		REPLACE NULL TO RIGHT		                   |
+// | MIDDLE	    LEFT		?		...				                               |
+// | MIDDLE	    RIGHT		?		...				                               |
+// | MIDDLE	    MIDDLE		?		... (ONLY ONE MIDDLE NODE)	                   |
 // |-------------------------------------------------------------------------------|
-// | LEFT		NULL		✔		REPLACE NULL TO LEFT		                   |
-// | LEFT		LEFT		✔		...				                               |
-// | LEFT		RIGHT		❌		...				                               |
-// | LEFT		MIDDLE		✔		...				                               |
+// | LEFT		NULL		?		REPLACE NULL TO LEFT		                   |
+// | LEFT		LEFT		?		...				                               |
+// | LEFT		RIGHT		?		...				                               |
+// | LEFT		MIDDLE		?		...				                               |
 // |-------------------------------------------------------------------------------|
-// | RIGHT		NULL		✔		REPLACE NULL TO RIGHT		                   |
-// | RIGHT		LEFT		❌		...				                               |
-// | RIGHT		RIGHT		✔		...				                               |
-// | RIGHT		MIDDLE		❌		...				                               |
+// | RIGHT		NULL		?		REPLACE NULL TO RIGHT		                   |
+// | RIGHT		LEFT		?		...				                               |
+// | RIGHT		RIGHT		?		...				                               |
+// | RIGHT		MIDDLE		?		...				                               |
 // #################################################################################
 class NodeHandler {
     constructor(nodeState) {
@@ -515,6 +557,4 @@ class NodeHandler {
         }
     }
 }
-
-
 

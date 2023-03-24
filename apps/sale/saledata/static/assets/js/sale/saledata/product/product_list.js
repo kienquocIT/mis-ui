@@ -32,17 +32,17 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'code', render: (data, type, row, meta) => {
-                        return `<a href="#"><span><b>` + row.code + `</b></span></a>`
+                        return `<a class="badge badge-outline badge-soft-success" style="width: 70%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
                         // return `<a href=""><span><b>` + row.fullname + `</b></span></a>`
                     }
                 }, {
                     'data': 'title', render: (data, type, row, meta) => {
-                        return `<span>` + row.title +`</span>`
+                        return `<a href="#"><span><b>` + row.title +`</b></span></a>`
                     }
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_type) {
-                            return `<span>` + row.general_information.product_type.title + `</span>`
+                            return `<span class="badge badge-danger badge-pill badge-outline">` + row.general_information.product_type.title + `</span>`
                         }
                         else {
                             return `<span></span>`
@@ -51,7 +51,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_category) {
-                            return `<span>` + row.general_information.product_category.title + `</span>`
+                            return `<span class="badge badge-indigo badge-pill badge-outline">` + row.general_information.product_category.title + `</span>`
                         }
                         else {
                             return `<span></span>`

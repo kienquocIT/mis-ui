@@ -128,7 +128,6 @@ $(document).ready(function () {
             'uom_group': $('#select-box-umo-group').val()
         }
 
-        console.log($('#check-tab-inventory').is(':checked'));
         if ($('#check-tab-inventory').is(':checked') === true) {
             frm.dataForm['inventory_information'] = {
                 'uom': $('#select-box-uom-name').val(),
@@ -137,14 +136,12 @@ $(document).ready(function () {
             }
         }
 
-        console.log($('#check-tab-sale').is(':checked'));
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val()
             }
         }
 
-        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

@@ -42,7 +42,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_type) {
-                            return `<span>` + row.general_information.product_type + `</span>`
+                            return `<span>` + row.general_information.product_type.title + `</span>`
                         }
                         else {
                             return `<span></span>`
@@ -51,7 +51,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_category) {
-                            return `<span>` + row.general_information.product_category + `</span>`
+                            return `<span>` + row.general_information.product_category.title + `</span>`
                         }
                         else {
                             return `<span></span>`
@@ -59,9 +59,9 @@ $(document).ready(function () {
                     }
                 }, {
                     'className': 'action-center', 'render': (data, type, row, meta) => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/saledata/contact/update/` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                        // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/saledata/contact/update/` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                         // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt2;
+                        return '';
                     }
                 },]
             }
@@ -86,6 +86,7 @@ $(document).ready(function () {
             $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    console.log(data)
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
                         config['data'] = resp.data.product_list;
                     }

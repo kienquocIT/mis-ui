@@ -572,6 +572,20 @@ $(document).ready(function () {
                         $(this).prop("readonly", true);
                         $(this).find('select').prop("disabled", true);
                     });
+                    $('.inp-can-edit').on('change', function () {
+                        if ($(this).is(':input')) {
+                            $(this).css({
+                                'border-color': '#00D67F',
+                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                            })
+                        }
+                        else {
+                            $(this).find('select').css({
+                                'border-color': '#00D67F',
+                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                            })
+                        }
+                    })
                 },
                 (errs) => {
                 }

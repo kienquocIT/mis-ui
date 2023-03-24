@@ -70,7 +70,7 @@ $(document).ready(function () {
     }
 
     function loadUoMGroup(id) {
-        let ele = $('#select-box-umo-group');
+        let ele = $('#select-box-uom-group');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -103,6 +103,16 @@ $(document).ready(function () {
                 let inventory_active = true;
                 $('#product-code').val(data.product.code);
                 $('#product-title').val(data.product.title);
+
+                $('#product-title').addClass('inp-can-edit');
+                $('#select-box-product-type-div').addClass('inp-can-edit');
+                $('#select-box-product-category-div').addClass('inp-can-edit');
+                $('#select-box-uom-group-div').addClass('inp-can-edit');
+                $('#select-box-default-uom-div').addClass('inp-can-edit');
+                $('#select-box-uom-name-div').addClass('inp-can-edit');
+                $('#inventory-level-min').addClass('inp-can-edit');
+                $('#inventory-level-max').addClass('inp-can-edit');
+
                 loadProductCategory(data.product.general_information.product_category);
                 loadProductType(data.product.general_information.product_type);
                 loadUoMGroup(data.product.general_information.uom_group);
@@ -119,7 +129,7 @@ $(document).ready(function () {
                     sale_active = false
                 }
 
-                let ele = $('#select-box-umo-group')
+                let ele = $('#select-box-uom-group')
                 let data_url = ele.attr('data-url-detail').replace(0, data.product.general_information.uom_group);
                 let data_method = ele.attr('data-method');
                 let select_box_default_uom = $('#select-box-default-uom');
@@ -151,6 +161,31 @@ $(document).ready(function () {
                     }
                 }, (errs) => {
                 },)
+
+                // mouse enter to edit
+                $('.inp-can-edit').mouseenter(function () {
+                    $(this).prop("readonly", false);
+                    $(this).find('select').prop("disabled", false);
+                });
+                $('.inp-can-edit').mouseleave(function () {
+                    $(this).prop("readonly", true);
+                    $(this).find('select').prop("disabled", true);
+                });
+                $('.inp-can-edit').on('change', function () {
+                    if ($(this).is(':input')) {
+                        $(this).css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
+                    }
+                    else {
+                        $(this).find('select').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
+                    }
+                })
+
             }
         }
     }, (errs) => {
@@ -158,7 +193,7 @@ $(document).ready(function () {
 
 
     // change select box UoM group tab general
-    $('#select-box-umo-group').on('change', function () {
+    $('#select-box-uom-group').on('change', function () {
         if ($(this).val()) {
             let data_url = $(this).attr('data-url-detail').replace(0, $(this).val());
             let data_method = $(this).attr('data-method');
@@ -199,7 +234,7 @@ $(document).ready(function () {
         frm.dataForm['general_information'] = {
             'product_type': $('#select-box-product-type').val(),
             'product_category': $('#select-box-product-category').val(),
-            'uom_group': $('#select-box-umo-group').val()
+            'uom_group': $('#select-box-uom-group').val()
         }
 
         if ($('#check-tab-inventory').is(':checked') === true) {

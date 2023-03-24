@@ -2,8 +2,9 @@
  * list of node user has declare and default system node
  * ***/
 let DEFAULT_NODE_LIST = {};
-let COMMIT_NODE_LIST = []
-let _MOUSE_POSITION = 0
+let COMMIT_NODE_LIST = [];
+let _MOUSE_POSITION = 0;
+let ASSOCIATION = [];
 
 /***
  * function handle user on click into Node
@@ -110,7 +111,7 @@ function extendDropSpace(){
         }
         else{
             // minus space
-            if (!(current_h - 300) < default_w || !(current_h - 300) < default_h){
+            if (!((current_h - 300) < default_h) || !((current_w - 300) < default_w)){
                 target_elm.css({
                     "height": current_h - 300,
                     "width": current_w - 300
@@ -132,8 +133,12 @@ class JSPlumbsHandle {
             DEFAULT_NODE_LIST = temp
         }
     };
+    set setAssociateList(strData) {
+         strData = strData ? JSON.parse(strData) : []
+        ASSOCIATION = strData
+    };
 
-    htmlDragRender() {
+    htmlDragRender(target_elm) {
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -142,9 +147,39 @@ class JSPlumbsHandle {
                     + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
         }
-        $('#node_dragbox').html(strHTMLDragNode)
+        if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
+        else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
+    createNodeAndConnection(){
+        this.setAssociateList = $('#associate-connect').val()
+        let $wrapWF = $('#flowchart_workflow')
+        let wrap_w = $wrapWF.width(),
+            wrap_h = $wrapWF.height(),
+            top_coord = 100,
+            left_coord = 100;
+        // loop in DEFAULT_NODE_LIST and render to chart
+        let HTML_temp = ''
+        for (let val in DEFAULT_NODE_LIST) {
+            let item = DEFAULT_NODE_LIST[val];
+            // $(`#node_dragbox .control[data-drag="${val}"]`).draggable( "disable" )
+            // check if node coord larger than wrap workflow node
+            if ((top_coord + 90) > wrap_h){
+                wrap_h  = wrap_h + 300
+                $wrapWF.css("height", wrap_h);
+            }
+            if ((left_coord + 90) > wrap_w){
+                wrap_w = wrap_w + 300
+                $wrapWF.css("width", wrap_w);
+            }
+            HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
+                +`style="left:${left_coord}px;top:${top_coord}px">`
+                + `<p class="drag-title">${item.title}</p></div>`;
+            left_coord = left_coord + 80
+            top_coord = top_coord + 80
+        }
+        $wrapWF.html(HTML_temp)
+    }
 
     initJSPlumbs() {
         const instance = jsPlumb.getInstance({
@@ -172,7 +207,6 @@ class JSPlumbsHandle {
                 appendTo: "#flowchart_workflow",
             });
             // init drop node
-
             $('#flowchart_workflow').droppable({
                 drop: function (event, ui) {
                     // when user drag to space clone and disable main node
@@ -248,6 +282,7 @@ class JSPlumbsHandle {
                             connector: ["Bezier", {curviness: 100}]
                             // connector: ["Flowchart", {cornerRadius: 5}]
                         });
+
                     // handle event on click node
                     $('#' + is_id).off().on("mousedown", function (evt) {
                         _MOUSE_POSITION = evt.pageX + evt.pageY
@@ -258,6 +293,13 @@ class JSPlumbsHandle {
                 }
 
             });
+
+            if ($('#form-detail_workflow').length){
+                $('#flowchart_workflow .clone').each(function(){
+                    let is_id = $(this).attr('id')
+                    instance.draggable(is_id, {containment: true})
+                })
+            }
 
             // append context menu for R-Click
             instance.bind("contextmenu", function (component, event) {
@@ -275,7 +317,6 @@ class JSPlumbsHandle {
 
             // update association data when connect 2 nodes, LHPHUC
             instance.bind("connection", function(connection){
-                let data_node = DEFAULT_NODE_LIST;
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
                 let end_result = {
@@ -309,7 +350,6 @@ class JSPlumbsHandle {
             // update association data when disconnect 2 nodes, LHPHUC
             instance.bind("connectionDetached", function (connection) {
                 let key = "";
-                let data_node = DEFAULT_NODE_LIST;
                 let connect = connection;
                 let node_in = connect.source.dataset.drag;
                 let node_out = connect.target.dataset.drag;
@@ -339,23 +379,9 @@ class JSPlumbsHandle {
     init() {
         this.setNodeList = setupDataNode();
         this.htmlDragRender();
+        // if window is detail page render flow chart
+        if (!$('#form-create_workflow').length) this.createNodeAndConnection()
         this.initJSPlumbs();
         extendDropSpace()
     }
-}
-
-
-// Function Check Rules When Connect/ Disconnect 2 Nodes
-function checkConnection(node_in, node_out, instance, connection) {
-    let check_result = true;
-    // code check connection rules begin here
-
-    // end.
-
-    if (check_result === false) {
-        // remove connection when fail rules
-        instance.deleteConnection(connection);
-        return false
-    }
-    return true
 }

@@ -61,6 +61,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Workflow
     WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow list'), 'WorkflowList')
     WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')
+    WORKFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Workflow detail'))
 
     # Contact, Account
     CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact list'), 'ContactList')
@@ -184,6 +185,7 @@ class BreadcrumbView:
     ]
 
     WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_CREATE_PAGE]
+    WORKFLOW_DETAIL_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_DETAIL_PAGE]
 
     CONTACT_LIST_PAGE = [
         BreadcrumbItem.CONTACT_LIST_PAGE

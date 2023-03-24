@@ -81,6 +81,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
 
     # WORKFLOW
+    WORKFLOW = StringUrl('workflow')
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')

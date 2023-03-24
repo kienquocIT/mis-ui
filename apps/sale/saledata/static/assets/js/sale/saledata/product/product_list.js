@@ -32,7 +32,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'code', render: (data, type, row, meta) => {
-                        return `<a class="badge badge-outline badge-soft-success" style="min-width: 80px; width: 70%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
+                        return `<a class="badge badge-outline badge-soft-success" style="min-width: max-content; width: 70%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
                         // return `<a href=""><span><b>` + row.fullname + `</b></span></a>`
                     }
                 }, {

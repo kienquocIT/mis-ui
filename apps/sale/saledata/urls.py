@@ -9,7 +9,7 @@ from apps.sale.saledata.views import (
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI,
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
     UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
-    UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI
+    UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail
 )
 
 urlpatterns = [
@@ -71,4 +71,6 @@ urlpatterns = [
     path('products', ProductList.as_view(), name='ProductList'),
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),
     path('products/api', ProductListAPI.as_view(), name='ProductListAPI'),
+    path('product/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
+    path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI')
 ]

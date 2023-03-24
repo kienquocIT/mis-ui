@@ -120,3 +120,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
+    PRODUCT_DETAIL = StringUrl('saledata/product/')

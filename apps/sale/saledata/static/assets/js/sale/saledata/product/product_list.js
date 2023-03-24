@@ -1,5 +1,6 @@
 $(document).ready(function () {
     function loadDefaultData() {
+        let url_detail = $('#datatable_product_list').attr('data-url-detail')
         "use strict";
         $(function () {
 
@@ -32,7 +33,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'code', render: (data, type, row, meta) => {
-                        return `<a href="#"><span><b>` + row.code + `</b></span></a>`
+                        return `<a href="`+ url_detail.replace(0, row.id) +`"><span><b>` + row.code + `</b></span></a>`
                         // return `<a href=""><span><b>` + row.fullname + `</b></span></a>`
                     }
                 }, {

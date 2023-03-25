@@ -129,20 +129,34 @@ $(function () {
                     render: (data, type, row) => {
                         let actionEle = renderAction();
                         if (row.order === 1) {
-                            return `<div class="btn-group dropdown">
-                                    <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"><span class="" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>
-                                    <div class="dropdown-menu w-250p">
-                                        <div class="h-250p">
-                                            <div data-simplebar class="nicescroll-bar">
-                                                <ul class="node-action-list p-0">
-                                                    ${actionEle}
-                                                </ul>
+                            return `<div class="row">
+                                        <div class="col-8">
+                                            <div class="btn-group dropdown">
+                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"></i>
+                                                <div class="dropdown-menu w-250p">
+                                                    <div class="h-250p">
+                                                        <div data-simplebar class="nicescroll-bar">
+                                                            <ul class="node-action-list p-0">
+                                                                ${actionEle}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>`;
+                                        <div class="col-4">
+                                            <span class=""><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                        </div>
+                                    </div>`;
                         } else {
-                            return `<i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>`
+                            return `<div class="row">
+                                        <div class="col-8">
+                                            <i class="fas fa-align-justify" style="color: #cccccc"></i>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                        </div>
+                                    </div>`
                         }
                     },
                 },
@@ -150,52 +164,65 @@ $(function () {
                     targets: 4,
                     render: (data, type, row) => {
                         if (row.order === 1) {
-                            return `<i class="fas fa-align-justify btn-initial-node-collaborator" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
-                                <div
-                                    class="modal fade" id="auditModalCreateInitial" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenter" aria-hidden="true"
-                                >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Add Collaborators</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table
-                                                        id=""
-                                                        class="table nowrap w-100 mb-5 table-initial-node-collaborator"
-                                                    >
-                                                        <thead>
-                                                        <tr>
-                                                            <th>Collaborator</th>
-                                                            <th>Position</th>
-                                                            <th>Role</th>
-                                                            <th>Editing Zone</th>
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        <td>Creator</td>
-                                                        <td>Creator's position</td>
-                                                        <td>Creator's role</td>
-                                                        <td class="initial-node-collaborator-zone"></td>
-                                                        <td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                            return `<div class="row">
+                                        <div class="col-8">
+                                            <i class="fas fa-align-justify btn-initial-node-collaborator" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
+                                            <div
+                                                class="modal fade" id="auditModalCreateInitial" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalCenter" aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table
+                                                                id=""
+                                                                class="table nowrap w-100 mb-5 table-initial-node-collaborator"
+                                                            >
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Collaborator</th>
+                                                                    <th>Position</th>
+                                                                    <th>Role</th>
+                                                                    <th>Editing Zone</th>
+                                                                    <th>Actions</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <td>Creator</td>
+                                                                <td>Creator's position</td>
+                                                                <td>Creator's role</td>
+                                                                <td class="initial-node-collaborator-zone"></td>
+                                                                <td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a></td>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                </div>
-                                <span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>`
+                                        <div class="col-4">
+                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                        </div>
+                                    </div>`
                         } else {
-                            return `<i class="fas fa-align-justify" style="color: #cccccc"><span class="check-done-audit" style="padding-left: 260px"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span></i>`;
+                            return `<div class="row">
+                                        <div class="col-8">
+                                            <i class="fas fa-align-justify" style="color: #cccccc"></i>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                        </div>
+                                    </div>`;
                         }
 
                     }
@@ -423,53 +450,65 @@ $(function () {
 
             initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span class="node-title-col-show node-title">${nodeName}</span><input type="text" class="node-title-col-edit" hidden></td><td><span class="node-remark-col-show node-description">${nodeDescription}</span><input type="text" class="node-remark-col-edit" hidden></td>
                                     <td>
-                                        <div class="btn-group dropdown">
-                                        <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="check-done-action" style="padding-left: 255px"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span></i>
-                                            <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
-                                                <ul class="node-action-list p-0">
-                                                    ${actionEle}
-                                                </ul>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <div class="btn-group dropdown">
+                                                    <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                    <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
+                                                        <ul class="node-action-list p-0">
+                                                            ${actionEle}
+                                                        </ul>
+                                                    </div>
+                                                    </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            </div>
+                                            <div class="col-4">
+                                                <span class="check-done-action"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                    <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
-                                        <div
-                                            class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalCenter" aria-hidden="true"
-                                        >
-                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Add Collaborator</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label class="form-label">List source</label>
-                                                            <select
-                                                                    class="form-select select-box-audit-option" 
-                                                            >
-                                                                <option></option>
-                                                                <option value="0">In form</option>
-                                                                <option value="1">Out form</option>
-                                                                <option value="2">In workflow</option>
-                                                            </select>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
+                                                <div
+                                                    class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
+                                                    aria-labelledby="exampleModalCenter" aria-hidden="true"
+                                                >
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Add Collaborator</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">List source</label>
+                                                                    <select
+                                                                            class="form-select select-box-audit-option" 
+                                                                    >
+                                                                        <option></option>
+                                                                        <option value="0">In form</option>
+                                                                        <option value="1">Out form</option>
+                                                                        <option value="2">In workflow</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-4">
+                                                <span class="check-done-audit"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                            </div>
                                         </div>
-                                        <span class="check-done-audit" style="padding-left: 255px"><i class="fas fa-times" style="color: red; font-size: 20px"</span>
-                                        <input type="text" class="workflow-node-audit-submit" hidden>
                                     </td>
                                     <td>${actionData}</td></tr>`);
 
@@ -676,22 +715,15 @@ $(function () {
                                         <span class="form-text text-muted">Description what to do</span>
                                     </div>
                                     <br><br>
-                                    <div class="row">
-                                        <div class="col-8"></div>
-                                        <div
-                                                class="col-2" data-bs-dismiss="offcanvas"
-                                                aria-label="" style="padding-left: 70px"
-                                        >
-                                            <span
-                                                    class="btn btn-primary button-add-audit-in-workflow-employee" id=""
-                                            >Add</span>
-                                        </div>
-                                        <div
-                                                class="col-2" data-bs-dismiss="offcanvas"
-                                                aria-label="Close"
-                                        >
-                                            <span class="btn btn-light">Cancel</span>
-                                        </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                        <button
+                                                type="button" 
+                                                class="btn btn-primary button-add-audit-in-workflow-employee" 
+                                                data-bs-dismiss="offcanvas"
+                                                id=""
+                                        >Save changes
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -788,22 +820,15 @@ $(function () {
                                         </tbody>
                                     </table>
                                     <br><br>
-                                    <div class="row">
-                                        <div class="col-8"></div>
-                                        <div
-                                                class="col-2" data-bs-dismiss="offcanvas"
-                                                aria-label="Close" style="padding-left: 70px"
-                                        >
-                                            <span
-                                                    class="btn btn-primary button-add-audit-out-form-employee" id=""
-                                            >Add</span>
-                                        </div>
-                                        <div
-                                                class="col-2" data-bs-dismiss="offcanvas"
-                                                aria-label="Close"
-                                        >
-                                            <span class="btn btn-light">Cancel</span>
-                                        </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                        <button
+                                                type="button" 
+                                                class="btn btn-primary button-add-audit-out-form-employee" 
+                                                data-bs-dismiss="offcanvas"
+                                                id=""
+                                        >Save changes
+                                        </button>
                                     </div>
                                 </div>
                             </div>

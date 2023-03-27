@@ -21,27 +21,14 @@ function eventNodeClick(event) {
     for (let item of data.action) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
-        if (item <= 1 && data.collaborators.option < 2 || item >= 4)
-            midd = `<input class="form-control formula-input" type="text" `
-                + `value="${item >= 4 ? data.collaborators.total_config : 1}" readonly>`;
-        else if (item <= 1 && data.collaborators.option === 2)
+        if (item <= 1 && data.collaborators.option < 2 || item >= 4) midd = `<input class="form-control formula-input" type="text" ` + `value="${item >= 4 ? data.collaborators.total_config : 1}" readonly>`; else if (item <= 1 && data.collaborators.option === 2)
             // else node type is approved/create and collab option is in workflow
-            midd = `<input class="form-control formula-input" type="number" min="1" value="1" `
-                + `max="${data.collaborators.total_config}">`;
-        else if (item > 1 && item < 4) {
+            midd = `<input class="form-control formula-input" type="number" min="1" value="1" ` + `max="${data.collaborators.total_config}">`; else if (item > 1 && item < 4) {
             let num = data.collaborators.total_config + 1 - 1;
-            midd = `<select class="form-select">`
-                + `<option value=""></option>`
-                + `<option class="formular_opt" value="${num}">${num}</option>`
-                + `<option class="formular_opt_else" value="else">else</option>`
-                + `</select>`;
+            midd = `<select class="form-select">` + `<option value=""></option>` + `<option class="formular_opt" value="${num}">${num}</option>` + `<option class="formular_opt_else" value="else">else</option>` + `</select>`;
         }
         let next_text = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
-        html += `<tr>`
-            + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>`
-            + `<td>${midd}</td>`
-            + `<td>${next_text}</td>`
-            + `</tr>`;
+        html += `<tr>` + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>` + `<td>${midd}</td>` + `<td>${next_text}</td>` + `</tr>`;
     }
     $modal.find('table tbody').html(html);
     $modal.modal('show');
@@ -65,11 +52,9 @@ function eventNodeClick(event) {
         let condition = []
         $modal.find('table tbody tr').each(function () {
             let temp = $(this).find('select option:selected').val()
-            if ($(this).find('.formula-input').length)
-                temp = $(this).find('.formula-input').val()
+            if ($(this).find('.formula-input').length) temp = $(this).find('.formula-input').val()
             condition.push({
-                action: parseInt($(this).find('[name*="node-action_"]').val()),
-                min_collaborator: temp,
+                action: parseInt($(this).find('[name*="node-action_"]').val()), min_collaborator: temp,
             })
         });
         COMMIT_NODE_LIST[data.order] = condition
@@ -105,15 +90,13 @@ function extendDropSpace() {
         if ($(this).attr('data-btn-type') === 'plus') {
             // plus space
             target_elm.css({
-                'height': current_h + 300,
-                'width': current_w + 300
+                'height': current_h + 300, 'width': current_w + 300
             })
         } else {
             // minus space
             if (!((current_h - 300) < default_h) || !((current_w - 300) < default_w)) {
                 target_elm.css({
-                    "height": current_h - 300,
-                    "width": current_w - 300
+                    "height": current_h - 300, "width": current_w - 300
                 })
             }
         }
@@ -122,6 +105,9 @@ function extendDropSpace() {
 }
 
 class JSPlumbsHandle {
+    nodeData = {};  // storage all node with {"id_node": "Object config node"}
+    associationData = []; // storage association Data // [{'node_in': '', 'node_out': ''},]
+    clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
 
     set setNodeList(strData) {
         let temp = {};
@@ -133,7 +119,8 @@ class JSPlumbsHandle {
             for (let item of strData) {
                 temp[item.order] = item
             }
-            DEFAULT_NODE_LIST = temp
+            DEFAULT_NODE_LIST = temp;
+            this.nodeData = temp;
         }
     };
 
@@ -147,8 +134,7 @@ class JSPlumbsHandle {
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
-                strHTMLDragNode += `<div class="control" data-drag="${item.order}" title="${item.title}">`
-                    + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
+                strHTMLDragNode += `<div class="control" data-drag="${item.order}" title="${item.title}">` + `<p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p></div>`;
             }
         }
         if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
@@ -191,6 +177,7 @@ class JSPlumbsHandle {
             ],
             Container: "flowchart_workflow",
         });
+        let that_cls = this; // save this - using for callback instance (because inside callback this was overridden)
 
         instance.bind("ready", function () {
             // declare style connection type
@@ -225,8 +212,7 @@ class JSPlumbsHandle {
                     for (let idx in DEFAULT_NODE_LIST) {
                         let item = DEFAULT_NODE_LIST[idx]
                         if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
-                            if (item.hasOwnProperty('code_node_system'))
-                                sys_code = item.code_node_system.toLowerCase()
+                            if (item.hasOwnProperty('code_node_system')) sys_code = item.code_node_system.toLowerCase()
                             break;
                         }
                     }
@@ -407,20 +393,19 @@ class JSPlumbsHandle {
                     $(`<div class="custom-menu"><a href="#" class="delete-connect">${$('#translate-factory').data('context_delete')}</a></div>`)
                         .appendTo("body")
                         .css({
-                            top: event.pageY + "px",
-                            left: event.pageX + "px"
+                            top: event.pageY + "px", left: event.pageX + "px"
                         });
                 }
             })
 
             // update association data when connect 2 nodes, LHPHUC
             instance.bind("connection", function (connection) {
+                // add value connection to global variable.
+                // change condition value by key: {nodeIN}_{nodeOut}
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
                 let end_result = {
-                    'node_in': '',
-                    'node_out': '',
-                    'condition': [],
+                    'node_in': '', 'node_out': '', 'condition': [],
                 }
                 let key = "";
                 let connect = connection;
@@ -445,8 +430,20 @@ class JSPlumbsHandle {
                 }
             })
 
+            instance.bind('beforeDrop', function (info) {
+                // Check rule connection two node.
+                // Allow: return true
+                // Deny: return false
+                let node_in = info.connection.source.dataset.drag;
+                let node_out = info.connection.target.dataset.drag;
+                // return checkConnection(node_in, node_out, true);
+                return that_cls.clsManage.addConnection(node_in, node_out, true);
+            });
+
             // update association data when disconnect 2 nodes, LHPHUC
             instance.bind("connectionDetached", function (connection) {
+                // remove value connection to global variable.
+                // change condition value by key: {nodeIN}_{nodeOut}
                 let key = "";
                 let connect = connection;
                 let node_in = connect.source.dataset.drag;
@@ -465,6 +462,13 @@ class JSPlumbsHandle {
                 }
             });
 
+            instance.bind("beforeDetach", function (conn) {
+                return that_cls.clsManage.removeConnection(
+                    conn.source.dataset.drag,
+                    conn.target.dataset.drag
+                )
+            });
+
 
             // declare event on click for context menu
             $("body").on("click", ".delete-connect", function () {
@@ -476,10 +480,371 @@ class JSPlumbsHandle {
 
     init() {
         this.setNodeList = setupDataNode();
+        this.setNodeState = this.nodeData;
         this.htmlDragRender();
         // if window is detail page render flow chart
         if ($('#form-detail_workflow').length) this.createNodeAndConnection()
         this.initJSPlumbs();
-        extendDropSpace()
+        extendDropSpace();
+    }
+
+    set setNodeState(nodeData) {
+        this.clsManage.setNodeState = nodeData;
+    }
+
+    set setAssociation(transData) {
+        // load association config in here (case load exist config)
+        this.associationData = transData;
+        this.clsManage.setAssociationList = transData;
+    }
+}
+
+// # left=INIT, right=COMPLETE, middle=APPROVED, null="NO CONNECTION TO SYSTEM"
+// {
+//      "init": "left",
+//      "2": "left",
+//      "3": "left",
+//      "appr": "middle",
+//      "5": null,
+//      "6": null,
+//      "comp": "right",
+// }
+//
+// [
+//      (2, 3, init),
+//      (...),
+// ]
+// #################################################################################
+// | INPUT      OUTPUT	    ALLOW	ACTION THEN ALLOWED		                       |
+// |###############################################################################|
+// | NULL		NULL	 	?		...                                            |
+// | NULL		LEFT	 	?	 	REPLACE NULL TO LEFT		                   |
+// | NULL		RIGHT	 	?	 	REPLACE NULL TO RIGHT		                   |
+// | NULL		MIDDLE	 	?		REPLACE NULL TO LEFT		                   |
+// |-------------------------------------------------------------------------------|
+// | MIDDLE	    NULL		?		REPLACE NULL TO RIGHT		                   |
+// | MIDDLE	    LEFT		?		...				                               |
+// | MIDDLE	    RIGHT		?		...				                               |
+// | MIDDLE	    MIDDLE		?		... (ONLY ONE MIDDLE NODE)	                   |
+// |-------------------------------------------------------------------------------|
+// | LEFT		NULL		?		REPLACE NULL TO LEFT		                   |
+// | LEFT		LEFT		?		...				                               |
+// | LEFT		RIGHT		?		...				                               |
+// | LEFT		MIDDLE		?		...				                               |
+// |-------------------------------------------------------------------------------|
+// | RIGHT		NULL		?		REPLACE NULL TO RIGHT		                   |
+// | RIGHT		LEFT		?		...				                               |
+// | RIGHT		RIGHT		?		...				                               |
+// | RIGHT		MIDDLE		?		...				                               |
+// #################################################################################
+// DESTROY CONNECTION
+// One group:
+// --------------------------------------------------
+// Node	IN	OUT	GROUP
+// 1	{}	{2}	G1
+// 2	{1}	{3}	G1
+// 3	{2}	{4}	G1
+// 4 	{3}	{5}	G1
+// 5	{4}	{6}	G1
+// 6	{5}	{}	G1
+// --------------------------------------------------
+// Del 3-4: => 3 del OUT=4 && 4 del IN=3
+// --------------------------------------------------
+// Node	IN	OUT	GROUP
+// 1	{}	{2}	G1.1
+// 2	{1}	{3}	G1.1
+// 3	{2}	{}	G1.1
+// 4 	{}	{5}	G1.2
+// 5	{4}	{6}	G1.2
+// 6	{5}	{}	G1.2
+// --------------------------------------------------
+// G1: {1,2,3} && {4,5,6}
+// {1,2,3} <> {4,5,6} === (EMPTY) ✔
+// 	=> SPLIT G1 => G1.1: {1,2,3} & G1.2: {4,5,6}
+//
+// 3 del OUT=4
+// 3 => {2}
+//      2 => {1,3}
+//          1 => {2} : EXIST
+//          3 : EXIST
+//  {1,2,3}
+//
+class NodeHandler {
+    set setNodeState(nodeData) {
+        Object.keys(nodeData).map((key) => {
+            if (nodeData[key]['is_system'] === true) {
+                switch (nodeData[key]['code_node_system']) {
+                    case 'initial':
+                        this.nodeState[key] = 'left';
+                        this.systemNode['left'] = key;
+                        break;
+                    case 'completed':
+                        this.nodeState[key] = 'right';
+                        this.systemNode['right'] = key;
+                        break;
+                    case 'approved':
+                        this.nodeState[key] = 'middle';
+                        this.systemNode['middle'] = key;
+                        break;
+                    default:
+                        console.log('Code:', nodeData[key]['code_node_system'], "don't supported.")
+                }
+            } else this.nodeState[key] = null;
+        });
+    }
+
+    set setAssociationList(associationData) {
+        this.associationList = associationData;
+        this.allNodeInOut = this.parseInOut(this.associationList);
+    }
+
+    getAllNodeOfGroup(node_idx_from, all_data) {
+        all_data = Array.isArray(all_data) ? all_data : [];
+        if (node_idx_from !== this.systemNode['middle']) {
+            all_data.push(node_idx_from);
+            let data = this.allNodeInOut[node_idx_from];
+            if (data !== undefined && typeof data === "object" && (data.in.length > 0 || data.out.length > 0)) {
+                [...data['in'], ...data['out']].map((idx) => {
+                    if (idx !== this.systemNode['middle'] && !all_data.includes(idx)) this.getAllNodeOfGroup(idx, all_data);
+                });
+            }
+        }
+        return all_data;
+    }
+
+    parseInOut(data) {
+        // data = [{"node_in": 1, "node_out": 2}, {"node_in": 2, "node_out": 3"}]
+        // => {
+        //      1: {"in": [], "out": [2]},
+        //      2: {"in": [1], "out": [3]},
+        //      3: {"in": [2], "out": []},
+        // }
+        let result = {};
+        data.map((item) => {
+            let id_in = item['node_in'];
+            let id_out = item['node_out'];
+            if (result[id_in]) result[id_in]['out'].push(id_out); else result[id_in] = {'in': [], 'out': [id_out]};
+            if (result[id_out]) result[id_out]['in'].push(id_in); else result[id_out] = {'in': [id_in], 'out': []};
+        });
+        return result;
+    }
+
+    crossArray(array1, array2) {
+        for (let item of array1) if (array2.includes(item)) return true;
+        return false;
+    }
+
+    getGroup(code_node) {
+        let tmp = this.nodeState[code_node];
+        return (tmp) ? tmp : null;
+    }
+
+    appendArrayToGroupNull(arrayNodeInput, arrayNodeOutput) {
+        arrayNodeInput = Array.isArray(arrayNodeInput) ? arrayNodeInput : [];
+        arrayNodeOutput = Array.isArray(arrayNodeOutput) ? arrayNodeOutput : [];
+
+        let sumArray = arrayNodeInput.concat(arrayNodeOutput);
+        if (sumArray.length > 0) {
+            let newNullNode = [];
+            for (let idx = 0; idx < this.nullNode.length; idx++) {
+                for (let key in sumArray){
+                    if (!this.nullNode[idx].includes(key)) {
+                        newNullNode.push(this.nullNode[idx]); break;
+                    }
+                }
+            }
+            if (arrayNodeInput.length > 0) newNullNode.push(arrayNodeInput);
+            if (arrayNodeOutput.length > 0) newNullNode.push(arrayNodeOutput);
+            this.nullNode = newNullNode;
+        }
+    }
+
+    appendGroupNull(node_input, node_output) {
+        if (this.nodeState[node_input] == null && this.nodeState[node_output] == null) {
+            let [idx_input, idx_output] = [null, null];
+            for (let idx = 0; idx < this.nullNode.length; idx++) {
+                if (this.nullNode[idx].includes(node_input) === true) idx_input = idx;
+                if (this.nullNode[idx].includes(node_output) === true) idx_output = idx;
+            }
+
+            if (idx_input == null && idx_output == null) this.nullNode.push([node_input, node_output]);
+            else if (idx_input == null) {
+                this.nullNode[idx_output].push(node_input)
+            } else if (idx_output == null) {
+                this.nullNode[idx_input].push(node_output)
+            } else if (idx_input === idx_output) {
+            } else if (idx_input < idx_output) {
+                let data_output = this.nullNode[idx_output];
+                this.nullNode[idx_input] = this.nullNode[idx_input].concat(data_output);
+                this.nullNode.splice(idx_output, 1);
+            } else if (idx_input > idx_output) {
+                let data_input = this.nullNode[idx_input];
+                this.nullNode[idx_output] = this.nullNode[idx_output].concat(data_input);
+                this.nullNode.splice(idx_input, 1);
+            } else console.log('Unbelievable!!!');
+            return true;
+        }
+        return false;
+    }
+
+    replaceGroup(code_node, to_code) {
+        let newNullNode = [];
+        let node_in_group = [];
+
+        for (let idx = 0; idx < this.nullNode.length; idx++) {
+            if (this.nullNode[idx].includes(code_node)) {
+                node_in_group = node_in_group.concat(this.nullNode[idx]);
+            } else {
+                newNullNode.push(this.nullNode[idx]);
+            }
+        }
+
+        this.nullNode = newNullNode;
+
+        if (node_in_group.includes(code_node)) {
+            node_in_group.map((node) => {
+                this.nodeState[node] = to_code;
+            });
+        } else {
+            this.nodeState[code_node] = to_code;
+        }
+        return true;
+    }
+
+    constructor(nodeData, associationList) {
+        this.systemNode = {'left': null, 'right': null, 'middle': null};
+        this.nodeState = {};
+        this.setNodeState = nodeData;
+        this.nullNode = [];
+        this.associationList = associationList;
+        this.allNodeInOut = this.parseInOut(this.associationList);
+    }
+
+    addConnection(node_input, node_output, enable_notify_failure) {
+        let state = false;
+        let msgFailed = null;
+        let combinedValue = this.getGroup(node_input) + '|' + this.getGroup(node_output);
+        switch (combinedValue) {
+            case 'null|null':
+                this.appendGroupNull(node_input, node_output);
+                state = true;
+                break;
+            case 'null|left':
+                this.replaceGroup(node_input, 'left');
+                state = true;
+                break;
+            case 'null|right':
+                this.replaceGroup(node_input, 'right');
+                state = true;
+                break;
+            case 'null|middle':
+                this.replaceGroup(node_input, 'left');
+                state = true;
+                break;
+            case 'middle|null':
+                this.replaceGroup(node_output, 'right');
+                state = true;
+                break;
+            case 'middle|left':
+                //
+                // return false;
+                msgFailed = "Approved Node can't connect to Node that connected Initial Node"
+                break;
+            case 'middle|right':
+                state = true;
+                break;
+            case 'middle|middle':
+                // can't exist two middle node
+                // return false;
+                msgFailed = "Can't exist two Middle Node"
+                break;
+            case 'left|null':
+                this.replaceGroup(node_output, 'left');
+                state = true;
+                break;
+            case 'left|left':
+                state = true;
+                break;
+            case 'left|right':
+                //
+                // return false;
+                msgFailed = "Node connected Initial Node can't connect to Node connect Completed Node";
+                break;
+            case 'left|middle':
+                state = true;
+                break;
+            case 'right|null':
+                this.replaceGroup(node_output, 'right');
+                state = true;
+                break;
+            case 'right|left':
+                //
+                // return false;
+                msgFailed = "Node connected Initial Node can't connect to Node connect Completed Node";
+                break;
+            case 'right|right':
+                state = true;
+                break;
+            case 'right|middle':
+                //
+                // return false;
+                msgFailed = "Node connected Completed Node can't connect to Approved Node"
+                break;
+            default:
+                console.log('Over case with data:', combinedValue);
+                // return false;
+                msgFailed = "Create connection is failure";
+                break;
+        }
+        if (state === true) {
+            this.addInOut(node_input, node_output);
+        } else if (enable_notify_failure === true) {
+            $.fn.notifyB({
+                'description': msgFailed ? msgFailed : "Don't allow connection..."
+            }, 'failure');
+        }
+        return state;
+    }
+
+    removeConnection(node_in, node_out) {
+        if (this.allNodeInOut[node_in] && this.allNodeInOut[node_in]['out'].includes(node_out)) {
+            this.allNodeInOut[node_in]['out'] = this.allNodeInOut[node_in]['out'].filter((item) => item !== node_out);
+        }
+        if (this.allNodeInOut[node_out] && this.allNodeInOut[node_out]['in'].includes(node_in)) {
+            this.allNodeInOut[node_out]['in'] = this.allNodeInOut[node_out]['in'].filter((item) => item !== node_in);
+        }
+        let groupIn = [...new Set(this.getAllNodeOfGroup(node_in))];
+        let groupOut = [...new Set(this.getAllNodeOfGroup(node_out))];
+
+        if (this.crossArray(groupIn, groupOut)) {
+            console.log('Groups are cross item.');
+        } else {
+            let appendGroupIn = false;
+            let appendGroupOut = false;
+            if (groupIn.includes(this.systemNode['left'])) groupIn.map((node) => this.replaceGroup(node, 'left'))
+            else if (groupIn.includes(this.systemNode['right'])) groupIn.map((node) => this.replaceGroup(node, 'right'))
+            else {
+                groupIn.map((node) => this.replaceGroup(node, null));
+                appendGroupIn = true;
+            }
+
+            if (groupOut.includes(this.systemNode['left'])) groupOut.map((node) => this.replaceGroup(node, 'left'))
+            else if (groupOut.includes(this.systemNode['right'])) groupOut.map((node) => this.replaceGroup(node, 'right'))
+            else {
+                groupOut.map((node) => this.replaceGroup(node, null));
+                appendGroupOut = true;
+            }
+            this.appendArrayToGroupNull(appendGroupIn === true ? groupIn : [], appendGroupOut ? groupOut : []);
+        }
+        return true;
+    }
+
+    addInOut(node_in, node_out) {
+        if (this.allNodeInOut[node_in]) {
+            if (!this.allNodeInOut[node_in]['out'].includes(node_out)) this.allNodeInOut[node_in]['out'].push(node_out);
+        } else this.allNodeInOut[node_in] = {'in': [], 'out': [node_out]};
+        if (this.allNodeInOut[node_out]) {
+            if (!this.allNodeInOut[node_out]['in'].includes(node_in)) this.allNodeInOut[node_out]['in'].push(node_in);
+        } else this.allNodeInOut[node_out] = {'in': [node_in], 'out': []};
     }
 }

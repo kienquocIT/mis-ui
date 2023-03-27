@@ -66,10 +66,17 @@ $(document).ready(function () {
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                if (row.is_default === false) {
+                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
             data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
                     <span><b>` + row.title + `</b></span>
                 </a>`
+                }
+                else {
+                    return `<a>
+                    <span><b>` + row.title + `</b></span>
+                </a>`
+                }
             }
         }, {
             'data': 'description', render: (data, type, row, meta) => {
@@ -78,11 +85,18 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt3;
+                if (row.is_default === false) {
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return bt3;
+                }
+                else {
+                    let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return bt3;
+                }
             }
         },]
     }
+
     let config_unit_measure_group = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,

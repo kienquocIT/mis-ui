@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.core.auths.middleware.CustomMiddleware',
 ]
+MIDDLEWARE += ['apps.shared.middleware.JaegerTracingMiddleware']
 
 ROOT_URLCONF = 'misui.urls'
 
@@ -260,6 +261,14 @@ LOGIN_URL = 'auth/login'
 # option database
 USE_DATABASE_CONFIG_OPTION = 0  # choices: 0=None,1=dev,2=online_site
 
+# Tracing
+JAEGER_TRACING_HOST = os.environ.get('JAEGER_TRACING_HOST', '127.0.0.1')
+JAEGER_TRACING_PORT = os.environ.get('JAEGER_TRACING_PORT', 6831)
+JAEGER_TRACING_PROJECT_NAME = os.environ.get('JAEGER_TRACING_PROJECT_NAME', 'MiS UI')
+JAEGER_TRACING_ENABLE = os.environ.get('JAEGER_TRACING_ENABLE', False)
+JAEGER_TRACING_ENABLE = True if JAEGER_TRACING_ENABLE in ['True', 'true', '1'] else False
+JAEGER_TRACING_EXCLUDE_LOG_PATH = '/__'
+
 # another import
 
 try:
@@ -322,4 +331,12 @@ if DEBUG is True:
         case _:
             print(Fore.BLUE, '#  1. DATABASES:          [LOCAL]:               ', DATABASES, '\033[0m')
     print(Fore.YELLOW, '#  2. API_DOMAIN:                                ', API_DOMAIN, '\033[0m')
+    if JAEGER_TRACING_ENABLE is True:
+        print(
+            Fore.LIGHTBLUE_EX,
+            '#  3. TRACING [JAEGER]:                          ',
+            f"{JAEGER_TRACING_HOST}:{JAEGER_TRACING_PORT} / {JAEGER_TRACING_PROJECT_NAME} \033[0m",
+        )
+    else:
+        print(Fore.LIGHTBLUE_EX, '#  3. TRACING [JAEGER]:                           Disable \033[0m')
     print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')

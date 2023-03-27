@@ -93,25 +93,24 @@ function clickConnection(connect) {
 /*** plus/minus button increase/decrease size of drop space
  * if size of space is less than default size -> do nothing
  */
-function extendDropSpace(){
+function extendDropSpace() {
     let target_elm = $('#flowchart_workflow')
     let default_h = target_elm.height();
     let default_w = target_elm.width();
-    $('.btn-extend_space').off().on('click', function (e){
+    $('.btn-extend_space').off().on('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         let current_h = target_elm.height();
         let current_w = target_elm.width();
-        if ($(this).attr('data-btn-type') === 'plus'){
+        if ($(this).attr('data-btn-type') === 'plus') {
             // plus space
             target_elm.css({
                 'height': current_h + 300,
                 'width': current_w + 300
             })
-        }
-        else{
+        } else {
             // minus space
-            if (!((current_h - 300) < default_h) || !((current_w - 300) < default_w)){
+            if (!((current_h - 300) < default_h) || !((current_w - 300) < default_w)) {
                 target_elm.css({
                     "height": current_h - 300,
                     "width": current_w - 300
@@ -125,7 +124,11 @@ function extendDropSpace(){
 class JSPlumbsHandle {
 
     set setNodeList(strData) {
-        let temp = {}
+        let temp = {};
+        if ($('#form-detail_workflow').length) {
+            let temp = JSON.parse($('#node-list').val());
+            strData = temp ? temp : []
+        }
         if (strData) {
             for (let item of strData) {
                 temp[item.order] = item
@@ -133,8 +136,9 @@ class JSPlumbsHandle {
             DEFAULT_NODE_LIST = temp
         }
     };
+
     set setAssociateList(strData) {
-         strData = strData ? JSON.parse(strData) : []
+        strData = strData ? JSON.parse(strData) : []
         ASSOCIATION = strData
     };
 
@@ -151,7 +155,7 @@ class JSPlumbsHandle {
         else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
-    createNodeAndConnection(){
+    createNodeAndConnection() {
         this.setAssociateList = $('#associate-connect').val()
         let $wrapWF = $('#flowchart_workflow')
         let wrap_w = $wrapWF.width(),
@@ -162,21 +166,20 @@ class JSPlumbsHandle {
         let HTML_temp = ''
         for (let val in DEFAULT_NODE_LIST) {
             let item = DEFAULT_NODE_LIST[val];
-            // $(`#node_dragbox .control[data-drag="${val}"]`).draggable( "disable" )
             // check if node coord larger than wrap workflow node
-            if ((top_coord + 90) > wrap_h){
-                wrap_h  = wrap_h + 300
+            if ((top_coord + 90) > wrap_h) {
+                wrap_h = wrap_h + 300
                 $wrapWF.css("height", wrap_h);
             }
-            if ((left_coord + 90) > wrap_w){
+            if ((left_coord + 90) > wrap_w) {
                 wrap_w = wrap_w + 300
                 $wrapWF.css("width", wrap_w);
             }
             HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
-                +`style="left:${left_coord}px;top:${top_coord}px">`
+                + `style="left:${left_coord}px;top:${top_coord}px">`
                 + `<p class="drag-title">${item.title}</p></div>`;
-            left_coord = left_coord + 80
-            top_coord = top_coord + 80
+            left_coord = left_coord + 130
+            top_coord = top_coord + 130
         }
         $wrapWF.html(HTML_temp)
     }
@@ -186,7 +189,7 @@ class JSPlumbsHandle {
             ConnectionOverlays: [
                 ["Arrow", {location: 1, id: "arrow", length: 10, width: 10, height: 10, foldback: 0.9}],
             ],
-            Container: "flowchart_workflow"
+            Container: "flowchart_workflow",
         });
 
         instance.bind("ready", function () {
@@ -201,7 +204,7 @@ class JSPlumbsHandle {
             $('#node_dragbox .control').draggable({
                 helper: function () {
                     return `<div class="clone" data-drag="${$(this).attr('data-drag')}" `
-                        +`title="${$(this).find('.drag-title').text()}">`
+                        + `title="${$(this).find('.drag-title').text()}">`
                         + `<p class="drag-title">${$(this).find('.drag-title').text()}</p></div>`;
                 },
                 appendTo: "#flowchart_workflow",
@@ -219,9 +222,9 @@ class JSPlumbsHandle {
                     instance.draggable(is_id, {containment: true})
                     let sys_code = "";
                     // check default system node
-                    for (let idx in DEFAULT_NODE_LIST){
+                    for (let idx in DEFAULT_NODE_LIST) {
                         let item = DEFAULT_NODE_LIST[idx]
-                        if (item.order === parseInt(ui.draggable.attr('data-drag'))){
+                        if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
                             if (item.hasOwnProperty('code_node_system'))
                                 sys_code = item.code_node_system.toLowerCase()
                             break;
@@ -229,6 +232,9 @@ class JSPlumbsHandle {
                     }
                     if (sys_code !== 'completed')
                         instance.addEndpoint(is_id, {
+                            endpoint: ["Dot", {radius: 4}],
+                            anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                            isSource: true,
                             connectorOverlays: [
                                 ["Label",
                                     {
@@ -245,18 +251,17 @@ class JSPlumbsHandle {
                             ],
                             maxConnections: -1,
                             connectionsDetachable: true,
-                            endpoint: ["Dot", {radius: 4}],
-                            endpointStyle:{ fill: "#374986" },
+                            endpointStyle: {fill: "#374986", opacity: ".8"},
                             HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                            anchor: ["Bottom", "BottomRight", "BottomLeft"],
-                            isSource: true,
                             connectionType: "pink-connection",
-                            connector: ["Bezier", {curviness: 100}],
-                            // connector: ["Flowchart", {cornerRadius: 5}],
+                            connector: ["Flowchart", {cornerRadius: 5}],
                         });
                     //
                     if (sys_code !== 'initial')
                         instance.addEndpoint(is_id, {
+                            endpoint: ["Rectangle", {width: 8, height: 8}],
+                            anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
+                            isTarget: true,
                             connectorOverlays: [
                                 ["Label",
                                     {
@@ -273,14 +278,10 @@ class JSPlumbsHandle {
                             ],
                             maxConnections: -1,
                             connectionsDetachable: true,
-                            endpoint: ["Rectangle", {width: 8, height: 8}],
-                            endpointStyle:{ fill: "#374986" },
+                            endpointStyle: {fill: "#374986", opacity: ".8"},
                             HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                            anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                            isTarget: true,
                             connectionType: "pink-connection",
-                            connector: ["Bezier", {curviness: 100}]
-                            // connector: ["Flowchart", {cornerRadius: 5}]
+                            connector: ["Flowchart", {cornerRadius: 5}],
                         });
 
                     // handle event on click node
@@ -294,11 +295,108 @@ class JSPlumbsHandle {
 
             });
 
-            if ($('#form-detail_workflow').length){
-                $('#flowchart_workflow .clone').each(function(){
+            // check if workflow detail or edit page show flowchart
+            if ($('#form-detail_workflow').length) {
+                $('#flowchart_workflow .clone').each(function () {
                     let is_id = $(this).attr('id')
                     instance.draggable(is_id, {containment: true})
+
+                    let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
+                    if (sys_code !== 'completed')
+                        instance.addEndpoint(is_id, {
+                            endpoint: ["Dot", {radius: 4}],
+                            anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                            isSource: true,
+                            connectorOverlays: [
+                                ["Label",
+                                    {
+                                        label: '',
+                                        location: 0.5,
+                                        cssClass: "cssAssociateLabel",
+                                        events: {
+                                            click: function (labelOverlay) {
+                                                clickConnection(labelOverlay)
+                                            }
+                                        },
+                                    },
+                                ]
+                            ],
+                            maxConnections: -1,
+                            connectionsDetachable: true,
+                            endpointStyle: {fill: "#374986", opacity: ".8"},
+                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                            connectionType: "pink-connection",
+                            connector: ["Flowchart", {cornerRadius: 5}],
+                        });
+                    //
+                    if (sys_code !== 'initial')
+                        instance.addEndpoint(is_id, {
+                            endpoint: ["Rectangle", {width: 8, height: 8}],
+                            anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
+                            isTarget: true,
+                            connectorOverlays: [
+                                ["Label",
+                                    {
+                                        label: '',
+                                        location: 0.5,
+                                        cssClass: "cssAssociateLabel",
+                                        events: {
+                                            click: function (labelOverlay) {
+                                                clickConnection(labelOverlay)
+                                            }
+                                        },
+                                    },
+                                ]
+                            ],
+                            maxConnections: -1,
+                            connectionsDetachable: true,
+                            endpointStyle: {fill: "#374986", opacity: ".8"},
+                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                            connectionType: "pink-connection",
+                            connector: ["Flowchart", {cornerRadius: 5}],
+                        });
                 })
+
+                for (let assoc of ASSOCIATION) {
+                    instance.connect({
+                        source: 'control-' + assoc.node_in.order,
+                        target: 'control-' + assoc.node_out.order,
+                        overlays: [
+                            ["Label",
+                                {
+                                    label: '',
+                                    location: 0.5,
+                                    cssClass: "cssAssociateLabel",
+                                    events: {
+                                        click: function (labelOverlay) {
+                                            clickConnection(labelOverlay)
+                                        }
+                                    },
+                                },
+                            ]
+                        ],
+                        endpoint: ["Dot", {radius: 4}],
+                        endpointStyle: {fill: "#374986", opacity: ".8"},
+                        paintStyle: {stroke: "#f3c6f2", strokeWidth: 4},
+                        hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
+                        connectionType: "pink-connection",
+                        connector: ["Flowchart", {cornerRadius: 5}],
+                    });
+                    jsPlumb.select({source: 'control-' + assoc.node_in.order}).addOverlay(
+                        ["Label",
+                            {
+                                label: 'aLabel',
+                                location: 0.5,
+                                cssClass: "cssAssociateLabel",
+                                events: {
+                                    click: function (labelOverlay) {
+                                        clickConnection(labelOverlay)
+                                    }
+                                },
+                            },
+                        ]
+                    )
+                }
             }
 
             // append context menu for R-Click
@@ -306,7 +404,7 @@ class JSPlumbsHandle {
                 if (component.hasClass("jtk-connector")) {
                     event.preventDefault()
                     window.selectedConnection = component;
-                    $('<div class="custom-menu"><a href="#" class="delete-connect">delete associate</a></div>')
+                    $(`<div class="custom-menu"><a href="#" class="delete-connect">${$('#translate-factory').data('context_delete')}</a></div>`)
                         .appendTo("body")
                         .css({
                             top: event.pageY + "px",
@@ -316,7 +414,7 @@ class JSPlumbsHandle {
             })
 
             // update association data when connect 2 nodes, LHPHUC
-            instance.bind("connection", function(connection){
+            instance.bind("connection", function (connection) {
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
                 let end_result = {
@@ -380,7 +478,7 @@ class JSPlumbsHandle {
         this.setNodeList = setupDataNode();
         this.htmlDragRender();
         // if window is detail page render flow chart
-        if (!$('#form-create_workflow').length) this.createNodeAndConnection()
+        if ($('#form-detail_workflow').length) this.createNodeAndConnection()
         this.initJSPlumbs();
         extendDropSpace()
     }

@@ -335,7 +335,11 @@
            data-employees="{% url 'EmployeeListAPI' %}"
            data-node="{% url 'NodeSystemListAPI' %}"
     >
+    <input type="hidden" id="translate-factory"
+           data-context_delete="{% trans 'Delete connection' %}"
+    >
     <input type="hidden" id="associate-connect">
+    <input type="hidden" id="node-list">
     <!--- modal add and edit zone--->
     <div class="modal fade"
          id="add_zone"

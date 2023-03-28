@@ -569,50 +569,52 @@ $(document).ready(function () {
 
                             if (data.unit_of_measure.group.is_referenced_unit === true) {
                                 $('#check-edit-unit').prop('checked', true);
-                                $('#select-box-edit-uom-group').prop('hidden', true);
+                                $('#select-box-edit-uom-group-div').prop('hidden', true);
                                 $('#select-group-div').removeClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', true);
                                 $('#inp-ratio-unit').removeClass('inp-can-edit');
 
-                                $('#inp-edit-uom-group').prop('hidden', false);
+                                $('#inp-edit-uom-group-div').prop('hidden', false);
                                 $('#check-edit-unit').prop('disabled', true);
                             } else {
                                 $('#check-edit-unit').prop('checked', false);
-                                $('#select-box-edit-uom-group').prop('hidden', false);
+                                $('#select-box-edit-uom-group-div').prop('hidden', false);
                                 $('#select-group-div').addClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', false);
                                 $('#inp-ratio-unit').addClass('inp-can-edit');
 
-                                $('#inp-edit-uom-group').prop('hidden', true);
+                                $('#inp-edit-uom-group-div').prop('hidden', true);
                                 $('#check-edit-unit').prop('disabled', false);
                             }
                         }
                     }
 
                     // mouse enter to edit
-                    $('.inp-can-edit').mouseenter(function () {
-                        $(this).prop("readonly", false);
+                    $('.inp-can-edit').on('click', function () {
                         $(this).find('select').prop("disabled", false);
                     });
                     $('.inp-can-edit').mouseleave(function () {
-                        $(this).prop("readonly", true);
                         $(this).find('select').prop("disabled", true);
                     });
+                    $('.inp-can-edit').focusin(function() {
+                        $(this).find('input[class=form-control]').prop('readonly', false);
+                        $(this).find('textarea').prop('readonly', false);
+                    });
+                    $('.inp-can-edit').focusout(function() {
+                        $(this).find('input[class=form-control]').attr('readonly', true);
+                        $(this).find('textarea').prop('readonly', true);
+                    });
                     $('.inp-can-edit').on('change', function () {
-                        if ($(this).is(':input')) {
-                            $(this).css({
-                                'border-color': '#00D67F',
-                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                            })
-                        }
-                        else {
-                            $(this).find('select').css({
-                                'border-color': '#00D67F',
-                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                            })
-                        }
+                        $(this).find('input[class=form-control]').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
+                        $(this).find('select').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
                     })
                 },
                 (errs) => {

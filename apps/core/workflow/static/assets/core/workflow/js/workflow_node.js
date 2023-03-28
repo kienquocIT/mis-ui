@@ -672,7 +672,7 @@ $(function () {
                                                 <i class="fas fa-plus"></i>
                                             </span>
                                             <span class="font-3 ml-1">
-                                                Add new employee
+                                                Add employee
                                             </span>
                                         </span>
                                     </button>
@@ -733,7 +733,6 @@ $(function () {
                                 >
                                     <thead>
                                     <tr>
-                                        <th data-orderable="false"></th>
                                         <th data-orderable="false">Collaborator</th>
                                         <th data-orderable="false">Position</th>
                                         <th data-orderable="false">Role</th>
@@ -856,10 +855,13 @@ $(function () {
                 loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
 
                 let jqueryId = "#" + tableInWorkflowEmployeeId;
-                let tableInWorkflow = $(jqueryId).DataTable();
-                tableInWorkflow.columns.adjust();
+                $(jqueryId).DataTable({
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    autoWidth: false,
+                });
             }
-
             return false;
         });
 
@@ -990,7 +992,7 @@ $(function () {
                                 let spanRole = ``;
                                 if (item.role && Array.isArray(item.role)) {
                                     for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<span class="badge badge-soft-primary">${item.role[r].title}</span>`
+                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
                                     }
                                 }
                                 ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
@@ -1019,7 +1021,7 @@ $(function () {
                                 let spanRole = ``;
                                 if (item.role && Array.isArray(item.role)) {
                                     for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<span class="badge badge-soft-primary">${item.role[r].title}</span>`
+                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
                                     }
                                 }
                                 ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
@@ -1104,7 +1106,6 @@ $(function () {
             let zoneDataList = zone.nextElementSibling.querySelector('.node-zone-list');
             let zoneShowLen = 0;
             let trSTT = 0;
-            let spanGroup = ``;
             let dataZoneShow = ``;
             if (zone.children.length > 0) {
                 for (let d = 0; d < zone.children.length; d++) {
@@ -1116,30 +1117,19 @@ $(function () {
                     for (let z = 0; z < zone.children[d].children.length; z++) {
                         trSTT++
                         let spanData = zone.children[d].children[z].innerHTML;
-                        if (trSTT !== 0 && trSTT % 2 === 0) {
-                            spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${spanData}</span>`
-                            dataZoneShow += `<div class="col-12" style="margin-left: -18px">${spanGroup}</div>`
-                            spanGroup = ``
-                        } else {
-                            if (trSTT === zoneShowLen) {
-                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${spanData}</span>`
-                                dataZoneShow += `<div class="col-12" style="margin-left: -18px">${spanGroup}</div>`
-                            } else {
-                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${spanData}</span>`
-                            }
-                        }
+                        dataZoneShow += `<div class="col-12" style="margin-left: -18px">
+                                            <span class="badge badge-soft-primary mt-1 ml-1">${spanData}</span>
+                                        </div>`
                     }
                 }
             }
 
             let currentId = "chk_sel_" + String(tableLen + 1)
             let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-in-workflow" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
-            let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
-            let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
-            let actionData = bt2 + bt3;
+            let delAction = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
 
             if (empTitle) {
-                table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${actionData}</td></tr>`)
+                table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${delAction}</td></tr>`)
             }
 
             // reset canvas

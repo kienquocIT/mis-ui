@@ -361,7 +361,8 @@ $(document).ready(function () {
             // handle if button prev is last of list nav
             if (btn_href === '#tab_function') $prev_btn.prop('disabled', true)
             $next_btn.prop('disabled', false)
-        } else {
+        }
+        else {
             elmIsActive.parents('li').next().find('a').addClass('active')
             // handle if button next is last of list nav
             if (btn_href === '#tab_next_node') $next_btn.prop('disabled', true)

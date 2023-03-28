@@ -12,8 +12,9 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover hidden"
-            type="button" id="btn-detail_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
+            type="button" id="btn-detail_workflow" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="{% trans 'Update' %}"
+            data-bs-original-title="{% trans 'Update' %}">
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
@@ -515,7 +516,7 @@
 
     <script src="{% static 'assets/core/workflow/js/workflow-flowchart.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_common.js' %}"></script>
-    <script src="{% static 'assets/core/workflow/js/workflow_node.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow_node_detail.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
 

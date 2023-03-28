@@ -853,21 +853,30 @@ $(document).ready(function () {
         )
     })
 
-    // mouse enter to edit modal product and expense
-    $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseenter(function () {
-        $(this).prop("readonly", false);
+    $('.inp-can-edit').on('click', function () {
+        $(this).find('select').prop("disabled", false);
     });
-    $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseleave(function () {
-        $(this).prop("readonly", true);
+    $('.inp-can-edit').mouseleave(function () {
+        $(this).find('select').prop("disabled", true);
     });
-
-    // mouse enter to edit modal uom group
-    $('#modal-detail-unit-measure-group input').mouseenter(function () {
-        $(this).prop("readonly", false);
+    $('.inp-can-edit').focusin(function() {
+        $(this).find('input').prop('readonly', false);
+        $(this).find('textarea').prop('readonly', false);
     });
-    $('#modal-detail-unit-measure-group input').mouseleave(function () {
-        $(this).prop("readonly", true);
+    $('.inp-can-edit').focusout(function() {
+        $(this).find('input').attr('readonly', true);
+        $(this).find('textarea').prop('readonly', true);
     });
+    $('.inp-can-edit').on('change', function () {
+        $(this).find('input').css({
+            'border-color': '#00D67F',
+            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+        })
+        $(this).find('select').css({
+            'border-color': '#00D67F',
+            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+        })
+    })
 
     $('.btn-show-modal').on('click', function () {
         $('#modal-product-and-expense .form-control').val('');

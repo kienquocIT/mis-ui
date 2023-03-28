@@ -52,11 +52,12 @@ $(function () {
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode(true);
             // get exit node condition for node list
-            if (COMMIT_NODE_LIST)
-                for (let item of nodeTableData) {
-                    if (COMMIT_NODE_LIST.hasOwnProperty(item.order))
-                        item.condition = COMMIT_NODE_LIST[item.order]
-                }
+            // if (COMMIT_NODE_LIST)
+            let flowNode = FlowJsP.getCommitNode
+            for (let item of nodeTableData) {
+                if (flowNode.hasOwnProperty(item.order)) item.condition = flowNode[item.order]
+                else item.condition = []
+            }
             _form.dataForm['node'] = nodeTableData
 
             // convert associate to json

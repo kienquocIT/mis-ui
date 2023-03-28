@@ -66,10 +66,25 @@ $(document).ready(function () {
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-            data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
-                    <span><b>` + row.title + `</b></span>
-                </a>`
+                if (row.is_default) {
+                    if (row.is_default === false) {
+                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                            data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
+                                    <span><b>` + row.title + `</b></span>
+                                </a>`
+                    }
+                    else {
+                        return `<a>
+                            <span><b>` + row.title + `</b></span>
+                        </a>`
+                    }
+                }
+                else {
+                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                        data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
+                                <span><b>` + row.title + `</b></span>
+                            </a>`
+                }
             }
         }, {
             'data': 'description', render: (data, type, row, meta) => {
@@ -78,11 +93,24 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt3;
+                if (row.is_default) {
+                    if (row.is_default === false) {
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                        return bt3;
+                    }
+                    else {
+                        let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                        return bt3;
+                    }
+                }
+                else {
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return bt3;
+                }
             }
         },]
     }
+
     let config_unit_measure_group = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
@@ -541,50 +569,52 @@ $(document).ready(function () {
 
                             if (data.unit_of_measure.group.is_referenced_unit === true) {
                                 $('#check-edit-unit').prop('checked', true);
-                                $('#select-box-edit-uom-group').prop('hidden', true);
+                                $('#select-box-edit-uom-group-div').prop('hidden', true);
                                 $('#select-group-div').removeClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', true);
                                 $('#inp-ratio-unit').removeClass('inp-can-edit');
 
-                                $('#inp-edit-uom-group').prop('hidden', false);
+                                $('#inp-edit-uom-group-div').prop('hidden', false);
                                 $('#check-edit-unit').prop('disabled', true);
                             } else {
                                 $('#check-edit-unit').prop('checked', false);
-                                $('#select-box-edit-uom-group').prop('hidden', false);
+                                $('#select-box-edit-uom-group-div').prop('hidden', false);
                                 $('#select-group-div').addClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', false);
                                 $('#inp-ratio-unit').addClass('inp-can-edit');
 
-                                $('#inp-edit-uom-group').prop('hidden', true);
+                                $('#inp-edit-uom-group-div').prop('hidden', true);
                                 $('#check-edit-unit').prop('disabled', false);
                             }
                         }
                     }
 
                     // mouse enter to edit
-                    $('.inp-can-edit').mouseenter(function () {
-                        $(this).prop("readonly", false);
+                    $('.inp-can-edit').on('click', function () {
                         $(this).find('select').prop("disabled", false);
                     });
                     $('.inp-can-edit').mouseleave(function () {
-                        $(this).prop("readonly", true);
                         $(this).find('select').prop("disabled", true);
                     });
+                    $('.inp-can-edit').focusin(function() {
+                        $(this).find('input[class=form-control]').prop('readonly', false);
+                        $(this).find('textarea').prop('readonly', false);
+                    });
+                    $('.inp-can-edit').focusout(function() {
+                        $(this).find('input[class=form-control]').attr('readonly', true);
+                        $(this).find('textarea').prop('readonly', true);
+                    });
                     $('.inp-can-edit').on('change', function () {
-                        if ($(this).is(':input')) {
-                            $(this).css({
-                                'border-color': '#00D67F',
-                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                            })
-                        }
-                        else {
-                            $(this).find('select').css({
-                                'border-color': '#00D67F',
-                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                            })
-                        }
+                        $(this).find('input[class=form-control]').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
+                        $(this).find('select').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
                     })
                 },
                 (errs) => {
@@ -825,21 +855,30 @@ $(document).ready(function () {
         )
     })
 
-    // mouse enter to edit modal product and expense
-    $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseenter(function () {
-        $(this).prop("readonly", false);
+    $('.inp-can-edit').on('click', function () {
+        $(this).find('select').prop("disabled", false);
     });
-    $('#modal-detail-product-and-expense input, #modal-detail-product-and-expense textarea').mouseleave(function () {
-        $(this).prop("readonly", true);
+    $('.inp-can-edit').mouseleave(function () {
+        $(this).find('select').prop("disabled", true);
     });
-
-    // mouse enter to edit modal uom group
-    $('#modal-detail-unit-measure-group input').mouseenter(function () {
-        $(this).prop("readonly", false);
+    $('.inp-can-edit').focusin(function() {
+        $(this).find('input').prop('readonly', false);
+        $(this).find('textarea').prop('readonly', false);
     });
-    $('#modal-detail-unit-measure-group input').mouseleave(function () {
-        $(this).prop("readonly", true);
+    $('.inp-can-edit').focusout(function() {
+        $(this).find('input').attr('readonly', true);
+        $(this).find('textarea').prop('readonly', true);
     });
+    $('.inp-can-edit').on('change', function () {
+        $(this).find('input').css({
+            'border-color': '#00D67F',
+            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+        })
+        $(this).find('select').css({
+            'border-color': '#00D67F',
+            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+        })
+    })
 
     $('.btn-show-modal').on('click', function () {
         $('#modal-product-and-expense .form-control').val('');

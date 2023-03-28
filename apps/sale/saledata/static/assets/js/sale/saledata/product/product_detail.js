@@ -157,14 +157,17 @@ $(document).ready(function () {
                 }, (errs) => {
                 },)
 
-                // mouse enter to edit
                 $('.inp-can-edit').on('click', function () {
-                    $(this).find('input').prop("readonly", false);
                     $(this).find('select').prop("disabled", false);
                 });
                 $('.inp-can-edit').mouseleave(function () {
-                    $(this).find('input').prop("readonly", true);
                     $(this).find('select').prop("disabled", true);
+                });
+                $('.inp-can-edit').focusin(function() {
+                    $(this).find('input').prop('readonly', false);
+                });
+                $('.inp-can-edit').focusout(function() {
+                    $(this).find('input').attr('readonly', true);
                 });
                 $('.inp-can-edit').on('change', function () {
                     $(this).find('input').css({

@@ -72,12 +72,6 @@ $(function () {
                 feather.replace();
             },
             rowCallback: function (row, data) {
-                // handle onclick btn
-                // $('.actions-btn a', row).off().on('click', function (e) {
-                //     e.stopPropagation();
-                //     actionsClick(row, data, e)
-                // })
-
                 let systemRowClass = "";
                 let initialCheckBox = "";
                 if (data.order === 1) {
@@ -190,7 +184,6 @@ $(function () {
                                                                     <th>Position</th>
                                                                     <th>Role</th>
                                                                     <th>Editing Zone</th>
-                                                                    <th>Actions</th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -198,7 +191,6 @@ $(function () {
                                                                 <td>Creator's position</td>
                                                                 <td>Creator's role</td>
                                                                 <td class="initial-node-collaborator-zone"></td>
-                                                                <td><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a></td>
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -641,7 +633,7 @@ $(function () {
                                 <label class="form-label">Editing zone</label>
                                 <div class="input-group mb-3">
                                     <span class="input-affix-wrapper">
-                                    <input type="text" class="form-control" placeholder="Select zone" aria-label="Username" aria-describedby="basic-addon1" disabled>
+                                    <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled>
                                     <div class="row zone-data-show"></div>
                                     <div class="btn-group dropdown">
                                         <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
@@ -733,6 +725,7 @@ $(function () {
                                 >
                                     <thead>
                                     <tr>
+                                        <th data-orderable="false"></th>
                                         <th data-orderable="false">Collaborator</th>
                                         <th data-orderable="false">Position</th>
                                         <th data-orderable="false">Role</th>
@@ -787,7 +780,7 @@ $(function () {
                                 <label class="form-label">Employee list</label>
                                 <div class="input-group mb-3">
                                     <span class="input-affix-wrapper">
-                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="Username" aria-describedby="basic-addon1" disabled>
+                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" disabled>
                                     
                                     <div class="row audit-out-form-employee-data-show"></div>
                                     

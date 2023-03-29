@@ -13,8 +13,8 @@ $(function () {
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone) initTableZone(res.zone);
-        if (res.node) $('#node-list').val(JSON.stringify(res.node)) // khúc này đợi P làm function node rồi ráp vào
-        if (res.association) $('#associate-connect').val(JSON.stringify(res.association))
+        if (res.node) $('#node-list').val(JSON.stringify(res.node))
+        if (res.association) $('#node-associate').val(JSON.stringify(res.association))
     }
 
     /***
@@ -39,6 +39,7 @@ $(function () {
         $('#btn-detail_workflow:not(.disabled)').on('click', function(){
             // show loading
             $(this).addClass('disabled')
+            $(this).find('.feather-icon').addClass('hidden')
             $(this).find('.loading-icon').removeClass('hidden')
 
             // prepare data
@@ -79,7 +80,6 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.dir(data)
                         prepareDataAndRenderHTML(data);
                         clickEditForm();
                         UpdateFormSubmit();
@@ -91,20 +91,30 @@ $(function () {
         $('#btn-detail_workflow').on('click', function (e) {
             e.preventDefault()
             let $form = document.getElementById('form-detail_workflow')
-            let _form = new SetupFormSubmit($form)
+            let _form = new SetupFormSubmit($('#form-detail_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode(true);
             // add condition object for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
-            for (let item of flowNode) {
-                if (flowNode.hasOwnProperty(item.order))
+            for (let item of nodeTableData) {
+                var node = document.getElementById(`control-${item.order}`);
+                var offset = jsPlumb.getOffset(node);
+                if (flowNode.hasOwnProperty(item.order)){
+                    //add coord of node
+                    item.coord = {
+                        top: offset.top,
+                        left: offset.left,
+                    }
                     item.condition = flowNode[item.order]
-                else item.condition = []
+                }
+                else{
+                    item.condition = []
+                    item.coord = {}
+                }
+
             }
             _form.dataForm['node'] = nodeTableData
-
-            // đang dừng ở đây
 
             // convert associate to json
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');

@@ -5,6 +5,7 @@ let DEFAULT_NODE_LIST = {};
 let _MOUSE_POSITION = 0;
 let ASSOCIATION = [];
 let is_node_changed = true;
+
 /***
  * function handle user on click into Node
  * @param event: element of Node
@@ -58,10 +59,7 @@ function eventNodeClick(event) {
         });
         let temp = FlowJsP.getCommitNode;
         temp[data.order] = condition;
-        var node = document.getElementById(`control-${data.order}`);
-        let nodeOffset = jsPlumb.getOffset(node);
         FlowJsP.setCommitNodeList = temp;
-
         $modal.modal('hide');
     })
 }
@@ -113,6 +111,7 @@ class JSPlumbsHandle {
     associationData = []; // storage association Data // [{'node_in': '', 'node_out': ''},]
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
     _commitNodeList = [];
+
     set setNodeList(strData) {
         let temp = {};
         for (let item of strData) {
@@ -131,10 +130,12 @@ class JSPlumbsHandle {
         strData = strData ? JSON.parse(strData) : []
         ASSOCIATION = strData.reverse();
     };
-    get getCommitNode(){
+
+    get getCommitNode() {
         return this._commitNodeList
     }
-    set setCommitNodeList(data){
+
+    set setCommitNodeList(data) {
         this._commitNodeList = data
     }
 
@@ -144,8 +145,8 @@ class JSPlumbsHandle {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
                 strHTMLDragNode += `<div class="control" id="drag-${item.order}" data-drag="${item.order}" `
-                    +`title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
-                    +`title="${item.remark}">${item.title}</p></div>`;
+                    + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
+                    + `title="${item.remark}">${item.title}</p></div>`;
             }
         }
         if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
@@ -153,7 +154,7 @@ class JSPlumbsHandle {
     };
 
     createNodeAndConnection() {
-        this.setAssociateList = $('#associate-connect').val()
+        this.setAssociateList = $('#node-associate').val()
         let $wrapWF = $('#flowchart_workflow')
         let wrap_w = $wrapWF.width(),
             wrap_h = $wrapWF.height(),
@@ -283,7 +284,7 @@ class JSPlumbsHandle {
 
                     // add drop node to commit node list
                     let temp = that_cls.getCommitNode
-                        temp[is_id] = DEFAULT_NODE_LIST[is_id]
+                    temp[is_id] = DEFAULT_NODE_LIST[is_id]
                     that_cls.setCommitNodeList = temp
 
                     // handle event on click node
@@ -299,7 +300,7 @@ class JSPlumbsHandle {
 
             // check if workflow detail or edit page show flowchart
             if ($('#form-detail_workflow').length) {
-                instance.doWhileSuspended( function(){
+                instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
                         instance.draggable(is_id, {containment: true})
@@ -363,10 +364,13 @@ class JSPlumbsHandle {
                         let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
 
                         // disable node drag in left side
-                        numID.draggable( "disable" );
+                        numID.draggable("disable");
                         // add event click for node of right side
-                        $(this).off().on('click', function(event){
-                            eventNodeClick(event);
+                        $('#' + is_id).off().on("mousedown", function (evt) {
+                            _MOUSE_POSITION = evt.pageX + evt.pageY
+                        }).on("mouseup", function (evt) {
+                            let temp = evt.pageX + evt.pageY;
+                            if (_MOUSE_POSITION === temp) eventNodeClick(evt)
                         })
                     })
                 }) // end do while suspended
@@ -434,7 +438,10 @@ class JSPlumbsHandle {
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
                 let end_result = {
-                    'node_in': '', 'node_out': '', 'condition': [],
+                    'node_in': '',
+                    'node_out': '',
+                    'condition': [],
+                    'anchor': {},
                 }
                 let key = "";
                 let connect = connection;
@@ -515,7 +522,7 @@ class JSPlumbsHandle {
         this.setNodeList = setupDataNode();
         this.setNodeState = this.nodeData;
         // check first time load detail page and data list node is changed
-        if (is_node_changed){
+        if (is_node_changed) {
             $('#node_dragbox').empty();
             $('#flowchart_workflow').empty();
             if ($('#form-detail_workflow').length) this.createNodeAndConnection();
@@ -684,9 +691,10 @@ class NodeHandler {
         if (sumArray.length > 0) {
             let newNullNode = [];
             for (let idx = 0; idx < this.nullNode.length; idx++) {
-                for (let key in sumArray){
+                for (let key in sumArray) {
                     if (!this.nullNode[idx].includes(key)) {
-                        newNullNode.push(this.nullNode[idx]); break;
+                        newNullNode.push(this.nullNode[idx]);
+                        break;
                     }
                 }
             }

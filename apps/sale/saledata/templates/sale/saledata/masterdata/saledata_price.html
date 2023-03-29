@@ -239,13 +239,13 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}<span
-                                        class="field-required">(*)</span></label>
+                                        class="field-required">*</span></label>
                                 <input class="form-control" type="text" name="title"
                                        placeholder="Input name">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Abbreviation" %}<span
-                                        class="field-required">(*)</span></label>
+                                        class="field-required">*</span></label>
                                 <input class="form-control" type="text" name="description"
                                        placeholder="Input text">
                             </div>
@@ -297,29 +297,32 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}<span
-                                        class="field-required">(*)</span></label>
+                                        class="field-required">*</span></label>
                                 <input class="form-control" type="text" name="title"
                                        placeholder="Input name">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}<span
-                                        class="field-required">(*)</span></label>
+                                        class="field-required">*</span></label>
                                 <input class="form-control" type="text" name="code"
-                                       placeholder="Input name">
+                                       placeholder="VAT-10" oninput="this.value=this.value.toUpperCase()">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Rate" %}<span
-                                        class="field-required">(*)</span></label>
-                                <input class="form-control" type="text" name="rate"
-                                       placeholder="Input name">
+                                        class="field-required">*</span></label>
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input class="form-control" type="number" name="rate" placeholder="10"
+                                    min="0">
+                                    <span class="input-suffix">%</span>
+                                </span>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Category" %}<span class="field-required">(*)</span></label>
+                                <label class="form-label">{% trans "Category" %}<span class="field-required">*</span></label>
                                 <select class="form-select" id="select-box-category" name="category"></select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Type" %}<span
-                                        class="field-required">(*)</span></label>
+                                        class="field-required">*</span></label>
                                 <select class="form-select" name="type">
                                     <option value="0">{% trans "Sale" %}</option>
                                     <option value="1">{% trans "Purchase" %}</option>

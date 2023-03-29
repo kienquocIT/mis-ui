@@ -100,7 +100,7 @@
             <!-- Section Tax -->
             <div class="lookup-data" id="section-tax" style="display: none">
                 <table id="datatable-tax" class="table nowrap w-100 mb-5"
-                       data-url="{% url "AccountTypeListAPI" %}"
+                       data-url="{% url "TaxListAPI" %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -126,7 +126,7 @@
             <!-- Section Tax Category -->
             <div class="lookup-data" id="section-tax-category" style="display: none">
                 <table id="datatable-tax-category" class="table nowrap w-100 mb-5"
-                       data-url="{% url "IndustryListAPI" %}"
+                       data-url="{% url "TaxCategoryListAPI" %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -304,24 +304,26 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}<span
                                         class="field-required">(*)</span></label>
-                                <input class="form-control" type="text" name="title"
+                                <input class="form-control" type="text" name="code"
                                        placeholder="Input name">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Rate" %}<span
                                         class="field-required">(*)</span></label>
-                                <input class="form-control" type="text" name="title"
+                                <input class="form-control" type="text" name="rate"
                                        placeholder="Input name">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Category" %}<span class="field-required">(*)</span></label>
-                                <select class="form-select" name="tax_category"></select>
+                                <select class="form-select" id="select-box-category" name="category"></select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Type" %}<span
                                         class="field-required">(*)</span></label>
-                                <input class="form-control" type="text" name="title"
-                                       placeholder="Input name">
+                                <select class="form-select" name="type">
+                                    <option value="0">{% trans "Sale" %}</option>
+                                    <option value="1">{% trans "Purchase" %}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">

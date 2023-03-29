@@ -1,12 +1,12 @@
 from django.urls import path
-from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI,\
+from apps.sale.saledata.views import ContactMasterDataList, SalutationCreateAPI, \
     InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList, \
-    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,\
+    IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList, \
     ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI, \
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, \
     AccountCreate, AccountCreateAPI, GetAccountNameAPI, ContactUpdate, AccountTypeDetailAPI, \
-    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
-
+    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, PriceMasterDataList, TaxCategoryListAPI, \
+    TaxListAPI
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -44,4 +44,8 @@ urlpatterns = [
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
     path('getaccountname/api', GetAccountNameAPI.as_view(), name='GetAccountNameAPI'),
+] + [
+    path('masterdata/price', PriceMasterDataList.as_view(), name='PriceMasterDataList'),
+    path('masterdata/tax-category/api', TaxCategoryListAPI.as_view(), name='TaxCategoryListAPI'),
+    path('masterdata/tax/api', TaxListAPI.as_view(), name='TaxListAPI'),
 ]

@@ -72,7 +72,6 @@ class UserListAPI(APIView):
                     return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
 
 
-
 class UserDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)

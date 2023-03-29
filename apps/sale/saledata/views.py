@@ -517,3 +517,87 @@ class GetAccountNameAPI(APIView):
         if resp.state:
             return {'account_manager_list': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_401_UNAUTHORIZED
+
+
+# price
+class PriceMasterDataList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/masterdata/saledata_price.html',
+        breadcrumb='CONTACT_LIST_PAGE',
+        menu_active='menu_contact_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class TaxCategoryListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).get()
+        if resp.state:
+            return {'tax_category_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class TaxListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
+        if resp.state:
+            return {'tax_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

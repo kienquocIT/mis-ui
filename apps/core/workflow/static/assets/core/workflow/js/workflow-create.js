@@ -55,8 +55,19 @@ $(function () {
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
             for (let item of nodeTableData) {
-                if (flowNode.hasOwnProperty(item.order)) item.condition = flowNode[item.order]
-                else item.condition = []
+                if (flowNode.hasOwnProperty(item.order)){
+                    let node = document.getElementById(`control-${item.order}`);
+                    let offset = jsPlumb.getOffset(node);
+                    item.condition = flowNode[item.order]
+                    item.coord = {
+                        top: offset.top,
+                        left: offset.left,
+                    }
+                }
+                else{
+                    item.condition = []
+                    item.coord = {}
+                }
             }
             _form.dataForm['node'] = nodeTableData
 

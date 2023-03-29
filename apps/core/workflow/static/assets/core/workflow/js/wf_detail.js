@@ -33,7 +33,7 @@ $(function () {
     }
 
     /***
-     * call ajax update form when user click update
+     * call ajax update form when user click button
      */
     function UpdateFormSubmit(){
         $('#btn-detail_workflow:not(.disabled)').on('click', function(){
@@ -372,9 +372,9 @@ $(function () {
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
             for (let item of nodeTableData) {
-                var node = document.getElementById(`control-${item.order}`);
-                var offset = jsPlumb.getOffset(node);
                 if (flowNode.hasOwnProperty(item.order)){
+                    const node = document.getElementById(`control-${item.order}`);
+                    const offset = jsPlumb.getOffset(node);
                     //add coord of node
                     item.coord = {
                         top: offset.top,

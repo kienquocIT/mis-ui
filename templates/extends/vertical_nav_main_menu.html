@@ -231,14 +231,24 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ProductList' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="bi bi-archive-fill"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Product' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
                             data-bs-target="#menu_masterdata" >
                         <span class="nav-icon-wrap">
                             <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-bar-chart-fill"></i>
+                                <i class="bi bi-mastodon"></i>
                             </span>
                         </span>
-                        <span class="nav-link-text">{% trans 'Master data' %}</span>
+                        <span class="nav-link-text">{% trans 'Master data config' %}</span>
                     </a>
                     <ul id="menu_masterdata" class="nav flex-column collapse  nav-children">
                         <li class="nav-item">
@@ -264,6 +274,30 @@
                                         </span>
                                         <span class="nav-link-text">
                                             {% trans 'Account' %}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "ProductMasterDataList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="bi bi-diagram-2-fill"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Items' %}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "ProductMasterDataList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="bi bi-currency-exchange"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Price' %}
                                         </span>
                                     </a>
                                 </li>

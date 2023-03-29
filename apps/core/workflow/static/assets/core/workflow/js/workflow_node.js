@@ -53,7 +53,6 @@ $(function () {
         return actionEle
     }
 
-
     /***
      * get data list of default node
      */
@@ -236,7 +235,6 @@ $(function () {
         });
     }
 
-
     function loadSystemNode() {
         let url = $('#url-factory').data('node');
         $.fn.callAjax(url, "GET").then(
@@ -251,11 +249,74 @@ $(function () {
         )
     }
 
+    function loadInitPropertyInFrom() {
+        let url = '/base/application-property-employee/api';
+        let method = "GET"
+        let ele = $('#data-init-property-in-form');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
+                        data.property_employee_list.map(function (item) {
+                            ele.append(`<option value="${item.code}">${item.title}</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    function loadInitCompanyInWorkflow() {
+        let url = '/company/list/api';
+        let method = "GET"
+        let ele = $('#data-init-company-in-workflow');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
+                        data.company_list.map(function (item) {
+                            ele.append(`<option value="${item.id}">${item.title}</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    function loadInitEmployeeInWorkflow() {
+        let url = '/hr/employee/api';
+        let method = "GET"
+        let ele = $('#data-init-employee-in-workflow');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        data.employee_list.map(function (item) {
+                            let spanRole = ``;
+                            if (item.role && Array.isArray(item.role)) {
+                                for (let r = 0; r < item.role.length; r++) {
+                                    spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
+                                }
+                            }
+                            ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
+                                            <div hidden>${spanRole}</div>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
 
     $(document).ready(function () {
         let tableNode = $('#datable-workflow-node-create');
 
-        loadSystemNode()
+        loadSystemNode();
+        loadInitPropertyInFrom();
+        loadInitCompanyInWorkflow();
+        loadInitEmployeeInWorkflow()
 
 
 // Action on click collaborator of initial node
@@ -314,7 +375,6 @@ $(function () {
             zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
 
         });
-
 
         function loadAuditOutFormEmployee(tableId) {
             let config = {
@@ -400,7 +460,6 @@ $(function () {
             loadDataTable();
         }
 
-
 // Action on open modal node
         $('#add-new-node-workflow-create').on('click', '.open-modal-node', function (e) {
             e.stopPropagation();
@@ -409,12 +468,10 @@ $(function () {
             $('#modal-node-description-create').val("");
         });
 
-
 // Action on add modal node
         $("#btn-add-new-node-create").on("click", function () {
             tableNodeAdd()
         });
-
 
         function tableNodeAdd() {
             let tableShowBodyOffModal = $('#datable-workflow-node-create tbody');
@@ -506,7 +563,6 @@ $(function () {
             return false;
         }
 
-
 // Action on click btn edit row node
         tableNode.on('click', '.workflow-node-edit-button', function (e) {
             let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
@@ -521,7 +577,6 @@ $(function () {
             remarkInput.value = remarkShow.innerHTML;
         });
 
-
 // Action on change node title
         tableNode.on('change', '.node-title-col-edit', function (e) {
             let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
@@ -532,7 +587,6 @@ $(function () {
             titleShow.removeAttribute('hidden');
         });
 
-
 // Action on change node description
         tableNode.on('change', '.node-remark-col-edit', function (e) {
             let remarkShow = $(this)[0].closest('tr').querySelector('.node-remark-col-show');
@@ -542,7 +596,6 @@ $(function () {
             $(this)[0].setAttribute("hidden", true);
             remarkShow.removeAttribute('hidden');
         });
-
 
 // Action on delete row node
         tableNode.on('click', '.workflow-node-del-button', function (e) {
@@ -561,7 +614,6 @@ $(function () {
             return false;
         });
 
-
 // Action on delete row audit employee in workflow
         tableNode.on('click', '.audit-in-workflow-del-button', function (e) {
             e.stopPropagation();
@@ -571,7 +623,6 @@ $(function () {
 
             return false;
         });
-
 
 // Action on change audit option
         tableNode.on('change', '.select-box-audit-option', function (e) {
@@ -926,73 +977,33 @@ $(function () {
             }
         });
 
-
+// load data by specific collaborator
         function loadPropertyAuditInFrom(boxId) {
-            let url = '/base/application-property-employee/api';
-            let method = "GET"
+            let initData = document.getElementById('data-init-property-in-form').innerHTML;
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
-                            data.property_employee_list.map(function (item) {
-                                ele.append(`<option value="${item.code}">${item.title}</option>`)
-                            })
-                        }
-                    }
-                }
-            )
+            if (initData) {
+               ele.append(initData)
+            }
         }
-
 
         function loadCompanyAuditInWorkflow(boxId) {
-            let url = '/company/list/api';
-            let method = "GET"
+            let initData = document.getElementById('data-init-company-in-workflow').innerHTML;
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
-                            data.company_list.map(function (item) {
-                                ele.append(`<option value="${item.id}">${item.title}</option>`)
-                            })
-                        }
-                    }
-                }
-            )
+            if (initData) {
+                ele.append(initData)
+            }
         }
-
 
         function loadEmployeeAuditInWorkflow(boxId) {
-            let url = '/hr/employee/api';
-            let method = "GET"
+            let initData = document.getElementById('data-init-employee-in-workflow').innerHTML;
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                            data.employee_list.map(function (item) {
-                                let spanRole = ``;
-                                if (item.role && Array.isArray(item.role)) {
-                                    for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
-                                    }
-                                }
-                                ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
-                                    <div hidden>${spanRole}</div>`)
-                            })
-                        }
-                    }
-                }
-            )
+            if (initData) {
+                ele.append(initData)
+            }
         }
-
 
         function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
             let url = '/hr/employee/company/' + company_id;
@@ -1021,7 +1032,6 @@ $(function () {
                 }
             )
         }
-
 
 // Action on add canvas employee out form
         tableNode.on('click', '.button-add-audit-out-form-employee', function (e) {
@@ -1065,7 +1075,6 @@ $(function () {
                 auditOutFormEmployeeShow.innerHTML = dataShow
             }
         });
-
 
 // On click button add Employee Audit In Workflow
         tableNode.on('click', '.button-add-audit-in-workflow-employee', function (e) {
@@ -1139,7 +1148,6 @@ $(function () {
                 }
             }
         });
-
 
 // On check zone of node
         tableNode.on('click', '.check-zone-node', function (e) {
@@ -1257,7 +1265,6 @@ $(function () {
             }
         });
 
-
 // On check action node & change status
         tableNode.on('click', '.check-action-node', function (e) {
             e.stopPropagation();
@@ -1271,7 +1278,7 @@ $(function () {
 
             // checked
             if ($(this)[0].checked === true) {
-                // change node's status
+                // change node's actions status
                 eleSpan.innerHTML = ``;
                 eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
 

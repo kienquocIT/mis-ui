@@ -72,8 +72,26 @@ $(function () {
     }
 
     /***
-     * get data list of nodes from detail
+     * functions support for main function loadTableNode
      */
+    function loadInitPropertyInFromDetail() {
+        let url = '/base/application-property-employee/api';
+        let method = "GET"
+        let ele = $('#data-init-property-in-form-detail');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
+                        data.property_employee_list.map(function (item) {
+                            ele.append(`<option value="${item.code}">${item.title}</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
     function loadAction(action_list, is_system_node = true) {
         let actionEle = ``;
         let nodeActionRaw = $('#wf_action').text();
@@ -131,6 +149,65 @@ $(function () {
         return actionEle
     }
 
+    function loadZoneInCollab(zone_collab, zone_list) {
+        let zoneCollabOrder = [];
+        for (let i = 0; i < zone_collab.length; i++) {
+            zoneCollabOrder.push(zone_collab[i].order)
+        }
+        let optionZone = ``;
+        optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="media d-flex align-items-center">
+                                <div class="media-body">
+                                    <div>
+                                        <div class="node-zone" data-node-zone="all">All</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check form-check-theme ms-3">
+                                <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+                                <label class="form-check-label" for="customCheck6"></label>
+                            </div>
+                        </li>`
+        for (let z = 0; z < zone_list.length; z++) {
+            let order = zone_list[z].order;
+            let title = zone_list[z].title
+            let input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">`;
+            if (zoneCollabOrder.includes(order)) {
+                input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" checked>`;
+            }
+            optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <div class="node-zone" data-node-zone="${order}">${title}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    ${input}
+                                    <label class="form-check-label" for="customCheck6"></label>
+                                </div>
+                            </li>`
+        }
+        return optionZone
+    }
+
+    function loadPropertyCollabInFrom(current_property) {
+        let optionProperty = `<option></option>`;
+        let initDataOptions = document.getElementById('data-init-property-in-form-detail').options;
+        for (let i = 0; i < initDataOptions.length; i++) {
+            if (initDataOptions[i].value && initDataOptions[i].innerHTML) {
+                if (initDataOptions[i].value === current_property) {
+                    optionProperty += `<option value="${initDataOptions[i].value}" selected>${initDataOptions[i].innerHTML}</option>`
+                } else {
+                    optionProperty += `<option value="${initDataOptions[i].value}">${initDataOptions[i].innerHTML}</option>`
+                }
+            }
+
+        }
+        return optionProperty
+    }
+
     function setupNodeOrder(row, data, dataLen) {
         let systemRowClass = "";
         let initialCheckBox = "";
@@ -163,7 +240,10 @@ $(function () {
         }
     }
 
-    function loadTableNode(data) {
+    /***
+     * get data list of nodes from detail
+     */
+    function loadTableNode(data, zone_list) {
         // init dataTable
         let listData = data ? data : [];
         let dataLen = listData.length;
@@ -260,7 +340,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-action"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                            <span class="check-done-action"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
                                         </div>
                                     </div>`
                         }
@@ -269,7 +349,7 @@ $(function () {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        if (row.order === 1) {
+                        if (row.code_node_system === 'initial') {
                             return `<div class="row">
                                         <div class="col-8">
                                             <i class="fas fa-align-justify btn-initial-node-collaborator" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
@@ -318,7 +398,7 @@ $(function () {
                                             <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
                                         </div>
                                     </div>`
-                        } else {
+                        } else if (row.code_node_system === 'approved' || row.code_node_system === 'completed') {
                             return `<div class="row">
                                         <div class="col-8">
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
@@ -327,8 +407,97 @@ $(function () {
                                             <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
                                         </div>
                                     </div>`;
-                        }
+                        } else {
+                            let newCheckBox = String(Number(row.order) + 1);
+                            let modalAuditId = "auditModalCreate" + newCheckBox;
+                            let collabBody = ``;
+                            let optionZone = ``;
+                            if (row.option_collaborator === 0) {
+                                optionZone = loadZoneInCollab(row.collab_in_form.zone, zone_list);
+                            } else if (row.option_collaborator === 1) {
+                                optionZone = ``;
+                            } else if (row.option_collaborator === 2) {
+                                optionZone = ``;
+                            }
+                            let defaultZone = `<div class="form-group">
+                                                    <label class="form-label">Editing zone</label>
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-affix-wrapper">
+                                                        <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled>
+                                                        <div class="row zone-data-show"></div>
+                                                        <div class="btn-group dropdown">
+                                                            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                                <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
+                                                                    <ul class="node-zone-list p-0">
+                                                                        ${optionZone}
+                                                                    </ul>
+                                                                </div>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>`
+                            if (row.option_collaborator === 0) {
+                                let boxInFormPropertyId = "select-box-audit-in-form-property-" + String(row.order);
+                                let optionProperty = loadPropertyCollabInFrom(row.collab_in_form.employee_field);
+                                collabBody = `<div class="form-group">
+                                                <label class="form-label">List source</label>
+                                                <select
+                                                        class="form-select select-box-audit-option"
+                                                >
+                                                    <option></option>
+                                                    <option value="0" selected>In form</option>
+                                                    <option value="1">Out form</option>
+                                                    <option value="2">In workflow</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Select field in form</label>
+                                                <select
+                                                        class="form-select select-box-audit-in-form-property"
+                                                        id="${boxInFormPropertyId}"
+                                                >
+                                                    ${optionProperty}
+                                                </select>
+                                            </div>
+                                            ${defaultZone}`
+                            } else if (row.option_collaborator === 1) {
 
+                            } else if (row.option_collaborator === 2) {
+
+                            }
+                            return `<div class="row">
+                                        <div class="col-8">
+                                            <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
+                                            <div
+                                                class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalCenter" aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Add Collaborator</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            ${collabBody}
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                        </div>
+                                    </div>`
+                        }
                     }
                 },
                 {
@@ -347,6 +516,8 @@ $(function () {
     $(document).ready(function() {
         let $form = $('#form-detail_workflow')
 
+        loadInitPropertyInFromDetail();
+
         // call ajax get info wf detail
         $.fn.callAjax($form.data('url'), 'GET')
             .then(
@@ -354,7 +525,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         prepareDataAndRenderHTML(data);
-                        loadTableNode(data.node);
+                        loadTableNode(data.node, data.zone);
                         clickEditForm();
                         UpdateFormSubmit();
                     }

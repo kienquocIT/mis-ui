@@ -121,3 +121,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
+
+    # masterdata/price
+    TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
+    TAX_LIST = StringUrl('saledata/taxes')

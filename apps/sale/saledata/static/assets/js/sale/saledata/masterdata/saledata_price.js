@@ -52,8 +52,8 @@ $(document).ready(function () {
             info: "_START_ - _END_ of _TOTAL_",
             sLengthMenu: "View  _MENU_",
             paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
+                previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
             }
         },
         drawCallback: function () {
@@ -122,8 +122,8 @@ $(document).ready(function () {
             info: "_START_ - _END_ of _TOTAL_",
             sLengthMenu: "View  _MENU_",
             paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
+                previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
             }
         },
         drawCallback: function () {

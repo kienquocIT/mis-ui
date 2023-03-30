@@ -46,8 +46,17 @@ $(document).ready(function () {
                         }
                         loadGroupList();
 
-                        eleDob.val(moment(data.employee.dob).format('YYYY-MM-DD'));
-                        eleDateJoined.val(moment(data.employee.date_joined).format('YYYY-MM-DD'));
+                        if (data.employee.dob) {
+                            eleDob.val(moment(data.employee.dob).format('YYYY-MM-DD'));
+                        } else {
+                            eleDob.val(null);
+                        }
+
+                        if (data.employee.date_joined) {
+                            eleDateJoined.val(moment(data.employee.date_joined).format('YYYY-MM-DD'));
+                        } else {
+                            eleDateJoined.val(null);
+                        }
 
                         let dataRoleInstance = [];
                         if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
@@ -72,7 +81,7 @@ $(document).ready(function () {
                                         let planAppInstanceList = planAppInstance[0].children;
                                         for (let app = 0; app < planAppInstanceList.length; app++) {
                                             if (planAppInstanceList[app].id === data.employee.plan_app[t].application[i].id) {
-                                                let appInput = planAppInstanceList[app].children[0];
+                                                let appInput = planAppInstanceList[app].querySelector('.check-plan-application');
                                                 appInput.checked  = true;
                                             }
                                         }
@@ -199,7 +208,11 @@ $(document).ready(function () {
                                     >
                                         ${data.tenant_plan_list[t].plan.title}
                                     </button>
-                                    <span style="margin-left: 10px">License: <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of <span>${licenseQuantity}</span></span>
+                                    <span style="margin-left: 10px">License: 
+                                        <span class="license-used-employee">${data.tenant_plan_list[t].license_used}</span> of <span>${licenseQuantity}</span>
+                                        <input type="text" class="license-used-employee-default" value="${data.tenant_plan_list[t].license_used}" hidden>
+                                        <input type="text" class="license-quantity" value="${data.tenant_plan_list[t].license_quantity}" hidden>
+                                    </span>
                                 </div>
                                 <div class="show" id="collapseExample${t}" style="margin-left: 12px; margin-bottom: 10px">
                                     <ul class="employee-application">
@@ -291,12 +304,16 @@ $(document).ready(function () {
             frm.dataForm['plan_app'] = dataPlanApp
         }
 
-        if (frm.dataForm.hasOwnProperty('date_joined')) {
+        if (frm.dataForm.hasOwnProperty('date_joined') && frm.dataForm.date_joined) {
             frm.dataForm['date_joined'] = moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss')
+        } else {
+            frm.dataForm['date_joined'] = null
         }
 
-        if (frm.dataForm.hasOwnProperty('dob')) {
+        if (frm.dataForm.hasOwnProperty('dob') && frm.dataForm.dob) {
             frm.dataForm['dob'] = moment(frm.dataForm['dob']).format('YYYY-MM-DD')
+        } else {
+            frm.dataForm['dob'] = null
         }
 
         let dataRoleList = $('#select-box-role-employee-update').val()
@@ -380,43 +397,53 @@ $(function () {
 
 $(document).on('click', '.check-plan-application', function (e) {
     let divRow = $(this)[0].closest('.row');
-    // checked ==> if user.val() ==> license + 1
-    if ($(this)[0].checked === true) {
-        let checkAll = 0
-        let divUl = $(this)[0].closest('ul');
-        let eleDivAppList = divUl.children;
-        for (let t = 0; t < eleDivAppList.length; t++) {
-            let app = eleDivAppList[t].firstElementChild;
-            if (app.checked === true) {
-                checkAll += 1
+    let eleLicenseUsed = divRow.querySelector('.license-used-employee');
+    let licenseQuantity = divRow.querySelector('.license-quantity').value;
+    let checkAll = 0;
+    let divUl = $(this)[0].closest('ul');
+    let eleDivAppList = divUl.children;
+    if (licenseQuantity && licenseQuantity !== 'null') {
+        // checked ==> if user.val() ==> license + 1
+        if ($(this)[0].checked === true) {
+            for (let t = 0; t < eleDivAppList.length; t++) {
+                let app = eleDivAppList[t].firstElementChild;
+                if (app.checked === true) {
+                    checkAll += 1
+                }
             }
-        }
-        if (checkAll === 1) {
-            let ele = divRow.firstElementChild.children[1].children[0];
-            if (ele.innerHTML) {
-                if ($('#select-box-user-update').val()) {
-                    let licenseUsed = Number(ele.innerHTML) + 1;
-                    ele.innerHTML = licenseUsed.toString()
+            if (checkAll === 1) {
+                if (eleLicenseUsed.innerHTML) {
+                    if ($('#select-box-user-update').val()) {
+                        let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
+                        if (licenseUsed <= Number(licenseQuantity)) {
+                            eleLicenseUsed.innerHTML = String(licenseUsed);
+                        } else {
+                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            $(this)[0].checked = false;
+                            return true
+                        }
+                    }
                 }
             }
         }
-    }
-    // unchecked ==> if all apps unchecked ==> license - 1
-    else {
-        let checkAll = 0
-        let divUl = $(this)[0].closest('ul');
-        let eleDivAppList = divUl.children;
-        for (let t = 0; t < eleDivAppList.length; t++) {
-            let app = eleDivAppList[t].firstElementChild;
-            if (app.checked === false) {
-                checkAll += 1
+        // unchecked ==> if all apps unchecked ==> license - 1
+        else {
+            for (let t = 0; t < eleDivAppList.length; t++) {
+                let app = eleDivAppList[t].firstElementChild;
+                if (app.checked === false) {
+                    checkAll += 1
+                }
             }
-        }
-        if (checkAll === eleDivAppList.length) {
-            let eleLicenseUsed = divRow.children[0].children[1].children[0];
-            if (Number(eleLicenseUsed.innerHTML) !== 0) {
-                let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
-                eleLicenseUsed.innerHTML = licenseUsed.toString();
+            if (checkAll === eleDivAppList.length) {
+                let licenseDefault = divRow.querySelector('.license-used-employee-default').value;
+                if (Number(eleLicenseUsed.innerHTML) !== 0) {
+                    if (licenseDefault) {
+                        let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
+                        if (licenseUsed === (Number(licenseDefault)-1)) {
+                            eleLicenseUsed.innerHTML = String(licenseUsed);
+                        }
+                    }
+                }
             }
         }
     }

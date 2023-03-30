@@ -3,12 +3,12 @@
  * ***/
 let DEFAULT_NODE_LIST = {};
 let _MOUSE_POSITION = 0;
-let ASSOCIATION = [];
 let is_node_changed = true;
+
 /***
  * function handle user on click into Node
  * @param event: element of Node
- * @action on save: get data of modal and store data to MODE_LIST
+ * @action on save: get data of modal and store data to NODE_LIST
  */
 function eventNodeClick(event) {
     let $Elm = $(event.currentTarget)
@@ -16,7 +16,9 @@ function eventNodeClick(event) {
     let $modal = $('#exit-node')
     let action_name = JSON.parse($('#wf_action').text())
     let html = ``;
-
+    // check it user right-click
+    const isRClick = event.button;
+    if (isRClick === 2) return true
     for (let item of data.action) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
@@ -58,10 +60,7 @@ function eventNodeClick(event) {
         });
         let temp = FlowJsP.getCommitNode;
         temp[data.order] = condition;
-        var node = document.getElementById(`control-${data.order}`);
-        let nodeOffset = jsPlumb.getOffset(node);
         FlowJsP.setCommitNodeList = temp;
-
         $modal.modal('hide');
     })
 }
@@ -113,6 +112,7 @@ class JSPlumbsHandle {
     associationData = []; // storage association Data // [{'node_in': '', 'node_out': ''},]
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
     _commitNodeList = [];
+    _ASSOCIATION = [];
     set setNodeList(strData) {
         let temp = {};
         for (let item of strData) {
@@ -129,13 +129,23 @@ class JSPlumbsHandle {
 
     set setAssociateList(strData) {
         strData = strData ? JSON.parse(strData) : []
-        ASSOCIATION = strData.reverse();
+        this._ASSOCIATION = strData.reverse();
     };
-    get getCommitNode(){
+
+    get getCommitNode() {
         return this._commitNodeList
     }
-    set setCommitNodeList(data){
+
+    set setCommitNodeList(data) {
         this._commitNodeList = data
+    }
+    convertAssociateToOrder(){
+        let temp =  [];
+        let assoc = this._ASSOCIATION
+        for (let a of assoc){
+            temp.push(a.node_in.order, a.node_out.order)
+        }
+        return [...new Set(temp)]
     }
 
     htmlDragRender(target_elm) {
@@ -144,39 +154,44 @@ class JSPlumbsHandle {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
                 strHTMLDragNode += `<div class="control" id="drag-${item.order}" data-drag="${item.order}" `
-                    +`title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
-                    +`title="${item.remark}">${item.title}</p></div>`;
+                    + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
+                    + `title="${item.remark}">${item.title}</p></div>`;
             }
         }
         if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
         else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
-    createNodeAndConnection() {
-        this.setAssociateList = $('#associate-connect').val()
-        let $wrapWF = $('#flowchart_workflow')
+    renderToFlowchart() {
+        this.setAssociateList = $('#node-associate').val();
+        let $wrapWF = $('#flowchart_workflow');
         let wrap_w = $wrapWF.width(),
             wrap_h = $wrapWF.height(),
-            top_coord = 100,
-            left_coord = 100;
+            top_coord = 0,
+            left_coord = 0;
         // loop in DEFAULT_NODE_LIST and render to chart
-        let HTML_temp = ''
+        let HTML_temp = '';
+        let assoc = this.convertAssociateToOrder();
         for (let val in DEFAULT_NODE_LIST) {
             let item = DEFAULT_NODE_LIST[val];
-            // check if node coord larger than wrap workflow node
-            if ((top_coord + 90) > wrap_h) {
-                wrap_h = wrap_h + 300
-                $wrapWF.css("height", wrap_h);
+            if (item.coord.hasOwnProperty("top") && item.coord.hasOwnProperty("left")){
+                top_coord = item.coord.top,
+                left_coord = item.coord.left;
             }
-            if ((left_coord + 90) > wrap_w) {
-                wrap_w = wrap_w + 300
-                $wrapWF.css("width", wrap_w);
+            if (assoc.includes(item.order)){
+                // check if node coord larger than wrap workflow node
+                if ((top_coord + 90) > wrap_h) {
+                    wrap_h = wrap_h + 300
+                    $wrapWF.css("height", wrap_h);
+                    $wrapWF.css("height", wrap_h);
+                }
+                if ((left_coord + 90) > wrap_w) {
+                    wrap_w = wrap_w + 300
+                    $wrapWF.css("width", wrap_w);
+                }
+                HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
+                    + `style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
             }
-            HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
-                + `style="left:${left_coord}px;top:${top_coord}px">`
-                + `<p class="drag-title">${item.title}</p></div>`;
-            left_coord = left_coord + 130
-            top_coord = top_coord + 130
         }
         $wrapWF.html(HTML_temp)
     }
@@ -212,7 +227,8 @@ class JSPlumbsHandle {
                 drop: function (event, ui) {
                     // when user drag to space clone and disable main node
                     const clone = $(ui.helper).clone(true);
-                    let is_id = 'control-' + ui.draggable.attr('data-drag')
+                    const numID = ui.draggable.attr('data-drag')
+                    let is_id = 'control-' + numID
                     clone.attr("id", is_id)
                     clone.appendTo(this);
                     let $this_elm = ui.draggable;
@@ -282,8 +298,9 @@ class JSPlumbsHandle {
                         });
 
                     // add drop node to commit node list
+
                     let temp = that_cls.getCommitNode
-                        temp[is_id] = DEFAULT_NODE_LIST[is_id]
+                    temp[numID] = DEFAULT_NODE_LIST[numID]
                     that_cls.setCommitNodeList = temp
 
                     // handle event on click node
@@ -299,7 +316,7 @@ class JSPlumbsHandle {
 
             // check if workflow detail or edit page show flowchart
             if ($('#form-detail_workflow').length) {
-                instance.doWhileSuspended( function(){
+                instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
                         instance.draggable(is_id, {containment: true})
@@ -363,15 +380,18 @@ class JSPlumbsHandle {
                         let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
 
                         // disable node drag in left side
-                        numID.draggable( "disable" );
+                        numID.draggable("disable");
                         // add event click for node of right side
-                        $(this).off().on('click', function(event){
-                            eventNodeClick(event);
+                        $('#' + is_id).off().on("mousedown", function (evt) {
+                            _MOUSE_POSITION = evt.pageX + evt.pageY
+                        }).on("mouseup", function (evt) {
+                            let temp = evt.pageX + evt.pageY;
+                            if (_MOUSE_POSITION === temp) eventNodeClick(evt)
                         })
                     })
                 }) // end do while suspended
 
-                for (let assoc of ASSOCIATION) {
+                for (let assoc of that_cls._ASSOCIATION) {
                     instance.connect({
                         source: 'control-' + assoc.node_in.order,
                         target: 'control-' + assoc.node_out.order,
@@ -434,7 +454,10 @@ class JSPlumbsHandle {
                 let elm_focus = $('#node-associate');
                 let before_data = elm_focus.val();
                 let end_result = {
-                    'node_in': '', 'node_out': '', 'condition': [],
+                    'node_in': '',
+                    'node_out': '',
+                    'condition': [],
+                    'anchor': {},
                 }
                 let key = "";
                 let connect = connection;
@@ -515,10 +538,10 @@ class JSPlumbsHandle {
         this.setNodeList = setupDataNode();
         this.setNodeState = this.nodeData;
         // check first time load detail page and data list node is changed
-        if (is_node_changed){
+        if (is_node_changed) {
             $('#node_dragbox').empty();
             $('#flowchart_workflow').empty();
-            if ($('#form-detail_workflow').length) this.createNodeAndConnection();
+            if ($('#form-detail_workflow').length) this.renderToFlowchart();
             this.htmlDragRender();
             this.initJSPlumbs();
         }
@@ -684,9 +707,10 @@ class NodeHandler {
         if (sumArray.length > 0) {
             let newNullNode = [];
             for (let idx = 0; idx < this.nullNode.length; idx++) {
-                for (let key in sumArray){
+                for (let key in sumArray) {
                     if (!this.nullNode[idx].includes(key)) {
-                        newNullNode.push(this.nullNode[idx]); break;
+                        newNullNode.push(this.nullNode[idx]);
+                        break;
                     }
                 }
             }
@@ -837,7 +861,7 @@ class NodeHandler {
             this.addInOut(node_input, node_output);
         } else if (enable_notify_failure === true) {
             $.fn.notifyB({
-                'description': msgFailed ? msgFailed : "Don't allow connection..."
+                'description': msgFailed ? msgFailed : "Don't allow connection.."
             }, 'failure');
         }
         return state;

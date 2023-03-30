@@ -14,7 +14,7 @@ $(function () {
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone) initTableZone(res.zone);
         if (res.zone) $('#zone-list').val(JSON.stringify(res.zone));
-        if (res.node) $('#node-list').val(JSON.stringify(res.node)); // khúc này đợi P làm function node rồi ráp vào
+        if (res.node) $('#node-list').val(JSON.stringify(res.node)); // kh�c n�y d?i P l�m function node r?i r�p v�o
         if (res.association) $('#associate-connect').val(JSON.stringify(res.association))
     }
 
@@ -34,12 +34,13 @@ $(function () {
     }
 
     /***
-     * call ajax update form when user click update
+     * call ajax update form when user click button
      */
     function UpdateFormSubmit(){
         $('#btn-detail_workflow:not(.disabled)').on('click', function(){
             // show loading
             $(this).addClass('disabled')
+            $(this).find('.feather-icon').addClass('hidden')
             $(this).find('.loading-icon').removeClass('hidden')
 
             // prepare data
@@ -299,8 +300,8 @@ $(function () {
                 info: "_START_ - _END_ of _TOTAL_",
                 sLengthMenu: "View  _MENU_",
                 paginate: {
-                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                    next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
+                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
                 }
             },
             drawCallback: function () {
@@ -726,7 +727,6 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.dir(data)
                         prepareDataAndRenderHTML(data);
                         loadTableNode(data.node, data.zone);
                         clickEditForm();
@@ -739,20 +739,30 @@ $(function () {
         $('#btn-detail_workflow').on('click', function (e) {
             e.preventDefault()
             let $form = document.getElementById('form-detail_workflow')
-            let _form = new SetupFormSubmit($form)
+            let _form = new SetupFormSubmit($('#form-detail_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode(true);
             // add condition object for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
-            for (let item of flowNode) {
-                if (flowNode.hasOwnProperty(item.order))
+            for (let item of nodeTableData) {
+                if (flowNode.hasOwnProperty(item.order)){
+                    const node = document.getElementById(`control-${item.order}`);
+                    const offset = jsPlumb.getOffset(node);
+                    //add coord of node
+                    item.coord = {
+                        top: offset.top,
+                        left: offset.left,
+                    }
                     item.condition = flowNode[item.order]
-                else item.condition = []
+                }
+                else{
+                    item.condition = []
+                    item.coord = {}
+                }
+
             }
             _form.dataForm['node'] = nodeTableData
-
-            // đang dừng ở đây
 
             // convert associate to json
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');

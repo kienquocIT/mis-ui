@@ -824,57 +824,56 @@ $(function () {
                                 </select>
                             </div>`);
                 modalBody.append(`<div class="form-group">
-                                <label class="form-label">Employee list</label>
-                                <div class="input-group mb-3">
-                                    <span class="input-affix-wrapper">
-                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" disabled>
-                                    
-                                    <div class="row audit-out-form-employee-data-show"></div>
-                                    
-                                    <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
-                                        aria-controls="offcanvasExample"></i></span>
-                                    <div
-                                    class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
-                                    aria-labelledby="offcanvasTopLabel"
-                                    style="width: 50%; margin-top: 4em;"
-                            >
-                                <div class="offcanvas-header">
-                                    <h5 id="offcanvasRightLabel">Add Employee</h5>
-                                </div>
-                                <div class="offcanvas-body form-group">
-                                    <table
-                                            id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
-                                            data-url="{% url 'EmployeeListAPI' %}"
-                                            data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th>Code</th>
-                                            <th>Full Name</th>
-                                            <th>Username</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                    <br><br>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
-                                        <button
-                                                type="button" 
-                                                class="btn btn-primary button-add-audit-out-form-employee" 
-                                                data-bs-dismiss="offcanvas"
-                                                id=""
-                                        >Save changes
-                                        </button>
+                                    <label class="form-label">Employee list</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-affix-wrapper">
+                                        <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" disabled>
+                                        
+                                        <div class="row audit-out-form-employee-data-show"></div>
+                                        
+                                        <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
+                                            aria-controls="offcanvasExample"></i></span>
+                                        <div
+                                        class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
+                                        aria-labelledby="offcanvasTopLabel"
+                                        style="width: 50%; margin-top: 4em;"
+                                >
+                                    <div class="offcanvas-header">
+                                        <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                    </div>
+                                    <div class="offcanvas-body form-group">
+                                        <table
+                                                id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
+                                                data-url="{% url 'EmployeeListAPI' %}"
+                                                data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Full Name</th>
+                                                <th>Username</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                        <br><br>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                            <button
+                                                    type="button" 
+                                                    class="btn btn-primary button-add-audit-out-form-employee" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    id=""
+                                            >Save changes
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                                    </span>
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            
                             ${defaultZone}`)
                 loadAuditOutFormEmployee(tableOutFormEmployeeId);
             } else {
@@ -1193,7 +1192,6 @@ $(function () {
                     }
                 }
             }
-
             // append data show
             let checkInitial = $(this)[0].getAttribute('data-node-initial');
             if (checkInitial === "true") {
@@ -1217,7 +1215,6 @@ $(function () {
                         }
                     }
                 }
-
                 eleSpan.innerHTML = "";
                 eleSpan.innerHTML = dataShow;
             } else {
@@ -1226,7 +1223,6 @@ $(function () {
                 let zoneEle = $(this)[0].closest('span');
                 let zoneInput = zoneEle.children[0];
                 let zoneShow = zoneEle.children[1];
-
                 let trSTT = 0;
                 for (let li = 0; li < eleUL.children.length; li++) {
                     let eleLi = eleUL.children[li];
@@ -1255,7 +1251,6 @@ $(function () {
                         }
                     }
                 }
-
                 zoneInput.setAttribute("hidden", true);
                 zoneShow.innerHTML = "";
                 zoneShow.innerHTML = dataShow;

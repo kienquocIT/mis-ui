@@ -11,7 +11,7 @@ let is_node_changed = true;
  * @action on save: get data of modal and store data to NODE_LIST
  */
 function eventNodeClick(event) {
-    let $Elm = $(event.currentTarget)
+    let $Elm = $(event.currentTarget);
     let data = DEFAULT_NODE_LIST[$Elm.attr('data-drag')]
     let $modal = $('#exit-node')
     let action_name = JSON.parse($('#wf_action').text())
@@ -59,7 +59,7 @@ function eventNodeClick(event) {
             })
         });
         let temp = FlowJsP.getCommitNode;
-        temp[data.order] = condition;
+        temp[data.order]['condition'] = condition;
         FlowJsP.setCommitNodeList = temp;
         $modal.modal('hide');
     })
@@ -111,7 +111,7 @@ class JSPlumbsHandle {
     nodeData = {};  // storage all node with {"id_node": "Object config node"}
     associationData = []; // storage association Data // [{'node_in': '', 'node_out': ''},]
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
-    _commitNodeList = [];
+    _commitNodeList = {};
     _ASSOCIATION = [];
     set setNodeList(strData) {
         let temp = {};
@@ -174,11 +174,15 @@ class JSPlumbsHandle {
         let assoc = this.convertAssociateToOrder();
         for (let val in DEFAULT_NODE_LIST) {
             let item = DEFAULT_NODE_LIST[val];
-            if (item.coord.hasOwnProperty("top") && item.coord.hasOwnProperty("left")){
-                top_coord = item.coord.top,
-                left_coord = item.coord.left;
-            }
+            const coordinates = item.coordinates
+            if (coordinates)
+                // check if node has coordinates
+                if (coordinates.hasOwnProperty("top") && coordinates.hasOwnProperty("left")){
+                    top_coord = coordinates.top,
+                    left_coord = coordinates.left;
+                }
             if (assoc.includes(item.order)){
+
                 // check if node coord larger than wrap workflow node
                 if ((top_coord + 90) > wrap_h) {
                     wrap_h = wrap_h + 300
@@ -191,7 +195,12 @@ class JSPlumbsHandle {
                 }
                 HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
                     + `style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
-            }
+
+                // get and set commit code to list in case detail page
+                let NodeListTemp = this.getCommitNode
+                NodeListTemp[item.order] = item
+                this.setCommitNodeList = NodeListTemp
+            } // end loop default node list
         }
         $wrapWF.html(HTML_temp)
     }

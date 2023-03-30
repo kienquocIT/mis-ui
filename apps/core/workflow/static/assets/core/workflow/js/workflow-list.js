@@ -4,6 +4,12 @@ $(function () {
         let $table = $('#table_workflow_list')
         let LISTURL = $table.attr('data-url')
         $table.DataTable({
+            language: {
+                "paginate": {
+                    "previous": '<i data-feather="chevron-left"></i>',
+                    "next": '<i data-feather="chevron-right"></i>'
+                }
+            },
             // dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"f>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
             searching: true,

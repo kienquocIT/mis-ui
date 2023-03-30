@@ -311,8 +311,11 @@ function initTableZone(data) {
                     let _id = row.order
                     if (row.hasOwnProperty('id') && row.id)
                         _id = row.id
+                    let disabled = '';
+                    const isReadonly = $('#form-detail_workflow').attr('readonly')
+                    if (isReadonly === 'readonly') disabled = 'disabled'
                     return `<div class="actions-btn">
-                                    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
+                                    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button ${disabled}"
                                        title="Edit"
                                        href="#"
                                        data-id="${_id}"
@@ -321,7 +324,7 @@ function initTableZone(data) {
                                             <i data-feather="edit"></i>
                                         </span>
                                     </a>
-                                    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
+                                    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn ${disabled}"
                                        title="Delete"
                                        href="#"
                                        data-id="${_id}"

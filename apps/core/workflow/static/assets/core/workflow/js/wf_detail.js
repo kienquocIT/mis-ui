@@ -29,6 +29,7 @@ $(function () {
             $form.find('input[readonly]').removeAttr('readonly')
             $form.find('input[type="checkbox"][disabled]').prop('disabled', false)
             $form.find('select[disabled]').prop('disabled', false)
+            $('.actions-btn a').removeClass('disabled')
         });
     }
 
@@ -334,8 +335,13 @@ $(function () {
                 {
                     targets: 5,
                     render: () => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="color: #cccccc"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: #cccccc"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" `
+                            +`data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" `
+                            +`href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit">`
+                            +`</i></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" `
+                            +`data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" `
+                            +`href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                         let actionData = bt2 + bt3;
                         return `${actionData}`
                     }
@@ -366,7 +372,17 @@ $(function () {
             e.preventDefault()
             let $form = document.getElementById('form-detail_workflow')
             let _form = new SetupFormSubmit($('#form-detail_workflow'))
-            _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
+            let dataZone = $('#table_workflow_zone').DataTable().data().toArray()
+            if (dataZone.length && typeof dataZone[0] === 'object')
+                // convert property list from object to id array list
+                for (let item of dataZone){
+                    let property_temp = []
+                    for (let val of item.property_list){
+                        property_temp.push(val.id)
+                    }
+                    item.property_list = property_temp
+                }
+            _form.dataForm['zone'] = dataZone
             let nodeTableData = setupDataNode(true);
             // add condition object for node list
             // if (COMMIT_NODE_LIST)
@@ -376,7 +392,7 @@ $(function () {
                     const node = document.getElementById(`control-${item.order}`);
                     const offset = jsPlumb.getOffset(node);
                     //add coord of node
-                    item.coord = {
+                    item.coordinates = {
                         top: offset.top,
                         left: offset.left,
                     }
@@ -384,7 +400,7 @@ $(function () {
                 }
                 else{
                     item.condition = []
-                    item.coord = {}
+                    item.coordinates = {}
                 }
 
             }
@@ -395,8 +411,13 @@ $(function () {
             if (associate_temp) {
                 let associate_data_submit = [];
                let associate_data_json =  JSON.parse(associate_temp);
-               for (let key in associate_data_json) {
-                   associate_data_submit.push(associate_data_json[key]);
+               for (let item of associate_data_json) {
+                   if (typeof item.node_in === "object"){
+                       // case from detail page update workflow if node_in is not order number
+                       item.node_in = item.node_in.order
+                       item.node_out = item.node_out.order
+                   }
+                   associate_data_submit.push(item);
                }
                _form.dataForm['association'] = associate_data_submit;
             }
@@ -409,7 +430,7 @@ $(function () {
                 'is_multi_company',
                 'is_define_zone',
                 'actions_rename',
-                'association'
+                'association',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

@@ -176,6 +176,7 @@ class WorkflowDetailAPI(APIView):
         data = request.data
         res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).put(data)
         if res.state:
+            res.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
             return res.result, status.HTTP_200_OK
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED

@@ -148,3 +148,9 @@ div.inline {
 .dropdown-menu-end {
     min-width: 280px;
 }
+.dataTables_paginate span{
+    margin:0 5px;
+}
+.dataTables_paginate span a{
+    padding: 0 5px;
+}

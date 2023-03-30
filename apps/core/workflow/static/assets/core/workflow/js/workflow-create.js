@@ -59,14 +59,14 @@ $(function () {
                     let node = document.getElementById(`control-${item.order}`);
                     let offset = jsPlumb.getOffset(node);
                     item.condition = flowNode[item.order]
-                    item.coord = {
+                    item.coordinates = {
                         top: offset.top,
                         left: offset.left,
                     }
                 }
                 else{
                     item.condition = []
-                    item.coord = {}
+                    item.coordinates = {}
                 }
             }
             _form.dataForm['node'] = nodeTableData
@@ -77,7 +77,13 @@ $(function () {
                 let associate_data_submit = [];
                let associate_data_json =  JSON.parse(associate_temp);
                for (let key in associate_data_json) {
-                   associate_data_submit.push(associate_data_json[key]);
+                   let item = associate_data_json[key]
+                   if (typeof item.node_in === "object"){
+                       // case from detail page update workflow if node_in is not order number
+                       item.node_in = item.node_in.order
+                       item.node_out = item.node_out.order
+                   }
+                   associate_data_submit.push(item);
                }
                _form.dataForm['association'] = associate_data_submit;
             }
@@ -90,7 +96,7 @@ $(function () {
                 'is_multi_company',
                 'is_define_zone',
                 'actions_rename',
-                'association'
+                'association',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

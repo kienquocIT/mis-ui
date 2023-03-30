@@ -13,7 +13,8 @@ $(function () {
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone) initTableZone(res.zone);
-        if (res.node) $('#node-list').val(JSON.stringify(res.node)) // khúc này đợi P làm function node rồi ráp vào
+        if (res.zone) $('#zone-list').val(JSON.stringify(res.zone));
+        if (res.node) $('#node-list').val(JSON.stringify(res.node)); // khúc này đợi P làm function node rồi ráp vào
         if (res.association) $('#associate-connect').val(JSON.stringify(res.association))
     }
 
@@ -124,9 +125,9 @@ $(function () {
                         inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
                     } else {
                         if (action_list.includes(Number(key))) {
-                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" checked>`;
+                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" checked disabled>`;
                         } else {
-                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6">`;
+                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`;
                         }
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
@@ -149,6 +150,8 @@ $(function () {
     }
 
     function loadZoneInCollab(zone_collab, zone_list) {
+        let dataShow = ``;
+        let spanGroup = ``;
         let zoneCollabOrder = [];
         for (let i = 0; i < zone_collab.length; i++) {
             zoneCollabOrder.push(zone_collab[i].order)
@@ -163,16 +166,31 @@ $(function () {
                                 </div>
                             </div>
                             <div class="form-check form-check-theme ms-3">
-                                <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
+                                <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" disabled>
                                 <label class="form-check-label" for="customCheck6"></label>
                             </div>
                         </li>`
+        let trSTT = 0;
+        let dataChecked = zoneCollabOrder.length;
         for (let z = 0; z < zone_list.length; z++) {
             let order = zone_list[z].order;
             let title = zone_list[z].title
-            let input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">`;
+            let input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" disabled>`;
             if (zoneCollabOrder.includes(order)) {
-                input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" checked>`;
+                input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" checked disabled>`;
+                trSTT++;
+                if (trSTT !== 0 && trSTT % 5 === 0) {
+                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${title}<input type="text" value="${order}" hidden></span>`
+                    dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
+                    spanGroup = ``
+                } else {
+                    if (trSTT === dataChecked) {
+                        spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${title}<input type="text" value="${order}" hidden></span>`
+                        dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
+                    } else {
+                        spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${title}<input type="text" value="${order}" hidden></span>`
+                    }
+                }
             }
             optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="media d-flex align-items-center">
@@ -188,7 +206,7 @@ $(function () {
                                 </div>
                             </li>`
         }
-        return optionZone
+        return {optionZone, dataShow}
     }
 
     function loadPropertyCollabInFrom(current_property) {
@@ -205,6 +223,34 @@ $(function () {
 
         }
         return optionProperty
+    }
+
+    function loadEmployeeCollabOutForm(employee_collab) {
+        let dataShow = ``;
+        let spanGroup = ``;
+        let trSTT = 0;
+        let employeeIDList = [];
+        for (let idx = 0; idx < employee_collab.length; idx++) {
+            let dataCheckedLen = employee_collab.length;
+            let childID = employee_collab[idx].id;
+            let childTitle = employee_collab[idx].full_name;
+            trSTT++;
+            employeeIDList.push(childID);
+
+            if (trSTT !== 0 && trSTT % 5 === 0) {
+                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                dataShow += `<div class="col-8">${spanGroup}</div>`
+                spanGroup = ``
+            } else {
+                if (trSTT === dataCheckedLen) {
+                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                    dataShow += `<div class="col-8">${spanGroup}</div>`
+                } else {
+                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                }
+            }
+        }
+        return {employeeIDList, dataShow}
     }
 
     function setupNodeOrder(row, data, dataLen) {
@@ -237,6 +283,89 @@ $(function () {
                 $(row).attr("data-initial-check-box", initialCheckBox);
             }
         }
+    }
+
+    function loadAuditOutFormEmployee(tableId) {
+        let config = {
+            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            ordering: false,
+            columnDefs: [{
+                "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+            }],
+            order: [2, 'asc'],
+            language: {
+                search: "",
+                searchPlaceholder: "Search",
+                info: "_START_ - _END_ of _TOTAL_",
+                sLengthMenu: "View  _MENU_",
+                paginate: {
+                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                }
+            },
+            drawCallback: function () {
+                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
+                feather.replace();
+            },
+            data: [],
+            columns: [{
+                'data': 'code', render: (data, type, row, meta) => {
+                    return String.format(`<b>{0}</b>`, data);
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
+                        return `<span id="${row.id}">` + row.full_name + `</span>`;
+                    }
+                    return '';
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('user') && row.user.hasOwnProperty('username')) {
+                        return row.user.username;
+                    }
+                    return '';
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                }
+            }]
+        }
+
+        function initDataTable(config) {
+            /*DataTable Init*/
+            let Id = "#" + tableId;
+            let dtb = $(Id);
+            if (dtb.length > 0) {
+                let targetDt = dtb.DataTable(config);
+                /*Checkbox Add*/
+                $(document).on('click', '.del-button', function () {
+                    targetDt.rows('.selected').remove().draw(false);
+                    return false;
+                });
+                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
+                dtb.parent().addClass('table-responsive');
+            }
+        }
+        /***
+         * call Ajax load employee list
+         */
+        function loadDataTable() {
+            let url = $('#url-factory').data('employees');
+            let method = "GET";
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
+                        initDataTable(config);
+                    }
+                },
+            )
+        }
+        loadDataTable();
     }
 
     /***
@@ -411,10 +540,15 @@ $(function () {
                             let modalAuditId = "auditModalCreate" + newCheckBox;
                             let collabBody = ``;
                             let optionZone = ``;
+                            let dataZoneShow = ``;
                             if (row.option_collaborator === 0) {
-                                optionZone = loadZoneInCollab(row.collab_in_form.zone, zone_list);
+                                let zoneData = loadZoneInCollab(row.collab_in_form.zone, zone_list);
+                                optionZone = zoneData.optionZone;
+                                dataZoneShow = zoneData.dataShow;
                             } else if (row.option_collaborator === 1) {
-                                optionZone = ``;
+                                let zoneData = loadZoneInCollab(row.collab_out_form.zone, zone_list);
+                                optionZone = zoneData.optionZone;
+                                dataZoneShow = zoneData.dataShow;
                             } else if (row.option_collaborator === 2) {
                                 optionZone = ``;
                             }
@@ -422,8 +556,8 @@ $(function () {
                                                     <label class="form-label">Editing zone</label>
                                                     <div class="input-group mb-3">
                                                         <span class="input-affix-wrapper">
-                                                        <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled>
-                                                        <div class="row zone-data-show"></div>
+                                                        <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled hidden>
+                                                        <div class="zone-data-show col-11" style="margin-right: 38px">${dataZoneShow}</div>
                                                         <div class="btn-group dropdown">
                                                             <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                                                 <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
@@ -444,6 +578,7 @@ $(function () {
                                                 <label class="form-label">List source</label>
                                                 <select
                                                         class="form-select select-box-audit-option"
+                                                        disabled
                                                 >
                                                     <option></option>
                                                     <option value="0" selected>In form</option>
@@ -456,13 +591,81 @@ $(function () {
                                                 <select
                                                         class="form-select select-box-audit-in-form-property"
                                                         id="${boxInFormPropertyId}"
+                                                        disabled
                                                 >
                                                     ${optionProperty}
                                                 </select>
                                             </div>
                                             ${defaultZone}`
                             } else if (row.option_collaborator === 1) {
-
+                                let tableOutFormEmployeeId = "datable-audit-out-form-employee-" + String(row.order);
+                                let canvasId = "offcanvasRight" + String(row.order);
+                                let empData = loadEmployeeCollabOutForm(row.collab_out_form.employee_list)
+                                let employeeIDList = empData.employeeIDList;
+                                let dataShow = empData.dataShow;
+                                collabBody = `<div class="form-group">
+                                                <label class="form-label">List source</label>
+                                                <select
+                                                        class="form-select select-box-audit-option"
+                                                        disabled
+                                                >
+                                                    <option></option>
+                                                    <option value="0">In form</option>
+                                                    <option value="1" selected>Out form</option>
+                                                    <option value="2">In workflow</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Employee list</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-affix-wrapper">
+                                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" value="${employeeIDList}" hidden disabled>
+                                                    <div class="row audit-out-form-employee-data-show">${dataShow}</div>
+                                                    <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
+                                                        aria-controls="offcanvasExample"></i></span>
+                                                    <div
+                                                    class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
+                                                    aria-labelledby="offcanvasTopLabel"
+                                                    style="width: 50%; margin-top: 4em;"
+                                                    >
+                                                    <div class="offcanvas-header">
+                                                        <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                                    </div>
+                                                    <div class="offcanvas-body form-group">
+                                                        <table
+                                                                id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
+                                                                data-url="{% url 'EmployeeListAPI' %}"
+                                                                data-method="GET"
+                                                        >
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Code</th>
+                                                                <th>Full Name</th>
+                                                                <th>Username</th>
+                                                                <th></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                        <br><br>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                                            <button
+                                                                    type="button" 
+                                                                    class="btn btn-primary button-add-audit-out-form-employee" 
+                                                                    data-bs-dismiss="offcanvas"
+                                                                    id=""
+                                                            >Save changes
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ${defaultZone}`
+                                loadAuditOutFormEmployee(tableOutFormEmployeeId);
                             } else if (row.option_collaborator === 2) {
 
                             }

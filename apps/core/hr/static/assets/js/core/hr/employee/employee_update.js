@@ -439,7 +439,7 @@ $(document).on('click', '.check-plan-application', function (e) {
                 if (Number(eleLicenseUsed.innerHTML) !== 0) {
                     if (licenseDefault) {
                         let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
-                        if (licenseUsed === (Number(licenseDefault) - 1)) {
+                        if (licenseUsed >= (Number(licenseDefault) - 1)) {
                             eleLicenseUsed.innerHTML = String(licenseUsed);
                         }
                     }

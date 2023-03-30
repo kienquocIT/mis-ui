@@ -14,7 +14,7 @@ $(function () {
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone) initTableZone(res.zone);
         if (res.zone) $('#zone-list').val(JSON.stringify(res.zone));
-        if (res.node) $('#node-list').val(JSON.stringify(res.node)); // khúc này d?i P làm function node r?i ráp vào
+        if (res.node) $('#node-list').val(JSON.stringify(res.node));
         if (res.association) $('#associate-connect').val(JSON.stringify(res.association))
     }
 
@@ -286,7 +286,7 @@ $(function () {
         }
     }
 
-    function loadAuditOutFormEmployee(tableId) {
+    function loadEmployeeOutForm(tableId) {
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -666,7 +666,7 @@ $(function () {
                                                 </div>
                                             </div>
                                         ${defaultZone}`
-                                loadAuditOutFormEmployee(tableOutFormEmployeeId);
+                                loadEmployeeOutForm(tableOutFormEmployeeId);
                             } else if (row.option_collaborator === 2) {
 
                             }

@@ -256,12 +256,14 @@
                     <div class="form-group col-3" id="inventory-level-min-div">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
                         <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
-                               placeholder="Input" readonly>
+                               min="0" step="1"
+                               placeholder="Input number" readonly>
                     </div>
                     <div class="form-group col-3" id="inventory-level-max-div">
                         <label class="form-label">{% trans "Inventory Level Max" %}</label>
                         <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
-                               placeholder="Input" readonly>
+                               min="0" step="1"
+                               placeholder="Input number" readonly>
                     </div>
                 </div>
                 <div class="row mt-5">

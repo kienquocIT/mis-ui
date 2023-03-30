@@ -355,13 +355,15 @@ $(document).on('change', '#select-box-user-update', function (e) {
     let last_name = sel.getAttribute('data-last-name');
     let email = sel.getAttribute('data-email');
     let phone = sel.getAttribute('data-phone');
-
-    $('#employee-first-name-update').val(first_name);
-    $('#employee-last-name-update').val(last_name);
-    $('#employee-email-update').val(email);
-    $('#employee-phone-update').val(phone);
-
-    updateLicenseWhenChangeUser()
+    let checkLicense = updateLicenseWhenChangeUser();
+    if (checkLicense === true) {
+        $('#employee-first-name-update').val(first_name);
+        $('#employee-last-name-update').val(last_name);
+        $('#employee-email-update').val(email);
+        $('#employee-phone-update').val(phone);
+    } else {
+        sel.selected = false;
+    }
 });
 
 
@@ -402,7 +404,7 @@ $(document).on('click', '.check-plan-application', function (e) {
     let checkAll = 0;
     let divUl = $(this)[0].closest('ul');
     let eleDivAppList = divUl.children;
-    if (licenseQuantity && licenseQuantity !== 'null') {
+    if (licenseQuantity && licenseQuantity !== 'null' && $('#select-box-user-update').val()) {
         // checked ==> if user.val() ==> license + 1
         if ($(this)[0].checked === true) {
             for (let t = 0; t < eleDivAppList.length; t++) {
@@ -413,15 +415,13 @@ $(document).on('click', '.check-plan-application', function (e) {
             }
             if (checkAll === 1) {
                 if (eleLicenseUsed.innerHTML) {
-                    if ($('#select-box-user-update').val()) {
-                        let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                        if (licenseUsed <= Number(licenseQuantity)) {
-                            eleLicenseUsed.innerHTML = String(licenseUsed);
-                        } else {
-                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
-                            $(this)[0].checked = false;
-                            return true
-                        }
+                    let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
+                    if (licenseUsed <= Number(licenseQuantity)) {
+                        eleLicenseUsed.innerHTML = String(licenseUsed);
+                    } else {
+                        $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                        $(this)[0].checked = false;
+                        return false
                     }
                 }
             }
@@ -439,7 +439,7 @@ $(document).on('click', '.check-plan-application', function (e) {
                 if (Number(eleLicenseUsed.innerHTML) !== 0) {
                     if (licenseDefault) {
                         let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
-                        if (licenseUsed === (Number(licenseDefault)-1)) {
+                        if (licenseUsed === (Number(licenseDefault) - 1)) {
                             eleLicenseUsed.innerHTML = String(licenseUsed);
                         }
                     }
@@ -451,20 +451,25 @@ $(document).on('click', '.check-plan-application', function (e) {
 
 
 function updateLicenseWhenChangeUser() {
-    let tablePlanApp = document.getElementById("datable-employee-plan-app");
+    let tablePlanApp = document.getElementById("datable-employee-plan-app-update");
     for (let r = 0; r < tablePlanApp.tBodies[0].rows.length; r++) {
         let divRow = tablePlanApp.tBodies[0].rows[r].firstElementChild.firstElementChild;
         let eleDivAppList = divRow.children[1].firstElementChild.children;
+        let licenseQuantity = divRow.querySelector('.license-quantity').value;
+        let eleLicenseUsed = divRow.querySelector('.license-used-employee');
         for (let t = 0; t < eleDivAppList.length; t++) {
-            let app = eleDivAppList[t].firstElementChild;
+            let app = eleDivAppList[t].querySelector('.check-plan-application');
             if (app.checked === true) {
                 if ($('#select-box-user-update').val()) {
-                    let eleLicenseUsed = divRow.children[0].children[1].children[0];
                     let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                    eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    if (licenseUsed <= Number(licenseQuantity)) {
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    } else {
+                        $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                        return false
+                    }
                     break
                 } else {
-                    let eleLicenseUsed = divRow.children[0].children[1].children[0];
                     if (Number(eleLicenseUsed.innerHTML) !== 0) {
                         let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
                         eleLicenseUsed.innerHTML = licenseUsed.toString();
@@ -474,4 +479,5 @@ function updateLicenseWhenChangeUser() {
             }
         }
     }
+    return true
 }

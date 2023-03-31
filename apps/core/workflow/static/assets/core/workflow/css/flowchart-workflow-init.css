@@ -4,6 +4,7 @@
     --secondary-color: #d5ddf8;
     --3nd-color: #7e96e8;
     --4th-color: #374986;
+    --4th-color-rgb: 55, 73, 134;
     --5th-color: #f3c6f2;
     --6th-color: #efa6b6;
 }
@@ -81,15 +82,19 @@
     height: 90px;
     align-items: center;
     justify-content: center;
-    box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
     position: relative;
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
 }
 
+.wrap-flowchart .control {
+    box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
+}
+
 .wrap-flowchart .clone {
     position: absolute;
+    border: solid 1px transparent;
 }
 
 .wrap-flowchart .control .drag-title,
@@ -196,4 +201,15 @@
 
 .jtk-overlay.cssAssociateLabel.jtk-hover {
     background: var(--4th-color);
+}
+
+/*hover effect*/
+#flowchart_workflow .clone.jtk-target-hover,
+#flowchart_workflow .clone.jtk-source-hover {
+    box-shadow: 0 0 13px 1px rgba(0,111,255,0.4);
+    border: solid 1px #f1f1f1;
+}
+
+#flowchart_workflow .jtk-connector.jtk-hover {
+    filter: drop-shadow(0 0 8px rgb(255 16 39/0.55));
 }

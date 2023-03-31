@@ -12,10 +12,12 @@ $(function () {
             initSelectbox(elmApp)
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
-        if (res.zone) initTableZone(res.zone);
-        if (res.zone) $('#zone-list').val(JSON.stringify(res.zone));
+        if (res.zone){
+            initTableZone(res.zone);
+            $('#zone-list').val(JSON.stringify(res.zone));
+        }
         if (res.node) $('#node-list').val(JSON.stringify(res.node));
-        if (res.association) $('#associate-connect').val(JSON.stringify(res.association))
+        if (res.association) $('#node-associate').val(JSON.stringify(res.association))
     }
 
     /***

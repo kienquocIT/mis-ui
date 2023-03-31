@@ -53,7 +53,6 @@ $(function () {
         return actionEle
     }
 
-
     /***
      * get data list of default node
      */
@@ -236,7 +235,6 @@ $(function () {
         });
     }
 
-
     function loadSystemNode() {
         let url = $('#url-factory').data('node');
         $.fn.callAjax(url, "GET").then(
@@ -251,12 +249,168 @@ $(function () {
         )
     }
 
+    function loadInitPropertyInFrom() {
+        let url = '/base/application-property-employee/api';
+        let method = "GET"
+        let ele = $('#data-init-property-in-form');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
+                        data.property_employee_list.map(function (item) {
+                            ele.append(`<option value="${item.code}">${item.title}</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    function loadInitCompanyInWorkflow() {
+        let url = '/company/list/api';
+        let method = "GET"
+        let ele = $('#data-init-company-in-workflow');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
+                        data.company_list.map(function (item) {
+                            ele.append(`<option value="${item.id}">${item.title}</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    function loadInitEmployeeInWorkflow() {
+        let url = '/hr/employee/api';
+        let method = "GET"
+        let ele = $('#data-init-employee-in-workflow');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        data.employee_list.map(function (item) {
+                            let spanRole = ``;
+                            if (item.role && Array.isArray(item.role)) {
+                                for (let r = 0; r < item.role.length; r++) {
+                                    spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
+                                }
+                            }
+                            ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
+                                            <div hidden>${spanRole}</div>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    function loadAuditOutFormEmployee(tableId) {
+        let config = {
+            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            ordering: false,
+            columnDefs: [{
+                "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+            }],
+            order: [2, 'asc'],
+            language: {
+                search: "",
+                searchPlaceholder: "Search",
+                info: "_START_ - _END_ of _TOTAL_",
+                sLengthMenu: "View  _MENU_",
+                paginate: {
+                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+                }
+            },
+            drawCallback: function () {
+                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
+                feather.replace();
+            },
+            data: [],
+            columns: [{
+                'data': 'code', render: (data, type, row, meta) => {
+                    return String.format(`<b>{0}</b>`, data);
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
+                        return `<span id="${row.id}">` + row.full_name + `</span>`;
+                    }
+                    return '';
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('user') && row.user.hasOwnProperty('username')) {
+                        return row.user.username;
+                    }
+                    return '';
+                }
+            }, {
+                'render': (data, type, row, meta) => {
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                }
+            }]
+        }
+
+        function initDataTable(config) {
+            /*DataTable Init*/
+            let Id = "#" + tableId;
+            let dtb = $(Id);
+            if (dtb.length > 0) {
+                let targetDt = dtb.DataTable(config);
+                /*Checkbox Add*/
+                $(document).on('click', '.del-button', function () {
+                    targetDt.rows('.selected').remove().draw(false);
+                    return false;
+                });
+                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
+                dtb.parent().addClass('table-responsive');
+            }
+        }
+
+        /***
+         * call Ajax load employee list
+         */
+        function loadDataTable() {
+            let dataRawEmployee = $('#wf-employee-out-form').val();
+            if (dataRawEmployee) {
+                config['data'] = JSON.parse(dataRawEmployee);
+                initDataTable(config)
+            }
+        }
+        loadDataTable();
+    }
+
+    function loadInitEmployeeOutForm() {
+        let url = $('#url-factory').data('employees');
+        let method = "GET";
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee_list')) {
+                        $('#wf-employee-out-form').val(JSON.stringify(data.employee_list))
+                    }
+                }
+            },
+        )
+    }
 
     $(document).ready(function () {
         let tableNode = $('#datable-workflow-node-create');
 
-        loadSystemNode()
-
+        loadSystemNode();
+        loadInitPropertyInFrom();
+        loadInitCompanyInWorkflow();
+        loadInitEmployeeInWorkflow();
+        loadInitEmployeeOutForm()
 
 // Action on click collaborator of initial node
         tableNode.on('click', '.btn-initial-node-collaborator', function (e) {
@@ -315,92 +469,6 @@ $(function () {
 
         });
 
-
-        function loadAuditOutFormEmployee(tableId) {
-            let config = {
-                dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-                ordering: false,
-                columnDefs: [{
-                    "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-                }],
-                order: [2, 'asc'],
-                language: {
-                    search: "",
-                    searchPlaceholder: "Search",
-                    info: "_START_ - _END_ of _TOTAL_",
-                    sLengthMenu: "View  _MENU_",
-                    paginate: {
-                        next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                        previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-                    }
-                },
-                drawCallback: function () {
-                    $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-                    feather.replace();
-                },
-                data: [],
-                columns: [{
-                    'data': 'code', render: (data, type, row, meta) => {
-                        return String.format(`<b>{0}</b>`, data);
-                    }
-                }, {
-                    'render': (data, type, row, meta) => {
-                        if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
-                            return `<span id="${row.id}">` + row.full_name + `</span>`;
-                        }
-                        return '';
-                    }
-                }, {
-                    'render': (data, type, row, meta) => {
-                        if (row.hasOwnProperty('user') && row.user.hasOwnProperty('username')) {
-                            return row.user.username;
-                        }
-                        return '';
-                    }
-                }, {
-                    'render': (data, type, row, meta) => {
-                        let currentId = "chk_sel_" + String(meta.row + 1)
-                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
-                    }
-                }]
-            }
-
-            function initDataTable(config) {
-                /*DataTable Init*/
-                let Id = "#" + tableId;
-                let dtb = $(Id);
-                if (dtb.length > 0) {
-                    let targetDt = dtb.DataTable(config);
-                    /*Checkbox Add*/
-                    $(document).on('click', '.del-button', function () {
-                        targetDt.rows('.selected').remove().draw(false);
-                        return false;
-                    });
-                    $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
-                    dtb.parent().addClass('table-responsive');
-                }
-            }
-
-            /***
-             * call Ajax load employee list
-             */
-            function loadDataTable() {
-                let url = $('#url-factory').data('employees');
-                let method = "GET";
-                $.fn.callAjax(url, method).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
-                            initDataTable(config);
-                        }
-                    },
-                )
-            }
-            loadDataTable();
-        }
-
-
 // Action on open modal node
         $('#add-new-node-workflow-create').on('click', '.open-modal-node', function (e) {
             e.stopPropagation();
@@ -409,12 +477,10 @@ $(function () {
             $('#modal-node-description-create').val("");
         });
 
-
 // Action on add modal node
         $("#btn-add-new-node-create").on("click", function () {
             tableNodeAdd()
         });
-
 
         function tableNodeAdd() {
             let tableShowBodyOffModal = $('#datable-workflow-node-create tbody');
@@ -506,7 +572,6 @@ $(function () {
             return false;
         }
 
-
 // Action on click btn edit row node
         tableNode.on('click', '.workflow-node-edit-button', function (e) {
             let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
@@ -521,7 +586,6 @@ $(function () {
             remarkInput.value = remarkShow.innerHTML;
         });
 
-
 // Action on change node title
         tableNode.on('change', '.node-title-col-edit', function (e) {
             let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
@@ -532,7 +596,6 @@ $(function () {
             titleShow.removeAttribute('hidden');
         });
 
-
 // Action on change node description
         tableNode.on('change', '.node-remark-col-edit', function (e) {
             let remarkShow = $(this)[0].closest('tr').querySelector('.node-remark-col-show');
@@ -542,7 +605,6 @@ $(function () {
             $(this)[0].setAttribute("hidden", true);
             remarkShow.removeAttribute('hidden');
         });
-
 
 // Action on delete row node
         tableNode.on('click', '.workflow-node-del-button', function (e) {
@@ -561,7 +623,6 @@ $(function () {
             return false;
         });
 
-
 // Action on delete row audit employee in workflow
         tableNode.on('click', '.audit-in-workflow-del-button', function (e) {
             e.stopPropagation();
@@ -571,7 +632,6 @@ $(function () {
 
             return false;
         });
-
 
 // Action on change audit option
         tableNode.on('change', '.select-box-audit-option', function (e) {
@@ -773,57 +833,56 @@ $(function () {
                                 </select>
                             </div>`);
                 modalBody.append(`<div class="form-group">
-                                <label class="form-label">Employee list</label>
-                                <div class="input-group mb-3">
-                                    <span class="input-affix-wrapper">
-                                    <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" disabled>
-                                    
-                                    <div class="row audit-out-form-employee-data-show"></div>
-                                    
-                                    <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
-                                        aria-controls="offcanvasExample"></i></span>
-                                    <div
-                                    class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
-                                    aria-labelledby="offcanvasTopLabel"
-                                    style="width: 50%; margin-top: 4em;"
-                            >
-                                <div class="offcanvas-header">
-                                    <h5 id="offcanvasRightLabel">Add Employee</h5>
-                                </div>
-                                <div class="offcanvas-body form-group">
-                                    <table
-                                            id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
-                                            data-url="{% url 'EmployeeListAPI' %}"
-                                            data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th>Code</th>
-                                            <th>Full Name</th>
-                                            <th>Username</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                    <br><br>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
-                                        <button
-                                                type="button" 
-                                                class="btn btn-primary button-add-audit-out-form-employee" 
-                                                data-bs-dismiss="offcanvas"
-                                                id=""
-                                        >Save changes
-                                        </button>
+                                    <label class="form-label">Employee list</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-affix-wrapper">
+                                        <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" disabled>
+                                        
+                                        <div class="row audit-out-form-employee-data-show"></div>
+                                        
+                                        <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
+                                            aria-controls="offcanvasExample"></i></span>
+                                        <div
+                                        class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
+                                        aria-labelledby="offcanvasTopLabel"
+                                        style="width: 50%; margin-top: 4em;"
+                                >
+                                    <div class="offcanvas-header">
+                                        <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                    </div>
+                                    <div class="offcanvas-body form-group">
+                                        <table
+                                                id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
+                                                data-url="{% url 'EmployeeListAPI' %}"
+                                                data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Full Name</th>
+                                                <th>Username</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                        <br><br>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                            <button
+                                                    type="button" 
+                                                    class="btn btn-primary button-add-audit-out-form-employee" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    id=""
+                                            >Save changes
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                                    </span>
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            
                             ${defaultZone}`)
                 loadAuditOutFormEmployee(tableOutFormEmployeeId);
             } else {
@@ -926,73 +985,33 @@ $(function () {
             }
         });
 
-
+// load data by specific collaborator
         function loadPropertyAuditInFrom(boxId) {
-            let url = '/base/application-property-employee/api';
-            let method = "GET"
+            let initData = document.getElementById('data-init-property-in-form').innerHTML;
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
-                            data.property_employee_list.map(function (item) {
-                                ele.append(`<option value="${item.code}">${item.title}</option>`)
-                            })
-                        }
-                    }
-                }
-            )
+            if (initData) {
+               ele.append(initData)
+            }
         }
-
 
         function loadCompanyAuditInWorkflow(boxId) {
-            let url = '/company/list/api';
-            let method = "GET"
+            let initData = document.getElementById('data-init-company-in-workflow').innerHTML;
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
-                            data.company_list.map(function (item) {
-                                ele.append(`<option value="${item.id}">${item.title}</option>`)
-                            })
-                        }
-                    }
-                }
-            )
+            if (initData) {
+                ele.append(initData)
+            }
         }
-
 
         function loadEmployeeAuditInWorkflow(boxId) {
-            let url = '/hr/employee/api';
-            let method = "GET"
+            let initData = document.getElementById('data-init-employee-in-workflow').innerHTML;
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                            data.employee_list.map(function (item) {
-                                let spanRole = ``;
-                                if (item.role && Array.isArray(item.role)) {
-                                    for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
-                                    }
-                                }
-                                ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
-                                    <div hidden>${spanRole}</div>`)
-                            })
-                        }
-                    }
-                }
-            )
+            if (initData) {
+                ele.append(initData)
+            }
         }
-
 
         function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
             let url = '/hr/employee/company/' + company_id;
@@ -1021,7 +1040,6 @@ $(function () {
                 }
             )
         }
-
 
 // Action on add canvas employee out form
         tableNode.on('click', '.button-add-audit-out-form-employee', function (e) {
@@ -1065,7 +1083,6 @@ $(function () {
                 auditOutFormEmployeeShow.innerHTML = dataShow
             }
         });
-
 
 // On click button add Employee Audit In Workflow
         tableNode.on('click', '.button-add-audit-in-workflow-employee', function (e) {
@@ -1140,7 +1157,6 @@ $(function () {
             }
         });
 
-
 // On check zone of node
         tableNode.on('click', '.check-zone-node', function (e) {
             e.stopPropagation();
@@ -1185,7 +1201,6 @@ $(function () {
                     }
                 }
             }
-
             // append data show
             let checkInitial = $(this)[0].getAttribute('data-node-initial');
             if (checkInitial === "true") {
@@ -1209,7 +1224,6 @@ $(function () {
                         }
                     }
                 }
-
                 eleSpan.innerHTML = "";
                 eleSpan.innerHTML = dataShow;
             } else {
@@ -1218,7 +1232,6 @@ $(function () {
                 let zoneEle = $(this)[0].closest('span');
                 let zoneInput = zoneEle.children[0];
                 let zoneShow = zoneEle.children[1];
-
                 let trSTT = 0;
                 for (let li = 0; li < eleUL.children.length; li++) {
                     let eleLi = eleUL.children[li];
@@ -1247,7 +1260,6 @@ $(function () {
                         }
                     }
                 }
-
                 zoneInput.setAttribute("hidden", true);
                 zoneShow.innerHTML = "";
                 zoneShow.innerHTML = dataShow;
@@ -1256,7 +1268,6 @@ $(function () {
                 zoneShow.style.marginRight = "38px"
             }
         });
-
 
 // On check action node & change status
         tableNode.on('click', '.check-action-node', function (e) {
@@ -1271,7 +1282,7 @@ $(function () {
 
             // checked
             if ($(this)[0].checked === true) {
-                // change node's status
+                // change node's actions status
                 eleSpan.innerHTML = ``;
                 eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
 

@@ -71,9 +71,17 @@ function initSelectbox(selectBoxElement = null) {
                             }else{
                                 if(item.hasOwnProperty('full_name')) text = 'full_name';
                             }
-                            if (default_data && default_data.includes(item.id))
-                                data_convert.push({...item, 'text': item[text], 'selected': true})
-                            else data_convert.push({...item, 'text': item[text]})
+                            try{
+                                if (default_data && default_data.hasOwnProperty('id')
+                                    && default_data.id === item.id
+                                )
+                                    data_convert.push({...item, 'text': item[text], 'selected': true})
+                                else data_convert.push({...item, 'text': item[text]})
+
+                            }
+                            catch (e) {
+                                console.log(e)
+                            }
                         }
                         if ($this.attr('data-virtual') !== undefined
                             && $this.attr('data-virtual') !== ''

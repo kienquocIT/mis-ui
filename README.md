@@ -127,3 +127,13 @@ plugin using for combobox with auto init and search real time
 ```
 *[vendors/select2/dist/js/init-select2.js](/statics/vendors/select2/dist/js/init-select2.js)*
 
+---
+
+### dataTables how to use
+1. Description
+```text
+plugin using for tables.
+tables list each page is had difference setup. so dataTable did not common file for default setup.
+visit workflow list page to refer way how to setup.
+good luck..
+```

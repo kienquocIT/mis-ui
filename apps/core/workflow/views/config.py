@@ -142,6 +142,7 @@ class WorkflowDetail(View):
                    'form': ConditionFormset(),
                    'wf_data_type': WORKFLOW_TYPE
                }, status.HTTP_200_OK
+
     def put(self, request, *args, **kwargs):
         data = request.data
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW).put(data)
@@ -162,6 +163,20 @@ class WorkflowDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).get()
         if res.state:
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).put(data)
+        if res.state:
+            res.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
             return res.result, status.HTTP_200_OK
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED

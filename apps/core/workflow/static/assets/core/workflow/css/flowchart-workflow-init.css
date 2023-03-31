@@ -206,8 +206,8 @@
 /*hover effect*/
 #flowchart_workflow .clone.jtk-target-hover,
 #flowchart_workflow .clone.jtk-source-hover {
-    box-shadow: 0 0 13px 1px rgba(0,111,255,0.4);
-    border: solid 1px #f1f1f1;
+    box-shadow: 0 0 4px 6px rgba(0,111,255,0.4);
+    border: solid 1px rgb(0 111 255 / 40%);
 }
 
 #flowchart_workflow .jtk-connector.jtk-hover {

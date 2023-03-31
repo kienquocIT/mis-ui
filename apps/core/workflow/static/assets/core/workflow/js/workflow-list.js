@@ -3,33 +3,34 @@ $(function () {
     $(document).ready(function () {
         let $table = $('#table_workflow_list')
         let LISTURL = $table.attr('data-url')
-        $table.DataTable({
+        let _dataTable = $table.DataTable({
+            searching: false,
             language: {
-                "paginate": {
+                // search: "_INPUT_",
+                // searchPlaceholder: "Search...",
+                paginate: {
                     "previous": '<i data-feather="chevron-left"></i>',
                     "next": '<i data-feather="chevron-right"></i>'
-                }
+                },
+                info: 'Showing _START_ to _END_ of _TOTAL_ rows',
+                lengthMenu: '_MENU_ rows per page',
             },
-            // dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"f>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            dom: '<"top"f>rt<"bottom"ilp><"clear">',
             ordering: false,
-            searching: true,
-            // paginate: false,
-            // info:false,
             ajax: {
                 url: LISTURL,
                 type: "GET",
                 dataSrc: 'data.workflow_list',
                 data:function(params){
+                    let txtSearch = $('#search_input').val();
+                    if (txtSearch.length > 0)
+                        params['search'] = txtSearch
                     params['is_ajax'] = true;
                     return params
                 },
-                error: function(jqXHR, ajaxOptions, thrownError) {
+                error: function(jqXHR) {
                     $table.find('.dataTables_empty').text(jqXHR.responseJSON.data.errors)
                 }
-            },
-            onFieldError: function (editor, error) {
-                errorbox(error.name + ': ' + error.status);
-                // Now how do I prevent the error shown inside the table row?
             },
             drawCallback: function () {
                 // render icon after table callback
@@ -70,19 +71,19 @@ $(function () {
                     className: 'action-center',
                     render: (data, type, row) => {
                         let urlUpdate = $('#workflow-link').attr('data-link-update').format_url_with_uuid(row.id)
-                        let str_html = `<div>
-                                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" 
-                                                data-bs-original-title="Delete" 
-                                                href="javascript:void(0)" 
-                                                data-url="${urlUpdate}" 
-                                                data-method="DELETE">
-                                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
-                                                </a>
-                                            </div>`;
-                        return str_html
+                        return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
+                            +`data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
+                            +`data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
+                            +`<i data-feather="trash-2"></i></span></span></a></div>`;
                     },
                 }
             ],
         });
+
+        $('#search_input').on('keyup', function(evt){
+            const keycode = evt.which;
+            if (keycode === 13) //enter to search
+                _dataTable.ajax.reload()
+        })
     });
 });

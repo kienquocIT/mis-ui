@@ -517,6 +517,10 @@ $(document).ready(function () {
             frm.dataForm['code'] = null;
         }
 
+        if (frm.dataForm['parent_account'] === '') {
+            frm.dataForm['parent_account'] = null;
+        }
+
         if ($('#select-box-acc-manager').val().length > 0) {
             frm.dataForm['manager'] = $('#select-box-acc-manager').val();
         }

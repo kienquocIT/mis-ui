@@ -531,74 +531,74 @@ $(function () {
                                             </span>
                                         </span>
                                     </button>
-                            <div
-                                class="offcanvas offcanvas-end" tabindex="-1" id="${canvasInWorkflowId}"
-                                aria-labelledby="offcanvasTopLabel"
-                                style="width: 50%; margin-top: 4em;"
-                            >
-                                <div class="offcanvas-header">
-                                    <h5 id="offcanvasRightLabel">Add Employee</h5>
-                                </div>
-                                <div class="offcanvas-body form-group">
-                                    <div class="form-group">
-                                        <label class="form-label">Select company</label>
-                                        <select
-                                                class="form-select select-box-audit-in-workflow-company" 
-                                                id="${boxInWorkflowCompanyId}"
-                                        >
-                                            <option></option>
-                                        </select>
+                                    <div
+                                        class="offcanvas offcanvas-end" tabindex="-1" id="${canvasInWorkflowId}"
+                                        aria-labelledby="offcanvasTopLabel"
+                                        style="width: 50%; margin-top: 4em;"
+                                    >
+                                        <div class="offcanvas-header">
+                                            <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                        </div>
+                                        <div class="offcanvas-body form-group">
+                                            <div class="form-group">
+                                                <label class="form-label">Select company</label>
+                                                <select
+                                                        class="form-select select-box-audit-in-workflow-company" 
+                                                        id="${boxInWorkflowCompanyId}"
+                                                >
+                                                    <option></option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Select employee</label>
+                                                <select
+                                                        class="form-select select-box-audit-in-workflow-employee" 
+                                                        id="${boxInWorkflowEmployeeId}"
+                                                >
+                                                    <option></option>
+                                                </select>
+                                            </div>
+                                            ${defaultZone}
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    Description
+                                                </label>
+                                                <textarea
+                                                        class="form-control"
+                                                        rows="4" cols="50"
+                                                ></textarea>
+                                                <span class="form-text text-muted">Description what to do</span>
+                                            </div>
+                                            <br><br>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                                <button
+                                                        type="button" 
+                                                        class="btn btn-primary button-add-audit-in-workflow-employee" 
+                                                        data-bs-dismiss="offcanvas"
+                                                        id=""
+                                                >Save changes
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Select employee</label>
-                                        <select
-                                                class="form-select select-box-audit-in-workflow-employee" 
-                                                id="${boxInWorkflowEmployeeId}"
-                                        >
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    ${defaultZone}
-                                    <div class="form-group">
-                                        <label class="form-label">
-                                            Description
-                                        </label>
-                                        <textarea
-                                                class="form-control"
-                                                rows="4" cols="50"
-                                        ></textarea>
-                                        <span class="form-text text-muted">Description what to do</span>
-                                    </div>
-                                    <br><br>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
-                                        <button
-                                                type="button" 
-                                                class="btn btn-primary button-add-audit-in-workflow-employee" 
-                                                data-bs-dismiss="offcanvas"
-                                                id=""
-                                        >Save changes
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                                <table
-                                    class="table nowrap w-100 mb-5 table-in-workflow-employee"
-                                    id="${tableInWorkflowEmployeeId}"
-                                >
-                                    <thead>
-                                    <tr>
-                                        <th data-orderable="false"></th>
-                                        <th data-orderable="false">Collaborator</th>
-                                        <th data-orderable="false">Position</th>
-                                        <th data-orderable="false">Role</th>
-                                        <th data-orderable="false">Editing Zone</th>
-                                        <th data-orderable="false">Actions</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>`
+                                    <table
+                                        class="table nowrap w-100 mb-5 table-in-workflow-employee"
+                                        id="${tableInWorkflowEmployeeId}"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th data-orderable="false"></th>
+                                            <th data-orderable="false">Collaborator</th>
+                                            <th data-orderable="false">Position</th>
+                                            <th data-orderable="false">Role</th>
+                                            <th data-orderable="false">Editing Zone</th>
+                                            <th data-orderable="false">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>`
 
             let modalBody = $(this).closest('.modal-body');
             let value = $(this).val();
@@ -720,7 +720,15 @@ $(function () {
             return false;
         });
 
+// Action on click button collaborator workflow detail loaded
+        tableNode.on('click', '.wf-detail-loaded', function (e) {
+            let tableOutFormEmployee = $(this)[0].closest('.row').querySelector('.table-out-form-employee');
+            if (tableOutFormEmployee) {
+                loadAuditOutFormEmployee(tableOutFormEmployee.id);
+            }
+        })
 
+// Action on click check select box of table
         tableNode.on('click', '.check-select', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -732,7 +740,7 @@ $(function () {
             }
         });
 
-
+// Action on click check select all box of table
         tableNode.on('click', '.check-select-all', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -756,7 +764,7 @@ $(function () {
             }
         });
 
-
+// Action on click check select box of table employee out form
         tableNode.on('click', '.check-select-employee-out-form', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -768,7 +776,7 @@ $(function () {
             }
         });
 
-
+// Action on click check select all box of table employee in workflow
         tableNode.on('click', '.check-select-employee-in-workflow', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -779,7 +787,6 @@ $(function () {
                 $('.check-select-all').prop('checked', false);
             }
         });
-
 
 // load employee box filter by company
         tableNode.on('change', '.select-box-audit-in-workflow-company', function (e) {

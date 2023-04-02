@@ -35,6 +35,7 @@ function setupDataNode(is_submit = false) {
         let total_collaborator_config = 1;
         let orderNode = 0;
         let fieldSelectCollaborator = "";
+        let coordinates = {};
 
         let collabInForm = {};
         let collabOutForm = {};
@@ -49,6 +50,10 @@ function setupDataNode(is_submit = false) {
             let col = rowChildren[d + 1];
             if ((d + 1) === 1) {
                 title = col.querySelector('.node-title').innerHTML;
+                let coordinatesRaw = col.querySelector('.node-title').getAttribute('data-coordinates');
+                if (coordinatesRaw) {
+                    coordinates = JSON.parse(coordinatesRaw)
+                }
                 if (col.children[0].getAttribute('data-is-system')) {
                     if (col.children[0].getAttribute('data-is-system') === "true") {
                         isSystem = true;
@@ -186,6 +191,7 @@ function setupDataNode(is_submit = false) {
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,
                 'check_approved': '',
+                'coordinates': coordinates,
             });
         }
     }

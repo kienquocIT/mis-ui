@@ -358,7 +358,11 @@ $(function () {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="node-title" data-is-system="true" data-system-code="${row.code}">${row.title}</span>`
+                        let coordinates = {};
+                        if (row.coordinates) {
+                            coordinates = JSON.stringify(row.coordinates)
+                        }
+                        return `<span class="node-title" data-is-system="true" data-system-code="${row.code}" data-coordinates=${coordinates}>${row.title}</span>`
                     }
                 },
                 {
@@ -557,6 +561,7 @@ $(function () {
                                 let canvasId = "offcanvasRight" + String(row.order);
                                 let empData = loadEmployeeCollabOutForm(row.collab_out_form.employee_list)
                                 let employeeIDList = empData.employeeIDList;
+                                let employeeIDListStr = JSON.stringify(empData.employeeIDList);
                                 let dataShow = empData.dataShow;
                                 collabBody = `<div class="form-group">
                                                 <label class="form-label">List source</label>
@@ -588,6 +593,7 @@ $(function () {
                                                         <h5 id="offcanvasRightLabel">Add Employee</h5>
                                                     </div>
                                                     <div class="offcanvas-body form-group">
+                                                        <input type="hidden" class="employee-out-form-id-list-wf-detail" value=${employeeIDListStr}>
                                                         <table
                                                                 id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
                                                                 data-url="{% url 'EmployeeListAPI' %}"

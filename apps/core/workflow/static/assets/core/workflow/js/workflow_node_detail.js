@@ -117,7 +117,7 @@ $(function () {
         )
     }
 
-    function loadAuditOutFormEmployee(tableId) {
+    function loadAuditOutFormEmployee(tableId, data_detail= []) {
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -161,7 +161,11 @@ $(function () {
             }, {
                 'render': (data, type, row, meta) => {
                     let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    if (data_detail && data_detail.includes(row.id)) {
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}" checked><label class="form-check-label" for="${currentId}"></label></span>`;
+                    } else {
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    }
                 }
             }]
         }
@@ -722,9 +726,14 @@ $(function () {
 
 // Action on click button collaborator workflow detail loaded
         tableNode.on('click', '.wf-detail-loaded', function (e) {
+            let employeeSelectedIdListRaw = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail').value;
+            let employeeSelectedIdList = [];
+            if (employeeSelectedIdListRaw) {
+                employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+            }
             let tableOutFormEmployee = $(this)[0].closest('.row').querySelector('.table-out-form-employee');
             if (tableOutFormEmployee) {
-                loadAuditOutFormEmployee(tableOutFormEmployee.id);
+                loadAuditOutFormEmployee(tableOutFormEmployee.id, employeeSelectedIdList);
             }
         })
 

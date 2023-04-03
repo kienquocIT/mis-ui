@@ -29,9 +29,10 @@ $(function () {
             if (!$form.attr('readonly')) return false
             $('#btn-detail_workflow').removeClass('hidden');
             $form.removeAttr('readonly');
-            $form.find('input[readonly]').removeAttr('readonly')
-            $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false)
-            $form.find('select[disabled]').prop('disabled', false)
+            $form.find('input[readonly]').removeAttr('readonly');
+            $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false);
+            $form.find('select[disabled]:not(.is-not-enabled)').prop('disabled', false);
+            $form.find('.is-editable').prop('disabled', false);
             $('.actions-btn a').removeClass('disabled')
         });
     }
@@ -105,9 +106,9 @@ $(function () {
             if (is_system_node === true) {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" checked disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" id="customCheck6" checked disabled>`;
                     } else {
-                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" id="customCheck6" disabled>`;
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                             <div class="media d-flex align-items-center">
@@ -126,7 +127,7 @@ $(function () {
             } else {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node is-not-enabled" id="customCheck6" disabled>`
                     } else {
                         if (action_list.includes(Number(key))) {
                             inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" checked disabled>`;
@@ -362,7 +363,11 @@ $(function () {
                         if (row.coordinates) {
                             coordinates = JSON.stringify(row.coordinates)
                         }
-                        return `<span class="node-title" data-is-system="true" data-system-code="${row.code}" data-coordinates=${coordinates}>${row.title}</span>`
+                        if (row.is_system === true) {
+                            return `<span class="node-title" data-is-system="true" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                        } else {
+                            return `<span class="node-title" data-is-system="false" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                        }
                     }
                 },
                 {
@@ -509,7 +514,8 @@ $(function () {
                                 optionZone = zoneData.optionZone;
                                 dataZoneShow = zoneData.dataShow;
                             } else if (row.option_collaborator === 2) {
-                                optionZone = ``;
+                                let zoneData = loadZoneInCollab([], zone_list);
+                                optionZone = zoneData.optionZone;
                             }
                             let defaultZone = `<div class="form-group">
                                                     <label class="form-label">Editing zone</label>
@@ -518,7 +524,7 @@ $(function () {
                                                         <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled hidden>
                                                         <div class="zone-data-show col-11" style="margin-right: 38px">${dataZoneShow}</div>
                                                         <div class="btn-group dropdown">
-                                                            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
+                                                            <i class="fas fa-align-justify is-editable" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
                                                                 <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                                     <ul class="node-zone-list p-0">
                                                                         ${optionZone}
@@ -582,7 +588,7 @@ $(function () {
                                                     <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" value="${employeeIDList}" hidden disabled>
                                                     <div class="row audit-out-form-employee-data-show">${dataShow}</div>
                                                     <span class="input-suffix">
-                                                        <i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
+                                                        <i class="fa fa-user is-editable" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
                                                     ></span>
                                                     <div
                                                     class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
@@ -645,7 +651,7 @@ $(function () {
                                             </div>
                                             <button
                                             type="button"
-                                            class="btn btn-flush-success flush-soft-hover"
+                                            class="btn btn-flush-success flush-soft-hover is-editable"
                                             data-bs-toggle="offcanvas" 
                                             data-bs-target="#${canvasInWorkflowId}"
                                             aria-controls="offcanvasExample"
@@ -730,6 +736,8 @@ $(function () {
                                                 </tbody>
                                             </table>`
                                 loadTableInWorkflow(tableInWorkflowEmployeeId, row.collab_in_workflow)
+                                loadCompanyAuditInWorkflow(boxInWorkflowCompanyId);
+                                loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
                             }
                             return `<div class="row">
                                         <div class="col-8">
@@ -766,16 +774,16 @@ $(function () {
                 },
                 {
                     targets: 5,
-                    render: () => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" `
-                            +`data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" `
-                            +`href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit">`
-                            +`</i></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" `
-                            +`data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" `
-                            +`href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        let actionData = bt2 + bt3;
-                        return `${actionData}`
+                    render: (data, type, row) => {
+                        let actionData = ``;
+                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="color: #cccccc"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: #cccccc"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        if (row.is_system !== true) {
+                            bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
+                            bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        }
+                        actionData = bt2 + bt3;
+                        return actionData
                     }
                 },
             ],

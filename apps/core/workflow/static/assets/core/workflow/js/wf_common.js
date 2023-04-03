@@ -382,7 +382,11 @@ $(document).ready(function () {
         $(`${btn_href}`).addClass('show active')
 
         // catch if next tab is display config condition
-        if (btn_href === '#tab_next_node') FlowJsP.init();
+        if (btn_href === '#tab_next_node') {
+            FlowJsP.init()
+        } else if (btn_href === '#tab_node') {
+            loadZoneInitialNode()
+        }
     })
 
     //handle event on change function applied

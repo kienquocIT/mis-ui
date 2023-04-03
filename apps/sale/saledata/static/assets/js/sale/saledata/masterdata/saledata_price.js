@@ -259,7 +259,7 @@ $(document).ready(function () {
                     if (row.is_primary === true) {
                         return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`
                     } else {
-                        return `<span>` + row.rate.toLocaleString('en-US', {minimumFractionDigits: 4}) + `</span>`
+                        return `<span>` + row.rate.toLocaleString('en-US', {minimumFractionDigits: 2}) + `</span>`
                     }
                 } else {
                     return ``;

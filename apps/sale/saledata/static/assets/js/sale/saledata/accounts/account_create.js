@@ -307,10 +307,12 @@ $(document).ready(function () {
     $('#inp-individual').on('change', function () {
         $('#select-box-parent-account').prop('selectedIndex', -1);
         $('#select-box-parent-account').attr('disabled', true);
+        $("#tax-code-label").text("Tax Code");
     })
 
     $('#inp-organization').on('change', function () {
         $('#select-box-parent-account').attr('disabled', false);
+        $("#tax-code-label").html("Tax Code<span class='field-required'>*</span>");
     })
 
     // Button add billing address
@@ -515,6 +517,14 @@ $(document).ready(function () {
 
         if (frm.dataForm['code'] === '') {
             frm.dataForm['code'] = null;
+        }
+
+        if (frm.dataForm['parent_account'] === '') {
+            frm.dataForm['parent_account'] = null;
+        }
+
+        if (frm.dataForm['tax_code'] === '') {
+            frm.dataForm['tax_code'] = null;
         }
 
         if ($('#select-box-acc-manager').val().length > 0) {

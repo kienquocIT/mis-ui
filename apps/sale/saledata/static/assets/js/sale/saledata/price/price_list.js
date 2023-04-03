@@ -29,10 +29,17 @@ $(document).ready(function () {
                     return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
-                'data': 'name', render: (data, type, row, meta) => {
-                    return `<a class="btn-detail" href="#" data-id="` + row.id + `">
-                                    <span><b>` + row.title + `</b></span>
-                                </a>`
+                'data': 'title', render: (data, type, row, meta) => {
+                    if (row.is_default === false) {
+                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                        data-bs-target="#modal-detail-currency" data-id="` + row.id + `">
+                                <span><b>` + row.title + `</b></span>
+                            </a>`
+                    } else {
+                        return `<a>
+                            <span><b>` + row.title + `</b></span>
+                        </a>`
+                    }
                 }
             }, {
                 'data': 'type', render: (data, type, row, meta) => {

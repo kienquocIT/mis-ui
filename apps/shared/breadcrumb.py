@@ -47,6 +47,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # user
     USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren(_('User Create'), 'UserCreate')
+    USER_DETAIL_PAGE = BreadcrumbChildren(_('User detail'))
+    USER_EDIT_PAGE = BreadcrumbChildren(_('Edit user'))
 
     # company
     COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
@@ -144,6 +146,10 @@ class BreadcrumbView:
     ]
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
+
+    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_DETAIL_PAGE]
+
+    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_EDIT_PAGE]
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

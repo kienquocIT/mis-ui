@@ -2,6 +2,12 @@
 {% load i18n %}
 {% load static %}
 {% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -47,8 +53,8 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-3">
-            <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
+        <div class="col-2">
+            <ul class="nav flex-column nav-light nav-pills nav-vertical mr-3" id="tab-select-table">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-currency">
                         <span class="nav-link-text">{% trans 'Currency' %}</span>
@@ -71,12 +77,11 @@
                 </li>
             </ul>
         </div>
-        <div class="col-1"></div>
-        <div class="col-8">
+        <div class="col-10">
             <!-- Section Currency -->
             <div class="lookup-data" id="section-currency" style="display: block">
                 <table id="datatable-currency" class="table nowrap w-100 mb-5"
-                       data-url="{% url "AccountTypeListAPI" %}"
+                       data-url="{% url "CurrencyListAPI" %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -90,8 +95,14 @@
                         </span>
                     </th>
                     <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Abbreviation" %}</th>
-                    <th class="w-30">{% trans "Selling rate" %}</th>
+                    <th class="w-20">{% trans "Abbreviation" %}</th>
+                    <th class="w-25">{% trans "Selling rate" %}&nbsp;&nbsp;&nbsp;
+                        <a href="#" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}"
+                           style="background: None; width: 60%" id="sync-from-VCB-button" class="badge badge-soft-primary">
+                            Sync with VCB &nbsp;<i class="bi bi-arrow-repeat"></i>
+                        </a>
+{#                        &nbsp;<span id="sync-status"></span>&nbsp;#}
+                    </th>
                     <th class="w-5"></th>
                     </thead>
                 </table>
@@ -100,7 +111,7 @@
             <!-- Section Tax -->
             <div class="lookup-data" id="section-tax" style="display: none">
                 <table id="datatable-tax" class="table nowrap w-100 mb-5"
-                       data-url="{% url "TaxListAPI" %}"
+                       data-url="{% url "TaxListAPI" %}" data-url-detail="{% url "TaxDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -113,11 +124,11 @@
                             <label class="form-check-label" for="customCheck1"></label>
                         </span>
                     </th>
-                    <th class="w-30">{% trans "Code" %}</th>
+                    <th class="w-10">{% trans "Code" %}</th>
                     <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Type" %}</th>
-                    <th class="w-5">{% trans "Category" %}</th>
-                    <th class="w-5">{% trans "Rate" %}</th>
+                    <th class="w-20 text-center">{% trans "Type" %}</th>
+                    <th class="w-20 text-center">{% trans "Category" %}</th>
+                    <th class="w-10 text-center">{% trans "Rate" %}</th>
                     <th class="w-5"></th>
                     </thead>
                 </table>
@@ -126,7 +137,7 @@
             <!-- Section Tax Category -->
             <div class="lookup-data" id="section-tax-category" style="display: none">
                 <table id="datatable-tax-category" class="table nowrap w-100 mb-5"
-                       data-url="{% url "TaxCategoryListAPI" %}"
+                       data-url="{% url "TaxCategoryListAPI" %}" data-url-detail="{% url "TaxCategoryDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -220,9 +231,7 @@
 
     <!-- Modal Create Currency -->
     <form id="form-create-currency" data-method="POST"
-          data-url-account-type="{% url "AccountTypeCreateAPI" %} "
-          data-url-industry="{% url "IndustryCreateAPI" %} "
-          data-url-redirect="{% url "AccountMasterDataList" %}">
+          data-url="{% url "CurrencyListAPI" %}">
         {% csrf_token %}
         <div class="modal fade" id="modal-section-currency" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalCenter"
@@ -241,29 +250,27 @@
                                 <label class="form-label">{% trans "Name" %}<span
                                         class="field-required">*</span></label>
                                 <input class="form-control" type="text" name="title"
-                                       placeholder="Input name">
+                                       placeholder="VIETNAM DONG">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Abbreviation" %}<span
                                         class="field-required">*</span></label>
-                                <input class="form-control" type="text" name="description"
-                                       placeholder="Input text">
+                                <input class="form-control" type="text" name="abbreviation"
+                                       oninput="this.value=this.value.toUpperCase()"
+                                       placeholder="VND">
                             </div>
-                            <div class="row">
-                                <div class="col-1 mt-2"><span>{% trans 'To' %}</span></div>
-                                <div class="col-2">
-                                    <div class="form-group">
-                                        <select class="form-select" type="text" name="description"></select>
-                                    </div>
-                                </div>
-                                <div class="col-5 mt-2">
-                                    <span>{% trans '   selling exchange rate' %}</span>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" name="description"
-                                               placeholder="Input text">
-                                    </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Rate" %}<span
+                                        class="field-required">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="border: None">
+                                        <span>{% trans 'To' %}</span>&nbsp;
+                                        <span class="badge badge-soft-red badge-pill badge-outline abbreviation-primary"></span>&nbsp;
+                                        <span>{% trans 'selling exchange rate' %}</span>
+                                    </span>
+                                    <input class="form-control" type="number" min="0" step="0.01" name="rate"
+                                           style="border-radius: 0.375rem;"
+                                           placeholder="Input rate number">
                                 </div>
                             </div>
                         </div>
@@ -277,7 +284,6 @@
             </div>
         </div>
     </form>
-
     <!-- Modal Create Tax -->
     <form id="form-create-tax" data-method="POST"
           data-url="{% url "TaxListAPI" %}">
@@ -312,20 +318,26 @@
                                         class="field-required">*</span></label>
                                 <span class="input-affix-wrapper affix-wth-text">
                                     <input class="form-control" type="number" name="rate" placeholder="10"
-                                    min="0">
+                                           min="0" step="0.1">
                                     <span class="input-suffix">%</span>
                                 </span>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Category" %}<span class="field-required">*</span></label>
-                                <select class="form-select" id="select-box-category" name="category"></select>
+                                <label class="form-label">{% trans "Category" %}<span
+                                        class="field-required">*</span></label>
+                                <select class="form-select select-box-category" name="category"></select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Type" %}<span
                                         class="field-required">*</span></label>
-                                <select class="form-select" name="type">
-                                    <option value="0">{% trans "Sale" %}</option>
-                                    <option value="1">{% trans "Purchase" %}</option>
+                                <select
+                                        class="form-control select2 select2-multiple"
+                                        multiple
+                                        data-placeholder="{% trans 'Choose' %}"
+                                        id="select-box-type"
+                                >
+                                    <option value="0">{% trans 'Sale' %}</option>
+                                    <option value="1">{% trans 'Purchase' %}</option>
                                 </select>
                             </div>
                         </div>
@@ -431,52 +443,168 @@
         </div>
     </div>
 
-    <!-- Modal Update Master Data -->
-    <form id="form-update-masterdata" data-method="POST"
-          data-url-account-type="{% url "AccountTypeDetailAPI" pk=0 %}"
-          data-url-industry="{% url "IndustryDetailAPI" pk=0 %}"
-          data-url-redirect="">
-        <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+    <!-- Modal Update Tax -->
+    <form id="form-update-tax" data-method="PUT"
+          data-url="{% url 'TaxDetailAPI' pk=0 %}">
+        <div class="modal fade" id="modal-detail-tax" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Edit Account Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Tax Detail" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Code" %}</label>
-                                <input id="code-update" class="form-control" type="text" name="code" readonly
-                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()" required>
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Name" %}<span
+                                        class="field-required">*</span></label>
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name" id="tax-title" readonly>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title" id="name-update"
-                                       placeholder="Input name" required>
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Code" %}<span
+                                        class="field-required">*</span></label>
+                                <input class="form-control" type="text" name="code"
+                                       placeholder="VAT-10" oninput="this.value=this.value.toUpperCase()" id="tax-code"
+                                       readonly>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Description" %}</label>
-                                <input class="form-control" type="text" name="description" id="description-update"
-                                       placeholder="Input text">
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Rate" %}<span
+                                        class="field-required">*</span></label>
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input class="form-control" type="number" name="rate" placeholder="10"
+                                           min="0" step="0.1" id="tax-rate" readonly>
+                                    <span class="input-suffix">%</span>
+                                </span>
+                            </div>
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Category" %}<span
+                                        class="field-required">*</span></label>
+                                <select class="form-select select-box-category" name="category" id="tax-category"
+                                        readonly="readonly"></select>
+                            </div>
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Type" %}<span
+                                        class="field-required">*</span></label>
+                                <select
+                                        class="form-control select2 select2-multiple"
+                                        multiple
+                                        data-placeholder="{% trans 'Choose' %}"
+                                        id="tax-type">
+                                    <option value="0">{% trans 'Sale' %}</option>
+                                    <option value="1">{% trans 'Purchase' %}</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary edit-button">Save</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-    <!-- End Modal Create Master Data->
+
+    <!-- Modal Update Tax Category -->
+    <form id="form-update-tax-category" data-method="PUT"
+          data-url="{% url "TaxCategoryDetailAPI" pk=0 %}">
+        <div class="modal fade" id="modal-detail-tax-category" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Tax Category Detail" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name" id="tax-category-title" readonly>
+                            </div>
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <textarea class="form-control" name="description" id="tax-category-description"
+                                          readonly></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Modal Update Currency -->
+    <form id="form-update-currency" data-method="PUT"
+          data-url="{% url "CurrencyDetailAPI" pk=0 %}">
+        {% csrf_token %}
+        <div class="modal fade" id="modal-detail-currency" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Currency Detail" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Name" %}<span
+                                        class="field-required">*</span></label>
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name" readonly id="currency-title">
+                            </div>
+                            <div class="form-group inp-can-edit">
+                                <label class="form-label">{% trans "Abbreviation" %}<span
+                                        class="field-required">*</span></label>
+                                <input class="form-control" type="text" name="abbreviation"
+                                       oninput="this.value=this.value.toUpperCase()"
+                                       placeholder="Input text" readonly id="currency-abbreviation">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Rate<span class="field-required">*</span></label>
+                                <div class="input-group form-group inp-can-edit default-can-edit">
+                                    <span class="input-group-text" style="border: None">
+                                        <span>To</span>&nbsp;
+                                        <span class="badge badge-soft-red badge-pill badge-outline abbreviation-primary">VND</span>&nbsp;
+                                        <span>selling exchange rate</span>
+                                    </span>
+                                    <input class="form-control" readonly id="currency-rate" type="number" min="0" step="0.01" name="rate" style="border-radius: 0.375rem;" placeholder="Input rate number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
 {% endblock %}
 {% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/sale/saledata/masterdata/saledata_price.js' %}"></script>
 {% endblock %}
+

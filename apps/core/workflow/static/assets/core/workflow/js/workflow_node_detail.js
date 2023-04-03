@@ -252,6 +252,11 @@ $(function () {
                 feather.replace();
             },
             data: [],
+            rowCallback: function (row, data) {
+                if (data_detail && data_detail.includes(data.id)) {
+                    $(row).addClass('selected')
+                }
+            },
             columns: [{
                 'data': 'code', render: (data, type, row, meta) => {
                     return String.format(`<b>{0}</b>`, data);
@@ -781,10 +786,13 @@ $(function () {
 
 // Action on click button collaborator workflow detail loaded
         tableNode.on('click', '.wf-detail-loaded', function (e) {
-            let employeeSelectedIdListRaw = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail').value;
             let employeeSelectedIdList = [];
-            if (employeeSelectedIdListRaw) {
-                employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+            let employeeOutFormDetailLoaded = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail');
+            if (employeeOutFormDetailLoaded) {
+                let employeeSelectedIdListRaw = employeeOutFormDetailLoaded.value;
+                if (employeeSelectedIdListRaw) {
+                    employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+                }
             }
             let tableOutFormEmployee = $(this)[0].closest('.row').querySelector('.table-out-form-employee');
             if (tableOutFormEmployee) {

@@ -37,6 +37,11 @@ $(function () {
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode(true);
+            // check status Node before submit
+            if (nodeTableData === false) {
+                $.fn.notifyPopup({description: 'Please finish data of Nodes'}, 'failure');
+                return false
+            }
             // get exit node condition for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode

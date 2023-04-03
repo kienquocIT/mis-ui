@@ -278,7 +278,7 @@ $(function () {
             let dataZoneShow = ``;
             if (zone && Array.isArray(zone)) {
                 for (let z = 0; z < zone.length; z++) {
-                    dataZoneShow += `<div class="col-12" style="margin-left: -18px"><span class="badge badge-soft-primary mt-1 ml-1">${zone[z].title}</span></div>`
+                    dataZoneShow += `<div class="col-12" style="margin-left: -18px"><span class="badge badge-soft-primary mt-1 ml-1">${zone[z].title}<input type="text" class="zone-in-workflow-id" value="${zone[z].order}" hidden></span></div>`
                 }
             }
             tableLen++

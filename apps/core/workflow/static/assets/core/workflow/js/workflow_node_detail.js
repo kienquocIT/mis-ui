@@ -1076,15 +1076,15 @@ $(function () {
                             let childTitle = eleDivData.innerHTML;
                             trSTT++;
                             if (trSTT !== 0 && trSTT % 5 === 0) {
-                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 spanGroup = ``
                             } else {
                                 if (trSTT === dataChecked) {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                     dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 } else {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 }
                             }
                         }

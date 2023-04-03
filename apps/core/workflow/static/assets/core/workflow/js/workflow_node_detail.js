@@ -1,3 +1,59 @@
+// Action load zone for initial node on click
+function loadZoneInitialNode(e) {
+    let tableNode = $('#datable-workflow-node-create');
+    let button = tableNode[0].querySelector('.btn-initial-node-collaborator');
+    let modalBody = button.closest('tr').querySelector('.modal-body');
+    let zoneTd = modalBody.querySelector('.initial-node-collaborator-zone');
+    let tableZone = document.getElementById('table_workflow_zone');
+    let actionDropDown = ``;
+    let optionZone = ``;
+    let orderNum = 0;
+    optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <div class="node-zone" data-node-zone="all">All</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
+                                    <label class="form-check-label" for="customCheck6"></label>
+                                </div>
+                            </li>`
+    for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
+        let row = tableZone.rows[z + 1];
+        if (row.children[1]) {
+            let childTitle = row.children[1].children[0].innerHTML;
+            orderNum++;
+            optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
+                                            <label class="form-check-label" for="customCheck6"></label>
+                                        </div>
+                                    </li>`
+        }
+    }
+    actionDropDown = `<div class="btn-group dropdown">
+                                    <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
+                                        <ul class="node-zone-list p-0">
+                                            ${optionZone}
+                                        </ul>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>`
+    zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
+}
+
 $(function () {
 
     function renderAction(is_system_node = true) {
@@ -222,63 +278,6 @@ $(function () {
         loadInitCompanyInWorkflow();
         loadInitEmployeeInWorkflow();
         loadInitEmployeeOutForm()
-
-// Action on click collaborator of initial node
-        tableNode.on('click', '.btn-initial-node-collaborator', function (e) {
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            let modalBody = $(this)[0].closest('tr').querySelector('.modal-body');
-            let zoneTd = modalBody.querySelector('.initial-node-collaborator-zone');
-            let tableZone = document.getElementById('table_workflow_zone');
-            let actionDropDown = ``;
-            let optionZone = ``;
-            let orderNum = 0;
-            optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <div class="node-zone" data-node-zone="all">All</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-                                    <label class="form-check-label" for="customCheck6"></label>
-                                </div>
-                            </li>`
-            for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
-                let row = tableZone.rows[z + 1];
-                if (row.children[1]) {
-                    let childTitle = row.children[1].children[0].innerHTML;
-                    orderNum++;
-                    optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                        <div class="media d-flex align-items-center">
-                                            <div class="media-body">
-                                                <div>
-                                                <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-check form-check-theme ms-3">
-                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-                                            <label class="form-check-label" for="customCheck6"></label>
-                                        </div>
-                                    </li>`
-                }
-            }
-            actionDropDown = `<div class="btn-group dropdown">
-                                    <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                    <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
-                                        <ul class="node-zone-list p-0">
-                                            ${optionZone}
-                                        </ul>
-                                    </div>
-                                    </div>
-                                    </div>
-                                </div>`
-            zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
-
-        });
 
 // Action on open modal node
         $('#add-new-node-workflow-create').on('click', '.open-modal-node', function (e) {

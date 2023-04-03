@@ -78,39 +78,39 @@
                                         </span>
                                     </a>
                                 </li>
-{#                                <li class="nav-item">#}
-{#                                    <a#}
-{#                                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"#}
-{#                                            data-bs-target="#menu_group_child"#}
-{#                                    >#}
-{#                                        <span class="nav-icon-wrap">#}
-{#                                            <span class="svg-icon menu-child-icon">#}
-{#                                                <i class="fas fa-users"></i>#}
-{#                                            </span>#}
-{#                                        </span>#}
-{#                                        <span class="nav-link-text">#}
-{#                                            {% trans 'Group' %}#}
-{#                                        </span>#}
-{#                                    </a>#}
-{#                                    <ul id="menu_group_child" class="nav flex-column collapse  nav-children">#}
-{#                                        <li class="nav-item">#}
-{#                                            <ul class="nav flex-column">#}
-{#                                                <li class="nav-item" id="menu_group_list">#}
-{#                                                    <a class="nav-link" href="{% url 'GroupList' %}">#}
-{#                                                        <span class="nav-icon-wrap">#}
-{#                                                            <span class="svg-icon menu-child-icon">#}
-{#                                                                <i class="fas fa-cogs"></i>#}
-{#                                                            </span>#}
-{#                                                        </span>#}
-{#                                                        <span class="nav-link-text">#}
-{#                                                            {% trans 'Settings' %}#}
-{#                                                        </span>#}
-{#                                                    </a>#}
-{#                                                </li>#}
-{#                                            </ul>#}
-{#                                        </li>#}
-{#                                    </ul>#}
-{#                                </li>#}
+                                {#                                <li class="nav-item">#}
+                                {#                                    <a#}
+                                {#                                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"#}
+                                {#                                            data-bs-target="#menu_group_child"#}
+                                {#                                    >#}
+                                {#                                        <span class="nav-icon-wrap">#}
+                                {#                                            <span class="svg-icon menu-child-icon">#}
+                                {#                                                <i class="fas fa-users"></i>#}
+                                {#                                            </span>#}
+                                {#                                        </span>#}
+                                {#                                        <span class="nav-link-text">#}
+                                {#                                            {% trans 'Group' %}#}
+                                {#                                        </span>#}
+                                {#                                    </a>#}
+                                {#                                    <ul id="menu_group_child" class="nav flex-column collapse  nav-children">#}
+                                {#                                        <li class="nav-item">#}
+                                {#                                            <ul class="nav flex-column">#}
+                                {#                                                <li class="nav-item" id="menu_group_list">#}
+                                {#                                                    <a class="nav-link" href="{% url 'GroupList' %}">#}
+                                {#                                                        <span class="nav-icon-wrap">#}
+                                {#                                                            <span class="svg-icon menu-child-icon">#}
+                                {#                                                                <i class="fas fa-cogs"></i>#}
+                                {#                                                            </span>#}
+                                {#                                                        </span>#}
+                                {#                                                        <span class="nav-link-text">#}
+                                {#                                                            {% trans 'Settings' %}#}
+                                {#                                                        </span>#}
+                                {#                                                    </a>#}
+                                {#                                                </li>#}
+                                {#                                            </ul>#}
+                                {#                                        </li>#}
+                                {#                                    </ul>#}
+                                {#                                </li>#}
                             </ul>
                         </li>
                     </ul>
@@ -207,7 +207,7 @@
     <div class="menu-content-wrap">
         <div class="menu-group">
             <div class="nav-header">
-                    <span>CRM</span>
+                <span>CRM</span>
             </div>
             <ul class="navbar-nav flex-column">
                 <li class="nav-item">
@@ -241,14 +241,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_masterdata" >
+                    <a
+                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                            data-bs-target="#menu_masterdata"
+                    >
                         <span class="nav-icon-wrap">
                             <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-bar-chart-fill"></i>
+                                <i class="bi bi-mastodon"></i>
                             </span>
                         </span>
-                        <span class="nav-link-text">{% trans 'Master data' %}</span>
+                        <span class="nav-link-text">{% trans 'Master data config' %}</span>
                     </a>
                     <ul id="menu_masterdata" class="nav flex-column collapse  nav-children">
                         <li class="nav-item">
@@ -286,6 +288,18 @@
                                         </span>
                                         <span class="nav-link-text">
                                             {% trans 'Items' %}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "PriceMasterDataList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="bi bi-currency-exchange"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Price' %}
                                         </span>
                                     </a>
                                 </li>

@@ -1,15 +1,22 @@
 from django.urls import path
-from apps.sale.saledata.views import (
-    ContactMasterDataList, SalutationCreateAPI,
-    InterestCreateAPI, SalutationListAPI, InterestListAPI, AccountMasterDataList,
+from apps.sale.saledata.views.accounts import (
+    ContactMasterDataList, SalutationCreateAPI,InterestCreateAPI,
+    SalutationListAPI, InterestListAPI, AccountMasterDataList,
     IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,
     ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
-    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail, ProductMasterDataList, ProductTypeListAPI,
+    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
+)
+from apps.sale.saledata.views.product import (
+    ProductMasterDataList, ProductTypeListAPI,
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
     UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
-    UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail
+    UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
+)
+from apps.sale.saledata.views.price import (
+    PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
+    CurrencyDetailAPI, SyncSellingRateWithVCB
 )
 
 urlpatterns = [
@@ -51,9 +58,10 @@ urlpatterns = [
 ] + [
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
-    path('masterdata/product-type/api<str:pk>', ProductTypeDetailAPI.as_view(), name='ProductTypeDetailAPI'),
+    path('masterdata/product-type/api/<str:pk>', ProductTypeDetailAPI.as_view(), name='ProductTypeDetailAPI'),
     path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(), name='ProductCategoryListAPI'),
-    path('masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
+    path(
+        'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
     ),
     path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
@@ -74,4 +82,17 @@ urlpatterns = [
     path('products/api', ProductListAPI.as_view(), name='ProductListAPI'),
     path('product/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI')
+] + [
+    path('masterdata/price', PriceMasterDataList.as_view(), name='PriceMasterDataList'),
+    path('masterdata/tax-category/api', TaxCategoryListAPI.as_view(), name='TaxCategoryListAPI'),
+    path('masterdata/tax/api', TaxListAPI.as_view(), name='TaxListAPI'),
+    path('masterdata/tax/api/<str:pk>', TaxDetailAPI.as_view(), name='TaxDetailAPI'),
+    path('masterdata/tax-category/api/<str:pk>', TaxCategoryDetailAPI.as_view(), name='TaxCategoryDetailAPI'),
+    path('masterdata/currency/api/', CurrencyListAPI.as_view(), name='CurrencyListAPI'),
+    path('masterdata/currency/api/<str:pk>', CurrencyDetailAPI.as_view(), name='CurrencyDetailAPI'),
+    path(
+        'masterdata/sync-selling-rate-from-VCB/api/<str:pk>',
+        SyncSellingRateWithVCB.as_view(),
+        name='SyncSellingRateWithVCB'
+    )
 ]

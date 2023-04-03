@@ -131,3 +131,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CURRENCY_DETAIL = StringUrl('saledata/currency/')
     SYNC_SELLING_RATE = StringUrl('saledata/sync-selling-rate-with-VCB/')
 
+    # price
+    PRICE_LIST = StringUrl('saledata/prices')

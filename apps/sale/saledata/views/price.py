@@ -272,7 +272,7 @@ class SyncSellingRateWithVCB(APIView):
                     )
                     if resp.state:
                         continue
-                    if resp.errors:
+                    if resp.errors: # noqa
                         if isinstance(resp.errors, dict):
                             err_msg = ""
                             for key, value in resp.errors.items():
@@ -283,3 +283,51 @@ class SyncSellingRateWithVCB(APIView):
                     return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
             return {}, status.HTTP_200_OK
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class PriceList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/price/price_list.html',
+        breadcrumb='PRICE_LIST_PAGE',
+        menu_active='menu_contact_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class PriceListAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get()
+        if resp.state:
+            return {'price_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data  # noqa
+        response = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

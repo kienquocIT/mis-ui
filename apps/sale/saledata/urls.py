@@ -16,7 +16,7 @@ from apps.sale.saledata.views.product import (
 )
 from apps.sale.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
-    CurrencyDetailAPI, SyncSellingRateWithVCB
+    CurrencyDetailAPI, SyncSellingRateWithVCB, PriceList, PriceListAPI
 )
 
 urlpatterns = [
@@ -94,4 +94,7 @@ urlpatterns = [
         SyncSellingRateWithVCB.as_view(),
         name='SyncSellingRateWithVCB'
     )
+] + [
+    path('price-list', PriceList.as_view(), name='PriceList'),
+    path('price-list/api', PriceListAPI.as_view(), name='PriceListAPI'),
 ]

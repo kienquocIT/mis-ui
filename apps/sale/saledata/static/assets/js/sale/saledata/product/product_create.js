@@ -79,9 +79,28 @@ $(document).ready(function () {
         },)
     }
 
+    function loadTaxCode(){
+        let ele = $('#select-box-tax-code');
+        ele.html('');
+        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            console.log(data)
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
+                    ele.append(`<option></option>`);
+                    resp.data.tax_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
     loadProductCategory();
     loadProductType();
     loadUoMGroup();
+    loadTaxCode();
 
     // change select box UoM group tab general
     $('#select-box-umo-group').on('change', function () {

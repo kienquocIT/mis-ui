@@ -1,3 +1,5 @@
+const $formset_cond = $('#formset-condition')
+
 class Conditions {
     constructor() {
     }
@@ -91,7 +93,7 @@ class Conditions {
         if (value.hasOwnProperty('math') && value.operator)
             $elm_cond.find('select[name="' + math + '"]').val(value.operator)
 
-        /*** append left condition ***/
+        /*** append right condition ***/
         let right_cond = `parameter-${elm_idx}-right_cond`;
         if (value.hasOwnProperty('right_cond') && value.right_cond)
             $elm_cond.find('select[name="' + right_cond + '"]').val(value.right_cond)
@@ -154,6 +156,21 @@ class Conditions {
     }
 
 
+    /***
+     *
+     * @param value Object key of data type
+     * @param elm element per row of formset
+     */
+    changeParameter(value, elm) {
+        let tempHtml = '';
+        elm.find('[name*="-math"]').html('');
+        for (let item of WF_DATATYPE[value]) {
+            tempHtml += `<option value="${item.value}">${item.text}</option>`;
+        }
+        elm.find('[name*="-math"]').append(tempHtml);
+    }
+
+
     /*** init formset for condition
      * run formset when page loaded
      * init sub formset when user click add formset
@@ -182,6 +199,7 @@ class Conditions {
             moveDownButton: '[data-subformset-move-down]',
             prefix: 'subformset-prefix'
         }
+        var $this = this;
 
         if (form_elm.length) {
             form_elm.each(function (idx, elm) {
@@ -341,7 +359,7 @@ class Conditions {
                         });
 
                         // on change value left condition change dropdown math
-                        changeParameter(_type, elm_sub_formset_row)
+                        $this.changeParameter(_type, elm_sub_formset_row)
                     });
 
                 });
@@ -379,10 +397,9 @@ $(document).ready(function () {
     condition.init();
 
     // add action click for condition element in page
-    let formset_cond = $('#formset-condition')
-    condition.ElementAction($('#save-associate'), $('#node-associate'),formset_cond);
+    condition.ElementAction($('#save-associate'), $('#node-associate'), $formset_cond);
 
     // load condition when open page or open popup
     let data_cond = [];
-    condition.loadCondition(formset_cond, data_cond)
+    condition.loadCondition($formset_cond, data_cond)
 });

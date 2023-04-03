@@ -353,6 +353,7 @@ $(document).ready(function () {
     let $prev_btn = $('#nav-next-prev-step .prev-btn');
     let $next_btn = $('#nav-next-prev-step .next-btn');
     let $select_box = $("#select-box-features");
+    WF_DATATYPE = JSON.parse($('#wf_data_type').text());
 
     // handle event on click prev next btn
     $("#nav-next-prev-step button").off().on('click', function (e) {

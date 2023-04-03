@@ -30,9 +30,8 @@ $(function () {
             $('#btn-detail_workflow').removeClass('hidden');
             $form.removeAttr('readonly');
             $form.find('input[readonly]').removeAttr('readonly')
-            $form.find('input[type="checkbox"][disabled]').prop('disabled', false)
-            // $form.find('select[disabled]').prop('disabled', false)
-            $form.find('select[disabled]:not(.is-not-enabled)').prop('disabled', false)
+            $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false)
+            $form.find('select[disabled]').prop('disabled', false)
             $('.actions-btn a').removeClass('disabled')
         });
     }

@@ -307,6 +307,37 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                            data-bs-target="#menu_pricing"
+                    >
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="bi bi-currency-exchange"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Pricing' %}</span>
+                    </a>
+                    <ul id="menu_pricing" class="nav flex-column collapse  nav-children">
+                        <li class="nav-item">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "ContactMasterDataList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="bi bi-cash-coin"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Price List' %}
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

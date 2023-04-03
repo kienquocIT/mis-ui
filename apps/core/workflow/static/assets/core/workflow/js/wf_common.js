@@ -63,6 +63,13 @@ function setupDataNode(is_submit = false) {
             } else if ((d + 1) === 2) {
                 description = col.querySelector('.node-description').innerHTML;
             } else if ((d + 1) === 3) {
+                // check Status Node when submit
+                if (is_submit === true) {
+                    let statusFail = col.querySelector('.fa-times');
+                    if (statusFail) {
+                        return false
+                    }
+                }
                 // set data workflow node actions submit
                 let eleUL = col.querySelector('.node-action-list');
                 if (eleUL) {
@@ -75,6 +82,12 @@ function setupDataNode(is_submit = false) {
                     }
                 }
             } else if ((d + 1) === 4) {
+                if (is_submit === true) {
+                    let statusFail = col.querySelector('.fa-times');
+                    if (statusFail) {
+                        return false
+                    }
+                }
                 // set data workflow node collaborator submit
                 let modalBody = col.querySelector('.modal-body');
                 if (modalBody) {

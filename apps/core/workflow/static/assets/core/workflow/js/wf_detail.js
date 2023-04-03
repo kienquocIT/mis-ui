@@ -32,7 +32,7 @@ $(function () {
             $form.find('input[readonly]').removeAttr('readonly');
             $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false);
             $form.find('select[disabled]:not(.is-not-enabled)').prop('disabled', false);
-            $form.find('.is-editable').prop('disabled', false);
+            $form.find('.wf-is-editable').prop('disabled', false);
             $('.actions-btn a').removeClass('disabled')
         });
     }
@@ -278,7 +278,7 @@ $(function () {
             let dataZoneShow = ``;
             if (zone && Array.isArray(zone)) {
                 for (let z = 0; z < zone.length; z++) {
-                    empRole += `<div class="col-12" style="margin-left: -18px"><span class="badge badge-soft-primary mt-1 ml-1">${zone[z].title}</span></div>`
+                    dataZoneShow += `<div class="col-12" style="margin-left: -18px"><span class="badge badge-soft-primary mt-1 ml-1">${zone[z].title}</span></div>`
                 }
             }
             tableLen++
@@ -500,8 +500,7 @@ $(function () {
                                         </div>
                                     </div>`;
                         } else {
-                            let newCheckBox = String(Number(row.order) + 1);
-                            let modalAuditId = "auditModalCreate" + newCheckBox;
+                            let modalAuditId = "auditModalCreate" + String(row.order);
                             let collabBody = ``;
                             let optionZone = ``;
                             let dataZoneShow = ``;
@@ -524,7 +523,7 @@ $(function () {
                                                         <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled hidden>
                                                         <div class="zone-data-show col-11" style="margin-right: 38px">${dataZoneShow}</div>
                                                         <div class="btn-group dropdown">
-                                                            <i class="fas fa-align-justify is-editable" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
+                                                            <i class="fas fa-align-justify wf-is-editable" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
                                                                 <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                                     <ul class="node-zone-list p-0">
                                                                         ${optionZone}
@@ -588,7 +587,7 @@ $(function () {
                                                     <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" value="${employeeIDList}" hidden disabled>
                                                     <div class="row audit-out-form-employee-data-show">${dataShow}</div>
                                                     <span class="input-suffix">
-                                                        <i class="fa fa-user is-editable" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
+                                                        <i class="fa fa-user wf-is-editable" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
                                                     ></span>
                                                     <div
                                                     class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
@@ -651,7 +650,7 @@ $(function () {
                                             </div>
                                             <button
                                             type="button"
-                                            class="btn btn-flush-success flush-soft-hover is-editable"
+                                            class="btn btn-flush-success flush-soft-hover wf-is-editable"
                                             data-bs-toggle="offcanvas" 
                                             data-bs-target="#${canvasInWorkflowId}"
                                             aria-controls="offcanvasExample"
@@ -735,7 +734,7 @@ $(function () {
                                                 <tbody>
                                                 </tbody>
                                             </table>`
-                                loadTableInWorkflow(tableInWorkflowEmployeeId, row.collab_in_workflow)
+                                loadTableInWorkflow(tableInWorkflowEmployeeId, row.collab_in_workflow);
                                 loadCompanyAuditInWorkflow(boxInWorkflowCompanyId);
                                 loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
                             }

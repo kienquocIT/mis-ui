@@ -29,9 +29,10 @@ $(function () {
             if (!$form.attr('readonly')) return false
             $('#btn-detail_workflow').removeClass('hidden');
             $form.removeAttr('readonly');
-            $form.find('input[readonly]').removeAttr('readonly')
-            $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false)
-            $form.find('select[disabled]:not(.is-not-enabled)').prop('disabled', false)
+            $form.find('input[readonly]').removeAttr('readonly');
+            $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false);
+            $form.find('select[disabled]:not(.is-not-enabled)').prop('disabled', false);
+            $form.find('.is-editable').prop('disabled', false);
             $('.actions-btn a').removeClass('disabled')
         });
     }
@@ -513,7 +514,8 @@ $(function () {
                                 optionZone = zoneData.optionZone;
                                 dataZoneShow = zoneData.dataShow;
                             } else if (row.option_collaborator === 2) {
-                                optionZone = ``;
+                                let zoneData = loadZoneInCollab([], zone_list);
+                                optionZone = zoneData.optionZone;
                             }
                             let defaultZone = `<div class="form-group">
                                                     <label class="form-label">Editing zone</label>
@@ -522,7 +524,7 @@ $(function () {
                                                         <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled hidden>
                                                         <div class="zone-data-show col-11" style="margin-right: 38px">${dataZoneShow}</div>
                                                         <div class="btn-group dropdown">
-                                                            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
+                                                            <i class="fas fa-align-justify is-editable" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
                                                                 <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                                     <ul class="node-zone-list p-0">
                                                                         ${optionZone}
@@ -586,7 +588,7 @@ $(function () {
                                                     <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" value="${employeeIDList}" hidden disabled>
                                                     <div class="row audit-out-form-employee-data-show">${dataShow}</div>
                                                     <span class="input-suffix">
-                                                        <i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
+                                                        <i class="fa fa-user is-editable" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
                                                     ></span>
                                                     <div
                                                     class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
@@ -649,7 +651,7 @@ $(function () {
                                             </div>
                                             <button
                                             type="button"
-                                            class="btn btn-flush-success flush-soft-hover"
+                                            class="btn btn-flush-success flush-soft-hover is-editable"
                                             data-bs-toggle="offcanvas" 
                                             data-bs-target="#${canvasInWorkflowId}"
                                             aria-controls="offcanvasExample"
@@ -734,6 +736,8 @@ $(function () {
                                                 </tbody>
                                             </table>`
                                 loadTableInWorkflow(tableInWorkflowEmployeeId, row.collab_in_workflow)
+                                loadCompanyAuditInWorkflow(boxInWorkflowCompanyId);
+                                loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
                             }
                             return `<div class="row">
                                         <div class="col-8">

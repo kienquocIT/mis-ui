@@ -54,6 +54,62 @@ function loadZoneInitialNode(e) {
     zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
 }
 
+// load data by specific collaborator
+function loadPropertyAuditInFrom(boxId) {
+    let initData = document.getElementById('data-init-property-in-form-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadCompanyAuditInWorkflow(boxId) {
+    let initData = document.getElementById('data-init-company-in-workflow-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadEmployeeAuditInWorkflow(boxId) {
+    let initData = document.getElementById('data-init-employee-in-workflow-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
+    let url = '/hr/employee/company/' + company_id;
+    let method = "GET"
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
+                    ele.text("");
+                    ele.append(`<option>` + `</option>`);
+                    data.employee_company_list.map(function (item) {
+                        let spanRole = ``;
+                        if (item.role && Array.isArray(item.role)) {
+                            for (let r = 0; r < item.role.length; r++) {
+                                spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
+                            }
+                        }
+                        ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
+                                    <div hidden>${spanRole}</div>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
 $(function () {
 
     function renderAction(is_system_node = true) {
@@ -806,62 +862,6 @@ $(function () {
                 loadEmployeeCompanyAuditInWorkflow(eleSelectEmp.id, companyId);
             }
         });
-
-// load data by specific collaborator
-        function loadPropertyAuditInFrom(boxId) {
-            let initData = document.getElementById('data-init-property-in-form-detail').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadCompanyAuditInWorkflow(boxId) {
-            let initData = document.getElementById('data-init-company-in-workflow-detail').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadEmployeeAuditInWorkflow(boxId) {
-            let initData = document.getElementById('data-init-employee-in-workflow-detail').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
-            let url = '/hr/employee/company/' + company_id;
-            let method = "GET"
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
-                            ele.text("");
-                            ele.append(`<option>` + `</option>`);
-                            data.employee_company_list.map(function (item) {
-                                let spanRole = ``;
-                                if (item.role && Array.isArray(item.role)) {
-                                    for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
-                                    }
-                                }
-                                ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
-                                    <div hidden>${spanRole}</div>`)
-                            })
-                        }
-                    }
-                }
-            )
-        }
 
 // Action on add canvas employee out form
         tableNode.on('click', '.button-add-audit-out-form-employee', function (e) {

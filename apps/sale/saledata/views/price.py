@@ -298,6 +298,19 @@ class PriceList(View):
         return {}, status.HTTP_200_OK
 
 
+class PriceListDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/price/price_list_detail.html',
+        breadcrumb='PRICE_LIST_DETAIL_PAGE',
+        menu_active='menu_contact_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class PriceListAPI(APIView):
     permission_classes = [IsAuthenticated] # noqa
 

@@ -139,6 +139,10 @@ $(document).ready(function () {
             let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
             $('ul').find(`li[title="`+primaryOption+`"]`).find('span').prop('hidden', true);
         })
+        $('#select-box-currency').on('change', function () {
+            let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
+            $('ul').find(`li[title="`+primaryOption+`"]`).find('span').prop('hidden', true);
+        })
 
         //logic checkbox
         $('#checkbox-copy-source').on('change', function () {

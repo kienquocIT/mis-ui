@@ -121,9 +121,9 @@ $(document).ready(function () {
                         if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                             data.currency_list.map(function (item) {
                                 if (item.is_primary) {
-                                    ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+                                    ele.append(`<option data-primary="1" disabled value="` + item.id + `" selected>` + item.title + `</option>`);
                                 } else
-                                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                                    ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
                             })
                         }
                     }
@@ -131,8 +131,14 @@ $(document).ready(function () {
             )
         }
 
+
         loadCurrency();
         loadTablePriceList();
+
+        $('#btn-show-modal-create').on('click', function () {
+            let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
+            $('ul').find(`li[title="`+primaryOption+`"]`).find('span').prop('hidden', true);
+        })
 
         //logic checkbox
         $('#checkbox-copy-source').on('change', function () {

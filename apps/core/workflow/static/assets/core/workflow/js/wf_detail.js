@@ -389,7 +389,7 @@ $(function () {
                             return `<div class="row">
                                         <div class="col-8">
                                             <div class="btn-group dropdown">
-                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"></i>
+                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                                 <div class="dropdown-menu w-250p">
                                                     <div class="h-250p">
                                                         <div data-simplebar class="nicescroll-bar">
@@ -402,7 +402,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class=""><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class=""><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`;
                         } else if (row.code_node_system === 'approved' || row.code_node_system === 'completed') {
@@ -411,7 +411,7 @@ $(function () {
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         } else {
@@ -432,7 +432,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-action"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-action"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         }
@@ -487,7 +487,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         } else if (row.code_node_system === 'approved' || row.code_node_system === 'completed') {
@@ -496,7 +496,7 @@ $(function () {
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`;
                         } else {
@@ -765,7 +765,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         }

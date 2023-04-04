@@ -389,7 +389,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-action"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-action"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -431,7 +431,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-audit"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-audit"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -1114,7 +1114,7 @@ $(function () {
             if ($(this)[0].checked === true) {
                 // change node's actions status
                 eleSpan.innerHTML = ``;
-                eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
 
                 // check group actions
                 if (dataAction === "1") {
@@ -1217,7 +1217,7 @@ $(function () {
                 }
                 if (allUnCheck === eleUL.children.length) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });
@@ -1237,30 +1237,30 @@ $(function () {
                 if (employeeInForm) {
                     if (employeeInForm.value) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     } else {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                     }
                 }
             } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     }
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             } else if (employeeInWorkflow) {
                 let body = employeeInWorkflow.tBodies[0];
                 if (!body.querySelector('.dataTables_empty') && body.rows.length > 0) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });

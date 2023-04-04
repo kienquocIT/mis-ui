@@ -160,7 +160,8 @@ $(document).ready(function () {
 
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
-                'default_uom': $('#select-box-default-uom').val()
+                'default_uom': $('#select-box-default-uom').val(),
+                'tax_code': $('#select-box-tax-code').val()
             }
         } else {
             frm.dataForm['sale_information'] = {}

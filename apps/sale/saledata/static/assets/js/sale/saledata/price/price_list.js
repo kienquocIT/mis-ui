@@ -149,6 +149,7 @@ $(document).ready(function () {
             if ($(this).prop("checked")) {
                 $('#select-box-price-list').removeAttr('disabled')
                 $('#checkbox-update-auto').removeAttr('disabled');
+                $('#select-box-currency').prop('disabled', true);
             } else {
                 $('#checkbox-update-auto').prop('checked', false);
                 $('#checkbox-can-delete').prop('checked', false);
@@ -156,6 +157,7 @@ $(document).ready(function () {
                 $('#select-box-price-list').find('option').prop('selected', false);
                 $('#checkbox-update-auto').attr('disabled', 'disabled');
                 $('#checkbox-can-delete').attr('disabled', 'disabled');
+                $('#select-box-currency').prop('disabled', false);
             }
         })
 

@@ -87,17 +87,18 @@
                                     <div class="form-group mt-2">
                                         <label class="form-label">{% trans "Select price list" %}</label>
                                         <select class="form-select" data-method="GET" data-url="{% url "PriceDetailAPI" pk=0 %}"
+                                                name="price_list_mapped"
                                                 id="select-box-price-list" disabled></select>
                                     </div>
                                     <div class="form-check ml-3">
-                                        <input class="form-check-input" type="checkbox" value=""
+                                        <input class="form-check-input" type="checkbox"
                                                id="checkbox-update-auto" disabled name="auto_update">
                                         <label class="form-check-label" for="checkbox-update-auto">
                                             {% trans "update automatically when source price list changes" %}
                                         </label>
                                     </div>
                                     <div class="form-check ml-3">
-                                        <input class="form-check-input" type="checkbox" value=""
+                                        <input class="form-check-input" type="checkbox"
                                                id="checkbox-can-delete" disabled name="can_delete">
                                         <label class="form-check-label" for="checkbox-can-delete">
                                             {% trans "Can delete Item in price list" %}

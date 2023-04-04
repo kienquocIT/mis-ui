@@ -44,11 +44,11 @@ $(document).ready(function () {
             }, {
                 'data': 'type', render: (data, type, row, meta) => {
                     if (row.price_list_type.value === 0) {
-                        return `<span style="width: 20%;" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span>`
                     } else if (row.price_list_type.value === 1) {
-                        return `<span style="width: 20%;" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span>`
                     } else if (row.price_list_type.value === 2) {
-                        return `<span style="width: 20%;" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span>`
                     } else {
                         return ''
                     }
@@ -121,7 +121,7 @@ $(document).ready(function () {
                         if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                             data.currency_list.map(function (item) {
                                 if (item.is_primary) {
-                                    ele.append(`<option data-primary="1" disabled value="` + item.id + `" selected>` + item.title + `</option>`);
+                                    ele.append(`<option disabled data-primary="1" value="` + item.id + `" selected>` + item.title + `</option>`);
                                 } else
                                     ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
                             })
@@ -178,6 +178,9 @@ $(document).ready(function () {
             frm.dataForm['currency'] = $('#select-box-currency').val();
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
+            }
+            else {
+                frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
             }
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

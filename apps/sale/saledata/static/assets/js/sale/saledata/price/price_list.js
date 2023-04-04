@@ -47,7 +47,7 @@ $(document).ready(function () {
                         return `<span style="width: 20%;" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span>`
                     }
                     else if (row.price_list_type.value === 1) {
-                        return `<span style="width: 20%;" class="badge badge-soft-sky badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<span style="width: 20%;" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span>`
                     }
                     else if (row.price_list_type.value === 2) {
                         return `<span style="width: 20%;" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span>`

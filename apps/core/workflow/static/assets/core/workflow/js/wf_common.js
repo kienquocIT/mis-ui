@@ -35,6 +35,7 @@ function setupDataNode(is_submit = false) {
         let total_collaborator_config = 1;
         let orderNode = 0;
         let fieldSelectCollaborator = "";
+        let coordinates = {};
 
         let collabInForm = {};
         let collabOutForm = {};
@@ -49,6 +50,10 @@ function setupDataNode(is_submit = false) {
             let col = rowChildren[d + 1];
             if ((d + 1) === 1) {
                 title = col.querySelector('.node-title').innerHTML;
+                let coordinatesRaw = col.querySelector('.node-title').getAttribute('data-coordinates');
+                if (coordinatesRaw) {
+                    coordinates = JSON.parse(coordinatesRaw)
+                }
                 if (col.children[0].getAttribute('data-is-system')) {
                     if (col.children[0].getAttribute('data-is-system') === "true") {
                         isSystem = true;
@@ -58,6 +63,13 @@ function setupDataNode(is_submit = false) {
             } else if ((d + 1) === 2) {
                 description = col.querySelector('.node-description').innerHTML;
             } else if ((d + 1) === 3) {
+                // check Status Node when submit
+                if (is_submit === true) {
+                    let statusFail = col.querySelector('.fa-times');
+                    if (statusFail) {
+                        return false
+                    }
+                }
                 // set data workflow node actions submit
                 let eleUL = col.querySelector('.node-action-list');
                 if (eleUL) {
@@ -70,6 +82,12 @@ function setupDataNode(is_submit = false) {
                     }
                 }
             } else if ((d + 1) === 4) {
+                if (is_submit === true) {
+                    let statusFail = col.querySelector('.fa-times');
+                    if (statusFail) {
+                        return false
+                    }
+                }
                 // set data workflow node collaborator submit
                 let modalBody = col.querySelector('.modal-body');
                 if (modalBody) {
@@ -130,11 +148,10 @@ function setupDataNode(is_submit = false) {
                                     let zoneTd = row.querySelector('.data-in-workflow-zone');
                                     if (zoneTd.children.length > 0) {
                                         for (let col = 0; col < zoneTd.children.length; col++) {
-                                            if (zoneTd.children[col].children.length > 0) {
-                                                for (let s = 0; s < zoneTd.children[col].children.length; s++) {
-                                                    let zoneVal = zoneTd.children[col].children[s].children[0].value;
-                                                    dataZoneInWorkflowList.push(Number(zoneVal))
-                                                }
+                                            let zoneInWorkflow = zoneTd.children[col].querySelector('.zone-in-workflow-id');
+                                            if (zoneInWorkflow) {
+                                                let zoneVal = zoneInWorkflow.value;
+                                                dataZoneInWorkflowList.push(Number(zoneVal))
                                             }
                                         }
                                     }
@@ -186,11 +203,11 @@ function setupDataNode(is_submit = false) {
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,
                 'check_approved': '',
+                'coordinates': coordinates,
             });
         }
     }
     return dataNodeList
-
 }
 
 // handle btn modal zone save
@@ -347,6 +364,7 @@ $(document).ready(function () {
     let $prev_btn = $('#nav-next-prev-step .prev-btn');
     let $next_btn = $('#nav-next-prev-step .next-btn');
     let $select_box = $("#select-box-features");
+    WF_DATATYPE = JSON.parse($('#wf_data_type').text());
 
     // handle event on click prev next btn
     $("#nav-next-prev-step button").off().on('click', function (e) {
@@ -375,7 +393,11 @@ $(document).ready(function () {
         $(`${btn_href}`).addClass('show active')
 
         // catch if next tab is display config condition
-        if (btn_href === '#tab_next_node') FlowJsP.init();
+        if (btn_href === '#tab_next_node') {
+            FlowJsP.init()
+        } else if (btn_href === '#tab_node') {
+            loadZoneInitialNode()
+        }
     })
 
     //handle event on change function applied

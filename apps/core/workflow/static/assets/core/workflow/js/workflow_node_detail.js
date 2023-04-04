@@ -1,3 +1,115 @@
+// Action load zone for initial node on click
+function loadZoneInitialNode(e) {
+    let tableNode = $('#datable-workflow-node-create');
+    let button = tableNode[0].querySelector('.btn-initial-node-collaborator');
+    let modalBody = button.closest('tr').querySelector('.modal-body');
+    let zoneTd = modalBody.querySelector('.initial-node-collaborator-zone');
+    let tableZone = document.getElementById('table_workflow_zone');
+    let actionDropDown = ``;
+    let optionZone = ``;
+    let orderNum = 0;
+    optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <div class="node-zone" data-node-zone="all">All</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
+                                    <label class="form-check-label" for="customCheck6"></label>
+                                </div>
+                            </li>`
+    for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
+        let row = tableZone.rows[z + 1];
+        if (row.children[1]) {
+            let childTitle = row.children[1].children[0].innerHTML;
+            orderNum++;
+            optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
+                                            <label class="form-check-label" for="customCheck6"></label>
+                                        </div>
+                                    </li>`
+        }
+    }
+    actionDropDown = `<div class="btn-group dropdown">
+                                    <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
+                                        <ul class="node-zone-list p-0">
+                                            ${optionZone}
+                                        </ul>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>`
+    zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
+}
+
+// load data by specific collaborator
+function loadPropertyAuditInFrom(boxId) {
+    let initData = document.getElementById('data-init-property-in-form-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadCompanyAuditInWorkflow(boxId) {
+    let initData = document.getElementById('data-init-company-in-workflow-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadEmployeeAuditInWorkflow(boxId) {
+    let initData = document.getElementById('data-init-employee-in-workflow-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
+    let url = '/hr/employee/company/' + company_id;
+    let method = "GET"
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
+                    ele.text("");
+                    ele.append(`<option>` + `</option>`);
+                    data.employee_company_list.map(function (item) {
+                        let spanRole = ``;
+                        if (item.role && Array.isArray(item.role)) {
+                            for (let r = 0; r < item.role.length; r++) {
+                                spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
+                            }
+                        }
+                        ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
+                                    <div hidden>${spanRole}</div>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
 $(function () {
 
     function renderAction(is_system_node = true) {
@@ -117,7 +229,7 @@ $(function () {
         )
     }
 
-    function loadAuditOutFormEmployee(tableId) {
+    function loadAuditOutFormEmployee(tableId, data_detail= []) {
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -140,6 +252,11 @@ $(function () {
                 feather.replace();
             },
             data: [],
+            rowCallback: function (row, data) {
+                if (data_detail && data_detail.includes(data.id)) {
+                    $(row).addClass('selected')
+                }
+            },
             columns: [{
                 'data': 'code', render: (data, type, row, meta) => {
                     return String.format(`<b>{0}</b>`, data);
@@ -161,7 +278,11 @@ $(function () {
             }, {
                 'render': (data, type, row, meta) => {
                     let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    if (data_detail && data_detail.includes(row.id)) {
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}" checked><label class="form-check-label" for="${currentId}"></label></span>`;
+                    } else {
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    }
                 }
             }]
         }
@@ -219,63 +340,6 @@ $(function () {
         loadInitEmployeeInWorkflow();
         loadInitEmployeeOutForm()
 
-// Action on click collaborator of initial node
-        tableNode.on('click', '.btn-initial-node-collaborator', function (e) {
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            let modalBody = $(this)[0].closest('tr').querySelector('.modal-body');
-            let zoneTd = modalBody.querySelector('.initial-node-collaborator-zone');
-            let tableZone = document.getElementById('table_workflow_zone');
-            let actionDropDown = ``;
-            let optionZone = ``;
-            let orderNum = 0;
-            optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <div class="node-zone" data-node-zone="all">All</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-                                    <label class="form-check-label" for="customCheck6"></label>
-                                </div>
-                            </li>`
-            for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
-                let row = tableZone.rows[z + 1];
-                if (row.children[1]) {
-                    let childTitle = row.children[1].children[0].innerHTML;
-                    orderNum++;
-                    optionZone += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                        <div class="media d-flex align-items-center">
-                                            <div class="media-body">
-                                                <div>
-                                                <div class="node-zone" data-node-zone="${orderNum}">${childTitle}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-check form-check-theme ms-3">
-                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-                                            <label class="form-check-label" for="customCheck6"></label>
-                                        </div>
-                                    </li>`
-                }
-            }
-            actionDropDown = `<div class="btn-group dropdown">
-                                    <i class="fas fa-chevron-down" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                    <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
-                                        <ul class="node-zone-list p-0">
-                                            ${optionZone}
-                                        </ul>
-                                    </div>
-                                    </div>
-                                    </div>
-                                </div>`
-            zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
-
-        });
-
 // Action on open modal node
         $('#add-new-node-workflow-create').on('click', '.open-modal-node', function (e) {
             e.stopPropagation();
@@ -325,7 +389,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-action"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-action"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -367,7 +431,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-audit"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-audit"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -531,74 +595,74 @@ $(function () {
                                             </span>
                                         </span>
                                     </button>
-                            <div
-                                class="offcanvas offcanvas-end" tabindex="-1" id="${canvasInWorkflowId}"
-                                aria-labelledby="offcanvasTopLabel"
-                                style="width: 50%; margin-top: 4em;"
-                            >
-                                <div class="offcanvas-header">
-                                    <h5 id="offcanvasRightLabel">Add Employee</h5>
-                                </div>
-                                <div class="offcanvas-body form-group">
-                                    <div class="form-group">
-                                        <label class="form-label">Select company</label>
-                                        <select
-                                                class="form-select select-box-audit-in-workflow-company" 
-                                                id="${boxInWorkflowCompanyId}"
-                                        >
-                                            <option></option>
-                                        </select>
+                                    <div
+                                        class="offcanvas offcanvas-end" tabindex="-1" id="${canvasInWorkflowId}"
+                                        aria-labelledby="offcanvasTopLabel"
+                                        style="width: 50%; margin-top: 4em;"
+                                    >
+                                        <div class="offcanvas-header">
+                                            <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                        </div>
+                                        <div class="offcanvas-body form-group">
+                                            <div class="form-group">
+                                                <label class="form-label">Select company</label>
+                                                <select
+                                                        class="form-select select-box-audit-in-workflow-company" 
+                                                        id="${boxInWorkflowCompanyId}"
+                                                >
+                                                    <option></option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Select employee</label>
+                                                <select
+                                                        class="form-select select-box-audit-in-workflow-employee" 
+                                                        id="${boxInWorkflowEmployeeId}"
+                                                >
+                                                    <option></option>
+                                                </select>
+                                            </div>
+                                            ${defaultZone}
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    Description
+                                                </label>
+                                                <textarea
+                                                        class="form-control"
+                                                        rows="4" cols="50"
+                                                ></textarea>
+                                                <span class="form-text text-muted">Description what to do</span>
+                                            </div>
+                                            <br><br>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                                <button
+                                                        type="button" 
+                                                        class="btn btn-primary button-add-audit-in-workflow-employee" 
+                                                        data-bs-dismiss="offcanvas"
+                                                        id=""
+                                                >Save changes
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Select employee</label>
-                                        <select
-                                                class="form-select select-box-audit-in-workflow-employee" 
-                                                id="${boxInWorkflowEmployeeId}"
-                                        >
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    ${defaultZone}
-                                    <div class="form-group">
-                                        <label class="form-label">
-                                            Description
-                                        </label>
-                                        <textarea
-                                                class="form-control"
-                                                rows="4" cols="50"
-                                        ></textarea>
-                                        <span class="form-text text-muted">Description what to do</span>
-                                    </div>
-                                    <br><br>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
-                                        <button
-                                                type="button" 
-                                                class="btn btn-primary button-add-audit-in-workflow-employee" 
-                                                data-bs-dismiss="offcanvas"
-                                                id=""
-                                        >Save changes
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                                <table
-                                    class="table nowrap w-100 mb-5 table-in-workflow-employee"
-                                    id="${tableInWorkflowEmployeeId}"
-                                >
-                                    <thead>
-                                    <tr>
-                                        <th data-orderable="false"></th>
-                                        <th data-orderable="false">Collaborator</th>
-                                        <th data-orderable="false">Position</th>
-                                        <th data-orderable="false">Role</th>
-                                        <th data-orderable="false">Editing Zone</th>
-                                        <th data-orderable="false">Actions</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>`
+                                    <table
+                                        class="table nowrap w-100 mb-5 table-in-workflow-employee"
+                                        id="${tableInWorkflowEmployeeId}"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th data-orderable="false"></th>
+                                            <th data-orderable="false">Collaborator</th>
+                                            <th data-orderable="false">Position</th>
+                                            <th data-orderable="false">Role</th>
+                                            <th data-orderable="false">Editing Zone</th>
+                                            <th data-orderable="false">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>`
 
             let modalBody = $(this).closest('.modal-body');
             let value = $(this).val();
@@ -720,7 +784,23 @@ $(function () {
             return false;
         });
 
+// Action on click button collaborator workflow detail loaded
+        tableNode.on('click', '.wf-detail-loaded', function (e) {
+            let employeeSelectedIdList = [];
+            let employeeOutFormDetailLoaded = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail');
+            if (employeeOutFormDetailLoaded) {
+                let employeeSelectedIdListRaw = employeeOutFormDetailLoaded.value;
+                if (employeeSelectedIdListRaw) {
+                    employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+                }
+            }
+            let tableOutFormEmployee = $(this)[0].closest('.row').querySelector('.table-out-form-employee');
+            if (tableOutFormEmployee) {
+                loadAuditOutFormEmployee(tableOutFormEmployee.id, employeeSelectedIdList);
+            }
+        })
 
+// Action on click check select box of table
         tableNode.on('click', '.check-select', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -732,7 +812,7 @@ $(function () {
             }
         });
 
-
+// Action on click check select all box of table
         tableNode.on('click', '.check-select-all', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -756,7 +836,7 @@ $(function () {
             }
         });
 
-
+// Action on click check select box of table employee out form
         tableNode.on('click', '.check-select-employee-out-form', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -768,7 +848,7 @@ $(function () {
             }
         });
 
-
+// Action on click check select all box of table employee in workflow
         tableNode.on('click', '.check-select-employee-in-workflow', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -780,7 +860,6 @@ $(function () {
             }
         });
 
-
 // load employee box filter by company
         tableNode.on('change', '.select-box-audit-in-workflow-company', function (e) {
             e.stopPropagation();
@@ -791,62 +870,6 @@ $(function () {
                 loadEmployeeCompanyAuditInWorkflow(eleSelectEmp.id, companyId);
             }
         });
-
-// load data by specific collaborator
-        function loadPropertyAuditInFrom(boxId) {
-            let initData = document.getElementById('data-init-property-in-form-detail').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadCompanyAuditInWorkflow(boxId) {
-            let initData = document.getElementById('data-init-company-in-workflow-detail').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadEmployeeAuditInWorkflow(boxId) {
-            let initData = document.getElementById('data-init-employee-in-workflow-detail').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
-            let url = '/hr/employee/company/' + company_id;
-            let method = "GET"
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
-                            ele.text("");
-                            ele.append(`<option>` + `</option>`);
-                            data.employee_company_list.map(function (item) {
-                                let spanRole = ``;
-                                if (item.role && Array.isArray(item.role)) {
-                                    for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
-                                    }
-                                }
-                                ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
-                                    <div hidden>${spanRole}</div>`)
-                            })
-                        }
-                    }
-                }
-            )
-        }
 
 // Action on add canvas employee out form
         tableNode.on('click', '.button-add-audit-out-form-employee', function (e) {
@@ -1053,15 +1076,15 @@ $(function () {
                             let childTitle = eleDivData.innerHTML;
                             trSTT++;
                             if (trSTT !== 0 && trSTT % 5 === 0) {
-                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 spanGroup = ``
                             } else {
                                 if (trSTT === dataChecked) {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                     dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 } else {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 }
                             }
                         }
@@ -1091,7 +1114,7 @@ $(function () {
             if ($(this)[0].checked === true) {
                 // change node's actions status
                 eleSpan.innerHTML = ``;
-                eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
 
                 // check group actions
                 if (dataAction === "1") {
@@ -1194,7 +1217,7 @@ $(function () {
                 }
                 if (allUnCheck === eleUL.children.length) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });
@@ -1214,30 +1237,30 @@ $(function () {
                 if (employeeInForm) {
                     if (employeeInForm.value) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     } else {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                     }
                 }
             } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     }
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             } else if (employeeInWorkflow) {
                 let body = employeeInWorkflow.tBodies[0];
                 if (!body.querySelector('.dataTables_empty') && body.rows.length > 0) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });

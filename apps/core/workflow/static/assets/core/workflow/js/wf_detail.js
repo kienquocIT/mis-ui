@@ -29,9 +29,10 @@ $(function () {
             if (!$form.attr('readonly')) return false
             $('#btn-detail_workflow').removeClass('hidden');
             $form.removeAttr('readonly');
-            $form.find('input[readonly]').removeAttr('readonly')
-            $form.find('input[type="checkbox"][disabled]').prop('disabled', false)
-            $form.find('select[disabled]').prop('disabled', false)
+            $form.find('input[readonly]').removeAttr('readonly');
+            $form.find('input[type="checkbox"][disabled]:not(.is-not-enabled)').prop('disabled', false);
+            $form.find('select[disabled]:not(.is-not-enabled)').prop('disabled', false);
+            $form.find('.wf-is-editable').prop('disabled', false);
             $('.actions-btn a').removeClass('disabled')
         });
     }
@@ -105,9 +106,9 @@ $(function () {
             if (is_system_node === true) {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" checked disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" id="customCheck6" checked disabled>`;
                     } else {
-                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" id="customCheck6" disabled>`;
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                             <div class="media d-flex align-items-center">
@@ -126,7 +127,7 @@ $(function () {
             } else {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node is-not-enabled" id="customCheck6" disabled>`
                     } else {
                         if (action_list.includes(Number(key))) {
                             inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" checked disabled>`;
@@ -257,6 +258,40 @@ $(function () {
         return {employeeIDList, dataShow}
     }
 
+    function loadTableInWorkflow(table_id, data_detail) {
+        let jqueryId = '#' + table_id;
+        let table = $(jqueryId);
+        let tableLen = 1;
+        for (let i = 0; i < data_detail.length; i++) {
+            let data = data_detail[i];
+            let employee = data.employee;
+            let role = employee.role;
+            let zone = data.zone;
+            let empTitle = employee.full_name;
+            let employeeVal = employee.id;
+            let empRole = ``;
+            if (role && Array.isArray(role)) {
+                for (let r = 0; r < role.length; r++) {
+                    empRole += `<div><span class="badge badge-soft-primary">${role[r].title}</span></div>`
+                }
+            }
+            let dataZoneShow = ``;
+            if (zone && Array.isArray(zone)) {
+                for (let z = 0; z < zone.length; z++) {
+                    dataZoneShow += `<div class="col-12" style="margin-left: -18px"><span class="badge badge-soft-primary mt-1 ml-1">${zone[z].title}<input type="text" class="zone-in-workflow-id" value="${zone[z].order}" hidden></span></div>`
+                }
+            }
+            tableLen++
+            let currentId = "chk_sel_" + String(tableLen + 1)
+            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-in-workflow" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+            let delAction = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+
+            if (empTitle) {
+                table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${delAction}</td></tr>`)
+            }
+        }
+    }
+
     function setupNodeOrder(row, data, dataLen) {
         let systemRowClass = "";
         let initialCheckBox = "";
@@ -287,89 +322,6 @@ $(function () {
                 $(row).attr("data-initial-check-box", initialCheckBox);
             }
         }
-    }
-
-    function loadEmployeeOutForm(tableId) {
-        let config = {
-            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            ordering: false,
-            columnDefs: [{
-                "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-            }],
-            order: [2, 'asc'],
-            language: {
-                search: "",
-                searchPlaceholder: "Search",
-                info: "_START_ - _END_ of _TOTAL_",
-                sLengthMenu: "View  _MENU_",
-                paginate: {
-                    next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
-                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
-                }
-            },
-            drawCallback: function () {
-                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-                feather.replace();
-            },
-            data: [],
-            columns: [{
-                'data': 'code', render: (data, type, row, meta) => {
-                    return String.format(`<b>{0}</b>`, data);
-                }
-            }, {
-                'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('id') && row.hasOwnProperty('full_name')) {
-                        return `<span id="${row.id}">` + row.full_name + `</span>`;
-                    }
-                    return '';
-                }
-            }, {
-                'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('user') && row.user.hasOwnProperty('username')) {
-                        return row.user.username;
-                    }
-                    return '';
-                }
-            }, {
-                'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
-                }
-            }]
-        }
-
-        function initDataTable(config) {
-            /*DataTable Init*/
-            let Id = "#" + tableId;
-            let dtb = $(Id);
-            if (dtb.length > 0) {
-                let targetDt = dtb.DataTable(config);
-                /*Checkbox Add*/
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
-                });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
-                dtb.parent().addClass('table-responsive');
-            }
-        }
-        /***
-         * call Ajax load employee list
-         */
-        function loadDataTable() {
-            let url = $('#url-factory').data('employees');
-            let method = "GET";
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('employee_list')) config['data'] = data.employee_list;
-                        initDataTable(config);
-                    }
-                },
-            )
-        }
-        loadDataTable();
     }
 
     /***
@@ -407,7 +359,15 @@ $(function () {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="node-title" data-is-system="true" data-system-code="${row.code}">${row.title}</span>`
+                        let coordinates = {};
+                        if (row.coordinates) {
+                            coordinates = JSON.stringify(row.coordinates)
+                        }
+                        if (row.is_system === true) {
+                            return `<span class="node-title" data-is-system="true" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                        } else {
+                            return `<span class="node-title" data-is-system="false" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                        }
                     }
                 },
                 {
@@ -429,7 +389,7 @@ $(function () {
                             return `<div class="row">
                                         <div class="col-8">
                                             <div class="btn-group dropdown">
-                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"></i>
+                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                                 <div class="dropdown-menu w-250p">
                                                     <div class="h-250p">
                                                         <div data-simplebar class="nicescroll-bar">
@@ -442,7 +402,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class=""><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class=""><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`;
                         } else if (row.code_node_system === 'approved' || row.code_node_system === 'completed') {
@@ -451,7 +411,7 @@ $(function () {
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         } else {
@@ -472,7 +432,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-action"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-action"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         }
@@ -527,7 +487,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         } else if (row.code_node_system === 'approved' || row.code_node_system === 'completed') {
@@ -536,12 +496,11 @@ $(function () {
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`;
                         } else {
-                            let newCheckBox = String(Number(row.order) + 1);
-                            let modalAuditId = "auditModalCreate" + newCheckBox;
+                            let modalAuditId = "auditModalCreate" + String(row.order);
                             let collabBody = ``;
                             let optionZone = ``;
                             let dataZoneShow = ``;
@@ -554,7 +513,8 @@ $(function () {
                                 optionZone = zoneData.optionZone;
                                 dataZoneShow = zoneData.dataShow;
                             } else if (row.option_collaborator === 2) {
-                                optionZone = ``;
+                                let zoneData = loadZoneInCollab([], zone_list);
+                                optionZone = zoneData.optionZone;
                             }
                             let defaultZone = `<div class="form-group">
                                                     <label class="form-label">Editing zone</label>
@@ -563,7 +523,7 @@ $(function () {
                                                         <input type="text" class="form-control" placeholder="Select zone" aria-label="Zone" aria-describedby="basic-addon1" style="background-color: white" disabled hidden>
                                                         <div class="zone-data-show col-11" style="margin-right: 38px">${dataZoneShow}</div>
                                                         <div class="btn-group dropdown">
-                                                            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                            <i class="fas fa-align-justify wf-is-editable" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled></i>
                                                                 <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                                     <ul class="node-zone-list p-0">
                                                                         ${optionZone}
@@ -606,6 +566,7 @@ $(function () {
                                 let canvasId = "offcanvasRight" + String(row.order);
                                 let empData = loadEmployeeCollabOutForm(row.collab_out_form.employee_list)
                                 let employeeIDList = empData.employeeIDList;
+                                let employeeIDListStr = JSON.stringify(empData.employeeIDList);
                                 let dataShow = empData.dataShow;
                                 collabBody = `<div class="form-group">
                                                 <label class="form-label">List source</label>
@@ -625,8 +586,9 @@ $(function () {
                                                     <span class="input-affix-wrapper">
                                                     <input type="text" class="form-control" placeholder="Select employees" aria-label="employees" aria-describedby="basic-addon1" style="background-color: white" value="${employeeIDList}" hidden disabled>
                                                     <div class="row audit-out-form-employee-data-show">${dataShow}</div>
-                                                    <span class="input-suffix"><i class="fa fa-user" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}"
-                                                        aria-controls="offcanvasExample"></i></span>
+                                                    <span class="input-suffix">
+                                                        <i class="fa fa-user wf-is-editable" data-bs-toggle="offcanvas" data-bs-target="#${canvasId}" aria-controls="offcanvasExample" disabled></i
+                                                    ></span>
                                                     <div
                                                     class="offcanvas offcanvas-end" tabindex="-1" id="${canvasId}"
                                                     aria-labelledby="offcanvasTopLabel"
@@ -636,6 +598,7 @@ $(function () {
                                                         <h5 id="offcanvasRightLabel">Add Employee</h5>
                                                     </div>
                                                     <div class="offcanvas-body form-group">
+                                                        <input type="hidden" class="employee-out-form-id-list-wf-detail" value=${employeeIDListStr}>
                                                         <table
                                                                 id="${tableOutFormEmployeeId}" class="table nowrap w-100 mb-5 table-out-form-employee"
                                                                 data-url="{% url 'EmployeeListAPI' %}"
@@ -669,13 +632,116 @@ $(function () {
                                                 </div>
                                             </div>
                                         ${defaultZone}`
-                                loadEmployeeOutForm(tableOutFormEmployeeId);
                             } else if (row.option_collaborator === 2) {
-
+                                let canvasInWorkflowId = "offcanvasRightInWorkflow" + String(row.order);
+                                let boxInWorkflowCompanyId = "select-box-audit-in-workflow-company-" + String(row.order);
+                                let boxInWorkflowEmployeeId = "select-box-audit-in-workflow-employee-" + String(row.order);
+                                let tableInWorkflowEmployeeId = "datable-audit-in-workflow-employee-" + String(row.order);
+                                collabBody = `<div class="form-group">
+                                                <label class="form-label">List source</label>
+                                                <select
+                                                        class="form-select select-box-audit-option"
+                                                        disabled
+                                                >
+                                                    <option></option>
+                                                    <option value="0">In form</option>
+                                                    <option value="1">Out form</option>
+                                                    <option value="2" selected>In workflow</option>
+                                                </select>
+                                            </div>
+                                            <button
+                                            type="button"
+                                            class="btn btn-flush-success flush-soft-hover wf-is-editable"
+                                            data-bs-toggle="offcanvas" 
+                                            data-bs-target="#${canvasInWorkflowId}"
+                                            aria-controls="offcanvasExample"
+                                            style="font-size: 60%"
+                                            disabled
+                                            >
+                                                <span class="icon">
+                                                    <span class="feather-icon">
+                                                        <i class="fas fa-plus"></i>
+                                                    </span>
+                                                    <span class="font-3 ml-1">
+                                                        Add employee
+                                                    </span>
+                                                </span>
+                                            </button>
+                                            <div
+                                                class="offcanvas offcanvas-end" tabindex="-1" id="${canvasInWorkflowId}"
+                                                aria-labelledby="offcanvasTopLabel"
+                                                style="width: 50%; margin-top: 4em;"
+                                            >
+                                                <div class="offcanvas-header">
+                                                    <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                                </div>
+                                                <div class="offcanvas-body form-group">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Select company</label>
+                                                        <select
+                                                                class="form-select select-box-audit-in-workflow-company" 
+                                                                id="${boxInWorkflowCompanyId}"
+                                                        >
+                                                            <option></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="form-label">Select employee</label>
+                                                        <select
+                                                                class="form-select select-box-audit-in-workflow-employee" 
+                                                                id="${boxInWorkflowEmployeeId}"
+                                                        >
+                                                            <option></option>
+                                                        </select>
+                                                    </div>
+                                                    ${defaultZone}
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Description
+                                                        </label>
+                                                        <textarea
+                                                                class="form-control"
+                                                                rows="4" cols="50"
+                                                        ></textarea>
+                                                        <span class="form-text text-muted">Description what to do</span>
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                                        <button
+                                                                type="button" 
+                                                                class="btn btn-primary button-add-audit-in-workflow-employee" 
+                                                                data-bs-dismiss="offcanvas"
+                                                                id=""
+                                                        >Save changes
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <table
+                                                class="table nowrap w-100 mb-5 table-in-workflow-employee"
+                                                id="${tableInWorkflowEmployeeId}"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th data-orderable="false"></th>
+                                                    <th data-orderable="false">Collaborator</th>
+                                                    <th data-orderable="false">Position</th>
+                                                    <th data-orderable="false">Role</th>
+                                                    <th data-orderable="false">Editing Zone</th>
+                                                    <th data-orderable="false">Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>`
+                                loadTableInWorkflow(tableInWorkflowEmployeeId, row.collab_in_workflow);
+                                loadCompanyAuditInWorkflow(boxInWorkflowCompanyId);
+                                loadEmployeeAuditInWorkflow(boxInWorkflowEmployeeId);
                             }
                             return `<div class="row">
                                         <div class="col-8">
-                                            <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
+                                            <i class="fas fa-align-justify wf-detail-loaded" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
                                             <div
                                                 class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
                                                 aria-labelledby="exampleModalCenter" aria-hidden="true"
@@ -700,7 +766,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         }
@@ -708,16 +774,16 @@ $(function () {
                 },
                 {
                     targets: 5,
-                    render: () => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" `
-                            +`data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" `
-                            +`href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit">`
-                            +`</i></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" `
-                            +`data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" `
-                            +`href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        let actionData = bt2 + bt3;
-                        return `${actionData}`
+                    render: (data, type, row) => {
+                        let actionData = ``;
+                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="color: #cccccc"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: #cccccc"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        if (row.is_system !== true) {
+                            bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
+                            bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        }
+                        actionData = bt2 + bt3;
+                        return actionData
                     }
                 },
             ],

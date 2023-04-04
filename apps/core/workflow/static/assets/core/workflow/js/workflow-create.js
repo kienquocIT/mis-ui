@@ -1,23 +1,9 @@
 "use strict";
-/***
- *
- * @param value Object key of data type
- * @param elm element per row of formset
- */
-function changeParameter(value, elm){
-    let tempHtml = '';
-    elm.find('[name*="-math"]').html('');
-    for (let item of WF_DATATYPE[value]){
-        tempHtml += `<option value="${item.value}">${item.text}</option>`;
-    }
-    elm.find('[name*="-math"]').append(tempHtml);
-}
 
 $(function () {
 
     $(document).ready(function () {
 
-        WF_DATATYPE = JSON.parse($('#wf_data_type').text())
         // init select function applied ---> chua vi?t docs cho select2
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
@@ -51,6 +37,11 @@ $(function () {
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
             let nodeTableData = setupDataNode(true);
+            // check status Node before submit
+            if (nodeTableData === false) {
+                $.fn.notifyPopup({description: 'Please finish data of Nodes'}, 'failure');
+                return false
+            }
             // get exit node condition for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode

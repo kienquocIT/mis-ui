@@ -22,14 +22,22 @@ function eventNodeClick(event) {
     for (let item of data.action) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
-        if (item <= 1 && data.collaborators.option < 2 || item >= 4) midd = `<input class="form-control formula-input" type="text" ` + `value="${item >= 4 ? data.collaborators.total_config : 1}" readonly>`; else if (item <= 1 && data.collaborators.option === 2)
+        if (item <= 1 && data.collaborators.option < 2 || item >= 4)
+            midd = `<input class="form-control formula-input" type="text" `
+                + `value="${item >= 4 ? data.collaborators.total_config : 1}" readonly>`;
+        else if (item <= 1 && data.collaborators.option === 2)
             // else node type is approved/create and collab option is in workflow
-            midd = `<input class="form-control formula-input" type="number" min="1" value="1" ` + `max="${data.collaborators.total_config}">`; else if (item > 1 && item < 4) {
+            midd = `<input class="form-control formula-input" type="number" min="1" value="1" `
+                + `max="${data.collaborators.total_config}">`;
+        else if (item > 1 && item < 4) {
             let num = data.collaborators.total_config + 1 - 1;
-            midd = `<select class="form-select">` + `<option value=""></option>` + `<option class="formular_opt" value="${num}">${num}</option>` + `<option class="formular_opt_else" value="else">else</option>` + `</select>`;
+            midd = `<select class="form-select"><option value=""></option>`
+                + `<option class="formular_opt" value="${num}">${num}</option>`
+                + `<option class="formular_opt_else" value="else">else</option></select>`;
         }
         let next_text = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
-        html += `<tr>` + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>` + `<td>${midd}</td>` + `<td>${next_text}</td>` + `</tr>`;
+        html += `<tr>` + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>`
+            + `<td>${midd}</td><td>${next_text}</td></tr>`;
     }
     $modal.find('table tbody').html(html);
     $modal.modal('show');
@@ -63,6 +71,7 @@ function eventNodeClick(event) {
         FlowJsP.setCommitNodeList = temp;
         $modal.modal('hide');
     })
+
 }
 
 /***
@@ -76,6 +85,9 @@ function clickConnection(connect) {
     $('#form-create-condition [name="node_out"]').val(node_out)
     $("#next-node-association").modal('show');
 
+    // render modal popup of connection
+    let data_cond = FlowJsP.getAssociate
+    condition.loadCondition($formset_cond, data_cond)
 }
 
 /*** plus/minus button increase/decrease size of drop space
@@ -132,12 +144,16 @@ class JSPlumbsHandle {
         this._ASSOCIATION = strData.reverse();
     };
 
+    set setCommitNodeList(data) {
+        this._commitNodeList = data
+    }
+
     get getCommitNode() {
         return this._commitNodeList
     }
 
-    set setCommitNodeList(data) {
-        this._commitNodeList = data
+    get getAssociate(){
+        return this._ASSOCIATION
     }
     convertAssociateToOrder(){
         let temp =  [];

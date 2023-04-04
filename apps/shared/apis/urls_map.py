@@ -133,3 +133,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # price
     PRICE_LIST = StringUrl('saledata/prices')
+    PRICE_DETAIL = StringUrl('saledata/price/')

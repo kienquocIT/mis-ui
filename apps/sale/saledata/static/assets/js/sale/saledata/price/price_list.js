@@ -45,14 +45,11 @@ $(document).ready(function () {
                 'data': 'type', render: (data, type, row, meta) => {
                     if (row.price_list_type.value === 0) {
                         return `<span style="width: 20%;" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span>`
-                    }
-                    else if (row.price_list_type.value === 1) {
+                    } else if (row.price_list_type.value === 1) {
                         return `<span style="width: 20%;" class="badge badge-soft-sky badge-pill">` + row.price_list_type.name + `</span>`
-                    }
-                    else if (row.price_list_type.value === 2) {
+                    } else if (row.price_list_type.value === 2) {
                         return `<span style="width: 20%;" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span>`
-                    }
-                    else {
+                    } else {
                         return ''
                     }
                 }
@@ -92,11 +89,17 @@ $(document).ready(function () {
 
         function loadTablePriceList() {
             const table = $('#datatable-price-list')
+            let ele = $('#select-box-price-list')
+            ele.html('');
             $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                         config['data'] = resp.data.price_list;
+                        ele.append(`<option></option>`)
+                        data.price_list.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        })
                     }
                     initDataTable(config, '#datatable-price-list');
                 }
@@ -117,7 +120,10 @@ $(document).ready(function () {
                         ele.text("");
                         if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                             data.currency_list.map(function (item) {
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                                if (item.is_primary) {
+                                    ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+                                } else
+                                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                             })
                         }
                     }
@@ -131,10 +137,13 @@ $(document).ready(function () {
         //logic checkbox
         $('#checkbox-copy-source').on('change', function () {
             if ($(this).prop("checked")) {
+                $('#select-box-price-list').removeAttr('disabled')
                 $('#checkbox-update-auto').removeAttr('disabled');
             } else {
                 $('#checkbox-update-auto').prop('checked', false);
                 $('#checkbox-can-delete').prop('checked', false);
+                $('#select-box-price-list').attr('disabled', 'disabled');
+                $('#select-box-price-list').find('option').prop('selected', false);
                 $('#checkbox-update-auto').attr('disabled', 'disabled');
                 $('#checkbox-can-delete').attr('disabled', 'disabled');
             }
@@ -175,5 +184,20 @@ $(document).ready(function () {
                     }
                 )
         });
+
+        // onchange select box select-box-price-list
+        $('#select-box-price-list').on('change', function () {
+            let data_url = $(this).attr('data-url').replace(0, $(this).val())
+            $.fn.callAjax(data_url, 'GET').then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('price')) {
+                            $('#select-box-currency').val(data.price.currency).trigger('change');
+                        }
+                    }
+                }
+            )
+        })
     })
 })

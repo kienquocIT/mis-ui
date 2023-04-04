@@ -155,6 +155,12 @@ $(document).ready(function () {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
+
+            frm.dataForm['currency'] = $('#select-box-currency').val();
+            if (frm.dataForm['currency'].length === 0) {
+                frm.dataForm['currency'] = null;
+            }
+
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {

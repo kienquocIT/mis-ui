@@ -29,20 +29,48 @@ $(document).ready(function () {
                     return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
-                'data': 'name', render: (data, type, row, meta) => {
-                    return `<a class="btn-detail" href="#" data-id="` + row.id + `">
-                                    <span><b>` + row.title + `</b></span>
-                                </a>`
+                'data': 'title', render: (data, type, row, meta) => {
+                    if (row.is_default === false) {
+                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                        data-bs-target="#modal-detail-currency" data-id="` + row.id + `">
+                                <span><b>` + row.title + `</b></span>
+                            </a>`
+                    } else {
+                        return `<a>
+                            <span><b>` + row.title + `</b></span>
+                        </a>`
+                    }
                 }
             }, {
                 'data': 'type', render: (data, type, row, meta) => {
-                    return `<span>` + row.price_list_type + `</span>`
+                    if (row.price_list_type.value === 0) {
+                        return `<span style="width: 20%;" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span>`
+                    }
+                    else if (row.price_list_type.value === 1) {
+                        return `<span style="width: 20%;" class="badge badge-soft-sky badge-pill">` + row.price_list_type.name + `</span>`
+                    }
+                    else if (row.price_list_type.value === 2) {
+                        return `<span style="width: 20%;" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span>`
+                    }
+                    else {
+                        return ''
+                    }
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    // let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></center>`;
-                    return '';
+                    // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                    if (row.is_default) {
+                        if (row.is_default === false) {
+                            let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                            return bt3;
+                        } else {
+                            let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                            return bt3;
+                        }
+                    } else {
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                        return bt3;
+                    }
                 }
             },]
         }
@@ -127,6 +155,12 @@ $(document).ready(function () {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
+
+            frm.dataForm['currency'] = $('#select-box-currency').val();
+            if (frm.dataForm['currency'].length === 0) {
+                frm.dataForm['currency'] = null;
+            }
+
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {

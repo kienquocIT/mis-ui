@@ -641,6 +641,7 @@ $(function () {
                                                 <label class="form-label">List source</label>
                                                 <select
                                                         class="form-select select-box-audit-option"
+                                                        disabled
                                                 >
                                                     <option></option>
                                                     <option value="0">In form</option>

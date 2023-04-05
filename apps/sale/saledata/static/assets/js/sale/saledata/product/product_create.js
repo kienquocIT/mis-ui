@@ -237,7 +237,8 @@ $(document).ready(function () {
                 price_list.push(
                     {
                         'id': $(this).attr('data-id'),
-                        'price': $(this).val()
+                        'price': $(this).val(),
+                        'currency_using': $(this).attr('data-currency')
                     }
                 )
         })

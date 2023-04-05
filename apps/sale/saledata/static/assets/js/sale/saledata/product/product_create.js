@@ -110,6 +110,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
                     data.currency_list.map(function (item) {
                         if (item.is_primary === true)
+                            console.log(item)
                             currency_primary = item.abbreviation;
                             currency_id = item.id;
                     })
@@ -135,7 +136,7 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-5 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ item.currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text">
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text">
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>
                                             </div>
@@ -151,7 +152,7 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-5 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ item.currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text" data-text="check-` + count + `" disabled>
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text" data-text="check-` + count + `" disabled>
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>    
                                             </div>
@@ -243,6 +244,7 @@ $(document).ready(function () {
                 )
         })
 
+        console.log(price_list);
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val(),

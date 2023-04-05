@@ -110,9 +110,10 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
                     data.currency_list.map(function (item) {
                         if (item.is_primary === true)
-                            console.log(item)
+                        {
                             currency_primary = item.abbreviation;
                             currency_id = item.id;
+                        }
                     })
                 }
             }

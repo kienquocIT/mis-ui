@@ -178,11 +178,9 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(this));
 
             frm.dataForm['currency'] = $('#select-box-currency').val();
+            frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
-            }
-            else {
-                frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
             }
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

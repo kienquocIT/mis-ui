@@ -88,7 +88,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     ele.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
+                        ele.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                     })
                 }
             }
@@ -132,7 +132,7 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-5 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-id="` + item.id + `" class="form-control value-price-list" type="text">
+                                                    <input data-id="` + item.id + `" class="form-control value-price-list" type="number">
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>
                                             </div>
@@ -148,7 +148,7 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-5 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-id="` + item.id + `" class="form-control value-price-list" type="text" data-text="check-` + count + `" disabled>
+                                                    <input data-id="` + item.id + `" class="form-control value-price-list" type="number" data-text="check-` + count + `" disabled>
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>    
                                             </div>
@@ -246,6 +246,8 @@ $(document).ready(function () {
             }
             if (price_list.length > 0)
                 frm.dataForm['sale_information']['price_list'] = price_list;
+            else
+                frm.dataForm['sale_information']['price_list'] = null;
         } else {
             frm.dataForm['sale_information'] = {}
         }

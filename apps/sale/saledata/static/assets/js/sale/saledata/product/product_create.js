@@ -89,7 +89,7 @@ $(document).ready(function () {
                     ele.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
                         if(item.type === 0 || item.type === 2)
-                            ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
+                            ele.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                     })
                 }
             }
@@ -249,6 +249,8 @@ $(document).ready(function () {
             }
             if (price_list.length > 0)
                 frm.dataForm['sale_information']['price_list'] = price_list;
+            else
+                frm.dataForm['sale_information']['price_list'] = null;
         } else {
             frm.dataForm['sale_information'] = {}
         }

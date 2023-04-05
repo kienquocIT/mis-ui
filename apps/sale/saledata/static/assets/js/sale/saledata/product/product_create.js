@@ -128,32 +128,32 @@ $(document).ready(function () {
                                 if (item.price_list_type.value === 0 && item.auto_update === false) {
                                     if (item.is_default === true) {
                                         html += `<div class="row">
-                                            <div class="col-7">
-                                                <div class="form-check form-check-inline mt-2">
+                                            <div class="col-6">
+                                                <div class="form-check form-check-inline mt-2 ml-5">
                                                     <input class="form-check-input" type="checkbox"
                                                         value="option1" checked disabled>
                                                     <label class="form-check-label">` + item.title + `</label>
                                                 </div>
                                             </div>
-                                            <div class="col-5 form-group">
+                                            <div class="col-6 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text">
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number">
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>
                                             </div>
                                         </div>`
                                     } else {
                                         html += `<div class="row">
-                                            <div class="col-7">
-                                                <div class="form-check form-check-inline mt-2">
+                                            <div class="col-6">
+                                                <div class="form-check form-check-inline mt-2 ml-5">
                                                     <input class="form-check-input" type="checkbox"
                                                         value="option1" data-check="check-` + count + `">
                                                     <label class="form-check-label">` + item.title + `</label>
                                                 </div>
                                             </div>
-                                            <div class="col-5 form-group">
+                                            <div class="col-6 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text" data-text="check-` + count + `" disabled>
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number" data-text="check-` + count + `" disabled>
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>    
                                             </div>

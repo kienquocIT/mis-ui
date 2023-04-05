@@ -133,6 +133,7 @@
                                             </div>
                                         </div>`
                             }
+                            count += 1;
 
                         })
                         ele.find('ul').append(html)

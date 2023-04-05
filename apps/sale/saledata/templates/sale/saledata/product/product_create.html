@@ -170,67 +170,11 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-3 form-group">
+                    <div class="col-3 form-group" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
                                data-bs-display="static" aria-expanded="false">
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked disabled>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "General price list" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "Bảng giá bán lẻ" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "Bảng giá bán buôn" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "Bảng giá đại lý cấp 1" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
                         </ul>
                     </div>
                 </div>

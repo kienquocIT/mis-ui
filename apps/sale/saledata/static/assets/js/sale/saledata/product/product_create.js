@@ -88,7 +88,8 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     ele.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
+                        if(item.type === 0 || item.type === 2)
+                            ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
                     })
                 }
             }
@@ -97,12 +98,12 @@ $(document).ready(function () {
 
     }
 
-
     function loadPriceList() {
         let ele = $('#select-price-list');
         let html = ``;
         let count = 0;
         let currency_primary;
+        let currency_id;
         $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -110,6 +111,7 @@ $(document).ready(function () {
                     data.currency_list.map(function (item) {
                         if (item.is_primary === true)
                             currency_primary = item.abbreviation;
+                            currency_id = item.id;
                     })
                 }
             }
@@ -121,24 +123,25 @@ $(document).ready(function () {
                     if (data) {
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                             data.price_list.map(function (item) {
-                                if (item.is_default === true) {
-                                    html += `<div class="row">
+                                if (item.price_list_type.value === 0 && item.auto_update === false) {
+                                    if (item.is_default === true) {
+                                        html += `<div class="row">
                                             <div class="col-7">
                                                 <div class="form-check form-check-inline mt-2">
                                                     <input class="form-check-input" type="checkbox"
-                                                        value="option1"checked disabled>
+                                                        value="option1" checked disabled>
                                                     <label class="form-check-label">` + item.title + `</label>
                                                 </div>
                                             </div>
                                             <div class="col-5 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-id="` + item.id + `" class="form-control value-price-list" type="text">
+                                                    <input data-currency="`+ item.currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text">
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>
                                             </div>
                                         </div>`
-                                } else {
-                                    html += `<div class="row">
+                                    } else {
+                                        html += `<div class="row">
                                             <div class="col-7">
                                                 <div class="form-check form-check-inline mt-2">
                                                     <input class="form-check-input" type="checkbox"
@@ -148,14 +151,14 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-5 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-id="` + item.id + `" class="form-control value-price-list" type="text" data-text="check-` + count + `" disabled>
+                                                    <input data-currency="`+ item.currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="text" data-text="check-` + count + `" disabled>
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>    
                                             </div>
                                         </div>`
+                                    }
+                                    count += 1;
                                 }
-                                count += 1;
-
                             })
                             ele.find('ul').append(html)
                         }

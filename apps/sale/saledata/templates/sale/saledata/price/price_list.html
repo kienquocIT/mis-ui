@@ -34,7 +34,7 @@
 
 
     <table id="datatable-price-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceListAPI" %}"
-           data-method="GET">
+           data-url-detail="{% url "PriceListDetail" pk=0 %}" data-method="GET">
         <thead>
         <th class="w-5">
             <span class="form-check">

@@ -1,6 +1,7 @@
 $(document).ready(function () {
     "use strict";
     $(function () {
+        let url_detail = $('#datatable-price-list').attr('data-url-detail');
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -31,8 +32,7 @@ $(document).ready(function () {
             }, {
                 'data': 'title', render: (data, type, row, meta) => {
                     if (row.is_default === false) {
-                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                        data-bs-target="#modal-detail-currency" data-id="` + row.id + `">
+                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) +`">
                                 <span><b>` + row.title + `</b></span>
                             </a>`
                     } else {

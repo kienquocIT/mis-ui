@@ -9,9 +9,9 @@
             type="text/css"
     />
     <style>
-    select, input, textarea {
-        margin-bottom: 10px;
-    }
+        select, input, textarea {
+            margin-bottom: 10px;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -54,7 +54,8 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}" data-url-redirect="{% url "ProductList" %}">
+    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}"
+          data-url-redirect="{% url "ProductList" %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-6">
@@ -63,7 +64,8 @@
                         <div class="form-group">
                             <label class="form-label">{% trans "Product Code" %}</label>
                             <input type="text" name="code" placeholder="Input Code" class="form-control"
-                                   oninput="this.value=this.value.toUpperCase()" id="product-code" style="border: None" readonly>
+                                   oninput="this.value=this.value.toUpperCase()" id="product-code" style="border: None"
+                                   readonly>
                         </div>
                     </div>
                     <div class="col-6 mt-5">
@@ -127,107 +129,54 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_general">
                 <div class="row">
-                    <div class="form-group col-3" id="select-box-product-type-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Product Type" %}</label>
-                        <select id="select-box-product-type" class="form-select" data-method="GET" disabled
+                        <select id="select-box-product-type" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url 'ProductTypeListAPI' %}" name="product_type"></select>
                     </div>
-                    <div class="form-group col-3" id="select-box-product-category-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Product Category" %}</label>
-                        <select id="select-box-product-category" class="form-select" data-method="GET" disabled
+                        <select id="select-box-product-category" class="form-select" data-method="GET"
+                                readonly="readonly"
                                 data-url="{% url "ProductCategoryListAPI" %}" name="product_category"></select>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-3" id="select-box-uom-group-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "UoM Group" %}</label>
-                        <select id="select-box-uom-group" class="form-select" data-method="GET" disabled
+                        <select id="select-box-uom-group" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
                                 data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                     </div>
-                    <div class="form-group col-3" id="select-box-manager-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label"><s>{% trans "Management By" %}</s></label>
                         <select id="select-box-manager" class="form-select" data-method="GET" data-url=""
-                                disabled name="management"></select>
+                                readonly="readonly" name="management"></select>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_sale">
                 <div class="row">
-                    <div class="form-group col-3" id="select-box-default-uom-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Default UoM" %}</label>
-                        <select id="select-box-default-uom" class="form-select" data-method="GET" disabled
+                        <select id="select-box-default-uom" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
                     </div>
-                    <div class="form-group col-3" id="select-box-tax-code-div">
-                        <label class="form-label"><s>{% trans "Tax Code" %}</s></label>
-                        <select id="select-box-tax-code" class="form-select" data-method="GET" data-url=""
-                                disabled name="tax_code"></select>
+                    <div class="form-group col-3 inp-can-edit">
+                        <label class="form-label">{% trans "Tax Code" %}</label>
+                        <select id="select-box-tax-code" class="form-select" data-method="GET"
+                                data-url="{% url "TaxListAPI" %}"
+                                readonly="readonly" name="tax_code"></select>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-3 form-group">
-                        <label class="form-label"><s>{% trans "Price List" %}</s></label>
-                        <input type="submit" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
-                               data-bs-display="static" aria-expanded="false" value="" disabled>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked disabled>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "General price list" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "Bảng giá bán lẻ" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "Bảng giá bán buôn" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="form-check form-check-inline mt-2">
-                                        <input class="form-check-input" type="checkbox" id="check-tab-inventory"
-                                               value="option1"
-                                               checked>
-                                        <label class="form-check-label"
-                                               for="check-tab-inventory">{% trans "Bảng giá đại lý cấp 1" %}</label>
-                                    </div>
-                                </div>
-                                <div class="col-4 form-group">
-                                    <input class="form-control" type="text">
-                                </div>
-                            </div>
+                    <div class="col-6 form-group inp-can-edit">
+                        <label class="form-label">{% trans "Price List" %}</label>
+                        <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
+                               oninput="this.value=''"
+                               data-bs-display="static" aria-expanded="false" placeholder="Select Price List" readonly>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
                         </ul>
                     </div>
                 </div>
@@ -237,28 +186,29 @@
                 <div class="row">
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Code" %}</label>
-                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;" readonly>
+                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;"
+                               readonly>
                     </div>
-                    <div class="form-group col-3" id="select-box-uom-name-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "UoM Name" %}</label>
-                        <select id="select-box-uom-name" class="form-select" data-method="GET" disabled
+                        <select id="select-box-uom-name" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
                         </select>
                     </div>
-                    <div class="form-group col-3" id="select-box-valuation-method-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
                         <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
-                                disabled name="valuation_method"></select>
+                                readonly="readonly" name="valuation_method"></select>
                     </div>
 
                 </div>
                 <div class="row">
-                    <div class="form-group col-3" id="inventory-level-min-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
                         <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
                                placeholder="Input" readonly>
                     </div>
-                    <div class="form-group col-3" id="inventory-level-max-div">
+                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Inventory Level Max" %}</label>
                         <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
                                placeholder="Input" readonly>

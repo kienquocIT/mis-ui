@@ -90,6 +90,102 @@ $(document).ready(function () {
         },)
     }
 
+    function loadTaxCode(id) {
+        let ele = $('#select-box-tax-code');
+        ele.html('');
+        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
+                    ele.append(`<option></option>`);
+                    resp.data.tax_list.map(function (item) {
+                        if(item.type === 0 || item.type === 2){
+                            if(item.id === id)
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
+                            else
+                                ele.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
+                        }
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+
+    }
+
+    function loadPriceList() {
+        let ele = $('#select-price-list');
+        let html = ``;
+        let count = 0;
+        let currency_primary;
+        let currency_id;
+        $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
+                    data.currency_list.map(function (item) {
+                        if (item.is_primary === true)
+                        {
+                            currency_primary = item.abbreviation;
+                            currency_id = item.id;
+                        }
+                    })
+                }
+            }
+        }, (errs) => {
+        },).then(
+            (resp) => {
+                $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                            data.price_list.map(function (item) {
+                                if (item.price_list_type.value === 0 && item.auto_update === false) {
+                                    if (item.is_default === true) {
+                                        html += `<div class="row">
+                                            <div class="col-6">
+                                                <div class="form-check form-check-inline mt-2 ml-5">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        value="option1" checked disabled>
+                                                    <label class="form-check-label">` + item.title + `</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 form-group">
+                                                <span class="input-affix-wrapper affix-wth-text">
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number">
+                                                    <span class="input-suffix">` + currency_primary + `</span>
+                                                </span>
+                                            </div>
+                                        </div>`
+                                    } else {
+                                        html += `<div class="row">
+                                            <div class="col-6">
+                                                <div class="form-check form-check-inline mt-2 ml-5">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        value="option1" data-check="check-` + count + `">
+                                                    <label class="form-check-label">` + item.title + `</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 form-group">
+                                                <span class="input-affix-wrapper affix-wth-text">
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number" data-text="check-` + count + `" disabled>
+                                                    <span class="input-suffix">` + currency_primary + `</span>
+                                                </span>    
+                                            </div>
+                                        </div>`
+                                    }
+                                    count += 1;
+                                }
+                            })
+                            ele.find('ul').append(html)
+                        }
+                    }
+                }, (errs) => {
+                },)
+            }
+        )
+    }
+
     let pk = window.location.pathname.split('/').pop();
     let url_detail = $('#form-update-product').attr('data-url').replace(0, pk)
 
@@ -100,16 +196,6 @@ $(document).ready(function () {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
                 $('#product-code').val(data.product.code);
                 $('#product-title').val(data.product.title);
-
-                $('#product-title-div').addClass('inp-can-edit');
-                $('#select-box-product-type-div').addClass('inp-can-edit');
-                $('#select-box-product-category-div').addClass('inp-can-edit');
-                $('#select-box-uom-group-div').addClass('inp-can-edit');
-                $('#select-box-default-uom-div').addClass('inp-can-edit');
-                $('#select-box-uom-name-div').addClass('inp-can-edit');
-                $('#inventory-level-min-div').addClass('inp-can-edit');
-                $('#inventory-level-max-div').addClass('inp-can-edit');
-
                 loadProductCategory(data.product.general_information.product_category);
                 loadProductType(data.product.general_information.product_type);
                 loadUoMGroup(data.product.general_information.uom_group);
@@ -152,39 +238,33 @@ $(document).ready(function () {
 
                             $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
                             $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
+                            loadTaxCode(data.product.sale_information.tax_code);
+
+
+                            $('.inp-can-edit').focusin(function () {
+                                $(this).find('input[class=form-control]').prop('readonly', false);
+                                $(this).find('select').removeAttr('readonly');
+                            });
+                            $('.inp-can-edit').focusout(function () {
+                                $(this).find('input[class=form-control]').prop('readonly', true);
+                                $(this).find('select').attr('readonly', 'readonly');
+                            });
+                            $('.inp-can-edit').on('change', function () {
+                                $(this).find('input').css({
+                                    'border-color': '#00D67F',
+                                    'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                                })
+                                $(this).find('select').css({
+                                    'border-color': '#00D67F',
+                                    'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                                })
+                            })
                         }
                     }
-                }, (errs) => {
-                },)
-
-                $('.inp-can-edit').on('click', function () {
-                    $(this).find('select').prop("disabled", false);
-                });
-                $('.inp-can-edit').mouseleave(function () {
-                    $(this).find('select').prop("disabled", true);
-                });
-                $('.inp-can-edit').focusin(function() {
-                    $(this).find('input').prop('readonly', false);
-                });
-                $('.inp-can-edit').focusout(function() {
-                    $(this).find('input').attr('readonly', true);
-                });
-                $('.inp-can-edit').on('change', function () {
-                    $(this).find('input').css({
-                        'border-color': '#00D67F',
-                        'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                    })
-                    $(this).find('select').css({
-                        'border-color': '#00D67F',
-                        'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                    })
                 })
-
             }
         }
-    }, (errs) => {
-    },)
-
+    })
 
     // change select box UoM group tab general
     $('#select-box-uom-group').on('change', function () {
@@ -260,7 +340,6 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })

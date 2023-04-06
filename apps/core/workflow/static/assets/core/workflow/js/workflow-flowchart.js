@@ -87,7 +87,8 @@ function clickConnection(connect) {
 
     // render modal popup of connection
     let data_cond = FlowJsP.getAssociate
-    condition.loadCondition($formset_cond, data_cond)
+    data_cond = data_cond[node_in+'_'+node_out]
+    condition.loadCondition($formset_cond, data_cond.condition)
 }
 
 /*** plus/minus button increase/decrease size of drop space
@@ -140,8 +141,9 @@ class JSPlumbsHandle {
     };
 
     set setAssociateList(strData) {
-        strData = strData ? JSON.parse(strData) : []
-        this._ASSOCIATION = strData.reverse();
+        if (typeof strData == 'string')
+            strData = strData ? JSON.parse(strData) : []
+        this._ASSOCIATION = strData;
     };
 
     set setCommitNodeList(data) {
@@ -158,8 +160,9 @@ class JSPlumbsHandle {
     convertAssociateToOrder(){
         let temp =  [];
         let assoc = this._ASSOCIATION
-        for (let a of assoc){
-            temp.push(a.node_in.order, a.node_out.order)
+        for (let a in assoc){
+            a = a.split('_')
+            temp.push(parseInt(a[0]), parseInt(a[1]))
         }
         return [...new Set(temp)]
     }
@@ -179,7 +182,16 @@ class JSPlumbsHandle {
     };
 
     renderToFlowchart() {
-        this.setAssociateList = $('#node-associate').val();
+        let assocList = $('#node-associate').val();
+        if (assocList){
+            assocList = JSON.parse(assocList)
+            let _assoc_object = {}
+            for(let a of assocList){
+                let key = a.node_in.order + '_' + a.node_out.order
+                _assoc_object[key] = {node_in: a.node_in.order, node_out: a.node_out.order, condition: a.condition}
+            }
+            this.setAssociateList = _assoc_object
+        }
         let $wrapWF = $('#flowchart_workflow');
         let wrap_w = $wrapWF.width(),
             wrap_h = $wrapWF.height(),
@@ -416,10 +428,11 @@ class JSPlumbsHandle {
                     })
                 }) // end do while suspended
 
-                for (let assoc of that_cls._ASSOCIATION) {
+                for (let assoc in that_cls._ASSOCIATION) {
+                    assoc = that_cls._ASSOCIATION[assoc]
                     instance.connect({
-                        source: 'control-' + assoc.node_in.order,
-                        target: 'control-' + assoc.node_out.order,
+                        source: 'control-' + assoc.node_in,
+                        target: 'control-' + assoc.node_out,
                         overlays: [
                             ["Label",
                                 {
@@ -442,7 +455,7 @@ class JSPlumbsHandle {
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],
                     });
-                    jsPlumb.select({source: 'control-' + assoc.node_in.order}).addOverlay(
+                    jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
                         ["Label",
                             {
                                 label: 'aLabel',

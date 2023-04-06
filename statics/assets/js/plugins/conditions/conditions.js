@@ -88,7 +88,7 @@ class Conditions {
     // render data item to html
     appendData(form_elm = null, value = null, idx = 0, sub_idx_arr = 0) {
         let elm_idx = idx
-        let $elm_cond = form_elm.find('[data-subformset-body]').children('.formset:not([data-formset-form-deleted])').eq(idx);
+        let $elm_cond = form_elm.find('[data-subformset-body] .formset:not([data-formset-form-deleted])').eq(idx);
         if (sub_idx_arr !== 0) elm_idx = sub_idx_arr
         /*** append logic to html ***/
         let logic_formset = `condition-${elm_idx}-logic`;
@@ -99,7 +99,7 @@ class Conditions {
         /*** append left condition ***/
         let left_cond = `parameter-${elm_idx}-left_cond`;
         if (value.hasOwnProperty('left_cond') && value.left_cond){
-            let isDetail = this.getPropertyList[value.left_cond]
+            let isDetail = this.getPropertyList[value.left_cond];
             $elm_cond.find('select[name="' + left_cond + '"]').attr('data-onload', JSON.stringify(isDetail))
             initSelectbox($elm_cond.find('select[name="' + left_cond + '"]'))
         }
@@ -113,9 +113,10 @@ class Conditions {
 
         /*** append right condition ***/
         let right_cond = `parameter-${elm_idx}-right_cond`;
-        if (value.hasOwnProperty('right_cond') && value.right_cond)
+        if (value.hasOwnProperty('right_cond') && value.right_cond){
+            this.generatorHTMLRightDropdownBox(this.getPropertyList[value.left_cond], idx, $elm_cond, $elm_cond.find('select[name="' + left_cond + '"]'));
             $elm_cond.find('select[name="' + right_cond + '"]').val(value.right_cond)
-        // initSelectbox($elm_cond.find('select[name="' + left_cond + '"]'))
+        }
 
     }
 
@@ -225,11 +226,13 @@ class Conditions {
     }
 
     /***
-     *
-     * @param left_info data info of left condition
-     * @param idx index of row formset
+     * render right condition when create new and open popup connection had value
+     * @param left_info data of left condition
+     * @param idx index of formset row
+     * @param elm_sub_formset_row child formset of row of formset
+     * @param select element of left condition
      */
-    generatorHTMLRightDropdownBox(left_info, idx, elm_sub_formset_row=null){
+    generatorHTMLRightDropdownBox(left_info, idx, elm_sub_formset_row=null, select){
         let _type = left_info.type
         let _code = left_info.code
         let properties = left_info.properties;
@@ -251,7 +254,6 @@ class Conditions {
                 md_multiple = dropdown.multiple
             }
         }
-        let right_cond = $(this).parents('[data-subformset-form]').find('[name*="-right_cond"]')
         let html_temp = {
             1: `<input class="form-control" type="${_type}" name="parameter-${idx}-right_cond">`,
             2: `<input class="form-control datetime_field" type="text" name="parameter-${idx}-right_cond"/>`,
@@ -262,14 +264,15 @@ class Conditions {
             5: `<select class="form-control dropdown-select_two" `
                 +`name="parameter-${idx}-right_cond" data-multiple="${md_multiple}" data-prefix="${md_prefix}" `
                 +`data-url="${md_url}"></select>`,
-        }
+        };
         // render html to column 3
-        if (_type === 2 || _type === 4 || _type === 6) {
-            let int = _type === 6 ? 1 : _type
-            elm_sub_formset_row.find('.child-formset .flex-row').eq(2).html(html_temp[int])
+        if (_type === 2 || _type === 4 || _type === 6){
+            let int = _type === 6 ? 1 : _type;
+            elm_sub_formset_row.find('.child-formset .flex-row').eq(2).html(html_temp[int]);
         }
         else {
-            _data.selected = true
+            let right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]');
+            left_info.selected = true
             let virtual = {
                 "id": "default",
                 "text": "input type",
@@ -291,13 +294,13 @@ class Conditions {
 
             }
             // get new element has been replaced
-            let right_cond = $(this).parents('[data-subformset-form]').find('[name*="-right_cond"]')
+            right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]')
             right_cond.attr({
                 'data-virtual': JSON.stringify(virtual),
-                'data-onload': JSON.stringify([_data]),
+                'data-onload': JSON.stringify([left_info]),
                 'data-params': params,
-                'data-url': $(this).attr('data-url'),
-                'data-prefix': $(this).attr('data-prefix'),
+                'data-url': select.attr('data-url'),
+                'data-prefix': select.attr('data-prefix'),
                 'data-multiple': 'false'
             })
             initSelectbox(right_cond)
@@ -323,7 +326,7 @@ class Conditions {
         // append type of left_cond
         let $input_type = $(`<input type="hidden" name="parameter-${idx}-property_type">`);
         $input_type.val(_type)
-        $(this).parent().append($input_type)
+        select.parent().append($input_type)
         // re-init jquery for new html of column 3
         if (_type === 2)
             elm_sub_formset_row.find('.datetime_field').daterangepicker({
@@ -335,7 +338,7 @@ class Conditions {
                 maxYear: parseInt(moment().format('YYYY'), 10)
             });
         // on change value left condition change dropdown math
-        $this.changeParameter(_type, elm_sub_formset_row)
+        this.changeParameter(_type, elm_sub_formset_row)
     }
 
     /*** init formset for condition
@@ -377,7 +380,7 @@ class Conditions {
                 let isAvailable = setInterval(function () {
                     if ($this.find('[data-subformset-prefix]')) {
                         $this.find('[data-subformset-prefix]').formset(sub_form_opt);
-                        clearInterval(isAvailable)
+                        clearInterval(isAvailable);
                     }
                 }, 200);
             });
@@ -420,7 +423,8 @@ class Conditions {
                         let _data = e.params.data;
                         let is_index = $(this).parents('[data-subformset-form]').index()
                         // init right condition HTML follow by left condition
-                        $this.generatorHTMLRightDropdownBox(_data, is_index, elm_sub_formset_row)
+                        let $select = $(this);
+                        $this.generatorHTMLRightDropdownBox(_data, is_index, elm_sub_formset_row, $select)
                     });
 
                 });
@@ -431,11 +435,9 @@ class Conditions {
                         .find('select[name*="-logic"]').prop('disabled', false);
                 });
             });
-
         }
-
     };
-}
+} // end class
 
 // init field element went add new condition
 jQuery.fn.renderFormElements = function (arg) {

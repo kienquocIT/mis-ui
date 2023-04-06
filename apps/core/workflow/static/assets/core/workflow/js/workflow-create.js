@@ -1,10 +1,9 @@
 "use strict";
 
 $(function () {
-
     $(document).ready(function () {
 
-        // init select function applied ---> chua vi?t docs cho select2
+        // init select function applied
         let $select_box = $("#select-box-features");
         let selectURL = $select_box.attr('data-url')
         $select_box.select2({
@@ -49,7 +48,7 @@ $(function () {
                 if (flowNode.hasOwnProperty(item.order)){
                     let node = document.getElementById(`control-${item.order}`);
                     let offset = jsPlumb.getOffset(node);
-                    item.condition = flowNode[item.order]
+                    item.condition = flowNode[item.order].condition
                     item.coordinates = {
                         top: offset.top,
                         left: offset.left,

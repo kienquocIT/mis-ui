@@ -102,12 +102,19 @@
 
 /* breadcrumb */
 .breadcrumb {
-    background-color: rgba(255, 255, 255, 0) !important ;
+    background-color: rgba(255, 255, 255, 0) !important;
 }
 
 /* filter table with inline group */
-div.inline { float:left; margin-right: 10px;}
-.clearBoth { clear:both; }
+div.inline {
+    float: left;
+    margin-right: 10px;
+}
+
+.clearBoth {
+    clear: both;
+}
+
 /*data table css */
 
 .dataTables_paginate .paginate_button i {
@@ -133,6 +140,17 @@ div.inline { float:left; margin-right: 10px;}
     margin-left: 1em;
     display: none;
 }
+
 .hk-menu:hover #span-code-company {
     display: inline-block !important;
+}
+
+.dropdown-menu-end {
+    min-width: 280px;
+}
+.dataTables_paginate span{
+    margin:0 5px;
+}
+.dataTables_paginate span a{
+    padding: 0 5px;
 }

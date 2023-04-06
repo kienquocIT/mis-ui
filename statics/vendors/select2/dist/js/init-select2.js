@@ -1,20 +1,23 @@
 "use strict";
 
 /***
- * init dropdown with select2
- * @required_html_data:
- * - class: dropdown-select_two
- * - data: multiple="true" => set combobox is multiple
- *         prefix="application_property_list" => object key of response return
- *         url="{% url 'ApplicationPropertyListAPI' %}" => UI url
- *         params="{name: value}"
- * handle event on change example:
+ * initSelectbox() is using for select dropdown
+ * @class {string} dropdown-select_two - class name of select element needed
+ * @data-attribute:
+ * + multiple="true" => set combobox is multiple
+ * + prefix="application_property_list" => object key of response return
+ * + url="{% url 'ApplicationPropertyListAPI' %}"
+ * + params="{name: value}"
+ * + onload={id="", title="asdad"}
+ *@note
+ * select2 on change
  *     selectbox.on("select2:select", function (e) {
  *          // do action here
  *          console.log(e.params.data)
  *     });
  *     @params selectbox: element of select
  *     @variable e.params.data: full data of select store
+ *
  */
 function initSelectbox(selectBoxElement = null) {
     let $select_box = selectBoxElement
@@ -27,7 +30,6 @@ function initSelectbox(selectBoxElement = null) {
         // check if element has default data
         let default_data = $this.attr('data-onload')
         if (default_data && default_data.length) {
-            let temp = []
             if (typeof default_data === 'string') {
                 try {
                     default_data = JSON.parse(default_data)
@@ -35,13 +37,15 @@ function initSelectbox(selectBoxElement = null) {
                     console.log('Warning: ', $this.attr('id'), ' parse data onload is error with this error', e)
                 }
             }
-            if (Object.keys(default_data).length !== 0) {
-                for (let item of default_data) {
-                    if (item.id)
-                        temp.push(item.id)
-                    else temp.push(item)
+            if (default_data){
+                if (Array.isArray(default_data)){
+                    let htmlTemp = ''
+                    for (let item of default_data){
+                        htmlTemp += `<option value="${item.id}" selected>${item.title}</option>`
+                    }
+                    $this.html(htmlTemp)
                 }
-                default_data = temp
+                else $this.html(`<option value="${default_data.id}" selected>${default_data.title}</option>`)
             }
         }
         let $thisURL = $this.attr('data-url')
@@ -69,9 +73,17 @@ function initSelectbox(selectBoxElement = null) {
                             }else{
                                 if(item.hasOwnProperty('full_name')) text = 'full_name';
                             }
-                            if (default_data && default_data.includes(item.id))
-                                data_convert.push({...item, 'text': item[text], 'selected': true})
-                            else data_convert.push({...item, 'text': item[text]})
+                            try{
+                                if (default_data && default_data.hasOwnProperty('id')
+                                    && default_data.id === item.id
+                                )
+                                    data_convert.push({...item, 'text': item[text], 'selected': true})
+                                else data_convert.push({...item, 'text': item[text]})
+
+                            }
+                            catch (e) {
+                                console.log(e)
+                            }
                         }
                         if ($this.attr('data-virtual') !== undefined
                             && $this.attr('data-virtual') !== ''

@@ -54,6 +54,62 @@ function loadZoneInitialNode(e) {
     zoneTd.innerHTML = `<div class="row"><div class="col-9"><span class="zone-node-initial-show">All</span></div><div class="col-3">${actionDropDown}</div></div>`
 }
 
+// load data by specific collaborator
+function loadPropertyAuditInFrom(boxId) {
+    let initData = document.getElementById('data-init-property-in-form-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadCompanyAuditInWorkflow(boxId) {
+    let initData = document.getElementById('data-init-company-in-workflow-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadEmployeeAuditInWorkflow(boxId) {
+    let initData = document.getElementById('data-init-employee-in-workflow-detail').innerHTML;
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    if (initData) {
+        ele.append(initData)
+    }
+}
+
+function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
+    let url = '/hr/employee/company/' + company_id;
+    let method = "GET"
+    let jqueryId = "#" + boxId
+    let ele = $(jqueryId);
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
+                    ele.text("");
+                    ele.append(`<option>` + `</option>`);
+                    data.employee_company_list.map(function (item) {
+                        let spanRole = ``;
+                        if (item.role && Array.isArray(item.role)) {
+                            for (let r = 0; r < item.role.length; r++) {
+                                spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
+                            }
+                        }
+                        ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
+                                    <div hidden>${spanRole}</div>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
 $(function () {
 
     function renderAction(is_system_node = true) {
@@ -110,205 +166,12 @@ $(function () {
     }
 
     /***
-     * get data list of default node
+     * get list data of default of node
      */
-    function setupInitNodeOrder(row, data) {
-        let systemRowClass = "";
-        let initialCheckBox = "";
-        if (data.order === 1) {
-            systemRowClass = "initial-row";
-            initialCheckBox = "1"
-            $(row).addClass(systemRowClass);
-            $(row).attr("data-initial-check-box", initialCheckBox);
-        } else if (data.order === 2) {
-            systemRowClass = "approved-row";
-            initialCheckBox = "2"
-            $(row).addClass(systemRowClass);
-            $(row).attr("data-initial-check-box", initialCheckBox);
-        } else if (data.order === 3) {
-            systemRowClass = "completed-row";
-            initialCheckBox = "3"
-            $(row).addClass(systemRowClass);
-            $(row).attr("data-initial-check-box", initialCheckBox);
-        }
-    }
-
-    function initTableNode(data) {
-        // init dataTable
-        let listData = data ? data : []
-        let $tables = $('#datable-workflow-node-create');
-        $tables.DataTable({
-            data: listData,
-            searching: false,
-            ordering: false,
-            paginate: false,
-            info: false,
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
-            },
-            rowCallback: function (row, data) {
-                setupInitNodeOrder(row, data)
-            },
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        let currentId = "";
-                        if (row.order === 1) {
-                            currentId = "check_sel_1";
-                        }
-                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-workflow-node" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="node-title" data-is-system="true" data-system-code="${row.code}">${row.title}</span>`
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        if (row.description) {
-                            return `<span class="node-description">${row.description}</span>`
-                        } else {
-                            return `<span class="node-description"></span>`
-                        }
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        let actionEle = renderAction();
-                        if (row.order === 1) {
-                            return `<div class="row">
-                                        <div class="col-8">
-                                            <div class="btn-group dropdown">
-                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                                <div class="dropdown-menu w-250p">
-                                                    <div class="h-250p">
-                                                        <div data-simplebar class="nicescroll-bar">
-                                                            <ul class="node-action-list p-0">
-                                                                ${actionEle}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <span class=""><i class="fas fa-check"></i></span>
-                                        </div>
-                                    </div>`;
-                        } else {
-                            return `<div class="row">
-                                        <div class="col-8">
-                                            <i class="fas fa-align-justify" style="color: #cccccc"></i>
-                                        </div>
-                                        <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
-                                        </div>
-                                    </div>`
-                        }
-                    },
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        if (row.order === 1) {
-                            return `<div class="row">
-                                        <div class="col-8">
-                                            <i class="fas fa-align-justify btn-initial-node-collaborator" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
-                                            <div
-                                                class="modal fade" id="auditModalCreateInitial" tabindex="-1" role="dialog"
-                                                aria-labelledby="exampleModalCenter" aria-hidden="true"
-                                            >
-                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <table
-                                                                id=""
-                                                                class="table nowrap w-100 mb-5 table-initial-node-collaborator"
-                                                            >
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>Collaborator</th>
-                                                                    <th>Position</th>
-                                                                    <th>Role</th>
-                                                                    <th>Editing Zone</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <td>Creator</td>
-                                                                <td>Creator's position</td>
-                                                                <td>Creator's role</td>
-                                                                <td class="initial-node-collaborator-zone"></td>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
-                                        </div>
-                                    </div>`
-                        } else {
-                            return `<div class="row">
-                                        <div class="col-8">
-                                            <i class="fas fa-align-justify" style="color: #cccccc"></i>
-                                        </div>
-                                        <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
-                                        </div>
-                                    </div>`;
-                        }
-
-                    }
-                },
-                {
-                    targets: 5,
-                    render: () => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="color: #cccccc"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: #cccccc"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
-                        let actionData = bt2 + bt3;
-                        return `${actionData}`
-                    }
-                },
-            ],
-        });
-    }
-
-    function loadSystemNode() {
-        let url = $('#url-factory').data('node');
-        $.fn.callAjax(url, "GET").then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('node_system') && Array.isArray(data.node_system)) {
-                        initTableNode(data.node_system);
-                    }
-                }
-            },
-        )
-    }
-
     function loadInitPropertyInFrom() {
         let url = '/base/application-property-employee/api';
         let method = "GET"
-        let ele = $('#data-init-property-in-form');
+        let ele = $('#data-init-property-in-form-detail');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -326,7 +189,7 @@ $(function () {
     function loadInitCompanyInWorkflow() {
         let url = '/company/list/api';
         let method = "GET"
-        let ele = $('#data-init-company-in-workflow');
+        let ele = $('#data-init-company-in-workflow-detail');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -344,7 +207,7 @@ $(function () {
     function loadInitEmployeeInWorkflow() {
         let url = '/hr/employee/api';
         let method = "GET"
-        let ele = $('#data-init-employee-in-workflow');
+        let ele = $('#data-init-employee-in-workflow-detail');
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -366,7 +229,7 @@ $(function () {
         )
     }
 
-    function loadAuditOutFormEmployee(tableId) {
+    function loadAuditOutFormEmployee(tableId, data_detail= []) {
         let config = {
             dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             ordering: false,
@@ -389,6 +252,11 @@ $(function () {
                 feather.replace();
             },
             data: [],
+            rowCallback: function (row, data) {
+                if (data_detail && data_detail.includes(data.id)) {
+                    $(row).addClass('selected')
+                }
+            },
             columns: [{
                 'data': 'code', render: (data, type, row, meta) => {
                     return String.format(`<b>{0}</b>`, data);
@@ -410,7 +278,11 @@ $(function () {
             }, {
                 'render': (data, type, row, meta) => {
                     let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    if (data_detail && data_detail.includes(row.id)) {
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}" checked><label class="form-check-label" for="${currentId}"></label></span>`;
+                    } else {
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    }
                 }
             }]
         }
@@ -435,12 +307,13 @@ $(function () {
          * call Ajax load employee list
          */
         function loadDataTable() {
-            let dataRawEmployee = $('#wf-employee-out-form').val();
+            let dataRawEmployee = $('#wf-employee-out-form-detail').val();
             if (dataRawEmployee) {
                 config['data'] = JSON.parse(dataRawEmployee);
                 initDataTable(config)
             }
         }
+
         loadDataTable();
     }
 
@@ -452,7 +325,7 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('employee_list')) {
-                        $('#wf-employee-out-form').val(JSON.stringify(data.employee_list))
+                        $('#wf-employee-out-form-detail').val(JSON.stringify(data.employee_list))
                     }
                 }
             },
@@ -462,7 +335,6 @@ $(function () {
     $(document).ready(function () {
         let tableNode = $('#datable-workflow-node-create');
 
-        loadSystemNode();
         loadInitPropertyInFrom();
         loadInitCompanyInWorkflow();
         loadInitEmployeeInWorkflow();
@@ -912,6 +784,22 @@ $(function () {
             return false;
         });
 
+// Action on click button collaborator workflow detail loaded
+        tableNode.on('click', '.wf-detail-loaded', function (e) {
+            let employeeSelectedIdList = [];
+            let employeeOutFormDetailLoaded = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail');
+            if (employeeOutFormDetailLoaded) {
+                let employeeSelectedIdListRaw = employeeOutFormDetailLoaded.value;
+                if (employeeSelectedIdListRaw) {
+                    employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+                }
+            }
+            let tableOutFormEmployee = $(this)[0].closest('.row').querySelector('.table-out-form-employee');
+            if (tableOutFormEmployee) {
+                loadAuditOutFormEmployee(tableOutFormEmployee.id, employeeSelectedIdList);
+            }
+        })
+
 // Action on click check select box of table
         tableNode.on('click', '.check-select', function (e) {
             e.stopPropagation();
@@ -982,62 +870,6 @@ $(function () {
                 loadEmployeeCompanyAuditInWorkflow(eleSelectEmp.id, companyId);
             }
         });
-
-// load data by specific collaborator
-        function loadPropertyAuditInFrom(boxId) {
-            let initData = document.getElementById('data-init-property-in-form').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-               ele.append(initData)
-            }
-        }
-
-        function loadCompanyAuditInWorkflow(boxId) {
-            let initData = document.getElementById('data-init-company-in-workflow').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadEmployeeAuditInWorkflow(boxId) {
-            let initData = document.getElementById('data-init-employee-in-workflow').innerHTML;
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            if (initData) {
-                ele.append(initData)
-            }
-        }
-
-        function loadEmployeeCompanyAuditInWorkflow(boxId, company_id) {
-            let url = '/hr/employee/company/' + company_id;
-            let method = "GET"
-            let jqueryId = "#" + boxId
-            let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('employee_company_list') && Array.isArray(data.employee_company_list)) {
-                            ele.text("");
-                            ele.append(`<option>` + `</option>`);
-                            data.employee_company_list.map(function (item) {
-                                let spanRole = ``;
-                                if (item.role && Array.isArray(item.role)) {
-                                    for (let r = 0; r < item.role.length; r++) {
-                                        spanRole += `<div><span class="badge badge-soft-primary">${item.role[r].title}</span></div>`
-                                    }
-                                }
-                                ele.append(`<option value="${item.id}" data-role="">${item.full_name}</option>
-                                    <div hidden>${spanRole}</div>`)
-                            })
-                        }
-                    }
-                }
-            )
-        }
 
 // Action on add canvas employee out form
         tableNode.on('click', '.button-add-audit-out-form-employee', function (e) {

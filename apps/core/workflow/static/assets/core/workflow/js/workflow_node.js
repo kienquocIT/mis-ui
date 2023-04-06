@@ -185,7 +185,7 @@ $(function () {
                             return `<div class="row">
                                         <div class="col-8">
                                             <div class="btn-group dropdown">
-                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #cccccc"></i>
+                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                                 <div class="dropdown-menu w-250p">
                                                     <div class="h-250p">
                                                         <div data-simplebar class="nicescroll-bar">
@@ -198,7 +198,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class=""><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class=""><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`;
                         } else {
@@ -207,7 +207,7 @@ $(function () {
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         }
@@ -262,7 +262,7 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`
                         } else {
@@ -271,7 +271,7 @@ $(function () {
                                             <i class="fas fa-align-justify" style="color: #cccccc"></i>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
                                         </div>
                                     </div>`;
                         }
@@ -517,7 +517,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-action"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-action"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -559,7 +559,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-audit"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-audit"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -1244,15 +1244,15 @@ $(function () {
                             let childTitle = eleDivData.innerHTML;
                             trSTT++;
                             if (trSTT !== 0 && trSTT % 5 === 0) {
-                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 spanGroup = ``
                             } else {
                                 if (trSTT === dataChecked) {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                     dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 } else {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 }
                             }
                         }
@@ -1282,7 +1282,7 @@ $(function () {
             if ($(this)[0].checked === true) {
                 // change node's actions status
                 eleSpan.innerHTML = ``;
-                eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
 
                 // check group actions
                 if (dataAction === "1") {
@@ -1385,7 +1385,7 @@ $(function () {
                 }
                 if (allUnCheck === eleUL.children.length) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });
@@ -1405,30 +1405,30 @@ $(function () {
                 if (employeeInForm) {
                     if (employeeInForm.value) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     } else {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                     }
                 }
             } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     }
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             } else if (employeeInWorkflow) {
                 let body = employeeInWorkflow.tBodies[0];
                 if (!body.querySelector('.dataTables_empty') && body.rows.length > 0) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });

@@ -63,6 +63,13 @@ function setupDataNode(is_submit = false) {
             } else if ((d + 1) === 2) {
                 description = col.querySelector('.node-description').innerHTML;
             } else if ((d + 1) === 3) {
+                // check Status Node when submit
+                if (is_submit === true) {
+                    let statusFail = col.querySelector('.fa-times');
+                    if (statusFail) {
+                        return false
+                    }
+                }
                 // set data workflow node actions submit
                 let eleUL = col.querySelector('.node-action-list');
                 if (eleUL) {
@@ -75,6 +82,12 @@ function setupDataNode(is_submit = false) {
                     }
                 }
             } else if ((d + 1) === 4) {
+                if (is_submit === true) {
+                    let statusFail = col.querySelector('.fa-times');
+                    if (statusFail) {
+                        return false
+                    }
+                }
                 // set data workflow node collaborator submit
                 let modalBody = col.querySelector('.modal-body');
                 if (modalBody) {
@@ -135,11 +148,10 @@ function setupDataNode(is_submit = false) {
                                     let zoneTd = row.querySelector('.data-in-workflow-zone');
                                     if (zoneTd.children.length > 0) {
                                         for (let col = 0; col < zoneTd.children.length; col++) {
-                                            if (zoneTd.children[col].children.length > 0) {
-                                                for (let s = 0; s < zoneTd.children[col].children.length; s++) {
-                                                    let zoneVal = zoneTd.children[col].children[s].children[0].value;
-                                                    dataZoneInWorkflowList.push(Number(zoneVal))
-                                                }
+                                            let zoneInWorkflow = zoneTd.children[col].querySelector('.zone-in-workflow-id');
+                                            if (zoneInWorkflow) {
+                                                let zoneVal = zoneInWorkflow.value;
+                                                dataZoneInWorkflowList.push(Number(zoneVal))
                                             }
                                         }
                                     }
@@ -196,7 +208,6 @@ function setupDataNode(is_submit = false) {
         }
     }
     return dataNodeList
-
 }
 
 // handle btn modal zone save

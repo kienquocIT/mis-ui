@@ -252,6 +252,11 @@ $(function () {
                 feather.replace();
             },
             data: [],
+            rowCallback: function (row, data) {
+                if (data_detail && data_detail.includes(data.id)) {
+                    $(row).addClass('selected')
+                }
+            },
             columns: [{
                 'data': 'code', render: (data, type, row, meta) => {
                     return String.format(`<b>{0}</b>`, data);
@@ -384,7 +389,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-action"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-action"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -426,7 +431,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-audit"><i class="fas fa-times" style="color: red; font-size: 20px"></i></span>
+                                                <span class="check-done-audit"><i class="fas fa-times"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -781,10 +786,13 @@ $(function () {
 
 // Action on click button collaborator workflow detail loaded
         tableNode.on('click', '.wf-detail-loaded', function (e) {
-            let employeeSelectedIdListRaw = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail').value;
             let employeeSelectedIdList = [];
-            if (employeeSelectedIdListRaw) {
-                employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+            let employeeOutFormDetailLoaded = $(this)[0].closest('.row').querySelector('.employee-out-form-id-list-wf-detail');
+            if (employeeOutFormDetailLoaded) {
+                let employeeSelectedIdListRaw = employeeOutFormDetailLoaded.value;
+                if (employeeSelectedIdListRaw) {
+                    employeeSelectedIdList = JSON.parse(employeeSelectedIdListRaw);
+                }
             }
             let tableOutFormEmployee = $(this)[0].closest('.row').querySelector('.table-out-form-employee');
             if (tableOutFormEmployee) {
@@ -1068,15 +1076,15 @@ $(function () {
                             let childTitle = eleDivData.innerHTML;
                             trSTT++;
                             if (trSTT !== 0 && trSTT % 5 === 0) {
-                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 spanGroup = ``
                             } else {
                                 if (trSTT === dataChecked) {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                     dataShow += `<div class="col-12" style="margin-left: -30px">${spanGroup}</div>`
                                 } else {
-                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" value="${childID}" hidden></span>`
+                                    spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${childTitle}<input type="text" class="zone-in-workflow-id" value="${childID}" hidden></span>`
                                 }
                             }
                         }
@@ -1106,7 +1114,7 @@ $(function () {
             if ($(this)[0].checked === true) {
                 // change node's actions status
                 eleSpan.innerHTML = ``;
-                eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
 
                 // check group actions
                 if (dataAction === "1") {
@@ -1209,7 +1217,7 @@ $(function () {
                 }
                 if (allUnCheck === eleUL.children.length) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });
@@ -1229,30 +1237,30 @@ $(function () {
                 if (employeeInForm) {
                     if (employeeInForm.value) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     } else {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                     }
                 }
             } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                     }
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             } else if (employeeInWorkflow) {
                 let body = employeeInWorkflow.tBodies[0];
                 if (!body.querySelector('.dataTables_empty') && body.rows.length > 0) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-check" style="color: #00D67F; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times" style="color: red; font-size: 20px"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
                 }
             }
         });

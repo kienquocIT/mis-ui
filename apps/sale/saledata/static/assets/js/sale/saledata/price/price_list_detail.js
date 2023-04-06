@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let url_item_detail = $('#datatable-item-list').attr('data-url-detail')
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
@@ -29,11 +30,11 @@ $(document).ready(function () {
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
-                            style="min-width: max-content; width: 70%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
+                            style="min-width: max-content; width: 70%" href="`+ url_item_detail.replace(0, row.id) +`"><center><span><b>` + row.code + `</b></span></center></a>`
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="#" data-id="` + row.id + `">
+                return `<a class="btn-detail" href="`+ url_item_detail.replace(0, row.id) +`" data-id="` + row.id + `">
                         <span><b>` + row.title + `</b></span>
                     </a>`
             }

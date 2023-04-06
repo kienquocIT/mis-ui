@@ -99,8 +99,8 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     ele.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
-                        if(item.type === 0 || item.type === 2){
-                            if(item.id === id)
+                        if (item.type === 0 || item.type === 2) {
+                            if (item.id === id)
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                             else
                                 ele.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -113,36 +113,21 @@ $(document).ready(function () {
 
     }
 
-    function loadPriceList() {
+    function loadPriceList(list_price) {
         let ele = $('#select-price-list');
         let html = ``;
         let count = 0;
-        let currency_primary;
-        let currency_id;
-        $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
+        let currency;
+        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
-                    data.currency_list.map(function (item) {
-                        if (item.is_primary === true)
-                        {
-                            currency_primary = item.abbreviation;
-                            currency_id = item.id;
-                        }
-                    })
-                }
-            }
-        }, (errs) => {
-        },).then(
-            (resp) => {
-                $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                            data.price_list.map(function (item) {
-                                if (item.price_list_type.value === 0 && item.auto_update === false) {
-                                    if (item.is_default === true) {
-                                        html += `<div class="row">
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                    data.price_list.map(function (item) {
+                        if (item.price_list_type.value === 0 && item.auto_update === false) {
+                            list_price.map(function (price) {
+                                currency = price.currency_using;
+                                if (price.id === item.id) {
+                                    html += `<div class="row">
                                             <div class="col-6">
                                                 <div class="form-check form-check-inline mt-2 ml-5">
                                                     <input class="form-check-input" type="checkbox"
@@ -152,44 +137,26 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-6 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number">
-                                                    <span class="input-suffix">` + currency_primary + `</span>
+                                                    <input data-currency="`+ price.currency_using +`" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `" readonly>
+                                                    <span class="input-suffix">` + price.currency_using + `</span>
                                                 </span>
                                             </div>
                                         </div>`
-                                    } else {
-                                        html += `<div class="row">
-                                            <div class="col-6">
-                                                <div class="form-check form-check-inline mt-2 ml-5">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="option1" data-check="check-` + count + `">
-                                                    <label class="form-check-label">` + item.title + `</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 form-group">
-                                                <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number" data-text="check-` + count + `" disabled>
-                                                    <span class="input-suffix">` + currency_primary + `</span>
-                                                </span>    
-                                            </div>
-                                        </div>`
-                                    }
-                                    count += 1;
                                 }
                             })
-                            ele.find('ul').append(html)
                         }
-                    }
-                }, (errs) => {
-                },)
+                        count += 1;
+                    })
+                    ele.find('ul').append(html)
+                }
             }
-        )
+        })
     }
 
     let pk = window.location.pathname.split('/').pop();
     let url_detail = $('#form-update-product').attr('data-url').replace(0, pk)
 
-    // get detail product
+// get detail product
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
@@ -239,6 +206,7 @@ $(document).ready(function () {
                             $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
                             $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
                             loadTaxCode(data.product.sale_information.tax_code);
+                            loadPriceList(data.product.sale_information.price_list);
 
 
                             $('.inp-can-edit').focusin(function () {

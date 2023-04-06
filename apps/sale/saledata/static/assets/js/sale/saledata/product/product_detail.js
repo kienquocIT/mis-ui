@@ -307,10 +307,10 @@ $(document).ready(function () {
                 'default_uom': $('#select-box-default-uom').val(),
                 'tax_code': $('#select-box-tax-code').val()
             }
-            if (price_list.length > 0)
-                frm.dataForm['sale_information']['price_list'] = price_list;
-            else
-                frm.dataForm['sale_information']['price_list'] = null;
+            // if (price_list.length > 0)
+            //     frm.dataForm['sale_information']['price_list'] = price_list;
+            // else
+            //     frm.dataForm['sale_information']['price_list'] = null;
         } else {
             frm.dataForm['sale_information'] = {}
         }

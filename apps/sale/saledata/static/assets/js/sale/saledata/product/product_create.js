@@ -245,7 +245,6 @@ $(document).ready(function () {
                 )
         })
 
-        console.log(price_list);
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val(),

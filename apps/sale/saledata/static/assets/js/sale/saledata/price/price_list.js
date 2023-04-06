@@ -31,15 +31,9 @@ $(document).ready(function () {
                 }
             }, {
                 'data': 'title', render: (data, type, row, meta) => {
-                    if (row.is_default === false) {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) +`">
-                                <span><b>` + row.title + `</b></span>
-                            </a>`
-                    } else {
-                        return `<a>
+                    return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) +`">
                             <span><b>` + row.title + `</b></span>
                         </a>`
-                    }
                 }
             }, {
                 'data': 'type', render: (data, type, row, meta) => {

@@ -62,7 +62,7 @@ $(document).ready(function () {
     }
 
     function loadUoMGroup() {
-        let ele = $('#select-box-umo-group');
+        let ele = $('#select-box-uom-group');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -178,7 +178,7 @@ $(document).ready(function () {
     loadTaxCode();
 
     // change select box UoM group tab general
-    $('#select-box-umo-group').on('change', function () {
+    $('#select-box-uom-group').on('change', function () {
         $('#uom-code').val('');
         let select_box_default_uom = $('#select-box-default-uom');
         let select_box_uom_name = $('#select-box-uom-name');

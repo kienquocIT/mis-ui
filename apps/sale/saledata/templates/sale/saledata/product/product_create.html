@@ -173,7 +173,8 @@
                     <div class="col-6 form-group" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
-                               data-bs-display="static" aria-expanded="false">
+                               oninput="this.value=''"
+                               data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
                         </ul>
                     </div>

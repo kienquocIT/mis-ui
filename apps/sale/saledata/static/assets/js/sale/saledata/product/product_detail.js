@@ -282,36 +282,30 @@ $(document).ready(function () {
         }
 
         if ($('#check-tab-inventory').is(':checked') === true) {
+            let inventory_level_min = $('#inventory-level-min').val();
+            if (inventory_level_min === '') {
+                inventory_level_min = null;
+            }
+
+            let inventory_level_max = $('#inventory-level-max').val();
+            if (inventory_level_max === '') {
+                inventory_level_max = null;
+            }
+
             frm.dataForm['inventory_information'] = {
                 'uom': $('#select-box-uom-name').val(),
-                'inventory_level_min': $('#inventory-level-min').val(),
-                'inventory_level_max': $('#inventory-level-max').val()
+                'inventory_level_min': inventory_level_min,
+                'inventory_level_max': inventory_level_max
             }
         } else {
             frm.dataForm['inventory_information'] = {}
         }
-
-        // let price_list = []
-        // $('.ul-price-list .value-price-list').each(function () {
-        //     if ($(this).val() !== '')
-        //         price_list.push(
-        //             {
-        //                 'id': $(this).attr('data-id'),
-        //                 'price': $(this).val(),
-        //                 'currency_using': $(this).attr('data-currency')
-        //             }
-        //         )
-        // })
 
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val(),
                 'tax_code': $('#select-box-tax-code').val()
             }
-            // if (price_list.length > 0)
-            //     frm.dataForm['sale_information']['price_list'] = price_list;
-            // else
-            //     frm.dataForm['sale_information']['price_list'] = null;
         } else {
             frm.dataForm['sale_information'] = {}
         }

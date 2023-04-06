@@ -224,10 +224,19 @@ $(document).ready(function () {
         }
 
         if ($('#check-tab-inventory').is(':checked') === true) {
+            let inventory_level_min = $('#inventory-level-min').val();
+            if (inventory_level_min === '') {
+                inventory_level_min = null;
+            }
+
+            let inventory_level_max = $('#inventory-level-max').val();
+            if (inventory_level_max === '') {
+                inventory_level_max = null;
+            }
             frm.dataForm['inventory_information'] = {
                 'uom': $('#select-box-uom-name').val(),
-                'inventory_level_min': $('#inventory-level-min').val(),
-                'inventory_level_max': $('#inventory-level-max').val()
+                'inventory_level_min': inventory_level_min,
+                'inventory_level_max': inventory_level_max
             }
         } else {
             frm.dataForm['inventory_information'] = {}

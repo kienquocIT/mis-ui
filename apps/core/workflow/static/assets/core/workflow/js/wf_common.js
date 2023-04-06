@@ -28,7 +28,6 @@ function setupDataNode(is_submit = false) {
         let dataEmployeeList = [];
         let dataZoneList = [];
         let dataInitialZoneList = [];
-        let dataCollaboratorList = [];
         let isSystem = false;
         let codeNodeSystem = "";
         let total_collaborator_in_process = 1;
@@ -111,7 +110,7 @@ function setupDataNode(is_submit = false) {
                                 if (eleProperty) {
                                     fieldSelectCollaborator = eleProperty.value;
                                 }
-                                collabInForm['employee_field'] = fieldSelectCollaborator;
+                                collabInForm['property'] = fieldSelectCollaborator;
                                 collabInForm['zone'] = dataZoneList;
                             }
 
@@ -156,18 +155,14 @@ function setupDataNode(is_submit = false) {
                                         }
                                     }
                                     if (employee) {
-                                        dataCollaboratorList.push({
-                                            'employee': employee,
-                                            'collaborator_zone': dataZoneInWorkflowList,
-                                        });
                                         collabInWorkflow.push({
                                             'employee': employee,
                                             'zone': dataZoneInWorkflowList,
                                         })
                                     }
                                 }
-                                total_collaborator_in_process = dataCollaboratorList.length;
-                                total_collaborator_config = dataCollaboratorList.length;
+                                total_collaborator_in_process = collabInWorkflow.length;
+                                total_collaborator_config = collabInWorkflow.length;
                             }
                         }
                     }
@@ -183,7 +178,6 @@ function setupDataNode(is_submit = false) {
                 'collab_in_form': collabInForm,
                 'collab_out_form': collabOutForm,
                 'collab_in_workflow': collabInWorkflow,
-                'collaborator': dataCollaboratorList,
                 'zone_initial_node': dataInitialZoneList,
                 'is_system': isSystem,
                 'code_node_system': codeNodeSystem,

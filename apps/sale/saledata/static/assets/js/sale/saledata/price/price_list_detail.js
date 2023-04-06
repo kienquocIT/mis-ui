@@ -29,7 +29,7 @@ $(document).ready(function () {
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
-                            style="min-width: max-content; width: 100%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
+                            style="min-width: max-content; width: 70%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {

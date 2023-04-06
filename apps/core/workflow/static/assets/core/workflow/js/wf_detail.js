@@ -89,7 +89,7 @@ $(function () {
                 if (data) {
                     if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
                         data.property_employee_list.map(function (item) {
-                            ele.append(`<option value="${item.code}">${item.title}</option>`)
+                            ele.append(`<option value="${item.id}">${item.title}</option>`)
                         })
                     }
                 }

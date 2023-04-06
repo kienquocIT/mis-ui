@@ -277,7 +277,7 @@ $(document).ready(function () {
         frm.dataForm['general_information'] = {
             'product_type': $('#select-box-product-type').val(),
             'product_category': $('#select-box-product-category').val(),
-            'uom_group': $('#select-box-umo-group').val()
+            'uom_group': $('#select-box-uom-group').val()
         }
 
         if ($('#check-tab-inventory').is(':checked') === true) {

@@ -89,7 +89,7 @@ $(function () {
                 if (data) {
                     if (data.hasOwnProperty('property_employee_list') && Array.isArray(data.property_employee_list)) {
                         data.property_employee_list.map(function (item) {
-                            ele.append(`<option value="${item.code}">${item.title}</option>`)
+                            ele.append(`<option value="${item.id}">${item.title}</option>`)
                         })
                     }
                 }
@@ -219,7 +219,7 @@ $(function () {
         let initDataOptions = document.getElementById('data-init-property-in-form-detail').options;
         for (let i = 0; i < initDataOptions.length; i++) {
             if (initDataOptions[i].value && initDataOptions[i].innerHTML) {
-                if (initDataOptions[i].value === current_property) {
+                if (initDataOptions[i].value === current_property.id) {
                     optionProperty += `<option value="${initDataOptions[i].value}" selected>${initDataOptions[i].innerHTML}</option>`
                 } else {
                     optionProperty += `<option value="${initDataOptions[i].value}">${initDataOptions[i].innerHTML}</option>`
@@ -537,7 +537,7 @@ $(function () {
                                                 </div>`
                             if (row.option_collaborator === 0) {
                                 let boxInFormPropertyId = "select-box-audit-in-form-property-" + String(row.order);
-                                let optionProperty = loadPropertyCollabInFrom(row.collab_in_form.employee_field);
+                                let optionProperty = loadPropertyCollabInFrom(row.collab_in_form.property);
                                 collabBody = `<div class="form-group">
                                                 <label class="form-label">List source</label>
                                                 <select

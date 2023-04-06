@@ -91018,5 +91018,11 @@ Project:	Jampack
     gap:1rem;
 }
 
-
+.underline_hover:hover{
+    text-decoration:underline;
+}
+.form-check-label{
+    user-select: none;
+    -webkit-user-select: none;
+}
 /*# sourceMappingURL=style.css.map */

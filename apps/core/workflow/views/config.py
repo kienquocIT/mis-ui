@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.workflow.initial_data import Node_data
 from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset
 
 WORKFLOW_ACTION = {
@@ -131,10 +132,56 @@ class WorkflowDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='core/workflow/workflow_create.html',
+        template='core/workflow/workflow_detail.html',
+        menu_active='menu_workflow_list',
+        breadcrumb='WORKFLOW_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        return {
+                   'data': {'doc_id': pk},
+                   'wf_actions': WORKFLOW_ACTION,
+                   'form': ConditionFormset(),
+                   'wf_data_type': WORKFLOW_TYPE
+               }, status.HTTP_200_OK
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW).put(data)
+        if resp.state:
+            resp.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
+            return resp.result, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class WorkflowDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).get()
+        if res.state:
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        data = request.data
+        res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).put(data)
+        if res.state:
+            res.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class NodeSystemListAPI(APIView):
@@ -145,9 +192,4 @@ class NodeSystemListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_NODE_SYSTEM_LIST).get()
-        if resp.state:
-            return {'node_system': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'node_system': Node_data}, status.HTTP_200_OK

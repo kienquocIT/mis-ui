@@ -258,7 +258,7 @@ class Conditions {
             3: `<select class="form-select" name="parameter-${idx}-right_cond">${opt_select}</select>`,
             4: `<div class="form-check mt-2"> <input type="checkbox" class="form-check-input" `
                 + `id="${_code}-${idx}" name="parameter-${idx}-right_cond">`
-                + `<label class="form-check-label" for="${_code}-${idx}">${_data.title}</label></div>`,
+                + `<label class="form-check-label" for="${_code}-${idx}">${left_info.title}</label></div>`,
             5: `<select class="form-control dropdown-select_two" `
                 +`name="parameter-${idx}-right_cond" data-multiple="${md_multiple}" data-prefix="${md_prefix}" `
                 +`data-url="${md_url}"></select>`,
@@ -420,7 +420,7 @@ class Conditions {
                         let _data = e.params.data;
                         let is_index = $(this).parents('[data-subformset-form]').index()
                         // init right condition HTML follow by left condition
-                        $this.generatorHTMLRightDropdownBox(_data, is_index)
+                        $this.generatorHTMLRightDropdownBox(_data, is_index, elm_sub_formset_row)
                     });
 
                 });

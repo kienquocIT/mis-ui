@@ -54,6 +54,10 @@ $(document).ready(function () {
                 return `<span>` + row.price.toLocaleString('en-US', {minimumFractionDigits: 0}) + `</span>`
             }
         }, {
+            'render': (data, type, row, meta) => {
+                return ''
+            }
+        }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                 let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
@@ -145,4 +149,22 @@ $(document).ready(function () {
                 }
             }
         })
+
+    $('#btn-add-price').on('click', function () {
+        let table = document.getElementById('datatable-item-list')
+        let index = table.rows[0].cells.length;
+        let rows = table.getElementsByTagName("tr");
+        let cell = rows[0].insertCell(index-2);
+        let text = document.createTextNode("Price abc");
+        cell.appendChild(text);
+        for (let i = 1; i < rows.length; i++) {
+            let cell = rows[i].insertCell(index-2);
+            let input = document.createElement("input");
+            input.type = "text";
+            input.className = "form-control"
+            input.value = "New Column";
+            cell.appendChild(input);
+            // rows[i].appendChild(cell);
+        }
+    })
 })

@@ -27,28 +27,31 @@ $(document).ready(function () {
                 return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
             }
         }, {
+            'data': 'code', render: (data, type, row, meta) => {
+                return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
+                            style="min-width: max-content; width: 70%" href="#"><center><span><b>` + row.code + `</b></span></center></a>`
+            }
+        }, {
             'data': 'title', render: (data, type, row, meta) => {
                 return `<a class="btn-detail" href="#" data-id="` + row.id + `">
                         <span><b>` + row.title + `</b></span>
                     </a>`
             }
         }, {
-            'data': 'code', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="#" data-id="` + row.id + `">
-                        <span><b>` + row.code + `</b></span>
-                    </a>`
-            }
-        }, {
             'data': 'uom_group', 'render': (data, type, row, meta) => {
-                return `<span>` + row.uom_group + `</span>`
+                return `<div class="row">
+                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 100%">` + row.uom_group + `</span></div>
+                        </div>`
             }
         }, {
             'data': 'uom', 'render': (data, type, row, meta) => {
-                return `<span>` + row.uom + `</span>`
+                return `<div class="row">
+                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill" style="min-width: max-content; width: 100%">` + row.uom + `</span></div>
+                        </div>`
             }
         }, {
             'data': 'price', 'render': (data, type, row, meta) => {
-                return `<span>` + row.price + `</span>`
+                return `<span>` + row.price.toLocaleString('en-US', {minimumFractionDigits: 0}) + `</span>`
             }
         }, {
             'render': (data, type, row, meta) => {
@@ -58,7 +61,7 @@ $(document).ready(function () {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                 let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt2 + bt3
+                return ''
             }
         },]
     }
@@ -131,7 +134,6 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (data.hasOwnProperty('price')) {
-                    console.log(data)
                     config['data'] = data.price.products_mapped;
                     initDataTable(config, '#datatable-item-list');
                     loadCurrency(data.price.currency);

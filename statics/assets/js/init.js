@@ -1082,6 +1082,7 @@ jQuery.fn.notifyB = function (option, typeAlert = null) {
 
 // support call API with ajax
 jQuery.fn.callAjax = function (url, method, data, headers = {}) {
+
     return new Promise(function (resolve, reject) {
         let ctx = {
             url: url,
@@ -1104,6 +1105,7 @@ jQuery.fn.callAjax = function (url, method, data, headers = {}) {
                 }
             },
         };
+        if (method.toLowerCase() === 'get') ctx.data = data
         $.ajax(ctx);
     });
 }

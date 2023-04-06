@@ -1,14 +1,15 @@
 "use strict";
 /***
- * init dropdown with select2
- * @required_html_data:
- * - class: dropdown-select_two
- * - data: -multiple="true" => set combobox is multiple
- *         -prefix="application_property_list" => object key of response return
- *         -url="{% url 'ApplicationPropertyListAPI' %}"
- *         -params="{name: value}"
- *         -onload={id="", title="asdad"}
- * handle event on change example:
+ * initSelectbox() is using for select dropdown
+ * @class {string} dropdown-select_two - class name of select element needed
+ * @data-attribute:
+ * + multiple="true" => set combobox is multiple
+ * + prefix="application_property_list" => object key of response return
+ * + url="{% url 'ApplicationPropertyListAPI' %}"
+ * + params="{name: value}"
+ * + onload={id="", title="asdad"}
+ *@note
+ * select2 on change
  *     selectbox.on("select2:select", function (e) {
  *          // do action here
  *          console.log(e.params.data)

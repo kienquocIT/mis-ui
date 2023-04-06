@@ -31,7 +31,7 @@ $(document).ready(function () {
                 }
             }, {
                 'data': 'title', render: (data, type, row, meta) => {
-                    return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) +`">
+                    return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
                             <span><b>` + row.title + `</b></span>
                         </a>`
                 }
@@ -89,10 +89,12 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                        console.log(data)
                         config['data'] = resp.data.price_list;
                         ele.append(`<option></option>`)
                         data.price_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            if (item.auto_update === false)
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                         })
                     }
                     initDataTable(config, '#datatable-price-list');
@@ -131,11 +133,11 @@ $(document).ready(function () {
 
         $('#btn-show-modal-create').on('click', function () {
             let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
-            $('ul').find(`li[title="`+primaryOption+`"]`).find('span').prop('hidden', true);
+            $('ul').find(`li[title="` + primaryOption + `"]`).find('span').prop('hidden', true);
         })
         $('#select-box-currency').on('change', function () {
             let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
-            $('ul').find(`li[title="`+primaryOption+`"]`).find('span').prop('hidden', true);
+            $('ul').find(`li[title="` + primaryOption + `"]`).find('span').prop('hidden', true);
         })
 
         //logic checkbox

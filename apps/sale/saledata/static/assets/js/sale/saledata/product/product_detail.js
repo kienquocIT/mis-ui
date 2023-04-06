@@ -166,16 +166,6 @@ $(document).ready(function () {
                 loadProductCategory(data.product.general_information.product_category);
                 loadProductType(data.product.general_information.product_type);
                 loadUoMGroup(data.product.general_information.uom_group);
-                if (Object.keys(data.product.inventory_information).length === 0) {
-                    $('#link-tab-inventory').addClass('disabled');
-                    $('#tab_inventory').removeClass('active show');
-                    $('#check-tab-inventory').prop('checked', false);
-                }
-                if (Object.keys(data.product.sale_information).length === 0) {
-                    $('#link-tab-sale').addClass('disabled');
-                    $('#tab_sale').removeClass('active show');
-                    $('#check-tab-sale').prop('checked', false);
-                }
 
                 let ele = $('#select-box-uom-group')
                 let data_url = ele.attr('data-url-detail').replace(0, data.product.general_information.uom_group);
@@ -190,6 +180,19 @@ $(document).ready(function () {
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
                             select_box_uom_name.append(`<option data-code=""></option>`);
                             select_box_default_uom.append(`<option></option>`);
+                            if (Object.keys(data.product.inventory_information).length === 0) {
+                                $('#link-tab-inventory').addClass('disabled');
+                                $('#tab_inventory').removeClass('active show');
+                                $('#check-tab-inventory').prop('checked', false);
+                            }
+                            if (Object.keys(data.product.sale_information).length === 0) {
+                                $('#link-tab-sale').addClass('disabled');
+                                $('#tab_sale').removeClass('active show');
+                                $('#check-tab-sale').prop('checked', false);
+                            }
+                            else {
+                                loadPriceList(data.product.sale_information.price_list);
+                            }
                             data_uom_gr.uom_group.uom.map(function (item) {
                                 if (item.uom_id === data.product.sale_information.default_uom)
                                     select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
@@ -206,8 +209,6 @@ $(document).ready(function () {
                             $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
                             $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
                             loadTaxCode(data.product.sale_information.tax_code);
-                            loadPriceList(data.product.sale_information.price_list);
-
 
                             $('.inp-can-edit').focusin(function () {
                                 $(this).find('input[class=form-control]').prop('readonly', false);
@@ -290,17 +291,17 @@ $(document).ready(function () {
             frm.dataForm['inventory_information'] = {}
         }
 
-        let price_list = []
-        $('.ul-price-list .value-price-list').each(function () {
-            if ($(this).val() !== '')
-                price_list.push(
-                    {
-                        'id': $(this).attr('data-id'),
-                        'price': $(this).val(),
-                        'currency_using': $(this).attr('data-currency')
-                    }
-                )
-        })
+        // let price_list = []
+        // $('.ul-price-list .value-price-list').each(function () {
+        //     if ($(this).val() !== '')
+        //         price_list.push(
+        //             {
+        //                 'id': $(this).attr('data-id'),
+        //                 'price': $(this).val(),
+        //                 'currency_using': $(this).attr('data-currency')
+        //             }
+        //         )
+        // })
 
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {

@@ -3,8 +3,8 @@
  * ***/
 let DEFAULT_NODE_LIST = {};
 let _MOUSE_POSITION = 0;
-let is_node_changed = true;
-
+let has_edited = false;
+let nodeChanged = false
 /***
  * function handle user on click into Node
  * @param event: element of Node
@@ -16,24 +16,43 @@ function eventNodeClick(event) {
     let $modal = $('#exit-node')
     let action_name = JSON.parse($('#wf_action').text())
     let html = ``;
+    let condition = {};
     // check it user right-click
     const isRClick = event.button;
-    if (isRClick === 2) return true
+    if (isRClick === 2) return true;
+    for (let cond of data.condition){
+        condition[cond.action] = cond
+    }
     for (let item of data.action) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
-        if (item <= 1 && data.collaborators.option < 2 || item >= 4)
+        if (item <= 1 && data.collaborators.option < 2 || item >= 4){
+            let val = item >= 4 ? data.collaborators.total_config : condition[item] ? condition[item].min_collaborator : 1
             midd = `<input class="form-control formula-input" type="text" `
-                + `value="${item >= 4 ? data.collaborators.total_config : 1}" readonly>`;
-        else if (item <= 1 && data.collaborators.option === 2)
+                + `value="${val}" readonly>`;
+        }
+        else if (item <= 1 && data.collaborators.option === 2){
             // else node type is approved/create and collab option is in workflow
+            let val = condition[item] ? condition[item].min_collaborator : data.collaborators.total_config;
             midd = `<input class="form-control formula-input" type="number" min="1" value="1" `
-                + `max="${data.collaborators.total_config}">`;
+                + `max="${val}">`;
+        }
         else if (item > 1 && item < 4) {
             let num = data.collaborators.total_config + 1 - 1;
+            let opt = '', optElse = '';
+            if (condition[item]) {
+                if (condition[item] === 'else') {
+                    optElse = 'selected'
+                } else {
+                    num = condition[item].min_collaborator
+                    opt = 'selected'
+
+                }
+            }
+
             midd = `<select class="form-select"><option value=""></option>`
-                + `<option class="formular_opt" value="${num}">${num}</option>`
-                + `<option class="formular_opt_else" value="else">else</option></select>`;
+                + `<option class="formular_opt" value="${num}" ${opt}>${num}</option>`
+                + `<option class="formular_opt_else" value="else" ${optElse}>else</option></select>`;
         }
         let next_text = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
         html += `<tr>` + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>`
@@ -135,7 +154,9 @@ class JSPlumbsHandle {
         let lst_compare_temp = JSON.stringify(temp)
         let lst_compare_default = JSON.stringify(DEFAULT_NODE_LIST)
         // if compare two data is difference enable flag true
-        if (lst_compare_default !== lst_compare_temp) is_node_changed = true;
+        if (lst_compare_default !== '{}'
+            && lst_compare_default !== lst_compare_temp) nodeChanged = true
+        if (lst_compare_default !== lst_compare_temp) has_edited = false;
         DEFAULT_NODE_LIST = temp;
         this.nodeData = temp;
     };
@@ -206,7 +227,7 @@ class JSPlumbsHandle {
             if (coordinates)
                 // check if node has coordinates
                 if (coordinates.hasOwnProperty("top") && coordinates.hasOwnProperty("left")){
-                    top_coord = coordinates.top,
+                    top_coord = coordinates.top
                     left_coord = coordinates.left;
                 }
             if (assoc.includes(item.order)){
@@ -566,22 +587,33 @@ class JSPlumbsHandle {
                 $(this).parent('.custom-menu').remove();
             });
         });
-
-        // set flag is false after run chart
-        is_node_changed = false
     };
 
     init() {
         // get node list from func node
         this.setNodeList = setupDataNode();
         this.setNodeState = this.nodeData;
-        // check first time load detail page and data list node is changed
-        if (is_node_changed) {
-            $('#node_dragbox').empty();
-            $('#flowchart_workflow').empty();
-            if ($('#form-detail_workflow').length) this.renderToFlowchart();
-            this.htmlDragRender();
-            this.initJSPlumbs();
+        if ($('#form-detail_workflow').length){
+            // detail and update page
+            if (!has_edited){
+                $('#node_dragbox').empty();
+                //
+                if (nodeChanged) $('#flowchart_workflow').empty();
+                if (!nodeChanged) this.renderToFlowchart();
+                this.htmlDragRender();
+                this.initJSPlumbs();
+                has_edited = true
+            }
+
+        }else{
+            // create page
+            if (!has_edited){
+                $('#node_dragbox').empty();
+                $('#flowchart_workflow').empty();
+                this.htmlDragRender();
+                this.initJSPlumbs();
+                has_edited = true
+            }
         }
         extendDropSpace();
     }

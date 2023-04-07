@@ -830,6 +830,11 @@ $(function () {
                 }
             _form.dataForm['zone'] = dataZone
             let nodeTableData = setupDataNode(true);
+            // check status Node before submit
+            if (nodeTableData === false) {
+                $.fn.notifyPopup({description: 'Please complete Nodes data'}, 'failure');
+                return false
+            }
             // add condition object for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode

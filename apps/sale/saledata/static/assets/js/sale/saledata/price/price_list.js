@@ -89,12 +89,10 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                        console.log(data)
                         config['data'] = resp.data.price_list;
                         ele.append(`<option></option>`)
                         data.price_list.map(function (item) {
-                            if (item.auto_update === false)
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                         })
                     }
                     initDataTable(config, '#datatable-price-list');

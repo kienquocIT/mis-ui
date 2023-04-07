@@ -2,6 +2,7 @@
 "use strict";
 $(function () {
     $(document).ready(function () {
+        let company_current_id = $('#company-current-id').attr('data-id')
         let config = {
             ordering: false, paginate: false, language: {
                 search: "", searchPlaceholder: "Search", info: "", sLengthMenu: "View  MENU",
@@ -14,28 +15,27 @@ $(function () {
                 },
             }, {
                 width: '10%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
-                    return `<a href="/company/detail/`+row.id+`">` + data + `</a>`
+                    return `<a href="/company/detail/` + row.id + `">` + data + `</a>`
                 }
             }, {
                 width: '30%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {
-                        if (data) {
-                            return `<div class="media align-items-center">
+                    if (data) {
+                        return `<div class="media align-items-center">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-success avatar-rounded">
                                                 <span class="initial-wrap"><b>` + row.title.charAt(0).toUpperCase() + `</b></span>
                                             </div>
                                         </div>
                                         <div class="media-body">
-                                            <a href="/company/detail/`+row.id+`">
+                                            <a href="/company/detail/` + row.id + `">
                                                 <span class="d-block"><b>` + row.title + `</b></span>
                                             </a>
                                         </div>
                                     </div>`;
-                        }
-                        else {
-                            return ''
-                        }
+                    } else {
+                        return ''
                     }
+                }
 
             }, {
                 width: '20%', data: 'date_created', render: (data, type, row, meta) => {
@@ -45,18 +45,23 @@ $(function () {
                 }
             }, {
                 width: '20%', data: 'representative_fullname', render: (data, type, row, meta) => {
-                        if (data) {
-                            return `<div class="representative_fullname"><span class="badge badge-primary">`+ data +`</span></div>`;
-                        }
-                        else {
-                            return `<div class="representative_fullname"><span class="badge badge-primary">`+ $('input[name=default_representative_name]').val() +`</span></div>`;
-                        }
+                    if (data) {
+                        return `<div class="representative_fullname"><span class="badge badge-primary">` + data + `</span></div>`;
+                    } else {
+                        return `<div class="representative_fullname"><span class="badge badge-primary">` + $('input[name=default_representative_name]').val() + `</span></div>`;
+                    }
                 }
             }, {
                 width: '15%', className: 'action-center', render: (data, type, row, meta) => {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/`+row.id+`" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="`+ row.id +`"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return `<div class="text-center">` + bt2 + bt3 + `</div>`;
+                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-setting" data-bs-toggle="modal" data-bs-target="#modal-setting" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>`;
+                    if(row.id === company_current_id){
+                        return `<div>` + bt2 + bt3 + bt1 + `</div>`;
+                    }
+                    else{
+                        return `<div>` + bt2 + bt3 + `</div>`;
+                    }
                 }
             },]
         }
@@ -108,10 +113,9 @@ $(function () {
             $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
-                    config['data'] = resp.data['company_list'] ? resp.data['company_list']: [];
+                    config['data'] = resp.data['company_list'] ? resp.data['company_list'] : [];
                 }
-                if (resp.data.company_list[0].tenant_auto_create_company === false)
-                {
+                if (resp.data.company_list[0].tenant_auto_create_company === false) {
                     const add_company_div = document.getElementById("add_company_button");
                     add_company_div.remove();
                 }
@@ -119,5 +123,60 @@ $(function () {
         }
 
         loadDataTable();
+
+
+        function loadCurrency() {
+            let ele = $('#setting-currency')
+            ele.empty();
+            $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
+                    data.currency_list.map(function (item) {
+                        if (item.is_primary === true) {
+                            ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                        } else {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        }
+                    })
+                }
+            })
+        }
+
+        let url_detail;
+        $(document).on('click', '.btn-setting', function () {
+            loadCurrency();
+            url_detail = $('#form-setting').attr('data-url')
+        })
+
+        let frm_setting_company = $('#form-setting')
+        frm_setting_company.submit(function () {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            let data_url = url_detail.replace(0, $('#setting-currency').val())
+            let data_form = {};
+            $.fn.callAjax(data_url, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency')) {
+                    data_form = data.currency;
+                }
+            }).then((resp) => {
+                data_form["is_primary"] = 1;
+                data_form["rate"] = 1;
+
+                $.fn.callAjax(data_url, frm.dataMethod, data_form, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success');
+                                $('#modal-setting').hide();
+                            }
+                        },
+                        (errs) => {
+                        }
+                    )
+            })
+        })
     })
 });

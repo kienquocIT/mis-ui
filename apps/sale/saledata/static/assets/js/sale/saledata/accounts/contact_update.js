@@ -35,7 +35,6 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
-                        ele.append(`<option>` + `</option>`)
                         data.interests_list.map(function (item) {
                             if (list_id.includes(item.id)) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
@@ -152,20 +151,24 @@ $(document).ready(function () {
                     $('#first_name_id').val(data.contact_detail.fullname.first_name);
                     $('#last_name_id').val(data.contact_detail.fullname.last_name);
                     $('#full_name_id').val(data.contact_detail.fullname.fullname);
-                    $('#text-bio').val(data.contact_detail.bio);
+                    $('#text-bio').val(data.contact_detail.biography);
                     $('#inp-phone').val(data.contact_detail.phone);
                     $('#inp-mobile').val(data.contact_detail.mobile);
                     $('#inp-email').val(data.contact_detail.email);
                     $('#inp-jobtitle').val(data.contact_detail.job_title);
-                    $('#work_address_id').val(data.contact_detail.address_infor.work_address);
-                    $('#home_address_id').val(data.contact_detail.address_infor.home_address);
-                    loadInterestList(data.contact_detail.additional_infor.interests.map(obj => obj.id));
-                    $('#tag_id').val(data.contact_detail.additional_infor.tags);
-                    $('#facebook_id').val(data.contact_detail.additional_infor.facebook);
-                    $('#gmail_id').val(data.contact_detail.additional_infor.gmail);
-                    $('#linkedln_id').val(data.contact_detail.additional_infor.linkedln);
-                    $('#twitter_id').val(data.contact_detail.additional_infor.twitter);
-
+                    $('#work_address_id').val(data.contact_detail.address_information.work_address);
+                    $('#home_address_id').val(data.contact_detail.address_information.home_address);
+                    if (Object.keys(data.contact_detail.additional_information).length > 0) {
+                        loadInterestList(data.contact_detail.additional_information.interests.map(obj => obj.id));
+                        $('#tag_id').val(data.contact_detail.additional_information.tags);
+                        $('#facebook_id').val(data.contact_detail.additional_information.facebook);
+                        $('#gmail_id').val(data.contact_detail.additional_information.gmail);
+                        $('#linkedln_id').val(data.contact_detail.additional_information.linkedln);
+                        $('#twitter_id').val(data.contact_detail.additional_information.twitter);
+                    }
+                    else {
+                        loadInterestList([]);
+                    }
                 }
             }
         )
@@ -217,7 +220,7 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($('#form-create-contact'));
-        frm.dataForm['additional_infor'] = {
+        frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
             'linkedln': $('#linkedln_id').val(),
@@ -226,7 +229,7 @@ $(document).ready(function () {
             'tags': $('#tag_id').val(),
         };
 
-        frm.dataForm['address_infor'] = {
+        frm.dataForm['address_information'] = {
             'work_address': $('#work_address_id').val(),
             'home_address': $('#home_address_id').val(),
         };

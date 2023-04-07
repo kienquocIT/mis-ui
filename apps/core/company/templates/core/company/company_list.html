@@ -35,7 +35,7 @@
             <th>{% trans 'Name' %}</th>
             <th>{% trans 'Created Date' %}</th>
             <th>{% trans 'Representative' %}</th>
-            <th class="text-center">{% trans 'Action' %}</th>
+            <th class="w-5">{% trans 'Action' %}</th>
         </tr>
         </thead>
         <tbody></tbody>
@@ -180,6 +180,39 @@
         </div>
     </div>
     <!-- / Add Company -->
+
+    <!-- Modal Setting Company -->
+    <form id="form-setting" data-method="PUT"
+          data-url="{% url "CurrencyDetailAPI" pk=0 %}">
+        {% csrf_token %}
+        <div class="modal fade" id="modal-setting" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Company Setting" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Primary Currency" %}<span
+                                        class="field-required">*</span></label>
+                                <select class="form-select" data-method="GET" data-url="{% url "CurrencyListAPI" %}" id="setting-currency"></select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 
 {% block jsFooter %}
@@ -187,3 +220,4 @@
     <script src="{% static 'core/company/js/add_new_company.js' %}"></script>
     <script src="{% static 'core/company/js/delete_company.js' %}"></script>
 {% endblock %}
+

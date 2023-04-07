@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-create-price-list"
+            style="background: none; border: none">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+        </span>
+    </button>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+
+    <div class="row">
+        <ul class="nav nav-light nav-tabs" id="tab-select-table">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab-item-list">
+                    <span class="nav-link-text">{% trans 'Price List' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-setting">
+                    <span class="nav-link-text">{% trans 'Setting' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <!-- Tab add item -->
+        <div class="tab-pane fade show active" id="tab-item-list">
+            <table id="datatable-item-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceDetailAPI" pk=0 %}"
+                   data-url-detail="{% url "ProductDetail" pk=0 %}" data-method="GET">
+                <thead>
+                <th class="w-5">
+            <span class="form-check">
+                <input
+                        type="checkbox"
+                        class="form-check-input check-select-all"
+                        id="customCheck1"
+                >
+                <label class="form-check-label" for="customCheck1"></label>
+            </span>
+                </th>
+                <th class="w-15">{% trans "Code" %}</th>
+                <th class="w-25">{% trans "Product name" %}</th>
+                <th class="w-15">{% trans "UoM group" %}</th>
+                <th class="w-15">{% trans "UoM" %}</th>
+                <th class="w-10">{% trans "Price in VND" %}
+                </th>
+				<th class="w-5">
+{#                    <button id="btn-add-price" type="button"#}
+{#                            style="background: none; border: none">#}
+{#                        <span class="icon">#}
+{#                            <span class="feather-icon">#}
+{#                                <i data-feather="plus"></i>#}
+{#                            </span>#}
+{#                        </span>#}
+{#                    </button>#}
+                </th>
+                <th class="w-5"></th>
+                </thead>
+            </table>
+        </div>
+
+        <!-- Tab Detail Price List -->
+        <div class="tab-pane fade" id="tab-setting">
+            <form id="form-update-price" data-method="PUT"
+                  data-url="{% url "PriceDetailAPI" pk=0 %}"
+                  data-url-redirect="{% url "PriceList" %}"
+            >
+                {% csrf_token %}
+                <div class="row">
+                    {#                    <div class="form-group">#}
+                    {#                        <label class="form-label">{% trans "Price list Name" %}</label>#}
+                    {#                        <input class="form-control" type="text" name="title"#}
+                    {#                               placeholder="input Name">#}
+                    {#                    </div>#}
+                    {#                    <div class="form-check ml-3">#}
+                    {#                        <input class="form-check-input" type="checkbox" value=""#}
+                    {#                               id="checkbox-copy-source" name="">#}
+                    {#                        <label class="form-check-label" for="checkbox-copy-source">#}
+                    {#                            {% trans "Copy from source price list" %}#}
+                    {#                        </label>#}
+                    {#                    </div>#}
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Select price list" %}</label>
+                        <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
+                                id="select-box-price-list" readonly="readonly"></select>
+                    </div>
+                    <div class="form-check ml-3">
+                        <input class="form-check-input" type="checkbox" value=""
+                               id="checkbox-update-auto" readonly name="auto_update">
+                        <label class="form-check-label" for="checkbox-update-auto">
+                            {% trans "update automatically when source price list changes" %}
+                        </label>
+                    </div>
+                    <div class="form-check ml-3">
+                        <input class="form-check-input" type="checkbox" value=""
+                               id="checkbox-can-delete" disabled name="can_delete">
+                        <label class="form-check-label" for="checkbox-can-delete">
+                            {% trans "Can delete Item in price list" %}
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Currency" %}</label>
+                        <select
+                                class="form-control select2 select2-multiple"
+                                multiple
+                                data-placeholder="{% trans 'Choose' %}"
+                                data-method="GET"
+                                data-url="{% url "CurrencyListAPI" %}"
+                                id="select-box-currency" name="currency">
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6 inp-can-edit">
+                            <label class="form-label">{% trans "Factor" %}</label>
+                            <input class="form-control" type="text" name="factor" id="inp-factor"
+                                   placeholder="input factor (0.8)">
+                        </div>
+                        <div class="form-group col-6 inp-can-edit">
+                            <label class="form-label">{% trans "Select list type" %}</label>
+                            <select class="form-select" name="price_list_type" id="select-box-type">
+                                <option></option>
+                                <option value="0">{% trans "For Sale" %}</option>
+                                <option value="1">{% trans "For Purchase" %}</option>
+                                <option value="2">{% trans "For Expense" %}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/sale/saledata/price/price_list_detail.js' %}"></script>
+{% endblock %}

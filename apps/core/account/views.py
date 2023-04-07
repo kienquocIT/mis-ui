@@ -35,13 +35,21 @@ class UserCreate(View):
 
 
 class UserDetail(View):
-    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    @mask_view(
+        auth_require=True,
+        template='core/account/user_detail.html',
+        breadcrumb='USER_DETAIL_PAGE',
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class UserEdit(View):
-    @mask_view(auth_require=True, template='core/account/user_edit.html')
+    @mask_view(
+        auth_require=True,
+        template='core/account/user_edit.html',
+        breadcrumb='USER_EDIT_PAGE'
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 

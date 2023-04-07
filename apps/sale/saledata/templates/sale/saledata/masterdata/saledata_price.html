@@ -181,12 +181,12 @@
             </div>
 
             <div class="lookup-data" id="section-create-payment-terms" style="display: none">
-                <form id="form-create-payment-term" data-method="POST" data-url="">
+                <form id="form-create-payment-term" data-method="POST" data-url="{% url 'PaymentsTermsAPI' %}">
                     {% csrf_token %}
                     <div class="row">
                         <div class="form-group col-6">
-                            <label class="form-label">{% trans "Name" %}</label>
-                            <input class="form-control" name="name" placeholder="Input name" type="text">
+                            <label class="form-label">{% trans "Name" %}<span class="field-required">*</span></label>
+                            <input class="form-control" name="name" placeholder="Input name" type="text" required>
                         </div>
                         <div class="form-group col-6">
                             <label class="form-label">{% trans "For" %}</label>
@@ -197,20 +197,23 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans "Description" %}</label>
-                            <textarea class="form-control" placeholder="Input text"></textarea>
+                            <textarea class="form-control" placeholder="Input text" rows="3"></textarea>
                         </div>
-                        <button data-bs-toggle="modal" data-bs-target="#modal-add-table"
-                                type="button" style="background: none;border: none; color: #007D88">
-                                    <span data-bs-toggle="tooltip"
-                                          data-bs-placement="bottom"
-                                          title="{% trans 'Add' %}">
-                                        <i class="fas fa-plus-circle"></i>
-                                        {% trans 'Add new line' %}
-                                    </span>
-                        </button>
-                        <table id="datatable-tax-category" class="table nowrap w-100 mb-5"
-                               data-url="{% url "IndustryListAPI" %}"
-                               data-method="GET">
+                        <div class="row mb-3">
+                            <div class="col-lg-3 col-xs-12">
+                                <button class="d-flex justify-content-between align-items-center"
+                                        data-bs-toggle="modal" data-bs-target="#modal-add-table"
+                                        type="button" style="background: none;border: none; color: #007D88">
+                                            <span data-bs-toggle="tooltip"
+                                                  data-bs-placement="bottom"
+                                                  title="{% trans 'Add' %}">
+                                                <i class="far fa-plus-square"></i>
+                                                {% trans 'Add new line' %}
+                                            </span>
+                                </button>
+                            </div>
+                        </div>
+                        <table id="datatable-tax-category" class="table nowrap w-100 mb-5">
                             <thead>
                             <th class="w-5">{% trans "#" %}</th>
                             <th class="w-30">{% trans "Value" %}</th>
@@ -420,7 +423,9 @@
                     <div class="row">
                         <div class="form-group col-6">
                             <label class="form-label">{% trans "Day Type" %}</label>
-                            <select class="form-select" id="select-box-day-type" data-method="GET" data-url="">
+                            <select class="form-select" id="select-box-day-type">
+                                <option value="percent">{% trans "Percent" %}</option>
+                                <option value="amount">{% trans "Amount" %}</option>
                             </select>
                         </div>
                         <div class="form-group col-6">

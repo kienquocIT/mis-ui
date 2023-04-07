@@ -4,9 +4,24 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg
 
-
+PAYMENTS_TERMS_UNIT = (
+    (0, MDConfigMsg.ACTION_CREATE),
+    (1, MDConfigMsg.ACTION_CREATE),
+    (2, MDConfigMsg.ACTION_CREATE),
+)
+PAYMENTS_TERMS_DAY_TYPE = (
+    (0, MDConfigMsg.ACTION_CREATE),
+    (1, MDConfigMsg.ACTION_CREATE),
+)
+PAYMENTS_TERMS_AFTER = (
+    (0, MDConfigMsg.ACTION_CREATE),
+    (1, MDConfigMsg.ACTION_CREATE),
+    (2, MDConfigMsg.ACTION_CREATE),
+    (3, MDConfigMsg.ACTION_CREATE),
+    (4, MDConfigMsg.ACTION_CREATE),
+)
 class PriceMasterDataList(View):
     permission_classes = [IsAuthenticated]
 
@@ -378,3 +393,21 @@ class PriceDetailAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class PaymentsTermsAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
+        if resp.state:
+            resp.result['message'] = MDConfigMsg.PT_CREATE
+            return resp.result, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

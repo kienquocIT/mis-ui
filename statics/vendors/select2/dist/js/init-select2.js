@@ -1,14 +1,14 @@
 "use strict";
 
 /***
- * initSelectbox() is using for select dropdown
+ * initSelectBox() is using for select dropdown
  * @class {string} dropdown-select_two - class name of select element needed
  * @data-attribute:
  * + multiple="true" => set combobox is multiple
  * + prefix="application_property_list" => object key of response return
  * + url="{% url 'ApplicationPropertyListAPI' %}"
  * + params="{name: value}"
- * + onload={id="", title="asdad"}
+ * + onload={id="", title="name"}
  *@note
  * select2 on change
  *     selectbox.on("select2:select", function (e) {
@@ -19,7 +19,8 @@
  *     @variable e.params.data: full data of select store
  *
  */
-function initSelectbox(selectBoxElement = null) {
+$(function () {
+function initSelectBox(selectBoxElement = null) {
     let $select_box = selectBoxElement
     if (selectBoxElement === null)
         $select_box = $(".dropdown-select_two");
@@ -109,5 +110,6 @@ function initSelectbox(selectBoxElement = null) {
 }
 
 $(document).ready(function () {
-    initSelectbox()
+    initSelectBox()
 });
+}, jQuery);

@@ -9,7 +9,7 @@ $(function () {
         if(res.application){
             const elmApp = $('[name="application"]');
             elmApp.attr('data-onload', JSON.stringify(res.application));
-            initSelectbox(elmApp)
+            initSelectBox(elmApp)
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone){

@@ -101,7 +101,7 @@ class Conditions {
         if (value.hasOwnProperty('left_cond') && value.left_cond){
             let isDetail = this.getPropertyList[value.left_cond];
             $elm_cond.find('select[name="' + left_cond + '"]').attr('data-onload', JSON.stringify(isDetail))
-            initSelectbox($elm_cond.find('select[name="' + left_cond + '"]'))
+            initSelectBox($elm_cond.find('select[name="' + left_cond + '"]'))
         }
 
         /*** append operator ***/
@@ -303,7 +303,7 @@ class Conditions {
                 'data-prefix': select.attr('data-prefix'),
                 'data-multiple': 'false'
             })
-            initSelectbox(right_cond)
+            initSelectBox(right_cond)
             // on change right condition
             right_cond.on("select2:select", function (e) {
                 const right_data = e.params.data;
@@ -319,7 +319,7 @@ class Conditions {
                     $(this).attr('data-multiple', textHtml.multiple)
                     $(this).select2('destroy')
                     $(this).empty();
-                    initSelectbox($(this))
+                    initSelectBox($(this))
                 }
             });
         }
@@ -415,7 +415,7 @@ class Conditions {
                     // call init select2 for left_cond
                     let left_cond = elm_sub_formset_row.find('[name*="-left_cond"]')
                     left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val()}))
-                    initSelectbox(left_cond)
+                    initSelectBox(left_cond)
 
                     // datatype on change
                     left_cond.on("select2:select", function (e) {

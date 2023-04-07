@@ -139,7 +139,7 @@ $(document).ready(function () {
                                     </div>
                                     <div class="col-6 form-group">
                                         <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                            <input data-text="check-` + count + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `">
+                                            <input data-text="check-` + count + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" min="0" step="1000" type="number" value="` + price.price + `">
                                             <span class="input-suffix">` + price.currency_using + `</span>
                                         </span>
                                     </div>
@@ -155,7 +155,7 @@ $(document).ready(function () {
                                     </div>
                                     <div class="col-6 form-group">
                                         <span class="input-affix-wrapper affix-wth-text">
-                                            <input data-factor="` + item.factor + `" data-source="` + item.price_list_mapped + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `" readonly>
+                                            <input data-factor="` + item.factor + `" data-source="` + item.price_list_mapped + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" min="0" step="1000" type="number" value="` + price.price + `" readonly>
                                             <span class="input-suffix">` + price.currency_using + `</span>
                                         </span>
                                     </div>
@@ -174,7 +174,7 @@ $(document).ready(function () {
                                     </div>
                                     <div class="col-6 form-group">
                                         <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                            <input data-text="check-` + count + `" data-currency="` + currency + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="">
+                                            <input data-text="check-` + count + `" data-currency="` + currency + `" data-id="` + item.id + `" class="form-control value-price-list" min="0" step="1000" type="number" value="">
                                             <span class="input-suffix">` + currency + `</span>
                                         </span>
                                     </div>

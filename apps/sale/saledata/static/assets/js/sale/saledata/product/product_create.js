@@ -137,7 +137,7 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-6 form-group">
                                                 <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number">
+                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" min="0" step="1000" type="number">
                                                     <span class="input-suffix">` + currency_primary + `</span>
                                                 </span>
                                             </div>

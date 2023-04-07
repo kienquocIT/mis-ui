@@ -921,15 +921,28 @@ $(function () {
             let tableId = $(this)[0].closest('.modal-body').querySelector('.table-in-workflow-employee').id;
             let jqueryId = "#" + tableId;
             let table = $(jqueryId);
-            let tableLen = document.getElementById(tableId).tBodies[0].rows.length;
             let tableCheckEmpty = document.getElementById(tableId).tBodies[0].querySelector('.dataTables_empty');
             if (tableCheckEmpty) {
                 document.getElementById(tableId).tBodies[0].innerHTML = ``;
             }
+            let tableLen = document.getElementById(tableId).tBodies[0].rows.length;
+            let tableRows = document.getElementById(tableId).tBodies[0].rows;
             let companySelectBox = document.getElementById($(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-company').id);
             let companySelected = companySelectBox.options[companySelectBox.selectedIndex];
             let employeeBoxId = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').id;
             let employeeVal = $(this)[0].closest('.offcanvas-body').querySelector('.select-box-audit-in-workflow-employee').value;
+            // Check employee exist
+            for (let i = 0; i < tableLen; i++) {
+                let empExist = tableRows[i].querySelector('.data-in-workflow-employee');
+                if (empExist) {
+                    let empIdExist = empExist.value;
+                    if (empIdExist === employeeVal) {
+                        $.fn.notifyPopup({description: 'Employee already exists. Please choose other employee'}, 'failure');
+                        return false
+                    }
+                }
+            }
+            // end check
             let empSelectBox = document.getElementById(employeeBoxId);
             let empSelected = empSelectBox.options[empSelectBox.selectedIndex];
             let empTitle = empSelected.text;

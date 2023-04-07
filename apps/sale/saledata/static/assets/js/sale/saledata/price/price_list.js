@@ -38,11 +38,11 @@ $(document).ready(function () {
             }, {
                 'data': 'type', render: (data, type, row, meta) => {
                     if (row.price_list_type.value === 0) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span></center>`
                     } else if (row.price_list_type.value === 1) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span></center>`
                     } else if (row.price_list_type.value === 2) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span>`
+                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span></center>`
                     } else {
                         return ''
                     }

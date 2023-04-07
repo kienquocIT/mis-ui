@@ -360,13 +360,17 @@ $(function () {
                     targets: 1,
                     render: (data, type, row) => {
                         let coordinates = {};
+                        let condition = [];
                         if (row.coordinates) {
                             coordinates = JSON.stringify(row.coordinates)
                         }
+                        if (row.condition) {
+                            condition = JSON.stringify(row.condition)
+                        }
                         if (row.is_system === true) {
-                            return `<span class="node-title" data-is-system="true" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                            return `<span class="node-title" data-is-system="true" data-system-code="${row.code_node_system}" data-coordinates=${coordinates} data-condition=${condition}>${row.title}</span>`
                         } else {
-                            return `<span class="node-title" data-is-system="false" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                            return `<span class="node-title" data-is-system="false" data-system-code="${row.code_node_system}" data-coordinates=${coordinates} data-condition=${condition}>${row.title}</span>`
                         }
                     }
                 },

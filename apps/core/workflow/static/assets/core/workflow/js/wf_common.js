@@ -35,6 +35,7 @@ function setupDataNode(is_submit = false) {
         let orderNode = 0;
         let fieldSelectCollaborator = "";
         let coordinates = {};
+        let condition = [];
 
         let collabInForm = {};
         let collabOutForm = {};
@@ -52,6 +53,10 @@ function setupDataNode(is_submit = false) {
                 let coordinatesRaw = col.querySelector('.node-title').getAttribute('data-coordinates');
                 if (coordinatesRaw) {
                     coordinates = JSON.parse(coordinatesRaw)
+                }
+                let conditionRaw = col.querySelector('.node-title').getAttribute('data-condition');
+                if (conditionRaw) {
+                    condition = JSON.parse(conditionRaw)
                 }
                 if (col.children[0].getAttribute('data-is-system')) {
                     if (col.children[0].getAttribute('data-is-system') === "true") {
@@ -198,6 +203,7 @@ function setupDataNode(is_submit = false) {
                 'code_node_system': codeNodeSystem,
                 'check_approved': '',
                 'coordinates': coordinates,
+                'condition': condition
             });
         }
     }

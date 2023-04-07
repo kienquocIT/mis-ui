@@ -1,5 +1,3 @@
-"use strict";
-
 /***
  * initSelectBox() is using for select dropdown
  * @class {string} dropdown-select_two - class name of select element needed
@@ -19,7 +17,6 @@
  *     @variable e.params.data: full data of select store
  *
  */
-$(function () {
 function initSelectBox(selectBoxElement = null) {
     let $select_box = selectBoxElement
     if (selectBoxElement === null)
@@ -108,8 +105,6 @@ function initSelectBox(selectBoxElement = null) {
         $this.select2(options)
     });
 }
-
 $(document).ready(function () {
     initSelectBox()
 });
-}, jQuery);

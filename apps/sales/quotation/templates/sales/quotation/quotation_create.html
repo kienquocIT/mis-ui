@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
+            href="#" data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="save"
+            data-bs-original-title="Save"
+            data-form-id="frm_quotation_create"
+    >
+        <span class="btn-icon-wrap">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-5"></div>
+        <div class="col-2">
+            <ul class="nav nav-line nav-tabs nav-light">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-link-text">Quotation</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-link-text">PAKD</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-5"></div>
+    </div>
+
+    <form
+            id="frm_quotation_create" class="needs-validation" data-url="" data-method="POST"
+            data-url-redirect=""
+            novalidate
+    >
+        {% csrf_token %}
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_block_1">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Select Opportunity' %}</label>
+                                <select
+                                        class="form-select" id="select-box-quotation-opportunity"
+                                        data-url=""
+                                        data-method="GET"
+                                        name="opportunity"
+                                >
+                                    <option></option>
+                                </select>
+                                <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Select Customer' %}</label>
+                                <select
+                                        class="form-select" id="select-box-quotation-customer"
+                                        data-url=""
+                                        data-method="GET"
+                                        name="customer"
+                                >
+                                    <option></option>
+                                </select>
+                                <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Select Contact' %}</label>
+                                <select
+                                        class="form-select" id="select-box-quotation-contact"
+                                        data-url=""
+                                        data-method="GET"
+                                        name="contact"
+                                >
+                                    <option></option>
+                                </select>
+                                <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Date Created' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="dd/mm/yyyy"
+                                        name="date_created"
+                                        id="quotation-date-created"
+                                        disabled
+                                >
+                                <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Status' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="Open"
+                                        name="status"
+                                        id="quotation-sale-person"
+                                        disabled
+                                >
+                                <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Select Sale Person' %}</label>
+                                <select
+                                        class="form-select" id="select-box-quotation-sale-person"
+                                        data-url=""
+                                        data-method="GET"
+                                        name="sale_person"
+                                >
+                                    <option></option>
+                                </select>
+                                <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <ul class="nav nav-light nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
+                                    <span class="nav-link-text">Line Detail</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4">
+                                    <span class="nav-link-text">Terms</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_5">
+                                    <span class="nav-link-text">Logistics</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_6">
+                                    <span class="nav-link-text">Cost</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_7">
+                                    <span class="nav-link-text">Expense</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab_block_3">
+                                <div class="row">
+                                    <table
+                                            id="datable-quotation-product-create"
+                                            class="table nowrap w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>{% trans 'Product' %}</th>
+                                            <th>{% trans 'Description' %}</th>
+                                            <th>{% trans 'Unit Of Measure' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Unit Price' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Subtotal Price' %}</th>
+                                            <th>{% trans 'Actions' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8"></div>
+                                    <div class="col-4">
+                                        <div class="row">
+                                            <div class="col-4"><p>Pretax Amount</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">680,000 VND</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4"><p>Taxes</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">68,000 VND</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4"><p>Discount</p></div>
+                                            <div class="col-4">0%</div>
+                                            <div class="col-4">0 VND</div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-4"><p>Total</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">748,000 VND</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4"><p>Coupon</p></div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" placeholder="input Coupon">
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-check form-check-lg">
+                                                    <input type="checkbox" class="form-check-input" id="customChecks3">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_block_4">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Select Price List' %}</label>
+                                        <select
+                                                class="form-control select2 select2-multiple"
+                                                multiple
+                                                data-placeholder="{% trans 'Choose' %}"
+                                                name=""
+                                                id="select-box-quotation-term-price"
+                                                data-url=""
+                                                data-method="GET"
+                                        >
+                                        </select>
+                                        <span class="form-text text-muted">{% trans 'Price list of quotation term' %}</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Select Discount List' %}</label>
+                                        <select
+                                                class="form-control select2 select2-multiple"
+                                                multiple
+                                                data-placeholder="{% trans 'Choose' %}"
+                                                name="role"
+                                                id="select-box-quotation-term-discount"
+                                                data-url=""
+                                                data-method="GET"
+                                        >
+                                        </select>
+                                        <span class="form-text text-muted">{% trans 'Discount list of quotation term' %}</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Select Payment Terms' %}</label>
+                                        <select
+                                                class="form-select" id="select-box-quotation-term-payment"
+                                                data-url=""
+                                                data-method="GET"
+                                                name=""
+                                        >
+                                            <option></option>
+                                        </select>
+                                        <span class="form-text text-muted">{% trans 'Payment terms quotation term' %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_block_5">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Shipping Address' %}</label>
+                                        <textarea class="form-control" rows="3" cols="50" name=""></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Billing Address' %}</label>
+                                        <textarea class="form-control" rows="3" cols="50" name=""></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_block_6">
+                                <div class="row">
+                                    <table
+                                            id="datable-quotation-product-create"
+                                            class="table nowrap w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>{% trans 'Product' %}</th>
+                                            <th>{% trans 'Unit Of Measure' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Cost Price' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Subtotal Price' %}</th>
+                                            <th>{% trans 'Actions' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_block_7">
+                                <div class="row">
+                                    <table
+                                            id="datable-quotation-product-create"
+                                            class="table nowrap w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>{% trans 'Expense' %}</th>
+                                            <th>{% trans 'Unit Of Measure' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Expense Price' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Subtotal Price' %}</th>
+                                            <th>{% trans 'Actions' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_block_2">
+                <table
+                        id="datable-employee-plan-app"
+                        data-url="{% url 'TenantPlanListAPI' %}"
+                        data-method="GET"
+                        style="width: 100%"
+                >
+                    <tbody></tbody>
+                </table>
+                <input type="hidden" id="is-check-app-employee-create" value="0">
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}
+
+
+{% block jsFooter %}
+
+{% endblock %}

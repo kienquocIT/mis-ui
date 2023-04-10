@@ -59,7 +59,7 @@
                 </span>
             </button>
             <table id="datatable-item-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceDetailAPI" pk=0 %}"
-                   data-url-detail="{% url "PriceListDetail" pk=0 %}" data-method="GET">
+                   data-url-detail="{% url "ProductDetail" pk=0 %}" data-method="GET">
                 <thead>
                 <th class="w-5">
             <span class="form-check">
@@ -162,79 +162,83 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-add-new-product" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenter"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Create New Product" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Name" %}
-                                <span class="field-required">*</span>
-                            </label>
-                            <input type="text" class="form-control" placeholder="Input Name of Item">
-                        </div>
+    <!-- Modal create new Product -->
+    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}">
+        <div class="modal fade" id="modal-add-new-product" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Create New Product" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Code" %}
-                                <span class="field-required">*</span>
-                            </label>
-                            <input type="text" class="form-control" placeholder="Input Name of Item">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <input type="text" class="form-control" placeholder="Input Name of Item" name="title">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "UoM Group" %}
-                                <span class="field-required">*</span></label>
-                            <select class="form-select" name="apply_for" id="select-uom-group" data-method="GET"
-                                    data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                                    data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}">
-                            </select>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Code" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <input type="text" class="form-control" placeholder="Input Name of Item" name="code">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "UoM" %}
-                                <span class="field-required">*</span>
-                            </label>
-                            <select class="form-select" name="apply_for" id="select-uom" data-method="GET"
-                                    data-url="{% url "UnitOfMeasureListAPI" %}">
-                            </select>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "UoM Group" %}
+                                    <span class="field-required">*</span></label>
+                                <select class="form-select" name="uom_group" id="select-uom-group" data-method="GET"
+                                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                                        data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}">
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "UoM" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <select class="form-select" name="uom" id="select-uom" data-method="GET"
+                                        data-url="{% url "UnitOfMeasureListAPI" %}">
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="row mt-3 overflow-x-scroll">
-                        <table class="table nowrap w-100 mb-5">
-                            <thead>
-                            <th class="w-20">{% trans "Price in VND" %}&nbsp;<span class="field-required">*</span></th>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <input class="form-control" placeholder="200000" type="number">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <div class="row mt-3 overflow-x-scroll">
+                            <table class="table nowrap w-100 mb-5">
+                                <thead>
+                                <th class="w-20">{% trans "Price in VND" %}&nbsp;<span class="field-required">*</span>
+                                </th>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" placeholder="200000" type="number">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-changes-modal-billing-address">
-                        Save
-                    </button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
 {% endblock %}
 {% block jsFooter %}

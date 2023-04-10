@@ -225,6 +225,7 @@ $(document).ready(function () {
         } else {
             $('#checkbox-can-delete').prop('checked', false);
             $('#checkbox-can-delete').attr('disabled', 'disabled');
+            // $('#')
         }
     })
 
@@ -288,5 +289,37 @@ $(document).ready(function () {
                 cell.appendChild(input);
             }
         }
+    })
+
+    let frm_create_product = $('#form-create-product')
+    frm_create_product.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        frm.dataForm['general_information'] = {
+            'uom_group': frm.dataForm['uom_group'],
+            'product_type': null,
+            'product_category': null
+        }
+
+        frm.dataForm['sale_information'] = {
+            'default_uom': frm.dataForm['uom_group'],
+            'tax_code': null,
+        }
+        frm.dataForm['inventory_information'] = {}
+        console.log(frm.dataForm)
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+            )
     })
 })

@@ -27,12 +27,12 @@
             <ul class="nav nav-line nav-tabs nav-light">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
-                        <span class="nav-link-text">Quotation</span>
+                        <span class="nav-link-text"><i class="far fa-file-alt"></i></span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                        <span class="nav-link-text">Forecast</span>
+                        <span class="nav-link-text"><i class="fas fa-chart-line"></i></span>
                     </a>
                 </li>
             </ul>
@@ -50,6 +50,19 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>
+                            <input
+                                    type="text" class="form-control"
+                                    placeholder="input title"
+                                    name="title"
+                                    id="quotation-create-title"
+                                    required
+                            >
+                            <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Opportunity' %}</label>
@@ -64,12 +77,13 @@
                                 <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Select Customer' %}</label>
+                                <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
                                 <select
                                         class="form-select" id="select-box-quotation-customer"
                                         data-url=""
                                         data-method="GET"
                                         name="customer"
+                                        required
                                 >
                                     <option></option>
                                 </select>
@@ -114,8 +128,9 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Sale Person' %}</label>
                                 <select
-                                        class="form-select" id="select-box-quotation-sale-person"
-                                        data-url=""
+                                        class="form-select"
+                                        id="select-box-quotation-sale-person"
+                                        data-url="{% url "EmployeeListAPI" %}"
                                         data-method="GET"
                                         name="sale_person"
                                 >
@@ -165,11 +180,11 @@
                                         <thead>
                                         <tr>
                                             <th>STT</th>
-                                            <th>{% trans 'Product' %}</th>
+                                            <th>{% trans 'Product' %}<span class="field-required">(*)</span></th>
                                             <th>{% trans 'Description' %}</th>
-                                            <th>{% trans 'Unit Of Measure' %}</th>
-                                            <th>{% trans 'Quantity' %}</th>
-                                            <th>{% trans 'Unit Price' %}</th>
+                                            <th>{% trans 'Unit Of Measure' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Quantity' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Unit Price' %}<span class="field-required">(*)</span></th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th>{% trans 'Actions' %}</th>
@@ -180,7 +195,7 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated">
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create">
                                                 <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
                                             </button>
                                         </div>
@@ -193,23 +208,31 @@
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-4"></div>
-                                            <div class="col-4">680,000 VND</div>
+                                            <div class="col-4">
+                                                <span id="quotation-create-product-pretax-amount">0</span><span class="ml-1">VND</span>
+                                            </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-4"></div>
-                                            <div class="col-4">68,000 VND</div>
+                                            <div class="col-4">
+                                                <span id="quotation-create-product-taxes">0</span><span class="ml-1">VND</span>
+                                            </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Discount' %}</p></div>
                                             <div class="col-4">0%</div>
-                                            <div class="col-4">0 VND</div>
+                                            <div class="col-4">
+                                                <span id="quotation-create-product-discount">0</span><span class="ml-1">VND</span>
+                                            </div>
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Total' %}</p></div>
                                             <div class="col-4"></div>
-                                            <div class="col-4">748,000 VND</div>
+                                            <div class="col-4">
+                                                <span id="quotation-create-product-total">0</span><span class="ml-1">VND</span>
+                                            </div>
                                         </div>
                                         <div class="row mb-2">
                                             <button

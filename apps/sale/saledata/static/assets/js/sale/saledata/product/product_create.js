@@ -113,8 +113,7 @@ $(document).ready(function () {
         return dataTree
     }
 
-    function appendHtmlForPriceList(dataTree, ele, currency) {
-        let count = 0;
+    function appendHtmlForPriceList(dataTree, ele, currency, count) {
         for (let i = 0; i < dataTree.length; i++) {
             if (dataTree[i].item.price_list_mapped !== null) {
                 if (dataTree[i].item.auto_update === true) {
@@ -128,7 +127,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
+                                <input data-auto-update="`+ dataTree[i].item.auto_update +`" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -144,7 +143,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <input data-auto-update="`+ dataTree[i].item.auto_update +`" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -162,7 +161,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <input data-auto-update="`+ dataTree[i].item.auto_update +`" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -178,7 +177,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <input data-auto-update="`+ dataTree[i].item.auto_update +`" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -187,18 +186,19 @@ $(document).ready(function () {
             }
             count += 1
             if (dataTree[i].child.length !== 0) {
-                appendHtmlForPriceList(dataTree[i].child, ele, currency)
+                count = appendHtmlForPriceList(dataTree[i].child, ele, currency, count)
             } else {
                 continue;
             }
         }
-        return true
+        return count
     }
 
     let currency_id;
     function loadPriceList() {
         let ele = $('#select-price-list');
         let currency_primary;
+        let count = 0;
         $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -228,7 +228,7 @@ $(document).ready(function () {
                                     }
                                 }
                             })
-                            appendHtmlForPriceList(dataTree, ele, currency_primary);
+                            appendHtmlForPriceList(dataTree, ele, currency_primary, count);
                             autoSelectPriceListCopyFromSource()
                             // ele.find('ul').append(html)
                         }
@@ -317,7 +317,8 @@ $(document).ready(function () {
                     {
                         'price_list_id': $(this).attr('data-id'),
                         'price_value': $(this).val(),
-                        'currency_using': currency_id
+                        'currency_using': currency_id,
+                        'is_auto_update': $(this).attr('data-auto-update')
                     }
                 )
         })
@@ -366,6 +367,18 @@ $(document).ready(function () {
 
     $(document).on('click', '.ul-price-list .form-check-input', function () {
         autoSelectPriceListCopyFromSource()
+        if($(this).prop('checked')){
+            $(`input[data-text="`+ $(this).attr('data-check') +`"]`).prop('readonly', false)
+        }
+        else{
+            $(`input[data-text="`+ $(this).attr('data-check') +`"]`).prop('readonly', true)
+            // $(`input[data-text="`+ $(this).attr('data-check') +`"]`).val(null);
+            let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input:not(:checked)')
+            for(let i=0; i<element.length; i++){
+                document.querySelector(`input[type="number"][data-text="` + element[i].getAttribute('data-check') + `"]`).value = null;
+            }
+        }
+
     })
 
     $(document).on('input', '.ul-price-list .value-price-list', function () {
@@ -373,7 +386,7 @@ $(document).ready(function () {
         for (let i = 0; i < element.length; i++) {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
-                if (isNaN(document.querySelector(`input[type="number"][data-id="` + data_id + `"]`))) {
+                if (document.querySelector(`input[type="number"][data-id="` + data_id + `"]`).value !== '') {
                     element[i].value = document.querySelector(`input[type="number"][data-id="` + data_id + `"]`).value * element[i].getAttribute('data-factor');
                 }
             }

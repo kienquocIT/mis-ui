@@ -311,7 +311,6 @@ $(document).ready(function () {
                         }
                     })
                     html = appendHtmlForPriceList(dataTree, ele, 0);
-                    console.log(list_price)
                 }
             }
         })

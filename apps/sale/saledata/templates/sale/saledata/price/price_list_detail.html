@@ -104,6 +104,7 @@
             <form id="form-update-price-list" data-method="PUT"
                   data-url="{% url "PriceDetailAPI" pk=0 %}"
                   data-url-redirect="{% url "PriceList" %}"
+                  data-url-list="{% url "PriceListAPI" %}"
             >
                 {% csrf_token %}
                 <div class="row">

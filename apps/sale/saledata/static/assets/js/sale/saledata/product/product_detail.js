@@ -211,6 +211,7 @@ $(document).ready(function () {
     }
 
     function loadPriceList(list_price) {
+        console.log(list_price)
         let ele = $('#select-price-list');
         let dataTree = []
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
@@ -228,6 +229,11 @@ $(document).ready(function () {
                     })
                     appendHtmlForPriceList(dataTree, ele, 'VND', 0);
                     autoSelectPriceListCopyFromSource()
+                    list_price.map(function (item){
+                        document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
+                        document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
+                        document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = false;
+                    })
                 }
             }
         })
@@ -285,7 +291,7 @@ $(document).ready(function () {
                                     select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
                             })
 
-                            $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
+                            $('#inventory-  level-max').val(data.product.inventory_information.inventory_level_max);
                             $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
                             loadTaxCode(data.product.sale_information.tax_code);
 

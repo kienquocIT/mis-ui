@@ -189,6 +189,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                $('#price_list_name').text(data.price.title)
                 if (data.hasOwnProperty('price')) {
                     config['data'] = data.price.products_mapped;
                     initDataTable(config, '#datatable-item-list');
@@ -254,7 +255,6 @@ $(document).ready(function () {
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
             }
-
 
             frm.dataMethod['price_list_child'] = price_list_copy_from_source;
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)

@@ -228,28 +228,46 @@ $(document).ready(function () {
         }
     })
 
-    frm.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        frm.dataForm['currency'] = $('#select-box-currency').val();
-        frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
-        if (frm.dataForm['currency'].length === 0) {
-            frm.dataForm['currency'] = null;
-        }
-        $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+    let price_list_copy_from_source = [];
+    price_list_copy_from_source.push(pk);
+    $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                data.price_list.map(function (item) {
+                    if (item.price_list_type.value === 0) {
+                        if (price_list_copy_from_source.includes(item.price_list_mapped) && item.auto_update === true)
+                            price_list_copy_from_source.push(item.id);
                     }
-                },
-                (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                }
-            )
+                })
+            }
+        }
+    }).then((resp) => {
+        frm.submit(function (event) {
+            console.log(price_list_copy_from_source);
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            frm.dataForm['currency'] = $('#select-box-currency').val();
+            frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
+            if (frm.dataForm['currency'].length === 0) {
+                frm.dataForm['currency'] = null;
+            }
+            frm.dataMethod['price_list_child'] = price_list_copy_from_source;
+            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    }
+                )
+        })
     })
 
     $('.btn-add-price').on('click', function () {

@@ -388,7 +388,7 @@ $(document).ready(function () {
                 }
             ).then(
             (rep) => {// reload dataTable after create
-                $('#section-tax-category').empty();
+                $('#section-tax-category').html('');
                 $('#section-tax-category').append(ele_tax_category);
                 loadTaxCategory();
             })
@@ -419,7 +419,7 @@ $(document).ready(function () {
                 }
             ).then(
             (rep) => {// reload dataTable after create
-                $('#section-tax').empty();
+                $('#section-tax').html('');
                 $('#section-tax').append(ele_tax);
                 loadTax();
             })
@@ -532,7 +532,7 @@ $(document).ready(function () {
                 }
             ).then(
             (rep) => {// reload dataTable after create
-                $('#section-tax').empty();
+                $('#section-tax').html('');
                 $('#section-tax').append(ele_tax);
                 loadTax();
             })
@@ -557,7 +557,7 @@ $(document).ready(function () {
                 }
             ).then(
             (resp) => {// reload dataTable after create
-                $('#section-tax-category').empty();
+                $('#section-tax-category').html('');
                 $('#section-tax-category').append(ele_tax_category);
                 loadTaxCategory();
             })
@@ -588,7 +588,7 @@ $(document).ready(function () {
                 }
             ).then(
             (rep) => {// reload dataTable after create
-                $('#section-currency').empty();
+                $('#section-currency').html('');
                 $('#section-currency').append(ele_currency);
                 loadCurrency();
             })
@@ -671,7 +671,7 @@ $(document).ready(function () {
                 }
             ).then(
             (resp) => {// reload dataTable after create
-                $('#section-currency').empty();
+                $('#section-currency').html('');
                 $('#section-currency').append(ele_currency);
                 loadCurrency();
             })
@@ -695,7 +695,7 @@ $(document).ready(function () {
                         setTimeout(function () {
                             $('#sync-from-VCB-button').text('Sync with VCB &nbsp;')
                             // $('#sync-status').html('');
-                            $('#section-currency').empty();
+                            $('#section-currency').html('');
                             $('#section-currency').append(ele_currency);
                             loadCurrency();
                         }, 2000);

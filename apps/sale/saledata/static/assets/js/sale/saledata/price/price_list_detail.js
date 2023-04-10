@@ -253,6 +253,8 @@ $(document).ready(function () {
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
             }
+
+
             frm.dataMethod['price_list_child'] = price_list_copy_from_source;
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(

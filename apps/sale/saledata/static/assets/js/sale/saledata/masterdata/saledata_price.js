@@ -220,6 +220,7 @@ $(document).ready(function () {
             feather.replace();
         },
         data: [],
+        round_number: null,
         columns: [{
             'render': (data, type, row, meta) => {
                 let currentId = "chk_sel_" + String(meta.row + 1)
@@ -259,7 +260,7 @@ $(document).ready(function () {
                     if (row.is_primary === true) {
                         return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`
                     } else {
-                        return `<span>` + row.rate.toLocaleString('en-US', {minimumFractionDigits: 2}) + `</span>`
+                        return `<span>` + row.rate.toLocaleString('en-US', {minimumFractionDigits: row.round_number}) + `</span>`
                     }
                 } else {
                     return ``;
@@ -347,11 +348,16 @@ $(document).ready(function () {
                         return currency.abbreviation === "VND";
                     })[0];
 
-                    // if (vndCurrency.is_primary) {
-                    //     $('#sync-from-VCB-button').prop('hidden', false);
-                    // } else {
-                    //     $('#sync-from-VCB-button').prop('hidden', true);
-                    // }
+                    if (vndCurrency.is_primary) {
+                        for (let i = 0; i < config_currency['data'].length; i++) {
+                            config_currency['data'][i]['round_number'] = 2;
+                        }
+                    } else {
+                        for (let i = 0; i < config_currency['data'].length; i++) {
+                            config_currency['data'][i]['round_number'] = 5;
+                        }
+                    }
+
                     data.currency_list.map(function (item) {
                         if (item.is_primary === true) {
                             $('.abbreviation-primary').text(item.abbreviation);
@@ -698,7 +704,7 @@ $(document).ready(function () {
                             $('#section-currency').html('');
                             $('#section-currency').append(ele_currency);
                             loadCurrency();
-                        }, 2000);
+                        }, 1500);
                     }
                 },
                 (errs) => {

@@ -313,15 +313,24 @@ $(document).ready(function () {
 
         let price_list = []
         $('.ul-price-list .value-price-list').each(function () {
+            let is_auto_update = true;
+            if ($(this).attr('data-auto-update') === 'false') {
+                is_auto_update = false;
+            }
             if ($(this).val() !== '') {
-                let is_auto_update = true;
-                if ($(this).attr('data-auto-update') === 'false') {
-                    is_auto_update = false;
-                }
                 price_list.push(
                     {
                         'price_list_id': $(this).attr('data-id'),
                         'price_value': $(this).val(),
+                        'is_auto_update': is_auto_update,
+                    }
+                )
+            }
+            else{
+                price_list.push(
+                    {
+                        'price_list_id': $(this).attr('data-id'),
+                        'price_value': null,
                         'is_auto_update': is_auto_update,
                     }
                 )
@@ -333,12 +342,10 @@ $(document).ready(function () {
                 'default_uom': $('#select-box-default-uom').val(),
                 'tax_code': $('#select-box-tax-code').val()
             }
-            if (price_list.length > 0)
-            {
+            if (price_list.length > 0) {
                 frm.dataForm['sale_information']['price_list'] = price_list;
                 frm.dataForm['sale_information']['currency_using'] = currency_id;
-            }
-            else{
+            } else {
                 frm.dataForm['sale_information']['price_list'] = null;
                 frm.dataForm['sale_information']['currency_using'] = null;
             }

@@ -312,9 +312,9 @@ $(document).ready(function () {
 
         let price_list = []
         $('.ul-price-list .value-price-list').each(function () {
-            let is_auto_update = true;
+            let is_auto_update = '1';
             if ($(this).attr('data-auto-update') === 'false') {
-                is_auto_update = false;
+                is_auto_update = '0';
             }
             if ($(`input[type="checkbox"][data-id="` + $(this).attr('data-id') + `"]`).prop('checked') === true) {
                 if ($(this).val() !== '') {

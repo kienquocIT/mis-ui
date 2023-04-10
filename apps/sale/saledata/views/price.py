@@ -242,9 +242,9 @@ class SyncSellingRateWithVCB(APIView):
                 {
                     '@CurrencyCode': 'VND',
                     '@CurrencyName': 'VIETNAM DONG   ',
-                    '@Buy': '1000.0',
-                    '@Transfer': '1000.0',
-                    '@Sell': '1000.0'
+                    '@Buy': '1.0',
+                    '@Transfer': '1.0',
+                    '@Sell': '1.0'
                 }
             )
 

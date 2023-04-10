@@ -49,7 +49,7 @@
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
-            <button data-bs-toggle="modal" data-bs-target="#modal-add-new-product" type="button"
+            <button class="mt-2 mb-3" data-bs-toggle="modal" data-bs-target="#modal-add-new-product" type="button"
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
@@ -76,24 +76,19 @@
                 <th class="w-10">{% trans "UoM group" %}</th>
                 <th class="w-10">{% trans "UoM" %}</th>
                 <th class="w-10">{% trans "Price in VND" %}
-                    <a href="#" class="bi bi-patch-plus ml-3"></a>
-                </th>
-                <th class="w-5">
-                    <div class="dropdown">
-                        <button type="button" class=""
-                                style="background: none; border: none" data-bs-toggle="dropdown">
-                        <span class="icon">
-                            <span class="feather-icon">
-                                <i data-feather="plus"></i>
-                            </span>
+                    <button type="button" class=""
+                            style="background: none; border: none" data-bs-toggle="dropdown">
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <a href="#" class="bi bi-patch-plus ml-3"></a>
                         </span>
-                        </button>
-                        <div role="menu" class="dropdown-menu" id="dropdown-currency">
-                            <a class="dropdown-item btn-add-price" href="#">VND</a>
-                        </div>
+                    </span>
+                    </button>
+                    <div role="menu" class="dropdown-menu" id="dropdown-currency">
+                        <a class="dropdown-item btn-add-price" href="#">VND</a>
                     </div>
-
                 </th>
+                <th class="w-5"></th>
                 <th class="w-5"></th>
                 </thead>
             </table>
@@ -182,7 +177,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Name" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Input Name of Item">
                         </div>
@@ -190,7 +185,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Code" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <input type="text" class="form-control" placeholder="Input Name of Item">
                         </div>
@@ -198,7 +193,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "UoM Group" %}
-                                <span class="field-required">(*)</span></label>
+                                <span class="field-required">*</span></label>
                             <select class="form-select" name="apply_for" id="select-uom-group" data-method="GET"
                                     data-url="{% url "UnitOfMeasureGroupListAPI" %}"
                                     data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}">
@@ -208,7 +203,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "UoM" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <select class="form-select" name="apply_for" id="select-uom" data-method="GET"
                                     data-url="{% url "UnitOfMeasureListAPI" %}">
@@ -219,7 +214,7 @@
                     <div class="row mt-3 overflow-x-scroll">
                         <table class="table nowrap w-100 mb-5">
                             <thead>
-                            <th class="w-20">{% trans "Price in VND" %}</th>
+                            <th class="w-20">{% trans "Price in VND" %}&nbsp;<span class="field-required">*</span></th>
                             </thead>
                             <tbody>
                             <tr>

@@ -189,7 +189,6 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 $('#price_list_name').text(data.price.title)
                 if (data.hasOwnProperty('price')) {
                     config['data'] = data.price.products_mapped;

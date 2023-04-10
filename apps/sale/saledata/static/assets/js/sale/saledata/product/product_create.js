@@ -271,7 +271,6 @@ $(document).ready(function () {
             }, (errs) => {
             },)
         }
-
     })
 
     // change select box UoM Name in tab inventory
@@ -317,23 +316,24 @@ $(document).ready(function () {
             if ($(this).attr('data-auto-update') === 'false') {
                 is_auto_update = false;
             }
-            if ($(this).val() !== '') {
-                price_list.push(
-                    {
-                        'price_list_id': $(this).attr('data-id'),
-                        'price_value': $(this).val(),
-                        'is_auto_update': is_auto_update,
-                    }
-                )
-            }
-            else{
-                price_list.push(
-                    {
-                        'price_list_id': $(this).attr('data-id'),
-                        'price_value': null,
-                        'is_auto_update': is_auto_update,
-                    }
-                )
+            if ($(`input[type="checkbox"][data-id="` + $(this).attr('data-id') + `"]`).prop('checked') === true) {
+                if ($(this).val() !== '') {
+                    price_list.push(
+                        {
+                            'price_list_id': $(this).attr('data-id'),
+                            'price_value': $(this).val(),
+                            'is_auto_update': is_auto_update,
+                        }
+                    )
+                } else {
+                    price_list.push(
+                        {
+                            'price_list_id': $(this).attr('data-id'),
+                            'price_value': null,
+                            'is_auto_update': is_auto_update,
+                        }
+                    )
+                }
             }
         })
 

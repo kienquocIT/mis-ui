@@ -143,7 +143,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
+                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -177,7 +177,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
+                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -322,7 +322,6 @@ $(document).ready(function () {
                     {
                         'price_list_id': $(this).attr('data-id'),
                         'price_value': $(this).val(),
-                        'currency_using': currency_id,
                         'is_auto_update': is_auto_update,
                     }
                 )
@@ -335,9 +334,14 @@ $(document).ready(function () {
                 'tax_code': $('#select-box-tax-code').val()
             }
             if (price_list.length > 0)
+            {
                 frm.dataForm['sale_information']['price_list'] = price_list;
-            else
+                frm.dataForm['sale_information']['currency_using'] = currency_id;
+            }
+            else{
                 frm.dataForm['sale_information']['price_list'] = null;
+                frm.dataForm['sale_information']['currency_using'] = null;
+            }
         } else {
             frm.dataForm['sale_information'] = {}
         }
@@ -374,9 +378,9 @@ $(document).ready(function () {
     $(document).on('click', '.ul-price-list .form-check-input', function () {
         autoSelectPriceListCopyFromSource()
         if ($(this).prop('checked')) {
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('readonly', false)
+            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', false)
         } else {
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('readonly', true)
+            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', true)
             // $(`input[data-text="`+ $(this).attr('data-check') +`"]`).val(null);
             let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input:not(:checked)')
             for (let i = 0; i < element.length; i++) {

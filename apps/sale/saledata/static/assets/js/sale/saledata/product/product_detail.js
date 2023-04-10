@@ -113,102 +113,207 @@ $(document).ready(function () {
 
     }
 
+    // function loadPriceList(list_price) {
+    //     let ele = $('#select-price-list');
+    //     let html = ``;
+    //     let count = 0;
+    //     let currency;
+    //     $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+    //         let data = $.fn.switcherResp(resp);
+    //         if (data) {
+    //             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+    //                 data.price_list.map(function (item) {
+    //                     if (item.price_list_type.value === 0) {
+    //                         let price = list_price.find(obj => obj.id === item.id)
+    //                         if (price !== undefined) {
+    //                             currency = price.currency_using;
+    //                             if (price.id === item.id) {
+    //                                 if (item.is_default === true) {
+    //                                     html += `<div class="row">
+    //                                 <div class="col-6">
+    //                                     <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+    //                                         <input class="form-check-input" type="checkbox"
+    //                                             value="option1" checked data-check="check-` + count + `" disabled>
+    //                                         <label class="form-check-label">` + item.title + `</label>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="col-6 form-group">
+    //                                     <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+    //                                         <input data-text="check-` + count + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `">
+    //                                         <span class="input-suffix">` + price.currency_using + `</span>
+    //                                     </span>
+    //                                 </div>
+    //                             </div>`
+    //                                 } else {
+    //                                     if (item.price_list_mapped === null || item.auto_update === true) {
+    //                                         html += `<div class="row">
+    //                                 <div class="col-6">
+    //                                     <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+    //                                         <input class="form-check-input" type="checkbox"
+    //                                             value="option1" checked data-check="check-` + count + `">
+    //                                         <label class="form-check-label">` + item.title + `</label>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="col-6 form-group">
+    //                                     <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+    //                                         <input data-text="check-` + count + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `">
+    //                                         <span class="input-suffix">` + price.currency_using + `</span>
+    //                                     </span>
+    //                                 </div>
+    //                             </div>`
+    //                                     } else {
+    //                                         html += `<div class="row">
+    //                                 <div class="col-6">
+    //                                     <div class="form-check form-check-inline mt-2 ml-5">
+    //                                         <input data-source="` + item.price_list_mapped + `" class="form-check-input" type="checkbox"
+    //                                             value="option1" checked disabled>
+    //                                         <label class="form-check-label">` + item.title + `</label>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="col-6 form-group">
+    //                                     <span class="input-affix-wrapper affix-wth-text">
+    //                                         <input data-factor="` + item.factor + `" data-source="` + item.price_list_mapped + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `" readonly>
+    //                                         <span class="input-suffix">` + price.currency_using + `</span>
+    //                                     </span>
+    //                                 </div>
+    //                             </div>`
+    //                                     }
+    //                                 }
+    //                             }
+    //
+    //                         } else {
+    //                             if (item.price_list_mapped === null || item.auto_update === true) {
+    //                                 html += `<div class="row">
+    //                                 <div class="col-6">
+    //                                     <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+    //                                         <input class="form-check-input" type="checkbox"
+    //                                             value="option1" data-check="check-` + count + `">
+    //                                         <label class="form-check-label">` + item.title + `</label>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="col-6 form-group">
+    //                                     <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+    //                                         <input data-text="check-` + count + `" data-currency="` + currency + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="">
+    //                                         <span class="input-suffix">` + currency + `</span>
+    //                                     </span>
+    //                                 </div>
+    //                             </div>`
+    //                             } else {
+    //                                 html += `<div class="row">
+    //                                 <div class="col-6">
+    //                                     <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+    //                                         <input data-source="` + item.price_list_mapped + `" class="form-check-input" type="checkbox"
+    //                                             value="option1" disabled checked data-check="check-` + count + `">
+    //                                         <label class="form-check-label">` + item.title + `</label>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="col-6 form-group">
+    //                                     <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+    //                                         <input data-source="` + item.price_list_mapped + `" data-factor="` + item.factor + `" data-text="check-` + count + `" data-currency="` + currency + `" data-id="` + item.id + `" class="form-control value-price-list price-list-not-price" type="number" readonly>
+    //                                         <span class="input-suffix">` + currency + `</span>
+    //                                     </span>
+    //                                 </div>
+    //                             </div>`
+    //                             }
+    //
+    //                         }
+    //                     }
+    //                     count += 1;
+    //                 })
+    //                 ele.find('ul').append(html)
+    //             }
+    //         }
+    //     }).then((resp) => {
+    //         $('.price-list-not-price').each(function () {
+    //             let val_source = parseInt($(`input[data-id="` + $(this).attr('data-source') + `"]`).val().replace(/,/g, ''))
+    //             $(this).val(val_source * $(this).attr('data-factor'))
+    //         })
+    //     })
+    // }
+
+    function getTreePriceList(dataTree, parent_id, child) {
+        for (let i = 0; i < dataTree.length; i++) {
+            if (dataTree[i].item.id === parent_id) {
+                dataTree[i].child.push({'item': child, 'child': []})
+            } else {
+                if (dataTree[i].child.length === 0)
+                    continue;
+                else {
+                    getTreePriceList(dataTree[i].child, parent_id, child)
+                }
+            }
+        }
+        return dataTree
+    }
+
+    function appendHtmlForPriceList(dataTree, ele, pl) {
+        let count = 0;
+        let class_padding = `pl-lg-` + pl.toString();
+        for (let i = 0; i < dataTree.length; i++) {
+            if (dataTree[i].item.price_list_mapped !== null) {
+                ele.find('ul').append(`<div class="row">
+                        <div class="col-6 ` + class_padding + `">
+                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <input class="form-check-input" type="checkbox"
+                                    value="option1" checked data-check="check-` + count + `" disabled>
+                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                            </div>
+                        </div>
+                        <div class="col-6 form-group">
+                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                                <input data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                            </span>
+                        </div>
+                    </div>`)
+            } else {
+                ele.find('ul').append(`<div class="row">
+                        <div class="col-6 ` + class_padding + `">
+                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <input class="form-check-input" type="checkbox"
+                                    value="option1" checked data-check="check-` + count + `" disabled>
+                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                            </div>
+                        </div>
+                        <div class="col-6 form-group">
+                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                                <input data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                            </span>
+                        </div>
+                    </div>`)
+            }
+            count += 1
+            if (dataTree[i].child.length !== 0) {
+                appendHtmlForPriceList(dataTree[i].child, ele, pl + 1)
+            } else {
+                continue;
+            }
+        }
+        return true
+    }
+
+
+
     function loadPriceList(list_price) {
         let ele = $('#select-price-list');
         let html = ``;
-        let count = 0;
-        let currency;
+        let dataTree = []
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                     data.price_list.map(function (item) {
                         if (item.price_list_type.value === 0) {
-                            let price = list_price.find(obj => obj.id === item.id)
-                            if (price !== undefined) {
-                                currency = price.currency_using;
-                                if (price.id === item.id) {
-                                    if (item.price_list_mapped === null || item.auto_update === false) {
-                                        html += `<div class="row">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
-                                            <input class="form-check-input" type="checkbox"
-                                                value="option1" checked data-check="check-` + count + `">
-                                            <label class="form-check-label">` + item.title + `</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 form-group">
-                                        <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                            <input data-text="check-` + count + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `">
-                                            <span class="input-suffix">` + price.currency_using + `</span>
-                                        </span>
-                                    </div>
-                                </div>`
-                                    } else {
-                                        html += `<div class="row">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline mt-2 ml-5">
-                                            <input data-source="` + item.price_list_mapped + `" class="form-check-input" type="checkbox"
-                                                value="option1" checked disabled>
-                                            <label class="form-check-label">` + item.title + `</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 form-group">
-                                        <span class="input-affix-wrapper affix-wth-text">
-                                            <input data-factor="` + item.factor + `" data-source="` + item.price_list_mapped + `" data-currency="` + price.currency_using + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="` + price.price + `" readonly>
-                                            <span class="input-suffix">` + price.currency_using + `</span>
-                                        </span>
-                                    </div>
-                                </div>`
-                                    }
-                                }
+                            if (item.price_list_mapped === null) {
+                                dataTree.push({'item': item, 'child': []})
                             } else {
-                                if (item.price_list_mapped === null) {
-                                    html += `<div class="row">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
-                                            <input class="form-check-input" type="checkbox"
-                                                value="option1" data-check="check-` + count + `">
-                                            <label class="form-check-label">` + item.title + `</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 form-group">
-                                        <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                            <input data-text="check-` + count + `" data-currency="` + currency + `" data-id="` + item.id + `" class="form-control value-price-list" type="number" value="">
-                                            <span class="input-suffix">` + currency + `</span>
-                                        </span>
-                                    </div>
-                                </div>`
-                                } else {
-                                    html += `<div class="row">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
-                                            <input data-source="`+ item.price_list_mapped +`" class="form-check-input" type="checkbox"
-                                                value="option1" disabled checked data-check="check-` + count + `">
-                                            <label class="form-check-label">` + item.title + `</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 form-group">
-                                        <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                            <input data-source="` + item.price_list_mapped + `" data-factor="` + item.factor + `" data-text="check-` + count + `" data-currency="` + currency + `" data-id="` + item.id + `" class="form-control value-price-list price-list-not-price" type="number" readonly>
-                                            <span class="input-suffix">` + currency + `</span>
-                                        </span>
-                                    </div>
-                                </div>`
-                                }
-
+                                dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
                             }
                         }
-                        count += 1;
                     })
-                    ele.find('ul').append(html)
+                    html = appendHtmlForPriceList(dataTree, ele, 0);
+                    console.log(list_price)
                 }
             }
-        }).then((resp) => {
-            $('.price-list-not-price').each(function (){
-                let val_source = parseInt($(`input[data-id="`+ $(this).attr('data-source') +`"]`).val().replace(/,/g, ''))
-                $(this).val(val_source * $(this).attr('data-factor'))
-            })
         })
     }
 
@@ -397,7 +502,7 @@ $(document).ready(function () {
     $(document).on('input', '#tab_sale .value-price-list', function () {
         let ele = $(`input[data-source="` + $(this).attr('data-id') + `"]`)
         let value_source = parseInt($(this).val());
-        for (let i=0; i < ele.length; i++){
+        for (let i = 0; i < ele.length; i++) {
             ele[i].value = value_source * ele[i].getAttribute('data-factor')
         }
     })

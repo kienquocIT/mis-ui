@@ -88,7 +88,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     ele.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
-                        if(item.type === 0 || item.type === 2)
+                        if (item.type === 0 || item.type === 2)
                             ele.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                     })
                 }
@@ -98,19 +98,113 @@ $(document).ready(function () {
 
     }
 
+    function getTreePriceList(dataTree, parent_id, child) {
+        for (let i = 0; i < dataTree.length; i++) {
+            if (dataTree[i].item.id === parent_id) {
+                dataTree[i].child.push({'item': child, 'child': []})
+            } else {
+                if (dataTree[i].child.length === 0)
+                    continue;
+                else {
+                    getTreePriceList(dataTree[i].child, parent_id, child)
+                }
+            }
+        }
+        return dataTree
+    }
+
+    function appendHtmlForPriceList(dataTree, ele, currency) {
+        let count = 0;
+        for (let i = 0; i < dataTree.length; i++) {
+            if (dataTree[i].item.price_list_mapped !== null) {
+                if (dataTree[i].item.auto_update === true) {
+                    ele.find('ul').append(`<div class="row">
+                        <div class="col-6">
+                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
+                                    value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `" disabled>
+                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                            </div>
+                        </div>
+                        <div class="col-6 form-group">
+                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                                <input data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="" readonly>
+                                <span class="input-suffix">` + currency + `</span>
+                            </span>
+                        </div>
+                    </div>`)
+                } else {
+                    ele.find('ul').append(`<div class="row">
+                        <div class="col-6">
+                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
+                                    value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
+                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                            </div>
+                        </div>
+                        <div class="col-6 form-group">
+                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                                <input data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <span class="input-suffix">` + currency + `</span>
+                            </span>
+                        </div>
+                    </div>`)
+                }
+            } else {
+                if (dataTree[i].item.is_default === true) {
+                    ele.find('ul').append(`<div class="row">
+                        <div class="col-6">
+                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <input class="form-check-input" type="checkbox"
+                                    value="option1" checked data-check="check-` + count + `" disabled data-id="` + dataTree[i].item.id + `">
+                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                            </div>
+                        </div>
+                        <div class="col-6 form-group">
+                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                                <input data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <span class="input-suffix">` + currency + `</span>
+                            </span>
+                        </div>
+                    </div>`)
+                } else {
+                    ele.find('ul').append(`<div class="row">
+                        <div class="col-6">
+                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <input class="form-check-input" type="checkbox"
+                                    value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
+                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                            </div>
+                        </div>
+                        <div class="col-6 form-group">
+                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                                <input data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <span class="input-suffix">` + currency + `</span>
+                            </span>
+                        </div>
+                    </div>`)
+                }
+            }
+            count += 1
+            if (dataTree[i].child.length !== 0) {
+                appendHtmlForPriceList(dataTree[i].child, ele, currency)
+            } else {
+                continue;
+            }
+        }
+        return true
+    }
+
+    let currency_id;
     function loadPriceList() {
         let ele = $('#select-price-list');
-        let html = ``;
-        let count = 0;
         let currency_primary;
-        let currency_id;
         $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
                     data.currency_list.map(function (item) {
-                        if (item.is_primary === true)
-                        {
+                        if (item.is_primary === true) {
                             currency_primary = item.abbreviation;
                             currency_id = item.id;
                         }
@@ -120,49 +214,23 @@ $(document).ready(function () {
         }, (errs) => {
         },).then(
             (resp) => {
+                let dataTree = [];
                 $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                             data.price_list.map(function (item) {
-                                if (item.price_list_type.value === 0 && item.auto_update === false) {
-                                    if (item.is_default === true) {
-                                        html += `<div class="row">
-                                            <div class="col-6">
-                                                <div class="form-check form-check-inline mt-2 ml-5">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="option1" checked disabled>
-                                                    <label class="form-check-label">` + item.title + `</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 form-group">
-                                                <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number">
-                                                    <span class="input-suffix">` + currency_primary + `</span>
-                                                </span>
-                                            </div>
-                                        </div>`
+                                if (item.price_list_type.value === 0) {
+                                    if (item.price_list_mapped === null) {
+                                        dataTree.push({'item': item, 'child': []})
                                     } else {
-                                        html += `<div class="row">
-                                            <div class="col-6">
-                                                <div class="form-check form-check-inline mt-2 ml-5">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="option1" data-check="check-` + count + `">
-                                                    <label class="form-check-label">` + item.title + `</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 form-group">
-                                                <span class="input-affix-wrapper affix-wth-text">
-                                                    <input data-currency="`+ currency_id +`" data-id="` + item.id + `" class="form-control value-price-list" type="number" data-text="check-` + count + `" disabled>
-                                                    <span class="input-suffix">` + currency_primary + `</span>
-                                                </span>    
-                                            </div>
-                                        </div>`
+                                        dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
                                     }
-                                    count += 1;
                                 }
                             })
-                            ele.find('ul').append(html)
+                            appendHtmlForPriceList(dataTree, ele, currency_primary);
+                            autoSelectPriceListCopyFromSource()
+                            // ele.find('ul').append(html)
                         }
                     }
                 }, (errs) => {
@@ -247,9 +315,9 @@ $(document).ready(function () {
             if ($(this).val() !== '')
                 price_list.push(
                     {
-                        'id': $(this).attr('data-id'),
-                        'price': $(this).val(),
-                        'currency_using': $(this).attr('data-currency')
+                        'price_list_id': $(this).attr('data-id'),
+                        'price_value': $(this).val(),
+                        'currency_using': currency_id
                     }
                 )
         })
@@ -282,10 +350,33 @@ $(document).ready(function () {
             )
     })
 
+    function autoSelectPriceListCopyFromSource() {
+        let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input[disabled]')
+        for (let i = 0; i < element.length; i++) {
+            if (element[i].hasAttribute('data-source')) {
+                let data_id = element[i].getAttribute('data-source')
+                if (document.querySelector(`input[type="checkbox"][data-id="` + data_id + `"]`).checked) {
+                    element[i].checked = true;
+                } else {
+                    element[i].checked = false;
+                }
+            }
+        }
+    }
+
     $(document).on('click', '.ul-price-list .form-check-input', function () {
-        if ($(this).prop('checked') === true)
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', false);
-        else
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', true);
+        autoSelectPriceListCopyFromSource()
+    })
+
+    $(document).on('input', '.ul-price-list .value-price-list', function () {
+        let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.value-price-list[readonly]')
+        for (let i = 0; i < element.length; i++) {
+            if (element[i].hasAttribute('data-source')) {
+                let data_id = element[i].getAttribute('data-source')
+                if (isNaN(document.querySelector(`input[type="number"][data-id="` + data_id + `"]`))) {
+                    element[i].value = document.querySelector(`input[type="number"][data-id="` + data_id + `"]`).value * element[i].getAttribute('data-factor');
+                }
+            }
+        }
     })
 })

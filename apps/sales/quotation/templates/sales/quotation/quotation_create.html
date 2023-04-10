@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
+    <link href="{% static 'assets/sales/quotation/css/quotation_create.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <a
@@ -31,7 +32,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                        <span class="nav-link-text">PAKD</span>
+                        <span class="nav-link-text">Forecast</span>
                     </a>
                 </li>
             </ul>
@@ -126,30 +127,30 @@
                     </div>
                     <br>
                     <div class="row">
-                        <ul class="nav nav-light nav-tabs">
+                        <ul class="nav nav-light nav-pills">
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
-                                    <span class="nav-link-text">Line Detail</span>
+                                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4">
-                                    <span class="nav-link-text">Terms</span>
+                                    <span class="nav-link-text">{% trans 'Terms' %}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_5">
-                                    <span class="nav-link-text">Logistics</span>
+                                    <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_6">
-                                    <span class="nav-link-text">Cost</span>
+                                    <span class="nav-link-text">{% trans 'Cost' %}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_7">
-                                    <span class="nav-link-text">Expense</span>
+                                    <span class="nav-link-text">{% trans 'Expense' %}</span>
                                 </a>
                             </li>
                         </ul>
@@ -158,7 +159,7 @@
                             <div class="tab-pane fade show active" id="tab_block_3">
                                 <div class="row">
                                     <table
-                                            id="datable-quotation-product-create"
+                                            id="datable-quotation-create-product"
                                             class="table nowrap w-100 mb-5"
                                     >
                                         <thead>
@@ -177,41 +178,88 @@
                                         <tbody>
                                         </tbody>
                                     </table>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <button type="button" class="btn btn-link btn-animated">
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-10"></div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-8"></div>
                                     <div class="col-4">
-                                        <div class="row">
-                                            <div class="col-4"><p>Pretax Amount</p></div>
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">680,000 VND</div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-4"><p>Taxes</p></div>
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">68,000 VND</div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-4"><p>Discount</p></div>
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Discount' %}</p></div>
                                             <div class="col-4">0%</div>
                                             <div class="col-4">0 VND</div>
                                         </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-4"><p>Total</p></div>
+                                        <hr class="quotation-horizon">
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Total' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">748,000 VND</div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-4"><p>Coupon</p></div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="input Coupon">
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-check form-check-lg">
-                                                    <input type="checkbox" class="form-check-input" id="customChecks3">
+                                        <div class="row mb-2">
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-gradient-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModalCenter"
+                                            >{% trans 'Check available promotion' %}</button>
+                                            <div
+                                                    class="modal fade" id="exampleModalCenter" tabindex="-1"
+                                                    role="dialog" aria-labelledby="exampleModalCenter"
+                                                    aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">{% trans 'Promotion' %}</h5>
+                                                            <button
+                                                                    type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"
+                                                            >
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table
+                                                                    id="datable-quotation-create-promotion"
+                                                                    class="table nowrap w-100 mb-5"
+                                                            >
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>STT</th>
+                                                                    <th>{% trans 'Title' %}</th>
+                                                                    <th>{% trans 'Actions' %}</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button
+                                                                    type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal"
+                                                            >Close
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary">Save changes
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,13 +272,14 @@
                                         <label class="form-label">{% trans 'Select Price List' %}</label>
                                         <select
                                                 class="form-control select2 select2-multiple"
-                                                multiple
+                                                multiple="multiple"
                                                 data-placeholder="{% trans 'Choose' %}"
                                                 name=""
                                                 id="select-box-quotation-term-price"
                                                 data-url=""
                                                 data-method="GET"
                                         >
+                                            <option></option>
                                         </select>
                                         <span class="form-text text-muted">{% trans 'Price list of quotation term' %}</span>
                                     </div>
@@ -238,9 +287,9 @@
                                         <label class="form-label">{% trans 'Select Discount List' %}</label>
                                         <select
                                                 class="form-control select2 select2-multiple"
-                                                multiple
+                                                multiple="multiple"
                                                 data-placeholder="{% trans 'Choose' %}"
-                                                name="role"
+                                                name=""
                                                 id="select-box-quotation-term-discount"
                                                 data-url=""
                                                 data-method="GET"
@@ -277,7 +326,7 @@
                             <div class="tab-pane fade" id="tab_block_6">
                                 <div class="row">
                                     <table
-                                            id="datable-quotation-product-create"
+                                            id="datable-quotation-create-cost"
                                             class="table nowrap w-100 mb-5"
                                     >
                                         <thead>
@@ -296,11 +345,32 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="row">
+                                    <div class="col-8"></div>
+                                    <div class="col-4">
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">680,000 VND</div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">68,000 VND</div>
+                                        </div>
+                                        <hr class="quotation-horizon">
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Total' %}</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">748,000 VND</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="tab_block_7">
                                 <div class="row">
                                     <table
-                                            id="datable-quotation-product-create"
+                                            id="datable-quotation-create-expense"
                                             class="table nowrap w-100 mb-5"
                                     >
                                         <thead>
@@ -318,6 +388,35 @@
                                         <tbody>
                                         </tbody>
                                     </table>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <button type="button" class="btn btn-link btn-animated">
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add expense</span></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-10"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8"></div>
+                                    <div class="col-4">
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">680,000 VND</div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">68,000 VND</div>
+                                        </div>
+                                        <hr class="quotation-horizon">
+                                        <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Total' %}</p></div>
+                                            <div class="col-4"></div>
+                                            <div class="col-4">748,000 VND</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -338,11 +437,12 @@
             </div>
         </div>
     </form>
-
-
 {% endblock %}
 
 
 {% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
+    <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 {% endblock %}

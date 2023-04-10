@@ -30,11 +30,11 @@ $(document).ready(function () {
         }, {
             'data': 'code', render: (data, type, row, meta) => {
                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
-                            style="min-width: max-content; width: 70%" href="`+ url_item_detail.replace(0, row.id) +`"><center><span><b>` + row.code + `</b></span></center></a>`
+                            style="min-width: max-content; width: 70%" href="` + url_item_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="`+ url_item_detail.replace(0, row.id) +`" data-id="` + row.id + `">
+                return `<a class="btn-detail" href="` + url_item_detail.replace(0, row.id) + `" data-id="` + row.id + `">
                         <span><b>` + row.title + `</b></span>
                     </a>`
             }
@@ -128,7 +128,62 @@ $(document).ready(function () {
         })
     }
 
-    let frm = $('#form-update-price')
+    function loadProDuctCategory() {
+        let element = $('#select-product-category');
+        $.fn.callAjax(element.attr('data-url'), element.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
+                    element.append(`<option></option>`)
+                    data.product_category_list.map(function (item) {
+                        element.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
+    function loadUoMGroup() {
+        let ele = $('#select-uom-group');
+        ele.html('');
+        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
+                    ele.append(`<option></option>`);
+                    resp.data.unit_of_measure_group.map(function (item) {
+                        if (Object.keys(item.referenced_unit).length !== 0)
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
+    $('#select-uom-group').on('change', function () {
+        let select_box_uom = $('#select-uom');
+        select_box_uom.html('');
+        if ($(this).val()) {
+            let data_url = $(this).attr('data-url-detail').replace(0, $(this).val());
+            let data_method = $(this).attr('data-method');
+            $.fn.callAjax(data_url, data_method).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                        select_box_uom.append(`<option></option>`);
+                        data.uom_group.uom.map(function (item) {
+                            select_box_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                        })
+                    }
+                }
+            }, (errs) => {
+            },)
+        }
+    })
+
+    let frm = $('#form-update-price-list')
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
         (resp) => {
@@ -142,30 +197,76 @@ $(document).ready(function () {
                     $('#inp-factor').val(data.price.factor);
                     if (data.price.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
+                        $('#select-product-category').prop('disabled', 'disabled');
+                        $('#select-box-currency').prop('disabled', 'disabled');
+                        $('#checkbox-can-delete').prop('disabled', false);
                     }
                     if (data.price.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
                     }
-                    loadSourcePriceList(data.price.price_list_mapped);
+                    if (data.price.price_list_mapped !== null) {
+                        loadSourcePriceList(data.price.price_list_mapped);
+                        $('#checkbox-update-auto').prop('disabled', false);
+                    }
+                    loadProDuctCategory();
+                    loadUoMGroup();
                 }
             }
-        })
+        }).then((resp) => {
+        if (config['data'].length === 0) {
+            let table = document.getElementById('datatable-item-list')
+            table.rows[0].cells[6].remove();
+        }
+    })
 
-    $('#btn-add-price').on('click', function () {
+    $('#checkbox-update-auto').on('change', function () {
+        if ($(this).prop("checked")) {
+            $('#checkbox-can-delete').removeAttr('disabled');
+        } else {
+            $('#checkbox-can-delete').prop('checked', false);
+            $('#checkbox-can-delete').attr('disabled', 'disabled');
+        }
+    })
+
+    frm.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        frm.dataForm['currency'] = $('#select-box-currency').val();
+        frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
+        if (frm.dataForm['currency'].length === 0) {
+            frm.dataForm['currency'] = null;
+        }
+        $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+            )
+    })
+
+    $('.btn-add-price').on('click', function () {
         let table = document.getElementById('datatable-item-list')
-        let index = table.rows[0].cells.length;
-        let rows = table.getElementsByTagName("tr");
-        let cell = rows[0].insertCell(index-2);
-        let text = document.createTextNode("Price abc");
-        cell.appendChild(text);
-        for (let i = 1; i < rows.length; i++) {
-            let cell = rows[i].insertCell(index-2);
-            let input = document.createElement("input");
-            input.type = "text";
-            input.className = "form-control"
-            input.value = "New Column";
-            cell.appendChild(input);
-            // rows[i].appendChild(cell);
+        if (table.rows[1].childNodes.length !== 1) {
+            let index = table.rows[0].cells.length;
+            let rows = table.getElementsByTagName("tr");
+            let cell = rows[0].insertCell(index - 2);
+            let text = document.createTextNode("Price abc");
+            cell.appendChild(text);
+            for (let i = 1; i < rows.length; i++) {
+                let cell = rows[i].insertCell(index - 2);
+                let input = document.createElement("input");
+                input.type = "number";
+                input.className = "form-control"
+                cell.appendChild(input);
+            }
         }
     })
 })

@@ -190,14 +190,14 @@
                         </div>
                         <div class="form-group col-6">
                             <label class="form-label">{% trans "For" %}</label>
-                            <select class="form-select">
-                                <option value="sale">{% trans "Sale" %}</option>
-                                <option value="purchase">{% trans "Purchase" %}</option>
+                            <select class="form-select" name="apply_for">
+                                <option value="0">{% trans "Sale" %}</option>
+                                <option value="1">{% trans "Purchase" %}</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans "Description" %}</label>
-                            <textarea class="form-control" placeholder="Input text" rows="3"></textarea>
+                            <textarea class="form-control" name="remark" placeholder="Input text" rows="3"></textarea>
                         </div>
                         <div class="row mb-3">
                             <div class="col-lg-3 col-xs-12">
@@ -213,7 +213,7 @@
                                 </button>
                             </div>
                         </div>
-                        <table id="datatable-tax-category" class="table nowrap w-100 mb-5">
+                        <table id="table_terms" class="table nowrap w-100 mb-5">
                             <thead>
                             <th class="w-5">{% trans "#" %}</th>
                             <th class="w-30">{% trans "Value" %}</th>
@@ -405,42 +405,48 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group col-6">
-                            <label class="form-label">{% trans "Unit Type" %}</label>
-                            <select class="form-select" id="select-box-unit-type">
-                                <option value="percent">{% trans "Percent" %}</option>
-                                <option value="amount">{% trans "Amount" %}</option>
-                                <option value="balance">{% trans "Balance" %}</option>
+                    <form method="get">
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label class="form-label">{% trans "Unit Type" %}</label>
+                                <select class="form-select" id="select-box-unit-type" name="unit_type" required>
+                                    {% for u in data.pay_terms_unit %}
+                                        <option value="{{ u.value }}">{{ u.text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-6">
+                                <label class="form-label">{% trans "Value" %}</label>
+                                <input class="form-control" type="text" name="value"
+                                       placeholder="40">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label class="form-label">{% trans "Day Type" %}</label>
+                                <select class="form-select" id="select-box-day-type" name="day_type" required>
+                                    {% for t in data.pay_teams_type %}
+                                        <option value="{{ t.value }}">{{ t.text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-6">
+                                <label class="form-label">{% trans "No of days" %}</label>
+                                <input class="form-control" type="number" min="0" max="365" name="no_of_days"
+                                       placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{% trans "After" %}</label>
+                            <select id="select-box-after" class="form-select" name="terms_after" required>
+                                {% for a in data.pay_teams_after %}
+                                    <option value="{{ a.value }}">{{ a.text }}</option>
+                                {% endfor %}
                             </select>
                         </div>
-                        <div class="form-group col-6">
-                            <label class="form-label">{% trans "Value" %}</label>
-                            <input class="form-control" type="text" name="value"
-                                   placeholder="40">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-6">
-                            <label class="form-label">{% trans "Day Type" %}</label>
-                            <select class="form-select" id="select-box-day-type">
-                                <option value="percent">{% trans "Percent" %}</option>
-                                <option value="amount">{% trans "Amount" %}</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-6">
-                            <label class="form-label">{% trans "No of days" %}</label>
-                            <input class="form-control" type="text" name="no_of_days"
-                                   placeholder="0">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">{% trans "After" %}</label>
-                        <select id="select-box-after" data-method="GET" data-url="" class="form-select">
-                        </select>
-                    </div>
+                    </form>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
@@ -605,7 +611,12 @@
             </div>
         </div>
     </form>
-
+    <input type="hidden" id="trans-factory"
+           data-terms-value="{% trans 'Value is required!' %}"
+           data-terms-day_type="{% trans 'Day type is required!' %}"
+           data-terms-unit_type="{% trans 'Unit type is required!' %}"
+           data-terms-after="{% trans 'After is required!' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <!-- Select2 -->

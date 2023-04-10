@@ -6,22 +6,22 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg
 
-PAYMENTS_TERMS_UNIT = (
-    (0, MDConfigMsg.ACTION_CREATE),
-    (1, MDConfigMsg.ACTION_CREATE),
-    (2, MDConfigMsg.ACTION_CREATE),
-)
-PAYMENTS_TERMS_DAY_TYPE = (
-    (0, MDConfigMsg.ACTION_CREATE),
-    (1, MDConfigMsg.ACTION_CREATE),
-)
-PAYMENTS_TERMS_AFTER = (
-    (0, MDConfigMsg.ACTION_CREATE),
-    (1, MDConfigMsg.ACTION_CREATE),
-    (2, MDConfigMsg.ACTION_CREATE),
-    (3, MDConfigMsg.ACTION_CREATE),
-    (4, MDConfigMsg.ACTION_CREATE),
-)
+PAYMENTS_TERMS_UNIT = [
+    {'value': 0, 'text': MDConfigMsg.PT_UNIT_PERCENT},
+    {'value': 1, 'text': MDConfigMsg.PT_UNIT_AMOUNT},
+    {'value': 2, 'text': MDConfigMsg.PT_UNIT_BALANCE},
+]
+PAYMENTS_TERMS_DAY_TYPE = [
+    {'value': 1, 'text': MDConfigMsg.PT_DAY_TYPE_WK_DAY},
+    {'value': 2, 'text': MDConfigMsg.PT_DAY_TYPE_CA_DAY},
+]
+PAYMENTS_TERMS_AFTER = [
+    {'value': 1, 'text': MDConfigMsg.PT_AFTER_CONTRACT},
+    {'value': 2, 'text': MDConfigMsg.PT_AFTER_DELIVERY},
+    {'value': 3, 'text': MDConfigMsg.PT_AFTER_INVOICE},
+    {'value': 4, 'text': MDConfigMsg.PT_AFTER_ACCEPTANCE},
+    {'value': 5, 'text': MDConfigMsg.PT_AFTER_EOI_MONTH},
+]
 class PriceMasterDataList(View):
     permission_classes = [IsAuthenticated]
 
@@ -32,7 +32,11 @@ class PriceMasterDataList(View):
         menu_active='menu_contact_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+                   'pay_terms_unit': PAYMENTS_TERMS_UNIT,
+                   'pay_teams_type': PAYMENTS_TERMS_DAY_TYPE,
+                   'pay_teams_after': PAYMENTS_TERMS_AFTER
+               }, status.HTTP_200_OK
 
 
 class TaxCategoryListAPI(APIView):
@@ -403,11 +407,12 @@ class PaymentsTermsAPI(APIView):
     )
     def post(self, request, *args, **kwargs):
         data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
-        if resp.state:
-            resp.result['message'] = MDConfigMsg.PT_CREATE
-            return resp.result, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        print('data', data)
+        # resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
+        # if resp.state:
+        #     resp.result['message'] = MDConfigMsg.PT_CREATE
+        #     return resp.result, status.HTTP_200_OK
+        return {'message': 'kaka long live the king!!! viva la vida!!!'}, status.HTTP_200_OK
+        # elif resp.status == 401:
+        #     return {}, status.HTTP_401_UNAUTHORIZED
+        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

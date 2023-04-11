@@ -41,37 +41,39 @@ $(document).ready(function () {
                             <span><b>` + row.title + `</b></span>
                         </a>`
                     }
-                }
-            }, {
-                'data': 'type', render: (data, type, row, meta) => {
-                    if (row.price_list_type.value === 0) {
-                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else if (row.price_list_type.value === 1) {
-                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else if (row.price_list_type.value === 2) {
-                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else {
-                        return ''
+                }, {
+                    'data': 'code', render: (data, type, row, meta) => {
+                        return `<a class="badge badge-outline badge-soft-success" style="min-width: 80px; width: 70%" href="` + url_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
+                        // return `<a href=""><span><b>` + row.fullname + `</b></span></a>`
                     }
-                }
-            }, {
-                'className': 'action-center', 'render': (data, type, row, meta) => {
-                    // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    if (row.is_default) {
-                        if (row.is_default === false) {
-                            let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                            return bt3;
+                }, {
+                    'data': 'title', render: (data, type, row, meta) => {
+                        return `<a href="` + url_detail.replace(0, row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                    }
+                }, {
+                    'data': 'product_type', 'render': (data, type, row, meta) => {
+                        if (row.general_information.product_type) {
+                            return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">` + row.general_information.product_type + `</span>`
                         } else {
-                            let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                            return bt3;
+                            return `<span></span>`
                         }
-                    } else {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt3;
                     }
-                }
-            },]
-        }
+                }, {
+                    'data': 'product_category', 'render': (data, type, row, meta) => {
+                        if (row.general_information.product_category) {
+                            return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">` + row.general_information.product_category + `</span>`
+                        } else {
+                            return `<span></span>`
+                        }
+                    }
+                }, {
+                    'className': 'action-center', 'render': (data, type, row, meta) => {
+                        // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/saledata/contact/update/` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                        return '';
+                    }
+                },]
+            }
 
         function initDataTable(config, id_table) {
             /*DataTable Init*/
@@ -88,10 +90,7 @@ $(document).ready(function () {
             }
         }
 
-        function loadTablePriceList() {
-            const table = $('#datatable-price-list')
-            let ele = $('#select-box-price-list')
-            ele.html('');
+            const table = $('#datatable_product_list');
             $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -102,103 +101,6 @@ $(document).ready(function () {
                             ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                         })
                     }
-                    initDataTable(config, '#datatable-price-list');
-                }
-            }, (errs) => {
-                initDataTable(config, '#datatable-price-list');
-            },)
-        }
-
-        function loadCurrency() {
-            $('#select-box-currency').select2();
-            let ele = $('#select-box-currency');
-            let url = ele.attr('data-url');
-            let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        ele.text("");
-                        if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
-                            data.currency_list.map(function (item) {
-                                if (item.is_primary) {
-                                    ele.append(`<option disabled data-primary="1" value="` + item.id + `" selected>` + item.title + `</option>`);
-                                } else
-                                    ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
-                            })
-                        }
-                    }
-                }
-            )
-        }
-
-
-        loadCurrency();
-        loadTablePriceList();
-
-        $('#btn-show-modal-create').on('click', function () {
-            let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
-            $('ul').find(`li[title="` + primaryOption + `"]`).find('span').prop('hidden', true);
-        })
-        $('#select-box-currency').on('change', function () {
-            let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
-            $('ul').find(`li[title="` + primaryOption + `"]`).find('span').prop('hidden', true);
-        })
-
-        //logic checkbox
-        $('#checkbox-copy-source').on('change', function () {
-            if ($(this).prop("checked")) {
-                $('#select-box-price-list').removeAttr('disabled')
-                $('#checkbox-update-auto').removeAttr('disabled');
-                $('#select-box-currency').prop('disabled', true);
-            } else {
-                $('#checkbox-update-auto').prop('checked', false);
-                $('#checkbox-can-delete').prop('checked', false);
-                $('#select-box-price-list').attr('disabled', 'disabled');
-                $('#select-box-price-list').find('option').prop('selected', false);
-                $('#checkbox-update-auto').attr('disabled', 'disabled');
-                $('#checkbox-can-delete').attr('disabled', 'disabled');
-                $('#select-box-currency').prop('disabled', false);
-            }
-        })
-
-        $('#checkbox-update-auto').on('change', function () {
-            if ($(this).prop("checked")) {
-                $('#checkbox-can-delete').removeAttr('disabled');
-            } else {
-                $('#checkbox-can-delete').prop('checked', false);
-                $('#checkbox-can-delete').attr('disabled', 'disabled');
-            }
-        })
-
-        // submit form create price list
-        let frm = $('#form-create-price')
-        frm.submit(function (event) {
-            event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-
-            frm.dataForm['currency'] = $('#select-box-currency').val();
-            frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
-            if (frm.dataForm['currency'].length === 0) {
-                frm.dataForm['currency'] = null;
-            }
-
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                    }
-                )
-        });
-
         // onchange select box select-box-price-list
         $('#select-box-price-list').on('change', function () {
             let data_url = $(this).attr('data-url').replace(0, $(this).val())
@@ -211,7 +113,38 @@ $(document).ready(function () {
                         }
                     }
                 }
-            )
-        })
-    })
+            }, (errs) => {
+                initDataTable(config, '#datatable_product_list');
+            },).then((resp) => {
+                $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
+                            let element = document.querySelectorAll('.span-product-type')
+                            for (let i = 0; i < element.length; i++) {
+                                let item = data.product_type_list.find(obj => obj.id === element[i].textContent.toString())
+                                element[i].textContent = item.title;
+                            }
+                        }
+                    }
+                })
+
+                $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
+                       let element = document.querySelectorAll('.span-product-category')
+                            for (let i = 0; i < element.length; i++) {
+                                let item = data.product_category_list.find(obj => obj.id === element[i].textContent.toString())
+                                element[i].textContent = item.title;
+                            }
+                    }
+                }
+            })
+            })
+
+        });
+    }
+
+    loadDefaultData();
 })

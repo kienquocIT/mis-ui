@@ -42,8 +42,9 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
+                        console.log(row.general_information)
                         if (row.general_information.product_type) {
-                            return `<span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 50%">` + row.general_information.product_type.title + `</span>`
+                            return `<span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 50%">` + row.general_information.product_type + `</span>`
                         }
                         else {
                             return `<span></span>`
@@ -52,7 +53,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_category) {
-                            return `<span class="badge badge-soft-indigo badge-pill" style="min-width: max-content; width: 50%">` + row.general_information.product_category.title + `</span>`
+                            return `<span class="badge badge-soft-indigo badge-pill" style="min-width: max-content; width: 50%">` + row.general_information.product_category + `</span>`
                         }
                         else {
                             return `<span></span>`
@@ -90,6 +91,26 @@ $(document).ready(function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
                         config['data'] = resp.data.product_list;
                     }
+
+                    $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
+                        let product_type = $.fn.switcherResp(resp);
+                        for (let i = 0; i < config['data'].length; i++) {
+                            const product_type_item = $.grep(product_type.product_type_list, function(obj) {
+                                return obj.id === config['data'][i]['general_information']['product_type'];
+                            });
+                            config['data'][i]['general_information']['product_type'] = product_type_item[0];
+                        }
+                    })
+                    $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
+                        let product_category = $.fn.switcherResp(resp);
+                        for (let i = 0; i < config['data'].length; i++) {
+                            const product_category_item = $.grep(product_category.product_category_list, function(obj) {
+                                return obj.id === config['data'][i]['general_information']['product_category'];
+                            });
+                            config['data'][i]['general_information']['product_category'] = product_category_item[0];
+                        }
+                    })
+
                     initDataTable(config, '#datatable_product_list');
                 }
             }, (errs) => {

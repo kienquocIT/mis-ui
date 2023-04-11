@@ -148,7 +148,7 @@ $(document).ready(function () {
         //logic checkbox
         $('#checkbox-copy-source').on('change', function () {
             if ($(this).prop("checked")) {
-                $('#select-box-price-list').removeAttr('disabled')
+                $('#select-box-price-list').removeAttr('disabled');
                 $('#checkbox-update-auto').removeAttr('disabled');
                 $('#select-box-currency').prop('disabled', true);
             } else {
@@ -165,9 +165,13 @@ $(document).ready(function () {
         $('#checkbox-update-auto').on('change', function () {
             if ($(this).prop("checked")) {
                 $('#checkbox-can-delete').removeAttr('disabled');
+                $('#factor-inp').val('');
+                $('#factor-inp').prop('readonly', false);
             } else {
                 $('#checkbox-can-delete').prop('checked', false);
                 $('#checkbox-can-delete').attr('disabled', 'disabled');
+                $('#factor-inp').val(1);
+                $('#factor-inp').prop('readonly', true);
             }
         })
 
@@ -183,6 +187,10 @@ $(document).ready(function () {
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
             }
+
+            // if (frm.dataForm['factor'] === undefined) {
+            //     frm.dataForm['factor'] =
+            // }
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(

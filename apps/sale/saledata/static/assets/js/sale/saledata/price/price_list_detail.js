@@ -189,6 +189,13 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                if (data.price.auto_update) {
+                    $('#btn-add-new-product').prop('hidden', true);
+                }
+                else {
+                    $('#btn-add-new-product').prop('hidden', false);
+                }
+
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 }
@@ -251,7 +258,6 @@ $(document).ready(function () {
             }
         }
     }).then((resp) => {
-        // console.log(price_list_copy_from_source)
         frm.submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -294,20 +300,20 @@ $(document).ready(function () {
                     price_list.push({
                         'price_list_id': item.id,
                         'price_value': value * item.factor,
-                        'is_auto_update': true,
+                        'is_auto_update': '1',
                     })
                 }
                 else{
                     price_list.push({
                         'price_list_id': item.id,
                         'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
-                        'is_auto_update': true,
+                        'is_auto_update': '1',
                     })
                 }
             })
 
             frm.dataForm['sale_information'] = {
-                'default_uom': frm.dataForm['uom_group'],
+                'default_uom': frm.dataForm['uom'],
                 'tax_code': null,
                 'price_list': price_list,
                 'currency_using': $('#select-box-currency').find('option[data-primary="1"]').val()
@@ -319,7 +325,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                            $.fn.redirectUrl(window.location, 1000);
                         }
                     },
                     (errs) => {

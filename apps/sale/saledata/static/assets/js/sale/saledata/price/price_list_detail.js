@@ -85,6 +85,7 @@ $(document).ready(function () {
     function loadCurrency(list_id) {
         $('#select-box-currency').select2();
         let ele = $('#select-box-currency');
+        let dropdown = $('#dropdown-currency')
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -94,10 +95,15 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                         data.currency_list.map(function (item) {
+                            if (item.is_primary === true) {
+                                dropdown.prepend(`<a class="dropdown-item bg-light bg-gradient" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
+                            } else {
+                                dropdown.append(`<a class="dropdown-item btn-add-price" href="#" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
+                            }
                             if (list_id.includes(item.id)) {
-                                if (item.is_primary === true)
+                                if (item.is_primary === true) {
                                     ele.append(`<option disabled data-primary="1" value="` + item.id + `" selected>` + item.title + `</option>`);
-                                else
+                                } else
                                     ele.append(`<option disabled data-primary="0" value="` + item.id + `" selected>` + item.title + `</option>`);
                             } else
                                 ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
@@ -162,6 +168,7 @@ $(document).ready(function () {
         },)
     }
 
+    // onchange uom-group in modal create new product
     $('#select-uom-group').on('change', function () {
         let select_box_uom = $('#select-uom');
         select_box_uom.html('');
@@ -183,6 +190,7 @@ $(document).ready(function () {
         }
     })
 
+    // load detail price list
     let frm = $('#form-update-price-list')
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
@@ -191,8 +199,7 @@ $(document).ready(function () {
             if (data) {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
-                }
-                else {
+                } else {
                     $('#price_list_name').text(data.price.title)
                 }
 
@@ -207,6 +214,7 @@ $(document).ready(function () {
                         $('#select-product-category').prop('disabled', 'disabled');
                         $('#select-box-currency').prop('disabled', 'disabled');
                         $('#checkbox-can-delete').prop('disabled', false);
+                        $('#btn-add-new-product').hide();
                     }
                     if (data.price.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
@@ -217,6 +225,28 @@ $(document).ready(function () {
                     }
                     loadProDuctCategory();
                     loadUoMGroup();
+
+                    $('.inp-can-edit select').mouseenter(function () {
+                        $(this).css('cursor', 'text');
+                    })
+                    $('.inp-can-edit').focusin(function () {
+                        $(this).find('input[class=form-control]').prop('readonly', false);
+                        $(this).find('select').removeAttr('readonly');
+                    });
+                    $('.inp-can-edit').focusout(function () {
+                        $(this).find('input[class=form-control]').attr('readonly', true);
+                        $(this).find('select').attr('readonly', 'readonly');
+                    });
+                    $('.inp-can-edit').on('change', function () {
+                        $(this).find('input[class=form-control]').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
+                        $(this).find('select').css({
+                            'border-color': '#00D67F',
+                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                        })
+                    })
                 }
             }
         }).then((resp) => {
@@ -228,14 +258,19 @@ $(document).ready(function () {
 
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
+            $('#select-product-category').prop('disabled', 'disabled');
+            $('#select-box-currency').prop('disabled', 'disabled');
             $('#checkbox-can-delete').removeAttr('disabled');
+            $('#btn-add-new-product').hide();
         } else {
             $('#checkbox-can-delete').prop('checked', false);
-            $('#checkbox-can-delete').attr('disabled', 'disabled');
-            // $('#')
+            $('#btn-add-new-product').show();
+            $('#select-product-category').removeAttr('disabled');
+            $('#select-box-currency').removeAttr('disabled');
         }
     })
 
+    // submit form create new product, setting price list
     let price_list_copy_from_source = [];
     price_list_copy_from_source.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
@@ -244,14 +279,22 @@ $(document).ready(function () {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                 data.price_list.map(function (item) {
                     if (item.price_list_type.value === 0) {
-                        if (price_list_copy_from_source.map(obj => obj.id).includes(item.price_list_mapped) && item.auto_update === true)
-                            price_list_copy_from_source.push({'id': item.id, 'factor': item.factor, 'id_source': item.price_list_mapped});
+                        if(item.is_default === true){
+                            price_list_copy_from_source.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
+                        }
+                        else {
+                            if (price_list_copy_from_source.map(obj => obj.id).includes(item.price_list_mapped) && item.auto_update === true)
+                            price_list_copy_from_source.push({
+                                'id': item.id,
+                                'factor': item.factor,
+                                'id_source': item.price_list_mapped
+                            });
+                        }
                     }
                 })
             }
         }
     }).then((resp) => {
-        // console.log(price_list_copy_from_source)
         frm.submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -290,14 +333,13 @@ $(document).ready(function () {
             let price_list = [];
             price_list_copy_from_source.map(function (item) {
                 let value = $('#inp-price').val()
-                if (price_list.length === 0) {
+                if (item.id_source === '') {
                     price_list.push({
                         'price_list_id': item.id,
-                        'price_value': value * item.factor,
+                        'price_value': value,
                         'is_auto_update': true,
                     })
-                }
-                else{
+                } else {
                     price_list.push({
                         'price_list_id': item.id,
                         'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
@@ -307,7 +349,7 @@ $(document).ready(function () {
             })
 
             frm.dataForm['sale_information'] = {
-                'default_uom': frm.dataForm['uom_group'],
+                'default_uom': frm.dataForm['uom'],
                 'tax_code': null,
                 'price_list': price_list,
                 'currency_using': $('#select-box-currency').find('option[data-primary="1"]').val()
@@ -329,14 +371,22 @@ $(document).ready(function () {
         })
     })
 
-    $('.btn-add-price').on('click', function () {
+    $(document).on('click', '.btn-add-price', function () {
+        $(this).addClass('bg-light bg-gradient')
+        $(this).removeClass('btn-add-price')
+        $('.th-dropdown .dropdown-menu').html($('#dropdown-currency').html().replaceAll('btn-add-price', 'btn-change-price'));
+        $('.th-dropdown .dropdown-menu').append(`<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li>`)
         let table = document.getElementById('datatable-item-list')
         if (table.rows[1].childNodes.length !== 1) {
             let index = table.rows[0].cells.length;
             let rows = table.getElementsByTagName("tr");
             let cell = rows[0].insertCell(index - 2);
-            let text = document.createTextNode("Price abc");
-            cell.appendChild(text);
+            let th = document.createElement('th'); // Tạo một thẻ <th>
+            th.textContent = 'Price In ' + $(this).text();
+            th.className = "dropdown th-dropdown"
+            th.setAttribute('data-id', $(this).attr('data-id'));
+            th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementById('dropdown-currency').innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
+            cell.outerHTML = th.outerHTML;
             for (let i = 1; i < rows.length; i++) {
                 let cell = rows[i].insertCell(index - 2);
                 let input = document.createElement("input");
@@ -346,4 +396,31 @@ $(document).ready(function () {
             }
         }
     })
+
+    $(document).on('click', '.btn-change-price', function () {
+        let element = $(this).closest('th')
+        let thText = element.contents().filter(function () {
+            return this.nodeType === Node.TEXT_NODE;
+        }).text().trim();
+        let html = element.html().replace(thText, "Price In " + $(this).text())
+        element.html(html);
+        $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`).addClass('btn-add-price')
+        $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`).removeClass('bg-light bg-gradient')
+        $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).removeClass('btn-add-price')
+        $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).addClass('bg-light bg-gradient')
+
+        console.log($(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`).length)
+        $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`).addClass('btn-change-price')
+        $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`).removeClass('bg-light bg-gradient')
+        $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).removeClass('btn-change-price')
+        $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).addClass('bg-light bg-gradient')
+
+        element.attr('data-id', $(this).attr('data-id'))
+    })
+
+    $(document).on('click', '.btn-del-price', function () {
+        let element = $(this).closest('th')
+        console.log(element)
+    })
+
 })

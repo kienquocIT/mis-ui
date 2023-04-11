@@ -49,7 +49,7 @@
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
-            <button class="mt-2 mb-3" data-bs-toggle="modal" data-bs-target="#modal-add-new-product" type="button"
+            <button class="mt-2 mb-3" data-bs-toggle="modal" data-bs-target="#modal-add-new-product" type="button" id="btn-add-new-product"
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
@@ -75,7 +75,7 @@
                 <th class="w-25">{% trans "Item name" %}</th>
                 <th class="w-10">{% trans "UoM group" %}</th>
                 <th class="w-10">{% trans "UoM" %}</th>
-                <th class="w-10">{% trans "Price in VND" %}
+                <th class="w-10 price-currency-primary">{% trans "Price in VND" %}
                     <button type="button" class=""
                             style="background: none; border: none" data-bs-toggle="dropdown">
                     <span class="icon">
@@ -85,7 +85,6 @@
                     </span>
                     </button>
                     <div role="menu" class="dropdown-menu" id="dropdown-currency">
-                        <a class="dropdown-item btn-add-price" href="#">VND</a>
                     </div>
                 </th>
                 <th class="w-5"></th>

@@ -197,6 +197,13 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                if (data.price.auto_update) {
+                    $('#btn-add-new-product').prop('hidden', true);
+                }
+                else {
+                    $('#btn-add-new-product').prop('hidden', false);
+                }
+
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
@@ -337,13 +344,13 @@ $(document).ready(function () {
                     price_list.push({
                         'price_list_id': item.id,
                         'price_value': value,
-                        'is_auto_update': true,
+                        'is_auto_update': '1',
                     })
                 } else {
                     price_list.push({
                         'price_list_id': item.id,
                         'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
-                        'is_auto_update': true,
+                        'is_auto_update': '1',
                     })
                 }
             })
@@ -361,7 +368,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                            $.fn.redirectUrl(window.location, 1000);
                         }
                     },
                     (errs) => {
@@ -381,7 +388,7 @@ $(document).ready(function () {
             let index = table.rows[0].cells.length;
             let rows = table.getElementsByTagName("tr");
             let cell = rows[0].insertCell(index - 2);
-            let th = document.createElement('th'); // Tạo một thẻ <th>
+            let th = document.createElement('th'); // T?o m?t th? <th>
             th.textContent = 'Price In ' + $(this).text();
             th.className = "dropdown th-dropdown"
             th.setAttribute('data-id', $(this).attr('data-id'));

@@ -55,10 +55,6 @@ $(document).ready(function () {
                 return `<span>` + row.price.toLocaleString('en-US', {minimumFractionDigits: 0}) + `</span>`
             }
         }, {
-            'render': (data, type, row, meta) => {
-                return ''
-            }
-        }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                 let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
@@ -199,8 +195,7 @@ $(document).ready(function () {
             if (data) {
                 if (data.price.auto_update) {
                     $('#btn-add-new-product').prop('hidden', true);
-                }
-                else {
+                } else {
                     $('#btn-add-new-product').prop('hidden', false);
                 }
 
@@ -286,16 +281,15 @@ $(document).ready(function () {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                 data.price_list.map(function (item) {
                     if (item.price_list_type.value === 0) {
-                        if(item.is_default === true){
+                        if (item.is_default === true) {
                             price_list_copy_from_source.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
-                        }
-                        else {
+                        } else {
                             if (price_list_copy_from_source.map(obj => obj.id).includes(item.price_list_mapped) && item.auto_update === true)
-                            price_list_copy_from_source.push({
-                                'id': item.id,
-                                'factor': item.factor,
-                                'id_source': item.price_list_mapped
-                            });
+                                price_list_copy_from_source.push({
+                                    'id': item.id,
+                                    'factor': item.factor,
+                                    'id_source': item.price_list_mapped
+                                });
                         }
                     }
                 })
@@ -378,6 +372,7 @@ $(document).ready(function () {
         })
     })
 
+    // add new price for currency in table list item
     $(document).on('click', '.btn-add-price', function () {
         $(this).addClass('bg-light bg-gradient')
         $(this).removeClass('btn-add-price')
@@ -387,7 +382,7 @@ $(document).ready(function () {
         if (table.rows[1].childNodes.length !== 1) {
             let index = table.rows[0].cells.length;
             let rows = table.getElementsByTagName("tr");
-            let cell = rows[0].insertCell(index - 2);
+            let cell = rows[0].insertCell(index - 1);
             let th = document.createElement('th'); // T?o m?t th? <th>
             th.textContent = 'Price In ' + $(this).text();
             th.className = "dropdown th-dropdown"
@@ -395,7 +390,7 @@ $(document).ready(function () {
             th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementById('dropdown-currency').innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
             cell.outerHTML = th.outerHTML;
             for (let i = 1; i < rows.length; i++) {
-                let cell = rows[i].insertCell(index - 2);
+                let cell = rows[i].insertCell(index - 1);
                 let input = document.createElement("input");
                 input.type = "number";
                 input.className = "form-control"
@@ -404,6 +399,7 @@ $(document).ready(function () {
         }
     })
 
+    // add new currency in table list item
     $(document).on('click', '.btn-change-price', function () {
         let element = $(this).closest('th')
         let thText = element.contents().filter(function () {
@@ -411,23 +407,52 @@ $(document).ready(function () {
         }).text().trim();
         let html = element.html().replace(thText, "Price In " + $(this).text())
         element.html(html);
-        $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`).addClass('btn-add-price')
-        $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`).removeClass('bg-light bg-gradient')
-        $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).removeClass('btn-add-price')
-        $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).addClass('bg-light bg-gradient')
+        let old_dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`)
+        let new_dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
+        old_dropdown_primary.addClass('btn-add-price')
+        old_dropdown_primary.removeClass('bg-light bg-gradient')
+        new_dropdown_primary.removeClass('btn-add-price')
+        new_dropdown_primary.addClass('bg-light bg-gradient')
 
-        console.log($(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`).length)
-        $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`).addClass('btn-change-price')
-        $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`).removeClass('bg-light bg-gradient')
-        $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).removeClass('btn-change-price')
-        $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`).addClass('bg-light bg-gradient')
+        let old_dropdown = $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`)
+        let new_dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
+        old_dropdown.addClass('btn-change-price')
+        old_dropdown.removeClass('bg-light bg-gradient')
+        new_dropdown.removeClass('btn-change-price')
+        new_dropdown.addClass('bg-light bg-gradient')
 
         element.attr('data-id', $(this).attr('data-id'))
     })
 
+    // delete price for currency in table list item
     $(document).on('click', '.btn-del-price', function () {
-        let element = $(this).closest('th')
-        console.log(element)
+        let index = $(this).closest('th').index();
+        let dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
+        dropdown_primary.addClass('btn-add-price')
+        dropdown_primary.removeClass('bg-light bg-gradient')
+
+        let dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
+        dropdown.addClass('btn-change-price')
+        dropdown.removeClass('bg-light bg-gradient')
+        let table = document.getElementById("datatable-item-list");
+        let rows = table.getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].deleteCell(index);
+        }
     })
 
+    let table_price_of_currrency = $('#table-price-of-currrency').html()
+    $('#btn-add-new-product').on('click', function () {
+        let table = $('#table-price-of-currrency')
+        table.html('');
+        table.append(table_price_of_currrency);
+        $('#datatable-item-list .th-dropdown').each(function () {
+            let thText = $(this).contents().filter(function () {
+                return this.nodeType === Node.TEXT_NODE;
+            }).text().trim();
+            table.find('thead').find('tr').append(`<th class="w-20">`+ thText +`&nbsp;<span class="field-required">*</span></th>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" data-id="`+ $(this).attr('data-id') +`"></td>`)
+        })
+    })
 })

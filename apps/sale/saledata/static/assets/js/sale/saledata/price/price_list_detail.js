@@ -344,7 +344,7 @@ $(document).ready(function () {
                     price_list.push({
                         'price_list_id': item.id,
                         'price_value': value,
-                        'is_auto_update': '1',
+                        'is_auto_update': '0',
                     })
                 } else {
                     price_list.push({

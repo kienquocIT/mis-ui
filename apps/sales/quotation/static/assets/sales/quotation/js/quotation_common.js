@@ -377,7 +377,7 @@ function dataTableExpense(data, table_id) {
     });
 }
 
-function deleteRow(currentRow, tableBody, table) {
+function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id) {
     currentRow.remove();
     let order = 0;
     if (tableBody.rows.length === 0) {
@@ -391,7 +391,7 @@ function deleteRow(currentRow, tableBody, table) {
             }
         }
     }
-    updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+    updateTotal(table[0], pretax_id, taxes_id, total_id);
 }
 
 function updateRowTaxAmount(row, subtotal) {

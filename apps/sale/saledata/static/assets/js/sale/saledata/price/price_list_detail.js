@@ -231,22 +231,22 @@ $(document).ready(function () {
     })
 
     let price_list_copy_from_source = [];
-    price_list_copy_from_source.push(pk);
+    price_list_copy_from_source.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                 data.price_list.map(function (item) {
                     if (item.price_list_type.value === 0) {
-                        if (price_list_copy_from_source.includes(item.price_list_mapped) && item.auto_update === true)
-                            price_list_copy_from_source.push(item.id);
+                        if (price_list_copy_from_source.map(obj => obj.id).includes(item.price_list_mapped) && item.auto_update === true)
+                            price_list_copy_from_source.push({'id': item.id, 'factor': item.factor, 'id_source': item.price_list_mapped});
                     }
                 })
             }
         }
     }).then((resp) => {
+        // console.log(price_list_copy_from_source)
         frm.submit(function (event) {
-            console.log(price_list_copy_from_source);
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
@@ -255,9 +255,59 @@ $(document).ready(function () {
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
             }
-
-            frm.dataMethod['price_list_child'] = price_list_copy_from_source;
+            frm.dataMethod['price_list_child'] = price_list_copy_from_source.map(obj => obj.id);
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    }
+                )
+        })
+
+        let frm_create_product = $('#form-create-product')
+        frm_create_product.submit(function (event) {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            frm.dataForm['general_information'] = {
+                'uom_group': frm.dataForm['uom_group'],
+                'product_type': null,
+                'product_category': null
+            }
+            let price_list = [];
+            price_list_copy_from_source.map(function (item) {
+                let value = $('#inp-price').val()
+                if (price_list.length === 0) {
+                    price_list.push({
+                        'price_list_id': item.id,
+                        'price_value': value * item.factor,
+                        'is_auto_update': true,
+                    })
+                }
+                else{
+                    price_list.push({
+                        'price_list_id': item.id,
+                        'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
+                        'is_auto_update': true,
+                    })
+                }
+            })
+
+            frm.dataForm['sale_information'] = {
+                'default_uom': frm.dataForm['uom_group'],
+                'tax_code': null,
+                'price_list': price_list,
+                'currency_using': $('#select-box-currency').find('option[data-primary="1"]').val()
+            }
+            frm.dataForm['inventory_information'] = {}
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
@@ -289,37 +339,5 @@ $(document).ready(function () {
                 cell.appendChild(input);
             }
         }
-    })
-
-    let frm_create_product = $('#form-create-product')
-    frm_create_product.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        frm.dataForm['general_information'] = {
-            'uom_group': frm.dataForm['uom_group'],
-            'product_type': null,
-            'product_category': null
-        }
-
-        frm.dataForm['sale_information'] = {
-            'default_uom': frm.dataForm['uom_group'],
-            'tax_code': null,
-        }
-        frm.dataForm['inventory_information'] = {}
-        console.log(frm.dataForm)
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                }
-            )
     })
 })

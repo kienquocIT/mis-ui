@@ -171,7 +171,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-6 form-group inp-can-edit" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                    <div class="col-6 form-group inp-can-edit" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
                                oninput="this.value=''"

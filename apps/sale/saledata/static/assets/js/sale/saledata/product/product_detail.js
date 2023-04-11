@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     function disabledTab(check, link_tab, id_tab) {
         if (!check) {
             $(link_tab).addClass('disabled');
@@ -210,32 +209,48 @@ $(document).ready(function () {
         return count
     }
 
+    let currency_id;
     function loadPriceList(list_price) {
-        console.log(list_price)
         let ele = $('#select-price-list');
-        let dataTree = []
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+        let currency_primary;
+        $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                    data.price_list.map(function (item) {
-                        if (item.price_list_type.value === 0) {
-                            if (item.price_list_mapped === null) {
-                                dataTree.push({'item': item, 'child': []})
-                            } else {
-                                dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
-                            }
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
+                    data.currency_list.map(function (item) {
+                        if (item.is_primary === true) {
+                            currency_primary = item.abbreviation;
+                            currency_id = item.id;
                         }
-                    })
-                    appendHtmlForPriceList(dataTree, ele, 'VND', 0);
-                    autoSelectPriceListCopyFromSource()
-                    list_price.map(function (item){
-                        document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
-                        document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
-                        document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = false;
                     })
                 }
             }
+        }, (errs) => {
+        },).then((resp) => {
+            let dataTree = []
+            $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                        data.price_list.map(function (item) {
+                            if (item.price_list_type.value === 0) {
+                                if (item.price_list_mapped === null) {
+                                    dataTree.push({'item': item, 'child': []})
+                                } else {
+                                    dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
+                                }
+                            }
+                        })
+                        appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
+                        autoSelectPriceListCopyFromSource()
+                        list_price.map(function (item) {
+                            document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
+                            document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
+                            document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = false;
+                        })
+                    }
+                }
+            })
         })
     }
 
@@ -386,10 +401,44 @@ $(document).ready(function () {
             frm.dataForm['inventory_information'] = {}
         }
 
+        let price_list = []
+        $('.ul-price-list .value-price-list').each(function () {
+            let is_auto_update = '1';
+            if ($(this).attr('data-auto-update') === 'false') {
+                is_auto_update = '0';
+            }
+            if ($(`input[type="checkbox"][data-id="` + $(this).attr('data-id') + `"]`).prop('checked') === true) {
+                if ($(this).val() !== '') {
+                    price_list.push(
+                        {
+                            'price_list_id': $(this).attr('data-id'),
+                            'price_value': $(this).val(),
+                            'is_auto_update': is_auto_update,
+                        }
+                    )
+                } else {
+                    price_list.push(
+                        {
+                            'price_list_id': $(this).attr('data-id'),
+                            'price_value': null,
+                            'is_auto_update': is_auto_update,
+                        }
+                    )
+                }
+            }
+        })
+
         if ($('#check-tab-sale').is(':checked') === true) {
             frm.dataForm['sale_information'] = {
                 'default_uom': $('#select-box-default-uom').val(),
                 'tax_code': $('#select-box-tax-code').val()
+            }
+            if (price_list.length > 0) {
+                frm.dataForm['sale_information']['price_list'] = price_list;
+                frm.dataForm['sale_information']['currency_using'] = currency_id;
+            } else {
+                frm.dataForm['sale_information']['price_list'] = null;
+                frm.dataForm['sale_information']['currency_using'] = null;
             }
         } else {
             frm.dataForm['sale_information'] = {}

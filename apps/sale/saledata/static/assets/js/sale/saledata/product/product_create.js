@@ -199,7 +199,6 @@ $(document).ready(function () {
     function loadPriceList() {
         let ele = $('#select-price-list');
         let currency_primary;
-        let count = 0;
         $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -229,9 +228,8 @@ $(document).ready(function () {
                                     }
                                 }
                             })
-                            appendHtmlForPriceList(dataTree, ele, currency_primary, count);
+                            appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
                             autoSelectPriceListCopyFromSource()
-                            // ele.find('ul').append(html)
                         }
                     }
                 }, (errs) => {

@@ -189,7 +189,13 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $('#price_list_name').text(data.price.title)
+                if (data.price.is_default) {
+                    $('#price_list_name').text(data.price.title.toUpperCase())
+                }
+                else {
+                    $('#price_list_name').text(data.price.title)
+                }
+
                 if (data.hasOwnProperty('price')) {
                     config['data'] = data.price.products_mapped;
                     initDataTable(config, '#datatable-item-list');
@@ -246,7 +252,6 @@ $(document).ready(function () {
         }
     }).then((resp) => {
         frm.submit(function (event) {
-            console.log(price_list_copy_from_source);
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
@@ -298,16 +303,15 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         frm.dataForm['general_information'] = {
             'uom_group': frm.dataForm['uom_group'],
-            'product_type': null,
-            'product_category': null
         }
 
         frm.dataForm['sale_information'] = {
             'default_uom': frm.dataForm['uom_group'],
-            'tax_code': null,
+            'currency_using': '3110b0b8221c41ed91f518e0780367e2'
         }
+
         frm.dataForm['inventory_information'] = {}
-        console.log(frm.dataForm)
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

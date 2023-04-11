@@ -1,45 +1,35 @@
 $(document).ready(function () {
-    "use strict";
-    $(function () {
-        let url_detail = $('#datatable-price-list').attr('data-url-detail');
-        let config = {
-            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            ordering: false,
-            columnDefs: [{
-                "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-            }],
-            order: [2, 'asc'],
-            language: {
-                search: "",
-                searchPlaceholder: "Search",
-                info: "_START_ - _END_ of _TOTAL_",
-                sLengthMenu: "View  _MENU_",
-                paginate: {
-                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-                }
-            },
-            drawCallback: function () {
-                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-                feather.replace();
-            },
-            data: [],
-            columns: [{
-                'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-                }
-            }, {
-                'data': 'title', render: (data, type, row, meta) => {
-                    if (row.is_default) {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
-                            <span><b>` + row.title.toUpperCase() + `</b></span>
-                        </a>`
+    function loadDefaultData() {
+        let url_detail = $('#datatable_product_list').attr('data-url-detail')
+        "use strict";
+        $(function () {
+
+            let config = {
+                dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                ordering: false,
+                columnDefs: [{
+                    "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+                }],
+                order: [2, 'asc'],
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search",
+                    info: "_START_ - _END_ of _TOTAL_",
+                    sLengthMenu: "View  _MENU_",
+                    paginate: {
+                        next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                        previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
                     }
-                    else {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
-                            <span><b>` + row.title + `</b></span>
-                        </a>`
+                },
+                drawCallback: function () {
+                    $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
+                    feather.replace();
+                },
+                data: [],
+                columns: [{
+                    'render': (data, type, row, meta) => {
+                        let currentId = "chk_sel_" + String(meta.row + 1)
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                     }
                 }, {
                     'data': 'code', render: (data, type, row, meta) => {
@@ -53,7 +43,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_type) {
-                            return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">` + row.general_information.product_type + `</span>`
+                            return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">` + row.general_information.product_type.title + `</span>`
                         } else {
                             return `<span></span>`
                         }
@@ -61,7 +51,7 @@ $(document).ready(function () {
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_category) {
-                            return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">` + row.general_information.product_category + `</span>`
+                            return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">` + row.general_information.product_category.title + `</span>`
                         } else {
                             return `<span></span>`
                         }
@@ -75,76 +65,59 @@ $(document).ready(function () {
                 },]
             }
 
-        function initDataTable(config, id_table) {
-            /*DataTable Init*/
-            let dtb = $(id_table);
-            if (dtb.length > 0) {
-                var targetDt = dtb.DataTable(config);
-                /*Checkbox Add*/
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
-                });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-                dtb.parent().addClass('table-responsive');
+            function initDataTable(config, id_table) {
+                /*DataTable Init*/
+                let dtb = $(id_table);
+                if (dtb.length > 0) {
+                    var targetDt = dtb.DataTable(config);
+                    /*Checkbox Add*/
+                    $(document).on('click', '.del-button', function () {
+                        targetDt.rows('.selected').remove().draw(false);
+                        return false;
+                    });
+                    $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
+                    dtb.parent().addClass('table-responsive');
+                }
             }
-        }
 
             const table = $('#datatable_product_list');
-            $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
+            let call1 = $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                        config['data'] = resp.data.price_list;
-                        ele.append(`<option></option>`)
-                        data.price_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
-        // onchange select box select-box-price-list
-        $('#select-box-price-list').on('change', function () {
-            let data_url = $(this).attr('data-url').replace(0, $(this).val())
-            $.fn.callAjax(data_url, 'GET').then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('price')) {
-                            $('#select-box-currency').val(data.price.currency).trigger('change');
-                        }
-                    }
+                    return data
                 }
-            }, (errs) => {
+            })
+            let call2 = $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
+                let product_type = $.fn.switcherResp(resp);
+                if (product_type) {
+                    return product_type
+                }
+            })
+            let call3 = $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
+                let product_category = $.fn.switcherResp(resp);
+                if (product_category) {
+                    return product_category
+                }
+            })
+
+            $.when(call1, call2, call3).done(function(response1, response2, response3) {
+                for (let i = 0; i < response1.product_list.length; i++) {
+                    const product_type_item = $.grep(response2.product_type_list, function(obj) {
+                        return obj.id === response1.product_list[i]['general_information']['product_type'];
+                    });
+                    response1.product_list[i]['general_information']['product_type'] = product_type_item[0];
+                }
+                for (let i = 0; i < response1.product_list.length; i++) {
+                    const product_category_item = $.grep(response3.product_category_list, function(obj) {
+                        return obj.id === response1.product_list[i]['general_information']['product_category'];
+                    });
+                    response1.product_list[i]['general_information']['product_category'] = product_category_item[0];
+                }
+                config['data'] = response1.product_list
                 initDataTable(config, '#datatable_product_list');
-            },).then((resp) => {
-                $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
-                            let element = document.querySelectorAll('.span-product-type')
-                            for (let i = 0; i < element.length; i++) {
-                                let item = data.product_type_list.find(obj => obj.id === element[i].textContent.toString())
-                                element[i].textContent = item.title;
-                            }
-                        }
-                    }
-                })
-
-                $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
-                       let element = document.querySelectorAll('.span-product-category')
-                            for (let i = 0; i < element.length; i++) {
-                                let item = data.product_category_list.find(obj => obj.id === element[i].textContent.toString())
-                                element[i].textContent = item.title;
-                            }
-                    }
-                }
-            })
-            })
-
+            }).fail(function(error) {
+            });
         });
     }
-
     loadDefaultData();
 })

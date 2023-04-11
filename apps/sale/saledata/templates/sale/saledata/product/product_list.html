@@ -44,7 +44,9 @@
 
     <div id="section-product-list" class="mt-5">
         <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "ProductListAPI" %}"
-               data-method="GET" data-url-detail="{% url "ProductDetail" pk=0%}">
+               data-method="GET" data-url-detail="{% url "ProductDetail" pk=0%}"
+        data-url-product-type="{% url "ProductTypeListAPI" %}"
+        data-url-product-category="{% url "ProductCategoryListAPI" %}">
             <thead>
             <th class="w-5">
                 <span class="form-check">

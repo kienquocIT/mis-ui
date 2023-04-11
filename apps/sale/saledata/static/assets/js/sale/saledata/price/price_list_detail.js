@@ -189,7 +189,13 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $('#price_list_name').text(data.price.title)
+                if (data.price.is_default) {
+                    $('#price_list_name').text(data.price.title.toUpperCase())
+                }
+                else {
+                    $('#price_list_name').text(data.price.title)
+                }
+
                 if (data.hasOwnProperty('price')) {
                     config['data'] = data.price.products_mapped;
                     initDataTable(config, '#datatable-item-list');

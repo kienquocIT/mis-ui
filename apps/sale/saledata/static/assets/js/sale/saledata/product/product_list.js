@@ -33,28 +33,26 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'code', render: (data, type, row, meta) => {
-                        return `<a class="badge badge-outline badge-soft-success" style="min-width: 80px; width: 70%" href="`+ url_detail.replace(0, row.id) +`"><center><span><b>` + row.code + `</b></span></center></a>`
+                        return `<a class="badge badge-outline badge-soft-success" style="min-width: 80px; width: 70%" href="` + url_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
                         // return `<a href=""><span><b>` + row.fullname + `</b></span></a>`
                     }
                 }, {
                     'data': 'title', render: (data, type, row, meta) => {
-                        return `<a href="`+ url_detail.replace(0, row.id) +`"><span><b>` + row.title +`</b></span></a>`
+                        return `<a href="` + url_detail.replace(0, row.id) + `"><span><b>` + row.title + `</b></span></a>`
                     }
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_type) {
-                            return `<span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 50%">` + row.general_information.product_type.title + `</span>`
-                        }
-                        else {
+                            return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">` + row.general_information.product_type + `</span>`
+                        } else {
                             return `<span></span>`
                         }
                     }
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
                         if (row.general_information.product_category) {
-                            return `<span class="badge badge-soft-indigo badge-pill" style="min-width: max-content; width: 50%">` + row.general_information.product_category.title + `</span>`
-                        }
-                        else {
+                            return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">` + row.general_information.product_category + `</span>`
+                        } else {
                             return `<span></span>`
                         }
                     }
@@ -82,8 +80,7 @@ $(document).ready(function () {
                 }
             }
 
-
-            const table = $('#datatable_product_list')
+            const table = $('#datatable_product_list');
             $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -94,8 +91,36 @@ $(document).ready(function () {
                 }
             }, (errs) => {
                 initDataTable(config, '#datatable_product_list');
-            },)
+            },).then((resp) => {
+                $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
+                            let element = document.querySelectorAll('.span-product-type')
+                            for (let i = 0; i < element.length; i++) {
+                                let item = data.product_type_list.find(obj => obj.id === element[i].textContent.toString())
+                                element[i].textContent = item.title;
+                            }
+                        }
+                    }
+                })
+
+                $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
+                       let element = document.querySelectorAll('.span-product-category')
+                            for (let i = 0; i < element.length; i++) {
+                                let item = data.product_category_list.find(obj => obj.id === element[i].textContent.toString())
+                                element[i].textContent = item.title;
+                            }
+                    }
+                }
+            })
+            })
+
         });
     }
+
     loadDefaultData();
 })

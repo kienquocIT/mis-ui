@@ -178,18 +178,19 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}
+                                <label class="form-label">{% trans "Code" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="Input Name of Item" name="title">
+                                <input type="text" class="form-control" placeholder="P001" name="code"
+                                oninput="this.value=this.value.toUpperCase()">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Code" %}
+                                <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="Input Name of Item" name="code">
+                                <input type="text" class="form-control" placeholder="Input Name" name="title">
                             </div>
                         </div>
                         <div class="row">

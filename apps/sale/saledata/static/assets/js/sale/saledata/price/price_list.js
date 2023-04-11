@@ -31,9 +31,16 @@ $(document).ready(function () {
                 }
             }, {
                 'data': 'title', render: (data, type, row, meta) => {
-                    return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
+                    if (row.is_default) {
+                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
+                            <span><b>` + row.title.toUpperCase() + `</b></span>
+                        </a>`
+                    }
+                    else {
+                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
                             <span><b>` + row.title + `</b></span>
                         </a>`
+                    }
                 }
             }, {
                 'data': 'type', render: (data, type, row, meta) => {

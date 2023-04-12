@@ -236,7 +236,7 @@ $(document).ready(function () {
                         $('#price_list_name').text(data.price.title)
                     }
                 }
-                $('#inp-source').val(data.price.price_list_mapped)
+                $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
                     config['data'] = product_mapped;
@@ -290,8 +290,8 @@ $(document).ready(function () {
                     if (data.price.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
                     }
-                    if (data.price.price_list_mapped !== null) {
-                        loadSourcePriceList(data.price.price_list_mapped);
+                    if (Object.keys(data.price.price_list_mapped).length !== 0) {
+                        loadSourcePriceList(data.price.price_list_mapped.id);
                         $('#checkbox-update-auto').prop('disabled', false);
                     }
                     loadProDuctCategory();

@@ -41,13 +41,13 @@ $(document).ready(function () {
         }, {
             'data': 'uom_group', 'render': (data, type, row, meta) => {
                 return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 100%">` + row.uom_group + `</span></div>
+                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span></div>
                         </div>`
             }
         }, {
             'data': 'uom', 'render': (data, type, row, meta) => {
                 return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill" style="min-width: max-content; width: 100%">` + row.uom + `</span></div>
+                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
                         </div>`
             }
         },]
@@ -223,7 +223,16 @@ $(document).ready(function () {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
-                    $('#price_list_name').text(data.price.title)
+                    if (data.price.auto_update) {
+                        $('#price_list_name').html(data.price.title + `
+                            <span class="badge badge-sm badge-soft-primary">
+                                <i class="bi bi-box-arrow-down-right"></i>
+                            </span>`
+                        )
+                    }
+                    else {
+                        $('#price_list_name').text(data.price.title)
+                    }
                 }
 
                 if (data.hasOwnProperty('price')) {
@@ -327,7 +336,7 @@ $(document).ready(function () {
         }
     })
 
-// submit form create new product, setting price list
+// submit form setting price list
     let price_list_copy_from_source = [];
     price_list_copy_from_source.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
@@ -372,7 +381,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                            $.fn.redirectUrl(location.href, 1000);
                         }
                     },
                     (errs) => {

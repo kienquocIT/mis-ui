@@ -357,11 +357,71 @@
                             <div class="tab-pane fade" id="tab_block_5">
                                 <div class="row">
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'Shipping Address' %}</label>
+                                        <label class="form-label">{% trans 'Shipping Address' %}
+                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"></i>
+                                        </label>
                                         <textarea class="form-control" rows="3" cols="50" name=""></textarea>
                                     </div>
+                                    <div
+                                            class="modal fade" id="shippingModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="shippingModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans 'Shipping address' %}</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row ml-1 shipping-group">
+                                                        <div class="row mb-1">
+                                                            <textarea class="form-control show-not-edit shipping-content" rows="3" cols="50" name="" disabled></textarea>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-5"></div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-3">
+                                                                <input type="checkbox" class="btn-check" id="btn-check" checked disabled>
+                                                                <label class="btn btn-primary" for="btn-check">Select this address</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="row ml-1 shipping-group">
+                                                        <div class="row mb-1">
+                                                            <textarea class="form-control show-not-edit shipping-content" rows="3" cols="50" name="" disabled></textarea>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-5"></div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-3">
+                                                                <input type="checkbox" class="btn-check" id="btn-check">
+                                                                <label class="btn btn-primary" for="btn-check">Select this address</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'Billing Address' %}</label>
+                                        <label class="form-label">{% trans 'Billing Address' %}
+                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></i>
+                                        </label>
                                         <textarea class="form-control" rows="3" cols="50" name=""></textarea>
                                     </div>
                                 </div>

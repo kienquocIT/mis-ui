@@ -70,6 +70,8 @@ $(document).ready(function () {
                         $('#select-box-role-employee-update').select2();
 
                         if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
+                            let flag_check = $('#is-check-app-employee-update');
+                            let flag_update = 0;
                             for (let t = 0; t < data.employee.plan_app.length; t++) {
                                 let planCode = "#" + data.employee.plan_app[t].code
                                 let instancePlan = $(planCode)
@@ -82,11 +84,13 @@ $(document).ready(function () {
                                             if (planAppInstanceList[app].id === data.employee.plan_app[t].application[i].id) {
                                                 let appInput = planAppInstanceList[app].querySelector('.check-plan-application');
                                                 appInput.checked  = true;
+                                                flag_update++;
                                             }
                                         }
                                     }
                                 }
                             }
+                            flag_check.val(String(flag_update));
                         }
                     }
                 }
@@ -196,7 +200,6 @@ $(document).ready(function () {
                                         </li>`
                                 }
                             }
-
                             $('#datable-employee-plan-app-update tbody').append(`<tr>
                         <td>
                             <div class="row mb-6" style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
@@ -299,6 +302,17 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
+        // check data submit user-app
+        let flag_check_app = Number($('#is-check-app-employee-update').val());
+        if (frm.dataForm.hasOwnProperty('user')) {
+            if (frm.dataForm['user']) {
+                if (flag_check_app === 0) {
+                    $.fn.notifyPopup({description: 'Employee map user must choose applications'}, 'failure');
+                    return false
+                }
+            }
+        }
+        // end check
         let dataPlanApp = setupDataPlanApp()
         if (dataPlanApp && frm.dataForm) {
             frm.dataForm['plan_app'] = dataPlanApp
@@ -404,7 +418,17 @@ $(document).on('click', '.check-plan-application', function (e) {
     let checkAll = 0;
     let divUl = $(this)[0].closest('ul');
     let eleDivAppList = divUl.children;
-    if (licenseQuantity && licenseQuantity !== 'null' && $('#select-box-user-update').val()) {
+    // update flag is check app
+    let flag_check = $('#is-check-app-employee-update');
+    if ($(this)[0].checked === true) {
+        let flag_update = String(Number(flag_check.val()) + 1);
+        flag_check.val(flag_update);
+    } else {
+        let flag_update = String(Number(flag_check.val()) - 1);
+        flag_check.val(flag_update);
+    }
+    // end check
+    if (licenseQuantity && $('#select-box-user-update').val()) {
         // checked ==> if user.val() ==> license + 1
         if ($(this)[0].checked === true) {
             for (let t = 0; t < eleDivAppList.length; t++) {
@@ -416,12 +440,16 @@ $(document).on('click', '.check-plan-application', function (e) {
             if (checkAll === 1) {
                 if (eleLicenseUsed.innerHTML) {
                     let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                    if (licenseUsed <= Number(licenseQuantity)) {
-                        eleLicenseUsed.innerHTML = String(licenseUsed);
+                    if (licenseQuantity !== 'null') {
+                        if (licenseUsed <= Number(licenseQuantity)) {
+                            eleLicenseUsed.innerHTML = String(licenseUsed);
+                        } else {
+                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            $(this)[0].checked = false;
+                            return false
+                        }
                     } else {
-                        $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
-                        $(this)[0].checked = false;
-                        return false
+                        eleLicenseUsed.innerHTML = String(licenseUsed);
                     }
                 }
             }
@@ -462,11 +490,15 @@ function updateLicenseWhenChangeUser() {
             if (app.checked === true) {
                 if ($('#select-box-user-update').val()) {
                     let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                    if (licenseUsed <= Number(licenseQuantity)) {
-                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    if (licenseQuantity && licenseQuantity !== "null") {
+                        if (licenseUsed <= Number(licenseQuantity)) {
+                            eleLicenseUsed.innerHTML = licenseUsed.toString();
+                        } else {
+                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            return false
+                        }
                     } else {
-                        $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
-                        return false
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
                     }
                     break
                 } else {

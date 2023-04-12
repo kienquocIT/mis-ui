@@ -9,7 +9,7 @@ $(function () {
         if(res.application){
             const elmApp = $('[name="application"]');
             elmApp.attr('data-onload', JSON.stringify(res.application));
-            initSelectbox(elmApp)
+            initSelectBox(elmApp)
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone){
@@ -360,13 +360,17 @@ $(function () {
                     targets: 1,
                     render: (data, type, row) => {
                         let coordinates = {};
+                        let condition = [];
                         if (row.coordinates) {
                             coordinates = JSON.stringify(row.coordinates)
                         }
+                        if (row.condition) {
+                            condition = JSON.stringify(row.condition)
+                        }
                         if (row.is_system === true) {
-                            return `<span class="node-title" data-is-system="true" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                            return `<span class="node-title" data-is-system="true" data-system-code="${row.code_node_system}" data-coordinates=${coordinates} data-condition=${condition}>${row.title}</span>`
                         } else {
-                            return `<span class="node-title" data-is-system="false" data-system-code="${row.code_node_system}" data-coordinates=${coordinates}>${row.title}</span>`
+                            return `<span class="node-title" data-is-system="false" data-system-code="${row.code_node_system}" data-coordinates=${coordinates} data-condition=${condition}>${row.title}</span>`
                         }
                     }
                 },
@@ -826,6 +830,11 @@ $(function () {
                 }
             _form.dataForm['zone'] = dataZone
             let nodeTableData = setupDataNode(true);
+            // check status Node before submit
+            if (nodeTableData === false) {
+                $.fn.notifyPopup({description: 'Please complete Nodes data'}, 'failure');
+                return false
+            }
             // add condition object for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode

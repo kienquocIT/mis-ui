@@ -227,7 +227,7 @@ $(document).ready(function () {
                     console.log(data)
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
-                            <span class="badge badge-sm badge-soft-primary">
+                            <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
                                 <i class="bi bi-box-arrow-down-right"></i>
                             </span>`
                         )
@@ -255,12 +255,12 @@ $(document).ready(function () {
                         for (let j = 0; j < body_table.length; j++) {
                             if (product_mapped[j].price[i].value === 0) {
                                 if(product_mapped[j].is_auto_update === true)
-                                    body_table[j].innerHTML += `<td><input class="form-control" type="number" value="" disabled></td>`
+                                    body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="" disabled></td>`
                                 else
                                     body_table[j].innerHTML += `<td><input class="form-control" type="number" value=""></td>`
                             } else {
                                 if(product_mapped[j].is_auto_update === true)
-                                    body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                    body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="` + product_mapped[j].price[i].value + `" disabled></td>`
                                 else
                                     body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `"></td>`
                             }

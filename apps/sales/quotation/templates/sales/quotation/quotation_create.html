@@ -142,33 +142,53 @@
                     </div>
                     <br>
                     <div class="row">
-                        <ul class="nav nav-light nav-pills" id="quotation-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
-                                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4">
-                                    <span class="nav-link-text">{% trans 'Terms' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_5">
-                                    <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item quotation-cost">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_6">
-                                    <span class="nav-link-text">{% trans 'Cost' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_7">
-                                    <span class="nav-link-text">{% trans 'Expense' %}</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <div class="row">
+                            <div class="col-6">
+                                <ul class="nav nav-light nav-pills" id="quotation-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
+                                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4">
+                                            <span class="nav-link-text">{% trans 'Terms' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_5">
+                                            <span class="nav-link-text">{% trans 'Logistics' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item quotation-cost">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_6">
+                                            <span class="nav-link-text">{% trans 'Cost' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_7">
+                                            <span class="nav-link-text">{% trans 'Expense' %}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-1">
+                                        <button type="button" class="btn btn-soft-primary">Print</button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-soft-primary">Send Email</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-soft-primary">Customer Confirm</button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-soft-primary">Create Order</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab_block_3">

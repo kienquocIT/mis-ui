@@ -224,6 +224,7 @@ $(document).ready(function () {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
+                    console.log(data)
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
                             <span class="badge badge-sm badge-soft-primary">

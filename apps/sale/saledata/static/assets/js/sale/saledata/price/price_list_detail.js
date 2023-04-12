@@ -231,8 +231,7 @@ $(document).ready(function () {
                                 <i class="bi bi-box-arrow-down-right"></i>
                             </span>`
                         )
-                    }
-                    else {
+                    } else {
                         $('#price_list_name').text(data.price.title)
                     }
                 }
@@ -254,12 +253,12 @@ $(document).ready(function () {
                         }
                         for (let j = 0; j < body_table.length; j++) {
                             if (product_mapped[j].price[i].value === 0) {
-                                if(product_mapped[j].is_auto_update === true)
+                                if (product_mapped[j].is_auto_update === true)
                                     body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="" disabled></td>`
                                 else
                                     body_table[j].innerHTML += `<td><input class="form-control" type="number" value=""></td>`
                             } else {
-                                if(product_mapped[j].is_auto_update === true)
+                                if (product_mapped[j].is_auto_update === true)
                                     body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="` + product_mapped[j].price[i].value + `" disabled></td>`
                                 else
                                     body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `"></td>`
@@ -267,12 +266,15 @@ $(document).ready(function () {
                         }
                         index_th += 1
                     }
-                    if ((data.price.auto_update === false && data.price.can_delete === false) || data.price.can_delete === true) {
-                        table.find('thead tr').append('<th class="w-5"></th>')
-                        for (let i = 0; i < body_table.length; i++) {
-                            body_table[i].innerHTML += `<td><a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                    table.find('thead tr').append('<th class="w-5"></th>')
+                    for (let i = 0; i < body_table.length; i++) {
+                        if(body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')){
+                            body_table[i].innerHTML += '<td></td>'
                         }
+                        else
+                            body_table[i].innerHTML += `<td><a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                     }
+
                     feather.replace();
 
                     loadCurrency(data.price.currency);
@@ -494,8 +496,7 @@ $(document).ready(function () {
                     let is_auto_update;
                     if ($(this).find('td:eq(' + index + ')').find('input').prop('disabled') === true) {
                         is_auto_update = true
-                    }
-                    else
+                    } else
                         is_auto_update = false
                     list_price_of_currency.push({
                         'product_id': product_id,
@@ -519,8 +520,7 @@ $(document).ready(function () {
                     let is_auto_update;
                     if ($(this).find('td:eq(' + index + ')').find('input').prop('disabled') === true) {
                         is_auto_update = true
-                    }
-                    else
+                    } else
                         is_auto_update = false
                     list_price_of_currency.push({
                         'product_id': product_id,
@@ -577,8 +577,8 @@ $(document).ready(function () {
                 let input = document.createElement("input");
                 input.type = "number";
                 input.className = "form-control"
-                if(rows[i].lastElementChild.lastElementChild.hasAttribute('disabled'))
-                {
+                console.log(rows[i].lastElementChild.lastElementChild)
+                if (rows[i].lastElementChild.lastElementChild.hasAttribute('disabled')) {
                     input.setAttribute('disabled', true);
                 }
                 let cell = rows[i].insertCell(index);

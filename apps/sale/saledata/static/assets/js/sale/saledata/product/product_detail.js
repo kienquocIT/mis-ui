@@ -166,17 +166,17 @@ $(document).ready(function () {
                 }
             } else {
                 if (dataTree[i].item.is_default === true) {
-                    ele.find('ul').append(`<div class="row">
+                    ele.find('ul').prepend(`<div class="row">
                         <div class="col-6">
                             <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
-                                <input class="form-check-input" type="checkbox"
+                                <input data-is-default="1" class="form-check-input" type="checkbox"
                                     value="option1" checked data-check="check-` + count + `" disabled data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
+                                <input data-is-default="1" data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" value="">
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -210,6 +210,7 @@ $(document).ready(function () {
     }
 
     let currency_id;
+
     function loadPriceList(list_price) {
         let ele = $('#select-price-list');
         let currency_primary;
@@ -243,10 +244,20 @@ $(document).ready(function () {
                         })
                         appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
                         autoSelectPriceListCopyFromSource()
+                        console.log(list_price)
                         list_price.map(function (item) {
-                            document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
+
                             document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
-                            document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = false;
+                            if (item.is_auto_update === false) {
+                                document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
+                                document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).disabled = false;
+                                document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = false;
+                                document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).readOnly  = false;
+                                document.querySelector(`input[type="checkbox"][data-is-default="1"]`).disabled = true;
+                            } else {
+                                document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
+                                document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = true;
+                            }
                         })
                     }
                 }

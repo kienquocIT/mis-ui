@@ -52,7 +52,12 @@ $(document).ready(function () {
             }
         }, {
             'data': 'price', 'render': (data, type, row, meta) => {
-                return `<span>` + row.price.toLocaleString('en-US', {minimumFractionDigits: 0}) + `</span>`
+                if (row.price > 0) {
+                    return `<span>` + row.price.toLocaleString('en-US', {minimumFractionDigits: 0}) + `</span>`
+                }
+                else {
+                    return `<span></span>`
+                }
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
@@ -214,6 +219,7 @@ $(document).ready(function () {
                     if (data.price.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
                         $('#select-product-category').prop('disabled', 'disabled');
+                        $('#apply-for-div').prop('hidden', true);
                         $('#select-box-currency').prop('disabled', 'disabled');
                         $('#checkbox-can-delete').prop('disabled', false);
                         $('#btn-add-new-product').hide();
@@ -261,6 +267,7 @@ $(document).ready(function () {
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
+            $('#apply-for-div').prop('hidden', true);
             $('#select-box-currency').prop('disabled', 'disabled');
             $('#checkbox-can-delete').removeAttr('disabled');
             $('#btn-add-new-product').hide();
@@ -268,6 +275,7 @@ $(document).ready(function () {
             $('#checkbox-can-delete').prop('checked', false);
             $('#btn-add-new-product').show();
             $('#select-product-category').removeAttr('disabled');
+            $('#apply-for-div').prop('hidden', false);
             $('#select-box-currency').removeAttr('disabled');
         }
     })
@@ -312,7 +320,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                            $.fn.redirectUrl(location.href, 1000);
                         }
                     },
                     (errs) => {

@@ -372,7 +372,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                            $.fn.redirectUrl(window.location, 1000);
                         }
                     },
                     (errs) => {
@@ -474,9 +474,16 @@ $(document).ready(function () {
         $('.th-dropdown .dropdown-menu').append(`<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li>`)
         let table = document.getElementById('datatable-item-list')
         if (table.rows[1].childNodes.length !== 1) {
-            let index = table.rows[0].cells.length;
+            let index = 0;
+            if (table.rows[0].lastElementChild.childElementCount === 0){
+                index = table.rows[0].cells.length - 1;
+            }
+            else{
+                index = table.rows[0].cells.length;
+            }
+
             let rows = table.getElementsByTagName("tr");
-            let cell = rows[0].insertCell(index - 1);
+            let cell = rows[0].insertCell(index);
             let th = document.createElement('th'); // T?o m?t th? <th>
             th.textContent = 'Price In ' + $(this).text();
             th.className = "dropdown th-dropdown"
@@ -484,7 +491,7 @@ $(document).ready(function () {
             th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementById('dropdown-currency').innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
             cell.outerHTML = th.outerHTML;
             for (let i = 1; i < rows.length; i++) {
-                let cell = rows[i].insertCell(index - 1);
+                let cell = rows[i].insertCell(index);
                 let input = document.createElement("input");
                 input.type = "number";
                 input.className = "form-control"
@@ -493,7 +500,7 @@ $(document).ready(function () {
         }
     })
 
-// add new currency in table list item
+// change price currency in table list item
     $(document).on('click', '.btn-change-price', function () {
         let element = $(this).closest('th')
         let thText = element.contents().filter(function () {

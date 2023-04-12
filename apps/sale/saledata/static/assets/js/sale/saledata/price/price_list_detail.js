@@ -50,16 +50,6 @@ $(document).ready(function () {
                         <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill" style="min-width: max-content; width: 100%">` + row.uom + `</span></div>
                         </div>`
             }
-        }, {
-            'data': 'price', 'render': (data, type, row, meta) => {
-                return `<span>` + row.price.toLocaleString('en-US', {minimumFractionDigits: 0}) + `</span>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return ''
-            }
         },]
     }
 
@@ -91,7 +81,10 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                         data.currency_list.map(function (item) {
-                            if (item.is_primary === true) {
+                            if ($('.price-currency-exists').map(function () {
+                                return $(this).data('id');
+                            }).get().includes(item.id)
+                            ) {
                                 dropdown.prepend(`<a class="dropdown-item bg-light bg-gradient" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
                             } else {
                                 dropdown.append(`<a class="dropdown-item btn-add-price" href="#" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
@@ -164,7 +157,7 @@ $(document).ready(function () {
         },)
     }
 
-    // onchange uom-group in modal create new product
+// onchange uom-group in modal create new product
     $('#select-uom-group').on('change', function () {
         let select_box_uom = $('#select-uom');
         select_box_uom.html('');
@@ -186,7 +179,35 @@ $(document).ready(function () {
         }
     })
 
-    // load detail price list
+
+    function getProductWithCurrency(list_product) {
+        let list_result = []
+        list_product.map(function (item) {
+            if (list_result.length === 0 || !list_result.find(obj => obj.id === item.id)) {
+                list_result.push({
+                    'code': item.code,
+                    'id': item.id,
+                    'title': item.title,
+                    'uom': item.uom,
+                    'uom_group': item.uom_group,
+                    'price': [{
+                        'id': item.currency_using.id,
+                        'abbreviation': item.currency_using.abbreviation,
+                        'value': item.price
+                    }]
+                })
+            } else {
+                list_result.find(obj => obj.id === item.id).price.push({
+                    'id': item.currency_using.id,
+                    'abbreviation': item.currency_using.abbreviation,
+                    'value': item.price
+                })
+            }
+        })
+        return list_result
+    }
+
+// load detail price list
     let frm = $('#form-update-price-list')
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
@@ -206,9 +227,41 @@ $(document).ready(function () {
                 }
 
                 if (data.hasOwnProperty('price')) {
-                    config['data'] = data.price.products_mapped;
+                    let product_mapped = getProductWithCurrency(data.price.products_mapped)
+                    config['data'] = product_mapped;
                     initDataTable(config, '#datatable-item-list');
+
+                    // add col in table item list (Price Of currency and button Delete item)
+                    let index_th = 4
+                    let table = $('#datatable-item-list')
+                    let body_table = table.find('tbody tr')
+                    console.log(product_mapped)
+                    for (let i = 0; i < product_mapped[0].price.length; i++) {
+                        if (i === product_mapped[0].price.length - 1) {
+                            table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + product_mapped[0].price[i].id + `">Price In ` + product_mapped[0].price[i].abbreviation + `<button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus ml-3"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></th>`))
+                        } else {
+                            table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + product_mapped[0].price[i].id + `">Price In ` + product_mapped[0].price[i].abbreviation + `</th>`))
+                        }
+                        for (let j = 0; j < body_table.length; j++) {
+                            if (product_mapped[j].price[i].value === 0) {
+                                body_table[j].innerHTML += `<td><input class="form-control" type="number" value=""></td>`
+                            } else {
+                                body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `"></td>`
+                            }
+                        }
+                        index_th += 1
+                    }
+                    if ((data.price.auto_update === false && data.price.can_delete === false) || data.price.can_delete === true) {
+                        table.find('thead tr').append('<th class="w-5"></th>')
+                        for (let i = 0; i < body_table.length; i++) {
+                            body_table[i].innerHTML += `<td><a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                        }
+                    }
+                    feather.replace();
+
                     loadCurrency(data.price.currency);
+
+                    // load data tab settings
                     $('#select-box-type').val(data.price.price_list_type);
                     $('#inp-factor').val(data.price.factor);
                     if (data.price.auto_update === true) {
@@ -228,6 +281,7 @@ $(document).ready(function () {
                     loadProDuctCategory();
                     loadUoMGroup();
 
+                    // edit field
                     $('.inp-can-edit select').mouseenter(function () {
                         $(this).css('cursor', 'text');
                     })
@@ -258,6 +312,7 @@ $(document).ready(function () {
         }
     })
 
+//onchage checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
@@ -272,7 +327,7 @@ $(document).ready(function () {
         }
     })
 
-    // submit form create new product, setting price list
+// submit form create new product, setting price list
     let price_list_copy_from_source = [];
     price_list_copy_from_source.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
@@ -296,6 +351,7 @@ $(document).ready(function () {
             }
         }
     }).then((resp) => {
+        // form update price list
         frm.submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -304,6 +360,10 @@ $(document).ready(function () {
             frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
+            }
+
+            if (frm.dataForm['apply_for'] === '') {
+                delete frm.dataForm.apply_for
             }
             frm.dataMethod['price_list_child'] = price_list_copy_from_source.map(obj => obj.id);
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
@@ -321,6 +381,7 @@ $(document).ready(function () {
                 )
         })
 
+        // form add new product
         let frm_create_product = $('#form-create-product')
         frm_create_product.submit(function (event) {
             event.preventDefault();
@@ -370,9 +431,42 @@ $(document).ready(function () {
                     }
                 )
         })
+
+        // form update item price
+        let frm_update_item_price = $('#form-update-item-price')
+        frm_update_item_price.submit(function (event) {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+            frm.dataForm['list_price'] = price_list_copy_from_source;
+            $('#datatable-item-list tbody tr').each(function () {
+                console.log($(this).find('td:eq(5)').find('input').val())
+            });
+            $('.th-dropdown').each(function () {
+                let index = $(this).index()
+                $('#datatable-item-list tbody tr').each(function () {
+                    console.log($(this).find('td:eq(' + index + ')').find('input').val())
+                });
+            })
+            // console.log($('#select-box-currency').find('option[data-primary="1"]').val())
+            frm.dataForm['list_item_price'] = price_list_copy_from_source;
+            // $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+            //     .then(
+            //         (resp) => {
+            //             let data = $.fn.switcherResp(resp);
+            //             if (data) {
+            //                 $.fn.notifyPopup({description: "Successfully"}, 'success')
+            //                 $.fn.redirectUrl(window.location, 1000);
+            //             }
+            //         },
+            //         (errs) => {
+            //             // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+            //         }
+            //     )
+        })
     })
 
-    // add new price for currency in table list item
+// add new price for currency in table list item
     $(document).on('click', '.btn-add-price', function () {
         $(this).addClass('bg-light bg-gradient')
         $(this).removeClass('btn-add-price')
@@ -399,7 +493,7 @@ $(document).ready(function () {
         }
     })
 
-    // add new currency in table list item
+// add new currency in table list item
     $(document).on('click', '.btn-change-price', function () {
         let element = $(this).closest('th')
         let thText = element.contents().filter(function () {
@@ -424,7 +518,7 @@ $(document).ready(function () {
         element.attr('data-id', $(this).attr('data-id'))
     })
 
-    // delete price for currency in table list item
+// delete price for currency in table list item
     $(document).on('click', '.btn-del-price', function () {
         let index = $(this).closest('th').index();
         let dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
@@ -442,17 +536,25 @@ $(document).ready(function () {
         }
     })
 
-    let table_price_of_currrency = $('#table-price-of-currrency').html()
+    let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-product').on('click', function () {
-        let table = $('#table-price-of-currrency')
+        let table = $('#table-price-of-currency')
         table.html('');
-        table.append(table_price_of_currrency);
+        table.append(table_price_of_currency);
         $('#datatable-item-list .th-dropdown').each(function () {
             let thText = $(this).contents().filter(function () {
                 return this.nodeType === Node.TEXT_NODE;
             }).text().trim();
-            table.find('thead').find('tr').append(`<th class="w-20">`+ thText +`&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" data-id="`+ $(this).attr('data-id') +`"></td>`)
+            table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" data-id="` + $(this).attr('data-id') + `"></td>`)
         })
+    })
+
+    $('#tab-select-table a').on('click', function () {
+        if ($(this).attr('href') === "#tab-item-list") {
+            $('#btn-update').attr('form', "form-update-item-price")
+        } else {
+            $('#btn-update').attr('form', "form-update-price-list")
+        }
     })
 })

@@ -224,7 +224,6 @@ $(document).ready(function () {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
-                    console.log(data)
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
                             <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
@@ -272,7 +271,7 @@ $(document).ready(function () {
                             body_table[i].innerHTML += '<td></td>'
                         }
                         else
-                            body_table[i].innerHTML += `<td><a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                            body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                     }
 
                     feather.replace();
@@ -577,8 +576,8 @@ $(document).ready(function () {
                 let input = document.createElement("input");
                 input.type = "number";
                 input.className = "form-control"
-                console.log(rows[i].lastElementChild.lastElementChild)
-                if (rows[i].lastElementChild.lastElementChild.hasAttribute('disabled')) {
+                // input.setAttribute('disabled', true);
+                if (rows[i].lastElementChild.previousElementSibling.lastElementChild.hasAttribute('disabled')) {
                     input.setAttribute('disabled', true);
                 }
                 let cell = rows[i].insertCell(index);
@@ -650,6 +649,13 @@ $(document).ready(function () {
         } else {
             $('#btn-update').attr('form', "form-update-price-list")
         }
+    })
+
+    $(document).on('click', '.btn-del', function (){
+        let index = $(this).closest('tr').index();
+        let table = $('#table-price-of-currency')
+        console.log(123)
+        table.find('tbody tr').eq(6).remove();
     })
 })
 

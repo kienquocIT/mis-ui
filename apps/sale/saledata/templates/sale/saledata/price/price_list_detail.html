@@ -59,7 +59,7 @@
                     {% trans 'Add New Product' %}
                 </span>
             </button>
-            <form id="form-update-item-price" data-url="{% url "PriceDetailAPI" pk=0 %}" data-method="GET">
+            <form id="form-update-item-price" data-url="{% url "PriceDetailAPI" pk=0 %}" data-method="PUT">
                 <table id="datatable-item-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "PriceDetailAPI" pk=0 %}"
                        data-url-detail="{% url "ProductDetail" pk=0 %}" data-method="GET">

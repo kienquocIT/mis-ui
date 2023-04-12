@@ -224,7 +224,17 @@ $(document).ready(function () {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
-                    $('#price_list_name').text(data.price.title)
+                    console.log(data)
+                    if (data.price.auto_update) {
+                        $('#price_list_name').html(data.price.title + `
+                            <span class="badge badge-sm badge-soft-primary">
+                                <i class="bi bi-box-arrow-down-right"></i>
+                            </span>`
+                        )
+                    }
+                    else {
+                        $('#price_list_name').text(data.price.title)
+                    }
                 }
                 $('#inp-source').val(data.price.price_list_mapped)
                 if (data.hasOwnProperty('price')) {
@@ -342,7 +352,7 @@ $(document).ready(function () {
         }
     })
 
-// submit form create new product, setting price list
+// submit form setting price list
     let price_list_add_new_item = [];
     price_list_add_new_item.push({'id': pk, 'factor': 1, 'id_source': ''});
 

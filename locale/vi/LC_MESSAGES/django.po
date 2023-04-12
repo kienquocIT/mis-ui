@@ -1679,3 +1679,38 @@ msgstr ""
 msgid "Add more"
 msgstr "Thêm"
 
+#
+msgid "Loading"
+msgstr "Đang tải"
+
+#
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#
+msgid "Linked with employee"
+msgstr "Đã liên kết với nhân viên"
+
+#
+msgid "Don't have link with employee"
+msgstr "Chưa liên kết với nhân viên"
+
+#
+msgid "Left: Company Name | Right: Linked with employee"
+msgstr "Trái: Tên công ty | Phải: Trạng thái liên kết với nhân viên"
+
+#
+msgid "Do not encourage remove company that has linked with employee"
+msgstr "Không khuyến khích loại bỏ các công ty đã có liên kết với nhân viên"
+
+#
+msgid "Employee Linked User / Total Employee"
+msgstr "Đã liên kết người dùng / Tổng nhân viên"
+
+#
+msgid "Company List"
+msgstr "Danh sách công ty"
+
+#
+msgid "Page is being developed!"
+msgstr "Trang đang được phát triển!"

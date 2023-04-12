@@ -44,11 +44,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
+    ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
+    EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')

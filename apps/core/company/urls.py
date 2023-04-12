@@ -7,7 +7,8 @@ from apps.core.company.views import (
     CompanyListOverviewDetail, EmployeeUserByCompanyListOverviewDetailAPI,
     CompanyDetailAPI,
     CompanyUpdateAPI,
-    CompanyDeleteAPI
+    CompanyDeleteAPI,
+    EmployeeOfTenantListAPI,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
         name='EmployeeUserByCompanyListOverviewDetailAPI'
     ),
     path('list/user-available', CompanyUserNotMapEmployeeListAPI.as_view(), name='CompanyUserNotMapEmployeeListAPI'),
+    path('list/employee-by-company', EmployeeOfTenantListAPI.as_view(), name='EmployeeOfTenantListAPI'),
 ]

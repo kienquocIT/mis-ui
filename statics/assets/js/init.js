@@ -1337,3 +1337,18 @@ Array.prototype.convert_to_key = function (key = 'id') {
     }
     return {};
 }
+
+
+$.fn.arraysEqual = function(a, b) {
+  if (a.length !== b.length) return false;
+  return a.every((value, index) => value === b[index]);
+}
+$.fn.arrayIncludesAll = function(a, b) {
+  return b.every(value => a.includes(value));
+}
+
+$.fn.shortName = function (name){
+    return name.split(" ").map((item)=>{
+        return item ? item.charAt(0): ""
+    }).join("");
+}

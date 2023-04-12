@@ -115,6 +115,18 @@
         <!-- /Page Body -->
     </div>
     <!-- /Main Content -->
+
+    <!-- spinner loading -->
+    <div id="loadingContainer" class="loading-container hidden">
+        <div class="my-spinner">
+            <div class="my-circle my-circle-1"></div>
+            <div class="my-circle my-circle-2"></div>
+            <div class="my-circle my-circle-3"></div>
+            <div class="my-circle my-circle-4"></div>
+            <div class="my-circle my-circle-5"></div>
+        </div>
+    </div>
+    <!-- /spinner loading -->
 </div>
 <!-- /Wrapper -->
 
@@ -144,6 +156,28 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <!-- Init JS -->
+    <script>
+        $(document).ready(function () {
+            $.fn.showLoading = (timeout) => {
+                $('#loadingContainer').removeClass('hidden');
+                if (timeout) {
+                    setTimeout(
+                        $.fn.hideLoading,
+                        (timeout > 100 ? timeout : 1000)
+                    );
+                }
+            }
+            $.fn.hideLoading = () => {
+                $('#loadingContainer').addClass('hidden');
+            }
+
+            {# Auto listen event loading và loaded data of DataTable with AJAX #}
+            $(document).find('table').each((idx, tbl)=>{
+                $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
+                $(tbl).on('draw.dt', ()=> $.fn.hideLoading());
+            })
+        })
+    </script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
     <script src="{% static 'assets/js/init.js' %}"></script>

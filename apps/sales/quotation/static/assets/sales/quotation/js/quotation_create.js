@@ -5,6 +5,9 @@ $(function () {
     $(document).ready(function () {
 
         loadBoxQuotationSalePerson('select-box-quotation-sale-person');
+        loadInitQuotationProduct('data-init-quotation-create-tables-product');
+        loadInitQuotationUOM('data-init-quotation-create-tables-uom');
+        loadInitQuotationTax('data-init-quotation-create-tables-tax');
         dataTableProduct([],'datable-quotation-create-product');
         dataTableCost([], 'datable-quotation-create-cost');
         dataTableExpense([], 'datable-quotation-create-expense');
@@ -23,38 +26,36 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
+            let selectProductID = 'quotation-create-box-product-' + String(order);
+            let selectUOMID = 'quotation-create-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-box-tax-' + String(order);
             let dataAdd =
                 {
                     'product': `<div class="row">
-                                    <select class="form-select table-row-item" required>
+                                    <select class="form-select table-row-item" id="${selectProductID}" required>
                                         <option value=""></option>
-                                        <option value="">Laptop HP</option>
-                                        <option value="">Laptop Dell</option>
-                                        <option value="">Laptop Lenovo</option>
                                     </select>
                                 </div>`,
                     'description': `<div class="row"><input type="text" class="form-control table-row-description"></div>`,
                     'unit_of_measure': `<div class="row">
-                                            <select class="form-select table-row-uom" required>
+                                            <select class="form-select table-row-uom" id="${selectUOMID}" required>
                                                 <option value=""></option>
-                                                <option value="">Item</option>
-                                                <option value="">Box</option>
                                             </select>
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
-                    'unit_price': `<div class="row"><input type="text" class="form-control table-row-price" required></div>`,
+                    'unit_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                     'tax': `<div class="row">
-                                <select class="form-select table-row-tax">
+                                <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value=""></option>
-                                    <option value="10">Vat-10</option>
-                                    <option value="5">Vat-5</option>
-                                    <option value="20">Vat-20</option>
                                 </select>
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
             tableProduct.DataTable().row.add(dataAdd).draw();
+            loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
+            loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+            loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
 
 // Action on delete row product
@@ -62,6 +63,27 @@ $(function () {
             e.stopPropagation();
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+        });
+
+// Action on change product
+        tableProduct.on('change', '.table-row-item', function (e) {
+            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
+            let productData = optionSelected.querySelector('.product-data');
+            if (productData) {
+                let data = JSON.parse(productData.value);
+                let uom = $(this)[0].closest('tr').querySelector('.table-row-uom');
+                let price = $(this)[0].closest('tr').querySelector('.table-row-price');
+                let tax = $(this)[0].closest('tr').querySelector('.table-row-tax');
+                if (uom) {
+                    uom.value = data.unit_of_measure.id;
+                }
+                if (price) {
+                    price.value = data.unit_price;
+                }
+                if (tax) {
+                    tax.value = data.tax.id;
+                }
+            }
         });
 
 // Action on change product quantity
@@ -76,7 +98,8 @@ $(function () {
 
 // Action on change product tax
         tableProduct.on('change', '.table-row-tax', function (e) {
-            changeTax($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
+            changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
         });
 
 // Action on click button add expense
@@ -106,7 +129,7 @@ $(function () {
                                             </select>
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
-                    'expense_price': `<div class="row"><input type="text" class="form-control table-row-price" required></div>`,
+                    'expense_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                     'tax': `<div class="row">
                                 <select class="form-select table-row-tax" data-tax-amount="">
                                     <option value=""></option>
@@ -140,7 +163,8 @@ $(function () {
 
 // Action on change expense tax
         tableExpense.on('change', '.table-row-tax', function (e) {
-            changeTax($(this)[0].value, $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
+            changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
         });
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
@@ -159,6 +183,7 @@ $(function () {
                 let valueUOM = "";
                 let showUOM = "";
                 let valueQuantity = "";
+                let valuePrice = "";
                 let optionTax = ``;
                 let valueOrder = "";
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
@@ -167,6 +192,13 @@ $(function () {
                     if (product) {
                         valueProduct = product.value;
                         showProduct = product.options[product.selectedIndex].text;
+                        let optionSelected = product.options[product.selectedIndex];
+                        if (optionSelected) {
+                            if (optionSelected.querySelector('.product-data')) {
+                                let data = JSON.parse(optionSelected.querySelector('.product-data').value);
+                                valuePrice = data.cost_price;
+                            }
+                        }
                     }
                     let uom = row.querySelector('.table-row-uom');
                     if (uom) {
@@ -206,7 +238,7 @@ $(function () {
                                                     </select>
                                                 </div>`,
                             'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" value="${valueQuantity}" disabled></div>`,
-                            'cost_price': `<div class="row"><input type="text" class="form-control table-row-price" required></div>`,
+                            'cost_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" value="${valuePrice}" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                             'tax': `<div class="row">
                                         <select class="form-select table-row-tax">${optionTax}</select>
                                         <input type="hidden" class="table-row-tax-amount">
@@ -214,6 +246,10 @@ $(function () {
                             'order': `<span class="table-row-order">${valueOrder}</span>`
                         }
                     tableCost.DataTable().row.add(dataAdd).draw();
+                    // update total
+                    if (valuePrice && valueQuantity) {
+                        
+                    }
                 }
             }
         });
@@ -225,7 +261,8 @@ $(function () {
 
 // Action on change cost tax
         tableCost.on('change', '.table-row-tax', function (e) {
-            changeTax($(this)[0].value, $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
+            changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
         });
 
 

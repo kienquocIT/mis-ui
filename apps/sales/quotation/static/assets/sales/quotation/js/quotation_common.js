@@ -9,7 +9,15 @@ function loadBoxQuotationOpportunity(opp_id) {
             if (data) {
                 if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                     data.opportunity_list.map(function (item) {
-                        ele.append(`<option value="${item.id}">${item.title}</option>`)
+                        let customer = {};
+                        if (item.customer) {
+                            customer = JSON.stringify(item.customer)
+                        }
+                        let data_show = `${item.title}` + `-` + `${item.code}`;
+                        ele.append(`<option value="${item.id}">
+                                        <span class="opp-title">${data_show}</span>
+                                        <input type="hidden" class="opp-customer-data" value=${customer}>
+                                    </option>`)
                     })
                 }
             }
@@ -26,9 +34,9 @@ function loadBoxQuotationCustomer(customer_id) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (data.hasOwnProperty('customer_list') && Array.isArray(data.customer_list)) {
-                    data.customer_list.map(function (item) {
-                        ele.append(`<option value="${item.id}">${item.title}</option>`)
+                if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
+                    data.account_list.map(function (item) {
+                        ele.append(`<option value="${item.id}"><span class="account-title">${item.title}</span></option>`)
                     })
                 }
             }
@@ -47,7 +55,7 @@ function loadBoxQuotationContact(contact_id) {
             if (data) {
                 if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
                     data.contact_list.map(function (item) {
-                        ele.append(`<option value="${item.id}">${item.title}</option>`)
+                        ele.append(`<option value="${item.id}"><span class="contact-title">${item.title}</span></option>`)
                     })
                 }
             }
@@ -66,12 +74,108 @@ function loadBoxQuotationSalePerson(sale_person_id) {
             if (data) {
                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
                     data.employee_list.map(function (item) {
-                        ele.append(`<option value="${item.id}">${item.full_name}</option>`)
+                        ele.append(`<option value="${item.id}"><span class="employee-title">${item.full_name}</span></option>`)
                     })
                 }
             }
         }
     )
+}
+
+function loadInitQuotationProduct(product_id) {
+    let jqueryId = '#' + product_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('product_list') && Array.isArray(data.product_list)) {
+                    ele.val(JSON.stringify(data.product_list))
+                }
+            }
+        }
+    )
+}
+
+function loadBoxQuotationProduct(product_id, box_id) {
+    let ele = document.getElementById(product_id);
+    let jqueryId = '#' + box_id;
+    let eleBox = $(jqueryId);
+    if (ele && eleBox) {
+        let data = JSON.parse(ele.value);
+        for (let i = 0; i < data.length; i++) {
+            let product_data = JSON.stringify({
+                'unit_of_measure': data[i].unit_of_measure,
+                'unit_price': data[i].unit_price,
+                'cost_price': data[i].cost_price,
+                'tax': data[i].tax,
+            })
+            eleBox.append(`<option value="${data[i].id}">
+                            <span class="product-title">${data[i].title}</span>
+                            <input type="hidden" class="product-data" value=${product_data}>
+                        </option>`)
+        }
+    }
+}
+
+function loadInitQuotationUOM(uom_id) {
+    let jqueryId = '#' + uom_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('uom_list') && Array.isArray(data.uom_list)) {
+                    ele.val(JSON.stringify(data.uom_list))
+                }
+            }
+        }
+    )
+}
+
+function loadBoxQuotationUOM(uom_id, box_id) {
+    let ele = document.getElementById(uom_id);
+    let jqueryId = '#' + box_id;
+    let eleBox = $(jqueryId);
+    if (ele && eleBox) {
+        let data = JSON.parse(ele.value);
+        for (let i = 0; i < data.length; i++) {
+            eleBox.append(`<option value="${data[i].id}"><span class="uom-title">${data[i].title}</span></option>`)
+        }
+    }
+}
+
+function loadInitQuotationTax(tax_id) {
+    let jqueryId = '#' + tax_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('tax_list') && Array.isArray(data.tax_list)) {
+                    ele.val(JSON.stringify(data.tax_list))
+                }
+            }
+        }
+    )
+}
+
+function loadBoxQuotationTax(tax_id, box_id) {
+    let ele = document.getElementById(tax_id);
+    let jqueryId = '#' + box_id;
+    let eleBox = $(jqueryId);
+    if (ele && eleBox) {
+        let data = JSON.parse(ele.value);
+        for (let i = 0; i < data.length; i++) {
+            eleBox.append(`<option value="${data[i].id}" data-value="${data[i].value}"><span class="tax-title">${data[i].title}</span></option>`)
+        }
+    }
 }
 
 function updateTotal(tableProduct, pretax_id, taxes_id, total_id) {
@@ -185,7 +289,7 @@ function dataTableProduct(data, table_id) {
             {
                 targets: 7,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-subtotal" disabled></div>`;
+                    return `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`;
                 }
             },
             {
@@ -274,7 +378,7 @@ function dataTableCost(data, table_id) {
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-subtotal" disabled></div>`;
+                    return `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`;
                 }
             },
             {
@@ -363,7 +467,7 @@ function dataTableExpense(data, table_id) {
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-subtotal" disabled></div>`;
+                    return `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`;
                 }
             },
             {
@@ -397,8 +501,9 @@ function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id) 
 function updateRowTaxAmount(row, subtotal) {
     let eleTax = row.querySelector('.table-row-tax');
     if (eleTax) {
-        if (eleTax.value) {
-            let taxAmount = ((Number(subtotal) * Number(eleTax.value)) / 100);
+        let optionSelected = eleTax.options[eleTax.selectedIndex];
+        if (optionSelected) {
+            let taxAmount = ((Number(subtotal) * Number(optionSelected.getAttribute('data-value'))) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
                 eleTaxAmount.value = taxAmount

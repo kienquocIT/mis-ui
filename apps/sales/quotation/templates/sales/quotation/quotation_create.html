@@ -66,39 +66,48 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Opportunity' %}</label>
-                                <select
-                                        class="form-select" id="select-box-quotation-opportunity"
-                                        data-url=""
-                                        data-method="GET"
-                                        name="opportunity"
-                                >
-                                    <option></option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
+                                    <select
+                                            class="form-select" id="select-box-quotation-opportunity"
+                                            data-url=""
+                                            data-method="GET"
+                                            name="opportunity"
+                                    >
+                                        <option></option>
+                                    </select>
+                                </div>
                                 <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
-                                <select
-                                        class="form-select" id="select-box-quotation-customer"
-                                        data-url=""
-                                        data-method="GET"
-                                        name="customer"
-                                        required
-                                >
-                                    <option></option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
+                                    <select
+                                            class="form-select" id="select-box-quotation-customer"
+                                            data-url=""
+                                            data-method="GET"
+                                            name="customer"
+                                            required
+                                    >
+                                        <option></option>
+                                    </select>
+                                </div>
                                 <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Contact' %}</label>
-                                <select
-                                        class="form-select" id="select-box-quotation-contact"
-                                        data-url=""
-                                        data-method="GET"
-                                        name="contact"
-                                >
-                                    <option></option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
+                                    <select
+                                            class="form-select" id="select-box-quotation-contact"
+                                            data-url=""
+                                            data-method="GET"
+                                            name="contact"
+                                    >
+                                        <option></option>
+                                    </select>
+                                </div>
                                 <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
                             </div>
                         </div>
@@ -127,15 +136,18 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Sale Person' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="select-box-quotation-sale-person"
-                                        data-url="{% url "EmployeeListAPI" %}"
-                                        data-method="GET"
-                                        name="sale_person"
-                                >
-                                    <option></option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-sale-person"
+                                            data-url="{% url "EmployeeListAPI" %}"
+                                            data-method="GET"
+                                            name="sale_person"
+                                    >
+                                        <option></option>
+                                    </select>
+                                </div>
                                 <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
                             </div>
                         </div>
@@ -229,21 +241,21 @@
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-product-pretax-amount">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-product-pretax-amount">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-product-taxes">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-product-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Discount' %}</p></div>
                                             <div class="col-4">0%</div>
                                             <div class="col-4">
-                                                <span id="quotation-create-product-discount">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-product-discount">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
@@ -251,7 +263,7 @@
                                             <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-product-total">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-product-total">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -456,14 +468,14 @@
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-cost-pretax-amount">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-cost-pretax-amount">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-cost-taxes">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-cost-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
@@ -471,7 +483,7 @@
                                             <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-cost-total">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-cost-total">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                     </div>
@@ -514,14 +526,14 @@
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-expense-pretax-amount">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-expense-pretax-amount">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-expense-taxes">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-expense-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
@@ -529,17 +541,35 @@
                                             <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <span id="quotation-create-expense-total">0</span><span class="ml-1">VND</span>
+                                                <span id="quotation-create-expense-total">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <select id="data-init-quotation-create-tables-product" hidden></select>
-                        <select id="data-init-quotation-create-tables-expense" hidden></select>
-                        <select id="data-init-quotation-create-tables-uom" hidden></select>
-                        <select id="data-init-quotation-create-tables-tax" hidden></select>
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-tables-product"
+                                data-url="{% url "ProductListAPI" %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-tables-expense"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-tables-uom"
+                                data-url="{% url "UnitOfMeasureListAPI" %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-tables-tax"
+                                data-url="{% url "TaxListAPI" %}"
+                                data-method="GET"
+                        >
                     </div>
                 </div>
             </div>

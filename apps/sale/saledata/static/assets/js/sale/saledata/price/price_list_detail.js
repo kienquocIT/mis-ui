@@ -280,14 +280,14 @@ $(document).ready(function () {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
                                 if (product_mapped[j].price[i].value === 0) {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" min="0" value="" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" value=""></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" min="0" value=""></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" min="0" value="` + product_mapped[j].price[i].value + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" min="0" value="` + product_mapped[j].price[i].value + `"></td>`
                                 }
 
                             }
@@ -663,7 +663,7 @@ $(document).ready(function () {
                 return this.nodeType === Node.TEXT_NODE;
             }).text().trim();
             table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" data-id="` + $(this).attr('data-id') + `"></td>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" data-id="` + $(this).attr('data-id') + `"></td>`)
         })
     })
 

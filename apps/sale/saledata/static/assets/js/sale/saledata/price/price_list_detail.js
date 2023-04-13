@@ -653,9 +653,8 @@ $(document).ready(function () {
 
     $(document).on('click', '.btn-del', function (){
         let index = $(this).closest('tr').index();
-        let table = $('#table-price-of-currency')
-        console.log(123)
-        table.find('tbody tr').eq(6).remove();
+        let table = document.getElementById('datatable-item-list');
+        table.deleteRow(index + 1);
     })
 })
 

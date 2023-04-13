@@ -268,9 +268,9 @@ $(document).ready(function () {
                         // create thead
                         for (let i = 0; i < price_longest.price.length; i++) {
                             if (i === price_longest.price.length - 1) {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus ml-3"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></th>`))
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<br><center><button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></center></th>`))
                             } else {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
                             }
                             index_th += 1
                         }
@@ -280,14 +280,14 @@ $(document).ready(function () {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
                                 if (product_mapped[j].price[i].value === 0) {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" min="0" step="0.001" value="" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" min="0" step="0.001" value=""></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" min="0" step="0.001" value="" style="min-width: max-content"></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" min="0" step="0.001" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="` + product_mapped[j].price[i].value + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" step="0.001" min="0" value="` + product_mapped[j].price[i].value + `"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" step="0.001" min="0" value="` + product_mapped[j].price[i].value + `" style="min-width: max-content"></td>`
                                 }
 
                             }

@@ -236,45 +236,76 @@ $(document).ready(function () {
                 }
                 $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
+                    console.log(data)
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
                     config['data'] = product_mapped;
                     initDataTable(config, '#datatable-item-list');
 
-                    // add col in table item list (Price Of currency and button Delete item)
-                    let index_th = 4
-                    let table = $('#datatable-item-list')
-                    let body_table = table.find('tbody tr')
-                    for (let i = 0; i < product_mapped[0].price.length; i++) {
-                        if (i === product_mapped[0].price.length - 1) {
-                            table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + product_mapped[0].price[i].id + `">Price In ` + product_mapped[0].price[i].abbreviation + `<button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus ml-3"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></th>`))
-                        } else {
-                            table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + product_mapped[0].price[i].id + `">Price In ` + product_mapped[0].price[i].abbreviation + `</th>`))
-                        }
-                        for (let j = 0; j < body_table.length; j++) {
-                            if (product_mapped[j].price[i].value === 0) {
-                                if (product_mapped[j].is_auto_update === true)
-                                    body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="" disabled></td>`
-                                else
-                                    body_table[j].innerHTML += `<td><input class="form-control" type="number" value=""></td>`
+
+                    // add column in table item list (Price Of currency and button Delete item)
+                    if (product_mapped.length != 0) {
+                        let index_th = 4
+                        let table = $('#datatable-item-list')
+                        let body_table = table.find('tbody tr')
+                        let price_longest = product_mapped.reduce((acc, cur) => {
+                            if (cur.price.length > acc.price.length) {
+                                return cur;
+                            }
+                            return acc;
+                        });
+                        product_mapped.filter(item => item.price.length < price_longest.price.length).map(function (item) {
+                            let ids = item.price.map(item => item.id);
+                            price_longest.price.forEach(obj => {
+                                if (!ids.includes(obj.id)) {
+                                    item.price.push({'id': obj.id, 'abbreviation': obj.abbreviation, 'value': 0});
+                                }
+                            });
+                            const order = price_longest.price.map(item => item.id);
+
+                            item.price.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+                        });
+
+                        // create thead
+                        for (let i = 0; i < price_longest.price.length; i++) {
+                            if (i === price_longest.price.length - 1) {
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus ml-3"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></th>`))
                             } else {
-                                if (product_mapped[j].is_auto_update === true)
-                                    body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="` + product_mapped[j].price[i].value + `" disabled></td>`
-                                else
-                                    body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `"></td>`
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
+                            }
+                            index_th += 1
+                        }
+
+                        // create tbody
+                        for (let j = 0; j < body_table.length; j++) {
+                            for (let i = 0; i < product_mapped[j].price.length; i++) {
+                                if (product_mapped[j].price[i].value === 0) {
+                                    if (product_mapped[j].is_auto_update === true)
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="" disabled></td>`
+                                    else
+                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" value=""></td>`
+                                } else {
+                                    if (product_mapped[j].is_auto_update === true)
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black" class="form-control" type="number" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                    else
+                                        body_table[j].innerHTML += `<td><input class="form-control" type="number" value="` + product_mapped[j].price[i].value + `"></td>`
+                                }
+
                             }
                         }
-                        index_th += 1
-                    }
-                    table.find('thead tr').append('<th class="w-5"></th>')
-                    for (let i = 0; i < body_table.length; i++) {
-                        if(body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')){
-                            body_table[i].innerHTML += '<td></td>'
+
+                        // create button del
+                        if (data.price.is_default !== true) {
+                            table.find('thead tr').append('<th class="w-5"></th>')
+                            for (let i = 0; i < body_table.length; i++) {
+                                if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
+                                    body_table[i].innerHTML += '<td></td>'
+                                } else
+                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                            }
+                            feather.replace();
                         }
-                        else
-                            body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                     }
 
-                    feather.replace();
 
                     loadCurrency(data.price.currency);
 
@@ -322,12 +353,7 @@ $(document).ready(function () {
                     })
                 }
             }
-        }).then((resp) => {
-        if (config['data'].length === 0) {
-            let table = document.getElementById('datatable-item-list')
-            table.rows[0].cells[6].remove();
-        }
-    })
+        })
 
 //onchage checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
@@ -368,10 +394,10 @@ $(document).ready(function () {
                         if (price_list_update.length === 0) {
                             price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
                         } else {
-                            if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped) && item.auto_update === true)
+                            if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
                                 price_list_update.push({
                                     'id': item.id,
-                                    'factor': item.factor,
+                                    'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
                                     'id_source': item.price_list_mapped
                                 });
                         }
@@ -382,10 +408,10 @@ $(document).ready(function () {
                                 'id_source': ''
                             });
                         } else {
-                            if (price_list_add_new_item.map(obj => obj.id).includes(item.price_list_mapped) && item.auto_update === true)
+                            if (price_list_add_new_item.map(obj => obj.id).includes(item.price_list_mapped))
                                 price_list_add_new_item.push({
                                     'id': item.id,
-                                    'factor': item.factor,
+                                    'factor': item.factor * price_list_add_new_item.find(obj => obj.id === item.price_list_mapped).factor,
                                     'id_source': item.price_list_mapped
                                 });
                         }
@@ -492,18 +518,17 @@ $(document).ready(function () {
                     let uom_id = $(this).find('.span-uom').attr('data-id')
                     let uom_gr_id = $(this).find('.span-uom-group').attr('data-id')
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
-                    let is_auto_update;
-                    if ($(this).find('td:eq(' + index + ')').find('input').prop('disabled') === true) {
-                        is_auto_update = true
-                    } else
-                        is_auto_update = false
+                    // let is_auto_update;
+                    // if ($(this).find('td:eq(' + index + ')').find('input').prop('disabled') === true) {
+                    //     is_auto_update = true
+                    // } else
+                    //     is_auto_update = false
                     list_price_of_currency.push({
                         'product_id': product_id,
                         'uom_id': uom_id,
                         'uom_group_id': uom_gr_id,
                         'price': price,
                         'currency': currency_id,
-                        'is_auto_update': is_auto_update
                     })
                 });
             })
@@ -531,7 +556,6 @@ $(document).ready(function () {
                     })
                 });
             })
-
             frm.dataForm['list_item'] = list_price_of_currency
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
@@ -651,10 +675,10 @@ $(document).ready(function () {
         }
     })
 
-    $(document).on('click', '.btn-del', function (){
-        let index = $(this).closest('tr').index();
-        let table = document.getElementById('datatable-item-list');
-        table.deleteRow(index + 1);
-    })
+    // $(document).on('click', '.btn-del', function () {
+    //     let index = $(this).closest('tr').index();
+    //     let table = document.getElementById('datatable-item-list');
+    //     table.deleteRow(index + 1);
+    // })
 })
 

@@ -215,11 +215,6 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (data.price.auto_update) {
-                    $('#btn-add-new-product').prop('hidden', true);
-                } else {
-                    $('#btn-add-new-product').prop('hidden', false);
-                }
 
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
@@ -281,12 +276,19 @@ $(document).ready(function () {
                     // load data tab settings
                     $('#select-box-type').val(data.price.price_list_type);
                     $('#inp-factor').val(data.price.factor);
+                    $('#inp-factor-default').val(data.price.factor);
+
                     if (data.price.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
                         $('#select-product-category').prop('disabled', 'disabled');
                         $('#select-box-currency').prop('disabled', 'disabled');
                         $('#checkbox-can-delete').prop('disabled', false);
-                        $('#btn-add-new-product').hide();
+                        $('#btn-add-new-product').prop('hidden', true);
+                        $('#inp-factor').prop('disabled', false);
+                    }
+                    else {
+                        $('#btn-add-new-product').prop('hidden', false);
+                        $('#inp-factor').prop('disabled', true);
                     }
                     if (data.price.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
@@ -335,7 +337,8 @@ $(document).ready(function () {
             $('#select-product-category').prop('disabled', 'disabled');
             $('#select-box-currency').prop('disabled', 'disabled');
             $('#checkbox-can-delete').removeAttr('disabled');
-            $('#btn-add-new-product').hide();
+            $('#inp-factor').val($('#inp-factor-default').val());
+            $('#inp-factor').prop('disabled', false);
             if ($('#inp-source').val() !== '') {
                 $.fn.callAjax(frm.attr('data-url').replace(0, $('#inp-source').val()), 'GET').then(
                     (resp) => {
@@ -347,9 +350,10 @@ $(document).ready(function () {
             }
         } else {
             $('#checkbox-can-delete').prop('checked', false);
-            $('#btn-add-new-product').show();
             $('#select-product-category').removeAttr('disabled');
             $('#select-box-currency').removeAttr('disabled');
+            $('#inp-factor').val(1);
+            $('#inp-factor').prop('disabled', true);
         }
     })
 
@@ -497,14 +501,17 @@ $(document).ready(function () {
                         is_auto_update = true
                     } else
                         is_auto_update = false
-                    list_price_of_currency.push({
-                        'product_id': product_id,
-                        'uom_id': uom_id,
-                        'uom_group_id': uom_gr_id,
-                        'price': price,
-                        'currency': currency_id,
-                        'is_auto_update': is_auto_update
-                    })
+
+                    if (price !== '') {
+                        list_price_of_currency.push({
+                            'product_id': product_id,
+                            'uom_id': uom_id,
+                            'uom_group_id': uom_gr_id,
+                            'price': price,
+                            'currency': currency_id,
+                            'is_auto_update': is_auto_update
+                        })
+                    }
                 });
             })
 
@@ -521,14 +528,17 @@ $(document).ready(function () {
                         is_auto_update = true
                     } else
                         is_auto_update = false
-                    list_price_of_currency.push({
-                        'product_id': product_id,
-                        'uom_id': uom_id,
-                        'uom_group_id': uom_gr_id,
-                        'price': price,
-                        'currency': currency_id,
-                        'is_auto_update': is_auto_update
-                    })
+
+                    if (price !== '') {
+                        list_price_of_currency.push({
+                            'product_id': product_id,
+                            'uom_id': uom_id,
+                            'uom_group_id': uom_gr_id,
+                            'price': price,
+                            'currency': currency_id,
+                            'is_auto_update': is_auto_update
+                        })
+                    }
                 });
             })
 

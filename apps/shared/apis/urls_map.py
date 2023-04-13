@@ -77,10 +77,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PERMISSION = StringUrl('base/permissions')
 
     TENANT = StringUrl('tenant/userlist')
+
     # HR
-    EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
-    USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
-    COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
 
     # WORKFLOW
     WORKFLOW = StringUrl('workflow')

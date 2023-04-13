@@ -13,11 +13,9 @@
 {% block pageAction %}{% endblock %}
 
 {% block pageContent %}
-    <div id="group-message-text">
-        <span class="hidden" id="notify-loading-text">{% trans 'Loading' %}...</span>
-        <span class="hidden" id="notify-search-text">{% trans 'Search' %}</span>
-        <span class="hidden" id="notify-employee-mapped-text">{% trans 'Linked with employee' %}</span>
-        <span class="hidden" id="notify-employee-not-mapped-text">{% trans "Don't have link with employee" %}</span>
+    <div class="hidden">
+        <span id="notify-employee-mapped-text">{% trans 'Linked with employee' %}</span>
+        <span id="notify-employee-not-mapped-text">{% trans "Don't have link with employee" %}</span>
     </div>
     {{ data.company_list|json_script:"id-company-list" }}
     <div class="mb-3">
@@ -40,15 +38,21 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade" id="tab_block_overview">
+                <div class="waiter-miner-group">
+
+                </div>
                 <table
                         id="datable_company_overview_list" class="table nowrap w-100 mb-5"
                         data-url="{% url "CompanyListOverviewListAPI" %}"
                         data-url-redirect="/"
                         data-method="GET"
-                        data-url-detail="{% url 'CompanyListOverviewDetail' pk=1 %}"
+                        data-url-detail="{% url 'CompanyDetail' pk=1 %}"
                 >
                     <thead>
                     <tr>
+                        <th>
+                            #
+                        </th>
                         <th class="wrap-text">
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             {% trans 'Code' %}
@@ -70,6 +74,7 @@
                     <tfoot style="background-color: rgba(0, 125, 136, 0.15)">
                     <th></th>
                     <th style="color: #007D88"><b>Tenant</b></th>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -114,13 +119,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane fade" id="tab_block_company">
-                <div id="waiter-miner-group" class="hidden">
+            <div class="tab-pane fade waiter-miner-group" id="tab_block_company">
+                <div class="waiter-miner-item hidden">
                     <div>
-                        <select id="chooseCompanyPage" class="form-control form-control-sm ">
+                        <select id="chooseCompanyPage" class="select2 form-control form-control-sm ">
                             {% for item in data.company_list %}
                                 {% if forloop.first %}
-                                    <option selected value="{{ item.id }}">{{ item.code }} - {{ item.title }}</option>
+                                    <option value="{{ item.id }}">{{ item.code }} - {{ item.title }}</option>
                                 {%  else  %}
                                     <option value="{{ item.id }}">{{ item.code }} - {{ item.title }}</option>
                                 {% endif %}
@@ -128,7 +133,7 @@
                         </select>
                     </div>
                     <div>
-                        <select id="chooseStateUser" class="form-control form-control-sm ">
+                        <select id="chooseStateUser" class="select2 form-control form-control-sm ">
                             <option selected value="all">{% trans 'All employee' %}</option>
                             <option value="linked">{% trans 'Linked user' %}</option>
                             <option value="not-linked">{% trans "Don't linked user" %}</option>
@@ -149,6 +154,7 @@
                             <th>Code</th>
                             <th>Full name</th>
                             <th>Linked User</th>
+                            <th>Apps</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

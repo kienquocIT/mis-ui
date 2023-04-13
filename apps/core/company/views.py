@@ -52,7 +52,7 @@ class CompanyDetail(View):
         return {}, status.HTTP_200_OK
 
 
-class CompanyDetailAPI(APIView):
+class CompanyDetail(View):
     @mask_view(auth_require=True, template='core/company/company_detail.html', breadcrumb='COMPANY_LIST_PAGE')
     def get(self, request, pk, *args, **kwargs):
         response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
@@ -119,26 +119,6 @@ class CompanyListOverviewListAPI(APIView):
         if resp.state:
             return {'company_list': resp.result}, status.HTTP_200_OK
 
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-
-class CompanyListOverviewDetail(View):
-    @mask_view(
-        auth_require=True,
-        template='core/company/company_overview/company_overview_detail.html',
-        breadcrumb='COMPANY_OVERVIEW_DETAIL_PAGE',
-        menu_active='menu_company_overview_list',
-    )
-    def get(self, request, *args, **kwargs):
-        # return {}, status.HTTP_200_OK
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
-        if resp.state:
-            return {
-                       'company_list': resp.result, 'pk': kwargs.get('pk', None),
-                       'user_url': '/company/list/overview/employee-user'
-                   }, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

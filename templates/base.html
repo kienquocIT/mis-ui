@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% if base.tenant_current_data %}
-        <title>{{ base.tenant_current_data.code }}- {{ base.tenant_current_data.title }}</title>
+        <title>{{ base.tenant_current_data.code|upper }} - {{ base.tenant_current_data.title }}</title>
     {% else %}
         <title>MIS - {% block title %}Management Information System{% endblock %}</title>
     {% endif %}
@@ -127,6 +127,21 @@
         </div>
     </div>
     <!-- /spinner loading -->
+    <!-- Message translate usually -->
+    <div class="hidden">
+        <span id="msg-user-language">{{ base.language }}</span>
+        <span id="msg-datatable-language-config">
+            {% if base.language == 'vi' %}
+                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
+            {% elif base.language == 'en' %}
+                {% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}
+            {% else %}
+                <!-- Proud of Vietnamese products -->
+                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
+            {% endif %}
+        </span>
+    </div>
+    <!-- /Message translate usually -->
 </div>
 <!-- /Wrapper -->
 
@@ -172,9 +187,9 @@
             }
 
             {# Auto listen event loading và loaded data of DataTable with AJAX #}
-            $(document).find('table').each((idx, tbl)=>{
+            $(document).find('table').each((idx, tbl) => {
                 $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
-                $(tbl).on('draw.dt', ()=> $.fn.hideLoading());
+                $(tbl).on('draw.dt', () => $.fn.hideLoading());
             })
         })
     </script>

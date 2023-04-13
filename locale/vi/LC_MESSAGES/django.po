@@ -1714,3 +1714,11 @@ msgstr "Danh sách công ty"
 #
 msgid "Page is being developed!"
 msgstr "Trang đang được phát triển!"
+
+#
+msgid "No data available in table"
+msgstr "Không có dữ liệu"
+
+#
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr ""

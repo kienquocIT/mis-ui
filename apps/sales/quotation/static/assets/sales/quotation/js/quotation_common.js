@@ -289,7 +289,10 @@ function dataTableProduct(data, table_id) {
             {
                 targets: 7,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`;
+                    if (row.subtotal) {
+                        return row.subtotal;
+                    }
+                    return ``;
                 }
             },
             {
@@ -378,7 +381,10 @@ function dataTableCost(data, table_id) {
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`;
+                    if (row.subtotal) {
+                        return row.subtotal;
+                    }
+                    return ``;
                 }
             },
             {
@@ -467,7 +473,10 @@ function dataTableExpense(data, table_id) {
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`;
+                    if (row.subtotal) {
+                        return row.subtotal;
+                    }
+                    return ``;
                 }
             },
             {

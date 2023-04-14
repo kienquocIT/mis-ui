@@ -13,6 +13,22 @@ $(function () {
         dataTableExpense([], 'datable-quotation-create-expense');
         $("#select-box-quotation-term-price").select2();
         $("#select-box-quotation-term-discount").select2();
+
+        $('input[name="date_created"]').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			showDropdowns: true,
+			minYear: 1901,
+			"cancelClass": "btn-secondary",
+			maxYear: parseInt(moment().format('YYYY'),10)
+			}, function(start, end, label) {
+			var years = moment().diff(start, 'years');
+			alert("You are " + years + " years old!");
+		});
+
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -26,9 +42,9 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
-            let selectProductID = 'quotation-create-box-product-' + String(order);
-            let selectUOMID = 'quotation-create-box-uom-' + String(order);
-            let selectTaxID = 'quotation-create-box-tax-' + String(order);
+            let selectProductID = 'quotation-create-product-box-product-' + String(order);
+            let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
             let dataAdd =
                 {
                     'product': `<div class="row">
@@ -50,6 +66,7 @@ $(function () {
                                 </select>
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
+                    'subtotal': `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
             tableProduct.DataTable().row.add(dataAdd).draw();
@@ -111,6 +128,9 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen + 1);
             }
+            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
+            let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             let dataAdd =
                 {
                     'expense': `<div class="row">
@@ -122,26 +142,24 @@ $(function () {
                                     </select>
                                 </div>`,
                     'unit_of_measure': `<div class="row">
-                                            <select class="form-select table-row-uom" required>
+                                            <select class="form-select table-row-uom" id="${selectUOMID}" required>
                                                 <option value=""></option>
-                                                <option value="">Item</option>
-                                                <option value="">Box</option>
                                             </select>
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
                     'expense_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                     'tax': `<div class="row">
-                                <select class="form-select table-row-tax" data-tax-amount="">
+                                <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value=""></option>
-                                    <option value="10">Vat-10</option>
-                                    <option value="5">Vat-5</option>
-                                    <option value="20">Vat-20</option>
                                 </select>
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
+                    'subtotal': `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
             tableExpense.DataTable().row.add(dataAdd).draw();
+            loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+            loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
 
 // Action on delete row expense
@@ -185,7 +203,10 @@ $(function () {
                 let valueQuantity = "";
                 let valuePrice = "";
                 let optionTax = ``;
+                let valueTaxSelected = "";
+                let valueTaxAmount = "";
                 let valueOrder = "";
+                let valueSubtotal = "";
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                     let row = tableProduct[0].tBodies[0].rows[i];
                     let product = row.querySelector('.table-row-item');
@@ -215,6 +236,7 @@ $(function () {
                             let option = tax.options[t];
                             if (option.selected === true) {
                                 optionTax += `<option value="${option.value}" selected>${option.text}</option>`
+                                valueTaxSelected = option.value;
                             } else {
                                 optionTax += `<option value="${option.value}">${option.text}</option>`
                             }
@@ -224,7 +246,12 @@ $(function () {
                     if (order) {
                         valueOrder = order.innerHTML;
                     }
-
+                    if (valuePrice && valueQuantity) {
+                        valueSubtotal = (Number(valuePrice) * Number(valueQuantity));
+                        if (valueTaxSelected) {
+                            valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100)
+                        }
+                    }
                     let dataAdd =
                         {
                             'product': `<div class="row">
@@ -241,16 +268,15 @@ $(function () {
                             'cost_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" value="${valuePrice}" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                             'tax': `<div class="row">
                                         <select class="form-select table-row-tax">${optionTax}</select>
-                                        <input type="hidden" class="table-row-tax-amount">
+                                        <input type="hidden" class="table-row-tax-amount" value="${valueTaxAmount}">
                                     </div>`,
+                            'subtotal': `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" value="${valueSubtotal}" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
                             'order': `<span class="table-row-order">${valueOrder}</span>`
                         }
                     tableCost.DataTable().row.add(dataAdd).draw();
-                    // update total
-                    if (valuePrice && valueQuantity) {
-                        
-                    }
                 }
+                // update total
+                updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
             }
         });
 

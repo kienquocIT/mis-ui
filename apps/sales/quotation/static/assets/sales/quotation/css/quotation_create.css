@@ -17,3 +17,20 @@
 .fa-info-circle {
     font-size: larger;
 }
+
+.custom-popover {
+    max-width: 250px;
+    border-color: var(--bs-primary);
+    border-width: 1px;
+    border-style: solid;
+}
+
+.custom-popover .popover-header {
+    background-color: var(--bs-primary);
+    color: var(--bs-white);
+}
+
+.custom-popover .popover-body {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}

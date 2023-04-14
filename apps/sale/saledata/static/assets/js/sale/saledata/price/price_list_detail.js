@@ -3,6 +3,7 @@ $(document).ready(function () {
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
+        paging: false,
         columnDefs: [{
             "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
         }],
@@ -300,7 +301,7 @@ $(document).ready(function () {
                             for (let i = 0; i < body_table.length; i++) {
                                 if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
                                     if (data.price.can_delete === true) {
-                                        body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                        body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                                     } else {
                                         body_table[i].innerHTML += '<td></td>'
                                     }

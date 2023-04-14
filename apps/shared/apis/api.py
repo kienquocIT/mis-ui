@@ -459,6 +459,8 @@ class ServerAPI:
         else:
             self.url = settings.API_DOMAIN + url
 
+        self.is_minimal = kwargs.get('is_minimal', False)
+
     @property
     def headers(self) -> dict:
         """
@@ -473,6 +475,8 @@ class ServerAPI:
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
+        if self.is_minimal is True:
+            data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
         return data
 
     def get(self, data=None):

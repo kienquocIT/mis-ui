@@ -72,22 +72,27 @@ $(document).ready(function () {
         let current_company_id = $('#company-current-id').attr('data-id');
         let company_id_selected = $("input[name='switch_current_company']:checked").val();
         if (current_company_id !== company_id_selected) {
-            $.fn.callAjax(
-                $(this).attr('data-url'),
-                $(this).attr('data-method'),
-                {
-                    'company': company_id_selected
-                 },
-                $('input[name=csrfmiddlewaretoken]').val(),
-            ).then((resp) => {
+            $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), {
+                'company': company_id_selected
+            }, $('input[name=csrfmiddlewaretoken]').val(),).then((resp) => {
                 $.fn.notifyB({
                     'description': resp.data.detail
                 }, 'success');
-                setTimeout(()=>{
+                setTimeout(() => {
                     $('#link-logout')[0].click();
                 }, 1200);
             });
         }
         $('#switchMyCompany').modal('toggle');
     });
+
+    $.fn.classOfPlan = (code) => {
+        let classPlan = {
+            'e-office': 'primary', 'hrm': 'success', 'personal': 'info', 'sale': 'danger'
+        }
+        if (code) {
+            return classPlan[code] ? classPlan[code] : 'primary'
+        }
+        return classPlan
+    }
 })

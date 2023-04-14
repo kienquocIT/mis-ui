@@ -8,6 +8,7 @@ from apps.sale.saledata.views.accounts import (
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
 )
+from apps.sale.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.sale.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI,
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
@@ -95,7 +96,14 @@ urlpatterns = [
         'masterdata/sync-selling-rate-from-VCB/api/<str:pk>',
         SyncSellingRateWithVCB.as_view(),
         name='SyncSellingRateWithVCB'
-    )
+    ),
+    path(
+        'masterdata/payments-terms/api', PaymentsTermsListAPI.as_view(), name='PaymentsTermsListAPI'),
+    path(
+        'masterdata/payments-terms/detail/api/<str:pk>',
+        PaymentsTermsDetailAPI.as_view(),
+        name='PaymentsTermsDetailAPI'
+    ),
 ] + [
     path('price-list', PriceList.as_view(), name='PriceList'),
     path('price-list/api', PriceListAPI.as_view(), name='PriceListAPI'),

@@ -22,6 +22,8 @@ PAYMENTS_TERMS_AFTER = [
     {'value': 4, 'text': MDConfigMsg.PT_AFTER_ACCEPTANCE},
     {'value': 5, 'text': MDConfigMsg.PT_AFTER_EOI_MONTH},
 ]
+
+
 class PriceMasterDataList(View):
     permission_classes = [IsAuthenticated]
 
@@ -397,22 +399,3 @@ class PriceDetailAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-
-
-class PaymentsTermsAPI(APIView):
-    permission_classes = [IsAuthenticated]
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        print('data', data)
-        # resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
-        # if resp.state:
-        #     resp.result['message'] = MDConfigMsg.PT_CREATE
-        #     return resp.result, status.HTTP_200_OK
-        return {'message': 'kaka long live the king!!! viva la vida!!!'}, status.HTTP_200_OK
-        # elif resp.status == 401:
-        #     return {}, status.HTTP_401_UNAUTHORIZED
-        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

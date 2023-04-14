@@ -4,6 +4,7 @@ class MDConfigMsg:  # pylint: disable=too-few-public-methods
     """Master data PAYMENTS_TERMS (PT) config message translations"""
     PT_CREATE = _('Payments terms create successfully')
     PT_UPDATE = _('Payments terms update successfully')
+    PT_DELETE = _('Payments terms delete successfully')
     PT_UNIT_PERCENT = _('Percent')
     PT_UNIT_AMOUNT = _('Amount')
     PT_UNIT_BALANCE = _('Balance')

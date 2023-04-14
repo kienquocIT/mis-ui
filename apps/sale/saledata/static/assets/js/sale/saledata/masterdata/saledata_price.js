@@ -34,6 +34,7 @@ $(document).ready(function () {
             $(this).hide();
             $('#btn-save-payment').show();
             $('#btn-back-payment').show();
+            $('[name="payment_terms_id"]').val('')
         }
     })
 
@@ -707,6 +708,79 @@ $(document).ready(function () {
     });
 
 // PAYMENTS TERMS handle
+    function PaymentTermsList(){
+        // init dataTable
+        let $tables = $('#datatable-payment-terms');
+        $.fn.callAjax($tables.attr('data-url'), 'GET')
+            .then((res) => {
+                let data = $.fn.switcherResp(res);
+                if (data) $tables.DataTable({
+                    data: data.payment_terms_list,
+                    searching: false,
+                    ordering: false,
+                    paginate: false,
+                    info: false,
+                    drawCallback: function (row, data) { // two parameter is row, data is available
+                        // render icon after table callback
+                        feather.replace();
+                        // generator index of row
+                        let api = this.api();
+                        let rows = api.rows({page: 'current'}).nodes();
+                        let column = 0; // declare row index who want to auto generator index
+                        api.column(column, {page: 'current'}).data().each(function (group, i) {
+                            // auto increase index row
+                            $(rows).eq(i).find('td').eq(column).text(i + 1);
+                        });
+                    },
+                    rowCallback: function (row, data) {
+                        // handle onclick btn
+                        $('.actions-btn a', row).off().on('click', function (e) {
+                            e.stopPropagation();
+                            let crf = $('[name=csrfmiddlewaretoken]', '#form-create-payment-term').val()
+                            let url = $('#url-factory').data('detail').format_url_with_uuid(data.id)
+                            DataTableAction.delete(url, data, crf, row)
+                        })
+                        $('.row-title', row).off().on('click', function(){
+                             $('#btn-show-modal-create').trigger('click')
+                            loadDetailPage($(this).attr('data-href'))
+                        })
+                    },
+                    columns: [{
+                        targets: 0, defaultContent: ''
+                    }, {
+                        targets: 1, render: (row, type, data) => {
+                            let url = $('#url-factory').data('detail').format_url_with_uuid(data.id);
+                            return `<p><a href="#" data-href="${url}" 
+                            class="text-primary text-decoration-underline row-title">${data.title}</a></p>`
+                        }
+                    }, {
+                        targets: 2, render: (row, type, data) => {
+                            let DATA_APPLY_FOR = {
+                                0: 'Sale', 1: 'Purchase'
+                            }
+                            return `<p>${DATA_APPLY_FOR[data.apply_for]}</p>`
+                        }
+                    }, {
+                        targets: 3, render: (data, type, row) => {
+                            return `<div class="actions-btn">
+                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
+                                   title="Delete"
+                                   href="#"
+                                   data-id="${row.id}"
+                                   data-action="delete">
+                                    <span class="btn-icon-wrap">
+                                        <span class="feather-icon">
+                                            <i data-feather="trash-2"></i>
+                                        </span>
+                                    </span>
+                                </a>
+                            </div>`;
+                        },
+                    }],
+                });
+            })
+    }
+
     function UnitTypeChange() {
         // handle event unit type on change
         let $modalElm = $('#modal-add-table');
@@ -719,18 +793,27 @@ $(document).ready(function () {
         })
     }
 
+    /**
+     * declare action delete/edit button of terms DataTable
+     * @param elm element of button
+     * @param data data of row had object format
+     * @param iEvent event object of element on click
+     */
     function tableActionRow(elm, data, iEvent) {
         let isAction = $(iEvent.currentTarget).attr('data-action');
         let table_elm = $(elm).parents('table.table');
         let rowIdx = $(table_elm).DataTable().row(elm).index()
         if (isAction === 'edit') {
+            let unit = data.unit_type.hasOwnProperty('value') ? data.unit_type.value : data.unit_type,
+                day = data.day_type.hasOwnProperty('value') ? data.day_type.value : data.day_type,
+                after = data.after.hasOwnProperty('value') ? data.after.value : data.after;
             let $add_teams = $('#modal-add-table');
             $add_teams.attr('data-table-idx', rowIdx)
             $add_teams.find('[name="value"]').val(data.value)
-            $add_teams.find('[name="unit_type"]').val(data.unit_type.value).trigger('change')
-            $add_teams.find('[name="day_type"]').val(data.day_type.value).trigger('change')
+            $add_teams.find('[name="unit_type"]').val(unit).trigger('change')
+            $add_teams.find('[name="day_type"]').val(day).trigger('change')
             $add_teams.find('[name="no_of_days"]').val(data.no_of_days)
-            $add_teams.find('[name="terms_after"]').val(data.terms_after.value).trigger('change')
+            $add_teams.find('[name="after"]').val(after).trigger('change')
             $add_teams.modal('show')
         } else if (isAction === 'delete') $(table_elm).DataTable().rows(elm).remove().draw();
     }
@@ -743,7 +826,7 @@ $(document).ready(function () {
             ordering: false,
             paginate: false,
             info: false,
-            drawCallback: function () { // two parameter is row, data is available
+            drawCallback: function (row, data) { // two parameter is row, data is available
                 // render icon after table callback
                 feather.replace();
                 // generator index of row
@@ -753,10 +836,12 @@ $(document).ready(function () {
                 api.column(column, {page: 'current'}).data().each(function (group, i) {
                     // auto increase index row
                     $(rows).eq(i).find('td').eq(column).text(i + 1);
+                    $(rows).eq(i).attr('data-order', i + 1)
                 });
             },
             rowCallback: function (row, data) {
                 // handle onclick btn
+                data['order'] = $(row).attr('data-order');
                 $('.actions-btn a', row).off().on('click', function (e) {
                     e.stopPropagation();
                     tableActionRow(row, data, e)
@@ -776,7 +861,12 @@ $(document).ready(function () {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<p>${row.unit_type.text}</p>`
+                        let txt = '';
+                        if (row.unit_type.hasOwnProperty('text')) // if row data is object
+                            txt = row.unit_type.text
+                        else // else row data is number
+                            txt = $('option[value="'+row.unit_type+'"]', '[name="unit_type"]').text()
+                        return `<p>${txt}</p>`
                     }
                 },
                 {
@@ -788,13 +878,19 @@ $(document).ready(function () {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<p>${row.day_type.text}</p>`
+                        let txt = '';
+                        if (row.day_type.hasOwnProperty('text')) txt = row.day_type.text
+                        else txt = $('option[value="'+row.day_type+'"]', '[name="day_type"]').text()
+                        return `<p>${txt}</p>`
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<p>${row.terms_after.text}</p>`
+                        let txt = '';
+                        if (row.after.hasOwnProperty('text')) txt = row.after.text
+                        else txt = $('option[value="'+row.after+'"]', '[name="after"]').text()
+                        return `<p>${txt}</p>`
                     }
                 },
                 {
@@ -831,9 +927,30 @@ $(document).ready(function () {
         });
     }
 
-    // button on add term
+    function loadDetailPage(url){
+        $.fn.callAjax(url, 'GET')
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $('[name="title"]').val(data.title)
+                        $('[name="apply_for"]').val(data.apply_for).trigger('change')
+                        $('[name="remark"]').val(data.remark)
+                        $('[name="payment_terms_id"]').val(data.id)
+                        $('#table_terms').DataTable().clear().draw();
+                        $('#table_terms').DataTable().rows.add(data.term).draw();
+                    }
+                }
+            )
+    }
+
+    // on Unit type changed
     UnitTypeChange()
+    // init terms data table
     termsDataTable()
+    // init config payment terms list
+    PaymentTermsList()
+    // button on add term
     $('#modal-add-table button[type=submit]').off().on('click', function () {
         let getIdx = $(this).closest('.modal').attr('data-table-idx');
         let convertData = {}
@@ -847,11 +964,11 @@ $(document).ready(function () {
             value: $('#modal-add-table [name="day_type"]').val()
         }
         convertData['no_of_days'] = $('#modal-add-table [name="no_of_days"]').val();
-        convertData['terms_after'] = {
-            text: $('#modal-add-table [name="terms_after"] option:selected').text(),
-            value: $('#modal-add-table [name="terms_after"]').val()
+        convertData['after'] = {
+            text: $('#modal-add-table [name="after"] option:selected').text(),
+            value: $('#modal-add-table [name="after"]').val()
         }
-        if (!convertData.value || !convertData.day_type || !convertData.unit_type || !convertData.terms_after) {
+        if (!convertData.value || !convertData.day_type || !convertData.unit_type || !convertData.after) {
             let txtKey = !convertData.value ? 'value' : !convertData.day_type ? 'day_type' : !convertData.unit_type ?
                 'unit_type' : 'after'
             let errorTxt = $('#trans-factory').data('terms-' + txtKey)
@@ -863,6 +980,7 @@ $(document).ready(function () {
         else $('#table_terms').DataTable().row.add(convertData).draw()
         $('#modal-add-table').modal('hide');
     });
+    // create new terms
     $('[data-bs-target="#modal-add-table"]').off().on('click', () => {
         $('#modal-add-table').removeAttr('data-table-idx')
         $('#modal-add-table form')[0].reset()
@@ -870,25 +988,48 @@ $(document).ready(function () {
 
     // form create submit
     $('#btn-save-payment').off().on('click', function () {
-        $(this).addClass('disabled')
         let $form = $('#form-create-payment-term')
         let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let formID = $('[name="payment_terms_id"]').val()
         let _form = new SetupFormSubmit($form);
-
-        _form.dataForm['terms'] = $('#table_terms').DataTable().data().toArray();
-        console.log(_form.dataForm)
+        let tableTerms = $('#table_terms').DataTable().data().toArray();
+        for (let item of tableTerms){
+            item.unit_type = item.unit_type.hasOwnProperty('value') ? item.unit_type.value : item.unit_type
+            item.day_type = item.day_type.hasOwnProperty('value') ? item.day_type.value : item.day_type
+            item.after = item.after.hasOwnProperty('value') ? item.after.value : item.after
+        }
+        if (!_form.dataForm['title']){
+            $.fn.notifyPopup({description: "Title is required"}, 'failure');
+            return false
+        }
+        if (!tableTerms.length){
+            $.fn.notifyPopup({description: "Term must be at least one rows"}, 'failure');
+            return false
+        }
+        _form.dataForm['term'] = tableTerms;
+        if (formID ){
+            _form.dataUrl = $('#url-factory').attr('data-detail').format_url_with_uuid(formID)
+            _form.dataMethod = 'PUT'
+        }
         $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let data_item = {
+                            'id': data.id,
+                            'title': data.title,
+                            'apply_for': data.apply_for
+                        }
                         $.fn.notifyPopup({description: data.message}, 'success')
-
-                        $('#btn-back-payment').trigger('click')
+                        let $table = $('#datatable-payment-terms');
+                        let defaultData = $table.DataTable().data().toArray();
+                        if (formID) defaultData.unshift(data_item);
+                        // $table.DataTable().row.add(data_item).draw()
+                        $table.DataTable().clear().draw()
+                        $table.DataTable().rows.add(defaultData).draw();
+                        $('#btn-back-payment').trigger('click');
                     }
-                },
-                (errs) => {
-                    $.fn.notifyPopup({description: errs.errors}, 'failure')
                 }
             )
     })

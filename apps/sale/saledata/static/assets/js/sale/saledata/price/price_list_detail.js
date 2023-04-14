@@ -3,6 +3,7 @@ $(document).ready(function () {
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
+        paging: false,
         columnDefs: [{
             "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
         }],

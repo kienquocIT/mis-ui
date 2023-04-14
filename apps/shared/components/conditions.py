@@ -53,6 +53,7 @@ class ConditionForm(forms.Form):
 
 class ConditionFormset(MultiForm):
     """params and condition formset"""
+    """use for condition formset"""
     form_classes = {
         'condition': formset_factory(
             ConditionForm,

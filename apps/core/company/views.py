@@ -52,7 +52,7 @@ class CompanyDetail(View):
         return {}, status.HTTP_200_OK
 
 
-class CompanyDetailAPI(APIView):
+class CompanyDetail(View):
     @mask_view(auth_require=True, template='core/company/company_detail.html', breadcrumb='COMPANY_LIST_PAGE')
     def get(self, request, pk, *args, **kwargs):
         response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
@@ -106,40 +106,19 @@ class CompanyListOverviewList(View):
         menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
+        if resp.state:
+            return {'company_list': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
 class CompanyListOverviewListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_OVERVIEW).get()
         if resp.state:
-            return {
-                       'company_list': resp.result,
-                       'total_user_summary': resp.result[0]['total_user_summary'],
-                       'power_user_summary': resp.result[0]['power_user_summary'],
-                   }, status.HTTP_200_OK
+            return {'company_list': resp.result}, status.HTTP_200_OK
 
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-
-class CompanyListOverviewDetail(View):
-    @mask_view(
-        auth_require=True,
-        template='core/company/company_overview/company_overview_detail.html',
-        breadcrumb='COMPANY_OVERVIEW_DETAIL_PAGE',
-        menu_active='menu_company_overview_list',
-    )
-    def get(self, request, *args, **kwargs):
-        # return {}, status.HTTP_200_OK
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
-        if resp.state:
-            return {'company_list': resp.result, 'pk': kwargs.get('pk', None),
-                    'user_url': '/company/list/overview/employee-user'}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -196,9 +175,8 @@ class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
             return response.result, status.HTTP_200_OK
         return response.errors, response.status
 
-class CompanyUserNotMapEmployeeListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
+class CompanyUserNotMapEmployeeListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE).get()
@@ -208,3 +186,25 @@ class CompanyUserNotMapEmployeeListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
+
+class EmployeeOfTenantListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        query_params = request.query_params
+        company_id = query_params.get('company_id', None)
+        user_is_null = query_params.get('user_is_null', None)
+        if company_id:
+            filter_data = {'company_id': company_id}
+            if user_is_null is not None:
+                user_is_null = TypeCheck.get_bool(user_is_null)
+                filter_data['user__isnull'] = user_is_null
+            print('filter_data: ', filter_data)
+            resp = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_TENANT, is_minimal=False).get(
+                data=filter_data
+            )
+            if resp.state:
+                return {'employee_list': resp.result}, status.HTTP_200_OK
+            elif resp.status == 401:
+                return {}, status.HTTP_401_UNAUTHORIZED
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'employee_list': []}, status.HTTP_200_OK

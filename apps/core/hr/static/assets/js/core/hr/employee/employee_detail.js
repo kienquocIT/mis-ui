@@ -1,4 +1,8 @@
 $(document).ready(function () {
+
+    /***
+     * @param {{first_name:string, last_name:string}} data
+     */
     // load instance data
     function loadDetailData() {
         let ele = $('#employee-detail-page');
@@ -36,6 +40,7 @@ $(document).ready(function () {
                         eleDob.val(moment(data.employee.dob).format('DD-MM-YYYY'));
                         eleDateJoined.val(moment(data.employee.date_joined).format('DD-MM-YYYY'));
 
+                        // load data for field Role
                         if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
                             let dataRoleEmp = ""
                             for (let r = 0; r < data.employee.role.length; r++) {
@@ -48,128 +53,44 @@ $(document).ready(function () {
                             eleRole.val(dataRoleEmp)
                         }
 
-                        if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
-                            let listTypeBtn = ["primary", "success", "info", "danger", "warning",]
-                            for (let t = 0; t < data.employee.plan_app.length; t++) {
-                                let app_list = ``;
-                                let app_list_edit = ``;
-                                if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
-                                    let appLength = data.employee.plan_app[t].application.length;
-                                    for (let i = 0; i < appLength; i++) {
-                                        app_list += `<tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0; padding-bottom: 25px;">
-                                                        <td style="width: 28%; border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked disabled/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">User</td>
-                                                    </tr>`
-                                        app_list_edit += `<tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
-                                                        <td style="width: 28%; border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><i class="fas fa-star"></i>${data.employee.plan_app[t].application[i].title}</td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0"><input type="checkbox" checked/></td>
-                                                        <td style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">User</td>
-                                                    </tr>`
-                                    }
-                                }
-                                let tableApplication = `<table class="mt-3" style="width: 100%">
-                                                        <thead>
-                                                        <tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Application</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View All</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Create</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Edit</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Delete</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Permission Range</th>
-                                                        </tr>
-                                                        <tbody>${app_list}</tbody>
-                                                    </table>`
-
-                                let tableApplicationEdit = `<table class="mt-3" style="width: 100%">
-                                                        <thead>
-                                                        <tr style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Application</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View All</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Create</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">View</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Edit</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Delete</th>
-                                                            <th style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">Permission Range</th>
-                                                        </tr>
-                                                        <tbody>${app_list_edit}</tbody>
-                                                    </table>`
-
-                                $('#data-employee-plan-app-detail').append(`<div class="row mb-5">
-                                <div>
-                                    <button
-                                            class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 310px"
-                                          
-                                    >
-                                        ${data.employee.plan_app[t].title}
-                                    </button>
-                                </div>
-                                <div class="show" id="collapseExample${t}">
-                                    ${tableApplication}
-                                </div>
-                            </div>`)
-
-
-                            $('#data-employee-plan-app-edit').append(`<div class="row mb-5">
-                                <div>
-                                    <button
-                                            class="btn btn-gradient-${listTypeBtn[t]}" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseExample${t}" aria-expanded="false"
-                                            aria-controls="collapseExample${t}" style="width: 295px"
-                                          
-                                    >
-                                        ${data.employee.plan_app[t].title}
-                                    </button>
-                                </div>
-                                <div class="show" id="collapseExample${t}">
-                                    ${tableApplicationEdit}
-                                </div>
-                            </div>`)
-                            }
-                        }
+                        // load permission table
+                        // call function handle permissions function
+                        PermissionsInit(data.employee.plan_app, data.employee.permission_by_configured)
                     }
-                }
-            }
+                } // end if data available
+            } // end response
         )
     }
 
-    function loadDefaultData() {
+    loadDetailData();
 
-        loadDetailData();
+    $('#input-avatar').on('change', function () {
+        let upload_img = $('#upload-area');
+        upload_img.text("");
+        upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
+    });
+    $('#upload-area').click(function () {
+        $('#input-avatar').click();
+    });
 
-        $('#input-avatar').on('change', function (ev) {
-            let upload_img = $('#upload-area');
-            upload_img.text("");
-            upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
-        });
-        $('#upload-area').click(function (e) {
-            $('#input-avatar').click();
-        });
+    $('#languages').select2();
 
-        $('#languages').select2();
-    }
-
-    loadDefaultData();
 
     jQuery.validator.setDefaults({
         debug: true,
         success: "valid"
     });
-});
 
-
-$(document).on('click', '#btn-edit-emp-permission', function () {
-    $('#employee-permission-detail').attr("hidden", true);
-    $('#employee-permission-edit').attr("hidden", false);
+    /***
+     * on click set permission button
+     */
+    $('#btn-edit-emp-permission').on('click', function(){
+        $(this).addClass("hidden")
+        $('#button-save-employee-permission').removeClass('hidden');
+        $('#employee-perm-detail input').attr('disabled', false);
+        $('.select_range').prop("disabled", false);
+        $('.add-new-perm').removeClass("hidden");
+        addNewPermission();
+        PermUpdateBtn();
+    })
 });

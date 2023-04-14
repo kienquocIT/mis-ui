@@ -1,4 +1,5 @@
 """system module"""
+from typing import Union
 from uuid import UUID
 
 
@@ -17,3 +18,13 @@ class TypeCheck:  # pylint: disable=too-few-public-methods
         if return_data is True:
             return data_checked if data_checked else None
         return bool(data_checked)
+
+    @staticmethod
+    def get_bool(data: Union[str, int, bool]):
+        if isinstance(data, bool):
+            return data
+        if data in ['true', 'True', '1', 1]:
+            return True
+        if data in ['false', 'False', '0', 0]:
+            return False
+        raise ValueError("Data isn't boolean format.")

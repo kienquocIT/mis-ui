@@ -153,10 +153,13 @@ $(document).ready(function () {
         let section = $(this).attr('data-collapse')
         $(".lookup-data").hide()
         let id_tag = `#` + section
-
-        let lookup = section.split('-').pop()
-        $('#modal-lookup-data h5').text(lookup.charAt(0).toUpperCase() + lookup.slice(1));
-        $('#form-create-lookup').attr('data-lookup', lookup)
+        if(section === 'section-account-type'){
+            $('#modal-lookup-data h5').text('Account Type');
+        }
+        else{
+            $('#modal-lookup-data h5').text('Industry');
+        }
+        $('#form-create-lookup').attr('data-lookup', section)
         $(id_tag).show();
     })
 
@@ -169,9 +172,9 @@ $(document).ready(function () {
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
         let data_url = ''
-        if (lookup === 'account_type') {
+        if (lookup === 'section-account-type') {
             data_url = $('#form-create-lookup').attr('data-url-account-type');
-        } else if (lookup === 'industry') {
+        } else if (lookup === 'section-industry') {
             data_url = $('#form-create-lookup').attr('data-url-industry');
         }
 
@@ -188,7 +191,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
                         $('#modal-lookup-data').hide();
                     }
                 },
@@ -196,7 +199,7 @@ $(document).ready(function () {
                 }
             ).then(
             (rep) => { // reload dataTalbe after create
-                if (lookup === 'account_type') {
+                if (lookup === 'section-account-type') {
                     $('#section-account-type').empty();
                     $('#section-account-type').append(ele_account_type);
                     let tb_account_type = $('#datatable-account-type-list');
@@ -323,7 +326,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Cập nhập"}, 'success')
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
                             $('#modal-update-data').hide();
                         }
                     },

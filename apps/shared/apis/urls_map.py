@@ -44,11 +44,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
+    ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
+    EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -72,12 +74,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
+    APPLICATION_PERMISSION = StringUrl('base/permissions')
 
     TENANT = StringUrl('tenant/userlist')
+
     # HR
-    EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
-    USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
-    COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
 
     # WORKFLOW
     WORKFLOW = StringUrl('workflow')

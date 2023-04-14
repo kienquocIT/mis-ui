@@ -93,6 +93,8 @@ $(document).ready(function () {
                                                     name="list-app-add-employee-${t}" class="form-check-input check-plan-application"
                                                     data-plan-id="${data.tenant_plan_list[t].plan.id}"
                                                     data-app-id="${data.tenant_plan_list[t].plan.application[i].id}"
+                                                    data-app-label="${data.tenant_plan_list[t].plan.application[i].app_label}"
+                                                    data-app-title="${data.tenant_plan_list[t].plan.application[i].title}"
                                             />
                                             <label
                                                     for="list-app-add-employee" class="form-check-label"
@@ -136,6 +138,7 @@ $(document).ready(function () {
         )
     }
 
+    // function này cần maintain nha tạm thời sử dụng thôi
     function setupDataPlanApp() {
         let dataPlanAppSubmit = [];
         let tablePlanApp = document.getElementById("datable-employee-plan-app");
@@ -208,10 +211,22 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
+        // check data submit user-app
+        let flag_check_app = Number($('#is-check-app-employee-create').val());
+        if (frm.dataForm.hasOwnProperty('user')) {
+            if (frm.dataForm['user']) {
+                if (flag_check_app === 0) {
+                    $.fn.notifyPopup({description: 'Employee map user must choose applications'}, 'failure');
+                    return false
+                }
+            }
+        }
+        // end check
         let dataPlanApp = setupDataPlanApp()
         if (dataPlanApp && frm.dataForm) {
             frm.dataForm['plan_app'] = dataPlanApp
         }
+
 
         if (frm.dataForm.hasOwnProperty('date_joined')) {
             frm.dataForm['date_joined'] = moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss')
@@ -309,7 +324,17 @@ $(document).on('click', '.check-plan-application', function (e) {
     let checkAll = 0;
     let divUl = $(this)[0].closest('ul');
     let eleDivAppList = divUl.children;
-    if (licenseQuantity && licenseQuantity !== 'null' && $('#select-box-user').val()) {
+    // update flag is check app
+    let flag_check = $('#is-check-app-employee-create');
+    if ($(this)[0].checked === true) {
+        let flag_update = String(Number(flag_check.val()) + 1);
+        flag_check.val(flag_update);
+    } else {
+        let flag_update = String(Number(flag_check.val()) - 1);
+        flag_check.val(flag_update);
+    }
+    // end check
+    if (licenseQuantity && $('#select-box-user').val()) {
         // checked ==> if user.val() ==> license + 1
         if ($(this)[0].checked === true) {
             for (let t = 0; t < eleDivAppList.length; t++) {
@@ -321,12 +346,16 @@ $(document).on('click', '.check-plan-application', function (e) {
             if (checkAll === 1) {
                 if (eleLicenseUsed.innerHTML) {
                     let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                    if (licenseUsed <= Number(licenseQuantity)) {
-                        eleLicenseUsed.innerHTML = String(licenseUsed);
+                    if (licenseQuantity !== 'null') {
+                        if (licenseUsed <= Number(licenseQuantity)) {
+                            eleLicenseUsed.innerHTML = String(licenseUsed);
+                        } else {
+                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            $(this)[0].checked = false;
+                            return false
+                        }
                     } else {
-                        $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
-                        $(this)[0].checked = false;
-                        return false
+                        eleLicenseUsed.innerHTML = String(licenseUsed);
                     }
                 }
             }
@@ -367,11 +396,15 @@ function updateLicenseWhenChangeUser() {
             if (app.checked === true) {
                 if ($('#select-box-user').val()) {
                     let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                    if (licenseUsed <= Number(licenseQuantity)) {
-                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    if (licenseQuantity && licenseQuantity !== "null") {
+                        if (licenseUsed <= Number(licenseQuantity)) {
+                            eleLicenseUsed.innerHTML = licenseUsed.toString();
+                        } else {
+                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            return false
+                        }
                     } else {
-                        $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
-                        return false
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
                     }
                     break
                 } else {

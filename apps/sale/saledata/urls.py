@@ -71,7 +71,8 @@ urlpatterns = [
     path(
         'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
         name='UnitOfMeasureGroupListAPI'
-    ), path(
+    ),
+    path(
         'masterdata/unit-of-measure-group/api/<str:pk>', UnitOfMeasureGroupDetailAPI.as_view(),
         name='UnitOfMeasureGroupDetailAPI'
     ),

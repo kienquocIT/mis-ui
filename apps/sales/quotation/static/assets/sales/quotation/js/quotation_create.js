@@ -26,8 +26,13 @@ $(function () {
 			alert("You are " + years + " years old!");
 		});
 
-        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+        let popoverTriggerList = document.querySelectorAll('.popover-opp');
+        let popoverList = [...popoverTriggerList].map(popoverTriggerEl => {
+            let popoverContent = `<div class="row"><span><b><i>Code</i></b></span><span class="ml-1">ABC</span></div>`;
+            popoverTriggerEl.setAttribute('data-bs-content', popoverContent);
+            popoverTriggerEl.setAttribute('data-bs-html', 'true');
+            return new bootstrap.Popover(popoverTriggerEl);
+        });
 
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');

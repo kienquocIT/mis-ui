@@ -296,7 +296,12 @@ $(document).ready(function () {
                             table.find('thead tr').append('<th class="w-5"></th>')
                             for (let i = 0; i < body_table.length; i++) {
                                 if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
-                                    body_table[i].innerHTML += '<td></td>'
+                                    if (data.price.can_delete === true) {
+                                        body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                    }
+                                    else{
+                                        body_table[i].innerHTML += '<td></td>'
+                                    }
                                 } else
                                     body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                             }
@@ -515,11 +520,9 @@ $(document).ready(function () {
                     let uom_id = $(this).find('.span-uom').attr('data-id')
                     let uom_gr_id = $(this).find('.span-uom-group').attr('data-id')
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
-                    // let is_auto_update;
-                    // if ($(this).find('td:eq(' + index + ')').find('input').prop('disabled') === true) {
-                    //     is_auto_update = true
-                    // } else
-                    //     is_auto_update = false
+                    if (price === '') {
+                        price = 0;
+                    }
                     list_price_of_currency.push({
                         'product_id': product_id,
                         'uom_id': uom_id,

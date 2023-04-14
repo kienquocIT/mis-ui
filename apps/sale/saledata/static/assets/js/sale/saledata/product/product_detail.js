@@ -245,7 +245,6 @@ $(document).ready(function () {
                         appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
                         autoSelectPriceListCopyFromSource()
                         list_price.map(function (item) {
-                            console.log(item)
                             if (item.currency_using === currency_primary){
                                 document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
                             }
@@ -318,7 +317,7 @@ $(document).ready(function () {
                                     select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
                             })
 
-                            $('#inventory-  level-max').val(data.product.inventory_information.inventory_level_max);
+                            $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
                             $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
                             loadTaxCode(data.product.sale_information.tax_code);
 

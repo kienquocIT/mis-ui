@@ -236,11 +236,9 @@ $(document).ready(function () {
                 }
                 $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
-                    console.log(data)
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
                     config['data'] = product_mapped;
                     initDataTable(config, '#datatable-item-list');
-
 
                     // add column in table item list (Price Of currency and button Delete item)
                     if (product_mapped.length != 0) {
@@ -268,9 +266,9 @@ $(document).ready(function () {
                         // create thead
                         for (let i = 0; i < price_longest.price.length; i++) {
                             if (i === price_longest.price.length - 1) {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus ml-3"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></th>`))
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-30 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus ml-3"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></th>`))
                             } else {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-30 price-currency-exists" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
                             }
                             index_th += 1
                         }
@@ -446,8 +444,7 @@ $(document).ready(function () {
                     },
                     (errs) => {
                         // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                    }
-                )
+                    })
         })
 
         // form add new product
@@ -563,13 +560,14 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
                         // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                    }
-                )
+                    })
         })
     })
 
@@ -675,10 +673,29 @@ $(document).ready(function () {
         }
     })
 
-    // $(document).on('click', '.btn-del', function () {
-    //     let index = $(this).closest('tr').index();
-    //     let table = document.getElementById('datatable-item-list');
-    //     table.deleteRow(index + 1);
-    // })
+    // delete item
+    $(document).on('click', '.btn-del', function () {
+        let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
+        let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
+        let data = {
+            'product_id': product_id,
+            'list_item': price_list_update,
+        }
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        $.fn.callAjax(data_url, 'PUT', data, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                })
+    })
 })
 

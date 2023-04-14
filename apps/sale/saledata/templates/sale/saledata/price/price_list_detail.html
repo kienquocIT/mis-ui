@@ -62,7 +62,9 @@
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}" data-method="PUT">
                 <table id="datatable-item-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "PriceDetailAPI" pk=0 %}"
-                       data-url-detail="{% url "ProductDetail" pk=0 %}" data-method="GET">
+                       data-url-detail="{% url "ProductDetail" pk=0 %}"
+                       data-url-delete="{% url "PriceListDeleteProductAPI" pk=0 %}"
+                       data-method="GET">
                     <thead>
                     <th class="w-5">
             <span class="form-check">

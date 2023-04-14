@@ -244,10 +244,11 @@ $(document).ready(function () {
                         })
                         appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
                         autoSelectPriceListCopyFromSource()
-                        console.log(list_price)
                         list_price.map(function (item) {
-
-                            document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
+                            console.log(item)
+                            if (item.currency_using === currency_primary){
+                                document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
+                            }
                             if (item.is_auto_update === false) {
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).disabled = false;

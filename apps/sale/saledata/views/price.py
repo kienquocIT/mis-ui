@@ -68,7 +68,8 @@ class TaxListAPI(APIView):
             return {'tax_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -101,7 +102,8 @@ class TaxDetailAPI(APIView):
             return {'tax': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -133,7 +135,8 @@ class TaxCategoryDetailAPI(APIView):
             return {'tax_category': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -167,7 +170,8 @@ class CurrencyListAPI(APIView):
             return {'currency_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -200,7 +204,8 @@ class CurrencyDetailAPI(APIView):
             return {'currency': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -324,7 +329,8 @@ class PriceListAPI(APIView):
             return {'price_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -359,7 +365,8 @@ class PriceDetailAPI(APIView):
             return {'price': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,
@@ -389,6 +396,28 @@ class UpdateProductForPriceListAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTS_FOR_PRICE_LIST + pk).put(request.data)  # noqa
+        if resp.state:
+            return {'price': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class PriceListDeleteProductAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST_DELETE_PRODUCT + pk).put(request.data)  # noqa
         if resp.state:
             return {'price': resp.result}, status.HTTP_200_OK
         if resp.errors:  # noqa

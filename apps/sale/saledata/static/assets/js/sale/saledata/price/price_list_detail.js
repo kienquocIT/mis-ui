@@ -258,10 +258,12 @@ $(document).ready(function () {
                                     item.price.push({'id': obj.id, 'abbreviation': obj.abbreviation, 'value': 0});
                                 }
                             });
-                            const order = price_longest.price.map(item => item.id);
-
-                            item.price.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
                         });
+
+                        product_mapped.map(function (item){
+                            const order = price_longest.price.map(item => item.id);
+                            item.price.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+                        })
 
                         // create thead
                         for (let i = 0; i < price_longest.price.length; i++) {
@@ -273,6 +275,7 @@ $(document).ready(function () {
                             index_th += 1
                         }
 
+                        console.log(product_mapped)
                         // create tbody
                         for (let j = 0; j < body_table.length; j++) {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
@@ -522,13 +525,15 @@ $(document).ready(function () {
                     if (price === '') {
                         price = 0;
                     }
-                    list_price_of_currency.push({
-                        'product_id': product_id,
-                        'uom_id': uom_id,
-                        'uom_group_id': uom_gr_id,
-                        'price': price,
-                        'currency': currency_id,
-                    })
+                    if ($(this).find('td:eq(' + index + ')').find('input').hasClass('inp-edited') === true) {
+                        list_price_of_currency.push({
+                            'product_id': product_id,
+                            'uom_id': uom_id,
+                            'uom_group_id': uom_gr_id,
+                            'price': price,
+                            'currency': currency_id,
+                        })
+                    }
                 });
             })
 
@@ -540,21 +545,19 @@ $(document).ready(function () {
                     let uom_id = $(this).find('.span-uom').attr('data-id')
                     let uom_gr_id = $(this).find('.span-uom-group').attr('data-id')
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
-                    let is_auto_update;
-                    if ($(this).find('td:eq(' + index + ')').find('input').prop('disabled') === true) {
-                        is_auto_update = true
-                    } else
-                        is_auto_update = false
+                    if (price === '') {
+                        price = 0;
+                    }
                     list_price_of_currency.push({
                         'product_id': product_id,
                         'uom_id': uom_id,
                         'uom_group_id': uom_gr_id,
                         'price': price,
                         'currency': currency_id,
-                        'is_auto_update': is_auto_update
                     })
                 });
             })
+            console.log(list_price_of_currency)
             frm.dataForm['list_item'] = list_price_of_currency
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
@@ -691,9 +694,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
+                            $.fn.redirectUrl(window.location, 1000);
                         }
                     },
                     (errs) => {
@@ -702,6 +703,7 @@ $(document).ready(function () {
         }
     })
 
-
+    $(document).on('input', '#datatable-item-list input.form-control', function () {
+        $(this).addClass('inp-edited');
+    })
 })
-

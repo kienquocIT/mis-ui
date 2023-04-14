@@ -298,8 +298,7 @@ $(document).ready(function () {
                                 if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
                                     if (data.price.can_delete === true) {
                                         body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
-                                    }
-                                    else{
+                                    } else {
                                         body_table[i].innerHTML += '<td></td>'
                                     }
                                 } else
@@ -677,28 +676,32 @@ $(document).ready(function () {
     })
 
     // delete item
+
     $(document).on('click', '.btn-del', function () {
-        let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
-        let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
-        let data = {
-            'product_id': product_id,
-            'list_item': price_list_update,
+        if (confirm("Confirm Delete ?") === true) {
+            let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
+            let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
+            let data = {
+                'product_id': product_id,
+            }
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(data_url, 'PUT', data, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    })
         }
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        $.fn.callAjax(data_url, 'PUT', data, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 1000);
-                    }
-                },
-                (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                })
     })
+
+
 })
 

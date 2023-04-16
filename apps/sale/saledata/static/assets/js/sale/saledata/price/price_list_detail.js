@@ -261,7 +261,7 @@ $(document).ready(function () {
                             });
                         });
 
-                        product_mapped.map(function (item){
+                        product_mapped.map(function (item) {
                             const order = price_longest.price.map(item => item.id);
                             item.price.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
                         })
@@ -276,7 +276,6 @@ $(document).ready(function () {
                             index_th += 1
                         }
 
-                        console.log(product_mapped)
                         // create tbody
                         for (let j = 0; j < body_table.length; j++) {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
@@ -407,12 +406,15 @@ $(document).ready(function () {
                                     'id_source': item.price_list_mapped
                                 });
                         }
+
                         if (item.is_default === true) {
-                            price_list_add_new_item.push({
-                                'id': item.id,
-                                'factor': item.factor,
-                                'id_source': ''
-                            });
+                            if (!price_list_add_new_item.map(obj => obj.id).includes(item.id)) {
+                                price_list_add_new_item.push({
+                                    'id': item.id,
+                                    'factor': item.factor,
+                                    'id_source': ''
+                                });
+                            }
                         } else {
                             if (price_list_add_new_item.map(obj => obj.id).includes(item.price_list_mapped))
                                 price_list_add_new_item.push({
@@ -468,27 +470,32 @@ $(document).ready(function () {
             }
             let price_list = [];
             price_list_add_new_item.map(function (item) {
-                let value = $('#inp-price').val()
-                if (item.id_source === '') {
-                    price_list.push({
-                        'price_list_id': item.id,
-                        'price_value': value,
-                        'is_auto_update': '0',
-                    })
-                } else {
-                    price_list.push({
-                        'price_list_id': item.id,
-                        'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
-                        'is_auto_update': '1',
-                    })
-                }
+                $('#table-price-of-currency tbody tr td').each(function () {
+                    if (item.id_source === '') {
+                        let value = $(this).val()
+                        if(value === ''){
+                            value = 0
+                        }
+                        price_list.push({
+                            'price_list_id': item.id,
+                            'price_value': value,
+                            'is_auto_update': '0',
+                            'currency_using': $(this).attr('data-id')
+                        })
+                    } else {
+                        price_list.push({
+                            'price_list_id': item.id,
+                            'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
+                            'is_auto_update': '1',
+                            'currency_using': $(this).attr('data-id')
+                        })
+                    }
+                })
             })
-
             frm.dataForm['sale_information'] = {
                 'default_uom': frm.dataForm['uom'],
                 'tax_code': null,
                 'price_list': price_list,
-                'currency_using': $('#select-box-currency').find('option[data-primary="1"]').val()
             }
             frm.dataForm['inventory_information'] = {}
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
@@ -558,7 +565,6 @@ $(document).ready(function () {
                     })
                 });
             })
-            console.log(list_price_of_currency)
             frm.dataForm['list_item'] = list_price_of_currency
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
@@ -662,6 +668,13 @@ $(document).ready(function () {
         let table = $('#table-price-of-currency')
         table.html('');
         table.append(table_price_of_currency);
+        $('#datatable-item-list .price-currency-exists').each(function () {
+            let thText = $(this).contents().filter(function () {
+                return this.nodeType === Node.TEXT_NODE;
+            }).text().trim();
+            table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+        })
         $('#datatable-item-list .th-dropdown').each(function () {
             let thText = $(this).contents().filter(function () {
                 return this.nodeType === Node.TEXT_NODE;

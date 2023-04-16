@@ -138,3 +138,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRICE_DETAIL = StringUrl('saledata/price/')
     PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/')
     PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/')
+    PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list')

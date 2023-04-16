@@ -168,7 +168,7 @@
     </div>
 
     <!-- Modal create new Product -->
-    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}">
+    <form id="form-create-product" data-method="POST" data-url="{% url "ProductAddFromPriceListAPI" %}">
         <div class="modal fade" id="modal-add-new-product" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalCenter"
              aria-hidden="true">
@@ -222,14 +222,10 @@
                         <div class="row mt-3 overflow-x-scroll">
                             <table class="table nowrap w-100 mb-5" id="table-price-of-currency">
                                 <thead>
-                                <th class="w-20">{% trans "Price in VND" %}&nbsp;<span class="field-required">*</span>
-                                </th>
+                                <tr></tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>
-                                        <input class="form-control" placeholder="200000" type="number" id="inp-price">
-                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

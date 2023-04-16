@@ -480,14 +480,14 @@ $(document).ready(function () {
                             'price_list_id': item.id,
                             'price_value': value,
                             'is_auto_update': '0',
-                            'currency_using': $(this).attr('data-id')
+                            'currency_using': $(this).find('input').attr('data-id')
                         })
                     } else {
                         price_list.push({
                             'price_list_id': item.id,
                             'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
                             'is_auto_update': '1',
-                            'currency_using': $(this).attr('data-id')
+                            'currency_using': $(this).find('input').attr('data-id')
                         })
                     }
                 })

@@ -81,43 +81,13 @@ $(document).ready(function () {
             }
 
             const table = $('#datatable_product_list');
-            let call1 = $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
+            $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    return data
+                    config['data'] = data.product_list;
+                    initDataTable(config, '#datatable_product_list');
                 }
             })
-            let call2 = $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
-                let product_type = $.fn.switcherResp(resp);
-                if (product_type) {
-                    return product_type
-                }
-            })
-            let call3 = $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
-                let product_category = $.fn.switcherResp(resp);
-                if (product_category) {
-                    return product_category
-                }
-            })
-
-            $.when(call1, call2, call3).done(function(response1, response2, response3) {
-                for (let i = 0; i < response1.product_list.length; i++) {
-                    let product_type_item = $.grep(response2.product_type_list, function(obj) {
-                        return obj.id === response1.product_list[i]['general_information']['product_type'];
-                    });
-                    response1.product_list[i]['general_information']['product_type'] = product_type_item[0];
-                }
-                for (let i = 0; i < response1.product_list.length; i++) {
-                    let product_category_item = $.grep(response3.product_category_list, function(obj) {
-                        return obj.id === response1.product_list[i]['general_information']['product_category'];
-                    });
-                    response1.product_list[i]['general_information']['product_category'] = product_category_item[0];
-                }
-
-                config['data'] = response1.product_list
-                initDataTable(config, '#datatable_product_list');
-            }).fail(function(error) {
-            });
         });
     }
     loadDefaultData();

@@ -1027,14 +1027,31 @@ $(document).ready(function () {
                             'title': data.title,
                             'apply_for': data.apply_for
                         }
+                        if (formID){
+                            data_item = _form.dataForm
+                        }
                         $.fn.notifyPopup({description: data.message}, 'success')
+                        $('#btn-back-payment').trigger('click');
                         let $table = $('#datatable-payment-terms');
                         let defaultData = $table.DataTable().data().toArray();
-                        if (formID) defaultData.unshift(data_item);
-                        // $table.DataTable().row.add(data_item).draw()
+                        if (!formID) defaultData.unshift(data_item);
+                        else{
+                            // is edit term
+                            for (let [idx, term] of defaultData.entries()){
+                                if (formID === term.id){
+                                    defaultData[idx] = {
+                                        apply_for: parseInt(data_item.apply_for),
+                                        id: formID,
+                                        title: data_item.title,
+                                        remark: data_item.remark,
+                                        term:data_item.term
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                         $table.DataTable().clear().draw()
                         $table.DataTable().rows.add(defaultData).draw();
-                        $('#btn-back-payment').trigger('click');
                     }
                 }
             )

@@ -17,3 +17,21 @@
     float: left;
     list-style: none;
 }
+
+.permission-table tr,
+.permission-table tr th {
+    border: 0;
+    border-bottom: solid 1px #007D88;
+}
+
+#employee-permission-detail table tr td {
+    padding: 5px 0;
+}
+
+#employee-permission-detail table tr td select {
+    height: 38px;
+    max-width: 280px;
+}
+.select2-container{
+    max-width: 280px;
+}

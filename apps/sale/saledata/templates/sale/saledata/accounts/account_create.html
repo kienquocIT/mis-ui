@@ -65,7 +65,7 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}
-                                    <span class="field-required">(*)</span>
+                                    <span class="field-required">*</span>
                                 </label>
                                 <input id="inp-account-name" class="form-control inp-required"
                                        placeholder="{% trans "Company ABC" %}" name="name">
@@ -74,7 +74,7 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Account Code" %}
-                                    <span class="field-required">(*)</span>
+                                    <span class="field-required">*</span>
                                 </label>
                                 <input id="inp-account-code" class="form-control" placeholder="{% trans "CODE" %}" name="code"
                                        oninput="this.value=this.value.toUpperCase()">
@@ -122,7 +122,7 @@
             <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Account Type" %}
-                        <span class="field-required">(*)</span>
+                        <span class="field-required">*</span>
                     </label>
                     <select id="select-box-acc-type" name=""
                             class="form-control select2 select2-multiple select2-required"
@@ -135,14 +135,14 @@
             <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Account Manager" %}
-                        <span class="field-required">(*)</span>
+                        <span class="field-required">*</span>
                     </label>
                     <select id="select-box-acc-manager" name=""
                             class="form-control select2 select2-multiple select2-required"
                             multiple
                             data-method="GET"
-                            data-url="{% url "GetAccountNameAPI" %}"
-                            data-url-account="{% url "GetAccountNameAPI" %}">
+                            data-url="{% url "EmployeeListAPI" %}"
+                            data-url-accounts = {% url "AccountsMapEmployeeAPI" %}>
                     </select>
                 </div>
             </div>
@@ -179,7 +179,7 @@
             </div>
             <div class="col-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Tax Code" %}</label>
+                    <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
                     <input type="text" class="form-control" name="tax_code" id="inp-tax-code"
                            placeholder="Input tax code">
                 </div>
@@ -187,7 +187,7 @@
             <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Industry" %}
-                        <span class="field-required">(*)</span>
+                        <span class="field-required">*</span>
                     </label>
                     <select id="select-box-industry" name="industry" class="form-select select-required"
                             data-method="GET"
@@ -216,7 +216,7 @@
             <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">{% trans "Total Employees" %}
-                        <span class="field-required">(*)</span>
+                        <span class="field-required">*</span>
                     </label>
                     <select id="select-box-total-emp" name="total_employees" class="form-select select-required"
                             data-method="GET"
@@ -415,7 +415,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Account Name" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <select class="form-select" id="select-box-account-name"
                                     data-method="GET"
@@ -427,7 +427,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Email Address" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <input type="text" class="form-control" id="inp-email-address">
                         </div>
@@ -435,7 +435,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Tax Code" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <input type="text" class="form-control" id="inp-tax-code-address">
                         </div>
@@ -443,7 +443,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Account Address" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                                 <button class="btn" type="button" hidden
                                         id="button_add_new_billing_address"
                                         style="position: absolute; right: 0; background: none; border: none; color: #007D88">
@@ -541,7 +541,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="form-label">{% trans "Contact Owner" %}
-                                <span class="field-required">(*)</span>
+                                <span class="field-required">*</span>
                             </label>
                             <select class="form-select" id="select-box-contact-owner"
                                     data-method="GET"
@@ -559,7 +559,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Full Name" %}
-                                    <span class="field-required">(*)</span>
+                                    <span class="field-required">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="inp-fullname">
                             </div>

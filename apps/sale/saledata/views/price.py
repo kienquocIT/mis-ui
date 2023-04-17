@@ -440,7 +440,7 @@ class ProductAddFromPriceListAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).post(data)
+        response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ADD_FROM_PRICE_LIST).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
         if response.errors:

@@ -28,6 +28,8 @@ $(document).ready(function () {
         $('.modal-body .form-control').val('');
         $('.modal-body .form-select').prop("selectedIndex", -1);
         $('.modal-body .select2').val(null).trigger("change");
+        $('#form-create-payment-term')[0].reset();
+        $('#table_terms').DataTable().clear().draw();
         if (!$(this).attr('data-bs-target')) {
             $(".lookup-data").hide();
             $('#section-create-payment-terms').show();
@@ -988,8 +990,8 @@ $(document).ready(function () {
     });
     // create new terms
     $('[data-bs-target="#modal-add-table"]').off().on('click', () => {
-        $('#modal-add-table').removeAttr('data-table-idx')
-        $('#modal-add-table form')[0].reset()
+        $('#modal-add-table').removeAttr('data-table-idx');
+        $('#modal-add-table form')[0].reset();
     })
 
     // form create submit

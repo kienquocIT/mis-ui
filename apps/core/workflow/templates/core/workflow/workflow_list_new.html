@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Workflow list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href="{% url 'WorkflowCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Workflow' %}"
+       id="create_workflow_button"
+       data-bs-original-title="Add Workflow">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <input type="hidden" id="workflow-link"
+           data-link-update="{% url 'WorkflowDetail' 1 %}"
+           data-link-list="{% url 'WorkflowList' %}"
+    >
+    <div class="row">
+        <div class="col-lg-2 offset-lg-10 col-sm-12 offset-sm-0">
+            <input type="text" placeholder="Search.." class="form-control" id="search_input"></div>
+    </div>
+    <table
+            id="table_workflow_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'WorkflowListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th>
+                <span class="form-check">
+                    <input
+                            type="checkbox"
+                            class="form-check-input check-select-all"
+                            id="customCheck1"
+                    >
+                    <label class="form-check-label" for="customCheck1"></label>
+                </span>
+            </th>
+            <th>{% trans 'Flow name' %}</th>
+            <th>{% trans 'Function applied' %}</th>
+            <th>
+                {% trans 'Status' %}
+            </th>
+            <th>
+                {% trans 'Actions' %}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/core/workflow/js/workflow-list.js' %}"></script>
+{% endblock %}

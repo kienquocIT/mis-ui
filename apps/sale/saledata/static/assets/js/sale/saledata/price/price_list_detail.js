@@ -673,7 +673,7 @@ $(document).ready(function () {
         let table = $('#table-price-of-currency')
         table.html('');
         table.append(table_price_of_currency);
-        if ($('#datatable-item-list tbody tr').first().find('td') === 1) {
+        if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
             let currency = $('#select-box-currency').find('option[data-primary="1"]')
             table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
             table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + currency.val() + `"></td>`)

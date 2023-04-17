@@ -82,6 +82,10 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                         data.currency_list.map(function (item) {
+                            if (item.is_primary === true) {
+
+                            }
+
                             if ($('.price-currency-exists').map(function () {
                                 return $(this).data('id');
                             }).get().includes(item.id)
@@ -472,8 +476,8 @@ $(document).ready(function () {
             price_list_add_new_item.map(function (item) {
                 $('#table-price-of-currency tbody tr td').each(function () {
                     if (item.id_source === '') {
-                        let value = $(this).val()
-                        if(value === ''){
+                        let value = $(this).find('input').val()
+                        if (value === '') {
                             value = 0
                         }
                         price_list.push({
@@ -663,25 +667,32 @@ $(document).ready(function () {
         }
     })
 
+    // add input price in modal create new product
     let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-product').on('click', function () {
         let table = $('#table-price-of-currency')
         table.html('');
         table.append(table_price_of_currency);
-        $('#datatable-item-list .price-currency-exists').each(function () {
-            let thText = $(this).contents().filter(function () {
-                return this.nodeType === Node.TEXT_NODE;
-            }).text().trim();
-            table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
-        })
-        $('#datatable-item-list .th-dropdown').each(function () {
-            let thText = $(this).contents().filter(function () {
-                return this.nodeType === Node.TEXT_NODE;
-            }).text().trim();
-            table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
-        })
+        if ($('#datatable-item-list tbody tr').first().find('td') === 1) {
+            let currency = $('#select-box-currency').find('option[data-primary="1"]')
+            table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + currency.val() + `"></td>`)
+        } else {
+            $('#datatable-item-list .price-currency-exists').each(function () {
+                let thText = $(this).contents().filter(function () {
+                    return this.nodeType === Node.TEXT_NODE;
+                }).text().trim();
+                table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+            })
+            $('#datatable-item-list .th-dropdown').each(function () {
+                let thText = $(this).contents().filter(function () {
+                    return this.nodeType === Node.TEXT_NODE;
+                }).text().trim();
+                table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+            })
+        }
     })
 
     $('#tab-select-table a').on('click', function () {
@@ -717,6 +728,7 @@ $(document).ready(function () {
         }
     })
 
+    //on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })

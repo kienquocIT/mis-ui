@@ -478,7 +478,7 @@ $(document).ready(function () {
                     if (item.id_source === '') {
                         let value = $(this).find('input').val()
                         if (value === '') {
-                            value = 0
+                            value = null
                         }
                         price_list.push({
                             'price_list_id': item.id,

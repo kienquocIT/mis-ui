@@ -15,11 +15,11 @@
 /*}*/
 
 .fa-info-circle {
-    font-size: larger;
+    font-size: large;
 }
 
 .custom-popover {
-    max-width: 300px;
+    max-width: 200px;
     border-color: var(--bs-primary);
     border-width: 1px;
     border-style: solid;

@@ -79,7 +79,7 @@
                                         </i>
                                     </span>
                                     <select
-                                            class="form-select" id="select-box-quotation-opportunity"
+                                            class="form-select" id="select-box-quotation-create-opportunity"
                                             data-url=""
                                             data-method="GET"
                                             name="opportunity"
@@ -92,10 +92,20 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <i
+                                            class="fas fa-info-circle popover-customer"
+                                            data-bs-toggle="popover"
+                                            data-bs-custom-class="custom-popover"
+                                            data-bs-title="more information"
+                                            data-bs-placement="bottom"
+                                            data-bs-content="my content"
+                                            >
+                                        </i>
+                                    </span>
                                     <select
-                                            class="form-select" id="select-box-quotation-customer"
-                                            data-url=""
+                                            class="form-select" id="select-box-quotation-create-customer"
+                                            data-url="{% url "AccountListAPI" %}"
                                             data-method="GET"
                                             name="customer"
                                             required
@@ -110,7 +120,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
                                     <select
-                                            class="form-select" id="select-box-quotation-contact"
+                                            class="form-select" id="select-box-quotation-create-contact"
                                             data-url=""
                                             data-method="GET"
                                             name="contact"
@@ -150,7 +160,7 @@
                                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
                                     <select
                                             class="form-select"
-                                            id="select-box-quotation-sale-person"
+                                            id="select-box-quotation-create-sale-person"
                                             data-url="{% url "EmployeeListAPI" %}"
                                             data-method="GET"
                                             name="sale_person"

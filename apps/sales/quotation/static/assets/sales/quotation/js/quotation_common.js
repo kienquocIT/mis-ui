@@ -16,7 +16,7 @@ function loadBoxQuotationOpportunity(opp_id) {
                         let data_show = `${item.title}` + `-` + `${item.code}`;
                         ele.append(`<option value="${item.id}">
                                         <span class="opp-title">${data_show}</span>
-                                        <input type="hidden" class="opp-customer-data" value=${customer}>
+                                        <input type="hidden" class="opp-customer-data" value="${customer}">
                                     </option>`)
                     })
                 }
@@ -36,7 +36,11 @@ function loadBoxQuotationCustomer(customer_id) {
             if (data) {
                 if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
                     data.account_list.map(function (item) {
-                        ele.append(`<option value="${item.id}"><span class="account-title">${item.title}</span></option>`)
+                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                        ele.append(`<option value="${item.id}">
+                                        <span class="account-title">${item.title}</span>
+                                        <input type="hidden" class="account-data" value="${dataStr}">
+                                    </option>`)
                     })
                 }
             }
@@ -111,10 +115,10 @@ function loadBoxQuotationProduct(product_id, box_id) {
                 'unit_price': data[i].unit_price,
                 'cost_price': data[i].cost_price,
                 'tax': data[i].tax,
-            })
+            }).replace(/"/g, "&quot;");
             eleBox.append(`<option value="${data[i].id}">
                             <span class="product-title">${data[i].title}</span>
-                            <input type="hidden" class="product-data" value=${product_data}>
+                            <input type="hidden" class="product-data" value="${product_data}">
                         </option>`)
         }
     }

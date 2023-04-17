@@ -50,6 +50,7 @@ INSTALLED_APPS = \
     ] + [  # Another Application
         'apps.sale.saledata',
     ] + [  # Sales Application
+        'apps.sales.opportunity',
         'apps.sales.quotation',
     ]
 

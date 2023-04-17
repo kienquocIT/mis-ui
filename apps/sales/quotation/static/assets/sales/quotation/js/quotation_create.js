@@ -4,7 +4,8 @@ $(function () {
 
     $(document).ready(function () {
 
-        loadBoxQuotationSalePerson('select-box-quotation-sale-person');
+        loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadBoxQuotationCustomer('select-box-quotation-create-customer');
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
@@ -26,13 +27,16 @@ $(function () {
 			alert("You are " + years + " years old!");
 		});
 
-        let popoverTriggerList = document.querySelectorAll('.popover-opp');
-        let popoverList = [...popoverTriggerList].map(popoverTriggerEl => {
+        let popoverOppTriggerList = document.querySelectorAll('.popover-opp');
+        let popoverOppList = [...popoverOppTriggerList].map(popoverTriggerEl => {
             let popoverContent = `<div class="row"><span><b><i>Code</i></b></span><span class="ml-1">ABC</span></div>`;
             popoverTriggerEl.setAttribute('data-bs-content', popoverContent);
             popoverTriggerEl.setAttribute('data-bs-html', 'true');
             return new bootstrap.Popover(popoverTriggerEl);
         });
+
+        let popoverCustomerTriggerList = document.querySelectorAll('.popover-customer');
+
 
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
@@ -201,18 +205,18 @@ $(function () {
                 document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
                 document.getElementById('quotation-create-cost-total').innerHTML = "0";
                 // copy data
-                let valueProduct = "";
-                let showProduct = "";
-                let valueUOM = "";
-                let showUOM = "";
-                let valueQuantity = "";
-                let valuePrice = "";
-                let optionTax = ``;
-                let valueTaxSelected = "";
-                let valueTaxAmount = "";
-                let valueOrder = "";
-                let valueSubtotal = "";
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
+                    let valueProduct = "";
+                    let showProduct = "";
+                    let valueUOM = "";
+                    let showUOM = "";
+                    let valueQuantity = "";
+                    let valuePrice = "";
+                    let optionTax = ``;
+                    let valueTaxSelected = "";
+                    let valueTaxAmount = "";
+                    let valueOrder = "";
+                    let valueSubtotal = "";
                     let row = tableProduct[0].tBodies[0].rows[i];
                     let product = row.querySelector('.table-row-item');
                     if (product) {
@@ -240,10 +244,10 @@ $(function () {
                         for (let t = 0; t < tax.options.length; t++) {
                             let option = tax.options[t];
                             if (option.selected === true) {
-                                optionTax += `<option value="${option.value}" selected>${option.text}</option>`
+                                optionTax += `<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>${option.text}</option>`
                                 valueTaxSelected = option.value;
                             } else {
-                                optionTax += `<option value="${option.value}">${option.text}</option>`
+                                optionTax += `<option value="${option.value}" data-value="${option.getAttribute('data-value')}">${option.text}</option>`
                             }
                         }
                     }
@@ -294,6 +298,27 @@ $(function () {
         tableCost.on('change', '.table-row-tax', function (e) {
             let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
             changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+        });
+
+// Action on change dropdown account
+        $('#select-box-quotation-create-customer').on('change', function (e) {
+            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
+            if (optionSelected) {
+                let eleDataCustomer = optionSelected.querySelector('.account-data');
+                if (eleDataCustomer) {
+                    let tmp = eleDataCustomer.value;
+                    let data = JSON.parse(eleDataCustomer.value);
+                    let info = ``;
+                    for (let key in data) {
+                        info += `<div class="row"><span><b><i>${key}</i></b></span><span class="ml-1">${data[key]}</span></div>`;
+                    }
+                    let popoverCustomerList = [...popoverCustomerTriggerList].map(popoverTriggerEl => {
+                        popoverTriggerEl.setAttribute('data-bs-content', info);
+                        popoverTriggerEl.setAttribute('data-bs-html', 'true');
+                        return new bootstrap.Popover(popoverTriggerEl);
+                    });
+                }
+            }
         });
 
 

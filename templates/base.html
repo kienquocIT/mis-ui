@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% if base.tenant_current_data %}
-        <title>{{ base.tenant_current_data.code }}- {{ base.tenant_current_data.title }}</title>
+        <title>{{ base.tenant_current_data.code|upper }} - {{ base.tenant_current_data.title }}</title>
     {% else %}
         <title>MIS - {% block title %}Management Information System{% endblock %}</title>
     {% endif %}
@@ -115,6 +115,33 @@
         <!-- /Page Body -->
     </div>
     <!-- /Main Content -->
+
+    <!-- spinner loading -->
+    <div id="loadingContainer" class="loading-container hidden">
+        <div class="my-spinner">
+            <div class="my-circle my-circle-1"></div>
+            <div class="my-circle my-circle-2"></div>
+            <div class="my-circle my-circle-3"></div>
+            <div class="my-circle my-circle-4"></div>
+            <div class="my-circle my-circle-5"></div>
+        </div>
+    </div>
+    <!-- /spinner loading -->
+    <!-- Message translate usually -->
+    <div class="hidden">
+        <span id="msg-user-language">{{ base.language }}</span>
+        <span id="msg-datatable-language-config">
+            {% if base.language == 'vi' %}
+                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
+            {% elif base.language == 'en' %}
+                {% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}
+            {% else %}
+                <!-- Proud of Vietnamese products -->
+                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
+            {% endif %}
+        </span>
+    </div>
+    <!-- /Message translate usually -->
 </div>
 <!-- /Wrapper -->
 
@@ -144,6 +171,28 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <!-- Init JS -->
+    <script>
+        $(document).ready(function () {
+            $.fn.showLoading = (timeout) => {
+                $('#loadingContainer').removeClass('hidden');
+                if (timeout) {
+                    setTimeout(
+                        $.fn.hideLoading,
+                        (timeout > 100 ? timeout : 1000)
+                    );
+                }
+            }
+            $.fn.hideLoading = () => {
+                $('#loadingContainer').addClass('hidden');
+            }
+
+            {# Auto listen event loading và loaded data of DataTable with AJAX #}
+            $(document).find('table').each((idx, tbl) => {
+                $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
+                $(tbl).on('draw.dt', () => $.fn.hideLoading());
+            })
+        })
+    </script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
     <script src="{% static 'assets/js/init.js' %}"></script>

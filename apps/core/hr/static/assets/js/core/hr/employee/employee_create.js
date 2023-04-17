@@ -93,6 +93,8 @@ $(document).ready(function () {
                                                     name="list-app-add-employee-${t}" class="form-check-input check-plan-application"
                                                     data-plan-id="${data.tenant_plan_list[t].plan.id}"
                                                     data-app-id="${data.tenant_plan_list[t].plan.application[i].id}"
+                                                    data-app-label="${data.tenant_plan_list[t].plan.application[i].app_label}"
+                                                    data-app-title="${data.tenant_plan_list[t].plan.application[i].title}"
                                             />
                                             <label
                                                     for="list-app-add-employee" class="form-check-label"
@@ -136,6 +138,7 @@ $(document).ready(function () {
         )
     }
 
+    // function này cần maintain nha tạm thời sử dụng thôi
     function setupDataPlanApp() {
         let dataPlanAppSubmit = [];
         let tablePlanApp = document.getElementById("datable-employee-plan-app");
@@ -223,6 +226,7 @@ $(document).ready(function () {
         if (dataPlanApp && frm.dataForm) {
             frm.dataForm['plan_app'] = dataPlanApp
         }
+
 
         if (frm.dataForm.hasOwnProperty('date_joined')) {
             frm.dataForm['date_joined'] = moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss')

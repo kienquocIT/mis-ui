@@ -35,13 +35,21 @@ class UserCreate(View):
 
 
 class UserDetail(View):
-    @mask_view(auth_require=True, template='core/account/user_detail.html')
+    @mask_view(
+        auth_require=True,
+        template='core/account/user_detail.html',
+        breadcrumb='USER_DETAIL_PAGE',
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class UserEdit(View):
-    @mask_view(auth_require=True, template='core/account/user_edit.html')
+    @mask_view(
+        auth_require=True,
+        template='core/account/user_edit.html',
+        breadcrumb='USER_EDIT_PAGE'
+    )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
@@ -70,7 +78,6 @@ class UserListAPI(APIView):
                         err_msg += str(key) + ": " + str(value)
                         break
                     return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-
 
 
 class UserDetailAPI(APIView):
@@ -103,3 +110,16 @@ class UserDetailAPI(APIView):
         if user.state:
             return {}, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class UserTenantOverviewListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_USER_TENANT).get()
+        if resp.state:
+            return {'user_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

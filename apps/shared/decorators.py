@@ -3,7 +3,6 @@ from functools import wraps
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -83,31 +82,6 @@ class ArgumentDecorator:
             space_all_list = [v for k, v in space_list.items()]
         return space_selected, space_all_list
 
-    @staticmethod
-    def msg_translate() -> dict:
-        return {
-            "successfully": _('Successfully'),
-            "errors": _('Errors'),
-            "field_required": _('This field is required'),
-            "required": _("This field is required"),
-            "remote": _("Please fix this field."),
-            "email": _("Please enter a valid email address."),
-            "url": _("Please enter a valid URL."),
-            "date": _("Please enter a valid date."),
-            "dateISO": _("Please enter a valid date (ISO)."),
-            "number": _("Please enter a valid number."),
-            "digits": _("Please enter only digits."),
-            "creditcard": _("Please enter a valid credit card number."),
-            "equalTo": _("Please enter the same value again."),
-            "accept": _("Please enter a value with a valid extension."),
-            "maxlength": _("Please enter no more than {0} characters."),
-            "minlength": _("Please enter at least {0} characters."),
-            "rangelength": _("Please enter a value between {0} and {1} characters long."),
-            "range": _("Please enter a value between {0} and {1}."),
-            "max": _("Please enter a value less than or equal to {0}."),
-            "min": _("Please enter a value greater than or equal to {0}."),
-        }
-
     @classmethod
     def parse_base(cls, user, cls_kwargs) -> dict:
         """parse base link"""
@@ -124,6 +98,7 @@ class ArgumentDecorator:
                 'space_current_data': user.space_current_data,
                 'employee_current_data': user.employee_current_data,
                 'companies_data': user.companies_data,
+                'language': user.language
             }
         return {}
 

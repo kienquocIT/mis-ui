@@ -1169,7 +1169,9 @@ jQuery.fn.switcherResp = function (resp) {
             case 201:
                 return resp.data
             case 400:
-                $.fn.notifyErrors(resp.data);
+                let mess = resp.data;
+                if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
+                $.fn.notifyErrors(mess);
                 return {};
             case 401:
                 console.log(resp.data);
@@ -1334,4 +1336,103 @@ Array.prototype.convert_to_key = function (key = 'id') {
         return objData;
     }
     return {};
+}
+
+
+$.fn.arraysEqual = function (a, b) {
+    if (a.length !== b.length) return false;
+    return a.every((value, index) => value === b[index]);
+}
+$.fn.arrayIncludesAll = function (a, b) {
+    return b.every(value => a.includes(value));
+}
+
+$.fn.shortName = function (name) {
+    return name.split(" ").map((item) => {
+        return item ? item.charAt(0) : ""
+    }).join("");
+}
+
+// DataTable Customize
+$.fn.DataTableDefault = function (opts, rowIdx = true) {
+    let defaultConfig = {
+        search: $.fn.DataTable.ext.type.search['html-numeric'],
+        searching: true,
+        ordering: false,
+        paginate: true,
+        pageLength: 10,
+        dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
+            "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+        language: {
+            url: $('#msg-datatable-language-config').text().trim(),
+        },
+        drawCallback: function () {
+            feather.replace();
+        },
+        data: [],
+        ...opts
+    }
+    if (opts.ajax) delete defaultConfig['data'];
+    if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
+    let tbl = $(this).DataTable(defaultConfig);
+    tbl.on('init.dt', function () {
+        let minerGroup = $(this).closest('.waiter-miner-group');
+        if (minerGroup.length > 0) {
+            let filterGroup = $(minerGroup[0]).find('.miner-group');
+            let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
+            if (filterGroup.length > 0 && filterItem.length > 0) {
+                filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
+                filterGroup.append(filterItem);
+                $('.dataTables_filter input').removeClass('form-control-sm');
+            }
+        }
+        $(this).closest('.dataTables_wrapper').find('.select2').select2();
+    });
+    return tbl;
+};
+// -- DataTable Customize
+
+// Array Customize
+$.fn.sumArray = (array) => {
+    return array.reduce(function (acc, currentValue) {
+        return acc + currentValue;
+    }, 0);
+}
+// -- Array Customize}
+/**
+ * common function for DataTable action
+ */
+var DataTableAction = {
+    'delete': function (url, data, crf, row) {
+        let div = jQuery('<div>');
+        let $transElm = $('#trans-factory')
+        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' +
+            `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` +
+            `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` +
+            '<div class="modal-footer justify-content-between">' +
+            `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` +
+            `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` +
+            '</button></div></div></div>';
+        div.addClass('modal fade')
+        div.html($content)
+        div.appendTo('body');
+        div.modal('show');
+        div.find('.btn').off().on('click', function(e){
+            if ($(this).attr('data-type') === 'cancel') div.remove();
+            else{
+                $.fn.callAjax(url, 'DELETE', data, crf)
+                    .then(
+                        (res) => {
+                            if (res.hasOwnProperty('status')){
+                                div.modal('hide');
+                                if ($(row).length)
+                                    $(row).closest('.table').DataTable().rows(row).remove().draw();
+                                $.fn.notifyPopup({description: 'Delete item successfully'}, 'success')
+                            }
+                        }
+                    )
+            }
+        })
+    },
 }

@@ -28,10 +28,6 @@
            data-link-update="{% url 'WorkflowDetail' 1 %}"
            data-link-list="{% url 'WorkflowList' %}"
     >
-    <div class="row">
-        <div class="col-lg-2 offset-lg-10 col-sm-12 offset-sm-0">
-            <input type="text" placeholder="Search.." class="form-control" id="search_input"></div>
-    </div>
     <table
             id="table_workflow_list"
             class="table nowrap w-100 mb-5"
@@ -40,31 +36,59 @@
     >
         <thead>
         <tr>
+            <th>{% trans 'Application name' %}</th>
+            <th>{% trans 'Workflow mode' %}</th>
             <th>
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-            </th>
-            <th>{% trans 'Flow name' %}</th>
-            <th>{% trans 'Function applied' %}</th>
-            <th>
-                {% trans 'Status' %}
+                {% trans 'Errors' %}
             </th>
             <th>
-                {% trans 'Actions' %}
+                {% trans 'Current WF applied' %}
             </th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
+
+    <template>
+        <div class="child-table">
+            <a href="#" class="btn add_new_wf">
+                <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                <span class="txt-btn">{% trans 'Add new workflow' %}</span>
+            </a>
+            <table class="child-table">
+                <thead>
+                <tr>
+                    <th>{% trans 'WF name' %}</th>
+                    <th>{% trans 'Applied day' %}</th>
+                    <th>{% trans 'Active status' %}</th>
+                    <th>{% trans 'Not completed' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="grand-child-table">
+            <table class="child-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'WF name' %}</th>
+                    <th>{% trans 'Applied day' %}</th>
+                    <th>{% trans 'Active status' %}</th>
+                    <th>{% trans 'Not completed' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </template>
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'assets/core/workflow/js/workflow-list.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/list-new.js' %}"></script>
 {% endblock %}

@@ -69,7 +69,7 @@ class WorkflowList(View):
 
     @mask_view(
         auth_require=True,
-        template='core/workflow/workflow_list.html',
+        template='core/workflow/workflow_list_new.html',
         menu_active='menu_workflow_list',
         breadcrumb='WORKFLOW_LIST_PAGE',
     )

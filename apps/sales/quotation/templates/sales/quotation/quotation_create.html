@@ -59,116 +59,162 @@
                                     id="quotation-create-title"
                                     required
                             >
-                            <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
+{#                            <span class="form-text text-muted">{% trans 'title of quotation' %}</span>#}
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Opportunity' %}</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1">
-                                        <i
-                                            class="fas fa-info-circle popover-opp"
-                                            data-bs-toggle="popover"
-                                            data-bs-custom-class="custom-popover"
-                                            data-bs-title="more information"
-                                            data-bs-placement="bottom"
-                                            data-bs-content="my content"
-                                            >
-                                        </i>
-                                    </span>
-                                    <select
+                                <div class="input-group mb-3 input-group-1">
+	                                <span class="input-affix-wrapper">
+		                                <span class="input-prefix">
+                                            <div class="btn-group dropdown">
+                                                <i
+                                                        class="fas fa-info-circle"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p"></div>
+                                            </div>
+                                        </span>
+                                        <select
                                             class="form-select" id="select-box-quotation-create-opportunity"
                                             data-url=""
                                             data-method="GET"
                                             name="opportunity"
-                                    >
-                                        <option></option>
-                                    </select>
+                                        >
+                                            <option></option>
+                                        </select>
+	                                </span>
                                 </div>
-                                <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
+{#                                <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>#}
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1">
-                                        <i
-                                            class="fas fa-info-circle popover-customer"
-                                            data-bs-toggle="popover"
-                                            data-bs-custom-class="custom-popover"
-                                            data-bs-title="more information"
-                                            data-bs-placement="bottom"
-                                            data-bs-content="my content"
-                                            >
-                                        </i>
-                                    </span>
-                                    <select
-                                            class="form-select" id="select-box-quotation-create-customer"
-                                            data-url="{% url "AccountListAPI" %}"
-                                            data-method="GET"
-                                            name="customer"
-                                            required
-                                    >
-                                        <option></option>
-                                    </select>
+                                <div class="input-group mb-3 input-group-2">
+	                                <span class="input-affix-wrapper">
+		                                <span class="input-prefix">
+                                            <div class="btn-group dropdown">
+                                                <i
+                                                        class="fas fa-info-circle"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p" style="z-index: 999;"></div>
+                                            </div>
+                                        </span>
+                                        <select
+                                                class="form-select" id="select-box-quotation-create-customer"
+                                                data-url="{% url "AccountListAPI" %}"
+                                                data-method="GET"
+                                                name="customer"
+                                                required
+                                        >
+                                            <option></option>
+                                        </select>
+	                                </span>
                                 </div>
-                                <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
+{#                                <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>#}
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Contact' %}</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
-                                    <select
+                                <div class="input-group mb-3 input-group-3">
+	                                <span class="input-affix-wrapper">
+		                                <span class="input-prefix">
+                                            <div class="btn-group dropdown">
+                                                <i
+                                                        class="fas fa-info-circle"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p"></div>
+                                            </div>
+                                        </span>
+                                        <select
                                             class="form-select" id="select-box-quotation-create-contact"
                                             data-url=""
                                             data-method="GET"
                                             name="contact"
-                                    >
-                                        <option></option>
-                                    </select>
+                                        >
+                                            <option></option>
+                                        </select>
+	                                </span>
                                 </div>
-                                <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
+{#                                <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>#}
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Date Created' %}</label>
-                                <input
-                                        type="text" class="form-control"
-                                        placeholder="dd/mm/yyyy"
-                                        name="date_created"
-                                        id="quotation-date-created"
-                                        disabled
-                                >
-                                <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
+                                <div class="input-group mb-3">
+	                                <span class="input-affix-wrapper">
+                                        <input
+                                            type="text" class="form-control"
+                                            placeholder="dd/mm/yyyy"
+                                            name="date_created"
+                                            id="quotation-date-created"
+                                            disabled
+                                        >
+	                                </span>
+                                </div>
+{#                                <span class="form-text text-m]uted">{% trans 'Date create quotation' %}</span>#}
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Status' %}</label>
-                                <input
-                                        type="text" class="form-control"
-                                        placeholder="Open"
-                                        name="status"
-                                        id="quotation-sale-person"
-                                        disabled
-                                >
-                                <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
+                                <div class="input-group mb-3">
+	                                <span class="input-affix-wrapper">
+                                        <input
+                                            type="text" class="form-control"
+                                            placeholder="Open"
+                                            name="status"
+                                            id="quotation-sale-person"
+                                            disabled
+                                        >
+	                                </span>
+                                </div>
+{#                                <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>#}
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Sale Person' %}</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-info-circle"></i></span>
-                                    <select
+                                <div class="input-group mb-3 input-group-4">
+	                                <span class="input-affix-wrapper">
+		                                <span class="input-prefix">
+                                            <div class="btn-group dropdown">
+                                                <i
+                                                        class="fas fa-info-circle"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p"></div>
+                                            </div>
+                                        </span>
+                                        <select
                                             class="form-select"
                                             id="select-box-quotation-create-sale-person"
                                             data-url="{% url "EmployeeListAPI" %}"
                                             data-method="GET"
+                                            data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                             name="sale_person"
-                                    >
-                                        <option></option>
-                                    </select>
+                                        >
+                                            <option></option>
+                                        </select>
+	                                </span>
                                 </div>
-                                <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+{#                                <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>#}
                             </div>
                         </div>
                     </div>

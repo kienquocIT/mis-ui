@@ -39,7 +39,7 @@ function loadBoxQuotationCustomer(customer_id) {
                         let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                         ele.append(`<option value="${item.id}">
                                         <span class="account-title">${item.title}</span>
-                                        <input type="hidden" class="account-data" value="${dataStr}">
+                                        <input type="hidden" class="data-info" value="${dataStr}">
                                     </option>`)
                     })
                 }
@@ -78,7 +78,20 @@ function loadBoxQuotationSalePerson(sale_person_id) {
             if (data) {
                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
                     data.employee_list.map(function (item) {
-                        ele.append(`<option value="${item.id}"><span class="employee-title">${item.full_name}</span></option>`)
+                        let group = '';
+                        if (item.group) {
+                            group = item.group.title
+                        }
+                        let dataStr = JSON.stringify({
+                            'id': item.id,
+                            'Name': item.full_name,
+                            'Code': item.code,
+                            'Group': group
+                        }).replace(/"/g, "&quot;");
+                        ele.append(`<option value="${item.id}">
+                                        <span class="employee-title">${item.full_name}</span>
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </option>`)
                     })
                 }
             }
@@ -568,4 +581,38 @@ function changeTax(tax, row, table, pretax_id, taxes_id, total_id) {
         }
     }
     updateTotal(table, pretax_id, taxes_id, total_id);
+}
+
+function loadInformationSelectBox(ele) {
+    let optionSelected = ele[0].options[ele[0].selectedIndex];
+    let inputWrapper = ele[0].closest('.input-affix-wrapper');
+    let dropdownContent = inputWrapper.querySelector('.dropdown-menu');
+    let link = "";
+    if (optionSelected) {
+        let eleDataCustomer = optionSelected.querySelector('.data-info');
+        if (eleDataCustomer) {
+            // remove attr disabled
+            ele[0].removeAttribute('disabled');
+            let data = JSON.parse(eleDataCustomer.value);
+            let info = ``;
+            info += `<h6 class="dropdown-header header-wth-bg">More Information</h6>`;
+            for (let key in data) {
+                if (key === 'id') {
+                    link = ele.data('link-detail').format_url_with_uuid(data[key])
+                } else {
+                    info += `<div class="row"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
+                }
+            }
+            info += `<div class="dropdown-divider"></div>
+                    <div class="row">
+                        <div class="col-4"></div>
+                        <div class="col-7">
+                            <a href="${link}" target="_blank" class="link-primary underline_hover"><button class="btn btn-flush-primary btn-sm"><span><span>View Detail</span><span class="icon"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span></button></a>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>`;
+            dropdownContent.innerHTML = ``;
+            dropdownContent.innerHTML = info;
+        }
+    }
 }

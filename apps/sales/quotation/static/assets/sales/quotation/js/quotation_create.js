@@ -302,23 +302,12 @@ $(function () {
 
 // Action on change dropdown account
         $('#select-box-quotation-create-customer').on('change', function (e) {
-            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            if (optionSelected) {
-                let eleDataCustomer = optionSelected.querySelector('.account-data');
-                if (eleDataCustomer) {
-                    let tmp = eleDataCustomer.value;
-                    let data = JSON.parse(eleDataCustomer.value);
-                    let info = ``;
-                    for (let key in data) {
-                        info += `<div class="row"><span><b><i>${key}</i></b></span><span class="ml-1">${data[key]}</span></div>`;
-                    }
-                    let popoverCustomerList = [...popoverCustomerTriggerList].map(popoverTriggerEl => {
-                        popoverTriggerEl.setAttribute('data-bs-content', info);
-                        popoverTriggerEl.setAttribute('data-bs-html', 'true');
-                        return new bootstrap.Popover(popoverTriggerEl);
-                    });
-                }
-            }
+            loadInformationSelectBox($(this));
+        });
+
+// Action on change dropdown sale person
+        $('#select-box-quotation-create-sale-person').on('change', function (e) {
+            loadInformationSelectBox($(this));
         });
 
 

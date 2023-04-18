@@ -114,6 +114,7 @@
                                                 class="form-select" id="select-box-quotation-create-customer"
                                                 data-url="{% url "AccountListAPI" %}"
                                                 data-method="GET"
+                                                data-link-detail="{% url 'AccountDetail' 1 %}"
                                                 name="customer"
                                                 required
                                         >
@@ -144,6 +145,7 @@
                                             class="form-select" id="select-box-quotation-create-contact"
                                             data-url=""
                                             data-method="GET"
+                                            data-link-detail="{% url 'ContactDetail' 1 %}"
                                             name="contact"
                                         >
                                             <option></option>

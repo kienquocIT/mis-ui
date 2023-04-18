@@ -589,25 +589,31 @@ function loadInformationSelectBox(ele) {
     let dropdownContent = inputWrapper.querySelector('.dropdown-menu');
     let link = "";
     if (optionSelected) {
-        let eleDataCustomer = optionSelected.querySelector('.data-info');
-        if (eleDataCustomer) {
+        let eleData = optionSelected.querySelector('.data-info');
+        if (eleData) {
             // remove attr disabled
-            ele[0].removeAttribute('disabled');
-            let data = JSON.parse(eleDataCustomer.value);
+            let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
+            if (eleInfo) {
+                eleInfo.removeAttribute('disabled');
+            }
+            // end
+            let data = JSON.parse(eleData.value);
             let info = ``;
             info += `<h6 class="dropdown-header header-wth-bg">More Information</h6>`;
             for (let key in data) {
                 if (key === 'id') {
                     link = ele.data('link-detail').format_url_with_uuid(data[key])
                 } else {
-                    info += `<div class="row"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
+                    info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
                 }
             }
             info += `<div class="dropdown-divider"></div>
                     <div class="row">
                         <div class="col-4"></div>
                         <div class="col-7">
-                            <a href="${link}" target="_blank" class="link-primary underline_hover"><button class="btn btn-flush-primary btn-sm"><span><span>View Detail</span><span class="icon"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span></button></a>
+                            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                                <span><span>View Detail</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                            </a>
                         </div>
                         <div class="col-1"></div>
                     </div>`;

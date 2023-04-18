@@ -59,14 +59,14 @@
                                     id="quotation-create-title"
                                     required
                             >
-{#                            <span class="form-text text-muted">{% trans 'title of quotation' %}</span>#}
+                            <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Opportunity' %}</label>
-                                <div class="input-group mb-3 input-group-1">
+                                <div class="input-group input-group-1">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
                                             <div class="btn-group dropdown">
@@ -83,7 +83,7 @@
                                         </span>
                                         <select
                                             class="form-select" id="select-box-quotation-create-opportunity"
-                                            data-url=""
+                                            data-url="{% url "OpportunityListAPI" %}"
                                             data-method="GET"
                                             name="opportunity"
                                         >
@@ -91,11 +91,11 @@
                                         </select>
 	                                </span>
                                 </div>
-{#                                <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>#}
+                                <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
-                                <div class="input-group mb-3 input-group-2">
+                                <div class="input-group input-group-2">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
                                             <div class="btn-group dropdown">
@@ -114,7 +114,7 @@
                                                 class="form-select" id="select-box-quotation-create-customer"
                                                 data-url="{% url "AccountListAPI" %}"
                                                 data-method="GET"
-                                                data-link-detail="{% url 'AccountDetail' 1 %}"
+{#                                                data-link-detail="{% url 'AccountDetail' 1 %}"#}
                                                 name="customer"
                                                 required
                                         >
@@ -122,11 +122,11 @@
                                         </select>
 	                                </span>
                                 </div>
-{#                                <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>#}
+                                <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Contact' %}</label>
-                                <div class="input-group mb-3 input-group-3">
+                                <div class="input-group input-group-3">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
                                             <div class="btn-group dropdown">
@@ -152,13 +152,13 @@
                                         </select>
 	                                </span>
                                 </div>
-{#                                <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>#}
+                                <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Date Created' %}</label>
-                                <div class="input-group mb-3">
+                                <div class="input-group">
 	                                <span class="input-affix-wrapper">
                                         <input
                                             type="text" class="form-control"
@@ -169,11 +169,11 @@
                                         >
 	                                </span>
                                 </div>
-{#                                <span class="form-text text-m]uted">{% trans 'Date create quotation' %}</span>#}
+                                <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Status' %}</label>
-                                <div class="input-group mb-3">
+                                <div class="input-group">
 	                                <span class="input-affix-wrapper">
                                         <input
                                             type="text" class="form-control"
@@ -184,11 +184,11 @@
                                         >
 	                                </span>
                                 </div>
-{#                                <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>#}
+                                <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Sale Person' %}</label>
-                                <div class="input-group mb-3 input-group-4">
+                                <div class="input-group input-group-4">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
                                             <div class="btn-group dropdown">
@@ -216,14 +216,14 @@
                                         </select>
 	                                </span>
                                 </div>
-{#                                <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>#}
+                                <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
                             </div>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-7">
                                 <ul class="nav nav-light nav-pills" id="quotation-tabs">
                                     <li class="nav-item">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
@@ -252,15 +252,15 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="col-6">
+                            <div class="col-5">
                                 <div class="row">
-                                    <div class="col-1">
+                                    <div class="col-2">
                                         <button type="button" class="btn btn-soft-primary">Print</button>
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-3">
                                         <button type="button" class="btn btn-soft-primary">Send Email</button>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <button type="button" class="btn btn-soft-primary">Customer Confirm</button>
                                     </div>
                                     <div class="col-3">

@@ -4,43 +4,32 @@ $(function () {
 
     $(document).ready(function () {
 
-        loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
         loadBoxQuotationCustomer('select-box-quotation-create-customer');
+        loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
+
         dataTableProduct([],'datable-quotation-create-product');
         dataTableCost([], 'datable-quotation-create-cost');
         dataTableExpense([], 'datable-quotation-create-expense');
+        let tableProduct = $('#datable-quotation-create-product');
+        let tableCost = $('#datable-quotation-create-cost');
+        let tableExpense = $('#datable-quotation-create-expense');
+
         $("#select-box-quotation-term-price").select2();
         $("#select-box-quotation-term-discount").select2();
 
         $('input[name="date_created"]').daterangepicker({
-			singleDatePicker: true,
-			timePicker: true,
-			showDropdowns: true,
-			minYear: 1901,
-			"cancelClass": "btn-secondary",
-			maxYear: parseInt(moment().format('YYYY'),10)
-			}, function(start, end, label) {
-			var years = moment().diff(start, 'years');
-			alert("You are " + years + " years old!");
-		});
-
-        let popoverOppTriggerList = document.querySelectorAll('.popover-opp');
-        let popoverOppList = [...popoverOppTriggerList].map(popoverTriggerEl => {
-            let popoverContent = `<div class="row"><span><b><i>Code</i></b></span><span class="ml-1">ABC</span></div>`;
-            popoverTriggerEl.setAttribute('data-bs-content', popoverContent);
-            popoverTriggerEl.setAttribute('data-bs-html', 'true');
-            return new bootstrap.Popover(popoverTriggerEl);
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: false,
+            minYear: 1901,
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY'), 10)
         });
-
-        let popoverCustomerTriggerList = document.querySelectorAll('.popover-customer');
-
-
-        let tableProduct = $('#datable-quotation-create-product');
-        let tableCost = $('#datable-quotation-create-cost');
-        let tableExpense = $('#datable-quotation-create-expense');
+        $('.daterangepicker').remove();
 
 // Action on click button add product
         $('#btn-add-product-quotation-create').on('click', function (e) {
@@ -68,14 +57,20 @@ $(function () {
                                             </select>
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
-                    'unit_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
+                    'unit_price': `<div class="row">
+                                        <input type="text" class="form-control w-80 table-row-price" required>
+                                        <span class="w-20 mt-2 quotation-currency">VND</span>
+                                    </div>`,
                     'tax': `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value=""></option>
                                 </select>
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
-                    'subtotal': `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
+                    'subtotal': `<div class="row">
+                                    <input type="text" class="form-control w-75 table-row-subtotal" disabled>
+                                    <span class="w-25 mt-2 quotation-currency">VND</span>
+                                </div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
             tableProduct.DataTable().row.add(dataAdd).draw();
@@ -156,14 +151,20 @@ $(function () {
                                             </select>
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
-                    'expense_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
+                    'expense_price': `<div class="row">
+                                            <input type="text" class="form-control w-75 table-row-price" required>
+                                            <span class="w-25 mt-2 quotation-currency">VND</span>
+                                        </div>`,
                     'tax': `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value=""></option>
                                 </select>
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
-                    'subtotal': `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
+                    'subtotal': `<div class="row">
+                                    <input type="text" class="form-control w-75 table-row-subtotal" disabled>
+                                    <span class="w-25 mt-2 quotation-currency">VND</span>
+                                </div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
             tableExpense.DataTable().row.add(dataAdd).draw();
@@ -274,12 +275,18 @@ $(function () {
                                                     </select>
                                                 </div>`,
                             'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" value="${valueQuantity}" disabled></div>`,
-                            'cost_price': `<div class="row"><input type="text" class="form-control w-85 table-row-price" value="${valuePrice}" required><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
+                            'cost_price': `<div class="row">
+                                                <input type="text" class="form-control w-75 table-row-price" value="${valuePrice}" required>
+                                                <span class="w-25 mt-2 quotation-currency">VND</span>
+                                            </div>`,
                             'tax': `<div class="row">
                                         <select class="form-select table-row-tax">${optionTax}</select>
                                         <input type="hidden" class="table-row-tax-amount" value="${valueTaxAmount}">
                                     </div>`,
-                            'subtotal': `<div class="row"><input type="text" class="form-control w-85 table-row-subtotal" value="${valueSubtotal}" disabled><span class="w-5 mt-2 quotation-currency">VND</span></div>`,
+                            'subtotal': `<div class="row">
+                                            <input type="text" class="form-control w-75 table-row-subtotal" value="${valueSubtotal}" disabled>
+                                            <span class="w-25 mt-2 quotation-currency">VND</span>
+                                        </div>`,
                             'order': `<span class="table-row-order">${valueOrder}</span>`
                         }
                     tableCost.DataTable().row.add(dataAdd).draw();

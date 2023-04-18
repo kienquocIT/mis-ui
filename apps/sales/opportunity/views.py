@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
 
-class OpportunityDDListAPI(APIView):
+class OpportunityListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(

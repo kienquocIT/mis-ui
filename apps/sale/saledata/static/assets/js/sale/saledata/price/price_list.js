@@ -132,7 +132,6 @@ $(document).ready(function () {
             )
         }
 
-
         loadCurrency();
         loadTablePriceList();
 
@@ -151,6 +150,7 @@ $(document).ready(function () {
                 $('#select-box-price-list').removeAttr('disabled');
                 $('#checkbox-update-auto').removeAttr('disabled');
                 $('#select-box-currency').prop('disabled', true);
+                $('#factor-inp').prop('readonly', false);
             } else {
                 $('#checkbox-update-auto').prop('checked', false);
                 $('#checkbox-can-delete').prop('checked', false);
@@ -159,6 +159,7 @@ $(document).ready(function () {
                 $('#checkbox-update-auto').attr('disabled', 'disabled');
                 $('#checkbox-can-delete').attr('disabled', 'disabled');
                 $('#select-box-currency').prop('disabled', false);
+                $('#factor-inp').prop('readonly', true);
             }
         })
 
@@ -166,12 +167,10 @@ $(document).ready(function () {
             if ($(this).prop("checked")) {
                 $('#checkbox-can-delete').removeAttr('disabled');
                 $('#factor-inp').val('');
-                $('#factor-inp').prop('readonly', false);
             } else {
                 $('#checkbox-can-delete').prop('checked', false);
                 $('#checkbox-can-delete').attr('disabled', 'disabled');
                 $('#factor-inp').val(1);
-                $('#factor-inp').prop('readonly', true);
             }
         })
 

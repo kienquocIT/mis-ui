@@ -305,7 +305,7 @@ $(document).ready(function () {
                 'inventory_level_max': inventory_level_max
             }
         } else {
-            frm.dataForm['inventory_information'] = {}
+            delete frm.dataForm['inventory_information']
         }
 
         let price_list = []
@@ -341,14 +341,14 @@ $(document).ready(function () {
                 'tax_code': $('#select-box-tax-code').val()
             }
             if (price_list.length > 0) {
-                frm.dataForm['sale_information']['price_list'] = price_list;
+                frm.dataForm['price_list'] = price_list;
                 frm.dataForm['sale_information']['currency_using'] = currency_id;
             } else {
-                frm.dataForm['sale_information']['price_list'] = null;
+                frm.dataForm['price_list'] = null;
                 frm.dataForm['sale_information']['currency_using'] = null;
             }
         } else {
-            frm.dataForm['sale_information'] = {}
+            delete frm.dataForm['sale_information']
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

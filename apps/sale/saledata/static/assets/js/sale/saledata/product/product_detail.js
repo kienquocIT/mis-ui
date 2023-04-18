@@ -245,14 +245,14 @@ $(document).ready(function () {
                         appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
                         autoSelectPriceListCopyFromSource()
                         list_price.map(function (item) {
-                            if (item.currency_using === currency_primary){
+                            if (item.currency_using === currency_primary) {
                                 document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).value = item.price;
                             }
                             if (item.is_auto_update === false) {
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).disabled = false;
                                 document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).disabled = false;
-                                document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).readOnly  = false;
+                                document.querySelector(`input[type="number"][data-id="` + item.id + `"]`).readOnly = false;
                                 document.querySelector(`input[type="checkbox"][data-is-default="1"]`).disabled = true;
                             } else {
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
@@ -275,12 +275,12 @@ $(document).ready(function () {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
                 $('#product-code').val(data.product.code);
                 $('#product-title').val(data.product.title);
-                loadProductCategory(data.product.general_information.product_category);
-                loadProductType(data.product.general_information.product_type);
-                loadUoMGroup(data.product.general_information.uom_group);
+                loadProductCategory(data.product.general_information.product_category.id);
+                loadProductType(data.product.general_information.product_type.id);
+                loadUoMGroup(data.product.general_information.uom_group.id);
 
                 let ele = $('#select-box-uom-group')
-                let data_url = ele.attr('data-url-detail').replace(0, data.product.general_information.uom_group);
+                let data_url = ele.attr('data-url-detail').replace(0, data.product.general_information.uom_group.id);
                 let data_method = ele.attr('data-method');
                 let select_box_default_uom = $('#select-box-default-uom');
                 let select_box_uom_name = $('#select-box-uom-name');
@@ -302,24 +302,32 @@ $(document).ready(function () {
                                 $('#tab_sale').removeClass('active show');
                                 $('#check-tab-sale').prop('checked', false);
                             } else {
-                                loadPriceList(data.product.sale_information.price_list);
+                                if(data.product.sale_information.hasOwnProperty('price_list'))
+                                    loadPriceList(data.product.sale_information.price_list);
+                                else{
+                                    loadPriceList([]);
+                                }
+                                if(data.product.sale_information.hasOwnProperty('tax_code'))
+                                    loadTaxCode(data.product.sale_information.tax_code.id);
                             }
                             data_uom_gr.uom_group.uom.map(function (item) {
-                                if (item.uom_id === data.product.sale_information.default_uom)
+                                if (item.uom_id === data.product.sale_information.default_uom.id)
                                     select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
                                 else
                                     select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
 
-                                if (item.uom_id === data.product.inventory_information.uom) {
-                                    select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
-                                    $('#uom-code').val(item.uom_code);
-                                } else
-                                    select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                                if (Object.keys(data.product.inventory_information).length > 0) {
+                                    if (item.uom_id === data.product.inventory_information.uom.id) {
+                                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
+                                        $('#uom-code').val(item.uom_code);
+                                    } else
+                                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                                }
                             })
 
                             $('#inventory-level-max').val(data.product.inventory_information.inventory_level_max);
                             $('#inventory-level-min').val(data.product.inventory_information.inventory_level_min);
-                            loadTaxCode(data.product.sale_information.tax_code);
+
 
                             $('.inp-can-edit').focusin(function () {
                                 $(this).find('input[class=form-control]').prop('readonly', false);
@@ -445,10 +453,10 @@ $(document).ready(function () {
                 'tax_code': $('#select-box-tax-code').val()
             }
             if (price_list.length > 0) {
-                frm.dataForm['sale_information']['price_list'] = price_list;
+                frm.dataForm['price_list'] = price_list;
                 frm.dataForm['sale_information']['currency_using'] = currency_id;
             } else {
-                frm.dataForm['sale_information']['price_list'] = null;
+                frm.dataForm['price_list'] = null;
                 frm.dataForm['sale_information']['currency_using'] = null;
             }
         } else {

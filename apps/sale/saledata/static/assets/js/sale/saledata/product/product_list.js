@@ -42,7 +42,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
-                        if (row.general_information.product_type) {
+                        if (row.general_information.product_type.title) {
                             return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">` + row.general_information.product_type.title + `</span>`
                         } else {
                             return `<span></span>`
@@ -50,7 +50,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
-                        if (row.general_information.product_category) {
+                        if (row.general_information.product_category.title) {
                             return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">` + row.general_information.product_category.title + `</span>`
                         } else {
                             return `<span></span>`

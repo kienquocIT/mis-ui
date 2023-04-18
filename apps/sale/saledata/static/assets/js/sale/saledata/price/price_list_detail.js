@@ -192,7 +192,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (data.price.auto_update) {
+                if (data.price.auto_update || data.price.is_default) {
                     $('#btn-add-new-product').prop('hidden', true);
                 } else {
                     $('#btn-add-new-product').prop('hidden', false);

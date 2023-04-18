@@ -21,6 +21,7 @@ PAYMENTS_TERMS_AFTER = [
     {'value': 3, 'text': MDConfigMsg.PT_AFTER_INVOICE},
     {'value': 4, 'text': MDConfigMsg.PT_AFTER_ACCEPTANCE},
     {'value': 5, 'text': MDConfigMsg.PT_AFTER_EOI_MONTH},
+    {'value': 6, 'text': MDConfigMsg.PT_AFTER_ORDER_DATE},
 ]
 
 

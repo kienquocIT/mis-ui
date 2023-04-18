@@ -1,0 +1,4 @@
+.custom-dropdown-tb .dropdown-toggle:after,
+.custom-dropdown-tb-2 .dropdown-toggle:after {
+    display: none!important;
+}

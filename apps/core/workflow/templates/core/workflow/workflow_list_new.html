@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block title %}{% trans 'Workflow list' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/wf-list-new.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block pageAction %}
@@ -50,7 +51,7 @@
         </tbody>
     </table>
 
-    <template>
+    <div class="wf-template hidden">
         <div class="child-table">
             <a href="#" class="btn add_new_wf">
                 <span class="feather-icon"><i data-feather="trash-2"></i></span>
@@ -86,7 +87,17 @@
                 </tbody>
             </table>
         </div>
-    </template>
+        <div class="dropdown-lv-1">
+            <div class="dropdown custom-dropdown-tb">
+                <i class="fa fa-caret-down font-6 dropdown-toggle" data-bs-toggle="dropdown"></i>
+                <div class="dropdown-menu wf-mode">
+                    <a class="dropdown-item" href="#" data-value="0">{% trans 'Not apply' %}</a>
+                    <a class="dropdown-item" href="#" data-value="1">{% trans 'Apply' %}</a>
+                    <a class="dropdown-item" href="#" data-value="2">{% trans 'Pending' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}

@@ -273,11 +273,10 @@ $(document).ready(function () {
         let data = $.fn.switcherResp(resp);
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                console.log(data.product)
                 $('#product-code').val(data.product.code);
                 $('#product-title').val(data.product.title);
-                // loadProductCategory(data.product.general_information.product_category.id);
-                // loadProductType(data.product.general_information.product_type.id);
+                loadProductCategory(data.product.general_information.product_category.id);
+                loadProductType(data.product.general_information.product_type.id);
                 loadUoMGroup(data.product.general_information.uom_group.id);
 
                 let ele = $('#select-box-uom-group')

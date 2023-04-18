@@ -168,7 +168,7 @@
     </div>
 
     <!-- Modal create new Product -->
-    <form id="form-create-product" data-method="POST" data-url="{% url "ProductAddFromPriceListAPI" %}">
+    <form id="form-create-product" data-method="PUT" data-url="{% url "ProductAddFromPriceListAPI" pk=0 %}">
         <div class="modal fade" id="modal-add-new-product" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalCenter"
              aria-hidden="true">
@@ -186,8 +186,8 @@
                                 <label class="form-label">{% trans "Code" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="P001" name="code"
-                                       oninput="this.value=this.value.toUpperCase()">
+                                <select type="text" class="form-select" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
@@ -195,16 +195,14 @@
                                 <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="Input Name" name="title">
+                                <input type="text" class="form-control" placeholder="Input Name" id="inp-name">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <select class="form-select" name="uom_group" id="select-uom-group" data-method="GET"
-                                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                                        data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}">
+                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom-group">
                                 </select>
                             </div>
                         </div>
@@ -213,9 +211,7 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select class="form-select" name="uom" id="select-uom" data-method="GET"
-                                        data-url="{% url "UnitOfMeasureListAPI" %}">
-                                </select>
+                               <input type="text" class="form-control" placeholder="Input Name" id="inp-uom">
                             </div>
                         </div>
 

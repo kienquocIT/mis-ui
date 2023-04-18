@@ -110,7 +110,7 @@ urlpatterns = [
         PriceListDeleteProductAPI.as_view(),
         name='PriceListDeleteProductAPI'),
     path(
-        'create-product-from-price-list',
+        'create-product-from-price-list/api/<str:pk>',
         ProductAddFromPriceListAPI.as_view(),
         name='ProductAddFromPriceListAPI'),
 ]

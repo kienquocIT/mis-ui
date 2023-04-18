@@ -445,10 +445,10 @@ $(document).ready(function () {
                 'tax_code': $('#select-box-tax-code').val()
             }
             if (price_list.length > 0) {
-                frm.dataForm['sale_information']['price_list'] = price_list;
+                frm.dataForm['price_list'] = price_list;
                 frm.dataForm['sale_information']['currency_using'] = currency_id;
             } else {
-                frm.dataForm['sale_information']['price_list'] = null;
+                frm.dataForm['price_list'] = null;
                 frm.dataForm['sale_information']['currency_using'] = null;
             }
         } else {

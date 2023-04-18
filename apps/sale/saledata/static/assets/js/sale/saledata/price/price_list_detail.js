@@ -82,10 +82,6 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
                         data.currency_list.map(function (item) {
-                            if (item.is_primary === true) {
-
-                            }
-
                             if ($('.price-currency-exists').map(function () {
                                 return $(this).data('id');
                             }).get().includes(item.id)

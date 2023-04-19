@@ -209,9 +209,8 @@ $(document).ready(function () {
                 } else {
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
-                            <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
-                                <i class="bi bi-box-arrow-down-right"></i>
-                            </span>`
+                            <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
+                            </i>`
                         )
                     } else {
                         $('#price_list_name').text(data.price.title)

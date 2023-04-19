@@ -59,7 +59,7 @@
                             <label class="form-label">{% trans "Product Code" %}
                             <span class="field-required">*</span>
                             </label>
-                            <input type="text" name="code" placeholder="Input Code" class="form-control" oninput="this.value=this.value.toUpperCase()">
+                            <input type="text" name="code" placeholder="Input Code" class="form-control rounded-input" oninput="this.value=this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="col-6 mt-5">
@@ -84,14 +84,14 @@
                         <label class="form-label">{% trans "Product Name" %}
                         <span class="field-required">*</span>
                         </label>
-                        <input type="text" name="title" placeholder="Input Name" class="form-control">
+                        <input type="text" name="title" placeholder="Input Name" class="form-control rounded-input">
                     </div>
                 </div>
             </div>
             <div class="col-3"></div>
             <div class="col-3">
                 <div class="form-group mt-5">
-                    <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
+                    <div id="upload-photo" class="form-control rounded-input">{% trans "photo" %}</div>
                     <input id="input-photo" type="file" class="hidden" name="photo">
                 </div>
             </div>
@@ -128,14 +128,14 @@
                         <label class="form-label">{% trans "Product Type" %}
                             <span class="field-required">*</span>
                         </label>
-                        <select id="select-box-product-type" class="form-select" data-method="GET"
+                        <select id="select-box-product-type" class="form-select rounded-input" data-method="GET"
                                 data-url="{% url 'ProductTypeListAPI' %}" name="product_type"></select>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Product Category" %}
                             <span class="field-required">*</span>
                         </label>
-                        <select id="select-box-product-category" class="form-select" data-method="GET"
+                        <select id="select-box-product-category" class="form-select rounded-input" data-method="GET"
                                 data-url="{% url "ProductCategoryListAPI" %}" name="product_category"></select>
                     </div>
                 </div>
@@ -144,13 +144,13 @@
                         <label class="form-label">{% trans "UoM Group" %}
                         <span class="field-required">*</span>
                         </label>
-                        <select id="select-box-uom-group" class="form-select" data-method="GET"
+                        <select id="select-box-uom-group" class="form-select rounded-input" data-method="GET"
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
                                 data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label"><s>{% trans "Management By" %}</s></label>
-                        <select id="select-box-manager" class="form-select" data-method="GET" data-url=""
+                        <select id="select-box-manager" class="form-select rounded-input" data-method="GET" data-url=""
                                 disabled name="management"></select>
                     </div>
                 </div>
@@ -160,13 +160,13 @@
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Default UoM" %}
                         <span class="field-required">*</span></label>
-                        <select id="select-box-default-uom" class="form-select" data-method="GET"
+                        <select id="select-box-default-uom" class="form-select rounded-input" data-method="GET"
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Tax Code" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-tax-code" class="form-select" data-method="GET" data-url="{% url "TaxListAPI" %}"
+                        <select id="select-box-tax-code" class="form-select rounded-input" data-method="GET" data-url="{% url "TaxListAPI" %}"
                                 name="tax_code"></select>
                     </div>
                 </div>
@@ -175,7 +175,7 @@
                     <div class="col-6 form-group" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <span class="field-required">*</span></label>
-                        <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
+                        <input type="select" class="form-select rounded-input dropdown-toggle" data-bs-toggle="dropdown"
                                oninput="this.value=''"
                                data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
@@ -189,18 +189,18 @@
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Code" %}
                         <span class="field-required">*</span></label>
-                        <input id="uom-code" class="form-control" name="uom_code" type="text" readonly>
+                        <input id="uom-code" class="form-control rounded-input" name="uom_code" type="text" style="border: None;" readonly>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Name" %}
                         <span class="field-required">*</span></label>
-                        <select id="select-box-uom-name" class="form-select" data-method="GET"
+                        <select id="select-box-uom-name" class="form-select rounded-input" data-method="GET"
                                 data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
                         </select>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
-                        <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
+                        <select id="select-box-valuation-method" class="form-select rounded-input" data-method="GET" data-url=""
                                 disabled name="valuation_method"></select>
                     </div>
 
@@ -208,28 +208,32 @@
                 <div class="row">
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
-                        <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
+                        <input id="inventory-level-min" type="number" class="form-control rounded-input" name="inventory_level_min"
                                min="0" step="1" placeholder="Input number">
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Inventory Level Max" %}</label>
-                        <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
+                        <input id="inventory-level-max" type="number" class="form-control rounded-input" name="inventory_level_max"
                                min="0" step="1" placeholder="Input number">
                     </div>
                 </div>
                 <div class="row mt-5">
-                    <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
-                           data-url="{% url "AccountListAPI" %}"
-                           data-method="GET">
-                        <thead>
-                        <th class="w-15">{% trans "Warehouse Code" %}</th>
-                        <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "Avalable" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
-                        <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
-                        </thead>
-                    </table>
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
+                               data-url="{% url "AccountListAPI" %}"
+                               data-method="GET">
+                            <thead>
+                            <th class="w-15">{% trans "Warehouse Code" %}</th>
+                            <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "Avalable" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col-1"></div>
                 </div>
             </div>
         </div>

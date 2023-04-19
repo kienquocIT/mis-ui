@@ -59,7 +59,23 @@
                     {% trans 'Add New Product' %}
                 </span>
             </button>
-            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}" data-method="PUT">
+            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
+                  data-method="PUT">
+                <div class="waiter-miner-item hidden">
+                    <div class="dropdown">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-light dropdown-toggle border" role="button">Add new currency</a>
+                        <div role="menu" class="dropdown-menu dropdown-currency">
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-light dropdown-toggle border" role="button">Delete currency</a>
+                        <div role="menu" class="dropdown-menu dropdown-del-currency">
+                        </div>
+                    </div>
+                </div>
                 <table id="datatable-item-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "PriceDetailAPI" pk=0 %}"
                        data-url-detail="{% url "ProductDetail" pk=0 %}"
@@ -80,18 +96,6 @@
                     <th class="w-25">{% trans "Item name" %}</th>
                     <th class="w-10">{% trans "UoM group" %}</th>
                     <th class="w-10">{% trans "UoM" %}</th>
-{#                    <th class="w-10 price-currency-primary">{% trans "Price in VND" %}#}
-{#                        <button type="button" class=""#}
-{#                                style="background: none; border: none" data-bs-toggle="dropdown">#}
-{#                            <span class="icon">#}
-{#                                <span class="feather-icon">#}
-{#                                    <a href="#" class="bi bi-patch-plus ml-3"></a>#}
-{#                                </span>#}
-{#                            </span>#}
-{#                        </button>#}
-{#                        <div role="menu" class="dropdown-menu" id="dropdown-currency">#}
-{#                        </div>#}
-{#                    </th>#}
                     </thead>
                 </table>
             </form>
@@ -186,8 +190,9 @@
                                 <label class="form-label">{% trans "Code" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select type="text" class="form-select" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
-                                data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
+                                <select type="text" class="form-select" name="product" id="select-box-product"
+                                        data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                        data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
@@ -211,7 +216,7 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                               <input type="text" class="form-control" placeholder="Input Name" id="inp-uom">
+                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom">
                             </div>
                         </div>
 

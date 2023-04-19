@@ -127,7 +127,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" step="0.001" value="" readonly>
+                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control rounded-input value-price-list" type="number" step="0.001" value="" readonly>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -143,7 +143,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" step="0.001" value="" disabled>
+                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control rounded-input value-price-list" type="number" step="0.001" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -161,7 +161,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" step="0.001" value="">
+                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control rounded-input value-price-list" type="number" step="0.001" value="">
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -177,7 +177,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-6 form-group">
                             <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list" type="number" step="0.001" value="" disabled>
+                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control rounded-input value-price-list" type="number" step="0.001" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
                         </div>
@@ -274,6 +274,15 @@ $(document).ready(function () {
     // change select box UoM Name in tab inventory
     $('#select-box-uom-name').on('change', function () {
         $('#uom-code').val($(this).find(":selected").attr('data-code'));
+    })
+
+    $('#select-box-default-uom').on('change', function () {
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            if ($('#select-box-uom-name').val() === '') {
+                $('#select-box-uom-name').val($(this).val());
+                $('#uom-code').val(($('#select-box-uom-name option:selected').attr('data-code')));
+            }
+        }
     })
 
     //submit form create product

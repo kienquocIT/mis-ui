@@ -18,7 +18,7 @@ from apps.sale.saledata.views.product import (
 from apps.sale.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
     CurrencyDetailAPI, SyncSellingRateWithVCB, PriceList, PriceListAPI, PriceListDetail, PriceDetailAPI,
-    UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI,
+    UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
 )
 
 urlpatterns = [
@@ -121,4 +121,9 @@ urlpatterns = [
         'create-product-from-price-list/api/<str:pk>',
         ProductAddFromPriceListAPI.as_view(),
         name='ProductAddFromPriceListAPI'),
+    path(
+        'delete-currency-from-price-list/api/<str:pk>',
+        DeleteCurrencyFromPriceListAPI.as_view(),
+        name='DeleteCurrencyFromPriceListAPI',
+    )
 ]

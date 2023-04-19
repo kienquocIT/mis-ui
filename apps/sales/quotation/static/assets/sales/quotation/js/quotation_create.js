@@ -4,9 +4,9 @@ $(function () {
 
     $(document).ready(function () {
 
-        loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
-        loadBoxQuotationCustomer('select-box-quotation-create-customer');
-        loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        let boxOpportunity = $('#select-box-quotation-create-opportunity');
+        let boxCustomer = $('#select-box-quotation-create-customer');
+        let boxSalePerson = $('#select-box-quotation-create-sale-person');
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
@@ -30,6 +30,37 @@ $(function () {
             maxYear: parseInt(moment().format('YYYY'), 10)
         });
         $('.daterangepicker').remove();
+
+// Action on click dropdown opportunity
+        boxOpportunity.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
+            }
+        });
+
+// Action on click dropdown customer
+        boxCustomer.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadBoxQuotationCustomer('select-box-quotation-create-customer');
+            }
+        });
+
+// Action on change dropdown customer
+        boxCustomer.on('change', function (e) {
+            loadInformationSelectBox($(this));
+        });
+
+// Action on click dropdown sale person
+        boxSalePerson.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+            }
+        });
+
+// Action on change dropdown sale person
+        boxSalePerson.on('change', function (e) {
+            loadInformationSelectBox($(this));
+        });
 
 // Action on click button add product
         $('#btn-add-product-quotation-create').on('click', function (e) {
@@ -60,6 +91,11 @@ $(function () {
                     'unit_price': `<div class="row">
                                         <input type="text" class="form-control w-80 table-row-price" required>
                                         <span class="w-20 mt-2 quotation-currency">VND</span>
+                                    </div>`,
+                    'discount': `<div class="row">
+                                        <input type="text" class="form-control w-80 table-row-discount">
+                                        <span class="w-20 mt-2">%</span>
+                                        <input type="hidden" class="table-row-discount-amount">
                                     </div>`,
                     'tax': `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
@@ -121,6 +157,11 @@ $(function () {
         tableProduct.on('change', '.table-row-tax', function (e) {
             let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
             changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+        });
+
+// Action on change product tax
+        tableProduct.on('change', '.table-row-discount', function (e) {
+            changeDiscount($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total')
         });
 
 // Action on click button add expense
@@ -307,15 +348,6 @@ $(function () {
             changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
         });
 
-// Action on change dropdown account
-        $('#select-box-quotation-create-customer').on('change', function (e) {
-            loadInformationSelectBox($(this));
-        });
-
-// Action on change dropdown sale person
-        $('#select-box-quotation-create-sale-person').on('change', function (e) {
-            loadInformationSelectBox($(this));
-        });
 
 
     });

@@ -86,9 +86,7 @@
                                             data-url="{% url "OpportunityListAPI" %}"
                                             data-method="GET"
                                             name="opportunity"
-                                        >
-                                            <option></option>
-                                        </select>
+                                        ></select>
 	                                </span>
                                 </div>
                                 <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
@@ -117,9 +115,7 @@
 {#                                                data-link-detail="{% url 'AccountDetail' 1 %}"#}
                                                 name="customer"
                                                 required
-                                        >
-                                            <option></option>
-                                        </select>
+                                        ></select>
 	                                </span>
                                 </div>
                                 <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
@@ -211,9 +207,7 @@
                                             data-method="GET"
                                             data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                             name="sale_person"
-                                        >
-                                            <option></option>
-                                        </select>
+                                        ></select>
 	                                </span>
                                 </div>
                                 <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
@@ -285,6 +279,7 @@
                                             <th>{% trans 'Unit Of Measure' %}<span class="field-required">(*)</span></th>
                                             <th>{% trans 'Quantity' %}<span class="field-required">(*)</span></th>
                                             <th>{% trans 'Unit Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th>{% trans 'Actions' %}</th>

@@ -54,12 +54,28 @@
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
-                        title="{% trans 'Add Product' %}">
+                        title="{% trans 'Add New Product' %}">
                     <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add Product' %}
+                    {% trans 'Add New Product' %}
                 </span>
             </button>
-            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}" data-method="PUT">
+            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
+                  data-method="PUT">
+                <div class="waiter-miner-item hidden">
+                    <div class="dropdown">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-light dropdown-toggle border" role="button">Add new currency</a>
+                        <div role="menu" class="dropdown-menu dropdown-currency">
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-light dropdown-toggle border" role="button">Delete currency</a>
+                        <div role="menu" class="dropdown-menu dropdown-del-currency">
+                        </div>
+                    </div>
+                </div>
                 <table id="datatable-item-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "PriceDetailAPI" pk=0 %}"
                        data-url-detail="{% url "ProductDetail" pk=0 %}"
@@ -80,18 +96,6 @@
                     <th class="w-25">{% trans "Item name" %}</th>
                     <th class="w-10">{% trans "UoM group" %}</th>
                     <th class="w-10">{% trans "UoM" %}</th>
-{#                    <th class="w-10 price-currency-primary">{% trans "Price in VND" %}#}
-{#                        <button type="button" class=""#}
-{#                                style="background: none; border: none" data-bs-toggle="dropdown">#}
-{#                            <span class="icon">#}
-{#                                <span class="feather-icon">#}
-{#                                    <a href="#" class="bi bi-patch-plus ml-3"></a>#}
-{#                                </span>#}
-{#                            </span>#}
-{#                        </button>#}
-{#                        <div role="menu" class="dropdown-menu" id="dropdown-currency">#}
-{#                        </div>#}
-{#                    </th>#}
                     </thead>
                 </table>
             </form>
@@ -108,7 +112,7 @@
                 <div class="row">
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Select price list" %}</label>
-                        <select class="form-select rounded-input" data-method="GET" data-url="{% url "PriceListAPI" %}"
+                        <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
                                 id="select-box-price-list" disabled="disabled" name="price_list_mapped"></select>
                     </div>
                     <div class="form-check ml-3">
@@ -129,7 +133,7 @@
                         <div class="form-group col-6">
                             <label class="form-label">{% trans "Currency" %}</label>
                             <select
-                                    class="form-control rounded-input select2 select2-multiple"
+                                    class="form-control select2 select2-multiple"
                                     multiple
                                     data-placeholder="{% trans 'Choose' %}"
                                     data-method="GET"
@@ -140,15 +144,15 @@
                         </div>
                         <div class="form-group col-6 inp-can-edit">
                             <label class="form-label">{% trans "Factor" %}</label>
-                            <input class="form-control rounded-input" type="number" name="factor" id="inp-factor"
+                            <input class="form-control" type="number" name="factor" id="inp-factor"
                                    placeholder="Input factor (0.8)" readonly>
-                            <input class="form-control rounded-input" type="number" id="inp-factor-default" disabled hidden>
+                            <input class="form-control" type="number" id="inp-factor-default" disabled hidden>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-6 inp-can-edit">
                             <label class="form-label">{% trans "Select list type" %}</label>
-                            <select class="form-select rounded-input" name="price_list_type" id="select-box-type" readonly="readonly">
+                            <select class="form-select" name="price_list_type" id="select-box-type" readonly="readonly">
                                 <option></option>
                                 <option value="0">{% trans "For Sale" %}</option>
                                 <option value="1">{% trans "For Purchase" %}</option>
@@ -157,7 +161,7 @@
                         </div>
                         <div class="form-group col-6 inp-can-edit">
                             <label class="form-label">{% trans "Apply For" %}</label>
-                            <select class="form-select rounded-input" name="apply_for" id="select-product-category" data-method="GET"
+                            <select class="form-select" name="apply_for" id="select-product-category" data-method="GET"
                                     data-url="{% url "ProductCategoryListAPI" %}" readonly="readonly">
                             </select>
                         </div>
@@ -175,18 +179,20 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Select A Product" %}</h5>
+                        <h5 class="modal-title">{% trans "Create New Product" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row" hidden>
+                        <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control rounded-input" id="inp-code" readonly>
+                                <select type="text" class="form-select" name="product" id="select-box-product"
+                                        data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                        data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
@@ -194,15 +200,14 @@
                                 <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select type="text" class="form-select rounded-input" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
-                                data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
+                                <input type="text" class="form-control" placeholder="Input Name" id="inp-name">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <input type="text" class="form-control rounded-input" id="inp-uom-group" readonly>
+                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom-group">
                                 </select>
                             </div>
                         </div>
@@ -211,7 +216,7 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                               <input type="text" class="form-control rounded-input" id="inp-uom" readonly>
+                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom">
                             </div>
                         </div>
 
@@ -229,7 +234,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="save-product-selected" disabled>
+                        <button type="submit" class="btn btn-primary">
                             Save
                         </button>
                     </div>

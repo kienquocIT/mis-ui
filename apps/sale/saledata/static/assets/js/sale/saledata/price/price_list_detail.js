@@ -64,7 +64,8 @@ $(document).ready(function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
             });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
+            let html = $('.waiter-miner-item').html();
+            $("div.blog-toolbar-left").html(html.replace('hidden', ''));
             dtb.parent().addClass('table-responsive');
         }
     }
@@ -72,7 +73,7 @@ $(document).ready(function () {
     function loadCurrency(list_id) {
         $('#select-box-currency').select2();
         let ele = $('#select-box-currency');
-        let dropdown = $('#dropdown-currency')
+        let dropdown = $('.dropdown-currency')
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -87,6 +88,9 @@ $(document).ready(function () {
                             }).get().includes(item.id)
                             ) {
                                 dropdown.prepend(`<a class="dropdown-item bg-light bg-gradient" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
+                                if (item.is_primary === false) {
+                                    $('.dropdown-del-currency').append((`<a class="dropdown-item btn-del-price" href="#" data-id="` + item.id + `">` + item.abbreviation + `</a>`))
+                                }
                             } else {
                                 dropdown.append(`<a class="dropdown-item btn-add-price" href="#" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
                             }
@@ -95,8 +99,10 @@ $(document).ready(function () {
                                     ele.append(`<option disabled data-primary="1" value="` + item.id + `" selected>` + item.title + `</option>`);
                                 } else
                                     ele.append(`<option disabled data-primary="0" value="` + item.id + `" selected>` + item.title + `</option>`);
+                            } else if (item.is_primary === true) {
+                                ele.append(`<option disabled data-primary="1" value="` + item.id + `">` + item.title + `</option>`);
                             } else
-                                ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
+                                ele.append(`<option disabled data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
                         })
                     }
                 }
@@ -146,10 +152,10 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    ele.append(`<option value="0"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.product_list.map(function (item) {
                         if (!list_item.includes(item.id) && Object.keys(item.sale_information).length > 0)
-                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
+                            ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
                     })
                 }
             }
@@ -203,7 +209,9 @@ $(document).ready(function () {
                 } else {
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
-                            &nbsp;<i class="fas fa-info-circle" style="font-size: smaller" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'></i>`
+                            <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
+                                <i class="bi bi-box-arrow-down-right"></i>
+                            </span>`
                         )
                     } else {
                         $('#price_list_name').text(data.price.title)
@@ -214,6 +222,7 @@ $(document).ready(function () {
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
                     config['data'] = product_mapped;
                     initDataTable(config, '#datatable-item-list');
+                    loadCurrency(data.price.currency);
 
                     // add column in table item list (Price Of currency and button Delete item)
                     if (product_mapped.length != 0) {
@@ -243,7 +252,7 @@ $(document).ready(function () {
                         // create thead
                         for (let i = 0; i < price_longest.price.length; i++) {
                             if (i === price_longest.price.length - 1) {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<br><center><button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></center></th>`))
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
                             } else {
                                 table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
                             }
@@ -286,7 +295,6 @@ $(document).ready(function () {
                     }
 
                     loadProduct(product_mapped.map(obj => obj.id));
-                    loadCurrency(data.price.currency);
 
                     // load data tab settings
                     $('#select-box-type').val(data.price.price_list_type);
@@ -420,11 +428,11 @@ $(document).ready(function () {
             let price_list = [];
             price_list_update.map(function (item) {
                 $('#table-price-of-currency tbody tr td').each(function () {
+                    let value = $(this).find('input').val()
+                    if (value === '') {
+                        value = 0;
+                    }
                     if (item.id_source === '') {
-                        let value = $(this).find('input').val();
-                        if (value === '') {
-                            value = null;
-                        }
                         price_list.push({
                             'price_list_id': item.id,
                             'price_value': value,
@@ -434,7 +442,7 @@ $(document).ready(function () {
                     } else {
                         price_list.push({
                             'price_list_id': item.id,
-                            'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
+                            'price_value': value * item.factor,
                             'is_auto_update': '1',
                             'currency_using': $(this).find('input').attr('data-id')
                         })
@@ -450,6 +458,7 @@ $(document).ready(function () {
 
             frm.dataForm['list_price_list'] = price_list;
             frm.dataForm['product'] = data_product;
+
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
@@ -541,8 +550,10 @@ $(document).ready(function () {
     $(document).on('click', '.btn-add-price', function () {
         $(this).addClass('bg-light bg-gradient')
         $(this).removeClass('btn-add-price')
-        $('.th-dropdown .dropdown-menu').html($('#dropdown-currency').html().replaceAll('btn-add-price', 'btn-change-price'));
-        $('.th-dropdown .dropdown-menu').append(`<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li>`)
+
+        $('.dropdown-del-currency').append(`<a class="dropdown-item btn-del-price" href="#" data-id="` + $(this).attr('data-id') + `">` + $(this).text() + `</a>`);
+        // $('.th-dropdown .dropdown-menu').html($('.dropdown-currency').html().replaceAll('btn-add-price', 'btn-change-price'));
+        // $('.th-dropdown .dropdown-menu').append(`<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li>`)
         let table = document.getElementById('datatable-item-list')
         if (table.rows[1].childNodes.length !== 1) {
             let index = 0;
@@ -558,7 +569,7 @@ $(document).ready(function () {
             th.textContent = 'Price In ' + $(this).text();
             th.className = "dropdown th-dropdown"
             th.setAttribute('data-id', $(this).attr('data-id'));
-            th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementById('dropdown-currency').innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
+            // th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementsByClassName('dropdown-currency')[document.getElementsByClassName('dropdown-currency').length - 1].innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
             cell.outerHTML = th.outerHTML;
             for (let i = 1; i < rows.length; i++) {
                 let input = document.createElement("input");
@@ -574,46 +585,45 @@ $(document).ready(function () {
         }
     })
 
-// change price currency in table list item
-    $(document).on('click', '.btn-change-price', function () {
-        let element = $(this).closest('th')
-        let thText = element.contents().filter(function () {
-            return this.nodeType === Node.TEXT_NODE;
-        }).text().trim();
-        let html = element.html().replace(thText, "Price In " + $(this).text())
-        element.html(html);
-        let old_dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`)
-        let new_dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
-        old_dropdown_primary.addClass('btn-add-price')
-        old_dropdown_primary.removeClass('bg-light bg-gradient')
-        new_dropdown_primary.removeClass('btn-add-price')
-        new_dropdown_primary.addClass('bg-light bg-gradient')
-
-        let old_dropdown = $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`)
-        let new_dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
-        old_dropdown.addClass('btn-change-price')
-        old_dropdown.removeClass('bg-light bg-gradient')
-        new_dropdown.removeClass('btn-change-price')
-        new_dropdown.addClass('bg-light bg-gradient')
-
-        element.attr('data-id', $(this).attr('data-id'))
-    })
-
 // delete price for currency in table list item
     $(document).on('click', '.btn-del-price', function () {
-        let index = $(this).closest('th').index();
-        let dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
-        dropdown_primary.addClass('btn-add-price')
-        dropdown_primary.removeClass('bg-light bg-gradient')
+        let th_tag = $(`thead tr th[data-id="` + $(this).attr('data-id') + `"]`);
+        let index = th_tag.index()
+        if (th_tag.hasClass('price-currency-exists') === true) {
+            if (confirm("Confirm Delete ?") === true) {
+                let url_del = $('#form-update-item-price').attr('data-url-update')
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                let dataForm = {'currency_id': $(this).attr('data-id')}
+                $.fn.callAjax(url_del.replace(0, pk), 'PUT', dataForm, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        })
+            }
+        } else {
+            let dropdown_primary = $(`.dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
+            dropdown_primary.addClass('btn-add-price')
+            dropdown_primary.removeClass('bg-light bg-gradient')
 
-        let dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
-        dropdown.addClass('btn-change-price')
-        dropdown.removeClass('bg-light bg-gradient')
-        let table = document.getElementById("datatable-item-list");
-        let rows = table.getElementsByTagName("tr");
+            let dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
+            dropdown.addClass('btn-change-price')
+            dropdown.removeClass('bg-light bg-gradient')
+            let table = document.getElementById("datatable-item-list");
+            let rows = table.getElementsByTagName("tr");
 
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].deleteCell(index);
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].deleteCell(index);
+            }
+            $(this).remove();
         }
     })
 
@@ -684,28 +694,18 @@ $(document).ready(function () {
     })
 
     $('#select-box-product').on('change', function () {
-        if ($(this).val() !== '0') {
-            $('#save-product-selected').prop('disabled', false);
-            let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
-            $.fn.callAjax(data_url, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    console.log(data)
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                        $('#inp-code').val(data.product.code);
-                        $('#inp-uom-group').val(data.product.general_information.uom_group.title);
-                        $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
-                        $('#inp-uom').val(data.product.sale_information.default_uom.title);
-                        $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
-                    }
+        let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
+        $.fn.callAjax(data_url, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
+                    $('#inp-name').val(data.product.title);
+                    $('#inp-uom-group').val(data.product.general_information.uom_group.title);
+                    $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
+                    $('#inp-uom').val(data.product.sale_information.default_uom.title);
+                    $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
                 }
-            })
-        }
-        else {
-            $('#inp-code').val('');
-            $('#inp-uom-group').val('');
-            $('#inp-uom').val('');
-            $('#save-product-selected').prop('disabled', true);
-        }
+            }
+        })
     })
 })

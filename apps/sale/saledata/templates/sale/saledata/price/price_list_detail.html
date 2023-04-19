@@ -54,9 +54,9 @@
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
-                        title="{% trans 'Add New Product' %}">
+                        title="{% trans 'Add Product' %}">
                     <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add New Product' %}
+                    {% trans 'Add Product' %}
                 </span>
             </button>
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}" data-method="PUT">
@@ -175,7 +175,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Create New Product" %}</h5>
+                        <h5 class="modal-title">{% trans "Select A Product" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

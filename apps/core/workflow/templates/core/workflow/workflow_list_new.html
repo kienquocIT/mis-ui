@@ -53,9 +53,11 @@
 
     <div class="wf-template hidden">
         <div class="child-table">
-            <a href="#" class="btn add_new_wf">
-                <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                <span class="txt-btn">{% trans 'Add new workflow' %}</span>
+            <a href="#" class="btn btn-flush-success btn-animated add_new_wf mb-2">
+                <span class="icon">
+                    <span class="feather-icon mr-2"><i data-feather="plus-square"></i></span>
+                    <span class="txt-btn">{% trans 'Add new workflow' %}</span>
+                </span>
             </a>
             <table class="child-table">
                 <thead>
@@ -72,7 +74,7 @@
             </table>
         </div>
         <div class="grand-child-table">
-            <table class="child-table">
+            <table class="grand-child-table">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -87,7 +89,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="dropdown-lv-1">
+        <div class="dropdown-lv-1 p">
             <div class="dropdown custom-dropdown-tb">
                 <i class="fa fa-caret-down font-6 dropdown-toggle" data-bs-toggle="dropdown"></i>
                 <div class="dropdown-menu wf-mode">
@@ -98,8 +100,14 @@
             </div>
         </div>
     </div>
+
+    <input type="hidden" id="url-factory"
+    data-new="{% url 'WorkflowCreate' %}"
+    data-child="{% url 'WorkflowListAPI' %}"
+    data-grand-child="{% url 'WorkflowListAPI' %}">
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'vendors/moment/moment.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/list-new.js' %}"></script>
 {% endblock %}

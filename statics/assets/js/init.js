@@ -1327,6 +1327,10 @@ String.prototype.format_by_key = function (objKey) {
     return s;
 }
 
+String.prototype.valid_uuid4 = function () {
+    return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(this.toString());
+}
+
 Array.prototype.convert_to_key = function (key = 'id') {
     if (Array.isArray(this)) {
         let objData = {};

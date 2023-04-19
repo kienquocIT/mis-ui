@@ -68,8 +68,8 @@ $(function () {
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
                     'subtotal': `<div class="row">
-                                    <input type="text" class="form-control w-75 table-row-subtotal" disabled>
-                                    <span class="w-25 mt-2 quotation-currency">VND</span>
+                                    <input type="text" class="form-control w-80 table-row-subtotal" disabled>
+                                    <span class="w-20 mt-2 quotation-currency">VND</span>
                                 </div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
@@ -152,8 +152,8 @@ $(function () {
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
                     'expense_price': `<div class="row">
-                                            <input type="text" class="form-control w-75 table-row-price" required>
-                                            <span class="w-25 mt-2 quotation-currency">VND</span>
+                                            <input type="text" class="form-control w-80 table-row-price" required>
+                                            <span class="w-20 mt-2 quotation-currency">VND</span>
                                         </div>`,
                     'tax': `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
@@ -162,8 +162,8 @@ $(function () {
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
                     'subtotal': `<div class="row">
-                                    <input type="text" class="form-control w-75 table-row-subtotal" disabled>
-                                    <span class="w-25 mt-2 quotation-currency">VND</span>
+                                    <input type="text" class="form-control w-80 table-row-subtotal" disabled>
+                                    <span class="w-20 mt-2 quotation-currency">VND</span>
                                 </div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
@@ -276,16 +276,16 @@ $(function () {
                                                 </div>`,
                             'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" value="${valueQuantity}" disabled></div>`,
                             'cost_price': `<div class="row">
-                                                <input type="text" class="form-control w-75 table-row-price" value="${valuePrice}" required>
-                                                <span class="w-25 mt-2 quotation-currency">VND</span>
+                                                <input type="text" class="form-control w-80 table-row-price" value="${valuePrice}" required>
+                                                <span class="w-20 mt-2 quotation-currency">VND</span>
                                             </div>`,
                             'tax': `<div class="row">
                                         <select class="form-select table-row-tax">${optionTax}</select>
                                         <input type="hidden" class="table-row-tax-amount" value="${valueTaxAmount}">
                                     </div>`,
                             'subtotal': `<div class="row">
-                                            <input type="text" class="form-control w-75 table-row-subtotal" value="${valueSubtotal}" disabled>
-                                            <span class="w-25 mt-2 quotation-currency">VND</span>
+                                            <input type="text" class="form-control w-80 table-row-subtotal" value="${valueSubtotal}" disabled>
+                                            <span class="w-20 mt-2 quotation-currency">VND</span>
                                         </div>`,
                             'order': `<span class="table-row-order">${valueOrder}</span>`
                         }

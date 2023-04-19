@@ -387,6 +387,15 @@ $(document).ready(function () {
         $('#uom-code').val($(this).find(":selected").attr('data-code'));
     })
 
+    $('#select-box-default-uom').on('change', function () {
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            if ($('#select-box-uom-name').val() === '') {
+                $('#select-box-uom-name').val($(this).val());
+                $('#uom-code').val(($('#select-box-uom-name option:selected').attr('data-code')));
+            }
+        }
+    })
+
     //submit form edit product
     let form_update_product = $('#form-update-product');
     form_update_product.submit(function (event) {

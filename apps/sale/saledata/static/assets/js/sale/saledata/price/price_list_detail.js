@@ -152,10 +152,10 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    ele.append(`<option></option>`);
+                    ele.append(`<option value="0"></option>`);
                     resp.data.product_list.map(function (item) {
                         if (!list_item.includes(item.id) && Object.keys(item.sale_information).length > 0)
-                            ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
+                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
                     })
                 }
             }
@@ -694,18 +694,28 @@ $(document).ready(function () {
     })
 
     $('#select-box-product').on('change', function () {
-        let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
-        $.fn.callAjax(data_url, 'GET').then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                    $('#inp-name').val(data.product.title);
-                    $('#inp-uom-group').val(data.product.general_information.uom_group.title);
-                    $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
-                    $('#inp-uom').val(data.product.sale_information.default_uom.title);
-                    $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
+        if ($(this).val() !== '0') {
+            $('#save-product-selected').prop('disabled', false);
+            let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
+            $.fn.callAjax(data_url, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    console.log(data)
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
+                        $('#inp-code').val(data.product.code);
+                        $('#inp-uom-group').val(data.product.general_information.uom_group.title);
+                        $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
+                        $('#inp-uom').val(data.product.sale_information.default_uom.title);
+                        $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
+                    }
                 }
-            }
-        })
+            })
+        }
+        else {
+            $('#inp-code').val('');
+            $('#inp-uom-group').val('');
+            $('#inp-uom').val('');
+            $('#save-product-selected').prop('disabled', true);
+        }
     })
 })

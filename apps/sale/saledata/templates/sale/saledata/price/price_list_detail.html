@@ -108,7 +108,7 @@
                 <div class="row">
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Select price list" %}</label>
-                        <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
+                        <select class="form-select rounded-input" data-method="GET" data-url="{% url "PriceListAPI" %}"
                                 id="select-box-price-list" disabled="disabled" name="price_list_mapped"></select>
                     </div>
                     <div class="form-check ml-3">
@@ -129,7 +129,7 @@
                         <div class="form-group col-6">
                             <label class="form-label">{% trans "Currency" %}</label>
                             <select
-                                    class="form-control select2 select2-multiple"
+                                    class="form-control rounded-input select2 select2-multiple"
                                     multiple
                                     data-placeholder="{% trans 'Choose' %}"
                                     data-method="GET"
@@ -140,15 +140,15 @@
                         </div>
                         <div class="form-group col-6 inp-can-edit">
                             <label class="form-label">{% trans "Factor" %}</label>
-                            <input class="form-control" type="number" name="factor" id="inp-factor"
+                            <input class="form-control rounded-input" type="number" name="factor" id="inp-factor"
                                    placeholder="Input factor (0.8)" readonly>
-                            <input class="form-control" type="number" id="inp-factor-default" disabled hidden>
+                            <input class="form-control rounded-input" type="number" id="inp-factor-default" disabled hidden>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-6 inp-can-edit">
                             <label class="form-label">{% trans "Select list type" %}</label>
-                            <select class="form-select" name="price_list_type" id="select-box-type" readonly="readonly">
+                            <select class="form-select rounded-input" name="price_list_type" id="select-box-type" readonly="readonly">
                                 <option></option>
                                 <option value="0">{% trans "For Sale" %}</option>
                                 <option value="1">{% trans "For Purchase" %}</option>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="form-group col-6 inp-can-edit">
                             <label class="form-label">{% trans "Apply For" %}</label>
-                            <select class="form-select" name="apply_for" id="select-product-category" data-method="GET"
+                            <select class="form-select rounded-input" name="apply_for" id="select-product-category" data-method="GET"
                                     data-url="{% url "ProductCategoryListAPI" %}" readonly="readonly">
                             </select>
                         </div>
@@ -186,7 +186,7 @@
                                 <label class="form-label">{% trans "Code" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="inp-code" readonly>
+                                <input type="text" class="form-control rounded-input" id="inp-code" readonly>
                             </div>
                         </div>
                         <div class="row">
@@ -194,7 +194,7 @@
                                 <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select type="text" class="form-select" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                <select type="text" class="form-select rounded-input" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
                                 data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
@@ -202,7 +202,7 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <input type="text" class="form-control" id="inp-uom-group" readonly>
+                                <input type="text" class="form-control rounded-input" id="inp-uom-group" readonly>
                                 </select>
                             </div>
                         </div>
@@ -211,7 +211,7 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                               <input type="text" class="form-control" id="inp-uom" readonly>
+                               <input type="text" class="form-control rounded-input" id="inp-uom" readonly>
                             </div>
                         </div>
 

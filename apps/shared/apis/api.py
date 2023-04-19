@@ -319,6 +319,12 @@ class APIUtil:
             resp_json = {
                 cls.key_response_err: {'detail': 'Server Error'},
             }
+        elif resp.status_code == 204:
+            return RespData(
+                _state=resp.status_code,
+                _result={},
+                _status=resp.status_code,
+            )
         else:
             resp_json = resp.json()
         return RespData(

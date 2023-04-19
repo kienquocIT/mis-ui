@@ -4,7 +4,25 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg
+
+PAYMENTS_TERMS_UNIT = [
+    {'value': 0, 'text': MDConfigMsg.PT_UNIT_PERCENT},
+    {'value': 1, 'text': MDConfigMsg.PT_UNIT_AMOUNT},
+    {'value': 2, 'text': MDConfigMsg.PT_UNIT_BALANCE},
+]
+PAYMENTS_TERMS_DAY_TYPE = [
+    {'value': 1, 'text': MDConfigMsg.PT_DAY_TYPE_WK_DAY},
+    {'value': 2, 'text': MDConfigMsg.PT_DAY_TYPE_CA_DAY},
+]
+PAYMENTS_TERMS_AFTER = [
+    {'value': 1, 'text': MDConfigMsg.PT_AFTER_CONTRACT},
+    {'value': 2, 'text': MDConfigMsg.PT_AFTER_DELIVERY},
+    {'value': 3, 'text': MDConfigMsg.PT_AFTER_INVOICE},
+    {'value': 4, 'text': MDConfigMsg.PT_AFTER_ACCEPTANCE},
+    {'value': 5, 'text': MDConfigMsg.PT_AFTER_EOI_MONTH},
+    {'value': 6, 'text': MDConfigMsg.PT_AFTER_ORDER_DATE},
+]
 
 
 class PriceMasterDataList(View):
@@ -17,7 +35,11 @@ class PriceMasterDataList(View):
         menu_active='menu_contact_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+                   'pay_terms_unit': PAYMENTS_TERMS_UNIT,
+                   'pay_teams_type': PAYMENTS_TERMS_DAY_TYPE,
+                   'pay_teams_after': PAYMENTS_TERMS_AFTER
+               }, status.HTTP_200_OK
 
 
 class TaxCategoryListAPI(APIView):

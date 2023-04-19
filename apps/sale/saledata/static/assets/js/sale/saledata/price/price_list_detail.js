@@ -264,14 +264,14 @@ $(document).ready(function () {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
                                 if (product_mapped[j].price[i].value === 0) {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control rounded-input text-center" type="number" min="0" step="0.001" value="" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control rounded-input text-center" type="number" min="0" step="0.001" value="" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" min="0" step="0.001" value="" style="min-width: max-content"></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control rounded-input text-center" type="number" min="0" step="0.001" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="` + product_mapped[j].price[i].value + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control rounded-input text-center" type="number" step="0.001" min="0" value="` + product_mapped[j].price[i].value + `" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" step="0.001" min="0" value="` + product_mapped[j].price[i].value + `" style="min-width: max-content"></td>`
                                 }
 
                             }
@@ -320,15 +320,15 @@ $(document).ready(function () {
                         $(this).css('cursor', 'text');
                     })
                     $('.inp-can-edit').focusin(function () {
-                        $(this).find('input[class=form-control rounded-input]').prop('readonly', false);
+                        $(this).find('input[class=form-control]').prop('readonly', false);
                         $(this).find('select').removeAttr('readonly');
                     });
                     $('.inp-can-edit').focusout(function () {
-                        $(this).find('input[class=form-control rounded-input]').attr('readonly', true);
+                        $(this).find('input[class=form-control]').attr('readonly', true);
                         $(this).find('select').attr('readonly', 'readonly');
                     });
                     $('.inp-can-edit').on('change', function () {
-                        $(this).find('input[class=form-control rounded-input]').css({
+                        $(this).find('input[class=form-control]').css({
                             'border-color': '#00D67F',
                             'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
                         })
@@ -574,7 +574,7 @@ $(document).ready(function () {
             for (let i = 1; i < rows.length; i++) {
                 let input = document.createElement("input");
                 input.type = "number";
-                input.className = "form-control rounded-input"
+                input.className = "form-control"
                 // input.setAttribute('disabled', true);
                 if (rows[i].lastElementChild.previousElementSibling.lastElementChild.hasAttribute('disabled')) {
                     input.setAttribute('disabled', true);
@@ -636,21 +636,21 @@ $(document).ready(function () {
         if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
             let currency = $('#select-box-currency').find('option[data-primary="1"]')
             table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control rounded-input" placeholder="200000" type="number" min="0" step="0.001" data-id="` + currency.val() + `"></td>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + currency.val() + `"></td>`)
         } else {
             $('#datatable-item-list .price-currency-exists').each(function () {
                 let thText = $(this).contents().filter(function () {
                     return this.nodeType === Node.TEXT_NODE;
                 }).text().trim();
                 table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-                table.find('tbody').find('tr').append(`<td><input class="form-control rounded-input" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
             })
             $('#datatable-item-list .th-dropdown').each(function () {
                 let thText = $(this).contents().filter(function () {
                     return this.nodeType === Node.TEXT_NODE;
                 }).text().trim();
                 table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-                table.find('tbody').find('tr').append(`<td><input class="form-control rounded-input" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
             })
         }
     })
@@ -689,7 +689,7 @@ $(document).ready(function () {
     })
 
     //on change price in table item
-    $(document).on('input', '#datatable-item-list input.form-control rounded-input', function () {
+    $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })
 

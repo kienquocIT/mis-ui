@@ -181,9 +181,17 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row" hidden>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="inp-code" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
                                 <select type="text" class="form-select" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
@@ -192,17 +200,9 @@
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}
-                                    <span class="field-required">*</span>
-                                </label>
-                                <input type="text" class="form-control" placeholder="Input Name" id="inp-name">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom-group">
+                                <input type="text" class="form-control" id="inp-uom-group" readonly>
                                 </select>
                             </div>
                         </div>
@@ -211,7 +211,7 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                               <input type="text" class="form-control" placeholder="Input Name" id="inp-uom">
+                               <input type="text" class="form-control" id="inp-uom" readonly>
                             </div>
                         </div>
 
@@ -229,7 +229,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save-product-selected" disabled>
                             Save
                         </button>
                     </div>

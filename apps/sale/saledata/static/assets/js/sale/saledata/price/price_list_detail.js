@@ -288,7 +288,7 @@ $(document).ready(function () {
                                         body_table[i].innerHTML += '<td></td>'
                                     }
                                 } else
-                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                             }
                             feather.replace();
                         }

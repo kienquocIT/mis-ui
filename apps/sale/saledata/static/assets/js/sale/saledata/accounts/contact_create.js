@@ -149,11 +149,11 @@ $(document).ready(function () {
         };
 
         if (frm.dataForm['account_name'] === '') {
-            frm.dataForm['account_name'] = null;
+            delete frm.dataForm['account_name'];
         }
 
         if (frm.dataForm['report_to'] === '') {
-            frm.dataForm['report_to'] = null;
+            delete frm.dataForm['report_to'];
         }
 
         if (frm.dataForm['owner'] === '') {
@@ -161,11 +161,11 @@ $(document).ready(function () {
         }
 
         if (frm.dataForm['email'] === '') {
-            frm.dataForm['email'] = null;
+            delete frm.dataForm['email'];
         }
 
         if (frm.dataForm['mobile'] === '') {
-            frm.dataForm['mobile'] = null;
+            delete frm.dataForm['mobile'];
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

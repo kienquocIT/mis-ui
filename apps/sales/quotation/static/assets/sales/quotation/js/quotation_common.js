@@ -10,14 +10,11 @@ function loadBoxQuotationOpportunity(opp_id) {
                 if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                     ele.append(`<option value=""></option>`);
                     data.opportunity_list.map(function (item) {
-                        let customer = {};
-                        if (item.customer) {
-                            customer = JSON.stringify(item.customer)
-                        }
+                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                         let data_show = `${item.title}` + `-` + `${item.code}`;
                         ele.append(`<option value="${item.id}">
                                         <span class="opp-title">${data_show}</span>
-                                        <input type="hidden" class="opp-customer-data" value="${customer}">
+                                        <input type="hidden" class="data-info" value="${dataStr}">
                                     </option>`)
                     })
                 }
@@ -196,33 +193,6 @@ function loadBoxQuotationTax(tax_id, box_id) {
             eleBox.append(`<option value="${data[i].id}" data-value="${data[i].value}"><span class="tax-title">${data[i].title}</span></option>`)
         }
     }
-}
-
-function updateTotal(tableProduct, pretax_id, taxes_id, total_id) {
-    let pretaxAmount = 0;
-    let taxAmount = 0;
-    let elePretaxAmount = document.getElementById(pretax_id);
-    let eleTaxes = document.getElementById(taxes_id);
-    let eleTotal = document.getElementById(total_id);
-    let tableLen = tableProduct.tBodies[0].rows.length;
-    for (let i = 0; i < tableLen; i++) {
-        let row = tableProduct.tBodies[0].rows[i];
-        let subtotal = row.querySelector('.table-row-subtotal');
-        if (subtotal) {
-            if (subtotal.value)
-                pretaxAmount += Number(subtotal.value);
-        }
-        let subTaxAmount = row.querySelector('.table-row-tax-amount');
-        if (subTaxAmount) {
-            if (subTaxAmount.value) {
-                taxAmount += Number(subTaxAmount.value);
-            }
-        }
-    }
-    let total = (pretaxAmount + taxAmount);
-    elePretaxAmount.innerHTML = String(pretaxAmount);
-    eleTaxes.innerHTML = String(taxAmount);
-    eleTotal.innerHTML = String(total);
 }
 
 function dataTableProduct(data, table_id) {
@@ -531,7 +501,59 @@ function dataTableExpense(data, table_id) {
     });
 }
 
-function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id) {
+function parseFloatStr(value) {
+    return parseFloat(value.replace(/[^\d.-]/g, "").replace(/\./g, "").replace(",", "."))
+}
+
+function updateDiscountTotal(discount, pretax_id, taxes_id, total_id, discount_id) {
+    let elePretaxAmount = document.getElementById(pretax_id);
+    let eleTaxes = document.getElementById(taxes_id);
+    let eleDiscount = document.getElementById(discount_id);
+    let eleTotal = document.getElementById(total_id);
+    let discountAmount = ((parseFloatStr(elePretaxAmount.innerHTML) * Number(discount)) / 100);
+    eleDiscount.innerHTML = discountAmount.toLocaleString();
+    let total = parseFloatStr(elePretaxAmount.innerHTML) - discountAmount + parseFloatStr(eleTaxes.innerHTML);
+    eleTotal.innerHTML = total.toLocaleString();
+}
+
+function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = null) {
+    let pretaxAmount = 0;
+    let taxAmount = 0;
+    let elePretaxAmount = document.getElementById(pretax_id);
+    let eleDiscount = document.getElementById(discount_id);
+    let eleTaxes = document.getElementById(taxes_id);
+    let eleTotal = document.getElementById(total_id);
+    let tableLen = tableProduct.tBodies[0].rows.length;
+    for (let i = 0; i < tableLen; i++) {
+        let row = tableProduct.tBodies[0].rows[i];
+        let subtotal = row.querySelector('.table-row-subtotal');
+        if (subtotal) {
+            if (subtotal.value) {
+                pretaxAmount += parseFloatStr(subtotal.value);
+            }
+        }
+        let subTaxAmount = row.querySelector('.table-row-tax-amount');
+        if (subTaxAmount) {
+            if (subTaxAmount.value) {
+                taxAmount += parseFloatStr(subTaxAmount.value);
+            }
+        }
+    }
+    let total = (pretaxAmount + taxAmount);
+    if (eleDiscount) {
+        let discount = document.getElementById('quotation-create-product-discount');
+        if (discount.value) {
+            let discountAmount = ((pretaxAmount * Number(discount.value)) / 100);
+            eleDiscount.innerHTML = discountAmount.toLocaleString();
+            total = (pretaxAmount - discountAmount + taxAmount);
+        }
+    }
+    elePretaxAmount.innerHTML = pretaxAmount.toLocaleString();
+    eleTaxes.innerHTML = taxAmount.toLocaleString();
+    eleTotal.innerHTML = total.toLocaleString();
+}
+
+function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, discount_id = null) {
     currentRow.remove();
     let order = 0;
     if (tableBody.rows.length === 0) {
@@ -545,7 +567,7 @@ function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id) 
             }
         }
     }
-    updateTotal(table[0], pretax_id, taxes_id, total_id);
+    updateTotal(table[0], pretax_id, taxes_id, total_id, discount_id);
 }
 
 function updateRowTaxAmount(row, subtotal) {
@@ -553,16 +575,16 @@ function updateRowTaxAmount(row, subtotal) {
     if (eleTax) {
         let optionSelected = eleTax.options[eleTax.selectedIndex];
         if (optionSelected) {
-            let taxAmount = ((Number(subtotal) * Number(optionSelected.getAttribute('data-value'))) / 100);
+            let taxAmount = ((parseFloatStr(subtotal) * Number(optionSelected.getAttribute('data-value'))) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
-                eleTaxAmount.value = taxAmount
+                eleTaxAmount.value = taxAmount.toLocaleString();
             }
         }
     }
 }
 
-function changeQuantity(quantity, row, table, pretax_id, taxes_id, total_id) {
+function changeQuantity(quantity, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
     let discountValue = "";
     let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
     if (eleDiscountAmount) {
@@ -575,21 +597,22 @@ function changeQuantity(quantity, row, table, pretax_id, taxes_id, total_id) {
     if (price) {
         if (price.value && quantity) {
             if (discountValue) {
-                subtotal = ((Number(price.value) - Number(discountValue)) * Number(quantity));
+                subtotal = ((parseFloatStr(price.value) - parseFloatStr(discountValue)) * parseInt(quantity));
             } else {
-                subtotal = (Number(quantity) * Number(price.value));
+                subtotal = parseInt(quantity) * parseFloatStr(price.value);
             }
             let eleTotal = row.querySelector('.table-row-subtotal')
             if (eleTotal && subtotal) {
+                subtotal = subtotal.toLocaleString();
                 eleTotal.value = subtotal;
                 updateRowTaxAmount(row, subtotal);
             }
         }
     }
-    updateTotal(table, pretax_id, taxes_id, total_id);
+    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
 }
 
-function changePrice(price, row, table, pretax_id, taxes_id, total_id) {
+function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
     let discountValue = "";
     let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
     if (eleDiscountAmount) {
@@ -602,53 +625,54 @@ function changePrice(price, row, table, pretax_id, taxes_id, total_id) {
     if (quantity) {
         if (quantity.value && price) {
             if (discountValue) {
-                subtotal = ((Number(price) - Number(discountValue)) * Number(quantity.value));
+                subtotal = ((parseFloatStr(price) - parseFloatStr(discountValue)) * parseInt(quantity.value));
             } else {
-                subtotal = (Number(price) * Number(quantity.value));
+                subtotal = (parseFloatStr(price) * parseInt(quantity.value));
             }
             let eleTotal = row.querySelector('.table-row-subtotal')
             if (eleTotal && subtotal) {
+                subtotal = subtotal.toLocaleString();
                 eleTotal.value = subtotal;
                 updateRowTaxAmount(row, subtotal)
             }
         }
     }
-    updateTotal(table, pretax_id, taxes_id, total_id);
+    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
 }
 
-function changeTax(tax, row, table, pretax_id, taxes_id, total_id) {
+function changeTax(tax, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
     let subtotal = row.querySelector('.table-row-subtotal');
     if (subtotal) {
         let subtotalVal = subtotal.value;
         if (subtotalVal && tax) {
-            let taxAmount = ((Number(subtotalVal) * Number(tax)) / 100);
+            let taxAmount = ((parseFloatStr(subtotalVal) * Number(tax)) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
-                eleTaxAmount.value = taxAmount
+                eleTaxAmount.value = taxAmount.toLocaleString();
             }
         }
     }
-    updateTotal(table, pretax_id, taxes_id, total_id);
+    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
 }
 
-function changeDiscount(discount, row, table, pretax_id, taxes_id, total_id) {
+function changeDiscount(discount, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
     let eleDiscount = row.querySelector('.table-row-discount-amount');
     let elePrice = row.querySelector('.table-row-price');
     let eleQuantity = row.querySelector('.table-row-quantity');
     let eleSubtotal = row.querySelector('.table-row-subtotal');
     if (discount && eleDiscount && elePrice) {
         if (elePrice.value) {
-            let discountAmount = ((Number(elePrice.value) * Number(discount)) / 100);
-            eleDiscount.value = String(discountAmount);
+            let discountAmount = ((parseFloatStr(elePrice.value) * Number(discount)) / 100);
+            eleDiscount.value = discountAmount.toLocaleString();
             if (eleQuantity && discountAmount && eleSubtotal) {
                 if (eleQuantity.value) {
-                    let subtotal = ((Number(elePrice.value) - discountAmount) * Number(eleQuantity.value));
-                    eleSubtotal.value = String(subtotal);
+                    let subtotal = ((parseFloatStr(elePrice.value) - discountAmount) * parseInt(eleQuantity.value));
+                    eleSubtotal.value = subtotal.toLocaleString();
                 }
             }
         }
     }
-    updateTotal(table, pretax_id, taxes_id, total_id);
+    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
 }
 
 function loadInformationSelectBox(ele) {

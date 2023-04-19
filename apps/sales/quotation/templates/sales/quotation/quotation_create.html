@@ -308,17 +308,22 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
+                                            <div class="col-4"><p>{% trans 'Discount' %}</p></div>
+                                            <div class="col-4">
+                                                <div class="row">
+                                                    <input type="text" class="form-control form-control-sm w-80" id="quotation-create-product-discount">
+                                                    <span class="w-20 mt-1">%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <span id="quotation-create-product-discount-amount">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-4"></div>
                                             <div class="col-4">
                                                 <span id="quotation-create-product-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Discount' %}</p></div>
-                                            <div class="col-4">0%</div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-product-discount">0</span><span class="ml-1 quotation-currency">VND</span>
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">

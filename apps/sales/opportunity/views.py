@@ -17,16 +17,28 @@ class OpportunityListAPI(APIView):
             {
                 'id': '1',
                 'title': 'Project 1',
-                'code': '1'
+                'code': '1',
+                'customer': {
+                    'id': '1',
+                    'title': 'Apple'
+                }
             },
             {
                 'id': '2',
                 'title': 'Project 2',
-                'code': '2'
+                'code': '2',
+                'customer': {
+                    'id': '2',
+                    'title': 'Facebook'
+                }
             },
             {
                 'id': '3',
                 'title': 'Project 3',
-                'code': '3'
+                'code': '3',
+                'customer': {
+                    'id': '3',
+                    'title': 'Microsoft'
+                }
             }
         ]}, status.HTTP_200_OK

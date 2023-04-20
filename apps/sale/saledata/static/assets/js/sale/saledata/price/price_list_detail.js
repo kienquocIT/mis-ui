@@ -669,6 +669,7 @@ $(document).ready(function () {
             let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
             let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
             let data = {
+                'list_price': price_list_update,
                 'product_id': product_id,
             }
             let csr = $("input[name=csrfmiddlewaretoken]").val();

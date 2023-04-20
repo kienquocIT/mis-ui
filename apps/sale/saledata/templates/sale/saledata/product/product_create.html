@@ -52,9 +52,9 @@
     <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}" data-url-redirect="{% url "ProductList" %}">
     {% csrf_token %}
         <div class="row">
-            <div class="col-6">
+            <div class="col-9">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <div class="form-group">
                             <label class="form-label">{% trans "Product Code" %}
                             <span class="field-required">*</span>
@@ -62,7 +62,7 @@
                             <input type="text" name="code" placeholder="Input Code" class="form-control" oninput="this.value=this.value.toUpperCase()">
                         </div>
                     </div>
-                    <div class="col-6 mt-5">
+                    <div class="col-4 mt-5 text-center">
                         <div class="form-check form-check-inline mt-2">
                             <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1"
                                    checked>
@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-10">
+                    <div class="form-group col-8">
                         <label class="form-label">{% trans "Product Name" %}
                         <span class="field-required">*</span>
                         </label>
@@ -88,7 +88,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3"></div>
             <div class="col-3">
                 <div class="form-group mt-5">
                     <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
@@ -138,8 +137,6 @@
                         <select id="select-box-product-category" class="form-select" data-method="GET"
                                 data-url="{% url "ProductCategoryListAPI" %}" name="product_category"></select>
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Group" %}
                         <span class="field-required">*</span>
@@ -148,7 +145,7 @@
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
                                 data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                     </div>
-                    <div class="form-group col-3">
+                    <div class="form-group col-3" hidden>
                         <label class="form-label"><s>{% trans "Management By" %}</s></label>
                         <select id="select-box-manager" class="form-select" data-method="GET" data-url=""
                                 disabled name="management"></select>
@@ -169,9 +166,6 @@
                         <select id="select-box-tax-code" class="form-select" data-method="GET" data-url="{% url "TaxListAPI" %}"
                                 name="tax_code"></select>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-6 form-group" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <span class="field-required">*</span></label>
@@ -199,14 +193,6 @@
                         </select>
                     </div>
                     <div class="form-group col-3">
-                        <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
-                        <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
-                                disabled name="valuation_method"></select>
-                    </div>
-
-                </div>
-                <div class="row">
-                    <div class="form-group col-3">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
                         <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
                                min="0" step="1" placeholder="Input number">
@@ -217,7 +203,14 @@
                                min="0" step="1" placeholder="Input number">
                     </div>
                 </div>
-                <div class="row mt-5">
+                <div class="row" hidden>
+                    <div class="form-group col-3">
+                        <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
+                        <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
+                                disabled name="valuation_method"></select>
+                    </div>
+                </div>
+                <div class="row mt-5" hidden>
                     <div class="col-1"></div>
                     <div class="col-10">
                         <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"

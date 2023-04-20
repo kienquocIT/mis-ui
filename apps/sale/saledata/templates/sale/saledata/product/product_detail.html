@@ -58,17 +58,17 @@
           data-url-redirect="{% url "ProductList" %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-6">
+            <div class="col-9">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <div class="form-group">
                             <label class="form-label">{% trans "Product Code" %}</label>
                             <input type="text" name="code" placeholder="Input Code" class="form-control"
-                                   oninput="this.value=this.value.toUpperCase()" id="product-code" style="border: None"
+                                   id="product-code" style="border: None"
                                    readonly>
                         </div>
                     </div>
-                    <div class="col-6 mt-5">
+                    <div class="col-4 mt-5 text-center">
                         <div class="form-check form-check-inline mt-2">
                             <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1"
                                    checked>
@@ -86,15 +86,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group inp-can-edit col-10">
+                    <div class="form-group inp-can-edit col-8">
                         <label class="form-label">{% trans "Product Name" %}</label>
                         <input type="text" name="title" placeholder="Input Name" class="form-control" id="product-title"
                                readonly>
                     </div>
                 </div>
             </div>
-            <div class="col-3"></div>
-            <div class="col-3">
+            <div class="col-1"></div>
+            <div class="col-2">
                 <div class="form-group mt-5">
                     <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
                     <input id="input-photo" type="file" class="hidden" name="photo">

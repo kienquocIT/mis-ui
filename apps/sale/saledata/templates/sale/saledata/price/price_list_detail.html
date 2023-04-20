@@ -198,8 +198,9 @@
                                 <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select type="text" class="form-select" name="product" id="select-box-product" data-method="GET" data-url="{% url "ProductListAPI" %}"
-                                data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
+                                <select type="text" class="form-select" name="product" id="select-box-product"
+                                        data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                        data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
@@ -247,4 +248,5 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/easy-number-separator.js' %}"></script>
     <script src="{% static 'assets/js/sale/saledata/price/price_list_detail.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
 {% endblock %}

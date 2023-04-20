@@ -409,7 +409,9 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -707,7 +709,6 @@ $(document).ready(function () {
             $.fn.callAjax(data_url, 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data)
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
                         $('#inp-code').val(data.product.code);
                         $('#inp-uom-group').val(data.product.general_information.uom_group.title);

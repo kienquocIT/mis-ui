@@ -66,19 +66,20 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Opportunity' %}</label>
-                                <div class="input-group input-group-1">
+                                <div class="input-group">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
-                                            <div class="btn-group dropdown">
+                                            <div class="btn-group dropstart">
                                                 <i
                                                         class="fas fa-info-circle"
                                                         data-bs-toggle="dropdown"
                                                         data-dropdown-animation
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
+                                                        disabled
                                                 >
                                                 </i>
-                                                <div class="dropdown-menu w-210p"></div>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
                                         <select
@@ -93,19 +94,20 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
-                                <div class="input-group input-group-2">
+                                <div class="input-group">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
-                                            <div class="btn-group dropdown">
+                                            <div class="btn-group dropstart">
                                                 <i
                                                         class="fas fa-info-circle"
                                                         data-bs-toggle="dropdown"
                                                         data-dropdown-animation
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
+                                                        disabled
                                                 >
                                                 </i>
-                                                <div class="dropdown-menu w-210p" style="z-index: 999;"></div>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
                                         <select
@@ -122,19 +124,20 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Contact' %}</label>
-                                <div class="input-group input-group-3">
+                                <div class="input-group">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
-                                            <div class="btn-group dropdown">
+                                            <div class="btn-group dropstart">
                                                 <i
                                                         class="fas fa-info-circle"
                                                         data-bs-toggle="dropdown"
                                                         data-dropdown-animation
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
+                                                        disabled
                                                 >
                                                 </i>
-                                                <div class="dropdown-menu w-210p"></div>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
                                         <select
@@ -184,10 +187,10 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Select Sale Person' %}</label>
-                                <div class="input-group input-group-4">
+                                <div class="input-group">
 	                                <span class="input-affix-wrapper">
 		                                <span class="input-prefix">
-                                            <div class="btn-group dropdown">
+                                            <div class="btn-group dropstart">
                                                 <i
                                                         class="fas fa-info-circle"
                                                         data-bs-toggle="dropdown"
@@ -197,7 +200,7 @@
                                                         disabled
                                                 >
                                                 </i>
-                                                <div class="dropdown-menu w-210p"></div>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
                                         <select
@@ -339,11 +342,11 @@
                                                     type="button"
                                                     class="btn btn-gradient-primary"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModalCenter"
+                                                    data-bs-target="#promotionModalCenter"
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
-                                                    class="modal fade" id="exampleModalCenter" tabindex="-1"
-                                                    role="dialog" aria-labelledby="exampleModalCenter"
+                                                    class="modal fade" id="promotionModalCenter" tabindex="-1"
+                                                    role="dialog" aria-labelledby="promotionModalCenter"
                                                     aria-hidden="true"
                                             >
                                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

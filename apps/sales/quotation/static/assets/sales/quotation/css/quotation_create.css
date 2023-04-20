@@ -10,34 +10,6 @@
     font-size: larger;
 }
 
-/*.show-not-edit {*/
-/*    background-color: white;*/
-/*}*/
-
-.fa-info-circle {
-    font-size: large;
-}
-
 .dropdown-menu .dropdown-header.header-wth-bg {
     background: #007D88;
-}
-
-.input-group-1 {
-    position:relative;
-    z-index: 9999;
-}
-
-.input-group-2 {
-    position:relative;
-    z-index: 9998;
-}
-
-.input-group-3 {
-    position:relative;
-    z-index: 9997;
-}
-
-.input-group-4 {
-    position:relative;
-    z-index: 9996;
 }

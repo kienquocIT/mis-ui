@@ -42,6 +42,7 @@ $(function () {
         boxOpportunity.on('change', function (e) {
             let eleData = $(this)[0].options[$(this)[0].selectedIndex].querySelector('.data-info');
             if (eleData) {
+                loadInformationSelectBox($(this));
                 let data = JSON.parse(eleData.value);
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
@@ -58,6 +59,7 @@ $(function () {
                                 break;
                             }
                         }
+                        loadInformationSelectBox(boxCustomer);
                     }
                 }
             }
@@ -102,9 +104,27 @@ $(function () {
             let dataAdd =
                 {
                     'product': `<div class="row">
-                                    <select class="form-select table-row-item" id="${selectProductID}" required>
-                                        <option value=""></option>
-                                    </select>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                    >
+                                                    </i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select class="form-select table-row-item" id="${selectProductID}" required>
+                                                <option value=""></option>
+                                            </select>
+                                        </span>
+                                    </div>
                                 </div>`,
                     'description': `<div class="row"><input type="text" class="form-control table-row-description"></div>`,
                     'unit_of_measure': `<div class="row">
@@ -150,7 +170,7 @@ $(function () {
 // Action on change product
         tableProduct.on('change', '.table-row-item', function (e) {
             let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            let productData = optionSelected.querySelector('.product-data');
+            let productData = optionSelected.querySelector('.data-info');
             if (productData) {
                 let data = JSON.parse(productData.value);
                 let uom = $(this)[0].closest('tr').querySelector('.table-row-uom');
@@ -167,6 +187,7 @@ $(function () {
                     tax.value = data.tax.id;
                     changeTax(data.tax.value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
                 }
+            loadInformationSelectBox($(this));
             }
         });
 
@@ -299,8 +320,8 @@ $(function () {
                         showProduct = product.options[product.selectedIndex].text;
                         let optionSelected = product.options[product.selectedIndex];
                         if (optionSelected) {
-                            if (optionSelected.querySelector('.product-data')) {
-                                let data = JSON.parse(optionSelected.querySelector('.product-data').value);
+                            if (optionSelected.querySelector('.data-info')) {
+                                let data = JSON.parse(optionSelected.querySelector('.data-info').value);
                                 valuePrice = data.cost_price;
                             }
                         }

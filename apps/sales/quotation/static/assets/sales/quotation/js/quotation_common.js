@@ -48,6 +48,9 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null) {
                         }
                         ele.append(dataAppend)
                     })
+                    if (valueToSelect) {
+                        loadInformationSelectBox(ele);
+                    }
                 }
             }
         }
@@ -138,7 +141,7 @@ function loadBoxQuotationProduct(product_id, box_id) {
             }).replace(/"/g, "&quot;");
             eleBox.append(`<option value="${data[i].id}">
                             <span class="product-title">${data[i].title}</span>
-                            <input type="hidden" class="product-data" value="${product_data}">
+                            <input type="hidden" class="data-info" value="${product_data}">
                         </option>`)
         }
     }
@@ -701,7 +704,10 @@ function loadInformationSelectBox(ele) {
             info += `<h6 class="dropdown-header header-wth-bg">More Information</h6>`;
             for (let key in data) {
                 if (key === 'id') {
-                    link = ele.data('link-detail').format_url_with_uuid(data[key])
+                    let linkDetail = ele.data('link-detail');
+                    if (linkDetail) {
+                        link = linkDetail.format_url_with_uuid(data[key]);
+                    }
                 } else {
                     info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
                 }

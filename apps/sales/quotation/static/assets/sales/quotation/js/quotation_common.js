@@ -23,7 +23,7 @@ function loadBoxQuotationOpportunity(opp_id) {
     )
 }
 
-function loadBoxQuotationCustomer(customer_id) {
+function loadBoxQuotationCustomer(customer_id, valueToSelect = null) {
     let jqueryId = '#' + customer_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
@@ -36,10 +36,17 @@ function loadBoxQuotationCustomer(customer_id) {
                     ele.append(`<option value=""></option>`);
                     data.account_list.map(function (item) {
                         let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                        ele.append(`<option value="${item.id}">
-                                        <span class="account-title">${item.title}</span>
-                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                    </option>`)
+                        let dataAppend = `<option value="${item.id}">
+                                            <span class="account-title">${item.title}</span>
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                        if (item.id === valueToSelect) {
+                            dataAppend = `<option value="${item.id}" selected>
+                                            <span class="account-title">${item.title}</span>
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                        }
+                        ele.append(dataAppend)
                     })
                 }
             }

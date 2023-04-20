@@ -46,12 +46,17 @@ $(function () {
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
                     if (!boxCustomer[0].innerHTML) {
-                        loadBoxQuotationCustomer('select-box-quotation-create-customer');
-                    }
-                    for (let option of boxCustomer[0].options) {
-                        if (option.value === valueToSelect) {
-                            option.selected = true;
-                            break;
+                        loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect);
+                    } else {
+                        let optionSelectedCustomer = boxCustomer[0].options[boxCustomer[0].selectedIndex];
+                        if (optionSelectedCustomer) {
+                            optionSelectedCustomer.removeAttribute('selected');
+                        }
+                        for (let option of boxCustomer[0].options) {
+                            if (option.value === valueToSelect) {
+                                option.setAttribute('selected', true);
+                                break;
+                            }
                         }
                     }
                 }
@@ -156,9 +161,11 @@ $(function () {
                 }
                 if (price) {
                     price.value = data.unit_price.toLocaleString();
+                    changePrice(data.unit_price.toLocaleString(), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
                 }
                 if (tax) {
                     tax.value = data.tax.id;
+                    changeTax(data.tax.value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
                 }
             }
         });
@@ -170,6 +177,7 @@ $(function () {
 
 // Action on change product price
         tableProduct.on('change', '.table-row-price', function (e) {
+            $(this)[0].value = parseFloatStr($(this)[0].value).toLocaleString();
             changePrice($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
         });
 

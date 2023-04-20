@@ -156,7 +156,7 @@ $(document).ready(function () {
                             <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
                                 <input class="form-check-input" type="checkbox"
                                     value="option1" checked data-check="check-` + count + `" disabled data-id="` + dataTree[i].item.id + `">
-                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                                <label class="form-check-label required">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">

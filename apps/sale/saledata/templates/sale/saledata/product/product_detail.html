@@ -62,7 +62,8 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Product Code" %}</label>
+                            <label class="form-label">{% trans "Product Code" %}
+                            <span class="field-required">*</span></label>
                             <input type="text" name="code" placeholder="Input Code" class="form-control"
                                    id="product-code" style="border: None"
                                    readonly>
@@ -87,7 +88,8 @@
                 </div>
                 <div class="row">
                     <div class="form-group inp-can-edit col-8">
-                        <label class="form-label">{% trans "Product Name" %}</label>
+                        <label class="form-label">{% trans "Product Name" %}
+                        <span class="field-required">*</span></label>
                         <input type="text" name="title" placeholder="Input Name" class="form-control" id="product-title"
                                readonly>
                     </div>

@@ -235,6 +235,7 @@ $(document).ready(function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                         data.price_list.map(function (item) {
                             if (item.price_list_type.value === 0) {
+                                item.auto_update = list_price.find(function(obj) {return obj.id === item.id}).is_auto_update;
                                 if (item.price_list_mapped === null) {
                                     dataTree.push({'item': item, 'child': []})
                                 } else {

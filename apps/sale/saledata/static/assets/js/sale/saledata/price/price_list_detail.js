@@ -11,12 +11,6 @@ $(document).ready(function () {
         language: {
             search: "",
             searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
-            }
         },
         drawCallback: function () {
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
@@ -24,28 +18,33 @@ $(document).ready(function () {
         },
         data: [],
         columns: [{
+            className: 'wrap-text',
             'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                let currentId = String(meta.row + 1)
+                return currentId;
             }
         }, {
+            className: 'wrap-text',
             'data': 'code', render: (data, type, row, meta) => {
                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
                             style="min-width: max-content; width: 70%" href="` + url_item_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'title', render: (data, type, row, meta) => {
                 return `<a class="btn-detail" href="` + url_item_detail.replace(0, row.id) + `" data-id="` + row.id + `">
                         <span><b>` + row.title + `</b></span>
                     </a>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'uom_group', 'render': (data, type, row, meta) => {
                 return `<div class="row">
                         <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span></div>
                         </div>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'uom', 'render': (data, type, row, meta) => {
                 return `<div class="row">
                         <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>

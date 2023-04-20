@@ -65,13 +65,13 @@
                 <div class="waiter-miner-item hidden">
                     <div class="dropdown">
                         <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-light dropdown-toggle border" role="button">Add new currency</a>
+                           class="btn btn-light dropdown-toggle border bg-body" role="button">Add new currency</a>
                         <div role="menu" class="dropdown-menu dropdown-currency">
                         </div>
                     </div>
                     <div class="dropdown">
                         <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-light dropdown-toggle border" role="button">Delete currency</a>
+                           class="btn btn-light dropdown-toggle border bg-body" role="button">Delete currency</a>
                         <div role="menu" class="dropdown-menu dropdown-del-currency">
                         </div>
                     </div>
@@ -82,16 +82,7 @@
                        data-url-delete="{% url "PriceListDeleteProductAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-            <span class="form-check">
-                <input
-                        type="checkbox"
-                        class="form-check-input check-select-all"
-                        id="customCheck1"
-                >
-                <label class="form-check-label" for="customCheck1"></label>
-            </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-15">{% trans "Code" %}</th>
                     <th class="w-25">{% trans "Item name" %}</th>
                     <th class="w-10">{% trans "UoM group" %}</th>

@@ -209,9 +209,8 @@ $(document).ready(function () {
                 } else {
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
-                            <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
-                                <i class="bi bi-box-arrow-down-right"></i>
-                            </span>`
+                            <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
+                            </i>`
                         )
                     } else {
                         $('#price_list_name').text(data.price.title)
@@ -288,7 +287,7 @@ $(document).ready(function () {
                                         body_table[i].innerHTML += '<td></td>'
                                     }
                                 } else
-                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                             }
                             feather.replace();
                         }

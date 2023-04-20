@@ -233,9 +233,17 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                        // console.log(list_price)
                         data.price_list.map(function (item) {
                             if (item.price_list_type.value === 0) {
-                                item.auto_update = list_price.find(function(obj) {return obj.id === item.id}).is_auto_update;
+                                let price_list_exists = list_price.find(function (obj) {
+                                    return obj.id === item.id
+                                })
+                                if (price_list_exists !== undefined) {
+                                    item.auto_update = list_price.find(function (obj) {
+                                        return obj.id === item.id
+                                    }).is_auto_update;
+                                }
                                 if (item.price_list_mapped === null) {
                                     dataTree.push({'item': item, 'child': []})
                                 } else {
@@ -303,12 +311,12 @@ $(document).ready(function () {
                                 $('#tab_sale').removeClass('active show');
                                 $('#check-tab-sale').prop('checked', false);
                             } else {
-                                if(data.product.sale_information.hasOwnProperty('price_list'))
+                                if (data.product.sale_information.hasOwnProperty('price_list'))
                                     loadPriceList(data.product.sale_information.price_list);
-                                else{
+                                else {
                                     loadPriceList([]);
                                 }
-                                if(data.product.sale_information.hasOwnProperty('tax_code'))
+                                if (data.product.sale_information.hasOwnProperty('tax_code'))
                                     loadTaxCode(data.product.sale_information.tax_code.id);
                             }
                             data_uom_gr.uom_group.uom.map(function (item) {

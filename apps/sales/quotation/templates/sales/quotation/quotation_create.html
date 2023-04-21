@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block cssHeader %}
     <link href="{% static 'assets/sales/quotation/css/quotation_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
     <a
@@ -77,8 +78,7 @@
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
                                                         disabled
-                                                >
-                                                </i>
+                                                ></i>
                                                 <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
@@ -105,16 +105,16 @@
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
                                                         disabled
-                                                >
-                                                </i>
+                                                ></i>
                                                 <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
                                         <select
-                                                class="form-select" id="select-box-quotation-create-customer"
+                                                class="form-select"
+                                                id="select-box-quotation-create-customer"
                                                 data-url="{% url "AccountListAPI" %}"
                                                 data-method="GET"
-{#                                                data-link-detail="{% url 'AccountDetail' 1 %}"#}
+                                                data-link-detail=""
                                                 name="customer"
                                                 required
                                         ></select>
@@ -135,20 +135,18 @@
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
                                                         disabled
-                                                >
-                                                </i>
+                                                ></i>
                                                 <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
                                         <select
-                                            class="form-select" id="select-box-quotation-create-contact"
-                                            data-url=""
+                                            class="form-select"
+                                            id="select-box-quotation-create-contact"
+                                            data-url="{% url "ContactListAPI" %}"
                                             data-method="GET"
                                             data-link-detail="{% url 'ContactDetail' 1 %}"
                                             name="contact"
-                                        >
-                                            <option></option>
-                                        </select>
+                                        ></select>
 	                                </span>
                                 </div>
                                 <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
@@ -198,8 +196,7 @@
                                                         aria-haspopup="true"
                                                         aria-expanded="false"
                                                         disabled
-                                                >
-                                                </i>
+                                                ></i>
                                                 <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
@@ -228,7 +225,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4" id="tab_terms">
                                             <span class="nav-link-text">{% trans 'Terms' %}</span>
                                         </a>
                                     </li>
@@ -404,9 +401,7 @@
                                                 id="select-box-quotation-create-price-list"
                                                 data-url="{% url "PriceListAPI" %}"
                                                 data-method="GET"
-                                        >
-                                            <option></option>
-                                        </select>
+                                        ></select>
                                         <span class="form-text text-muted">{% trans 'Price list of quotation term' %}</span>
                                     </div>
                                     <div class="form-group">
@@ -425,15 +420,31 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Select Payment Terms' %}</label>
-                                        <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-payment-term"
-                                                data-url="{% url "PaymentsTermsListAPI" %}"
-                                                data-method="GET"
-                                                name="payment_term"
-                                        >
-                                            <option></option>
-                                        </select>
+                                        <div class="input-group">
+	                                        <span class="input-affix-wrapper">
+		                                        <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                                class="fas fa-info-circle"
+                                                                data-bs-toggle="dropdown"
+                                                                data-dropdown-animation
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false"
+                                                                disabled
+                                                        ></i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select
+                                                        class="form-select"
+                                                        id="select-box-quotation-create-payment-term"
+                                                        data-url="{% url "PaymentsTermsListAPI" %}"
+                                                        data-link-detail=""
+                                                        data-method="GET"
+                                                        name="payment_term"
+                                                ></select>
+	                                        </span>
+                                        </div>
                                         <span class="form-text text-muted">{% trans 'Payment terms quotation term' %}</span>
                                     </div>
                                 </div>
@@ -624,6 +635,7 @@
                                 type="hidden"
                                 id="data-init-quotation-create-tables-product"
                                 data-url="{% url "ProductListAPI" %}"
+                                data-link-detail="{% url "ProductDetail" 1 %}"
                                 data-method="GET"
                         >
                         <input

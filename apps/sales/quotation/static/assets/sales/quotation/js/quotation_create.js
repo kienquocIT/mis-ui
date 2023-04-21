@@ -4,11 +4,15 @@ $(function () {
 
     $(document).ready(function () {
 
+        $(".select2").select2();
+
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
+        let boxContact = $('#select-box-quotation-create-contact');
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
+        let tabPrice = $('#tab_terms');
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
@@ -20,7 +24,6 @@ $(function () {
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
 
-        $("#select-box-quotation-term-price").select2();
         $("#select-box-quotation-term-discount").select2();
 
         $('input[name="date_created"]').daterangepicker({
@@ -79,6 +82,18 @@ $(function () {
             loadInformationSelectBox($(this));
         });
 
+// Action on click dropdown contact
+        boxContact.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadBoxQuotationContact('select-box-quotation-create-contact');
+            }
+        });
+
+// Action on change dropdown contact
+        boxContact.on('change', function (e) {
+            loadInformationSelectBox($(this));
+        });
+
 // Action on click dropdown sale person
         boxSalePerson.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
@@ -92,8 +107,8 @@ $(function () {
         });
 
 // Action on click dropdown price list
-        boxPriceList.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
+        tabPrice.on('click', function(e) {
+            if (!boxPriceList[0].innerHTML) {
                 loadBoxQuotationPrice('select-box-quotation-create-price-list');
             }
         });
@@ -103,6 +118,11 @@ $(function () {
             if (!$(this)[0].innerHTML) {
                 loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
             }
+        });
+
+// Action on change dropdown payment term
+        boxPaymentTerm.on('change', function(e) {
+            loadInformationSelectBox($(this));
         });
 
 // Action on click button add product
@@ -136,7 +156,10 @@ $(function () {
                                                     <div class="dropdown-menu w-210p mt-4"></div>
                                                 </div>
                                             </span>
-                                            <select class="form-select table-row-item" id="${selectProductID}" required>
+                                            <select 
+                                            class="form-select table-row-item" 
+                                            id="${selectProductID}"
+                                            required>
                                                 <option value=""></option>
                                             </select>
                                         </span>
@@ -186,7 +209,7 @@ $(function () {
 // Action on change product
         tableProduct.on('change', '.table-row-item', function (e) {
             let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            let productData = optionSelected.querySelector('.data-info');
+            let productData = optionSelected.querySelector('.data-default');
             if (productData) {
                 let data = JSON.parse(productData.value);
                 let uom = $(this)[0].closest('tr').querySelector('.table-row-uom');
@@ -196,12 +219,12 @@ $(function () {
                     uom.value = data.unit_of_measure.id;
                 }
                 if (price) {
-                    price.value = data.unit_price.toLocaleString();
-                    changePrice(data.unit_price.toLocaleString(), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
+                    // price.value = data.unit_price.toLocaleString();
+                    // changePrice(data.unit_price.toLocaleString(), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
                 }
                 if (tax) {
                     tax.value = data.tax.id;
-                    changeTax(data.tax.value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
+                    changeTax(data.tax.rate, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
                 }
             loadInformationSelectBox($(this));
             }
@@ -336,8 +359,8 @@ $(function () {
                         showProduct = product.options[product.selectedIndex].text;
                         let optionSelected = product.options[product.selectedIndex];
                         if (optionSelected) {
-                            if (optionSelected.querySelector('.data-info')) {
-                                let data = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            if (optionSelected.querySelector('.data-default')) {
+                                let data = JSON.parse(optionSelected.querySelector('.data-default').value);
                                 valuePrice = data.cost_price;
                             }
                         }

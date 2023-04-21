@@ -35,14 +35,18 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null) {
                 if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
                     ele.append(`<option value=""></option>`);
                     data.account_list.map(function (item) {
-                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                        let dataStr = JSON.stringify({
+                            'id': item.id,
+                            'Name': item.name,
+                            'Owner name': item.owner.fullname,
+                        }).replace(/"/g, "&quot;");
                         let dataAppend = `<option value="${item.id}">
-                                            <span class="account-title">${item.title}</span>
+                                            <span class="account-title">${item.name}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
                         if (item.id === valueToSelect) {
                             dataAppend = `<option value="${item.id}" selected>
-                                            <span class="account-title">${item.title}</span>
+                                            <span class="account-title">${item.name}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
                         }
@@ -67,8 +71,19 @@ function loadBoxQuotationContact(contact_id) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
+                    ele.append(`<option value=""></option>`);
                     data.contact_list.map(function (item) {
-                        ele.append(`<option value="${item.id}"><span class="contact-title">${item.title}</span></option>`)
+                        let dataStr = JSON.stringify({
+                            'id': item.id,
+                            'Name': item.fullname,
+                            'Job title': item.job_title,
+                            'Mobile': item.mobile,
+                            'Email': item.email
+                        }).replace(/"/g, "&quot;");
+                        ele.append(`<option value="${item.id}">
+                                        <span class="contact-title">${item.fullname}</span>
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </option>`)
                     })
                 }
             }
@@ -179,17 +194,29 @@ function loadBoxQuotationProduct(product_id, box_id) {
     let jqueryId = '#' + box_id;
     let eleBox = $(jqueryId);
     if (ele && eleBox) {
+        let linkDetail = ele.getAttribute('data-link-detail');
+        eleBox.attr('data-link-detail', linkDetail);
         let data = JSON.parse(ele.value);
         for (let i = 0; i < data.length; i++) {
+            let dataStr = JSON.stringify({
+                'id': data[i].id,
+                'title': data[i].title,
+                'code': data[i].code,
+                'unit_of_measure': data[i].sale_information.default_uom.title,
+            }).replace(/"/g, "&quot;");
             let product_data = JSON.stringify({
-                'unit_of_measure': data[i].unit_of_measure,
+                'id': data[i].id,
+                'title': data[i].title,
+                'code': data[i].code,
+                'unit_of_measure': data[i].sale_information.default_uom,
                 'unit_price': data[i].unit_price,
                 'cost_price': data[i].cost_price,
-                'tax': data[i].tax,
+                'tax': data[i].sale_information.tax_code,
             }).replace(/"/g, "&quot;");
             eleBox.append(`<option value="${data[i].id}">
                             <span class="product-title">${data[i].title}</span>
-                            <input type="hidden" class="data-info" value="${product_data}">
+                            <input type="hidden" class="data-default" value="${product_data}">
+                            <input type="hidden" class="data-info" value="${dataStr}">
                         </option>`)
         }
     }
@@ -204,8 +231,8 @@ function loadInitQuotationUOM(uom_id) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (data.hasOwnProperty('uom_list') && Array.isArray(data.uom_list)) {
-                    ele.val(JSON.stringify(data.uom_list))
+                if (data.hasOwnProperty('unit_of_measure') && Array.isArray(data.unit_of_measure)) {
+                    ele.val(JSON.stringify(data.unit_of_measure))
                 }
             }
         }
@@ -248,7 +275,7 @@ function loadBoxQuotationTax(tax_id, box_id) {
     if (ele && eleBox) {
         let data = JSON.parse(ele.value);
         for (let i = 0; i < data.length; i++) {
-            eleBox.append(`<option value="${data[i].id}" data-value="${data[i].value}"><span class="tax-title">${data[i].title}</span></option>`)
+            eleBox.append(`<option value="${data[i].id}" data-value="${data[i].rate}"><span class="tax-title">${data[i].title}</span></option>`)
         }
     }
 }

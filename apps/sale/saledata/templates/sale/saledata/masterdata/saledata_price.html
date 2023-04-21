@@ -621,6 +621,7 @@
            data-terms-value="{% trans 'Value is required!' %}"
            data-terms-day_type="{% trans 'Day type is required!' %}"
            data-terms-unit_type="{% trans 'Unit type is required!' %}"
+           data-terms-no_of_days="{% trans 'No of days is required!' %}"
            data-terms-after="{% trans 'After is required!' %}"
            data-terms-config="{% trans 'Confirm' %}"
            data-terms-cancel="{% trans 'Cancel' %}"
@@ -629,6 +630,7 @@
            data-terms-mess-1="{% trans 'Percent do not math with before setup' %}"
            data-terms-mess-2="{% trans 'Amount do not math with before setup' %}"
            data-terms-mess-3="{% trans 'Balance only selected one time per setup' %}"
+           data-valid-percent="{% trans 'Total Percent setup is large than 100% please verify again!' %}"
     >
     <input type="hidden" id="url-factory"
     data-detail="{% url 'PaymentsTermsDetailAPI' 1 %}">

@@ -521,6 +521,19 @@ class AccountCreateAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class AccountDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/accounts/account_detail.html',
+        breadcrumb='ACCOUNT_DETAIL_PAGE',
+        menu_active='menu_account_detail',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class AccountDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 

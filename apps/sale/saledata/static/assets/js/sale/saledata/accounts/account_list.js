@@ -32,7 +32,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'name', render: (data, type, row, meta) => {
-                        return `<a href=""><span><b>` + row.name + `</b></span></a>`
+                        return `<a href="/saledata/account/` + row.id + `"><span><b>` + row.name + `</b></span></a>`
                     }
                 }, {
                     'data': 'account_type', render: (data, type, row, meta) => {

@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'assets/css/sale/saledata/accounts/contact_create.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .avatar {
+            width: 100%;
+            height: 100%;
+            min-width: fit-content;
+            min-height: fit-content;
+        }
+        .scroll-container {
+            overflow: auto;
+            height: 70%;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Edit">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="bi bi-pencil-square"></i>
+            </span>
+        </span>
+    </a>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="bi bi-save2"></i>
+            </span>
+        </span>
+    </a>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-3" style="border-right: 3px solid #ced4da;">
+            <div class="scroll-container">
+                <div class="col-12" style="padding-right: 6%">
+                <div class="row">
+                    <div class="form-group col-2 text-center">
+                        <div class="avatar avatar-soft-primary">
+                            <span class="initial-wrap"><i class="bi bi-person-lines-fill"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-10">
+                        <label class="form-label required">{% trans "Account Title" %}</label>
+                        <input type="text" class="form-control" name="account-title" id="account-title-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label required">{% trans "Code" %}</label>
+                        <input type="text" class="form-control" name="account-code" id="account-code-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label">{% trans "Website" %}</label>
+                        <input type="text" class="form-control" name="account-website" id="account-website-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label required">{% trans "Account Type" %}</label>
+                        <input type="text" class="form-control" name="account-type" id="account-type-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label required">{% trans "Industry" %}</label>
+                        <input type="text" class="form-control" name="account-industry" id="account-industry-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2 text-center">
+                        <div class="avatar avatar-soft-dark">
+                            <span class="initial-wrap"><i class="bi bi-person-lines-fill"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-10">
+                        <label class="form-label">{% trans "Owner Name" %}</label>
+                        <input type="text" class="form-control" name="account-owner" id="account-owner-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label">{% trans "Job Title" %}</label>
+                        <input type="text" class="form-control" name="account-job-title" id="account-job-title-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label">{% trans "Email" %}</label>
+                        <input type="text" class="form-control" name="account-email" id="account-email-id" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-10">
+                        <label class="form-label">{% trans "Phone" %}</label>
+                        <input type="text" class="form-control" name="account-phone" id="account-phone-id" value="">
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="col-12" style="padding-left: 2%">
+                <ul class="nav nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                            <span class="nav-link-text">Detail</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_contacts">
+                            <span class="nav-link-text">Contacts</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" data-bs-toggle="tab" href="#">
+                            <span class="nav-link-text badge-on-text">Activities</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" data-bs-toggle="tab" href="#">
+                            <span class="nav-link-text badge-on-text">Opportunities</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_detail">
+                        <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. </p>
+                    </div>
+                    <div class="tab-pane fade" id="tab_contacts">
+                        <p>iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static "assets/js/sale/saledata/accounts/account_detail.js" %}"></script>
+{% endblock %}

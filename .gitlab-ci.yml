@@ -7,7 +7,8 @@ variables:
   MYSQL_PASSWORD: $MYSQL_PASS
 
 default:
-  image: python:3.11.1-alpine3.17
+#  image: python:3.11.1-alpine3.17
+  image: localhost:5000/python3-11-gitlab-ci
   #services:
   #  - mysql:8.0
 
@@ -15,10 +16,11 @@ default:
   #  paths:
   #    - ~/.cache/pip/
   before_script:
-    - apk add gcc musl-dev mariadb-connector-c-dev
-    - pip3 --version
-    - pip3 install pip==20.0.2
-    - pip3 install -r req.txt
+#    - apk add gcc musl-dev mariadb-connector-c-dev
+#    - pip3 --version
+#    - pip3 install pip==20.0.2
+#    - pip3 install -r req.txt
+    - pip3 install --default-timeout=1000 -r req.txt
     - python3 manage.py makemigrations
     - python3 manage.py migrate
 

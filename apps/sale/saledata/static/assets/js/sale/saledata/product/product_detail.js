@@ -254,7 +254,7 @@ $(document).ready(function () {
                         autoSelectPriceListCopyFromSource()
                         list_price.map(function (item) {
                             if (item.currency_using === currency_primary) {
-                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price.toLocaleString();
+                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price.toLocaleString('de-DE', { minimumFractionDigits: 2 });
                             }
                             if (item.is_auto_update === false) {
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
@@ -448,7 +448,7 @@ $(document).ready(function () {
                     price_list.push(
                         {
                             'price_list_id': $(this).attr('data-id'),
-                            'price_value': parseFloat($(this).val().replace(/,/g, '')),
+                            'price_value': parseFloat($(this).val().replace(/\./g, '').replace(',', '.')),
                             'is_auto_update': is_auto_update,
                         }
                     )
@@ -528,7 +528,7 @@ $(document).ready(function () {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
                 if (document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value !== '') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/,/g, '')) * element[i].getAttribute('data-factor')).toLocaleString();
+                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', { minimumFractionDigits: 2 });
                 }
             }
         }

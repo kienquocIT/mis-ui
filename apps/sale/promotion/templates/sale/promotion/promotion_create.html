@@ -6,6 +6,7 @@
 {% block jsHeader %}
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/sale/promotion/promotion.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-success btn-animated mr-1 font-5" type="button"
@@ -85,13 +86,12 @@
             <div class="col-md-12">
                 <label class="form-label" for="form-create-valid_time">{% trans 'Select method' %}</label>
             </div>
-            <div class="col-md-6">
+            <div class="row row-cols-6 mb-2">
                 <div class="col">
                     <div class="form-check form-check-lg">
                         <input type="checkbox" class="form-check-input" id="is_discount" checked>
                         <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
                     </div>
-
                 </div>
                 <div class="col">
                     <div class="form-check form-check-lg">
@@ -106,75 +106,83 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-check mr-5">
-                    <input type="radio" id="tax_position_01" name="tax_position" class="form-check-input">
-                    <label class="form-check-label" for="tax_position_01">{% trans 'Before Tax' %}</label>
+            <div class="row row-cols-6 mb-2">
+                <div class="col">
+                    <div class="form-check form-check-lg">
+                        <input type="radio" id="tax_position_01" name="tax_position" class="form-check-input">
+                        <label class="form-check-label" for="tax_position_01">{% trans 'Before Tax' %}</label>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input type="radio" id="tax_position_02" name="tax_position" class="form-check-input">
-                    <label class="form-check-label" for="tax_position_02">{% trans 'After Tax' %}</label>
+                <div class="col">
+                    <div class="form-check form-check-lg">
+                        <input type="radio" id="tax_position_02" name="tax_position" class="form-check-input">
+                        <label class="form-check-label" for="tax_position_02">{% trans 'After Tax' %}</label>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6 d-flex justify-content-between align-items-center">
-                <div class="form-check">
+            <div class="col-md-6 col-xs-12 d-flex justify-content-start align-items-center mb-3">
+                <div class="form-check mr-4">
                     <input type="radio" id="percent_01" name="percent" class="form-check-input">
                     <label class="form-check-label" for="percent_01">{% trans '%' %}</label>
                 </div>
-                <div class="form-check">
+                <div class="form-check mr-4">
                     <input type="radio" id="percent_02" name="percent" class="form-check-input">
                     <label class="form-check-label" for="percent_02">{% trans 'Fixed Amount' %}</label>
                 </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="percent_value" id="form-create-percent_value">
+                <div class="form-group mb-0">
+                    <input class="form-control" type="text" name="fixed_amount_value" id="form-create-fixed_amount">
                 </div>
-                <div class="form-label"> <p>{% trans 'Max amount' %}</p></div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="percent_value" id="form-create-percent_value">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="percent_value" id="form-create-percent_value">
-                </div>
-                <label class="form-label" for="form-create-customer_per">{% trans 'use  for each customer per' %}</label>
-                <select name="customer_per" id="form-create-customer_per" class="form-select">
-                    <option value="0">{% trans 'Valid time' %}</option>
-                    <option value="1">{% trans 'Week' %}</option>
-                    <option value="2">{% trans 'Month' %}</option>
-                </select>
-                <div class="form-label"><p>{% trans 'Max Usages' %}</p></div>
-                <div class="form-group">
-                    <input class="form-control" type="number" min="0" max="999999" name="max_usages"
-                           id="form-create-max_usages">
+                <div class="form-group ml-auto mb-0 d-flex align-items-center">
+                    <label for="form-create-percent_value" class="mr-4">{% trans 'Max amount' %}</label>
+                    <input class="form-control" type="text" name="max_amount" id="form-create-percent_value">
                 </div>
             </div>
-            <div class="group-select-box">
-                <div class="col-md-6">
-                    <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" id="is_discount_order">
-                        <label class="form-check-label" for="is_discount_order">{% trans 'Discount on order' %}</label>
-                    </div>
-                    <div class="form-label"><p>{% trans 'When' %}</p></div>
-                    <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" id="is_discount_order_opt">
-                        <label class="form-check-label" for="is_discount_order_opt">
-                            {% trans 'Minimum purchase value' %}</label>
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="discount_order_opt_value"
-                               id="form-create-discount_order_opt_value">
+            <div class="clearfix"></div>
+            <div class="col-md-6 col-xs-12 mb-2">
+                <div class="form-group d-flex align-items-center">
+                    <input class="form-control mr-2" type="number" min="1" name="percent_value" placeholder="1"
+                           id="form-create-percent_value">
+                    <label class="mr-4" for="form-create-customer_per">{% trans 'use  for each customer per' %}</label>
+                    <select name="customer_per" id="form-create-customer_per" class="form-select">
+                        <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
+                        <option value="0">{% trans 'Valid time' %}</option>
+                        <option value="1">{% trans 'Week' %}</option>
+                        <option value="2">{% trans 'Month' %}</option>
+                    </select>
+                    <div class="sub-text-max_usages d-flex align-items-center">
+                        <p class="mr-4">{% trans 'Max Usages' %}</p>
+                        <input class="form-control" type="number" min="0" max="999999" name="max_usages"
+                               id="form-create-max_usages">
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" id="is_discount_special">
-                        <label class="form-check-label" for="is_discount_special">
-                            {% trans 'Discount on special product' %}</label>
+            </div>
+            <div class="clearfix"></div>
+            <div class="group-select-box col-md-6">
+                <div class="form-check form-check-lg form-check-inline">
+                    <input type="checkbox" class="form-check-input" id="is_discount_order">
+                    <label class="form-check-label" for="is_discount_order">
+                        {% trans 'Discount on order' %}&nbsp;&nbsp;&nbsp;&nbsp;{% trans 'When' %}</label>
+                </div>
+                <div class="form-check form-check-lg form-check-inline">
+                    <input type="checkbox" class="form-check-input" id="is_discount_order_opt">
+                    <label class="form-check-label" for="is_discount_order_opt">
+                        {% trans 'Minimum purchase value' %}</label>
+                </div>
+                <div class="form-group d-inline-block">
+                    <input class="form-control" type="text" name="discount_order_opt_value"
+                           id="form-create-discount_order_opt_value">
+                </div>
+                <div class="clearfix"></div>
+                <div class="row mb-3">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" class="form-check-input" id="is_discount_special">
+                            <label class="form-check-label" for="is_discount_special">
+                                {% trans 'Discount on special product' %}</label>
+                        </div>
                     </div>
-                    <div class="form-select">
+                    <div class="col-md-6 col-xs-12">
                         <select class="form-control dropdown-select_two"
-                                data-placeholder="{% trans 'Nothing selected' %}"
                                 name="discount_special_pro_list"
                                 id="form-create-discount_special_pro_list"
                                 data-multiple="false"
@@ -182,24 +190,23 @@
                                 data-url="{% url 'ProductListAPI' %}"
                         ></select>
                     </div>
-                    <div class="clearfix"></div>
-                    <div class="form-label"><p>{% trans 'When' %}</p></div>
-                    <div class="form-check form-check-lg">
+                </div>
+                <div class="d-flex justify-content-end align-items-center">
+                    <div class="form-label mr-4"><p>{% trans 'When' %}</p></div>
+                    <div class="form-check form-check-lg mr-4">
                         <input type="checkbox" class="form-check-input" id="discount_special_quantity">
                         <label class="form-check-label" for="discount_special_quantity">
                             {% trans 'Minimum quantity' %}</label>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-0">
                         <input class="form-control" type="text" name="discount_special_quantity_value"
                                id="form-create-discount_special_quantity_value">
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" id="is_free_shipping">
-                        <label class="form-check-label" for="is_free_shipping">
-                            {% trans 'Free shipping' %}</label>
-                    </div>
+                <div class="form-check form-check-lg">
+                    <input type="checkbox" class="form-check-input" id="is_free_shipping">
+                    <label class="form-check-label" for="is_free_shipping">
+                        {% trans 'Free shipping' %}</label>
                 </div>
             </div>
         </div>

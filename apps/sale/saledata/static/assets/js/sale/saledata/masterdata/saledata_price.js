@@ -1,4 +1,5 @@
 let term_type_list = [];
+let PercentCount = 0;
 let $transElm = $('#trans-factory');
 $(document).ready(function () {
 
@@ -853,16 +854,26 @@ $(document).ready(function () {
                     $(rows).eq(i).find('td').eq(column).text(i + 1);
                     $(rows).eq(i).attr('data-order', i + 1)
                 });
-                 let data = api.rows( {page:'current'} ).data().toArray()
+                let data = api.rows( {page:'current'} ).data().toArray();
+
                 if (data && data.length){
                     term_type_list = []
+                    PercentCount = 0;
                     for (let val of data){
+                        if (val['unit_type'].value === '0')
+                            PercentCount += parseInt(val['value'])
                         term_type_list.push(parseInt(val['unit_type'].value));
                     }
                     term_type_list = [...new Set(term_type_list)]
                 }
                 // check if update term list do not have balance option
-                $('[data-bs-target="#modal-add-table"]').prop('disabled', term_type_list.indexOf(2)!==-1)
+                let $addBtn = $('[data-bs-target="#modal-add-table"]')
+                $addBtn.prop('disabled', term_type_list.indexOf(2)!==-1)
+                if (PercentCount === 100) $addBtn.prop('disabled', true)
+                else if (PercentCount > 100)
+                    $.fn.notifyPopup({
+                        description: $('#trans-factory').attr('data-valid-percent')
+                        }, 'failure');
             },
             rowCallback: function (row, data) {
                 // handle onclick btn
@@ -1035,14 +1046,16 @@ $(document).ready(function () {
             return false
         }
         else{
-            $modalForm.removeClass('was-validate')
-            $('#modal-add-table [name="unit_type"]').removeClass('is-invalid')
+            $modalForm.removeClass('was-validate');
+            $('#modal-add-table [name="unit_type"]').removeClass('is-invalid');
         }
         // end validate
 
-        if (!convertData.value || !convertData.day_type || !convertData.unit_type || !convertData.after) {
-            let txtKey = !convertData.value ? 'value' : !convertData.day_type ? 'day_type' : !convertData.unit_type ?
-                'unit_type' : 'after'
+        if (!convertData.value || !convertData.day_type.value
+            || !convertData.unit_type.value || !convertData.after.value || !convertData.no_of_days) {
+            let txtKey = !convertData.value ? 'value' : !convertData.day_type.value ?
+                'day_type' : !convertData.unit_type.value ? 'unit_type' : !convertData.no_of_days ?
+                    'no_of_days' : 'after';
             let errorTxt = $transElm.data('terms-' + txtKey)
             $.fn.notifyPopup({description: errorTxt}, 'failure')
             return false

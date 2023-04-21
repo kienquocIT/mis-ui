@@ -11,12 +11,6 @@ $(document).ready(function () {
         language: {
             search: "",
             searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
-            }
         },
         drawCallback: function () {
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
@@ -24,28 +18,33 @@ $(document).ready(function () {
         },
         data: [],
         columns: [{
+            className: 'wrap-text',
             'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                let currentId = String(meta.row + 1)
+                return currentId;
             }
         }, {
+            className: 'wrap-text',
             'data': 'code', render: (data, type, row, meta) => {
                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
                             style="min-width: max-content; width: 70%" href="` + url_item_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'title', render: (data, type, row, meta) => {
                 return `<a class="btn-detail" href="` + url_item_detail.replace(0, row.id) + `" data-id="` + row.id + `">
                         <span><b>` + row.title + `</b></span>
                     </a>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'uom_group', 'render': (data, type, row, meta) => {
                 return `<div class="row">
                         <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span></div>
                         </div>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'uom', 'render': (data, type, row, meta) => {
                 return `<div class="row">
                         <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
@@ -152,10 +151,10 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    ele.append(`<option></option>`);
+                    ele.append(`<option value="0"></option>`);
                     resp.data.product_list.map(function (item) {
                         if (!list_item.includes(item.id) && Object.keys(item.sale_information).length > 0)
-                            ele.append(`<option value="` + item.id + `">` + item.code + `</option>`);
+                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
                     })
                 }
             }
@@ -209,9 +208,8 @@ $(document).ready(function () {
                 } else {
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
-                            <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
-                                <i class="bi bi-box-arrow-down-right"></i>
-                            </span>`
+                            <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
+                            </i>`
                         )
                     } else {
                         $('#price_list_name').text(data.price.title)
@@ -264,16 +262,15 @@ $(document).ready(function () {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
                                 if (product_mapped[j].price[i].value === 0) {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" min="0" step="0.001" value="" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="" style="min-width: max-content"></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString() + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" step="0.001" min="0" value="` + product_mapped[j].price[i].value + `" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString() + `" style="min-width: max-content"></td>`
                                 }
-
                             }
                         }
 
@@ -288,7 +285,7 @@ $(document).ready(function () {
                                         body_table[i].innerHTML += '<td></td>'
                                     }
                                 } else
-                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                             }
                             feather.replace();
                         }
@@ -411,7 +408,9 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -431,6 +430,8 @@ $(document).ready(function () {
                     let value = $(this).find('input').val()
                     if (value === '') {
                         value = 0;
+                    } else {
+                        value = parseFloat(value.replace(/,/g, ''))
                     }
                     if (item.id_source === '') {
                         price_list.push({
@@ -495,6 +496,8 @@ $(document).ready(function () {
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
                     if (price === '') {
                         price = 0;
+                    } else {
+                        price = parseFloat(price.replace(/,/g, ''))
                     }
                     if ($(this).find('td:eq(' + index + ')').find('input').hasClass('inp-edited') === true) {
                         list_price_of_currency.push({
@@ -518,6 +521,8 @@ $(document).ready(function () {
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
                     if (price === '') {
                         price = 0;
+                    } else {
+                        price = parseFloat(price.replace(/,/g, ''))
                     }
                     list_price_of_currency.push({
                         'product_id': product_id,
@@ -573,8 +578,8 @@ $(document).ready(function () {
             cell.outerHTML = th.outerHTML;
             for (let i = 1; i < rows.length; i++) {
                 let input = document.createElement("input");
-                input.type = "number";
-                input.className = "form-control"
+                input.type = "text";
+                input.className = "form-control number-separator"
                 // input.setAttribute('disabled', true);
                 if (rows[i].lastElementChild.previousElementSibling.lastElementChild.hasAttribute('disabled')) {
                     input.setAttribute('disabled', true);
@@ -636,21 +641,21 @@ $(document).ready(function () {
         if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
             let currency = $('#select-box-currency').find('option[data-primary="1"]')
             table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + currency.val() + `"></td>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + currency.val() + `"></td>`)
         } else {
             $('#datatable-item-list .price-currency-exists').each(function () {
                 let thText = $(this).contents().filter(function () {
                     return this.nodeType === Node.TEXT_NODE;
                 }).text().trim();
                 table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-                table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
             })
             $('#datatable-item-list .th-dropdown').each(function () {
                 let thText = $(this).contents().filter(function () {
                     return this.nodeType === Node.TEXT_NODE;
                 }).text().trim();
                 table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-                table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
             })
         }
     })
@@ -670,6 +675,7 @@ $(document).ready(function () {
             let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
             let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
             let data = {
+                'list_price': price_list_update,
                 'product_id': product_id,
             }
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -679,7 +685,9 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -694,18 +702,26 @@ $(document).ready(function () {
     })
 
     $('#select-box-product').on('change', function () {
-        let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
-        $.fn.callAjax(data_url, 'GET').then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                    $('#inp-name').val(data.product.title);
-                    $('#inp-uom-group').val(data.product.general_information.uom_group.title);
-                    $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
-                    $('#inp-uom').val(data.product.sale_information.default_uom.title);
-                    $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
+        if ($(this).val() !== '0') {
+            $('#save-product-selected').prop('disabled', false);
+            let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
+            $.fn.callAjax(data_url, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
+                        $('#inp-code').val(data.product.code);
+                        $('#inp-uom-group').val(data.product.general_information.uom_group.title);
+                        $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
+                        $('#inp-uom').val(data.product.sale_information.default_uom.title);
+                        $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
+                    }
                 }
-            }
-        })
+            })
+        } else {
+            $('#inp-code').val('');
+            $('#inp-uom-group').val('');
+            $('#inp-uom').val('');
+            $('#save-product-selected').prop('disabled', true);
+        }
     })
 })

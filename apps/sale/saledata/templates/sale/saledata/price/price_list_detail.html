@@ -54,9 +54,9 @@
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
-                        title="{% trans 'Add New Product' %}">
+                        title="{% trans 'Add Product' %}">
                     <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add New Product' %}
+                    {% trans 'Add Product' %}
                 </span>
             </button>
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
@@ -65,13 +65,13 @@
                 <div class="waiter-miner-item hidden">
                     <div class="dropdown">
                         <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-light dropdown-toggle border" role="button">Add new currency</a>
+                           class="btn btn-soft-primary dropdown-toggle" role="button">Add new currency</a>
                         <div role="menu" class="dropdown-menu dropdown-currency">
                         </div>
                     </div>
                     <div class="dropdown">
                         <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-light dropdown-toggle border" role="button">Delete currency</a>
+                           class="btn btn-soft-danger dropdown-toggle" role="button">Delete currency</a>
                         <div role="menu" class="dropdown-menu dropdown-del-currency">
                         </div>
                     </div>
@@ -82,16 +82,7 @@
                        data-url-delete="{% url "PriceListDeleteProductAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-            <span class="form-check">
-                <input
-                        type="checkbox"
-                        class="form-check-input check-select-all"
-                        id="customCheck1"
-                >
-                <label class="form-check-label" for="customCheck1"></label>
-            </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-15">{% trans "Code" %}</th>
                     <th class="w-25">{% trans "Item name" %}</th>
                     <th class="w-10">{% trans "UoM group" %}</th>
@@ -179,15 +170,23 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Create New Product" %}</h5>
+                        <h5 class="modal-title">{% trans "Select a product" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row" hidden>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="inp-code" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
                                 <select type="text" class="form-select" name="product" id="select-box-product"
@@ -197,17 +196,9 @@
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}
-                                    <span class="field-required">*</span>
-                                </label>
-                                <input type="text" class="form-control" placeholder="Input Name" id="inp-name">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom-group">
+                                <input type="text" class="form-control" id="inp-uom-group">
                                 </select>
                             </div>
                         </div>
@@ -216,7 +207,7 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="Input Name" id="inp-uom">
+                                <input type="text" class="form-control" id="inp-uom">
                             </div>
                         </div>
 
@@ -234,7 +225,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save-product-selected" disabled>
                             Save
                         </button>
                     </div>
@@ -246,5 +237,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static "assets/js/sale/saledata/product/easy-number-separator.js" %}"></script>
     <script src="{% static 'assets/js/sale/saledata/price/price_list_detail.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
 {% endblock %}

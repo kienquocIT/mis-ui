@@ -10,12 +10,10 @@
  *@note
  * select2 on change
  *     selectbox.on("select2:select", function (e) {
- *          // do action here
- *          console.log(e.params.data)
+ *          let item = e.params.data
  *     });
- *     @params selectbox: element of select
  *     @variable e.params.data: full data of select store
- *
+ * @param selectBoxElement: element of select
  */
 function initSelectBox(selectBoxElement = null) {
     let $select_box = selectBoxElement

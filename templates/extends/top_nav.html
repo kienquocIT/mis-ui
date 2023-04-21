@@ -9,6 +9,64 @@
             ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 
             <!-- Search -->
+            {% random_int 14 as num_random %}
+            {% if num_random == 1 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-cat"></i>
+                </a>
+            {% elif num_random == 2 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-crow" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 3 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-spider" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 4 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-paw" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 5 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-otter" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 6 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-kiwi-bird" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 7 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-horse-head" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 8 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-horse" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 9 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-hippo" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 10 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-frog" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 11 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-fish" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 12 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-dragon" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 13 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-dove" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% elif num_random == 14 %}
+                <a href="{% url 'DefaultDataView' %}">
+                    <i class="fas fa-dog" href="{% url 'DefaultDataView' %}"></i>
+                </a>
+            {% endif %}
             <select class="form-select" style="margin-left: 10px;margin-right: 10px;" id="menu-tenant">
                 <option selected>Select...</option>
                 <option value="1">One</option>
@@ -268,8 +326,8 @@
                                                                     checked="checked" type="radio"
                                                             >
                                                             <b><label
-                                                                class="form-check-label"
-                                                                for="company_switch_id_{{ item.id }}"
+                                                                    class="form-check-label"
+                                                                    for="company_switch_id_{{ item.id }}"
                                                             >{{ item.code }} - {{ item.title }}</label></b>
                                                         {% else %}
                                                             <input
@@ -280,9 +338,9 @@
                                                                     type="radio"
                                                             >
                                                             <label
-                                                                class="form-check-label"
-                                                                for="company_switch_id_{{ item.id }}"
-                                                        >{{ item.code }} - {{ item.title }}</label>
+                                                                    class="form-check-label"
+                                                                    for="company_switch_id_{{ item.id }}"
+                                                            >{{ item.code }} - {{ item.title }}</label>
                                                         {% endif %}
                                                     </div>
                                                 {% endfor %}

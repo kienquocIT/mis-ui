@@ -44,11 +44,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
+    ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
+    EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -72,12 +74,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
+    APPLICATION_PERMISSION = StringUrl('base/permissions')
 
     TENANT = StringUrl('tenant/userlist')
+
     # HR
-    EMPLOYEE_BY_COMPANY_OVERVIEW = StringUrl('company/overview/employee/{company_id}')
-    USER_BY_COMPANY_OVERVIEW = StringUrl('company/overview/user/{company_id}')
-    COMPANY_OF_USER_OVERVIEW = StringUrl('company/overview/company-of-user/{company_id}')
 
     # WORKFLOW
     WORKFLOW = StringUrl('workflow')
@@ -88,7 +89,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')
     CONTACT_DETAIL = StringUrl('saledata/contact')
-    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/listnotmapaccount')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contacts-not-map-account')
 
     # masterdata/lookup/contact
     SALUTATION_LIST = StringUrl('saledata/salutations')
@@ -105,4 +106,40 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account')
-    ACCOUNTNAME_LIST = StringUrl('saledata/employee_map_account_list')
+    ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
+
+    # masterdata/product
+    PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
+    PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/')
+    PRODUCT_CATEGORY_LIST = StringUrl('saledata/product-categories')
+    PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/')
+    EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
+    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/')
+    UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
+    UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/')
+    UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
+    UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/')
+
+    # product
+    PRODUCT_LIST = StringUrl('saledata/products')
+    PRODUCT_DETAIL = StringUrl('saledata/product/')
+
+    # masterdata/price
+    TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
+    TAX_LIST = StringUrl('saledata/taxes')
+    TAX_DETAIL = StringUrl('saledata/tax/')
+    TAX_CATEGORY_DETAIL = StringUrl('saledata/tax-category/')
+    CURRENCY_LIST = StringUrl('saledata/currencies')
+    CURRENCY_DETAIL = StringUrl('saledata/currency/')
+    SYNC_SELLING_RATE = StringUrl('saledata/sync-selling-rate-with-VCB/')
+
+    # price
+    PRICE_LIST = StringUrl('saledata/prices')
+    PRICE_DETAIL = StringUrl('saledata/price/')
+    PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/')
+    PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/')
+    PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/')
+    DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/')
+
+    # payment terms
+    PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')

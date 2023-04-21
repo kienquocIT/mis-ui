@@ -319,6 +319,12 @@ class APIUtil:
             resp_json = {
                 cls.key_response_err: {'detail': 'Server Error'},
             }
+        elif resp.status_code == 204:
+            return RespData(
+                _state=resp.status_code,
+                _result={},
+                _status=resp.status_code,
+            )
         else:
             resp_json = resp.json()
         return RespData(
@@ -459,6 +465,8 @@ class ServerAPI:
         else:
             self.url = settings.API_DOMAIN + url
 
+        self.is_minimal = kwargs.get('is_minimal', False)
+
     @property
     def headers(self) -> dict:
         """
@@ -473,6 +481,8 @@ class ServerAPI:
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
+        if self.is_minimal is True:
+            data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
         return data
 
     def get(self, data=None):

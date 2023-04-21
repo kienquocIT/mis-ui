@@ -1,54 +1,227 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 
-{% block cssHeader %}{% endblock %}
+{% block cssHeader %}
+    <style>
+        .dataTables_processing span {
+            color: red !important;
+        }
+    </style>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
 {% block pageAction %}{% endblock %}
 
 {% block pageContent %}
-    {{ data.company_list }}
-    <table
-            id="datable_company_overview_list" class="table nowrap w-100 mb-5"
-            data-url="{% url "CompanyListOverviewListAPI" %}"
-            data-url-redirect="/"
-            data-method="GET"
-            data-url-detail="{% url 'CompanyListOverviewDetail' pk=1 %}"
+    <div class="hidden">
+        <span id="notify-employee-mapped-text">{% trans 'Linked with employee' %}</span>
+        <span id="notify-employee-not-mapped-text">{% trans "Don't have link with employee" %}</span>
+    </div>
+    {{ data.company_list|json_script:"id-company-list" }}
+    <div class="mb-3">
+        <ul class="nav nav-light nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab_block_overview">
+                    <span class="nav-link-text">{% trans 'Overview' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab_block_tenant">
+                    <span class="nav-link-text">{% trans 'User of Tenant' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab_block_company">
+                    <span class="nav-link-text">{% trans 'Employee of Company' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade" id="tab_block_overview">
+                <div class="waiter-miner-group">
+
+                </div>
+                <table
+                        id="datable_company_overview_list" class="table nowrap w-100 mb-5"
+                        data-url="{% url "CompanyListOverviewListAPI" %}"
+                        data-url-redirect="/"
+                        data-method="GET"
+                        data-url-detail="{% url 'CompanyDetail' pk=1 %}"
+                >
+                    <thead>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th class="wrap-text">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            {% trans 'Code' %}
+                            <i
+                                    class="fas fa-info-circle icon-info"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="{% trans 'Press row here to open detail page.' %}"
+                            ></i>
+                        </th>
+                        <th class="wrap-text">{% trans 'Name' %}</th>
+                        <th class="wrap-text">{% trans 'License Used' %}</th>
+                        <th class="wrap-text">{% trans 'Total User' %}</th>
+                        <th class="wrap-text">{% trans 'Power User' %}</th>
+                        <th class="wrap-text">{% trans 'Employee Linked User / Total Employee' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot style="background-color: rgba(0, 125, 136, 0.15)">
+                    <th></th>
+                    <th style="color: #007D88"><b>Tenant</b></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="tab_block_tenant">
+                <table
+                        id="tbl-user-of-tenant"
+                        class="table nowrap w-100 mb-5"
+                        data-url="{% url "UserTenantOverviewListAPI" %}"
+                        data-method="GET"
+                        data-url-detail="{% url 'UserDetail' pk=1 %}"
+                >
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            {% trans 'Username' %}
+                            <i
+                                    class="fas fa-info-circle icon-info"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="{% trans 'Press row here to open detail page.' %}"
+                            ></i>
+                        </th>
+                        <th>{% trans 'User' %}</th>
+                        <th>
+                            {% trans 'Company List' %}
+                            <i
+                                    class="fas fa-info-circle icon-info"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="{% trans 'Left: Company Name | Right: Linked with employee' %}"
+                            ></i>
+                        </th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade waiter-miner-group" id="tab_block_company">
+                <div class="waiter-miner-item hidden">
+                    <div>
+                        <select id="chooseCompanyPage" class="select2 form-control form-control-sm ">
+                            {% for item in data.company_list %}
+                                {% if forloop.first %}
+                                    <option value="{{ item.id }}">{{ item.code }} - {{ item.title }}</option>
+                                {%  else  %}
+                                    <option value="{{ item.id }}">{{ item.code }} - {{ item.title }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <select id="chooseStateUser" class="select2 form-control form-control-sm ">
+                            <option selected value="all">{% trans 'All employee' %}</option>
+                            <option value="linked">{% trans 'Linked user' %}</option>
+                            <option value="not-linked">{% trans "Don't linked user" %}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <table
+                            id="dttEmployeeOfCompany" class="table nowrap w-100 mb-5"
+                            data-url="{% url "EmployeeOfTenantListAPI" %}"
+                            data-url-redirect="/"
+                            data-method="GET"
+                            data-url-detail="{% url 'EmployeeDetail' pk=1 %}"
+                    >
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Full name</th>
+                            <th>Linked User</th>
+                            <th>Apps</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+            class="modal fade" id="changeUserCompanies" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenter"
+            aria-hidden="true"
     >
-        <thead>
-        <tr>
-            <th class="wrap-text">
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                {% trans 'Code' %}
-                <i
-                        class="fas fa-info-circle icon-info"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="{% trans 'Press row here to open detail page.' %}"
-                ></i>
-            </th>
-            <th class="wrap-text">{% trans 'Name' %}</th>
-            <th class="wrap-text">{% trans 'License Used' %}</th>
-            <th class="wrap-text">{% trans 'Total User' %}</th>
-            <th class="wrap-text">{% trans 'Power User' %}</th>
-            <th class="wrap-text">{% trans 'Employee Linked User / Total' %}</th>
-            <th class="wrap-text">{% trans 'Employee Linked User' %}</th>
-            <th class="wrap-text">{% trans 'Total' %}</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot style="background-color: rgba(0, 125, 136, 0.15)">
-        <th></th>
-        <th style="color: #007D88"><b>Tenant</b></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        </tfoot>
-    </table>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form
+                        id="modalUserUpdate"
+                        data-url-detail="{% url 'EmployeeUserByCompanyListOverviewDetailAPI' pk=1 %}"
+                        data-method="PUT"
+                        novalidate
+                >
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="userPersonFullname" data-id=""></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <span class="badge badge-soft-warning">{% trans 'Do not encourage remove company that has linked with employee' %}</span>
+                        </div>
+                        <br/>
+                        <div>
+                            <label for="userCompaniesExist">{% trans 'User companies currently' %}</label>
+                            <ul class="list-group" id="userCompaniesExist"></ul>
+                        </div>
+                        <br/>
+                        <div>
+                            <label for="company_list_choose">{% trans 'Change companies' %}</label>
+                            <select
+                                    class="select2 select2-multiple" multiple="multiple" data-placeholder="Choose"
+                                    id="company_list_choose" name="company_list"
+                            >
+                                {% for item in data.company_list %}
+                                    <option value="{{ item.id }}">{{ item.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="group-action-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                        <div class="spinner-border loading-spinner hidden" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'core/company/company_overview/js/company_overview_list.js' %}"></script>
 {% endblock %}

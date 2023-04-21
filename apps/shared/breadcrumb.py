@@ -47,6 +47,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # user
     USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren(_('User Create'), 'UserCreate')
+    USER_DETAIL_PAGE = BreadcrumbChildren(_('User detail'))
+    USER_EDIT_PAGE = BreadcrumbChildren(_('Edit user'))
 
     # company
     COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
@@ -62,6 +64,29 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow list'), 'WorkflowList')
     WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')
     WORKFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Workflow detail'))
+
+    # Contact, Account
+    CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact list'), 'ContactList')
+    CONTACT_CREATE_PAGE = BreadcrumbChildren(_('Contact create'), 'ContactCreate')
+    CONTACT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
+    ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
+
+    # Master Data
+    CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
+    ACCOUNT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Account'), 'AccountMasterDataList')
+    PRODUCT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Product'), 'ProductMasterDataList')
+
+    # Product
+    PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product list'), 'ProductList')
+    PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
+    PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Price
+
+    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
+    PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
 
 class BreadcrumbView:
@@ -128,6 +153,10 @@ class BreadcrumbView:
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
 
+    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_DETAIL_PAGE]
+
+    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_EDIT_PAGE]
+
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ORGANIZATION_PAGE,
@@ -173,3 +202,35 @@ class BreadcrumbView:
 
     WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_CREATE_PAGE]
     WORKFLOW_DETAIL_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_DETAIL_PAGE]
+
+    CONTACT_LIST_PAGE = [
+        BreadcrumbItem.CONTACT_LIST_PAGE
+    ]
+    CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
+    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
+
+    ACCOUNT_LIST_PAGE = [
+        BreadcrumbItem.ACCOUNT_LIST_PAGE
+    ]
+    ACCOUNT_CREATE_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_CREATE_PAGE]
+
+    CONTACT_MASTER_DATA_LIST_PAGE = [
+        BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
+    ]
+    ACCOUNT_MASTER_DATA_LIST_PAGE = [
+        BreadcrumbItem.ACCOUNT_MASTER_DATA_LIST_PAGE
+    ]
+    PRODUCT_MASTER_DATA_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_MASTER_DATA_LIST_PAGE
+    ]
+
+    PRODUCT_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_LIST_PAGE
+    ]
+    PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
+    PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]
+
+    PRICE_LIST_PAGE = [
+        BreadcrumbItem.PRICE_LIST_PAGE
+    ]
+    PRICE_LIST_DETAIL_PAGE = PRICE_LIST_PAGE + [BreadcrumbItem.PRICE_LIST_DETAIL_PAGE]

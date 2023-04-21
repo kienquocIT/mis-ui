@@ -44,25 +44,20 @@ $(document).ready(function () {
                         return `<div class="row">` + element + `</div>`
                     }
                 }, {
-                    'data': 'industry', 'render': (data, type, row, meta) => {
-                        return `<span><center>` + row.industry + `</center></span>`
+                    'data': 'owner', 'render': (data, type, row, meta) => {
+                        if (row.owner.fullname) {
+                            return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></center></div>`
+                        } else {
+                            return ``
+                        }
+                    }
+                }, {
+                    'data': 'phone', 'render': (data, type, row, meta) => {
+                        return `<span><center>` + row.phone + `</center></span>`
                     }
                 }, {
                     'data': 'website', 'render': (data, type, row, meta) => {
                         return `<span><center>` + row.website + `</center></span>`
-                    }
-                }, {
-                    'data': 'owner', 'render': (data, type, row, meta) => {
-                        if (row.owner.fullname) {
-                            return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></center></div>`
-                        }
-                        else {
-                            return ``
-                        }
-                    }
-                },{
-                    'data': 'phone', 'render': (data, type, row, meta) => {
-                        return `<span><center>` + row.phone + `</center></span>`
                     }
                 }, {
                     'data': 'manager', 'render': (data, type, row, meta) => {

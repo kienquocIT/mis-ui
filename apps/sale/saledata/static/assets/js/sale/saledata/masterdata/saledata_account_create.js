@@ -93,8 +93,8 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt2 + bt3;
+                // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                return bt2;
             }
         },]
     }
@@ -143,15 +143,23 @@ $(document).ready(function () {
     },)
 
 
+    $('#btn-show-modal-create').on('click', function (){
+        $('.modal-body input').val('');
+    })
+
+
 //Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')
         $(".lookup-data").hide()
         let id_tag = `#` + section
-
-        let lookup = section.split('-').pop()
-        $('#modal-lookup-data h5').text(lookup.charAt(0).toUpperCase() + lookup.slice(1));
-        $('#form-create-lookup').attr('data-lookup', lookup)
+        if(section === 'section-account-type'){
+            $('#modal-lookup-data h5').text('Account Type');
+        }
+        else{
+            $('#modal-lookup-data h5').text('Industry');
+        }
+        $('#form-create-lookup').attr('data-lookup', section)
         $(id_tag).show();
     })
 
@@ -159,14 +167,14 @@ $(document).ready(function () {
     let frm = $('#form-create-lookup');
     frm.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let csr = $("input[name=csrfmiddlewaretoken]").last().val();
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
         let lookup = $('#form-create-lookup').attr('data-lookup');
         let data_url = ''
-        if (lookup === 'account_type') {
+        if (lookup === 'section-account-type') {
             data_url = $('#form-create-lookup').attr('data-url-account-type');
-        } else if (lookup === 'industry') {
+        } else if (lookup === 'section-industry') {
             data_url = $('#form-create-lookup').attr('data-url-industry');
         }
 
@@ -183,7 +191,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
                         $('#modal-lookup-data').hide();
                     }
                 },
@@ -191,7 +199,7 @@ $(document).ready(function () {
                 }
             ).then(
             (rep) => { // reload dataTalbe after create
-                if (lookup === 'account_type') {
+                if (lookup === 'section-account-type') {
                     $('#section-account-type').empty();
                     $('#section-account-type').append(ele_account_type);
                     let tb_account_type = $('#datatable-account-type-list');
@@ -295,7 +303,7 @@ $(document).ready(function () {
             },)
         // save edit
         $('#modal-update-data .edit-button').off().on('click', function () {
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let csr = $("input[name=csrfmiddlewaretoken]").last().val();
             let inp_name = $('#name-update');
             let inp_code = $('#code-update');
             let inp_des = $('#description-update');
@@ -318,7 +326,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Cập nhập"}, 'success')
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
                             $('#modal-update-data').hide();
                         }
                     },

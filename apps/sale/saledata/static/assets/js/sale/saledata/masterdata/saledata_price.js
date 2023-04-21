@@ -189,7 +189,7 @@ $(document).ready(function () {
             }
         }, {
             'data': 'rate', 'render': (data, type, row, meta) => {
-                if (row.rate) {
+                if (row.rate >= 0) {
                     return `<center>
                             <span class="badge badge-soft-pink badge-pill" style="min-width: max-content; width: 100%">` + row.rate + `%</span>
                             </center>`

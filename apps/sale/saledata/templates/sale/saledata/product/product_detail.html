@@ -58,17 +58,18 @@
           data-url-redirect="{% url "ProductList" %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-6">
+            <div class="col-9">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Product Code" %}</label>
-                            <input type="text" name="code" placeholder="Input Code" class="form-control rounded-input"
-                                   oninput="this.value=this.value.toUpperCase()" id="product-code" style="border: None"
+                            <label class="form-label">{% trans "Product Code" %}
+                            <span class="field-required">*</span></label>
+                            <input type="text" name="code" placeholder="Input Code" class="form-control"
+                                   id="product-code" style="border: None"
                                    readonly>
                         </div>
                     </div>
-                    <div class="col-6 mt-5">
+                    <div class="col-4 mt-5 text-center">
                         <div class="form-check form-check-inline mt-2">
                             <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1"
                                    checked>
@@ -86,17 +87,17 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group inp-can-edit col-10">
-                        <label class="form-label">{% trans "Product Name" %}</label>
-                        <input type="text" name="title" placeholder="Input Name" class="form-control rounded-input" id="product-title"
+                    <div class="form-group inp-can-edit col-8">
+                        <label class="form-label">{% trans "Product Name" %}
+                        <span class="field-required">*</span></label>
+                        <input type="text" name="title" placeholder="Input Name" class="form-control" id="product-title"
                                readonly>
                     </div>
                 </div>
             </div>
-            <div class="col-3"></div>
             <div class="col-3">
                 <div class="form-group mt-5">
-                    <div id="upload-photo" class="form-control rounded-input">{% trans "photo" %}</div>
+                    <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
                     <input id="input-photo" type="file" class="hidden" name="photo">
                 </div>
             </div>
@@ -132,28 +133,26 @@
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Product Type" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-product-type" class="form-select rounded-input" data-method="GET" readonly="readonly"
+                        <select id="select-box-product-type" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url 'ProductTypeListAPI' %}" name="product_type"></select>
                     </div>
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Product Category" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-product-category" class="form-select rounded-input" data-method="GET"
+                        <select id="select-box-product-category" class="form-select" data-method="GET"
                                 readonly="readonly"
                                 data-url="{% url "ProductCategoryListAPI" %}" name="product_category"></select>
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "UoM Group" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-uom-group" class="form-select rounded-input" data-method="GET" readonly="readonly"
+                        <select id="select-box-uom-group" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
                                 data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
+                    <div class="form-group col-3 inp-can-edit" hidden>
                         <label class="form-label"><s>{% trans "Management By" %}</s></label>
-                        <select id="select-box-manager" class="form-select rounded-input" data-method="GET" data-url=""
+                        <select id="select-box-manager" class="form-select" data-method="GET" data-url=""
                                 readonly="readonly" name="management"></select>
                     </div>
                 </div>
@@ -163,23 +162,20 @@
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Default UoM" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-default-uom" class="form-select rounded-input" data-method="GET" readonly="readonly"
+                        <select id="select-box-default-uom" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
                     </div>
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Tax Code" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-tax-code" class="form-select rounded-input" data-method="GET"
+                        <select id="select-box-tax-code" class="form-select" data-method="GET"
                                 data-url="{% url "TaxListAPI" %}"
                                 readonly="readonly" name="tax_code"></select>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-6 form-group inp-can-edit" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <span class="field-required">*</span></label>
-                        <input type="select" class="form-select rounded-input dropdown-toggle" data-bs-toggle="dropdown"
+                        <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
                                oninput="this.value=''"
                                data-bs-display="static" aria-expanded="false" placeholder="Select Price List" readonly>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
@@ -193,38 +189,37 @@
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Code" %}</label>
                         <span class="field-required">*</span></label>
-                        <input id="uom-code" class="form-control rounded-input" name="uom_code" type="text" style="border: None;"
+                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;"
                                readonly>
                     </div>
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "UoM Name" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-uom-name" class="form-select rounded-input" data-method="GET" readonly="readonly"
+                        <select id="select-box-uom-name" class="form-select" data-method="GET" readonly="readonly"
                                 data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
                         </select>
                     </div>
                     <div class="form-group col-3 inp-can-edit">
-                        <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
-                        <select id="select-box-valuation-method" class="form-select rounded-input" data-method="GET" data-url=""
-                                readonly="readonly" name="valuation_method"></select>
-                    </div>
-
-                </div>
-                <div class="row">
-                    <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
-                        <input id="inventory-level-min" type="number" class="form-control rounded-input" name="inventory_level_min"
+                        <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
                                min="0" step="1"
                                placeholder="Input number" readonly>
                     </div>
                     <div class="form-group col-3 inp-can-edit">
                         <label class="form-label">{% trans "Inventory Level Max" %}</label>
-                        <input id="inventory-level-max" type="number" class="form-control rounded-input" name="inventory_level_max"
+                        <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
                                min="0" step="1"
                                placeholder="Input number" readonly>
                     </div>
                 </div>
-                <div class="row mt-5">
+                <div class="row" hidden>
+                    <div class="form-group col-3 inp-can-edit">
+                        <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
+                        <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
+                                readonly="readonly" name="valuation_method"></select>
+                    </div>
+                </div>
+                <div class="row mt-5" hidden>
                     <div class="col-1"></div>
                     <div class="col-10">
                         <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
@@ -248,4 +243,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "assets/js/sale/saledata/product/product_detail.js" %}"></script>
+    <script src="{% static "assets/js/sale/saledata/product/easy-number-separator.js" %}"></script>
 {% endblock %}

@@ -140,6 +140,8 @@
                 {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
             {% endif %}
         </span>
+        <span id="urlCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
+        <span id="urlCompanyConfigData"></span>
     </div>
     <!-- /Message translate usually -->
 </div>
@@ -170,29 +172,10 @@
     <!-- Select2 JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
-    <!-- Init JS -->
-    <script>
-        $(document).ready(function () {
-            $.fn.showLoading = (timeout) => {
-                $('#loadingContainer').removeClass('hidden');
-                if (timeout) {
-                    setTimeout(
-                        $.fn.hideLoading,
-                        (timeout > 100 ? timeout : 1000)
-                    );
-                }
-            }
-            $.fn.hideLoading = () => {
-                $('#loadingContainer').addClass('hidden');
-            }
+    <!-- Mask Money jQuery -->
+    <script src="{% static 'assets/js/cdn-clone/jquery/jquery.maskMoney.min.js' %}"></script>
 
-            {# Auto listen event loading và loaded data of DataTable with AJAX #}
-            $(document).find('table').each((idx, tbl) => {
-                $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
-                $(tbl).on('draw.dt', () => $.fn.hideLoading());
-            })
-        })
-    </script>
+    <!-- Init JS -->
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
     <script src="{% static 'assets/js/init.js' %}"></script>
@@ -202,31 +185,60 @@
     <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
     <script>
         $(document).ready(function () {
-            let nav_data = $('#get-menu-active');
-
-            let menu_id_active = nav_data.attr('data-nav-menu');
-            if (menu_id_active) {
-                let ele_menu = $('#' + menu_id_active);
-                if (ele_menu) {
-                    active_menu(ele_menu);
+            <!-- function utils -->
+            function active_menu(item) {
+                if (item.length > 0) {
+                    item.first().addClass('active')
+                    let parent = item.first().parents('.nav-item');
+                    if (parent.length > 0) {
+                        parent.first().addClass('active');
+                        active_menu(parent.first());
+                    }
                 }
+                return null;
             }
 
-            let tenant_code_active = nav_data.attr('data-nav-tenant');
-            if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
+            function menu_handler() {
+                let nav_data = $('#get-menu-active');
+                let menu_id_active = nav_data.attr('data-nav-menu');
+                if (menu_id_active) {
+                    let ele_menu = $('#' + menu_id_active);
+                    if (ele_menu) {
+                        active_menu(ele_menu);
+                    }
+                }
+                let tenant_code_active = nav_data.attr('data-nav-tenant');
+                if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
+            }
+
+            function init_mask_money() {
+                $.fn.getCompanyCurrencyConfig().then((currencyConfig)=>{
+                    if (currencyConfig) {
+                        $('input[type=text].mask-money').each((idx, item) => {
+                            $(item).initInputCurrency(currencyConfig);
+                        })
+                    } else throw  Error('Currency config is not found.')
+                });
+
+            }
+
+            <!-- ## function utils -->
+
+            <!-- Loading table ajax -->
+            $(document).find('table').each((idx, tbl) => {
+                $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
+                $(tbl).on('draw.dt', () => $.fn.hideLoading());
+            });
+            <!-- ## Loading table ajax -->
+
+            <!-- Active menu -->
+            menu_handler();
+            <!-- ## Active menu -->
+
+            <!-- Init Mask Money -->
+            init_mask_money();
+            <!-- ## Init Mask Money -->
         });
-
-        function active_menu(item) {
-            if (item.length > 0) {
-                item.first().addClass('active')
-                let parent = item.first().parents('.nav-item');
-                if (parent.length > 0) {
-                    parent.first().addClass('active');
-                    active_menu(parent.first());
-                }
-            }
-            return null;
-        }
     </script>
     {% block jsFooter %}
     {% endblock %}

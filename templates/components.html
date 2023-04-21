@@ -7,13 +7,22 @@
 
 {% block pageContent %}
     {% include 'plugins/condition/condition_component.html' %}
+    <div class="row">
+        <label class="form-label" for="input-test-mask">Test Make Money: </label>
+        <input
+                type="text" id="input-test-mask"
+                class="form-control mask-money"
+                value="123.99"
+                data-return-type="number"
+        />
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
     <!-- Customize JS -->
 
     <!--CONDITIONS--- required js file for component conditions -->
-<script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
-<script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <!--END CONDITIONS -->
 {% endblock %}

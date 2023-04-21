@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
+from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck, LocaleInfo
 
 
 class CompanyList(View):
@@ -208,3 +208,13 @@ class EmployeeOfTenantListAPI(APIView):
                 return {}, status.HTTP_401_UNAUTHORIZED
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
         return {'employee_list': []}, status.HTTP_200_OK
+
+
+class CompanyConfigDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        opt_selected = request.user.language
+        # opt_selected = 'en'
+        return {
+            'currency': LocaleInfo.get_currency(opt_selected),
+        }, status.HTTP_200_OK

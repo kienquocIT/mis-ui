@@ -5,9 +5,9 @@ $(document).ready(function () {
         ordering: false,
         paging: false,
         columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+            "searchable": false, "orderable": true, // "targets": [0,1,3,4,5,6,7,8,9]
         }],
-        order: [2, 'asc'],
+        order: [[2, 'asc']],
         language: {
             search: "",
             searchPlaceholder: "Search",
@@ -58,6 +58,7 @@ $(document).ready(function () {
         let dtb = $(id_table);
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
+            // targetDt.column(2).order('asc').draw();
             /*Checkbox Add*/
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
@@ -219,7 +220,9 @@ $(document).ready(function () {
                 $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
-                    config['data'] = product_mapped;
+                    config['data'] = product_mapped.sort(function (a, b){
+                        return a.code - b.code;
+                    });
                     initDataTable(config, '#datatable-item-list');
                     loadCurrency(data.price.currency);
 

@@ -7,6 +7,8 @@ $(function () {
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
+        let boxPriceList = $('#select-box-quotation-create-price-list');
+        let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
@@ -87,6 +89,20 @@ $(function () {
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadInformationSelectBox($(this));
+        });
+
+// Action on click dropdown price list
+        boxPriceList.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadBoxQuotationPrice('select-box-quotation-create-price-list');
+            }
+        });
+
+// Action on click dropdown payment term
+        boxPaymentTerm.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+            }
         });
 
 // Action on click button add product
@@ -198,7 +214,7 @@ $(function () {
 
 // Action on change product price
         tableProduct.on('change', '.table-row-price', function (e) {
-            $(this)[0].value = parseFloatStr($(this)[0].value).toLocaleString();
+            $(this)[0].value = parseFloatStrToStr($(this)[0].value);
             changePrice($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
         });
 

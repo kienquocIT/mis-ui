@@ -109,6 +109,54 @@ function loadBoxQuotationSalePerson(sale_person_id) {
     )
 }
 
+function loadBoxQuotationPaymentTerm(term_id) {
+    let jqueryId = '#' + term_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+                    ele.append(`<option value=""></option>`);
+                    data.payment_terms_list.map(function (item) {
+                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                        ele.append(`<option value="${item.id}">
+                                        <span class="opp-title">${item.title}</span>
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </option>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
+function loadBoxQuotationPrice(price_id) {
+    let jqueryId = '#' + price_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('price_list') && Array.isArray(data.price_list)) {
+                    ele.append(`<option value=""></option>`);
+                    data.price_list.map(function (item) {
+                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                        ele.append(`<option value="${item.id}">
+                                        <span class="opp-title">${item.title}</span>
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </option>`)
+                    })
+                }
+            }
+        }
+    )
+}
+
 function loadInitQuotationProduct(product_id) {
     let jqueryId = '#' + product_id;
     let ele = $(jqueryId);
@@ -511,8 +559,13 @@ function dataTableExpense(data, table_id) {
     });
 }
 
-function parseFloatStr(value) {
-    return parseFloat(value.replace(/[^\d.-]/g, "").replace(/\./g, "").replace(",", "."))
+function parseStrToFloat(value) {
+    return parseFloat(value.replace(',', '.'));
+}
+
+function parseFloatStrToStr(value) {
+    let floatValue = parseStrToFloat(String(value));
+    return floatValue.toLocaleString('de-DE');
 }
 
 function updateDiscountTotal(discount, pretax_id, taxes_id, total_id, discount_id) {
@@ -520,10 +573,10 @@ function updateDiscountTotal(discount, pretax_id, taxes_id, total_id, discount_i
     let eleTaxes = document.getElementById(taxes_id);
     let eleDiscount = document.getElementById(discount_id);
     let eleTotal = document.getElementById(total_id);
-    let discountAmount = ((parseFloatStr(elePretaxAmount.innerHTML) * Number(discount)) / 100);
-    eleDiscount.innerHTML = discountAmount.toLocaleString();
-    let total = parseFloatStr(elePretaxAmount.innerHTML) - discountAmount + parseFloatStr(eleTaxes.innerHTML);
-    eleTotal.innerHTML = total.toLocaleString();
+    let discountAmount = ((parseStrToFloat(elePretaxAmount.innerHTML) * Number(discount)) / 100);
+    eleDiscount.innerHTML = parseFloatStrToStr(discountAmount);
+    let total = parseStrToFloat(elePretaxAmount.innerHTML) - discountAmount + parseStrToFloat(eleTaxes.innerHTML);
+    eleTotal.innerHTML = parseFloatStrToStr(total);
 }
 
 function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = null) {
@@ -539,13 +592,13 @@ function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = 
         let subtotal = row.querySelector('.table-row-subtotal');
         if (subtotal) {
             if (subtotal.value) {
-                pretaxAmount += parseFloatStr(subtotal.value);
+                pretaxAmount += parseStrToFloat(subtotal.value);
             }
         }
         let subTaxAmount = row.querySelector('.table-row-tax-amount');
         if (subTaxAmount) {
             if (subTaxAmount.value) {
-                taxAmount += parseFloatStr(subTaxAmount.value);
+                taxAmount += parseStrToFloat(subTaxAmount.value);
             }
         }
     }
@@ -554,13 +607,13 @@ function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = 
         let discount = document.getElementById('quotation-create-product-discount');
         if (discount.value) {
             let discountAmount = ((pretaxAmount * Number(discount.value)) / 100);
-            eleDiscount.innerHTML = discountAmount.toLocaleString();
+            eleDiscount.innerHTML = parseFloatStrToStr(discountAmount);
             total = (pretaxAmount - discountAmount + taxAmount);
         }
     }
-    elePretaxAmount.innerHTML = pretaxAmount.toLocaleString();
-    eleTaxes.innerHTML = taxAmount.toLocaleString();
-    eleTotal.innerHTML = total.toLocaleString();
+    elePretaxAmount.innerHTML = parseFloatStrToStr(pretaxAmount);
+    eleTaxes.innerHTML = parseFloatStrToStr(taxAmount);
+    eleTotal.innerHTML = parseFloatStrToStr(total);
 }
 
 function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, discount_id = null) {
@@ -585,10 +638,10 @@ function updateRowTaxAmount(row, subtotal) {
     if (eleTax) {
         let optionSelected = eleTax.options[eleTax.selectedIndex];
         if (optionSelected) {
-            let taxAmount = ((parseFloatStr(subtotal) * Number(optionSelected.getAttribute('data-value'))) / 100);
+            let taxAmount = ((parseStrToFloat(subtotal) * Number(optionSelected.getAttribute('data-value'))) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
-                eleTaxAmount.value = taxAmount.toLocaleString();
+                eleTaxAmount.value = parseFloatStrToStr(taxAmount);
             }
         }
     }
@@ -607,13 +660,13 @@ function changeQuantity(quantity, row, table, pretax_id, taxes_id, total_id, dis
     if (price) {
         if (price.value && quantity) {
             if (discountValue) {
-                subtotal = ((parseFloatStr(price.value) - parseFloatStr(discountValue)) * parseInt(quantity));
+                subtotal = ((parseStrToFloat(price.value) - parseStrToFloat(discountValue)) * parseInt(quantity));
             } else {
-                subtotal = parseInt(quantity) * parseFloatStr(price.value);
+                subtotal = parseInt(quantity) * parseStrToFloat(price.value);
             }
             let eleTotal = row.querySelector('.table-row-subtotal')
             if (eleTotal && subtotal) {
-                subtotal = subtotal.toLocaleString();
+                subtotal = parseFloatStrToStr(subtotal);
                 eleTotal.value = subtotal;
                 updateRowTaxAmount(row, subtotal);
             }
@@ -635,13 +688,13 @@ function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_
     if (quantity) {
         if (quantity.value && price) {
             if (discountValue) {
-                subtotal = ((parseFloatStr(price) - parseFloatStr(discountValue)) * parseInt(quantity.value));
+                subtotal = ((parseStrToFloat(price) - parseStrToFloat(discountValue)) * parseInt(quantity.value));
             } else {
-                subtotal = (parseFloatStr(price) * parseInt(quantity.value));
+                subtotal = (parseStrToFloat(price) * parseInt(quantity.value));
             }
             let eleTotal = row.querySelector('.table-row-subtotal')
             if (eleTotal && subtotal) {
-                subtotal = subtotal.toLocaleString();
+                subtotal = parseFloatStrToStr(subtotal);
                 eleTotal.value = subtotal;
                 updateRowTaxAmount(row, subtotal)
             }
@@ -655,10 +708,10 @@ function changeTax(tax, row, table, pretax_id, taxes_id, total_id, discount_id =
     if (subtotal) {
         let subtotalVal = subtotal.value;
         if (subtotalVal && tax) {
-            let taxAmount = ((parseFloatStr(subtotalVal) * Number(tax)) / 100);
+            let taxAmount = ((parseStrToFloat(subtotalVal) * Number(tax)) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
-                eleTaxAmount.value = taxAmount.toLocaleString();
+                eleTaxAmount.value = parseFloatStrToStr(taxAmount);
             }
         }
     }
@@ -672,12 +725,12 @@ function changeDiscount(discount, row, table, pretax_id, taxes_id, total_id, dis
     let eleSubtotal = row.querySelector('.table-row-subtotal');
     if (discount && eleDiscount && elePrice) {
         if (elePrice.value) {
-            let discountAmount = ((parseFloatStr(elePrice.value) * Number(discount)) / 100);
-            eleDiscount.value = discountAmount.toLocaleString();
+            let discountAmount = ((parseStrToFloat(elePrice.value) * Number(discount)) / 100);
+            eleDiscount.value = parseFloatStrToStr(discountAmount);
             if (eleQuantity && discountAmount && eleSubtotal) {
                 if (eleQuantity.value) {
-                    let subtotal = ((parseFloatStr(elePrice.value) - discountAmount) * parseInt(eleQuantity.value));
-                    eleSubtotal.value = subtotal.toLocaleString();
+                    let subtotal = ((parseStrToFloat(elePrice.value) - discountAmount) * parseInt(eleQuantity.value));
+                    eleSubtotal.value = parseFloatStrToStr(subtotal);
                 }
             }
         }

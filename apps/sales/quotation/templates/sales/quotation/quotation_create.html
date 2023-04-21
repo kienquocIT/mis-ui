@@ -401,8 +401,8 @@
                                                 multiple="multiple"
                                                 data-placeholder="{% trans 'Choose' %}"
                                                 name=""
-                                                id="select-box-quotation-term-price"
-                                                data-url=""
+                                                id="select-box-quotation-create-price-list"
+                                                data-url="{% url "PriceListAPI" %}"
                                                 data-method="GET"
                                         >
                                             <option></option>
@@ -426,10 +426,11 @@
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Select Payment Terms' %}</label>
                                         <select
-                                                class="form-select" id="select-box-quotation-term-payment"
-                                                data-url=""
+                                                class="form-select"
+                                                id="select-box-quotation-create-payment-term"
+                                                data-url="{% url "PaymentsTermsListAPI" %}"
                                                 data-method="GET"
-                                                name=""
+                                                name="payment_term"
                                         >
                                             <option></option>
                                         </select>

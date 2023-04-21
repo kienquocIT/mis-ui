@@ -69,6 +69,7 @@ $(document).ready(function () {
         }
     }
 
+    // load for tab setting and dropdown add currency for price lust
     function loadCurrency(list_id) {
         $('#select-box-currency').select2();
         let ele = $('#select-box-currency');

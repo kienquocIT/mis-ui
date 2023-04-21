@@ -267,9 +267,9 @@ $(document).ready(function () {
                                         body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="" style="min-width: max-content"></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2 }) + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2 }) + `" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + `" style="min-width: max-content"></td>`
                                 }
                             }
                         }

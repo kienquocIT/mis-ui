@@ -410,7 +410,7 @@ $(document).ready(function () {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
                 if (document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value !== '') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', { minimumFractionDigits: 2 });
+                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
             }
         }

@@ -19,6 +19,15 @@
     </style>
 {% endblock %}
 {% block jsHeader %}
+    <script>
+        window.addEventListener("load", function() {
+            let screenHeight = window.screen.height*0.64;
+            $('.scroll-div').css({
+                'overflow': 'auto',
+                'height': screenHeight.toString()+'px'
+            })
+        });
+    </script>
 {% endblock %}
 {% block pageAction %}
     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
@@ -52,226 +61,228 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <div class="row">
-        <div class="col-4" style="border-right: 5px solid #dee2e6;">
-            <div class="col-12" style="padding-right: 6%">
-                <div class="row">
-                    <div class="form-group col-2 text-center">
-                        <div class="avatar avatar-soft-primary">
-                            <span class="initial-wrap"><i class="bi bi-person-lines-fill"></i></span>
-                        </div>
-                    </div>
-                    <div class="form-group col-10">
-                        <label class="form-label required">{% trans "Account Title" %}</label>
-                        <input type="text" class="form-control" name="account-title" id="account-title-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label required">{% trans "Code" %}</label>
-                        <input type="text" class="form-control" name="account-code" id="account-code-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label">{% trans "Website" %}</label>
-                        <input type="text" class="form-control" name="account-website" id="account-website-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label required">{% trans "Account Type" %}</label>
-                        <input type="text" class="form-control" name="account-type" id="account-type-id" value="">
-                    </div>
-                </div>
-                <div class="row mb-10">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label required">{% trans "Industry" %}</label>
-                        <input type="text" class="form-control" name="account-industry" id="account-industry-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2 text-center">
-                        <div class="avatar avatar-soft-dark">
-                            <span class="initial-wrap"><i class="bi bi-person-lines-fill"></i></span>
-                        </div>
-                    </div>
-                    <div class="form-group col-10">
-                        <label class="form-label">{% trans "Owner Name" %}</label>
-                        <input type="text" class="form-control" name="account-owner" id="account-owner-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label">{% trans "Job Title" %}</label>
-                        <input type="text" class="form-control" name="account-job-title" id="account-job-title-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label">{% trans "Email" %}</label>
-                        <input type="text" class="form-control" name="account-email" id="account-email-id" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-2"></div>
-                    <div class="form-group col-10">
-                        <label class="form-label">{% trans "Phone" %}</label>
-                        <input type="text" class="form-control" name="account-phone" id="account-phone-id" value="">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="col-12" style="padding-left: 2%">
-                <ul class="nav nav-light nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
-                            <span class="nav-link-text">Detail</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_contacts">
-                            <span class="nav-link-text">Contacts</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" href="#">
-                            <span class="nav-link-text badge-on-text">Activities</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" href="#">
-                            <span class="nav-link-text badge-on-text">Opportunities</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_detail">
-                        <div class="row mt-6">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Account Manager" %}</label>
-                                        <input type="text" class="form-control" name="account-manager" id="account-manager-id" value="">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Account Revenue" %}</label>
-                                        <input type="text" class="form-control" name="account-revenue" id="account-revenue-id" value="">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Total Employees" %}</label>
-                                        <input type="text" class="form-control" name="total-employees" id="total-employees-id" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Phone Number" %}</label>
-                                        <input type="text" class="form-control" name="phone-number" id="phone-number-id" value="">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Email" %}</label>
-                                        <input type="text" class="form-control" name="account-email" id="account-email-id" value="">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Tax Code" %}</label>
-                                        <input type="text" class="form-control" name="tax-code" id="tax-code-id" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Parent Account" %}</label>
-                                        <input type="text" class="form-control" name="parent-account" id="parent-account-id" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="w-100 p-1 bg-light mt-3">
-                                    <h5>Shipping Address</h5>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-4 text-left">
-                                                <button data-bs-toggle="modal" data-bs-target="#modal-shipping-address" type="button" style="background: none;border: none; color: #007D88">
-                                                    <span id="edit-shipping-address-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Add new shipping address">
-                                                        <i class="fas fa-plus-circle"></i>
-                                                        Add/Edit Address
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div id="list-shipping-address" class="col-8"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="w-100 p-1 bg-light mt-3">
-                                    <h5>Billing/Invoice Address</h5>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-4 text-left">
-                                                <button data-bs-toggle="modal" data-bs-target="#modal-billing-address" type="button" style="background: none;border: none; color: #007D88">
-                                                    <span id="edit-billing-address-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Add new billing/invoice address">
-                                                        <i class="fas fa-plus-circle"></i>
-                                                        Add/Edit Address
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div id="list-billing-address" class="col-8"></div>
-                                        </div>
-                                    </div>
-                                </div>
+    <form data-method="GET" id="form-detail-account" data-url="{% url "AccountDetailAPI" pk=0 %}">
+        <div class="row">
+            <div class="col-4 scroll-div">
+                <div class="col-12" style="padding-right: 6%">
+                    <div class="row">
+                        <div class="form-group col-2 text-center">
+                            <div class="avatar avatar-soft-primary">
+                                <span class="initial-wrap"><i class="bi bi-person-lines-fill"></i></span>
                             </div>
                         </div>
+                        <div class="form-group col-10">
+                            <label class="form-label required">{% trans "Account Title" %}</label>
+                            <textarea type="text" class="form-control" name="account-title" id="account-title-id" value=""></textarea>
+                        </div>
                     </div>
-                    <div class="tab-pane fade" id="tab_contacts">
-                        <div class="row mt-5">
-                            <div id="section-contact-list" class="contact-list mt-5">
-                                <table id="datatable_contact_list" class="table nowrap w-100 mb-5" data-url="{% url "ContactListAPI" %}"
-                                       data-method="GET">
-                                    <thead>
-                                    <th class="w-5">
-                                        <span class="form-check">
-                                            <input type="checkbox"
-                                                   class="form-check-input check-select-all"
-                                                   id="customCheck1">
-                                            <label class="form-check-label" for="customCheck1"></label>
-                                        </span>
-                                    </th>
-                                    <th class="w-30">{% trans "Name" %}</th>
-                                    <th class="w-15 text-center">{% trans "Job title" %}</th>
-                                    <th class="w-25 text-center">{% trans "Mobile" %}</th>
-                                    <th class="w-25 text-center">{% trans "Email" %}</th>
-                                    </thead>
-                                </table>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label required">{% trans "Code" %}</label>
+                            <input type="text" class="form-control" name="account-code" id="account-code-id" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label">{% trans "Website" %}</label>
+                            <input type="text" class="form-control" name="account-website" id="account-website-id" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label required">{% trans "Account Type" %}</label>
+                            <input type="text" class="form-control" name="account-type" id="account-type-id" value="">
+                        </div>
+                    </div>
+                    <div class="row mb-10">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label required">{% trans "Industry" %}</label>
+                            <input type="text" class="form-control" name="account-industry" id="account-industry-id" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2 text-center">
+                            <div class="avatar avatar-soft-dark">
+                                <span class="initial-wrap"><i class="bi bi-person-lines-fill"></i></span>
                             </div>
+                        </div>
+                        <div class="form-group col-10">
+                            <label class="form-label">{% trans "Account Owner" %}</label>
+                            <input type="text" class="form-control" name="account-owner" id="account-owner-id" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label">{% trans "Job Title" %}</label>
+                            <input type="text" class="form-control" name="account-job-title" id="account-job-title-id" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label">{% trans "Email" %}</label>
+                            <input type="text" class="form-control" name="account-email" id="account-email-id" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
+                            <label class="form-label">{% trans "Phone" %}</label>
+                            <input type="text" class="form-control" name="account-phone" id="account-phone-id" value="">
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-8">
+                <div class="col-12" style="padding-left: 2%">
+                    <ul class="nav nav-light nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                                <span class="nav-link-text">Detail</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_contacts">
+                                <span class="nav-link-text">Contacts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" data-bs-toggle="tab" href="#">
+                                <span class="nav-link-text badge-on-text">Activities</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" data-bs-toggle="tab" href="#">
+                                <span class="nav-link-text badge-on-text">Opportunities</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_detail">
+                            <div class="row mt-6">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Account Manager" %}</label>
+                                            <input type="text" class="form-control" name="account-manager" id="account-manager-id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Account Revenue" %}</label>
+                                            <input type="text" class="form-control" name="account-revenue" id="account-revenue-id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Total Employees" %}</label>
+                                            <input type="text" class="form-control" name="total-employees" id="total-employees-id" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Phone Number" %}</label>
+                                            <input type="text" class="form-control" name="phone-number" id="phone-number-id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Email" %}</label>
+                                            <input type="text" class="form-control" name="account-email" id="account-email-id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Tax Code" %}</label>
+                                            <input type="text" class="form-control" name="tax-code" id="tax-code-id" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans "Parent Account" %}</label>
+                                            <input type="text" class="form-control" name="parent-account" id="parent-account-id" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="w-100 p-1 bg-light mt-3">
+                                        <h5>Shipping Address</h5>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-4 text-left">
+                                                    <button data-bs-toggle="modal" data-bs-target="#modal-shipping-address" type="button" style="background: none;border: none; color: #007D88">
+                                                        <span id="edit-shipping-address-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Add new shipping address">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                            Add/Edit Address
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div id="list-shipping-address" class="col-8"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="w-100 p-1 bg-light mt-3">
+                                        <h5>Billing/Invoice Address</h5>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-4 text-left">
+                                                    <button data-bs-toggle="modal" data-bs-target="#modal-billing-address" type="button" style="background: none;border: none; color: #007D88">
+                                                        <span id="edit-billing-address-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Add new billing/invoice address">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                            Add/Edit Address
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div id="list-billing-address" class="col-8"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_contacts">
+                            <div class="row mt-5">
+                                <div id="section-contact-list" class="contact-list mt-5">
+                                    <table id="datatable_contact_list" class="table nowrap w-100 mb-5" data-url="{% url "ContactListAPI" %}"
+                                           data-method="GET">
+                                        <thead>
+                                        <th class="w-5">
+                                            <span class="form-check">
+                                                <input type="checkbox"
+                                                       class="form-check-input check-select-all"
+                                                       id="customCheck1">
+                                                <label class="form-check-label" for="customCheck1"></label>
+                                            </span>
+                                        </th>
+                                        <th class="w-30">{% trans "Name" %}</th>
+                                        <th class="w-15 text-center">{% trans "Job title" %}</th>
+                                        <th class="w-25 text-center">{% trans "Mobile" %}</th>
+                                        <th class="w-25 text-center">{% trans "Email" %}</th>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 {% endblock %}
 {% block jsFooter %}
     <!-- Select2 -->

@@ -78,7 +78,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form
+                        data-url="{% url 'OpportunityListAPI' %}"
+                        data-url-redirect="{% url 'OpportunityList' %}"
+                        data-method="POST"
+                        id="form-create_opportunity"
+                        method="post"
+                    >
+                        {% csrf_token %}
                         <div class="mb-3">
                             <label class="form-label" for="exampleDropdownFormEmail1">{% trans 'Select Customer' %}</label>
                             <select
@@ -92,18 +99,18 @@
                         <div class="mb-3">
                             <label class="form-label" for="exampleDropdownFormPassword1">{% trans 'Code' %}</label>
                             <input
-                                    type="password" class="form-control" id="exampleDropdownFormPassword1"
-                                    placeholder="Password"
+                                    type="text" class="form-control" id="exampleDropdownFormPassword1"
+                                    placeholder="" name="code"
                             >
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="exampleDropdownFormPassword1">{% trans 'Name' %}</label>
                             <input
-                                    type="password" class="form-control" id="exampleDropdownFormPassword1"
-                                    placeholder="Password"
+                                    type="text" class="form-control" id="exampleDropdownFormPassword1"
+                                    placeholder="" name="title"
                             >
                         </div>
-                        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+                        <button type="submit" class="btn btn-primary" id="btn-create_opportunity">{% trans 'Save' %}</button>
                     </form>
                 </div>
             </div>

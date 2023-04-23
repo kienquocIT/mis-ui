@@ -101,14 +101,22 @@
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label required">{% trans "Account Type" %}</label>
-                            <input type="text" class="form-control" name="account-type" id="account-type-id" value="">
+                            <select id="account-type-id" name="account-type"
+                                    class="form-control"
+                                    multiple
+                                    data-method="GET"
+                                    data-url="{% url "AccountTypeListAPI" %}">
+                            </select>
                         </div>
                     </div>
                     <div class="row mb-10">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label required">{% trans "Industry" %}</label>
-                            <input type="text" class="form-control" name="account-industry" id="account-industry-id" value="">
+                            <select id="account-industry-id" name="account-industry" class="form-select"
+                                    data-method="GET"
+                                    data-url="{% url "IndustryListAPI" %}">
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -173,50 +181,72 @@
                         <div class="tab-pane fade show active" id="tab_detail">
                             <div class="row mt-6">
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-12">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Account Manager" %}</label>
                                             <input type="text" class="form-control" name="account-manager" id="account-manager-id" value="">
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Account Revenue" %}</label>
-                                            <input type="text" class="form-control" name="account-revenue" id="account-revenue-id" value="">
+                                            <select id="account-revenue-id" name="account-revenue" class="form-select"
+                                                    data-method="GET"
+                                                    data-url="">
+                                                <option value="1-10 billions">{% trans "1-10 billions" %}</option>
+                                                <option value="10-20 billions">{% trans "10-20 billions" %}</option>
+                                                <option value="20-50 billions">{% trans "20-50 billions" %}</option>
+                                                <option value="50-200 billions">{% trans "50-200 billions" %}</option>
+                                                <option value="200-1000 billions">{% trans "200-1000 billions" %}</option>
+                                                <option value="> 1000 billions">{% trans "> 1000 billions" %}</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Total Employees" %}</label>
-                                            <input type="text" class="form-control" name="total-employees" id="total-employees-id" value="">
+                                            <select id="total-employees-id" name="total-employees" class="form-select"
+                                                    data-method="GET"
+                                                    data-url="">
+                                                <option value="< 20 people">{% trans "< 20 people" %}</option>
+                                                <option value="20-50 people">{% trans "20-50 people" %}</option>
+                                                <option value="50-200 people">{% trans "50-200 people" %}</option>
+                                                <option value="200-500 people">{% trans "200-500 people" %}</option>
+                                                <option value="> 500 people">{% trans "> 500 people" %}</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Phone Number" %}</label>
                                             <input type="text" class="form-control" name="phone-number" id="phone-number-id" value="">
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Email" %}</label>
                                             <input type="text" class="form-control" name="account-email" id="account-email-id" value="">
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Tax Code" %}</label>
                                             <input type="text" class="form-control" name="account-tax-code" id="account-tax-code-id" value="">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label">{% trans "Parent Account" %}</label>
-                                            <input type="text" class="form-control" name="parent-account" id="parent-account-id" value="">
+                                            <select id="parent-account-id" name="parent_account" class="form-select"
+                                                    data-method="GET"
+                                                    data-url="{% url "AccountListAPI" %}" disabled>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -296,6 +326,5 @@
     </form>
 {% endblock %}
 {% block jsFooter %}
-    <!-- Select2 -->
     <script src="{% static "assets/js/sale/saledata/accounts/account_detail.js" %}"></script>
 {% endblock %}

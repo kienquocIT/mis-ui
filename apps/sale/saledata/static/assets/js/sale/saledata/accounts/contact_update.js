@@ -107,8 +107,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    resp.data.account_detail.owner.map(function (item) {
-                    })
+                    console.log(data)
                     ele.text("");
                     ele.append(`<option selected>` + `</option>`)
                     data.account_detail.owner.map(function (item) {

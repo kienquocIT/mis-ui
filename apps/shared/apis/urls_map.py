@@ -143,3 +143,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
+
+    # opportunity
+    OPPORTUNITY_LIST = StringUrl('opportunity/lists')

@@ -1,7 +1,8 @@
 from django.urls import path
 
-from apps.sales.opportunity.views import OpportunityListAPI
+from apps.sales.opportunity.views import OpportunityList, OpportunityListAPI
 
 urlpatterns = [
-    path('lists/api', OpportunityListAPI.as_view(), name='OpportunityListAPI'),
+    path('lists', OpportunityList.as_view(), name='OpportunityList'),
+    path('api/lists', OpportunityListAPI.as_view(), name='OpportunityListAPI'),
 ]

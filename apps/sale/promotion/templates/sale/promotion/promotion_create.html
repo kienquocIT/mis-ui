@@ -2,11 +2,9 @@
 {% load i18n static %}
 {% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
-{% endblock %}
-{% block jsHeader %}
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/css/sale/promotion/promotion.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sale/promotion/css/promotion.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-success btn-animated mr-1 font-5" type="button"
@@ -29,15 +27,16 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <!-- Form Create-->
     <form id="promo_create" data-url="" method="post" novalidate>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label" for="form-create-title">{% trans 'Name' %}</label>
                     <input class="form-control" type="text" name="title" id="form-create-title" required>
                 </div>
             </div>
-            <div class="col-md-4 offset-md-2 col-xs-6 offset-xs-0">
+            <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
                 <div class="form-group">
                     <label class="form-label" for="form-create-valid_time">{% trans 'Valid time' %}</label>
                     <input class="form-control" type="text" name="valid_time" id="form-create-valid_time" required>
@@ -51,7 +50,7 @@
                     <input class="form-control" type="text" name="remark" id="form-create-remark"/>
                 </div>
             </div>
-            <div class="col-md-4 offset-md-2 col-xs-6 offset-xs-0">
+            <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
                 <div class="form-group">
                     <label class="form-label" for="form-create-currency">{% trans 'Currency' %}</label>
                     <select class="form-control dropdown-select_two"
@@ -67,16 +66,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label w-100" for="form-create-customer">
                         <span>{% trans 'Customer' %}</span>
-                        <button type="button" class="float-right btn btn-flush-success btn-animated">
+                        <button type="button" class="float-right btn btn-flush-success btn-animated"
+                                data-bs-target="#customer_modal" data-bs-toggle="modal">
                             <i class="bi bi-pencil-square mr-1"></i>
                             {% trans 'Edit' %}
                         </button>
                     </label>
-                    <input type="hidden" name="customer" id="form-create-customer">
+                    <input type="hidden" name="customer_type">
                     <textarea class="form-control" type="text" name="customer_hint"
                               id="form-create-customer"></textarea>
                 </div>
@@ -86,7 +86,7 @@
             <div class="col-md-12">
                 <label class="form-label" for="form-create-valid_time">{% trans 'Select method' %}</label>
             </div>
-            <div class="row row-cols-6 mb-2">
+            <div class="row row-cols-md-6 mb-2">
                 <div class="col">
                     <div class="form-check form-check-lg">
                         <input type="checkbox" class="form-check-input" id="is_discount" checked>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row row-cols-6 mb-2">
+            <div class="row row-cols-md-6 mb-2">
                 <div class="col">
                     <div class="form-check form-check-lg">
                         <input type="radio" id="tax_position_01" name="tax_position" class="form-check-input">
@@ -120,7 +120,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-xs-12 d-flex justify-content-start align-items-center mb-3">
+            <div class="col-md-6 col-xs-12 d-md-flex justify-content-start align-items-center mb-3">
                 <div class="form-check mr-4">
                     <input type="radio" id="percent_01" name="percent" class="form-check-input">
                     <label class="form-check-label" for="percent_01">{% trans '%' %}</label>
@@ -139,7 +139,7 @@
             </div>
             <div class="clearfix"></div>
             <div class="col-md-6 col-xs-12 mb-2">
-                <div class="form-group d-flex align-items-center">
+                <div class="form-group d-md-flex align-items-center">
                     <input class="form-control mr-2" type="number" min="1" name="percent_value" placeholder="1"
                            id="form-create-percent_value">
                     <label class="mr-4" for="form-create-customer_per">{% trans 'use  for each customer per' %}</label>
@@ -191,8 +191,8 @@
                         ></select>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end align-items-center">
-                    <div class="form-label mr-4"><p>{% trans 'When' %}</p></div>
+                <div class="d-md-flex justify-content-end align-items-center">
+                    <div class="form-label mr-4 mb-0">{% trans 'When' %}</div>
                     <div class="form-check form-check-lg mr-4">
                         <input type="checkbox" class="form-check-input" id="discount_special_quantity">
                         <label class="form-check-label" for="discount_special_quantity">
@@ -211,6 +211,91 @@
             </div>
         </div>
     </form>
+    <!--Form create end-->
+    <!-- modal customer --->
+    <div class="modal fade" id="customer_modal" tabindex="-1" role="document" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">{% trans 'Edit customer list' %}</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 col-xs-12">{% trans 'Type' %}</div>
+                        <div class="col-md-8 col-xs-12">
+                            <select class="form-select" name="select_customer_type">
+                                <option value="0">{% trans 'All' %}</option>
+                                <option value="1">{% trans 'Select form list' %}</option>
+                                <option value="2">{% trans 'Edit conditions' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row customer_list hidden">
+                        <div class="col">
+                            <table id="table_customer_list" data-url="{% url 'EmployeeListAPI' %}" class="table w-100">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{% trans 'Customer name' %}</th>
+                                    <th>{% trans 'Code' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="customer_condition hidden">
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-start align-items-center">
+                    <button type="button" class="btn float-left font-2 border-primary text-primary" id="btn-customer">
+                        <i data-feather="save"></i>
+                    </button>
+                    <button type="button" class="btn font-3 ml-auto border-danger text-danger" data-bs-dismiss="modal">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="template">
+        <div class="t-conditions">
+            <div class="row">
+                <div class="col-xs-4 col-md-4">
+                    <select class="form-select" name="select_customer_property">
+                        <option value="" selected disabled hidden>{% trans 'Select property' %}</option>
+                        <option value="0">{% trans 'Group' %}</option>
+                        <option value="1">{% trans 'Industry' %}</option>
+                        <option value="2">{% trans 'Size' %}</option>
+                        <option value="3">{% trans 'Revenue' %}</option>
+                    </select>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <select class="form-select" name="select_customer_operator">
+                        <option value="" selected disabled hidden>{% trans 'operator' %}</option>
+                    </select>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <select class="form-select customer-not-init" name="select_customer_result">
+                        <option value="" selected disabled hidden>{% trans 'Select result' %}</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <div class="dropdown">
+                        <button class="btn border-primary text-primary" type="button">
+                            <span text>{% trans 'Add' %}</span>
+                            <span class="dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton"
+                                  aria-haspopup="true" aria-expanded="false"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">{% trans 'And' %}</a>
+                            <a class="dropdown-item" href="#">{% trans 'Or' %}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <input type="hidden" id="trans-factory">
     <input type="hidden" id="url-factory">
 {% endblock %}
@@ -220,6 +305,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'assets/js/sale/saledata/masterdata/saledata_price.js' %}"></script>
+    <script src="{% static 'assets/sale/promotion/js/promotion.js' %}"></script>
 {% endblock %}
 

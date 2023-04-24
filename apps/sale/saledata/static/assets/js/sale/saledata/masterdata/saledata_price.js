@@ -860,9 +860,10 @@ $(document).ready(function () {
                     term_type_list = []
                     PercentCount = 0;
                     for (let val of data){
-                        if (val['unit_type'].value === '0')
+                        let isValue = val['unit_type'].hasOwnProperty('value') ? val['unit_type'].value : val['unit_type']
+                        if (parseInt(isValue) === 0)
                             PercentCount += parseInt(val['value'])
-                        term_type_list.push(parseInt(val['unit_type'].value));
+                        term_type_list.push(parseInt(isValue));
                     }
                     term_type_list = [...new Set(term_type_list)]
                 }
@@ -969,6 +970,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        $('#modal-add-table form #is_edited').val('true')
                         $('[name="title"]').val(data.title)
                         $('[name="apply_for"]').val(data.apply_for).trigger('change')
                         $('[name="remark"]').val(data.remark)
@@ -1033,7 +1035,7 @@ $(document).ready(function () {
             }
         }
         else{
-            if (term_type_list.indexOf(2) !== -1){
+            if (term_type_list.indexOf(2) !== -1 && $('#is_edited').val() !== 'true'){
                 // có 2
                 validate_unit_type = false
                 $modalForm.find('.invalid-feedback').html(temp_txt_invalid[2])

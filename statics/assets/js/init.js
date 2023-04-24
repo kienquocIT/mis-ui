@@ -1225,7 +1225,7 @@ $.fn.extend({
         return new RegExp(`\\D`, 'g');
     },
     initInputCurrency: function (configData) {
-        this.attr(
+        return this.attr(
             'data-precision', configData.precision
         ).attr(
             'data-decimal', configData.decimal
@@ -1238,7 +1238,7 @@ $.fn.extend({
             precision: configData.precision,
             allowZero: configData.allowZero,
             allowNegative: configData.allowNegative,
-        }).trigger('mask.maskMoney');
+        }).maskMoney('mask', parseFloat(this.val()));
     },
     valCurrency: function () {
         let precision = this.attr('data-precision');
@@ -1258,16 +1258,20 @@ $.fn.extend({
         }
         throw Error("The money must be return type text or number, don't support: " + returnType);
     },
-    parseCurrencyDisplay: function (numFloat_or_numStr) {
-        const configData = JSON.parse($('#urlCompanyConfigData').text());
+    parseCurrencyDisplay: function (configData) {
         let eleInput = $('<input>', {
             "type": 'text',
             "class": "mask-money",
-            "value": numFloat_or_numStr.toString(),
-            "data-return-type": "text",
+            "value": this.attr('data-mask-value'),
         });
-        $.fn.initInputCurrency(eleInput, configData);
-        return eleInput.val();
+        eleInput.initInputCurrency(configData);
+        this.attr(
+            'data-precision', eleInput.attr('precision')
+        ).attr(
+            'data-decimal', eleInput.attr('decimal')
+        ).attr(
+            'data-money-pared', eleInput.val()
+        ).text(eleInput.val());
     },
 
     // HTTP response, redirect, Ajax

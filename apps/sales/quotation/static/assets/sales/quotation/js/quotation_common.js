@@ -10,10 +10,17 @@ function loadBoxQuotationOpportunity(opp_id) {
                 if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                     ele.append(`<option value=""></option>`);
                     data.opportunity_list.map(function (item) {
-                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                        let dataStr = JSON.stringify({
+                            'id': item.id,
+                            'title': item.title,
+                            'code': item.code,
+                            'customer': item.customer.title
+                        }).replace(/"/g, "&quot;");
+                        let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
                         let data_show = `${item.title}` + `-` + `${item.code}`;
                         ele.append(`<option value="${item.id}">
                                         <span class="opp-title">${data_show}</span>
+                                        <input type="hidden" class="data-default" value="${opportunity_data}">
                                         <input type="hidden" class="data-info" value="${dataStr}">
                                     </option>`)
                     })
@@ -202,7 +209,7 @@ function loadBoxQuotationProduct(product_id, box_id) {
                 'id': data[i].id,
                 'title': data[i].title,
                 'code': data[i].code,
-                'unit_of_measure': data[i].sale_information.default_uom.title,
+                'unit of measure': data[i].sale_information.default_uom.title,
             }).replace(/"/g, "&quot;");
             let product_data = JSON.stringify({
                 'id': data[i].id,
@@ -376,9 +383,18 @@ function dataTableProduct(data, table_id) {
                 targets: 6,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input type="text" class="form-control w-80 table-row-discount">
-                                <span class="w-20 mt-2">%</span>
-                                <input type="hidden" class="table-row-discount-amount">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-discount">
+                                        <span class="input-suffix">%</span>
+                                    </span>
+                                </div>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-discount-amount"
+                                    data-return-type="number"
+                                    hidden
+                                >
                             </div>`;
                 }
             },
@@ -389,7 +405,12 @@ function dataTableProduct(data, table_id) {
                                 <select class="form-select table-row-tax" id="${row.selectTaxID}">
                                     <option value=""></option>
                                 </select>
-                                <input type="hidden" class="table-row-tax-amount">
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    data-return-type="number"
+                                    hidden
+                                >
                             </div>`;
                 }
             },
@@ -402,7 +423,7 @@ function dataTableProduct(data, table_id) {
                                     class="form-control mask-money table-row-subtotal" 
                                     value="0"
                                     data-return-type="number"
-                                    disabled
+                                    readonly
                                 >
                             </div>`;
                 }
@@ -449,7 +470,7 @@ function dataTableCost(data, table_id) {
                 targets: 1,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-item" disabled>
+                                <select class="form-select table-row-item" readonly>
                                     <option value="${row.valueProduct}" selected>${row.showProduct}</option>
                                 </select>
                             </div>`;
@@ -460,7 +481,7 @@ function dataTableCost(data, table_id) {
                 width: "1%",
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-uom" disabled>
+                                <select class="form-select table-row-uom" readonly>
                                     <option value="${row.valueUOM}" selected>${row.showUOM}</option>
                                 </select>
                             </div>`;
@@ -470,7 +491,7 @@ function dataTableCost(data, table_id) {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-quantity" value="${row.valueQuantity}" disabled></div>`;
+                    return `<div class="row"><input type="text" class="form-control table-row-quantity" value="${row.valueQuantity}" readonly></div>`;
                 }
             },
             {
@@ -487,7 +508,13 @@ function dataTableCost(data, table_id) {
                 render: (data, type, row) => {
                     return `<div class="row">
                                 <select class="form-select table-row-tax">${row.optionTax}</select>
-                                <input type="hidden" class="table-row-tax-amount" value="${row.valueTaxAmount}">
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    data-return-type="number"
+                                    value="${row.valueTaxAmount}"
+                                    hidden
+                                >
                             </div>`;
                 }
             },
@@ -495,8 +522,13 @@ function dataTableCost(data, table_id) {
                 targets: 6,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input type="text" class="form-control w-80 table-row-subtotal" value="${row.valueSubtotal}" disabled>
-                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-subtotal" 
+                                    value="${row.valueSubtotal}"
+                                    data-return-type="number"
+                                    readonly
+                                >
                             </div>`;
                 }
             },
@@ -572,8 +604,12 @@ function dataTableExpense(data, table_id) {
                 targets: 4,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input type="text" class="form-control w-80 table-row-price" required>
-                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    data-return-type="number"
+                                    required
+                                >
                             </div>`;
                 }
             },
@@ -584,7 +620,12 @@ function dataTableExpense(data, table_id) {
                                 <select class="form-select table-row-tax" id="${row.selectTaxID}">
                                     <option value=""></option>
                                 </select>
-                                <input type="hidden" class="table-row-tax-amount">
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    data-return-type="number"
+                                    hidden
+                                >
                             </div>`;
                 }
             },
@@ -592,8 +633,13 @@ function dataTableExpense(data, table_id) {
                 targets: 6,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input type="text" class="form-control w-80 table-row-subtotal" disabled>
-                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-subtotal" 
+                                    value="0"
+                                    data-return-type="number"
+                                    readonly
+                                >
                             </div>`;
                 }
             },
@@ -609,24 +655,19 @@ function dataTableExpense(data, table_id) {
     });
 }
 
-function parseStrToFloat(value) {
-    return parseFloat(value.replace(',', '.'));
-}
-
-function parseFloatStrToStr(value) {
-    let floatValue = parseStrToFloat(String(value));
-    return floatValue.toLocaleString('de-DE');
-}
-
 function updateDiscountTotal(discount, pretax_id, taxes_id, total_id, discount_id) {
     let elePretaxAmount = document.getElementById(pretax_id);
     let eleTaxes = document.getElementById(taxes_id);
     let eleDiscount = document.getElementById(discount_id);
     let eleTotal = document.getElementById(total_id);
-    let discountAmount = ((parseStrToFloat(elePretaxAmount.innerHTML) * Number(discount)) / 100);
-    eleDiscount.innerHTML = parseFloatStrToStr(discountAmount);
-    let total = parseStrToFloat(elePretaxAmount.innerHTML) - discountAmount + parseStrToFloat(eleTaxes.innerHTML);
-    eleTotal.innerHTML = parseFloatStrToStr(total);
+    let pretaxVal = $(elePretaxAmount).valCurrency();
+    let taxVal = $(eleTaxes).valCurrency();
+    let discountAmount = ((pretaxVal * Number(discount)) / 100);
+    eleDiscount.value = discountAmount;
+    $(eleDiscount).maskMoney('mask', discountAmount);
+    let total = pretaxVal - discountAmount + taxVal;
+    eleTotal.value = total;
+    $(eleTotal).maskMoney('mask', total);
 }
 
 function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = null) {
@@ -642,13 +683,13 @@ function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = 
         let subtotal = row.querySelector('.table-row-subtotal');
         if (subtotal) {
             if (subtotal.value) {
-                pretaxAmount += subtotal.value;
+                pretaxAmount += $(subtotal).valCurrency();
             }
         }
         let subTaxAmount = row.querySelector('.table-row-tax-amount');
         if (subTaxAmount) {
             if (subTaxAmount.value) {
-                taxAmount += subTaxAmount.value;
+                taxAmount += $(subTaxAmount).valCurrency();
             }
         }
     }
@@ -657,13 +698,17 @@ function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = 
         let discount = document.getElementById('quotation-create-product-discount');
         if (discount.value) {
             let discountAmount = ((pretaxAmount * Number(discount.value)) / 100);
-            eleDiscount.innerHTML = discountAmount;
+            eleDiscount.value = discountAmount;
             total = (pretaxAmount - discountAmount + taxAmount);
+            $(eleDiscount).maskMoney('mask', discountAmount);
         }
     }
-    elePretaxAmount.innerHTML = pretaxAmount;
-    eleTaxes.innerHTML = taxAmount;
-    eleTotal.innerHTML = total;
+    elePretaxAmount.value = pretaxAmount;
+    $(elePretaxAmount).maskMoney('mask', pretaxAmount);
+    eleTaxes.value = taxAmount;
+    $(eleTaxes).maskMoney('mask', taxAmount);
+    eleTotal.value = total;
+    $(eleTotal).maskMoney('mask', total);
 }
 
 function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, discount_id = null) {
@@ -683,15 +728,17 @@ function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, 
     updateTotal(table[0], pretax_id, taxes_id, total_id, discount_id);
 }
 
-function updateRowTaxAmount(row, subtotal) {
+function updateRowTaxAmount(row, eleTotal) {
     let eleTax = row.querySelector('.table-row-tax');
     if (eleTax) {
         let optionSelected = eleTax.options[eleTax.selectedIndex];
         if (optionSelected) {
-            let taxAmount = ((subtotal * Number(optionSelected.getAttribute('data-value'))) / 100);
+            let subTotalVal = $(eleTotal).valCurrency();
+            let taxAmount = ((subTotalVal * Number(optionSelected.getAttribute('data-value'))) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
                 eleTaxAmount.value = taxAmount;
+                $(eleTaxAmount).maskMoney('mask', taxAmount)
             }
         }
     }
@@ -702,23 +749,24 @@ function changeQuantity(quantity, row, table, pretax_id, taxes_id, total_id, dis
     let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
     if (eleDiscountAmount) {
         if (eleDiscountAmount.value) {
-            discountValue = eleDiscountAmount.value;
+            discountValue = $(eleDiscountAmount).valCurrency();
         }
     }
     let price = row.querySelector('.table-row-price');
     let subtotal = "";
     if (price) {
         if (price.value && quantity) {
+            let priceVal = $(price).valCurrency();
             if (discountValue) {
-                subtotal = ((parseStrToFloat(price.value) - parseStrToFloat(discountValue)) * parseInt(quantity));
+                subtotal = ((priceVal - discountValue) * parseInt(quantity));
             } else {
-                subtotal = parseInt(quantity) * parseStrToFloat(price.value);
+                subtotal = parseInt(quantity) * priceVal;
             }
             let eleTotal = row.querySelector('.table-row-subtotal')
             if (eleTotal && subtotal) {
-                subtotal = parseFloatStrToStr(subtotal);
                 eleTotal.value = subtotal;
-                updateRowTaxAmount(row, subtotal);
+                $(eleTotal).maskMoney('mask', subtotal)
+                updateRowTaxAmount(row, eleTotal);
             }
         }
     }
@@ -730,7 +778,7 @@ function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_
     let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
     if (eleDiscountAmount) {
         if (eleDiscountAmount.value) {
-            discountValue = eleDiscountAmount.value;
+            discountValue = $(eleDiscountAmount).valCurrency();
         }
     }
     let quantity = row.querySelector('.table-row-quantity');
@@ -738,14 +786,13 @@ function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_
     if (quantity) {
         if (quantity.value && price) {
             if (discountValue) {
-                subtotal = ((price - parseStrToFloat(discountValue)) * parseInt(quantity.value));
+                subtotal = ((price - discountValue) * parseInt(quantity.value));
             } else {
                 subtotal = (price * parseInt(quantity.value));
             }
             let eleTotal = row.querySelector('.table-row-subtotal')
             if (eleTotal && subtotal) {
                 eleTotal.value = subtotal;
-                // eleTotal.attr('value', subtotal);
                 $(eleTotal).maskMoney('mask', subtotal)
                 updateRowTaxAmount(row, subtotal)
             }
@@ -757,12 +804,13 @@ function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_
 function changeTax(tax, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
     let subtotal = row.querySelector('.table-row-subtotal');
     if (subtotal) {
-        let subtotalVal = subtotal.value;
+        let subtotalVal = $(subtotal).valCurrency();
         if (subtotalVal && tax) {
-            let taxAmount = ((parseStrToFloat(subtotalVal) * Number(tax)) / 100);
+            let taxAmount = ((subtotalVal * Number(tax)) / 100);
             let eleTaxAmount = row.querySelector('.table-row-tax-amount');
             if (eleTaxAmount) {
-                eleTaxAmount.value = parseFloatStrToStr(taxAmount);
+                eleTaxAmount.value = taxAmount;
+                $(eleTaxAmount).maskMoney('mask', taxAmount)
             }
         }
     }
@@ -776,14 +824,17 @@ function changeDiscount(discount, row, table, pretax_id, taxes_id, total_id, dis
     let eleSubtotal = row.querySelector('.table-row-subtotal');
     if (discount && eleDiscount && elePrice) {
         if (elePrice.value) {
-            let discountAmount = ((parseStrToFloat(elePrice.value) * Number(discount)) / 100);
-            eleDiscount.value = parseFloatStrToStr(discountAmount);
+            let priceVal = $(elePrice).valCurrency();
+            let discountAmount = ((priceVal * Number(discount)) / 100);
+            eleDiscount.value = discountAmount;
             if (eleQuantity && discountAmount && eleSubtotal) {
                 if (eleQuantity.value) {
-                    let subtotal = ((parseStrToFloat(elePrice.value) - discountAmount) * parseInt(eleQuantity.value));
-                    eleSubtotal.value = parseFloatStrToStr(subtotal);
+                    let subtotal = ((priceVal - discountAmount) * parseInt(eleQuantity.value));
+                    eleSubtotal.value = subtotal;
+                    $(eleSubtotal).maskMoney('mask', subtotal);
                 }
             }
+            $(eleDiscount).maskMoney('mask', discountAmount);
         }
     }
     updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
@@ -832,15 +883,11 @@ function loadInformationSelectBox(ele) {
     }
 }
 
-function init_mask_money() {
+function init_mask_money_single(ele) {
     $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
         if (currencyConfig) {
-            $('input[type=text].mask-money').each((idx, item) => {
-                $(item).initInputCurrency(currencyConfig);
-            });
-            $('.mask-money-value').each((idx, item) => {
-                $(item).parseCurrencyDisplay(currencyConfig);
-            });
+            ele.find('.mask-money').initInputCurrency(currencyConfig);
+            ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
         } else throw  Error('Currency config is not found.')
     });
 }

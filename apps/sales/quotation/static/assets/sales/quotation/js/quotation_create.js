@@ -45,7 +45,7 @@ $(function () {
 
 // Action on change dropdown opportunity
         boxOpportunity.on('change', function (e) {
-            let eleData = $(this)[0].options[$(this)[0].selectedIndex].querySelector('.data-info');
+            let eleData = $(this)[0].options[$(this)[0].selectedIndex].querySelector('.data-default');
             if (eleData) {
                 loadInformationSelectBox($(this));
                 let data = JSON.parse(eleData.value);
@@ -137,13 +137,15 @@ $(function () {
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
             let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
-            tableProduct.DataTable().row.add({
+            let addRow = tableProduct.DataTable().row.add({
                 'order': order,
                 'selectProductID': selectProductID,
                 'selectUOMID': selectUOMID,
                 'selectTaxID': selectTaxID
             }).draw();
-            init_mask_money();
+            let newRow = tableProduct.DataTable().row(addRow).node();
+            let $newRow = $(newRow);
+            init_mask_money_single($newRow);
             loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -169,8 +171,10 @@ $(function () {
                     uom.value = data.unit_of_measure.id;
                 }
                 if (price) {
-                    // price.value = data.unit_price.toLocaleString();
-                    // changePrice(data.unit_price.toLocaleString(), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
+                    price.value = data.unit_price;
+                    $(price).maskMoney('mask', parseFloat(data.unit_price));
+                    let priceVal = $(price).valCurrency();
+                    changePrice(priceVal, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
                 }
                 if (tax) {
                     tax.value = data.tax.id;
@@ -221,11 +225,14 @@ $(function () {
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
-            tableExpense.DataTable().row.add({
+            let addRow = tableExpense.DataTable().row.add({
                 'selectUOMID': selectUOMID,
                 'selectTaxID': selectTaxID,
                 'order': order
             }).draw();
+            let newRow = tableExpense.DataTable().row(addRow).node();
+            let $newRow = $(newRow);
+            init_mask_money_single($newRow);
             loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
@@ -320,7 +327,7 @@ $(function () {
                             valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100)
                         }
                     }
-                    tableCost.DataTable().row.add({
+                    let addRow = tableCost.DataTable().row.add({
                         'valueProduct': valueProduct,
                         'showProduct': showProduct,
                         'valueUOM': valueUOM,
@@ -332,6 +339,9 @@ $(function () {
                         'valueSubtotal': valueSubtotal,
                         'valueOrder': valueOrder
                     }).draw();
+                    let newRow = tableCost.DataTable().row(addRow).node();
+                    let $newRow = $(newRow);
+                    init_mask_money_single($newRow);
                 }
                 // update total
                 updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');

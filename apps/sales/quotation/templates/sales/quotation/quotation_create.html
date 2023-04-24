@@ -298,40 +298,68 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-8"></div>
-                                    <div class="col-4">
+                                    <div class="col-7"></div>
+                                    <div class="col-5">
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-product-pretax-amount">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-product-pretax-amount"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Discount' %}</p></div>
-                                            <div class="col-4">
+                                            <div class="col-3"><p>{% trans 'Discount' %}</p></div>
+                                            <div class="col-3">
                                                 <div class="row">
-                                                    <input type="text" class="form-control form-control-sm w-80" id="quotation-create-product-discount">
-                                                    <span class="w-20 mt-1">%</span>
+                                                    <div class="input-group">
+                                                        <span class="input-affix-wrapper">
+                                                            <input type="text" class="form-control" id="quotation-create-product-discount">
+                                                            <span class="input-suffix">%</span>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-product-discount-amount">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-product-discount-amount"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-product-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-product-taxes"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
-                                            <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-product-total">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><b>{% trans 'Total' %}</b></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-product-total"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -545,28 +573,46 @@
                                 </div>
                                 <br>
                                 <div class="row">
-                                    <div class="col-8"></div>
-                                    <div class="col-4">
+                                    <div class="col-7"></div>
+                                    <div class="col-5">
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-cost-pretax-amount">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-cost-pretax-amount"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-cost-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-cost-taxes"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
-                                            <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-cost-total">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><b>{% trans 'Total' %}</b></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-cost-total"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -603,28 +649,46 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-8"></div>
-                                    <div class="col-4">
+                                    <div class="col-7"></div>
+                                    <div class="col-5">
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-expense-pretax-amount">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-expense-pretax-amount"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-expense-taxes">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-expense-taxes"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
-                                            <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                            <div class="col-4"></div>
-                                            <div class="col-4">
-                                                <span id="quotation-create-expense-total">0</span><span class="ml-1 quotation-currency">VND</span>
+                                            <div class="col-3"><b>{% trans 'Total' %}</b></div>
+                                            <div class="col-3"></div>
+                                            <div class="col-6">
+                                                <input
+                                                    id="quotation-create-expense-total"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                                >
                                             </div>
                                         </div>
                                     </div>

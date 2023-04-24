@@ -7,13 +7,218 @@
 
 {% block pageContent %}
     {% include 'plugins/condition/condition_component.html' %}
+
+    <div class="row mb-3">
+        <h1>Diagram</h1>
+        <div
+                id="runtime-data" data-url="{% url 'FlowRuntimeDetailAPI' %}"
+                data-url-task="{% url 'TaskBackgroundState' pk=1 %}"
+        ></div>
+        <p id="doc-data"></p>
+        <p id="doc-app"></p>
+        <p id="doc-state-current"></p>
+        <p id="doc-flow"></p>
+        <table
+                id="tbl-load-data-nek"
+                class="table nowrap w-100 mb-5"
+                data-url="{% url "FlowDiagramListAPI" %}"
+                data-method="GET"
+                data-url-detail="{% url "TaskBackgroundState" pk=1 %}"
+                data-url-history-stage="{% url 'FlowRuntimeHistoryStageAPI' pk=1 %}"
+        >
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Overview' %}</th>
+                <th>{% trans 'Connection' %}</th>
+                <th>{% trans 'Assignee & Zone' %}</th>
+                <th>{% trans 'Log' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
     <!-- Customize JS -->
 
     <!--CONDITIONS--- required js file for component conditions -->
-<script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
-<script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <!--END CONDITIONS -->
+
+    <script>
+        $('html').on('click', '.btn-showHideLog', function () {
+            let nextEle = $(this).parents().children('.log-block');
+            if (nextEle.hasClass('hidden')) {
+                if ($(nextEle).children().length === 0){
+                    let dtb = $('#tbl-load-data-nek');
+                    let frm = new SetupFormSubmit(dtb);
+                    let rowData = dtb.DataTable().row($(this).closest('tr')).data();
+                    $.fn.callAjax(
+                        frm.getUrlDetailWithDataUrl('history-stage', rowData.id),
+                        'GET',
+                    ).then((resp)=>{
+                        let data = $.fn.switcherResp(resp);
+                        data['histories']['histories'].map((item)=>{
+                              nextEle.append(
+                                    `<li>` + item['assignee']['full_name'] + " : " + item['msg'] + `</li>`
+                              )
+                        })
+                    })
+                }
+
+                $(this).empty().append(`<i class="fas fa-angle-double-up"></i>`);
+                nextEle.removeClass('hidden');
+            } else {
+                $(this).empty().append(`<i class="fas fa-angle-double-down"></i>`);
+                nextEle.addClass('hidden');
+            }
+        })
+
+        $(document).ready(function () {
+            $.fn.getRuntimeState = function (stateNum) {
+                let stateAll = {
+                    0: 'Created',
+                    1: 'In Progress',
+                    2: 'Finish',
+                    3: 'Finish with flow non-apply'
+                }
+                return stateAll[stateNum];
+            }
+            $.fn.getRuntimeStatus = function (statusNum) {
+                let statusAll = {
+                    0: 'Waiting',
+                    1: 'Success',
+                    2: 'Fail',
+                    3: 'Pending',
+                }
+                return statusAll[statusNum];
+            }
+
+            function loadStageLog() {
+                let dtb = $('#tbl-load-data-nek');
+                let frm = new SetupFormSubmit(dtb);
+                dtb.DataTableDefault({
+                    ajax: {
+                        url: frm.dataUrl, type: frm.dataMethod, dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('stages')) {
+                                return resp.data['stages'] ? resp.data['stages'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: [
+                        {
+                            width: "5%",
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        },
+                        {
+                            width: "10%",
+                            render: (data, type, row, meta) => {
+                                let htmlCell = `<span class="badge badge-soft-warning mr-1">{0}</span>`.format_by_idx(
+                                    Date.parse(row['date_created'])
+                                )
+                                if (row.code && row.title) htmlCell += row.title + ' <span class="badge badge-primary">' + row.code + '</span>';
+                                else if (row.code) htmlCell += row.code;
+                                else if (row.title) htmlCell += row.title;
+                                else htmlCell += 'Nothing';
+                                return htmlCell;
+                            }
+                        },
+                        {
+                            width: "25%",
+                            render: (data, type, row, meta) => {
+                                let node_in = row['association_passed_data']['node_in'];
+                                let node_out = row['association_passed_data']['node_out'];
+                                if (node_in && node_out) {
+                                    return `<span class="badge badge-soft-primary">{0}</span><i class="fas fa-long-arrow-alt-right ml-2 mr-2"></i><span class="badge badge-soft-success">{1}</span>`.format_by_idx(
+                                        (node_in ? node_in['title'] : ''),
+                                        (node_out ? node_out['title'] : '')
+                                    )
+                                }
+                                return '';
+                            }
+                        },
+                        {
+                            width: "25%",
+                            render: (data, type, row, meta) => {
+                                let htmlCell = '';
+                                if (row.assignee_and_zone && row.assignee_and_zone.length > 0) {
+                                    row.assignee_and_zone.map((item) => {
+                                        htmlCell += `<span class="badge badge-soft-danger">{0}</span><i class="fas fa-caret-right ml-3 mr-3"></i><span class="badge badge-soft-warning">{1}</span>`.format_by_idx(
+                                            item['full_name'],
+                                            item['zone_and_properties'].length > 0 ? "ABC, DEF" : `<i class="fas fa-times"></i>`,
+                                        );
+                                    })
+                                }
+                                return htmlCell;
+                            }
+                        },
+                        {
+                            width: "35%",
+                            render: (data, type, row, meta) => {
+                                if (row.log_count > 0){
+                                    let htmlCell = `<span class="badge badge-soft-blue btn-showHideLog" style="cursor: pointer"><i class="fas fa-angle-double-down"></i></span>`;
+                                    return `<div class="wrap-text">` + htmlCell + `<ul class="log-block hidden"></ul>` + `</div>`;
+                                }
+                                return `<span class="badge badge-soft-danger"><i class="fas fa-times"></i></span>`;
+                            }
+                        }
+                    ]
+                });
+            }
+
+            async function callGetRuntime() {
+                return await $.fn.callAjax(
+                    $('#runtime-data').attr('data-url'),
+                    'GET'
+                ).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    $('#doc-data').html(
+                        `<p>` + data['doc_title'] + ' : ' + data['doc_id'] + `</p>` +
+                        `<p>STATUS: ` + $.fn.getRuntimeStatus(data['runtime_status']) + `</p>` +
+                        `<p>STATE: ` + $.fn.getRuntimeState(data['state']) + `</p>`
+                    );
+                    if (data['flow'] !== undefined && Object.keys(data['flow']).length !== 0) {
+                        $('#doc-flow').html(`<p>Flow: ` + data['flow']['id'] + ' - ' + data['flow']['title'] + `</p>`);
+                    }
+                    switch (data['task_bg_state']) {
+                        case "SUCCESS":
+                            loadStageLog();
+                            return true;
+                        default:
+                            break
+                    }
+                    return false;
+                });
+            }
+
+            $.fn.showLoading();
+            callGetRuntime().then((rs) => {
+                if (rs === true) {
+                    $.fn.hideLoading();
+                } else {
+                    let intervalCall = setInterval(
+                        async function () {
+                            return await callGetRuntime().then((rs) => {
+                                if (rs === true) {
+                                    $.fn.hideLoading();
+                                    clearInterval(intervalCall);
+                                }
+                                return true;
+                            });
+                        },
+                        5000
+                    )
+                }
+                return true;
+            });
+        })
+    </script>
 {% endblock %}

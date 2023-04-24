@@ -39,6 +39,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
 
+    # state of task background
+    TASK_BG = StringUrl('task-bg/{pk}')
+
+    XXX = StringUrl('company/overview/{id}/{option}')
+
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
 
@@ -50,6 +55,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
+    EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
 
     # organization/group
@@ -85,6 +91,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
+
+    # WORKFLOW RUNTIME
+    RUNTIME_DETAIL = StringUrl('workflow/runtime')
+    RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
+    RUNTIME_HISTORY_STAGE = StringUrl('workflow/history/stage/{pk}')
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')

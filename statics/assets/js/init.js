@@ -1192,6 +1192,8 @@ jQuery.fn.switcherResp = function (resp) {
 // support for Form Submit
 class SetupFormSubmit {
     constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
+        this.formSelected = formSelected;
+
         // URL call API
         this.dataUrl = formSelected.attr('data-url');
         if (!this.dataUrl) this.dataUrl = urlDefault ? urlDefault : window.location.pathname;
@@ -1242,12 +1244,21 @@ class SetupFormSubmit {
         return null;
     }
 
+    getUrlDetailWithDataUrl(attrName, pk){
+        let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
+        return data_url + pk.toString()
+    }
+
     static getUrlDetailWithID(url, pk) {
         url = url.split("/").slice(0, -1).join("/") + "/";
         if (url && pk) {
             return url + pk.toString();
         }
         return null;
+    }
+
+    convertUrlDetail(url){
+        return url.split("/").slice(0, -1).join("/") + "/";
     }
 
     appendFilter(url, filter) {

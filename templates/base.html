@@ -216,10 +216,12 @@
                     if (currencyConfig) {
                         $('input[type=text].mask-money').each((idx, item) => {
                             $(item).initInputCurrency(currencyConfig);
-                        })
+                        });
+                        $('.mask-money-value').each((idx, item)=>{
+                            $(item).parseCurrencyDisplay(currencyConfig);
+                        });
                     } else throw  Error('Currency config is not found.')
                 });
-
             }
 
             <!-- ## function utils -->

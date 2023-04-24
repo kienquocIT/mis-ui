@@ -7,14 +7,31 @@
 
 {% block pageContent %}
     {% include 'plugins/condition/condition_component.html' %}
-    <div class="row">
-        <label class="form-label" for="input-test-mask">Test Make Money: </label>
+    <div class="row mb-5">
+        <h6>Value of currency round to the nearest value.</h6>
+        <span>Example 1: <b>123.99 round to 124</b> if config have <b>decimal is zero</b>.</span>
+        <span>Example 2: <b>123.99 round to 123.99</b> if config have <b>decimal is two</b>.</span>
+    </div>
+    <div class="row mb-5">
+        <h6>Recommendation: </h6>
+        <span class="badge badge-warning" style="text-align: left">
+            Don't change decimal config and input currency decimal the same with config for display value is correct.
+        </span>
+    </div>
+    <div class="row mb-5">
+        <h6>Test Mask Money with input[type=text].mask-money: </h6>
+        <label class="form-label" for="input-test-mask"></label>
         <input
                 type="text" id="input-test-mask"
                 class="form-control mask-money"
                 value="123.99"
                 data-return-type="number"
         />
+    </div>
+    <div class="row mb-5">
+        <h6>Test Mask Money with p.mask-money-value</h6>
+        <label for=""></label>
+        <p class="mask-money-value" data-mask-value="77.89"></p>
     </div>
 {% endblock %}
 

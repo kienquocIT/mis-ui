@@ -63,7 +63,7 @@ $(document).ready(function () {
                     'data': 'manager', 'render': (data, type, row, meta) => {
                         let element = ''
                         for (let i = 0; i < row.manager.length; i++) {
-                            element += `<span class="badge badge-soft-secondary badge-outline mt-1 ml-1">` + row.manager[i] + `</span>`;
+                            element += `<span class="badge badge-soft-secondary badge-outline mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
                         }
                         return `<div class="row">` + element + `</div>`
                     }

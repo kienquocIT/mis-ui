@@ -11,12 +11,6 @@ $(document).ready(function () {
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
                 $('#account-website-id').val(data.website);
-                if (data.owner !== {}) {
-                    $('#account-owner-id').val(data.owner.fullname);
-                    $('#owner-job-title-id').val(data.owner.job_title);
-                    $('#owner-email-id').val(data.owner.email);
-                    $('#owner-mobile-id').val(data.owner.mobile);
-                }
                 $('#phone-number-id').val(data.phone);
                 $('#account-email-id').val(data.email);
                 $('#account-tax-code-id').val(data.tax_code);
@@ -24,15 +18,15 @@ $(document).ready(function () {
                 let list_shipping_address = ``;
                 for (let i = 0; i < data.shipping_address.length; i++) {
                     if (i === 0) {
-                        list_shipping_address += `<div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="shippingaddressRadio" id="shippingaddressRadio0" checked>
-                                <label class="form-check-label" for="shippingaddressRadio0">`+ data.shipping_address[i] +`</label>
+                        list_shipping_address += `<div class="form-check ml-5 mb-2">
+                                <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
+                                <label>`+ data.shipping_address[i] +`</label>
                            </div>`;
                     }
                     else {
-                        list_shipping_address += `<div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="shippingaddressRadio" id="shippingaddressRadio0">
-                                <label class="form-check-label" for="shippingaddressRadio0">`+ data.shipping_address[i] +`</label>
+                        list_shipping_address += `<div class="form-check ml-5 mb-2">
+                                <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
+                                <label>`+ data.shipping_address[i] +`</label>
                            </div>`;
                     }
                 }
@@ -42,15 +36,15 @@ $(document).ready(function () {
                 for (let i = 0; i < data.billing_address.length; i++) {
                     let billing_address = data.billing_address[i];
                     if (i === 0) {
-                        list_billing_address += `<div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="billingaddressRadio" id="billingaddressRadio0" checked>
-                                <label class="form-check-label" for="billingaddressRadio0">`+ billing_address + `</label>
+                        list_billing_address += `<div class="form-check ml-5 mb-2">
+                                <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
+                                <label>`+ billing_address + `</label>
                            </div>`;
                     }
                     else {
-                        list_billing_address += `<div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="billingaddressRadio" id="billingaddressRadio0">
-                                <label class="form-check-label" for="billingaddressRadio0">`+ billing_address + `</label>
+                        list_billing_address += `<div class="form-check ml-5 mb-2">
+                                <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
+                                <label>`+ billing_address + `</label>
                            </div>`;
                     }
                 }
@@ -93,10 +87,62 @@ $(document).ready(function () {
                 }
 
                 load_contact_mapped(data.contact_mapped);
+
                 loadAccountType(data.account_type.map(obj => obj.id));
-                if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
-                    $('#parent-account-id').attr('disabled', false);
+                let account_type_view_html = '';
+                let account_type_title_list = data.account_type.map(obj => obj.title);
+                for (let i = 0; i < account_type_title_list.length; i++) {
+                    account_type_view_html += `<span class="badge badge-soft-primary badge-outline mr-1">` + account_type_title_list[i] + `</span>`
                 }
+                $('#account-type-view').html(account_type_view_html)
+
+                if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
+                    $('#inp-organization').attr('checked', true);
+                }
+                else {
+                    if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
+                        $('#inp-individual').prop('checked', true);
+                        $("#account-tax-code-label-id").addClass("required");
+                    }
+                    else {
+                        $('#account-type-customer-type-div-id').prop('hidden', true);
+                    }
+
+                    $('#parent-account-div-id').prop('hidden', true);
+                }
+
+                $('#edit-account-on').on('click', function () {
+                    $('.form-select').prop('disabled', false);
+                    $('.input-can-edit').prop('readonly', false);
+                    $('.form-check-input').prop('disabled', false);
+                    if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
+                        $('#parent-account-id').attr('disabled', false);
+                    }
+                    $('.view-mode-for-select').hide();
+                    $('#edit-account-on').prop('hidden', true);
+                    $('#save-account-on').prop('hidden', false);
+                    $('#shipping-address-btn').prop('hidden', false);
+                    $('#billing-address-btn').prop('hidden', false);
+
+                    $('#account-industry-id').select2();
+                    $('#parent-account-id').select2();
+                    $('#account-owner-id').select2();
+                    $('#account-revenue-id').select2();
+                    $('#total-employees-id').select2();
+                    $('#shipping-city').select2();
+                    $('#shipping-district').select2();
+                    $('#shipping-ward').select2();
+                    $('#select-box-account-name').select2();
+                    $('#select-box-address').select2();
+                    $('.select2').show();
+                })
+
+                $('#save-account-on').on('click', function () {
+                    $.fn.notifyPopup({description: "Updating Account"}, 'success')
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1000);
+                })
 
                 loadIndustry(data.industry);
 
@@ -104,6 +150,19 @@ $(document).ready(function () {
                 $('#total-employees-id').find(`option[value="` + data.total_employees + `"]`).prop('selected', true);
 
                 loadParentAccount(data.parent_account);
+
+                loadAccountManager(data.manager.map(obj => obj.id))
+                let account_manager_view_html = '';
+                let account_manager_title_list = data.manager.map(obj => obj.fullname);
+                for (let i = 0; i < account_manager_title_list.length; i++) {
+                    account_manager_view_html += `<span class="badge badge-soft-primary badge-outline mr-1">` + account_manager_title_list[i] + `</span>`
+                }
+                $('#account-manager-view').html(account_manager_view_html)
+
+                let current_owner = data.owner
+                loadAccountOwner(current_owner)
+
+                $('.select2').hide();
             }
         })
 
@@ -131,6 +190,7 @@ $(document).ready(function () {
         )
     }
     $('#account-type-id').select2();
+
     // condition to choosing ParentAccount
     $('#account-type-id').on('change', function () {
         let selected_acc_type = $('#account-type-id option:selected').filter(function () {
@@ -138,11 +198,14 @@ $(document).ready(function () {
         })
 
         if (selected_acc_type.length > 0) {
-            $('#parent-account-id').attr('disabled', false);
+            $('#parent-account-div-id').attr('hidden', false);
+            $('#account-type-customer-type-div-id').attr('hidden', false);
+            $("#account-tax-code-label-id").addClass("required");
         } else {
-            $('#parent-account-id').attr('disabled', true);
+            $('#parent-account-div-id').attr('hidden', true);
+            $('#account-type-customer-type-div-id').attr('hidden', true);
+            $("#account-tax-code-label-id").removeClass("required");
         }
-
     });
 
     // load Industry SelectBox
@@ -168,7 +231,6 @@ $(document).ready(function () {
             }
         )
     }
-    $('#account-industry-id').select2();
 
     // load Parent Account SelectBox
     function loadParentAccount(parent_account_mapped) {
@@ -194,5 +256,138 @@ $(document).ready(function () {
             }
         )
     }
-    $('#parent-account-id').select2();
+
+    // load Account Manager SelectBox
+    function loadAccountManager(account_managers_mapped) {
+        let ele = $('#account-manager-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        data.employee_list.map(function (item) {
+                            if (account_managers_mapped.includes(item.id)) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.full_name + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+    $('#account-manager-id').select2();
+
+    // load Account Owner SelectBox
+    function loadAccountOwner(current_account_owner) {
+        $('#owner-job-title-id').val(current_account_owner.job_title);
+        $('#owner-email-id').val(current_account_owner.email);
+        $('#owner-mobile-id').val(current_account_owner.mobile);
+
+        let ele = $('#account-owner-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
+                        data.contact_list_not_map_account.push(current_account_owner);
+                        console.log(data);
+                        ele.append(`<option selected></option>`)
+                        data.contact_list_not_map_account.map(function (item) {
+                            if (item.id === current_account_owner.id) {
+                                ele.append(`<option data-mobile="`+ item.mobile +`" data-email="`+ item.email +`" data-job-title="`+ item.job_title +`" value="` + item.id + `" selected>` + item.fullname + `</option>`)
+                            } else {
+                                ele.append(`<option data-mobile="`+ item.mobile +`" data-email="`+ item.email +`" data-job-title="`+ item.job_title +`" value="` + item.id + `">` + item.fullname + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load data for Shipping address modal
+    $('#edit-shipping-address').on('click', function () {
+        if ($('#list-shipping-address input').length === 0)
+            $('#make-default-shipping-address').prop('checked', true);
+    })
+    // load data for Billing address modal
+    $('#edit-billing-address').on('click', function () {
+        let ele = $('#select-box-account-name')
+        ele.html('');
+        $('#edited-billing-address').val('');
+        $('#button_add_new_billing_address').prop('hidden', true);
+        $('#select-box-address').prop('hidden', false);
+        $('#edited-billing-address').prop('hidden', true);
+        $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
+
+        let list_emp = []
+        $('#account-manager-id').find('option:selected').each(function () {
+            list_emp.push($(this).val());
+        })
+
+        let list_acc_map_emp = []
+        let data_url = $('#account-manager-id').attr('data-url-accounts')
+        let data_method = $('#account-manager-id').attr('data-method')
+        $.fn.callAjax(data_url, data_method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('accounts_map_employee')) {
+                        data.accounts_map_employee.map(function (item) {
+                            if (list_emp.includes(item.employee)) {
+                                if (!list_acc_map_emp.includes(item.account.id)) {
+                                    list_acc_map_emp.push(item.account.id)
+                                    ele.append(`<option value="` + item.account.id + `">` + item.account.name + `</option>`)
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        )
+
+        $('#inp-tax-code-address').val($('#account-tax-code-id').val());
+        $('#inp-email-address').val($('#account-email-id').val());
+
+        if ($('#list-billing-address input').length === 0)
+            $('#make-default-billing-address').prop('checked', true);
+
+        let select_box = $('#select-box-address')
+        select_box.empty();
+        select_box.append(`<option value="0" selected></option>`)
+        $('#list-shipping-address').children().each(function () {
+            if ($(this).find('input').prop('checked') === true)
+                select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+            else
+                select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+        });
+    })
+
+    // ratio individual onchange
+    $('#inp-individual').on('change', function () {
+        $('#parent-account-div-id').prop('hidden', true);
+        $("#account-tax-code-label-id").addClass("required");
+    })
+
+    // Account Owner onchange
+    $('#account-owner-id').on('change', function () {
+        let option_selected = $(this).find('option:selected');
+        $('#owner-job-title-id').val(option_selected.attr('data-job-title'));
+        $('#owner-email-id').val(option_selected.attr('data-email'));
+        $('#owner-mobile-id').val(option_selected.attr('data-mobile'));
+    });
+
+    // ratio organization onchange
+    $('#inp-organization').on('change', function () {
+        $('#parent-account-div-id').prop('hidden', false);
+        $("#account-tax-code-label-id").removeClass("required");
+    })
 })

@@ -137,3 +137,28 @@ tables list each page is had difference setup. so dataTable did not common file 
 visit workflow list page to refer way how to setup.
 good luck..
 ```
+
+---
+
+### Mask Money
+```html
+<input 
+        type="text" 
+        id="input-test-mask"
+        class="form-control mask-money"
+        value="123.99"
+        data-return-type="text"
+/>
+```
+```js
+$('#input-test-mask').valCurrency();
+```
+1. [*] Bắt buộc là thẻ input
+2. [*] type: text
+3. [*] class: mask-money
+4. value: "123.99" nếu cần load dữ liệu mặc định
+5. data-return-type: "text"(default) hoặc "number" để định nghĩa kiểu dữ liệu khi gọi $('input').valCurrency()
+6. Trong quá trình init mask money sẽ thêm vào các attribute vào element input đó: data-precision, data-decimal
+7. Gọi valCurrency() sẽ trả lỗi nếu cấu hình và quá trình trả dữ liệu có sự cố --> chống đẩy dữ liệu rác lên server
+
+---

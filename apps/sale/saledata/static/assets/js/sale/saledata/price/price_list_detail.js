@@ -5,9 +5,9 @@ $(document).ready(function () {
         ordering: false,
         paging: false,
         columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+            "searchable": false, "orderable": true, // "targets": [0,1,3,4,5,6,7,8,9]
         }],
-        order: [2, 'asc'],
+        order: [[2, 'asc']],
         language: {
             search: "",
             searchPlaceholder: "Search",
@@ -58,6 +58,7 @@ $(document).ready(function () {
         let dtb = $(id_table);
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
+            // targetDt.column(2).order('asc').draw();
             /*Checkbox Add*/
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
@@ -69,6 +70,7 @@ $(document).ready(function () {
         }
     }
 
+    // load for tab setting and dropdown add currency for price lust
     function loadCurrency(list_id) {
         $('#select-box-currency').select2();
         let ele = $('#select-box-currency');
@@ -218,7 +220,9 @@ $(document).ready(function () {
                 $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
-                    config['data'] = product_mapped;
+                    config['data'] = product_mapped.sort(function (a, b){
+                        return a.code - b.code;
+                    });
                     initDataTable(config, '#datatable-item-list');
                     loadCurrency(data.price.currency);
 
@@ -267,9 +271,9 @@ $(document).ready(function () {
                                         body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="" style="min-width: max-content"></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString() + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString() + `" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + `" style="min-width: max-content"></td>`
                                 }
                             }
                         }
@@ -402,6 +406,15 @@ $(document).ready(function () {
                 delete frm.dataForm.apply_for
             }
             frm.dataForm['price_list_child'] = price_list_update.map(obj => obj.id);
+
+            if (frm.dataForm['auto_update'] === undefined) {
+                frm.dataForm['auto_update'] = false
+            }
+
+            if (frm.dataForm['can_delete'] === undefined) {
+                frm.dataForm['can_delete'] = false
+            }
+
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
@@ -431,7 +444,7 @@ $(document).ready(function () {
                     if (value === '') {
                         value = 0;
                     } else {
-                        value = parseFloat(value.replace(/,/g, ''))
+                        value = parseFloat(value.replace(/\./g, '').replace(',', '.'))
                     }
                     if (item.id_source === '') {
                         price_list.push({
@@ -497,7 +510,7 @@ $(document).ready(function () {
                     if (price === '') {
                         price = 0;
                     } else {
-                        price = parseFloat(price.replace(/,/g, ''))
+                        price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
                     }
                     if ($(this).find('td:eq(' + index + ')').find('input').hasClass('inp-edited') === true) {
                         list_price_of_currency.push({
@@ -522,7 +535,7 @@ $(document).ready(function () {
                     if (price === '') {
                         price = 0;
                     } else {
-                        price = parseFloat(price.replace(/,/g, ''))
+                        price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
                     }
                     list_price_of_currency.push({
                         'product_id': product_id,

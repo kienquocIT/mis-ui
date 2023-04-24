@@ -295,91 +295,116 @@ function dataTableProduct(data, table_id) {
             // render icon after table callback
             feather.replace();
         },
-        rowCallback: function (row, data) {
-        },
+        rowCallback: function (row, data) {},
         columns: [
             {
                 targets: 0,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.order) {
-                        return row.order
-                    }
-                    return ``
+                    return `<span class="table-row-order">${row.order}</span>`
                 }
             },
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    if (row.product) {
-                        return row.product;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <div class="btn-group dropstart">
+                                                <i
+                                                        class="fas fa-info-circle"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                        </span>
+                                        <select 
+                                        class="form-select table-row-item" 
+                                        id="${row.selectProductID}"
+                                        required>
+                                            <option value=""></option>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>`;
                 }
             },
             {
                 targets: 2,
                 render: (data, type, row) => {
-                    if (row.description) {
-                        return row.description;
-                    }
-                    return ``;
+                    return `<div class="row"><input type="text" class="form-control table-row-description"></div>`;
                 }
             },
             {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.unit_of_measure) {
-                        return row.unit_of_measure;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-uom" id="${row.selectUOMID}" required>
+                                    <option value=""></option>
+                                </select>
+                            </div>`;
                 },
             },
             {
                 targets: 4,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.quantity) {
-                        return row.quantity;
-                    }
-                    return ``;
+                    return `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`;
                 }
             },
             {
                 targets: 5,
                 render: (data, type, row) => {
-                    if (row.unit_price) {
-                        return row.unit_price;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    data-return-type="number"
+                                    required
+                                >
+                            </div>`;
                 }
             },
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    if (row.discount) {
-                        return row.discount;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input type="text" class="form-control w-80 table-row-discount">
+                                <span class="w-20 mt-2">%</span>
+                                <input type="hidden" class="table-row-discount-amount">
+                            </div>`;
                 }
             },
             {
                 targets: 7,
                 render: (data, type, row) => {
-                    if (row.tax) {
-                        return row.tax;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-tax" id="${row.selectTaxID}">
+                                    <option value=""></option>
+                                </select>
+                                <input type="hidden" class="table-row-tax-amount">
+                            </div>`;
                 }
             },
             {
                 targets: 8,
                 render: (data, type, row) => {
-                    if (row.subtotal) {
-                        return row.subtotal;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-subtotal" 
+                                    value="0"
+                                    data-return-type="number"
+                                    disabled
+                                >
+                            </div>`;
                 }
             },
             {
@@ -392,6 +417,7 @@ function dataTableProduct(data, table_id) {
             },
         ],
     });
+
 }
 
 function dataTableCost(data, table_id) {
@@ -416,66 +442,62 @@ function dataTableCost(data, table_id) {
                 targets: 0,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.order) {
-                        return row.order
-                    }
-                    return ``
+                    return `<span class="table-row-order">${row.valueOrder}</span>`
                 }
             },
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    if (row.product) {
-                        return row.product;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-item" disabled>
+                                    <option value="${row.valueProduct}" selected>${row.showProduct}</option>
+                                </select>
+                            </div>`;
                 }
             },
             {
                 targets: 2,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.unit_of_measure) {
-                        return row.unit_of_measure;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-uom" disabled>
+                                    <option value="${row.valueUOM}" selected>${row.showUOM}</option>
+                                </select>
+                            </div>`;
                 },
             },
             {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.quantity) {
-                        return row.quantity;
-                    }
-                    return ``;
+                    return `<div class="row"><input type="text" class="form-control table-row-quantity" value="${row.valueQuantity}" disabled></div>`;
                 }
             },
             {
                 targets: 4,
                 render: (data, type, row) => {
-                    if (row.cost_price) {
-                        return row.cost_price;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input type="text" class="form-control w-80 table-row-price" value="${row.valuePrice}" required>
+                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                            </div>`;
                 }
             },
             {
                 targets: 5,
                 render: (data, type, row) => {
-                    if (row.tax) {
-                        return row.tax;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-tax">${row.optionTax}</select>
+                                <input type="hidden" class="table-row-tax-amount" value="${row.valueTaxAmount}">
+                            </div>`;
                 }
             },
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    if (row.subtotal) {
-                        return row.subtotal;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input type="text" class="form-control w-80 table-row-subtotal" value="${row.valueSubtotal}" disabled>
+                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                            </div>`;
                 }
             },
             {
@@ -512,66 +534,67 @@ function dataTableExpense(data, table_id) {
                 targets: 0,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.order) {
-                        return row.order
-                    }
-                    return ``
+                    return `<span class="table-row-order">${row.order}</span>`
                 }
             },
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    if (row.expense) {
-                        return row.expense;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-item" required>
+                                    <option value=""></option>
+                                    <option value="">Laptop HP</option>
+                                    <option value="">Laptop Dell</option>
+                                    <option value="">Laptop Lenovo</option>
+                                </select>
+                            </div>`;
                 }
             },
             {
                 targets: 2,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.unit_of_measure) {
-                        return row.unit_of_measure;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-uom" id="${row.selectUOMID}" required>
+                                    <option value=""></option>
+                                </select>
+                            </div>`;
                 },
             },
             {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    if (row.quantity) {
-                        return row.quantity;
-                    }
-                    return ``;
+                    return `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`;
                 }
             },
             {
                 targets: 4,
                 render: (data, type, row) => {
-                    if (row.expense_price) {
-                        return row.expense_price;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input type="text" class="form-control w-80 table-row-price" required>
+                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                            </div>`;
                 }
             },
             {
                 targets: 5,
                 render: (data, type, row) => {
-                    if (row.tax) {
-                        return row.tax;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <select class="form-select table-row-tax" id="${row.selectTaxID}">
+                                    <option value=""></option>
+                                </select>
+                                <input type="hidden" class="table-row-tax-amount">
+                            </div>`;
                 }
             },
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    if (row.subtotal) {
-                        return row.subtotal;
-                    }
-                    return ``;
+                    return `<div class="row">
+                                <input type="text" class="form-control w-80 table-row-subtotal" disabled>
+                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                            </div>`;
                 }
             },
             {
@@ -814,8 +837,10 @@ function init_mask_money() {
         if (currencyConfig) {
             $('input[type=text].mask-money').each((idx, item) => {
                 $(item).initInputCurrency(currencyConfig);
-            })
+            });
+            $('.mask-money-value').each((idx, item) => {
+                $(item).parseCurrencyDisplay(currencyConfig);
+            });
         } else throw  Error('Currency config is not found.')
     });
-
 }

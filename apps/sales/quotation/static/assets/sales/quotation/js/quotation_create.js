@@ -173,8 +173,13 @@ $(function () {
                                         </div>`,
                     'quantity': `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`,
                     'unit_price': `<div class="row">
-                                        <input type="text" class="form-control w-80 table-row-price" required>
-                                        <span class="w-20 mt-2 quotation-currency">VND</span>
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price" 
+                                            value="0"
+                                            data-return-type="number"
+                                            required
+                                        >
                                     </div>`,
                     'discount': `<div class="row">
                                         <input type="text" class="form-control w-80 table-row-discount">
@@ -188,15 +193,21 @@ $(function () {
                                 <input type="hidden" class="table-row-tax-amount">
                             </div>`,
                     'subtotal': `<div class="row">
-                                    <input type="text" class="form-control w-80 table-row-subtotal" disabled>
-                                    <span class="w-20 mt-2 quotation-currency">VND</span>
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-subtotal" 
+                                        value="0"
+                                        data-return-type="number"
+                                        disabled
+                                    >
                                 </div>`,
                     'order': `<span class="table-row-order">${order}</span>`
                 }
             tableProduct.DataTable().row.add(dataAdd).draw();
             loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
-            loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
+            loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+            init_mask_money();
         });
 
 // Action on delete row product
@@ -237,8 +248,10 @@ $(function () {
 
 // Action on change product price
         tableProduct.on('change', '.table-row-price', function (e) {
-            $(this)[0].value = parseFloatStrToStr($(this)[0].value);
-            changePrice($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
+            let price = $(this).valCurrency();
+            if (price) {
+                changePrice(price, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
+            }
         });
 
 // Action on change product tax

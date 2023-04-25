@@ -30,7 +30,7 @@ function loadBoxQuotationOpportunity(opp_id) {
     )
 }
 
-function loadBoxQuotationCustomer(customer_id, valueToSelect = null) {
+function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, boxContact = null) {
     let jqueryId = '#' + customer_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
@@ -47,15 +47,21 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null) {
                             'Name': item.name,
                             'Owner name': item.owner.fullname,
                         }).replace(/"/g, "&quot;");
+                        let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
                         let dataAppend = `<option value="${item.id}">
                                             <span class="account-title">${item.name}</span>
+                                            <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
                         if (item.id === valueToSelect) {
                             dataAppend = `<option value="${item.id}" selected>
                                             <span class="account-title">${item.name}</span>
+                                            <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
+
+                            loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                            loadContactCustomer(boxContact, item);
                         }
                         ele.append(dataAppend)
                     })
@@ -68,7 +74,7 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null) {
     )
 }
 
-function loadBoxQuotationContact(contact_id) {
+function loadBoxQuotationContact(contact_id, valueToSelect = null) {
     let jqueryId = '#' + contact_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
@@ -87,10 +93,17 @@ function loadBoxQuotationContact(contact_id) {
                             'Mobile': item.mobile,
                             'Email': item.email
                         }).replace(/"/g, "&quot;");
-                        ele.append(`<option value="${item.id}">
-                                        <span class="contact-title">${item.fullname}</span>
-                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                    </option>`)
+                        let dataAppend = `<option value="${item.id}">
+                                            <span class="contact-title">${item.fullname}</span>
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                        if (item.id === valueToSelect) {
+                            dataAppend = `<option value="${item.id}" selected>
+                                            <span class="contact-title">${item.fullname}</span>
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                        }
+                        ele.append(dataAppend)
                     })
                 }
             }
@@ -911,6 +924,68 @@ function init_mask_money_single(ele) {
             ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
         } else throw  Error('Currency config is not found.')
     });
+}
+
+function loadShippingBillingCustomer(modalShipping, modalBilling, item) {
+    let modalShippingContent = modalShipping[0].querySelector('.modal-body');
+    if (modalShippingContent) {
+        for (let i = 0; i < item.shipping_address.length; i++) {
+            let address = item.shipping_address[i];
+            $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
+                                                <div class="row mb-1">
+                                                    <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-5"></div>
+                                                    <div class="col-4"></div>
+                                                    <div class="col-3">
+                                                        <button class="btn btn-primary choose-shipping">Select This Address</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>`)
+        }
+    }
+    let modalBillingContent = modalBilling[0].querySelector('.modal-body');
+    if (modalBillingContent) {
+        for (let i = 0; i < item.billing_address.length; i++) {
+            let address = item.billing_address[i];
+            $(modalBillingContent).append(`<div class="row ml-1 billing-group">
+                                                <div class="row mb-1">
+                                                    <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-5"></div>
+                                                    <div class="col-4"></div>
+                                                    <div class="col-3">
+                                                        <button class="btn btn-primary choose-billing">Select This Address</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>`)
+        }
+    }
+}
+
+function loadContactCustomer(boxContact, item) {
+    if (item.owner) {
+        let valueToSelect = item.owner.id;
+        if (!boxContact[0].innerHTML) {
+            loadBoxQuotationContact('select-box-quotation-create-contact', valueToSelect);
+        } else {
+            let optionSelectedContact = boxContact[0].options[boxContact[0].selectedIndex];
+            if (optionSelectedContact) {
+                optionSelectedContact.removeAttribute('selected');
+            }
+            for (let option of boxContact[0].options) {
+                if (option.value === valueToSelect) {
+                    option.setAttribute('selected', true);
+                    break;
+                }
+            }
+            loadInformationSelectBox(boxContact);
+        }
+    }
 }
 
 function setupDataProduct() {

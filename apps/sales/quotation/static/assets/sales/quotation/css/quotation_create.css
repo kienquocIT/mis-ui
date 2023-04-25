@@ -17,3 +17,22 @@
 .disabled-custom-show:disabled {
     color: #0c0c0c;
 }
+
+.fa-chevron-up {
+    text-align: center;
+    font-size: larger;
+}
+
+.fa-chevron-down {
+    text-align: center;
+    font-size: larger;
+}
+
+ul.quotation-tabs {
+  display: flex;
+  justify-content: center;
+}
+
+ul.quotation-tabs li.quotation-tab-item {
+  margin-right: 10px;
+}

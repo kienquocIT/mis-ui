@@ -24,6 +24,9 @@ $(function () {
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
 
+        let modalShipping = $('#quotation-create-modal-shipping-body');
+        let modalBilling = $('#quotation-create-modal-billing-body');
+
         $("#select-box-quotation-term-discount").select2();
 
         $('input[name="date_created"]').daterangepicker({
@@ -52,7 +55,7 @@ $(function () {
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
                     if (!boxCustomer[0].innerHTML) {
-                        loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect);
+                        loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling, boxContact);
                     } else {
                         let optionSelectedCustomer = boxCustomer[0].options[boxCustomer[0].selectedIndex];
                         if (optionSelectedCustomer) {
@@ -79,6 +82,14 @@ $(function () {
 
 // Action on change dropdown customer
         boxCustomer.on('change', function (e) {
+            let optionSelected = boxCustomer[0].options[boxCustomer[0].selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-default')) {
+                    let data = JSON.parse(optionSelected.querySelector('.data-default').value);
+                    loadShippingBillingCustomer(modalShipping, modalBilling, data);
+                    loadContactCustomer(boxContact, data);
+                }
+            }
             loadInformationSelectBox($(this));
         });
 
@@ -363,6 +374,37 @@ $(function () {
         tableCost.on('change', '.table-row-tax', function (e) {
             let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
             changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+        });
+
+// Action on click button collapse
+        $('#quotation-info-collapse').click(function () {
+            $(this).toggleClass('fa-chevron-up fa-chevron-down');
+        });
+
+// Action on click choose shipping
+        modalShipping.on('click', '.choose-shipping', function (e) {
+            // Enable other buttons
+            $('.choose-shipping').prop('disabled', false);
+            // Disable the clicked button
+            $(this).prop('disabled', true);
+            let eleContent = $(this)[0].closest('.shipping-group').querySelector('.shipping-content');
+            let eleShow = $(this)[0].closest('.logistics-body').querySelector('.shipping-show');
+            if (eleContent && eleShow) {
+                eleShow.value = eleContent.value;
+            }
+        });
+
+// Action on click choose shipping
+        modalBilling.on('click', '.choose-billing', function (e) {
+            // Enable other buttons
+            $('.choose-billing').prop('disabled', false);
+            // Disable the clicked button
+            $(this).prop('disabled', true);
+            let eleContent = $(this)[0].closest('.billing-group').querySelector('.billing-content');
+            let eleShow = $(this)[0].closest('.logistics-body').querySelector('.billing-show');
+            if (eleContent && eleShow) {
+                eleShow.value = eleContent.value;
+            }
         });
 
 // Submit form quotation

@@ -85,7 +85,7 @@
 {% block pageContent %}
     <form data-method="PUT" id="form-detail-update-account" data-url="{% url "AccountDetailAPI" pk=0 %}">
         <div class="row">
-            <div class="col-4 scroll-div">
+            <div class="col-3 scroll-div">
                 <div class="col-12 mb-20" style="padding-right: 6%">
                     <div class="row">
                         <div class="form-group col-2 text-center">
@@ -125,7 +125,7 @@
                     </div>
                     <div class="row" id="account-type-div">
                         <div class="form-group col-2"></div>
-                        <div class="form-group col-10">
+                        <div class="form-group col-10 mb-5">
                             <label class="label-field form-label required" for="account-type-id">{% trans "Account Type" %}</label>
                             <div class="view-mode-for-select ml-3" id="account-type-view"></div>
                             <select id="account-type-id" name="account_type"
@@ -187,7 +187,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-8 scroll-div">
+            <div class="col-9 scroll-div">
                 <div class="col-12 mb-20" style="padding-left: 2%">
                     <ul class="nav nav-light nav-tabs">
                         <li class="nav-item">
@@ -214,7 +214,7 @@
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab_detail">
                             <div class="row mt-6">
-                                <div class="row">
+                                <div class="row mb-5">
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label class="label-field form-label required" for="account-manager-id">{% trans "Account Manager" %}</label>
@@ -229,8 +229,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6">
+                                <div class="row mb-5">
+                                    <div class="col-4">
                                         <div class="form-group">
                                             <label class="label-field form-label" for="account-revenue-id">{% trans "Account Revenue" %}</label>
                                             <select id="account-revenue-id" name="annual_revenue" class="form-select"
@@ -245,7 +245,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <div class="form-group">
                                             <label class="label-field form-label required" for="total-employees-id">{% trans "Total Employees" %}</label>
                                             <select id="total-employees-id" name="total_employees" class="form-select"
@@ -259,29 +259,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="label-field form-label" for="account-phone-number-id">{% trans "Phone Number" %}</label>
-                                            <input type="text" class="form-control input-can-edit" name="phone" id="account-phone-number-id" value="" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="label-field form-label" for="account-email-id">{% trans "Email" %}</label>
-                                            <input type="text" class="form-control input-can-edit" name="email" id="account-email-id" value="" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="label-field form-label" id="account-tax-code-label-id" for="account-tax-code-id">{% trans "Tax Code" %}</label>
-                                            <input type="text" class="form-control input-can-edit" name="tax_code" id="account-tax-code-id" value="" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-6" id="parent-account-div-id">
+                                    <div class="col-4" id="parent-account-div-id">
                                         <div class="form-group">
                                             <label class="label-field form-label" for="parent-account-id">{% trans "Parent Account" %}</label>
                                             <select id="parent-account-id" name="parent_account" class="form-select"
@@ -291,7 +269,27 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-5">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="label-field form-label" for="account-phone-number-id">{% trans "Phone Number" %}</label>
+                                            <input type="text" class="form-control input-can-edit" name="phone" id="account-phone-number-id" value="" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="label-field form-label" for="account-email-id">{% trans "Email" %}</label>
+                                            <input type="text" class="form-control input-can-edit" name="email" id="account-email-id" value="" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="label-field form-label" id="account-tax-code-label-id" for="account-tax-code-id">{% trans "Tax Code" %}</label>
+                                            <input type="text" class="form-control input-can-edit" name="tax_code" id="account-tax-code-id" value="" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
                                     <div class="w-100 p-1 bg-light mt-3">
                                         <h5>Shipping Address</h5>
                                     </div>
@@ -318,7 +316,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-5">
                                     <div class="w-100 p-1 bg-light mt-3">
                                         <h5>Billing/Invoice Address</h5>
                                     </div>

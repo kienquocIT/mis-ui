@@ -129,9 +129,11 @@ $(document).ready(function () {
                     $('#account-owner-id').select2();
                     $('#account-revenue-id').select2();
                     $('#total-employees-id').select2();
+
                     $('#shipping-city').select2();
                     $('#shipping-district').select2();
                     $('#shipping-ward').select2();
+
                     $('#select-box-account-name').select2();
                     $('#select-box-address').select2();
                     $('.select2').show();
@@ -298,7 +300,6 @@ $(document).ready(function () {
                     ele.text("");
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
                         data.contact_list_not_map_account.push(current_account_owner);
-                        console.log(data);
                         ele.append(`<option selected></option>`)
                         data.contact_list_not_map_account.map(function (item) {
                             if (item.id === current_account_owner.id) {
@@ -318,6 +319,7 @@ $(document).ready(function () {
         if ($('#list-shipping-address input').length === 0)
             $('#make-default-shipping-address').prop('checked', true);
     })
+
     // load data for Billing address modal
     $('#edit-billing-address').on('click', function () {
         let ele = $('#select-box-account-name')

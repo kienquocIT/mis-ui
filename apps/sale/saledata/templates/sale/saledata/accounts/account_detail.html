@@ -114,6 +114,16 @@
                     <div class="row">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
+                            <label class="label-field form-label required" for="account-industry-id">{% trans "Industry" %}</label>
+                            <select id="account-industry-id" name="account-industry" class="form-select"
+                                    data-method="GET"
+                                    data-url="{% url "IndustryListAPI" %}" disabled>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-2"></div>
+                        <div class="form-group col-10">
                             <label class="label-field form-label required" for="account-type-id">{% trans "Account Type" %}</label>
                             <div class="view-mode-for-select ml-3" id="account-type-view"></div>
                             <select id="account-type-id" name="account-type"
@@ -124,7 +134,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row" id="account-type-customer-type-div-id">
+                    <div class="row mb-10" id="account-type-customer-type-div-id">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-5 text-center">
                             <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual"
@@ -135,16 +145,6 @@
                             <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-organization"
                                    disabled>
                             <label for="inp-organization">{% trans "organization" %}</label>
-                        </div>
-                    </div>
-                    <div class="row mb-10">
-                        <div class="form-group col-2"></div>
-                        <div class="form-group col-10">
-                            <label class="label-field form-label required" for="account-industry-id">{% trans "Industry" %}</label>
-                            <select id="account-industry-id" name="account-industry" class="form-select"
-                                    data-method="GET"
-                                    data-url="{% url "IndustryListAPI" %}" disabled>
-                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -301,7 +301,9 @@
                                                             data-bs-target="#modal-shipping-address" href="#"
                                                             style="background: none; border: none; color: #007D88"
                                                             class="btn" hidden>
-                                                        <span id="edit-shipping-address" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Add new/edit shipping address">
+                                                        <span id="edit-shipping-address" data-bs-toggle="tooltip"
+                                                              data-bs-placement="bottom" title="" href="#"
+                                                              data-bs-original-title="Add new/edit shipping address">
                                                             <i class="fas fa-plus-circle"></i>
                                                             &nbsp;Add/Edit Shipping Address
                                                         </span>
@@ -326,7 +328,9 @@
                                                             data-bs-target="#modal-billing-address" href="#"
                                                             style="background: none;border: none; color: #007D88"
                                                             class="btn" hidden>
-                                                        <span id="edit-billing-address" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Add new/edit billing/invoice address">
+                                                        <span id="edit-billing-address" data-bs-toggle="tooltip"
+                                                              data-bs-placement="bottom" title="" href="#"
+                                                              data-bs-original-title="Add new/edit billing/invoice address">
                                                             <i class="fas fa-plus-circle"></i>
                                                             &nbsp;Add/Edit Billing Address
                                                         </span>
@@ -364,22 +368,22 @@
                                             </div>
                                             <div class="row">
                                                 <div class="form-group">
-                                                    <label class="form-label">{% trans "Province" %}</label>
-                                                    <select class="form-select" id="shipping-city" aria-label=".form-select-sm">
+                                                    <label class="form-label">{% trans "Province/City" %}</label>
+                                                    <select class="form-select" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET" aria-label=".form-select-sm">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="form-label">{% trans "District" %}</label>
-                                                    <select class="form-select" id="shipping-district" aria-label=".form-select-sm">
+                                                    <select class="form-select" id="shipping-district" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="form-label">{% trans "Ward" %}</label>
-                                                    <select class="form-select" id="shipping-ward" aria-label=".form-select-sm">
+                                                    <select class="form-select" id="shipping-ward" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
                                                     </select>
                                                 </div>
                                             </div>

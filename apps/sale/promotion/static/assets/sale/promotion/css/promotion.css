@@ -46,3 +46,8 @@ input[name="discount_order_opt_value"] {
 #customer_modal .modal-body {
     min-height: 350px;
 }
+
+#customer_modal .modal-body{
+    max-height: 450px;
+    overflow-y: scroll;
+}

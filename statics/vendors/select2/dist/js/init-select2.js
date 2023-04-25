@@ -95,7 +95,7 @@ function initSelectBox(selectBoxElement = null) {
             tags:false
 
         }
-        if ($this.attr('data-multiple') !== 'false'){
+        if ($this.attr('data-multiple') === 'true'){
             options['multiple'] = true
             options['tags'] = true
             $this.prop('multiple', true)

@@ -359,6 +359,58 @@ $(function () {
             changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
         });
 
+// Submit form quotation
+        $('#btn-create_quotation').on('click', function (e) {
+            e.preventDefault()
+            let $form = document.getElementById('frm_quotation_create');
+            let _form = new SetupFormSubmit($('#frm_quotation_create'));
+            setupDataSubmit(_form);
+            let submitFields = [
+                'title',
+                'opportunity',
+                'customer',
+                'contact',
+                'sale_person',
+                'total_product_pretax_amount',
+                'total_product_discount',
+                'total_product_tax',
+                'total_product',
+                'total_cost_pretax_amount',
+                'total_cost_tax',
+                'total_cost',
+                'total_expense_pretax_amount',
+                'total_expense_tax',
+                'total_expense',
+                'quotation_products_data',
+                'quotation_term_data',
+                'quotation_logistic_data',
+                'quotation_costs_data',
+                'quotation_expenses_data',
+                'is_customer_confirm',
+            ]
+            if (_form.dataForm) {
+                for (let key in _form.dataForm) {
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
+                }
+            }
+            let csr = $("[name=csrfmiddlewaretoken]").val()
+
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                        $.fn.notifyPopup({description: "Quotation create fail"}, 'failure')
+                    }
+                )
+        });
+
 
 
 

@@ -5,20 +5,18 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
-            href="#" data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="save"
-            data-bs-original-title="Save"
-            data-form-id="frm_quotation_create"
-    >
-        <span class="btn-icon-wrap">
+    <button class="btn btn-flush-primary flush-soft-hover"
+            type="button" id="btn-create_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
             </span>
+            <span class="font-3 ml-1">
+                {% trans 'Save' %}
+            </span>
         </span>
-    </a>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
@@ -42,9 +40,11 @@
     </div>
 
     <form
-            id="frm_quotation_create" class="needs-validation" data-url="" data-method="POST"
-            data-url-redirect=""
-            novalidate
+            data-url="{% url 'QuotationListAPI' %}"
+            data-url-redirect="{% url 'QuotationList' %}"
+            data-method="POST"
+            id="frm_quotation_create"
+            method="post"
     >
         {% csrf_token %}
         <div class="tab-content">
@@ -158,10 +158,10 @@
                                 <div class="input-group">
 	                                <span class="input-affix-wrapper">
                                         <input
-                                            type="text" class="form-control"
+                                            type="text" class="form-control disabled-custom-show"
                                             placeholder="dd/mm/yyyy"
                                             name="date_created"
-                                            id="quotation-date-created"
+                                            id="quotation-create-date-created"
                                             disabled
                                         >
 	                                </span>
@@ -173,10 +173,10 @@
                                 <div class="input-group">
 	                                <span class="input-affix-wrapper">
                                         <input
-                                            type="text" class="form-control"
-                                            placeholder="Open"
+                                            type="text" class="form-control disabled-custom-show"
+                                            value="Open"
                                             name="status"
-                                            id="quotation-sale-person"
+                                            id="quotation-create-status"
                                             disabled
                                         >
 	                                </span>
@@ -307,9 +307,10 @@
                                                 <input
                                                     id="quotation-create-product-pretax-amount"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_product_pretax_amount"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -329,9 +330,10 @@
                                                 <input
                                                     id="quotation-create-product-discount-amount"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_product_discount"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -342,9 +344,10 @@
                                                 <input
                                                     id="quotation-create-product-taxes"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_product_tax"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -356,9 +359,10 @@
                                                 <input
                                                     id="quotation-create-product-total"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_product"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -582,9 +586,10 @@
                                                 <input
                                                     id="quotation-create-cost-pretax-amount"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_cost_pretax_amount"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -595,9 +600,10 @@
                                                 <input
                                                     id="quotation-create-cost-taxes"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_cost_tax"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -609,9 +615,10 @@
                                                 <input
                                                     id="quotation-create-cost-total"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_cost"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -658,9 +665,10 @@
                                                 <input
                                                     id="quotation-create-expense-pretax-amount"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_expense_pretax_amount"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -671,9 +679,10 @@
                                                 <input
                                                     id="quotation-create-expense-taxes"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_expense_tax"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>
@@ -685,9 +694,10 @@
                                                 <input
                                                     id="quotation-create-expense-total"
                                                     type="text"
-                                                    class="form-control mask-money"
+                                                    class="form-control mask-money disabled-custom-show"
                                                     data-return-type="number"
-                                                    readonly
+                                                    name="total_expense"
+                                                    disabled
                                                 >
                                             </div>
                                         </div>

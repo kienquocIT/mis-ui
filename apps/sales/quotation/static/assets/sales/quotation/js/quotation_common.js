@@ -423,7 +423,7 @@ function dataTableProduct(data, table_id) {
                                     class="form-control mask-money table-row-subtotal" 
                                     value="0"
                                     data-return-type="number"
-                                    readonly
+                                    disabled
                                 >
                             </div>`;
                 }
@@ -470,7 +470,7 @@ function dataTableCost(data, table_id) {
                 targets: 1,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-item" readonly>
+                                <select class="form-select table-row-item" disabled>
                                     <option value="${row.valueProduct}" selected>${row.showProduct}</option>
                                 </select>
                             </div>`;
@@ -481,7 +481,7 @@ function dataTableCost(data, table_id) {
                 width: "1%",
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-uom" readonly>
+                                <select class="form-select table-row-uom" disabled>
                                     <option value="${row.valueUOM}" selected>${row.showUOM}</option>
                                 </select>
                             </div>`;
@@ -491,7 +491,7 @@ function dataTableCost(data, table_id) {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-quantity" value="${row.valueQuantity}" readonly></div>`;
+                    return `<div class="row"><input type="text" class="form-control table-row-quantity" value="${row.valueQuantity}" disabled></div>`;
                 }
             },
             {
@@ -527,7 +527,7 @@ function dataTableCost(data, table_id) {
                                     class="form-control mask-money table-row-subtotal" 
                                     value="${row.valueSubtotal}"
                                     data-return-type="number"
-                                    readonly
+                                    disabled
                                 >
                             </div>`;
                 }
@@ -638,7 +638,7 @@ function dataTableExpense(data, table_id) {
                                     class="form-control mask-money table-row-subtotal" 
                                     value="0"
                                     data-return-type="number"
-                                    readonly
+                                    disabled
                                 >
                             </div>`;
                 }
@@ -890,4 +890,22 @@ function init_mask_money_single(ele) {
             ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
         } else throw  Error('Currency config is not found.')
     });
+}
+
+function setupDataSubmit(_form) {
+    let dateCreatedVal = $('#quotation-create-date-created').val();
+    if (dateCreatedVal) {
+        _form.dataForm['data_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
+    }
+    _form.dataForm['status'] = $('#quotation-create-status').val();
+    _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
+    _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
+    _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
+    _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();
+    _form.dataForm['total_cost_pretax_amount'] = $('#quotation-create-cost-pretax-amount').valCurrency();
+    _form.dataForm['total_cost_tax'] = $('#quotation-create-cost-taxes').valCurrency();
+    _form.dataForm['total_cost'] = $('#quotation-create-cost-total').valCurrency();
+    _form.dataForm['total_expense_pretax_amount'] = $('#quotation-create-expense-pretax-amount').valCurrency();
+    _form.dataForm['total_expense_tax'] = $('#quotation-create-expense-taxes').valCurrency();
+    _form.dataForm['total_expense'] = $('#quotation-create-expense-total').valCurrency();
 }

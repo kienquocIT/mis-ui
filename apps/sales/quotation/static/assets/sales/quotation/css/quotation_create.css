@@ -13,3 +13,7 @@
 .dropdown-menu .dropdown-header.header-wth-bg {
     background: #007D88;
 }
+
+.disabled-custom-show:disabled {
+    color: #0c0c0c;
+}

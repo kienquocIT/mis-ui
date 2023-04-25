@@ -7,7 +7,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['account_detail'];
-                console.log(data);
+                // console.log(data);
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
                 $('#account-website-id').val(data.website);
@@ -444,7 +444,7 @@ $(document).ready(function () {
             frm.dataForm['billing_address'] = billing_address_list;
         }
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
             .then(

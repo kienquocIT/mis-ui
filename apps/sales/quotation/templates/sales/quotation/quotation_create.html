@@ -51,17 +51,33 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>
-                            <input
-                                    type="text" class="form-control"
-                                    placeholder="input title"
-                                    name="title"
-                                    id="quotation-create-title"
-                                    required
-                            >
-                            <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="input title"
+                                        name="title"
+                                        id="quotation-create-title"
+                                        required
+                                >
+                                <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
+                            </div>
                         </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Code' %}<span class="field-required">(*)</span></label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="auto generate"
+                                        name="code"
+                                        id="quotation-create-code"
+                                        disabled
+                                >
+                                <span class="form-text text-muted">{% trans 'code of quotation' %}</span>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="row">
                         <div class="col-6">

@@ -253,7 +253,15 @@ function loadBoxQuotationUOM(uom_id, box_id) {
     if (ele && eleBox) {
         let data = JSON.parse(ele.value);
         for (let i = 0; i < data.length; i++) {
-            eleBox.append(`<option value="${data[i].id}"><span class="uom-title">${data[i].title}</span></option>`)
+            let dataStr = JSON.stringify({
+                'id': data[i].id,
+                'title': data[i].title,
+                'code': data[i].code,
+            }).replace(/"/g, "&quot;");
+            eleBox.append(`<option value="${data[i].id}">
+                                <span class="uom-title">${data[i].title}</span>
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </option>`)
         }
     }
 }
@@ -282,7 +290,15 @@ function loadBoxQuotationTax(tax_id, box_id) {
     if (ele && eleBox) {
         let data = JSON.parse(ele.value);
         for (let i = 0; i < data.length; i++) {
-            eleBox.append(`<option value="${data[i].id}" data-value="${data[i].rate}"><span class="tax-title">${data[i].title}</span></option>`)
+            let dataStr = JSON.stringify({
+                'id': data[i].id,
+                'title': data[i].title,
+                'value': data[i].rate,
+            }).replace(/"/g, "&quot;");
+            eleBox.append(`<option value="${data[i].id}" data-value="${data[i].rate}">
+                            <span class="tax-title">${data[i].title}</span>
+                            <input type="hidden" class="data-info" value="${dataStr}">
+                        </option>`)
         }
     }
 }
@@ -498,8 +514,13 @@ function dataTableCost(data, table_id) {
                 targets: 4,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input type="text" class="form-control w-80 table-row-price" value="${row.valuePrice}" required>
-                                <span class="w-20 mt-2 quotation-currency">VND</span>
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    data-return-type="number"
+                                    value="${row.valuePrice}"
+                                    required
+                                >
                             </div>`;
                 }
             },
@@ -892,6 +913,160 @@ function init_mask_money_single(ele) {
     });
 }
 
+function setupDataProduct() {
+    let result = [];
+    let table = document.getElementById('datable-quotation-create-product');
+    let tableBody = table.tBodies[0];
+    for (let i = 0; i < tableBody.rows.length; i++) {
+        let rowData = {};
+        let row = tableBody.rows[i];
+        let eleProduct = row.querySelector('.table-row-item');
+        if (eleProduct) {
+            let optionSelected = eleProduct.options[eleProduct.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['product'] = dataInfo.id;
+                    rowData['product_title'] = dataInfo.title;
+                    rowData['product_code'] = dataInfo.code;
+                }
+            }
+
+        }
+        let eleUOM = row.querySelector('.table-row-uom');
+        if (eleUOM) {
+            let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['uom'] = dataInfo.id;
+                    rowData['product_uom_title'] = dataInfo.title;
+                    rowData['product_uom_code'] = dataInfo.code;
+                }
+            }
+
+        }
+        let eleTax = row.querySelector('.table-row-tax');
+        if (eleTax) {
+            let optionSelected = eleTax.options[eleTax.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['tax'] = dataInfo.id;
+                    rowData['product_tax_title'] = dataInfo.title;
+                    rowData['product_tax_value'] = dataInfo.value;
+                }
+            }
+
+        }
+        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+        if (eleTaxAmount) {
+            rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
+        }
+        let eleDescription = row.querySelector('.table-row-description');
+        if (eleDescription) {
+            rowData['product_description'] = eleDescription.value;
+        }
+        let eleQuantity = row.querySelector('.table-row-quantity');
+        if (eleQuantity) {
+            rowData['product_quantity'] = eleQuantity.value;
+        }
+        let elePrice = row.querySelector('.table-row-price');
+        if (elePrice) {
+            rowData['product_unit_price'] = $(elePrice).valCurrency();
+        }
+        let eleDiscount = row.querySelector('.table-row-discount');
+        if (eleDiscount) {
+            rowData['product_discount_value'] = parseInt(eleDiscount.value);
+        }
+        let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+        if (eleDiscountAmount) {
+            rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
+        }
+        let eleSubtotal = row.querySelector('.table-row-subtotal');
+        if (eleSubtotal) {
+            rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
+        }
+        let eleOrder = row.querySelector('.table-row-order');
+        if (eleOrder) {
+            rowData['order'] = parseInt(eleOrder.innerHTML);
+        }
+        result.push(rowData);
+    }
+    return result
+}
+
+function setupDataCost() {
+    let result = [];
+    let table = document.getElementById('datable-quotation-create-cost');
+    let tableBody = table.tBodies[0];
+    for (let i = 0; i < tableBody.rows.length; i++) {
+        let rowData = {};
+        let row = tableBody.rows[i];
+        let eleProduct = row.querySelector('.table-row-item');
+        if (eleProduct) {
+            let optionSelected = eleProduct.options[eleProduct.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['product'] = dataInfo.id;
+                    rowData['product_title'] = dataInfo.title;
+                    rowData['product_code'] = dataInfo.code;
+                }
+            }
+
+        }
+        let eleUOM = row.querySelector('.table-row-uom');
+        if (eleUOM) {
+            let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['uom'] = dataInfo.id;
+                    rowData['product_uom_title'] = dataInfo.title;
+                    rowData['product_uom_code'] = dataInfo.code;
+                }
+            }
+
+        }
+        let eleTax = row.querySelector('.table-row-tax');
+        if (eleTax) {
+            let optionSelected = eleTax.options[eleTax.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['tax'] = dataInfo.id;
+                    rowData['product_tax_title'] = dataInfo.title;
+                    rowData['product_tax_value'] = dataInfo.value;
+                }
+            }
+
+        }
+        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+        if (eleTaxAmount) {
+            rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
+        }
+        let eleQuantity = row.querySelector('.table-row-quantity');
+        if (eleQuantity) {
+            rowData['product_quantity'] = eleQuantity.value;
+        }
+        let elePrice = row.querySelector('.table-row-price');
+        if (elePrice) {
+            rowData['product_unit_price'] = $(elePrice).valCurrency();
+        }
+        let eleSubtotal = row.querySelector('.table-row-subtotal');
+        if (eleSubtotal) {
+            rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
+        }
+        let eleOrder = row.querySelector('.table-row-order');
+        if (eleOrder) {
+            rowData['order'] = parseInt(eleOrder.innerHTML);
+        }
+        result.push(rowData);
+    }
+    return result
+}
+
 function setupDataSubmit(_form) {
     let dateCreatedVal = $('#quotation-create-date-created').val();
     if (dateCreatedVal) {
@@ -908,4 +1083,7 @@ function setupDataSubmit(_form) {
     _form.dataForm['total_expense_pretax_amount'] = $('#quotation-create-expense-pretax-amount').valCurrency();
     _form.dataForm['total_expense_tax'] = $('#quotation-create-expense-taxes').valCurrency();
     _form.dataForm['total_expense'] = $('#quotation-create-expense-total').valCurrency();
+
+    _form.dataForm['quotation_products_data'] = setupDataProduct();
+    _form.dataForm['quotation_costs_data'] = setupDataCost();
 }

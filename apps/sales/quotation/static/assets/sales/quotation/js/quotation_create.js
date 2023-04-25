@@ -251,7 +251,10 @@ $(function () {
 
 // Action on change expense price
         tableExpense.on('change', '.table-row-price', function (e) {
-            changePrice($(this)[0].value, $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            let price = $(this).valCurrency();
+            if (price) {
+                changePrice(price, $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            }
         });
 
 // Action on change expense tax
@@ -350,7 +353,10 @@ $(function () {
 
 // Action on change cost price
         tableCost.on('change', '.table-row-price', function (e) {
-            changePrice($(this)[0].value, $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+            let price = $(this).valCurrency();
+            if (price) {
+                changePrice(price, $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+            }
         });
 
 // Action on change cost tax

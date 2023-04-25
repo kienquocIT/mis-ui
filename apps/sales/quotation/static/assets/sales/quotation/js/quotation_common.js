@@ -436,7 +436,7 @@ function dataTableProduct(data, table_id) {
                     return `<div class="row">
                                 <input 
                                     type="text" 
-                                    class="form-control mask-money table-row-subtotal" 
+                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
                                     value="0"
                                     data-return-type="number"
                                     disabled
@@ -486,7 +486,7 @@ function dataTableCost(data, table_id) {
                 targets: 1,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-item" disabled>
+                                <select class="form-select table-row-item disabled-custom-show" disabled>
                                     <option value="${row.valueProduct}" selected>${row.showProduct}</option>
                                 </select>
                             </div>`;
@@ -497,7 +497,7 @@ function dataTableCost(data, table_id) {
                 width: "1%",
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-uom" disabled>
+                                <select class="form-select table-row-uom disabled-custom-show" disabled>
                                     <option value="${row.valueUOM}" selected>${row.showUOM}</option>
                                 </select>
                             </div>`;
@@ -507,7 +507,7 @@ function dataTableCost(data, table_id) {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-quantity" value="${row.valueQuantity}" disabled></div>`;
+                    return `<div class="row"><input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.valueQuantity}" disabled></div>`;
                 }
             },
             {
@@ -545,7 +545,7 @@ function dataTableCost(data, table_id) {
                     return `<div class="row">
                                 <input 
                                     type="text" 
-                                    class="form-control mask-money table-row-subtotal" 
+                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
                                     value="${row.valueSubtotal}"
                                     data-return-type="number"
                                     disabled
@@ -656,7 +656,7 @@ function dataTableExpense(data, table_id) {
                     return `<div class="row">
                                 <input 
                                     type="text" 
-                                    class="form-control mask-money table-row-subtotal" 
+                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
                                     value="0"
                                     data-return-type="number"
                                     disabled
@@ -815,7 +815,7 @@ function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_
             if (eleTotal && subtotal) {
                 eleTotal.value = subtotal;
                 $(eleTotal).maskMoney('mask', subtotal)
-                updateRowTaxAmount(row, subtotal)
+                updateRowTaxAmount(row, eleTotal)
             }
         }
     }

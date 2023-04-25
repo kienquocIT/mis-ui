@@ -10,7 +10,7 @@
     />
     <link href="{% static 'assets/css/sale/saledata/accounts/contact_create.css' %}" rel="stylesheet" type="text/css"/>
     <style>
-        .input-can-edit[readonly] {
+        .input-can-edit[readonly], .input-cannot-edit[readonly] {
             border: none;
             background: none;
             color: black;
@@ -60,15 +60,17 @@
         </span>
     </a>
 
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" hidden
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top"
-       data-bs-original-title="Save" id="save-account-on">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="bi bi-save2"></i>
+    <button id="save-account" type="submit" form="form-detail-update-account" style="background: none; border: none">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" hidden
+           href="#" data-bs-toggle="tooltip" data-bs-placement="top"
+           data-bs-original-title="Save" id="save-account-on">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i class="bi bi-save2"></i>
+                </span>
             </span>
-        </span>
-    </a>
+        </a>
+    </button>
 
     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
        href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -81,7 +83,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form data-method="GET" id="form-detail-account" data-url="{% url "AccountDetailAPI" pk=0 %}">
+    <form data-method="PUT" id="form-detail-update-account" data-url="{% url "AccountDetailAPI" pk=0 %}">
         <div class="row">
             <div class="col-4 scroll-div">
                 <div class="col-12 mb-20" style="padding-right: 6%">
@@ -93,7 +95,7 @@
                         </div>
                         <div class="form-group col-10">
                             <label class="label-field form-label required" for="account-title-id">{% trans "Account Title" %}</label>
-                            <textarea type="text" class="form-control input-can-edit" name="account-title" id="account-title-id" readonly>
+                            <textarea type="text" class="form-control input-can-edit" name="name" id="account-title-id" readonly>
                             </textarea>
                         </div>
                     </div>
@@ -101,32 +103,32 @@
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label required" for="account-code-id">{% trans "Code" %}</label>
-                            <input type="text" class="form-control input-can-edit" name="account-code" id="account-code-id" value="" readonly>
+                            <input type="text" class="form-control input-cannot-edit" name="code" id="account-code-id" value="" readonly>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label" for="account-website-id">{% trans "Website" %}</label>
-                            <input type="text" class="form-control input-can-edit" name="account-website" id="account-website-id" value="" readonly>
+                            <input type="text" class="form-control input-can-edit" name="website" id="account-website-id" value="" readonly>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label required" for="account-industry-id">{% trans "Industry" %}</label>
-                            <select id="account-industry-id" name="account-industry" class="form-select"
+                            <select id="account-industry-id" name="industry" class="form-select"
                                     data-method="GET"
                                     data-url="{% url "IndustryListAPI" %}" disabled>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="account-type-div">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label required" for="account-type-id">{% trans "Account Type" %}</label>
                             <div class="view-mode-for-select ml-3" id="account-type-view"></div>
-                            <select id="account-type-id" name="account-type"
+                            <select id="account-type-id" name="account_type"
                                     class="form-control"
                                     multiple
                                     data-method="GET"
@@ -166,21 +168,21 @@
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label" for="owner-job-title-id">{% trans "Job Title" %}</label>
-                            <input type="text" class="form-control input-can-edit" name="owner-job-title" id="owner-job-title-id" value="" readonly>
+                            <input type="text" class="form-control input-cannot-edit" name="owner-job-title" id="owner-job-title-id" value="" readonly>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label" for="owner-email-id">{% trans "Email" %}</label>
-                            <input type="text" class="form-control input-can-edit" name="owner-email" id="owner-email-id" value="" readonly>
+                            <input type="text" class="form-control input-cannot-edit" name="owner-email" id="owner-email-id" value="" readonly>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-10">
                             <label class="label-field form-label" for="owner-mobile-id">{% trans "Mobile" %}</label>
-                            <input type="text" class="form-control input-can-edit" name="owner-mobile" id="owner-mobile-id" value="" readonly>
+                            <input type="text" class="form-control input-cannot-edit" name="owner-mobile" id="owner-mobile-id" value="" readonly>
                         </div>
                     </div>
                 </div>
@@ -231,7 +233,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label" for="account-revenue-id">{% trans "Account Revenue" %}</label>
-                                            <select id="account-revenue-id" name="account-revenue" class="form-select"
+                                            <select id="account-revenue-id" name="annual_revenue" class="form-select"
                                                     data-method="GET" disabled
                                                     data-url="">
                                                 <option value="1-10 billions">{% trans "1-10 billions" %}</option>
@@ -246,7 +248,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label required" for="total-employees-id">{% trans "Total Employees" %}</label>
-                                            <select id="total-employees-id" name="total-employees" class="form-select"
+                                            <select id="total-employees-id" name="total_employees" class="form-select"
                                                     data-method="GET" disabled
                                                     data-url="">
                                                 <option value="< 20 people">{% trans "< 20 people" %}</option>
@@ -261,14 +263,14 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="label-field form-label" for="phone-number-id">{% trans "Phone Number" %}</label>
-                                            <input type="text" class="form-control input-can-edit" name="phone-number" id="phone-number-id" value="" readonly>
+                                            <label class="label-field form-label" for="account-phone-number-id">{% trans "Phone Number" %}</label>
+                                            <input type="text" class="form-control input-can-edit" name="phone" id="account-phone-number-id" value="" readonly>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label" for="account-email-id">{% trans "Email" %}</label>
-                                            <input type="text" class="form-control input-can-edit" name="account-email" id="account-email-id" value="" readonly>
+                                            <input type="text" class="form-control input-can-edit" name="email" id="account-email-id" value="" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -276,13 +278,13 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="label-field form-label" id="account-tax-code-label-id" for="account-tax-code-id">{% trans "Tax Code" %}</label>
-                                            <input type="text" class="form-control input-can-edit" name="account-tax-code" id="account-tax-code-id" value="" readonly>
+                                            <input type="text" class="form-control input-can-edit" name="tax_code" id="account-tax-code-id" value="" readonly>
                                         </div>
                                     </div>
                                     <div class="col-6" id="parent-account-div-id">
                                         <div class="form-group">
                                             <label class="label-field form-label" for="parent-account-id">{% trans "Parent Account" %}</label>
-                                            <select id="parent-account-id" name="parent-account" class="form-select"
+                                            <select id="parent-account-id" name="parent_account" class="form-select"
                                                     data-method="GET"
                                                     data-url="{% url "AccountListAPI" %}" disabled>
                                             </select>
@@ -298,14 +300,14 @@
                                             <div class="row">
                                                 <div class="col-12 text-right">
                                                     <button data-bs-toggle="modal" id="shipping-address-btn"
-                                                            data-bs-target="#modal-shipping-address" href="#"
+                                                            data-bs-target="#modal-shipping-address" type="button"
                                                             style="background: none; border: none; color: #007D88"
                                                             class="btn" hidden>
                                                         <span id="edit-shipping-address" data-bs-toggle="tooltip"
-                                                              data-bs-placement="bottom" title="" href="#"
-                                                              data-bs-original-title="Add new/edit shipping address">
+                                                              data-bs-placement="bottom"
+                                                              data-bs-original-title="Add new shipping address">
                                                             <i class="fas fa-plus-circle"></i>
-                                                            &nbsp;Add/Edit Shipping Address
+                                                            &nbsp;Add New Shipping Address
                                                         </span>
                                                     </button>
                                                 </div>
@@ -325,14 +327,14 @@
                                             <div class="row">
                                                 <div class="col-12 text-right">
                                                     <button data-bs-toggle="modal" id="billing-address-btn"
-                                                            data-bs-target="#modal-billing-address" href="#"
+                                                            data-bs-target="#modal-billing-address" type="button"
                                                             style="background: none;border: none; color: #007D88"
                                                             class="btn" hidden>
                                                         <span id="edit-billing-address" data-bs-toggle="tooltip"
-                                                              data-bs-placement="bottom" title="" href="#"
-                                                              data-bs-original-title="Add new/edit billing/invoice address">
+                                                              data-bs-placement="bottom"
+                                                              data-bs-original-title="Add new billing/invoice address">
                                                             <i class="fas fa-plus-circle"></i>
-                                                            &nbsp;Add/Edit Billing Address
+                                                            &nbsp;Add New Billing Address
                                                         </span>
                                                     </button>
                                                 </div>

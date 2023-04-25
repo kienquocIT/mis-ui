@@ -105,7 +105,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
-    ACCOUNT_DETAIL = StringUrl('saledata/account')
+    ACCOUNT_DETAIL = StringUrl('saledata/account/')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
 
     # masterdata/product

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // load data detail
     let pk = window.location.pathname.split('/').pop();
-    let url_loaded = $('#form-detail-account').attr('data-url').replace(0, pk);
+    let url_loaded = $('#form-detail-update-account').attr('data-url').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -11,7 +11,7 @@ $(document).ready(function () {
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
                 $('#account-website-id').val(data.website);
-                $('#phone-number-id').val(data.phone);
+                $('#account-phone-number-id').val(data.phone);
                 $('#account-email-id').val(data.email);
                 $('#account-tax-code-id').val(data.tax_code);
 
@@ -92,20 +92,21 @@ $(document).ready(function () {
                 let account_type_view_html = '';
                 let account_type_title_list = data.account_type.map(obj => obj.title);
                 for (let i = 0; i < account_type_title_list.length; i++) {
-                    account_type_view_html += `<span class="badge badge-soft-primary badge-outline mr-1">` + account_type_title_list[i] + `</span>`
+                    account_type_view_html += `<span class="badge badge-soft-primary badge-outline mr-1 mt-1">` + account_type_title_list[i] + `</span>`
                 }
                 $('#account-type-view').html(account_type_view_html)
 
                 if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
                     $('#inp-organization').attr('checked', true);
+                    $("#account-tax-code-label-id").addClass("required");
                 }
                 else {
                     if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
                         $('#inp-individual').prop('checked', true);
-                        $("#account-tax-code-label-id").addClass("required");
                     }
                     else {
                         $('#account-type-customer-type-div-id').prop('hidden', true);
+                        $('#account-type-div').addClass('mb-10');
                     }
 
                     $('#parent-account-div-id').prop('hidden', true);
@@ -139,25 +140,18 @@ $(document).ready(function () {
                     $('.select2').show();
                 })
 
-                $('#save-account-on').on('click', function () {
-                    $.fn.notifyPopup({description: "Updating Account"}, 'success')
-                    setTimeout(function () {
-                        location.reload()
-                    }, 1000);
-                })
-
                 loadIndustry(data.industry);
 
                 $('#account-revenue-id').find(`option[value="` + data.annual_revenue + `"]`).prop('selected', true);
                 $('#total-employees-id').find(`option[value="` + data.total_employees + `"]`).prop('selected', true);
 
-                loadParentAccount(data.parent_account);
+                loadParentAccount(data.parent_account, data.id);
 
                 loadAccountManager(data.manager.map(obj => obj.id))
                 let account_manager_view_html = '';
                 let account_manager_title_list = data.manager.map(obj => obj.fullname);
                 for (let i = 0; i < account_manager_title_list.length; i++) {
-                    account_manager_view_html += `<span class="badge badge-soft-primary badge-outline mr-1">` + account_manager_title_list[i] + `</span>`
+                    account_manager_view_html += `<span class="badge badge-soft-primary badge-outline mr-1 mt-1">` + account_manager_title_list[i] + `</span>`
                 }
                 $('#account-manager-view').html(account_manager_view_html)
 
@@ -200,13 +194,13 @@ $(document).ready(function () {
         })
 
         if (selected_acc_type.length > 0) {
+            $('#account-type-div').removeClass('mb-10');
             $('#parent-account-div-id').attr('hidden', false);
             $('#account-type-customer-type-div-id').attr('hidden', false);
-            $("#account-tax-code-label-id").addClass("required");
         } else {
+            $('#account-type-div').addClass('mb-10');
             $('#parent-account-div-id').attr('hidden', true);
             $('#account-type-customer-type-div-id').attr('hidden', true);
-            $("#account-tax-code-label-id").removeClass("required");
         }
     });
 
@@ -235,7 +229,7 @@ $(document).ready(function () {
     }
 
     // load Parent Account SelectBox
-    function loadParentAccount(parent_account_mapped) {
+    function loadParentAccount(parent_account_mapped, current_account_id) {
         let ele = $('#parent-account-id');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -245,12 +239,14 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
-                        ele.append(`<option value="0"></option>`)
+                        ele.append(`<option value=""></option>`)
                         data.account_list.map(function (item) {
-                            if (parent_account_mapped === item.id) {
-                                ele.append(`<option value="` + item.id + `" selected>` + item.name + `</option>`)
-                            } else {
-                                ele.append(`<option value="` + item.id + `">` + item.name + `</option>`)
+                            if (item.id !== current_account_id) {
+                                if (parent_account_mapped === item.id) {
+                                    ele.append(`<option value="` + item.id + `" selected>` + item.name + `</option>`)
+                                } else {
+                                    ele.append(`<option value="` + item.id + `">` + item.name + `</option>`)
+                                }
                             }
                         })
                     }
@@ -376,7 +372,7 @@ $(document).ready(function () {
     // ratio individual onchange
     $('#inp-individual').on('change', function () {
         $('#parent-account-div-id').prop('hidden', true);
-        $("#account-tax-code-label-id").addClass("required");
+        $("#account-tax-code-label-id").removeClass("required");
     })
 
     // Account Owner onchange
@@ -390,6 +386,80 @@ $(document).ready(function () {
     // ratio organization onchange
     $('#inp-organization').on('change', function () {
         $('#parent-account-div-id').prop('hidden', false);
-        $("#account-tax-code-label-id").removeClass("required");
+        $("#account-tax-code-label-id").addClass("required");
     })
+
+    // send data to update
+    let frm = $('#form-detail-update-account')
+    frm.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+
+        if ($('#account-type-id').val().length > 0) {
+            frm.dataForm['account_type'] = $('#account-type-id').val();
+        }
+
+        let customer_detail_type = $('#account-type-id option:selected').filter(function () {
+            return $(this).text().toLowerCase() === 'customer';
+        })
+
+        if (customer_detail_type.length > 0) {
+            if ($('#inp-organization').is(':checked')) {
+                frm.dataForm['customer_detail_type'] = 'organization';
+            } else {
+                frm.dataForm['customer_detail_type'] = 'individual';
+            }
+        }
+
+        if ($('#account-manager-id').val().length > 0) {
+            frm.dataForm['manager'] = $('#account-manager-id').val();
+        }
+
+        let shipping_address_list = [];
+        $('#list-shipping-address input[type=radio]').each(function () {
+            if ($(this).is(':checked')) {
+                shipping_address_list.unshift($(this).next('label').text().trim());
+            }
+            else {
+                shipping_address_list.push($(this).next('label').text().trim());
+            }
+        });
+
+        let billing_address_list = [];
+        $('#list-billing-address input[type=radio]').each(function () {
+            if ($(this).is(':checked')) {
+                billing_address_list.unshift($(this).next('label').text().trim());
+            }
+            else {
+                billing_address_list.push($(this).next('label').text().trim());
+            }
+        });
+
+        if (shipping_address_list.length > 0) {
+            frm.dataForm['shipping_address'] = shipping_address_list;
+        }
+
+        if (billing_address_list.length > 0) {
+            frm.dataForm['billing_address'] = billing_address_list;
+        }
+
+        console.log(frm.dataForm)
+
+        $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Updating account"}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+            )
+    });
 })

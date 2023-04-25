@@ -157,6 +157,13 @@ good luck..
 // get value of input currency
 $('#input-test-mask').valCurrency();
 // parse input and display auto run in base.html
+
+// get currency config
+CCurrency.getConfig
+
+// convert number to currency string for show table or etc...
+// isNumber: number string get from API
+CCurrency.convertCurrency(isNumber)
 ```
 1. Cho thẻ input
    1. [*] Bắt buộc là thẻ input

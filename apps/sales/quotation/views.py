@@ -48,7 +48,7 @@ class QuotationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url='').get()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
         if resp.state:
             return {'quotation_list': resp.result}, status.HTTP_200_OK
 
@@ -63,6 +63,6 @@ class QuotationListAPI(APIView):
     def post(self, request, *args, **kwargs):
         return create_update_quotation(
             request=request,
-            url='',
+            url=ApiURL.QUOTATION_LIST,
             msg=SaleMsg.QUOTATION_CREATE
         )

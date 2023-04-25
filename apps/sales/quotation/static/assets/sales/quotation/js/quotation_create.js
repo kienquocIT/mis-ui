@@ -27,7 +27,7 @@ $(function () {
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
 
-        $("#select-box-quotation-term-discount").select2();
+        $("#select-box-quotation-create-discount-list").select2();
 
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
@@ -288,11 +288,19 @@ $(function () {
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                     let valueProduct = "";
                     let showProduct = "";
+                    let product_data = "";
+                    let productDataStr = "";
+                    let optionProduct = ``;
+
                     let valueUOM = "";
                     let showUOM = "";
+                    let uomDataStr = "";
+                    let optionUOM = ``;
+
                     let valueQuantity = "";
                     let valuePrice = "";
                     let optionTax = ``;
+                    let taxDataStr = "";
                     let valueTaxSelected = "";
                     let valueTaxAmount = "";
                     let valueOrder = "";
@@ -301,61 +309,106 @@ $(function () {
                     let product = row.querySelector('.table-row-item');
                     if (product) {
                         valueProduct = product.value;
-                        showProduct = product.options[product.selectedIndex].text;
                         let optionSelected = product.options[product.selectedIndex];
                         if (optionSelected) {
+                            showProduct = optionSelected.text;
                             if (optionSelected.querySelector('.data-default')) {
-                                let data = JSON.parse(optionSelected.querySelector('.data-default').value);
-                                valuePrice = data.cost_price;
+                                let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
+                                valuePrice = product_data_json.cost_price;
+                                product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
+                            }
+                            if (optionSelected.querySelector('.data-info')) {
+                                let dataStrJson = JSON.parse(optionSelected.querySelector('.data-info').value);
+                                productDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
                             }
                         }
+                        optionProduct = `<option value="${valueProduct}" selected></option>`
                     }
                     let uom = row.querySelector('.table-row-uom');
                     if (uom) {
                         valueUOM = uom.value;
-                        showUOM = uom.options[uom.selectedIndex].text;
+                        let optionSelected = uom.options[uom.selectedIndex];
+                        if (optionSelected) {
+                            showUOM = optionSelected.text;
+                            if (optionSelected.querySelector('.data-info')) {
+                                let dataStrJson = JSON.parse(optionSelected.querySelector('.data-info').value);
+                                uomDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
+                            }
+                        }
+                        optionUOM = `<option value="${valueUOM}" selected></option>`
                     }
                     let quantity = row.querySelector('.table-row-quantity');
                     if (quantity) {
                         valueQuantity = quantity.value;
                     }
-                    let tax = row.querySelector('.table-row-tax');
-                    if (tax) {
-                        for (let t = 0; t < tax.options.length; t++) {
-                            let option = tax.options[t];
-                            if (option.selected === true) {
-                                optionTax += `<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>${option.text}</option>`
-                                valueTaxSelected = option.value;
-                            } else {
-                                optionTax += `<option value="${option.value}" data-value="${option.getAttribute('data-value')}">${option.text}</option>`
-                            }
-                        }
-                    }
                     let order = row.querySelector('.table-row-order');
                     if (order) {
                         valueOrder = order.innerHTML;
                     }
-                    if (valuePrice && valueQuantity) {
-                        valueSubtotal = (Number(valuePrice) * Number(valueQuantity));
-                        if (valueTaxSelected) {
-                            valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100)
-                        }
-                    }
+
                     let addRow = tableCost.DataTable().row.add({
-                        'valueProduct': valueProduct,
-                        'showProduct': showProduct,
-                        'valueUOM': valueUOM,
-                        'showUOM': showUOM,
                         'valueQuantity': valueQuantity,
                         'valuePrice': valuePrice,
-                        'optionTax': optionTax,
-                        'valueTaxAmount': valueTaxAmount,
                         'valueSubtotal': valueSubtotal,
                         'valueOrder': valueOrder
                     }).draw();
                     let newRow = tableCost.DataTable().row(addRow).node();
                     let $newRow = $(newRow);
                     init_mask_money_single($newRow);
+                    let rowProduct = $newRow[0].querySelector('.table-row-item');
+                    if (rowProduct) {
+                        $(rowProduct).append(`<option value="${valueProduct}" selected>
+                                                    <span class="product-title">${showProduct}</span>
+                                                    <input type="hidden" class="data-default" value="${product_data}">
+                                                    <input type="hidden" class="data-info" value="${productDataStr}">
+                                                </option>`)
+                        loadInformationSelectBox($(rowProduct))
+                    }
+                    let rowUOM = $newRow[0].querySelector('.table-row-uom');
+                    if (rowUOM) {
+                        $(rowUOM).append(`<option value="${valueUOM}" selected>
+                                                <span class="uom-title">${showUOM}</span>
+                                                <input type="hidden" class="data-info" value="${uomDataStr}">
+                                        </option>`)
+                    }
+                    let rowTax = $newRow[0].querySelector('.table-row-tax');
+                    if (rowTax) {
+                        let tax = row.querySelector('.table-row-tax');
+                        if (tax) {
+                            for (let t = 0; t < tax.options.length; t++) {
+                                let option = tax.options[t];
+                                if (option.querySelector('.data-info')) {
+                                        let dataStrJson = JSON.parse(option.querySelector('.data-info').value);
+                                        taxDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
+                                    }
+                                if (option.selected === true) {
+                                    $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
+                                                        <span class="tax-title">${option.text}</span>
+                                                        <input type="hidden" class="data-info" value="${taxDataStr}">
+                                                    </option>`)
+                                    valueTaxSelected = option.value;
+                                } else {
+                                    $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
+                                                        <span class="tax-title">${option.text}</span>
+                                                        <input type="hidden" class="data-info" value="${taxDataStr}">
+                                                    </option>`)
+                                }
+                            }
+                        }
+                    }
+                    let rowTaxAmount = $newRow[0].querySelector('.table-row-tax-amount');
+                    if (rowTaxAmount) {
+                        if (valuePrice && valueQuantity) {
+                            valueSubtotal = (Number(valuePrice) * Number(valueQuantity));
+                            if (valueTaxSelected) {
+                                valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100);
+                                rowTaxAmount.value = valueTaxAmount;
+                                $(rowTaxAmount).maskMoney('mask', valueTaxAmount)
+                            }
+                        }
+                    }
+
+
                 }
                 // update total
                 updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
@@ -378,7 +431,7 @@ $(function () {
 
 // Action on click button collapse
         $('#quotation-info-collapse').click(function () {
-            $(this).toggleClass('fa-chevron-up fa-chevron-down');
+            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
 // Action on click choose shipping
@@ -388,9 +441,9 @@ $(function () {
             // Disable the clicked button
             $(this).prop('disabled', true);
             let eleContent = $(this)[0].closest('.shipping-group').querySelector('.shipping-content');
-            let eleShow = $(this)[0].closest('.logistics-body').querySelector('.shipping-show');
+            let eleShow = $('#quotation-create-shipping-address');
             if (eleContent && eleShow) {
-                eleShow.value = eleContent.value;
+                eleShow[0].value = eleContent.value;
             }
         });
 
@@ -401,9 +454,9 @@ $(function () {
             // Disable the clicked button
             $(this).prop('disabled', true);
             let eleContent = $(this)[0].closest('.billing-group').querySelector('.billing-content');
-            let eleShow = $(this)[0].closest('.logistics-body').querySelector('.billing-show');
+            let eleShow = $('#quotation-create-billing-address');
             if (eleContent && eleShow) {
-                eleShow.value = eleContent.value;
+                eleShow[0].value = eleContent.value;
             }
         });
 

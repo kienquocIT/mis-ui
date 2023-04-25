@@ -146,3 +146,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
+
+    # quotation
+    QUOTATION_LIST = StringUrl('quotation/lists')

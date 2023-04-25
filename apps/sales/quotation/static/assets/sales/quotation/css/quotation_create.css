@@ -18,14 +18,16 @@
     color: #0c0c0c;
 }
 
-.fa-chevron-up {
+.fa-angle-double-up {
+    color: #007D88;
     text-align: center;
-    font-size: larger;
+    font-size: x-large;
 }
 
-.fa-chevron-down {
+.fa-angle-double-down {
+    color: #007D88;
     text-align: center;
-    font-size: larger;
+    font-size: x-large;
 }
 
 ul.quotation-tabs {

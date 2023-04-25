@@ -349,12 +349,12 @@ function dataTableProduct(data, table_id) {
                                         <span class="input-prefix">
                                             <div class="btn-group dropstart">
                                                 <i
-                                                        class="fas fa-info-circle"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
+                                                    class="fas fa-info-circle"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
                                                 >
                                                 </i>
                                                 <div class="dropdown-menu w-210p mt-4"></div>
@@ -499,9 +499,26 @@ function dataTableCost(data, table_id) {
                 targets: 1,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-item disabled-custom-show" disabled>
-                                    <option value="${row.valueProduct}" selected>${row.showProduct}</option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <div class="btn-group dropstart">
+                                                <i
+                                                    class="fas fa-info-circle"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                        </span>
+                                        <select class="form-select table-row-item disabled-custom-show" disabled>
+                                        </select>
+                                    </span>
+                                </div>
                             </div>`;
                 }
             },
@@ -511,7 +528,6 @@ function dataTableCost(data, table_id) {
                 render: (data, type, row) => {
                     return `<div class="row">
                                 <select class="form-select table-row-uom disabled-custom-show" disabled>
-                                    <option value="${row.valueUOM}" selected>${row.showUOM}</option>
                                 </select>
                             </div>`;
                 },
@@ -541,12 +557,12 @@ function dataTableCost(data, table_id) {
                 targets: 5,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-tax">${row.optionTax}</select>
+                                <select class="form-select table-row-tax">
+                                </select>
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
                                     data-return-type="number"
-                                    value="${row.valueTaxAmount}"
                                     hidden
                                 >
                             </div>`;
@@ -1014,7 +1030,7 @@ function setupDataProduct() {
             if (optionSelected) {
                 if (optionSelected.querySelector('.data-info')) {
                     let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['uom'] = dataInfo.id;
+                    rowData['unit_of_measure'] = dataInfo.id;
                     rowData['product_uom_title'] = dataInfo.title;
                     rowData['product_uom_code'] = dataInfo.code;
                 }
@@ -1089,7 +1105,6 @@ function setupDataCost() {
                     rowData['product_code'] = dataInfo.code;
                 }
             }
-
         }
         let eleUOM = row.querySelector('.table-row-uom');
         if (eleUOM) {
@@ -1097,7 +1112,7 @@ function setupDataCost() {
             if (optionSelected) {
                 if (optionSelected.querySelector('.data-info')) {
                     let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['uom'] = dataInfo.id;
+                    rowData['unit_of_measure'] = dataInfo.id;
                     rowData['product_uom_title'] = dataInfo.title;
                     rowData['product_uom_code'] = dataInfo.code;
                 }
@@ -1127,7 +1142,7 @@ function setupDataCost() {
         }
         let elePrice = row.querySelector('.table-row-price');
         if (elePrice) {
-            rowData['product_unit_price'] = $(elePrice).valCurrency();
+            rowData['product_cost_price'] = $(elePrice).valCurrency();
         }
         let eleSubtotal = row.querySelector('.table-row-subtotal');
         if (eleSubtotal) {
@@ -1140,6 +1155,91 @@ function setupDataCost() {
         result.push(rowData);
     }
     return result
+}
+
+function setupDataExpense() {
+    let result = [];
+    let table = document.getElementById('datable-quotation-create-expense');
+    let tableBody = table.tBodies[0];
+    for (let i = 0; i < tableBody.rows.length; i++) {
+        let rowData = {};
+        let row = tableBody.rows[i];
+        let eleExpense = row.querySelector('.table-row-item');
+        if (eleExpense) {
+            let optionSelected = eleExpense.options[eleExpense.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['expense'] = dataInfo.id;
+                    rowData['expense_title'] = dataInfo.title;
+                    rowData['expense_code'] = dataInfo.code;
+                }
+            }
+        }
+        let eleUOM = row.querySelector('.table-row-uom');
+        if (eleUOM) {
+            let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['unit_of_measure'] = dataInfo.id;
+                    rowData['expense_uom_title'] = dataInfo.title;
+                    rowData['expense_uom_code'] = dataInfo.code;
+                }
+            }
+
+        }
+        let eleTax = row.querySelector('.table-row-tax');
+        if (eleTax) {
+            let optionSelected = eleTax.options[eleTax.selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-info')) {
+                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                    rowData['tax'] = dataInfo.id;
+                    rowData['expense_tax_title'] = dataInfo.title;
+                    rowData['expense_tax_value'] = dataInfo.value;
+                }
+            }
+
+        }
+        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+        if (eleTaxAmount) {
+            rowData['expense_tax_amount'] = $(eleTaxAmount).valCurrency();
+        }
+        let eleQuantity = row.querySelector('.table-row-quantity');
+        if (eleQuantity) {
+            rowData['expense_quantity'] = eleQuantity.value;
+        }
+        let elePrice = row.querySelector('.table-row-price');
+        if (elePrice) {
+            rowData['expense_price'] = $(elePrice).valCurrency();
+        }
+        let eleSubtotal = row.querySelector('.table-row-subtotal');
+        if (eleSubtotal) {
+            rowData['expense_subtotal_price'] = $(eleSubtotal).valCurrency();
+        }
+        let eleOrder = row.querySelector('.table-row-order');
+        if (eleOrder) {
+            rowData['order'] = parseInt(eleOrder.innerHTML);
+        }
+        result.push(rowData);
+    }
+    return []
+}
+
+function setupDataTerm() {
+    return {
+        'price_list': $('#select-box-quotation-create-price-list').val(),
+        'discount_list': $('#select-box-quotation-create-discount-list').val(),
+        'payment_term': $('#select-box-quotation-create-payment-term').val(),
+    }
+}
+
+function setupDataLogistic() {
+    return {
+        'shipping_address': $('#quotation-create-shipping-address').val(),
+        'billing_address': $('#quotation-create-billing-address').val(),
+    }
 }
 
 function setupDataSubmit(_form) {
@@ -1161,4 +1261,8 @@ function setupDataSubmit(_form) {
 
     _form.dataForm['quotation_products_data'] = setupDataProduct();
     _form.dataForm['quotation_costs_data'] = setupDataCost();
+    _form.dataForm['quotation_expenses_data'] = setupDataExpense();
+
+    _form.dataForm['quotation_term_data'] = setupDataTerm();
+    _form.dataForm['quotation_logistic_data'] = setupDataLogistic();
 }

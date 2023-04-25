@@ -92,7 +92,7 @@ $(document).ready(function () {
                 let account_type_view_html = '';
                 let account_type_title_list = data.account_type.map(obj => obj.title);
                 for (let i = 0; i < account_type_title_list.length; i++) {
-                    account_type_view_html += `<span class="badge badge-soft-primary badge-outline mr-1 mt-1">` + account_type_title_list[i] + `</span>`
+                    account_type_view_html += `<span class="badge badge-soft-red badge-outline mr-1 mt-1">` + account_type_title_list[i] + `</span>`
                 }
                 $('#account-type-view').html(account_type_view_html)
 

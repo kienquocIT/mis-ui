@@ -1015,179 +1015,376 @@ $(document).ready(function () {
 });
 
 
-// convert form serializerArray to name-value
-jQuery.fn.serializerObject = function (formSelected) {
-    return formSelected.serializeArray().reduce((o, kv) => ({...o, [kv.name]: kv.value}), {});
-}
-
-// support alert popup message with:
-//    option: {'title': '', 'description': []/''}
-//    typeAlert: success, warning, error, info
-jQuery.fn.notifyPopup = function (option, typeAlert = 'info') {
-    // option: Object
-    //     - title: title notify
-    //     - description: content of notify
-    // typeAlert: string
-    //     - Choice in info, success, failure, warning
-    if (typeAlert === 'success') {
-        new NotifyPopup().success(option);
-    } else if (typeAlert === 'failure') {
-        new NotifyPopup().error(option);
-    } else if (typeAlert === 'warning') {
-        new NotifyPopup().warning(option);
-    } else if (typeAlert === 'info') {
-        new NotifyPopup().info(option)
-    }
-}
-
-jQuery.fn.notifyB = function (option, typeAlert = null) {
-    setTimeout(function () {
-        $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
-    }, 100);
-    let msg = "";
-    if (option.title) {
-        msg += option.title;
-    }
-    if (option.description) {
-        let des_tmp = '';
-        if (typeof option.description === 'string') {
-            des_tmp = option.description;
-        } else if (Array.isArray(option.description)) {
-            des_tmp = option.description.join(", ");
-        } else {
-            des_tmp = option.description.toString();
+// function extend to jQuery
+$.fn.extend({
+    // utils
+    generateRandomString: function (length) {
+        let result = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        if (msg) {
-            msg += ": " + des_tmp;
-        } else {
-            msg = des_tmp;
-        }
-    }
-    let alert_config = {
-        animate: {
-            enter: 'animated bounceInDown', exit: 'animated bounceOutUp'
-        }, type: "dismissible alert-primary",
-    }
-    if (typeAlert === 'success') {
-        alert_config['type'] = "dismissible alert-success";
-    } else if (typeAlert === 'failure') {
-        alert_config['type'] = "dismissible alert-danger";
-    } else if (typeAlert === 'warning') {
-        alert_config['type'] = "dismissible alert-warning";
-    } else if (typeAlert === 'info') {
-        alert_config['type'] = "dismissible alert-info";
-    }
-    $.notify(msg, alert_config);
-}
-
-// support call API with ajax
-jQuery.fn.callAjax = function (url, method, data, headers = {}) {
-
-    return new Promise(function (resolve, reject) {
-        let ctx = {
-            url: url,
-            type: method,
-            dataType: 'json',
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            headers: {"X-CSRFToken": headers},
-            success: function (rest) {
-                let data = $.fn.switcherResp(rest);
-                if (data) {
-                    resolve(rest);
-                }
+        return result;
+    },
+    arraysEqual: function (a, b) {
+        if (a.length !== b.length) return false;
+        return a.every((value, index) => value === b[index]);
+    },
+    arrayIncludesAll: function (a, b) {
+        return b.every(value => a.includes(value));
+    },
+    shortName: function (name) {
+        return name.split(" ").map((item) => {
+            return item ? item.charAt(0) : ""
+        }).join("");
+    },
+    DataTableDefault: function (opts, rowIdx = true) {
+        let defaultConfig = {
+            search: $.fn.DataTable.ext.type.search['html-numeric'],
+            searching: true,
+            ordering: false,
+            paginate: true,
+            pageLength: 10,
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
+                "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
+                "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            language: {
+                url: $('#msg-datatable-language-config').text().trim(),
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                let resp_data = jqXHR.responseJSON;
-                if (resp_data && typeof resp_data === 'object') {
-                    $.fn.switcherResp(resp_data);
-                    reject(resp_data);
-                }
+            drawCallback: function () {
+                feather.replace();
             },
-        };
-        if (method.toLowerCase() === 'get') ctx.data = data
-        $.ajax(ctx);
-    });
-}
-
-
-// Simulate redirect path
-jQuery.fn.redirectUrl = function (redirectPath, timeout = 0, params = '') {
-    setTimeout(() => {
-        if (params && (params !== '' && params !== undefined)) {
-            window.location.href = redirectPath + '?' + params;
-        } else {
-            window.location.href = redirectPath;
+            data: [],
+            ...opts
         }
-    }, timeout);
-}
-jQuery.fn.redirectLogin = function (timeout = 0, location_to_next = true) {
-    if (location_to_next === true) {
-        jQuery.fn.redirectUrl('/auth/login', timeout, 'next=' + window.location.pathname);
-    } else {
-        jQuery.fn.redirectUrl('/auth/login', timeout, '');
-    }
+        if (opts.ajax) delete defaultConfig['data'];
+        if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
+        let tbl = $(this).DataTable(defaultConfig);
+        tbl.on('init.dt', function () {
+            let minerGroup = $(this).closest('.waiter-miner-group');
+            if (minerGroup.length > 0) {
+                let filterGroup = $(minerGroup[0]).find('.miner-group');
+                let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
+                if (filterGroup.length > 0 && filterItem.length > 0) {
+                    filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
+                    filterGroup.append(filterItem);
+                    $('.dataTables_filter input').removeClass('form-control-sm');
+                }
+            }
+            $(this).closest('.dataTables_wrapper').find('.select2').select2();
+        });
+        return tbl;
+    },
+    sumArray: (array) => {
+        return array.reduce(function (acc, currentValue) {
+            return acc + currentValue;
+        }, 0);
+    },
 
-}
-jQuery.fn.cleanDataNotify = (data) => {
-    if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
-        data = data.errors;
-        switch (typeof data) {
-            case 'object':
-                ['status'].map((key) => {
-                    delete data[key];
+    // notify
+    notifyB: function (option, typeAlert = null) {
+        setTimeout(function () {
+            $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+        }, 100);
+        let msg = "";
+        if (option.title) {
+            msg += option.title;
+        }
+        if (option.description) {
+            let des_tmp = '';
+            if (typeof option.description === 'string') {
+                des_tmp = option.description;
+            } else if (Array.isArray(option.description)) {
+                des_tmp = option.description.join(", ");
+            } else {
+                des_tmp = option.description.toString();
+            }
+            if (msg) {
+                msg += ": " + des_tmp;
+            } else {
+                msg = des_tmp;
+            }
+        }
+        let alert_config = {
+            animate: {
+                enter: 'animated bounceInDown', exit: 'animated bounceOutUp'
+            }, type: "dismissible alert-primary",
+        }
+        if (typeAlert === 'success') {
+            alert_config['type'] = "dismissible alert-success";
+        } else if (typeAlert === 'failure') {
+            alert_config['type'] = "dismissible alert-danger";
+        } else if (typeAlert === 'warning') {
+            alert_config['type'] = "dismissible alert-warning";
+        } else if (typeAlert === 'info') {
+            alert_config['type'] = "dismissible alert-info";
+        }
+        $.notify(msg, alert_config);
+    },
+    notifyPopup: function (option, typeAlert = 'info') {
+        // option: Object
+        //     - title: title notify
+        //     - description: content of notify
+        // typeAlert: string
+        //     - Choice in info, success, failure, warning
+        if (typeAlert === 'success') {
+            new NotifyPopup().success(option);
+        } else if (typeAlert === 'failure') {
+            new NotifyPopup().error(option);
+        } else if (typeAlert === 'warning') {
+            new NotifyPopup().warning(option);
+        } else if (typeAlert === 'info') {
+            new NotifyPopup().info(option)
+        }
+    },
+    notifyErrors: (errs) => {
+        if (errs && typeof errs === 'object') {
+            let errors_converted = jQuery.fn.cleanDataNotify(errs);
+            Object.keys(errors_converted).map((key) => {
+                jQuery.fn.notifyB({'title': key, 'description': errors_converted[key]}, 'failure');
+            });
+        }
+    },
+
+    // Config
+    getCompanyConfig: async function () {
+        let dataText = $('#urlCompanyConfigData').text();
+        if (!dataText || dataText === '') {
+            let companyConfigUrl = $('#urlCompanyConfig').attr('data-url');
+            if (companyConfigUrl) {
+                return await $.fn.callAjax(companyConfigUrl, 'GET').then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    // let data = {
+                    //     "currency": {
+                    //         "currency_name": "Đồng",
+                    //         "currency_symbol": "VND",
+                    //         "prefix": "",
+                    //         "suffix": " VND",
+                    //         "affixesStay": true,
+                    //         "thousands": ".",
+                    //         "decimal": ",",
+                    //         "precision": 0,
+                    //         "allowZero": true,
+                    //         "allowNegative": false
+                    //     }, "status": 200
+                    // }
+                    // let data = {
+                    //     "currency": {
+                    //         "currency_name": "Dollar",
+                    //         "currency_symbol": "$",
+                    //         "prefix": "$ ",
+                    //         "suffix": "",
+                    //         "affixesStay": true,
+                    //         "thousands": ",",
+                    //         "decimal": ".",
+                    //         "precision": 2,
+                    //         "allowZero": true,
+                    //         "allowNegative": true
+                    //     }, "status": 200
+                    // };
+                    dataText = JSON.stringify(data);
+                    $('#urlCompanyConfigData').text(dataText);
+                    return data;
+                }).then((rs) => {
+                    return rs
                 });
-                break;
-            default:
-                data = {'': data.toString()}
-        }
-    } else {
-        ['status'].map((key) => {
-            delete data[key];
-        });
-    }
-    return data;
-};
-jQuery.fn.notifyErrors = (errs) => {
-    if (errs && typeof errs === 'object') {
-        let errors_converted = jQuery.fn.cleanDataNotify(errs);
-        Object.keys(errors_converted).map((key) => {
-            jQuery.fn.notifyB({'title': key, 'description': errors_converted[key]}, 'failure');
-        });
-    }
-}
+            }
+        } else return JSON.parse(dataText);
+    },
+    getCompanyCurrencyConfig: async function () {
+        let data = await $.fn.getCompanyConfig();
+        return data['currency'];
+    },
 
-jQuery.fn.switcherResp = function (resp) {
-    if (typeof resp === 'object') {
-        let status = 500;
-        if (resp.hasOwnProperty('status')) {
-            status = resp.status;
+    // FORM handler
+    serializerObject: function (formSelected) {
+        return formSelected.serializeArray().reduce((o, kv) => ({...o, [kv.name]: kv.value}), {});
+    },
+    formSubmit: function (formElement, notify = {'success': true, 'failure': true}, enableRedirect = true,) {
+        return new Promise(function (resolve, reject) {
+            let frm = new SetupFormSubmit($(formElement));
+            if (frm.dataUrl && frm.dataMethod) {
+                $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm).then((resp) => {
+                    if (notify.success) $.fn.notifyB({description: resp.detail}, 'info');
+                    resolve(resp);
+                    if (enableRedirect) if (frm.dataUrlRedirect) $.fn.redirectUrl(frm.dataUrlRedirect, frm.dataRedirectTimeout);
+                }, (err) => {
+                    console.log(err);
+                    console.log(err.detail);
+                    if (notify.failure) $.fn.notifyB({description: err.detail}, 'failure');
+                    if (reject) {
+                        reject(err);
+                    }
+                })
+            } else throw 'Setup call raise exception with URL or method is incorrect.!';
+        });
+    },
+    regexCurrency: (precision, decimal) => {
+        if (precision > 0 && decimal) return new RegExp(`[^\\d${decimal}]`, 'g');
+        return new RegExp(`\\D`, 'g');
+    },
+    initInputCurrency: function (configData) {
+        return this.attr(
+            'data-precision', configData.precision
+        ).attr(
+            'data-decimal', configData.decimal
+        ).maskMoney({
+            prefix: configData.prefix,
+            suffix: configData.suffix,
+            affixesStay: configData.affixesStay,
+            thousands: configData.thousands,
+            decimal: configData.decimal,
+            precision: configData.precision,
+            allowZero: configData.allowZero,
+            allowNegative: configData.allowNegative,
+        }).maskMoney('mask', parseFloat(this.val()));
+    },
+    valCurrency: function () {
+        let precision = this.attr('data-precision');
+        let decimal = this.attr('data-decimal');
+        let realValue = $.fn.val.apply(this, arguments);
+        let reg = $.fn.regexCurrency(precision, decimal);
+        let replaceValue = realValue.replace(reg, "");
+        let result = replaceValue.replace(decimal, ".");
+        if (realValue[0] === '-') result = '-' + result;
+
+        let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
+        switch (returnType) {
+            case 'text':
+                return result;
+            case 'number':
+                return Number(result);
         }
-        switch (status) {
-            case 200:
-                return resp.data
-            case 201:
-                return resp.data
-            case 400:
-                let mess = resp.data;
-                if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
-                $.fn.notifyErrors(mess);
-                return {};
-            case 401:
-                console.log(resp.data);
-                $.fn.notifyB({'description': resp.data}, 'failure');
-                return jQuery.fn.redirectLogin(500);
-            // return {}
-            case 403:
-                jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
-                return {};
-            case 500:
-                return {};
-            default:
-                return {};
+        throw Error("The money must be return type text or number, don't support: " + returnType);
+    },
+    parseCurrencyDisplay: function (configData) {
+        let eleInput = $('<input>', {
+            "type": 'text',
+            "class": "mask-money",
+            "value": this.attr('data-mask-value'),
+        });
+        eleInput.initInputCurrency(configData);
+        this.attr(
+            'data-precision', eleInput.attr('precision')
+        ).attr(
+            'data-decimal', eleInput.attr('decimal')
+        ).attr(
+            'data-money-pared', eleInput.val()
+        ).text(eleInput.val());
+    },
+
+    // HTTP response, redirect, Ajax
+    switcherResp: function (resp) {
+        if (typeof resp === 'object') {
+            let status = 500;
+            if (resp.hasOwnProperty('status')) {
+                status = resp.status;
+            }
+            switch (status) {
+                case 200:
+                    return resp.data
+                case 201:
+                    return resp.data
+                case 400:
+                    let mess = resp.data;
+                    if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
+                    $.fn.notifyErrors(mess);
+                    return {};
+                case 401:
+                    console.log(resp.data);
+                    $.fn.notifyB({'description': resp.data}, 'failure');
+                    return jQuery.fn.redirectLogin(500);
+                // return {}
+                case 403:
+                    jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
+                    return {};
+                case 500:
+                    return {};
+                default:
+                    return {};
+            }
         }
-    }
-}
+    },
+    cleanDataNotify: (data) => {
+        if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
+            data = data.errors;
+            switch (typeof data) {
+                case 'object':
+                    ['status'].map((key) => {
+                        delete data[key];
+                    });
+                    break;
+                default:
+                    data = {'': data.toString()}
+            }
+        } else {
+            ['status'].map((key) => {
+                delete data[key];
+            });
+        }
+        return data;
+    },
+    redirectLogin: function (timeout = 0, location_to_next = true) {
+        if (location_to_next === true) {
+            jQuery.fn.redirectUrl('/auth/login', timeout, 'next=' + window.location.pathname);
+        } else {
+            jQuery.fn.redirectUrl('/auth/login', timeout, '');
+        }
+
+    },
+    redirectUrl: function (redirectPath, timeout = 0, params = '') {
+        setTimeout(() => {
+            if (params && (params !== '' && params !== undefined)) {
+                window.location.href = redirectPath + '?' + params;
+            } else {
+                window.location.href = redirectPath;
+            }
+        }, timeout);
+    },
+    callAjax: function (url, method, data, headers = {}) {
+
+        return new Promise(function (resolve, reject) {
+            let ctx = {
+                url: url,
+                type: method,
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                headers: {"X-CSRFToken": headers},
+                success: function (rest) {
+                    let data = $.fn.switcherResp(rest);
+                    if (data) {
+                        resolve(rest);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    let resp_data = jqXHR.responseJSON;
+                    if (resp_data && typeof resp_data === 'object') {
+                        $.fn.switcherResp(resp_data);
+                        reject(resp_data);
+                    }
+                },
+            };
+            if (method.toLowerCase() === 'get') ctx.data = data
+            $.ajax(ctx);
+        });
+    },
+
+    // Table: loading
+    showLoading: function (timeout) {
+        $('#loadingContainer').removeClass('hidden');
+        if (timeout) {
+            setTimeout(
+                $.fn.hideLoading,
+                (timeout > 100 ? timeout : 1000)
+            );
+        }
+    },
+    hideLoading: function () {
+        $('#loadingContainer').addClass('hidden');
+    },
+})
 
 // support for Form Submit
 class SetupFormSubmit {
@@ -1262,26 +1459,6 @@ class SetupFormSubmit {
     }
 }
 
-jQuery.fn.formSubmit = function (formElement, notify = {'success': true, 'failure': true}, enableRedirect = true,) {
-    return new Promise(function (resolve, reject) {
-        let frm = new SetupFormSubmit($(formElement));
-        if (frm.dataUrl && frm.dataMethod) {
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm).then((resp) => {
-                if (notify.success) $.fn.notifyB({description: resp.detail}, 'info');
-                resolve(resp);
-                if (enableRedirect) if (frm.dataUrlRedirect) $.fn.redirectUrl(frm.dataUrlRedirect, frm.dataRedirectTimeout);
-            }, (err) => {
-                console.log(err);
-                console.log(err.detail);
-                if (notify.failure) $.fn.notifyB({description: err.detail}, 'failure');
-                if (reject) {
-                    reject(err);
-                }
-            })
-        } else throw 'Setup call raise exception with URL or method is incorrect.!';
-    });
-}
-
 // Extend and improvement base package
 String.format = function () {
     // String.format("{0} : {1}", "Fullname", "Nguyen Van A") => "Fullname : Nguyen Van A"
@@ -1338,67 +1515,6 @@ Array.prototype.convert_to_key = function (key = 'id') {
     return {};
 }
 
-
-$.fn.arraysEqual = function (a, b) {
-    if (a.length !== b.length) return false;
-    return a.every((value, index) => value === b[index]);
-}
-$.fn.arrayIncludesAll = function (a, b) {
-    return b.every(value => a.includes(value));
-}
-
-$.fn.shortName = function (name) {
-    return name.split(" ").map((item) => {
-        return item ? item.charAt(0) : ""
-    }).join("");
-}
-
-// DataTable Customize
-$.fn.DataTableDefault = function (opts, rowIdx = true) {
-    let defaultConfig = {
-        search: $.fn.DataTable.ext.type.search['html-numeric'],
-        searching: true,
-        ordering: false,
-        paginate: true,
-        pageLength: 10,
-        dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
-            "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
-        language: {
-            url: $('#msg-datatable-language-config').text().trim(),
-        },
-        drawCallback: function () {
-            feather.replace();
-        },
-        data: [],
-        ...opts
-    }
-    if (opts.ajax) delete defaultConfig['data'];
-    if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
-    let tbl = $(this).DataTable(defaultConfig);
-    tbl.on('init.dt', function () {
-        let minerGroup = $(this).closest('.waiter-miner-group');
-        if (minerGroup.length > 0) {
-            let filterGroup = $(minerGroup[0]).find('.miner-group');
-            let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
-            if (filterGroup.length > 0 && filterItem.length > 0) {
-                filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
-                filterGroup.append(filterItem);
-                $('.dataTables_filter input').removeClass('form-control-sm');
-            }
-        }
-        $(this).closest('.dataTables_wrapper').find('.select2').select2();
-    });
-    return tbl;
-};
-// -- DataTable Customize
-
-// Array Customize
-$.fn.sumArray = (array) => {
-    return array.reduce(function (acc, currentValue) {
-        return acc + currentValue;
-    }, 0);
-}
 // -- Array Customize}
 /**
  * common function for DataTable action
@@ -1418,13 +1534,13 @@ var DataTableAction = {
         div.html($content)
         div.appendTo('body');
         div.modal('show');
-        div.find('.btn').off().on('click', function(e){
+        div.find('.btn').off().on('click', function (e) {
             if ($(this).attr('data-type') === 'cancel') div.remove();
-            else{
+            else {
                 $.fn.callAjax(url, 'DELETE', data, crf)
                     .then(
                         (res) => {
-                            if (res.hasOwnProperty('status')){
+                            if (res.hasOwnProperty('status')) {
                                 div.modal('hide');
                                 if ($(row).length)
                                     $(row).closest('.table').DataTable().rows(row).remove().draw();
@@ -1436,3 +1552,31 @@ var DataTableAction = {
         })
     },
 }
+
+/**
+ * class support for currency function in base.html
+ * @func: convertCurrency => return string with format currency
+ * @param isNumber string number get from API
+ */
+class ExtendCurrency{
+    ConfigOption = [];
+
+    set setConfig(data){
+        this.ConfigOption = data
+    }
+
+    get getConfig(){
+        return this.ConfigOption
+    }
+
+    convertCurrency(isNumber){
+        let strNumber = '';
+        let html = jQuery('<input>')
+        html.attr('type', 'hidden')
+        html.appendTo('body')
+        strNumber = $(html).maskMoney(this.getConfig).maskMoney('mask', parseFloat(isNumber)).val();
+        html.remove()
+        return strNumber;
+    }
+}
+let CCurrency = new ExtendCurrency();

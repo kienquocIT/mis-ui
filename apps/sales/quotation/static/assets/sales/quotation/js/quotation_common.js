@@ -1243,7 +1243,6 @@ function setupDataExpense() {
 function setupDataTerm() {
     return {
         'price_list': $('#select-box-quotation-create-price-list').val(),
-        'discount_list': $('#select-box-quotation-create-discount-list').val(),
         'payment_term': $('#select-box-quotation-create-payment-term').val(),
     }
 }

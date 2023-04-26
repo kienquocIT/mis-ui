@@ -66,3 +66,18 @@ class QuotationListAPI(APIView):
             url=ApiURL.QUOTATION_LIST,
             msg=SaleMsg.QUOTATION_CREATE
         )
+
+
+class QuotationDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/quotation_detail.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'data': {'doc_id': pk},
+               }, status.HTTP_200_OK

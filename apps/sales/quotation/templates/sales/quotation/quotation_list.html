@@ -25,7 +25,7 @@
 
 {% block pageContent %}
     <input type="hidden" id="quotation-link"
-           data-link-update=""
+           data-link-update="{% url 'QuotationDetail' 1 %}"
            data-link-list="{% url 'QuotationList' %}"
     >
     <div class="row">

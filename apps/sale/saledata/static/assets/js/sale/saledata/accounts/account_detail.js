@@ -7,7 +7,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['account_detail'];
-                // console.log(data);
+                console.log(data);
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
                 $('#account-website-id').val(data.website);
@@ -295,7 +295,7 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
-                        if (current_account_owner.length > 0) {
+                        if (Object.keys(current_account_owner).length > 0) {
                             data.contact_list_not_map_account.push(current_account_owner);
                         }
                         ele.append(`<option selected></option>`)
@@ -454,7 +454,7 @@ $(document).ready(function () {
             frm.dataForm['account-owner'] = null;
         }
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
             .then(

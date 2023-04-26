@@ -26,15 +26,13 @@ $(document).ready(function () {
         }, {
             className: 'wrap-text',
             'data': 'code', render: (data, type, row, meta) => {
-                return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
-                            style="min-width: max-content; width: 70%" href="` + url_item_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
+                return `<span class="badge badge-soft-success" data-id="` + row.id + `"
+                            style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
             }
         }, {
             className: 'wrap-text',
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="` + url_item_detail.replace(0, row.id) + `" data-id="` + row.id + `">
-                        <span><b>` + row.title + `</b></span>
-                    </a>`
+                return `<span><b>` + row.title + `</b></span>`
             }
         }, {
             className: 'wrap-text',

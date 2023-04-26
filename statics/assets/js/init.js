@@ -1552,3 +1552,31 @@ var DataTableAction = {
         })
     },
 }
+
+/**
+ * class support for currency function in base.html
+ * @func: convertCurrency => return string with format currency
+ * @param isNumber string number get from API
+ */
+class ExtendCurrency{
+    ConfigOption = [];
+
+    set setConfig(data){
+        this.ConfigOption = data
+    }
+
+    get getConfig(){
+        return this.ConfigOption
+    }
+
+    convertCurrency(isNumber){
+        let strNumber = '';
+        let html = jQuery('<input>')
+        html.attr('type', 'hidden')
+        html.appendTo('body')
+        strNumber = $(html).maskMoney(this.getConfig).maskMoney('mask', parseFloat(isNumber)).val();
+        html.remove()
+        return strNumber;
+    }
+}
+let CCurrency = new ExtendCurrency();

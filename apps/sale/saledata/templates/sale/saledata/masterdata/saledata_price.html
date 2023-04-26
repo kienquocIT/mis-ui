@@ -412,7 +412,7 @@
                             <div class="form-group col-6">
                                 <label class="form-label">{% trans "Unit Type" %}</label>
                                 <select class="form-select" id="select-box-unit-type" name="unit_type" required>
-                                    <option value="" disabled selected>select option..</option>
+                                    <option value="" disabled selected hidden>select option..</option>
                                     {% for u in data.pay_terms_unit %}
                                         <option value="{{ u.value }}">{{ u.text }}</option>
                                     {% endfor %}
@@ -423,13 +423,15 @@
                                 <label class="form-label">{% trans "Value" %}</label>
                                 <input class="form-control" type="text" name="value"
                                        placeholder="40">
+                                <input name="value_amount" placeholder="40,000" type="text"
+                                       class="form-control mask-money hidden" data-return-type="text">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
                                 <label class="form-label">{% trans "Day Type" %}</label>
                                 <select class="form-select" id="select-box-day-type" name="day_type" required>
-                                    <option value="" disabled selected>select option..</option>
+                                    <option value="" disabled selected hidden>select option..</option>
                                     {% for t in data.pay_teams_type %}
                                         <option value="{{ t.value }}">{{ t.text }}</option>
                                     {% endfor %}
@@ -438,13 +440,16 @@
                             <div class="form-group col-6">
                                 <label class="form-label">{% trans "No of days" %}</label>
                                 <input class="form-control" type="number" min="0" max="365" name="no_of_days"
-                                       placeholder="0">
+                                       placeholder="0"
+                                       oninput="this.value = !!this.value && Math.abs(this.value) >= 0 ?
+                                        Math.abs(this.value) : null"
+                                >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans "After" %}</label>
                             <select id="select-box-after" class="form-select" name="after" required>
-                                <option value="" disabled selected>Select option..</option>
+                                <option value="" disabled selected hidden>Select option..</option>
                                 {% for a in data.pay_teams_after %}
                                     <option value="{{ a.value }}">{{ a.text }}</option>
                                 {% endfor %}

@@ -214,6 +214,8 @@
             function init_mask_money() {
                 $.fn.getCompanyCurrencyConfig().then((currencyConfig)=>{
                     if (currencyConfig) {
+                        // store config to global variable and then can export to other js file
+                        CCurrency.setConfig = currencyConfig;
                         $('input[type=text].mask-money').each((idx, item) => {
                             $(item).initInputCurrency(currencyConfig);
                         });

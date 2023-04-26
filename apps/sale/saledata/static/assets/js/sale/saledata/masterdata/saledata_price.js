@@ -801,10 +801,21 @@ $(document).ready(function () {
         $modalElm.find('[name="unit_type"]').off().on('change', function (e) {
             $(this).removeClass('is-invalid')
             e.stopPropagation();
-            if (parseInt(this.value) === 2)
+            if (parseInt(this.value) === 2){
+                $('[name="value"]').removeClass('hidden');
+                $('[name="value_amount"]').addClass('hidden');
                 $modalElm.find('[name="value"]').prop('readonly', true).val(
                     $('[name="unit_type"] option:selected').text());
-            else $modalElm.find('[name="value"]').prop('readonly', false).focus();
+            }
+            else if (parseInt(this.value) === 1){
+                $('[name="value"]').addClass('hidden');
+                $('[name="value_amount"]').removeClass('hidden')
+            }
+            else{
+                $('[name="value"]').removeClass('hidden');
+                $('[name="value_amount"]').addClass('hidden');
+                $modalElm.find('[name="value"]').prop('readonly', false).focus();
+            }
         })
     }
 
@@ -825,7 +836,15 @@ $(document).ready(function () {
                 after = data.after.hasOwnProperty('value') ? data.after.value : data.after;
             let $add_teams = $('#modal-add-table');
             $add_teams.attr('data-table-idx', rowIdx)
-            $add_teams.find('[name="value"]').val(data.value)
+            if (parseInt(unit) === 0 || parseInt(unit) === 2){
+                $add_teams.find('[name="value"]').val(data.value)
+                $add_teams.find('[name="value_amount"]').addClass('hidden')
+            }
+            else if (parseInt(unit) === 1){
+                $add_teams.find('[name="value_amount"]').val(data.value)
+                $add_teams.find('[name="value_amount"]').initInputCurrency(CCurrency.getConfig)
+                $add_teams.find('[name="value"]').addClass('hidden')
+            }
             $add_teams.find('[name="unit_type"]').val(unit).trigger('change')
             $add_teams.find('[name="day_type"]').val(day).trigger('change')
             $add_teams.find('[name="no_of_days"]').val(data.no_of_days)
@@ -891,8 +910,11 @@ $(document).ready(function () {
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<p>${row.value}</p>`
+                    render: (row, type, data) => {
+                        let textValue = data.value
+                        let UnitType = parseInt(data.unit_type.value ? data.unit_type.value : data.unit_type)
+                        if(UnitType === 1) textValue = CCurrency.convertCurrency(textValue)
+                        return `<p>${textValue}</p>`
                     }
                 },
                 {
@@ -1000,6 +1022,7 @@ $(document).ready(function () {
         let $modalForm = $('form', $(this).closest('.modal-body'))
         let convertData = {}
         convertData['value'] = $('#modal-add-table [name="value"]').val()
+        let value_amount = $('#modal-add-table [name="value_amount"]').valCurrency()
         convertData['unit_type'] = {
             text: $('#modal-add-table [name="unit_type"] option:selected').text(),
             value: $('#modal-add-table [name="unit_type"]').val()
@@ -1033,6 +1056,7 @@ $(document).ready(function () {
                 validate_unit_type = false
                 $modalForm.find('.invalid-feedback').html(temp_txt_invalid[1])
             }
+            convertData['value'] = value_amount
         }
         else{
             if (term_type_list.indexOf(2) !== -1 && $('#is_edited').val() !== 'true'){
@@ -1053,11 +1077,17 @@ $(document).ready(function () {
         }
         // end validate
 
-        if (!convertData.value || !convertData.day_type.value
-            || !convertData.unit_type.value || !convertData.after.value || !convertData.no_of_days) {
-            let txtKey = !convertData.value ? 'value' : !convertData.day_type.value ?
+        if (!convertData.unit_type.value
+            || (!convertData.value && convertData.unit_type.value === '0')
+            || (!value_amount && convertData.unit_type.value === '1')
+            || !convertData.day_type.value
+            || !convertData.after.value
+            || !convertData.no_of_days) {
+            let txtKey = !convertData.day_type.value ?
                 'day_type' : !convertData.unit_type.value ? 'unit_type' : !convertData.no_of_days ?
                     'no_of_days' : 'after';
+            if ((!convertData.value && convertData.unit_type.value === '0')
+                || (!value_amount && convertData.unit_type.value === '1')) txtKey = 'value'
             let errorTxt = $transElm.data('terms-' + txtKey)
             $.fn.notifyPopup({description: errorTxt}, 'failure')
             return false
@@ -1070,7 +1100,12 @@ $(document).ready(function () {
     // create new terms
     $('[data-bs-target="#modal-add-table"]').off().on('click', () => {
         $('#modal-add-table').removeAttr('data-table-idx');
-        $('#modal-add-table form')[0].reset();
+        let $modalForm = $('#modal-add-table form');
+        $modalForm[0].reset();
+        $modalForm.find('[name="value"]').removeClass('hidden')
+        $modalForm.find('[name="value_amount"]').addClass('hidden')
+        $modalForm.removeClass('was-validate');
+        $modalForm.find('.form-select').removeClass('is-invalid')
     })
 
     // form create submit

@@ -765,7 +765,7 @@ function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = 
 }
 
 function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, discount_id = null) {
-    currentRow.remove();
+    table.DataTable().row(currentRow).remove().draw();
     let order = 0;
     if (tableBody.rows.length === 0) {
         table.DataTable().clear();

@@ -295,7 +295,9 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
-                        data.contact_list_not_map_account.push(current_account_owner);
+                        if (current_account_owner.length > 0) {
+                            data.contact_list_not_map_account.push(current_account_owner);
+                        }
                         ele.append(`<option selected></option>`)
                         data.contact_list_not_map_account.map(function (item) {
                             if (item.id === current_account_owner.id) {
@@ -444,7 +446,15 @@ $(document).ready(function () {
             frm.dataForm['billing_address'] = billing_address_list;
         }
 
-        // console.log(frm.dataForm)
+        if (frm.dataForm['parent_account'] === '') {
+            frm.dataForm['parent_account'] = null;
+        }
+
+        if ($('#account-owner-id').val() === '') {
+            frm.dataForm['account-owner'] = null;
+        }
+
+        console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
             .then(

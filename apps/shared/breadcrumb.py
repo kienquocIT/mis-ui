@@ -88,6 +88,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    # Expense
+    EXPENSE_LIST_PAGE = BreadcrumbChildren(_('Expense list'), 'ExpenseList')
+    EXPENSE_CREATE_PAGE = BreadcrumbChildren(_('Expense create'), 'ExpenseCreate')
+    EXPENSE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -234,3 +239,7 @@ class BreadcrumbView:
         BreadcrumbItem.PRICE_LIST_PAGE
     ]
     PRICE_LIST_DETAIL_PAGE = PRICE_LIST_PAGE + [BreadcrumbItem.PRICE_LIST_DETAIL_PAGE]
+
+    EXPENSE_LIST_PAGE = [BreadcrumbItem.EXPENSE_LIST_PAGE]
+    EXPENSE_CREATE_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_CREATE_PAGE]
+    EXPENSE_DETAIL_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_DETAIL_PAGE]

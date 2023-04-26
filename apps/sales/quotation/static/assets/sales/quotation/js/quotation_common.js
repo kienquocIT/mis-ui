@@ -242,7 +242,7 @@ function loadBoxQuotationProduct(product_id, box_id) {
                 'title': data[i].title,
                 'code': data[i].code,
                 'unit_of_measure': default_uom,
-                'unit_price': data[i].unit_price,
+                'price_list': data[i].price_list,
                 'cost_price': data[i].cost_price,
                 'tax': tax_code,
             }).replace(/"/g, "&quot;");
@@ -445,7 +445,7 @@ function dataTableProduct(data, table_id) {
                 render: (data, type, row) => {
                     return `<div class="row">
                                 <select class="form-select table-row-tax" id="${row.selectTaxID}">
-                                    <option value=""></option>
+                                    <option value="" data-value="0"></option>
                                 </select>
                                 <input
                                     type="text"
@@ -681,7 +681,7 @@ function dataTableExpense(data, table_id) {
                 render: (data, type, row) => {
                     return `<div class="row">
                                 <select class="form-select table-row-tax" id="${row.selectTaxID}">
-                                    <option value=""></option>
+                                    <option value="" data-value="0"></option>
                                 </select>
                                 <input
                                     type="text"
@@ -733,16 +733,16 @@ function updateDiscountTotal(discount, pretax_id, taxes_id, total_id, discount_i
     $(eleTotal).maskMoney('mask', total);
 }
 
-function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = null) {
+function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
     let pretaxAmount = 0;
     let taxAmount = 0;
     let elePretaxAmount = document.getElementById(pretax_id);
     let eleDiscount = document.getElementById(discount_id);
     let eleTaxes = document.getElementById(taxes_id);
     let eleTotal = document.getElementById(total_id);
-    let tableLen = tableProduct.tBodies[0].rows.length;
+    let tableLen = table.tBodies[0].rows.length;
     for (let i = 0; i < tableLen; i++) {
-        let row = tableProduct.tBodies[0].rows[i];
+        let row = table.tBodies[0].rows[i];
         let subtotal = row.querySelector('.table-row-subtotal');
         if (subtotal) {
             if (subtotal.value) {
@@ -774,6 +774,94 @@ function updateTotal(tableProduct, pretax_id, taxes_id, total_id, discount_id = 
     $(eleTotal).maskMoney('mask', total);
 }
 
+function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
+    let price = 0;
+    let quantity = 0;
+    let elePrice = row.querySelector('.table-row-price');
+    if (elePrice) {
+        price = $(elePrice).valCurrency();
+    }
+    let eleQuantity = row.querySelector('.table-row-quantity');
+    if (eleQuantity) {
+        if (eleQuantity.value) {
+            quantity = parseInt(eleQuantity.value)
+        } else if (!eleQuantity.value || eleQuantity.value === "0") {
+            quantity = 0
+        }
+    }
+    let tax = 0;
+    let discount = 0;
+    let subtotal = (price * quantity);
+    let eleDiscount = row.querySelector('.table-row-discount');
+    if (eleDiscount) {
+        if (eleDiscount.value) {
+            discount = parseInt(eleDiscount.value)
+        } else if (!eleDiscount.value || eleDiscount.value === "0") {
+            discount = 0
+        }
+    }
+    if (discount || discount === 0) {
+        let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+        if (eleDiscountAmount) {
+            let discountAmount = ((price * discount) / 100);
+            eleDiscountAmount.value = discountAmount;
+            subtotal = ((price - discountAmount) * quantity);
+            $(eleDiscountAmount).maskMoney('mask', discountAmount);
+        }
+    }
+    let eleTax = row.querySelector('.table-row-tax');
+    if (eleTax) {
+        let optionSelected = eleTax.options[eleTax.selectedIndex];
+        if (optionSelected) {
+            tax = parseInt(optionSelected.getAttribute('data-value'));
+        }
+    }
+    if (tax || tax === 0) {
+        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+        if (eleTaxAmount) {
+            let taxAmount = ((subtotal * tax) / 100);
+            eleTaxAmount.value = taxAmount;
+            $(eleTaxAmount).maskMoney('mask', taxAmount);
+        }
+    }
+    let eleSubtotal = row.querySelector('.table-row-subtotal');
+    if (eleSubtotal) {
+        eleSubtotal.value = subtotal;
+        $(eleSubtotal).maskMoney('mask', subtotal);
+    }
+    if (is_product === true) {
+        updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+    } else if (is_cost === true) {
+        updateTotal(table[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total')
+    } else if (is_expense === true) {
+        updateTotal(table[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total')
+    }
+
+
+}
+
+function loadDataProductSelect(ele) {
+    let optionSelected = ele[0].options[ele[0].selectedIndex];
+    let productData = optionSelected.querySelector('.data-default');
+    if (productData) {
+        let data = JSON.parse(productData.value);
+        let uom = ele[0].closest('tr').querySelector('.table-row-uom');
+        let price = ele[0].closest('tr').querySelector('.table-row-price');
+        let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+        if (uom) {
+            uom.value = data.unit_of_measure.id;
+        }
+        if (price) {
+            price.value = data.price_list;
+            $(price).maskMoney('mask', parseFloat(data.price_list));
+        }
+        if (tax) {
+            tax.value = data.tax.id;
+        }
+        loadInformationSelectBox(ele);
+    }
+}
+
 function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, discount_id = null) {
     table.DataTable().row(currentRow).remove().draw();
     let order = 0;
@@ -789,118 +877,6 @@ function deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, 
         }
     }
     updateTotal(table[0], pretax_id, taxes_id, total_id, discount_id);
-}
-
-function updateRowTaxAmount(row, eleTotal) {
-    let eleTax = row.querySelector('.table-row-tax');
-    if (eleTax) {
-        let optionSelected = eleTax.options[eleTax.selectedIndex];
-        if (optionSelected) {
-            let subTotalVal = $(eleTotal).valCurrency();
-            let taxAmount = ((subTotalVal * Number(optionSelected.getAttribute('data-value'))) / 100);
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-            if (eleTaxAmount) {
-                eleTaxAmount.value = taxAmount;
-                $(eleTaxAmount).maskMoney('mask', taxAmount)
-            }
-        }
-    }
-}
-
-function changeQuantity(quantity, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
-    let discountValue = "";
-    let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-    if (eleDiscountAmount) {
-        if (eleDiscountAmount.value) {
-            discountValue = $(eleDiscountAmount).valCurrency();
-        }
-    }
-    let price = row.querySelector('.table-row-price');
-    let subtotal = "";
-    if (price) {
-        if (price.value && quantity) {
-            let priceVal = $(price).valCurrency();
-            if (discountValue) {
-                subtotal = ((priceVal - discountValue) * parseInt(quantity));
-            } else {
-                subtotal = parseInt(quantity) * priceVal;
-            }
-            let eleTotal = row.querySelector('.table-row-subtotal')
-            if (eleTotal && subtotal) {
-                eleTotal.value = subtotal;
-                $(eleTotal).maskMoney('mask', subtotal)
-                updateRowTaxAmount(row, eleTotal);
-            }
-        }
-    }
-    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
-}
-
-function changePrice(price, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
-    let discountValue = "";
-    let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-    if (eleDiscountAmount) {
-        if (eleDiscountAmount.value) {
-            discountValue = $(eleDiscountAmount).valCurrency();
-        }
-    }
-    let quantity = row.querySelector('.table-row-quantity');
-    let subtotal = "";
-    if (quantity) {
-        if (quantity.value && price) {
-            if (discountValue) {
-                subtotal = ((price - discountValue) * parseInt(quantity.value));
-            } else {
-                subtotal = (price * parseInt(quantity.value));
-            }
-            let eleTotal = row.querySelector('.table-row-subtotal')
-            if (eleTotal && subtotal) {
-                eleTotal.value = subtotal;
-                $(eleTotal).maskMoney('mask', subtotal)
-                updateRowTaxAmount(row, eleTotal)
-            }
-        }
-    }
-    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
-}
-
-function changeTax(tax, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
-    let subtotal = row.querySelector('.table-row-subtotal');
-    if (subtotal) {
-        let subtotalVal = $(subtotal).valCurrency();
-        if (subtotalVal && tax) {
-            let taxAmount = ((subtotalVal * Number(tax)) / 100);
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-            if (eleTaxAmount) {
-                eleTaxAmount.value = taxAmount;
-                $(eleTaxAmount).maskMoney('mask', taxAmount)
-            }
-        }
-    }
-    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
-}
-
-function changeDiscount(discount, row, table, pretax_id, taxes_id, total_id, discount_id = null) {
-    let eleDiscount = row.querySelector('.table-row-discount-amount');
-    let elePrice = row.querySelector('.table-row-price');
-    let eleQuantity = row.querySelector('.table-row-quantity');
-    let eleSubtotal = row.querySelector('.table-row-subtotal');
-    if (discount && eleDiscount && elePrice) {
-        if (elePrice.value) {
-            let priceVal = $(elePrice).valCurrency();
-            let discountAmount = ((priceVal * Number(discount)) / 100);
-            eleDiscount.value = discountAmount;
-            if (eleQuantity && discountAmount && eleSubtotal) {
-                if (eleQuantity.value) {
-                    let subtotal = ((priceVal - discountAmount) * parseInt(eleQuantity.value));
-                    eleSubtotal.value = subtotal;
-                    $(eleSubtotal).maskMoney('mask', subtotal);
-                }
-            }
-            $(eleDiscount).maskMoney('mask', discountAmount);
-        }
-    }
-    updateTotal(table, pretax_id, taxes_id, total_id, discount_id);
 }
 
 function loadInformationSelectBox(ele) {
@@ -1240,13 +1216,6 @@ function setupDataExpense() {
     return []
 }
 
-function setupDataTerm() {
-    return {
-        'price_list': $('#select-box-quotation-create-price-list').val(),
-        'payment_term': $('#select-box-quotation-create-payment-term').val(),
-    }
-}
-
 function setupDataLogistic() {
     return {
         'shipping_address': $('#quotation-create-shipping-address').val(),
@@ -1275,6 +1244,5 @@ function setupDataSubmit(_form) {
     _form.dataForm['quotation_costs_data'] = setupDataCost();
     _form.dataForm['quotation_expenses_data'] = setupDataExpense();
 
-    _form.dataForm['quotation_term_data'] = setupDataTerm();
     _form.dataForm['quotation_logistic_data'] = setupDataLogistic();
 }

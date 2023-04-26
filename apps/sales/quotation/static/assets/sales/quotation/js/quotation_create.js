@@ -169,54 +169,13 @@ $(function () {
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
         });
 
-// Action on change product
-        tableProduct.on('change', '.table-row-item', function (e) {
-            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            let productData = optionSelected.querySelector('.data-default');
-            if (productData) {
-                let data = JSON.parse(productData.value);
-                let uom = $(this)[0].closest('tr').querySelector('.table-row-uom');
-                let price = $(this)[0].closest('tr').querySelector('.table-row-price');
-                let tax = $(this)[0].closest('tr').querySelector('.table-row-tax');
-                if (uom) {
-                    uom.value = data.unit_of_measure.id;
-                }
-                if (price) {
-                    price.value = data.unit_price;
-                    $(price).maskMoney('mask', parseFloat(data.unit_price));
-                    let priceVal = $(price).valCurrency();
-                    changePrice(priceVal, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
-                }
-                if (tax) {
-                    tax.value = data.tax.id;
-                    changeTax(data.tax.rate, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
-                }
-            loadInformationSelectBox($(this));
+// ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
+        tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function (e) {
+            let row = $(this)[0].closest('tr');
+            if ($(this).hasClass('table-row-item')) {
+                loadDataProductSelect($(this));
             }
-        });
-
-// Action on change product quantity
-        tableProduct.on('change', '.table-row-quantity', function (e) {
-            changeQuantity($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
-        });
-
-// Action on change product price
-        tableProduct.on('change', '.table-row-price', function (e) {
-            let price = $(this).valCurrency();
-            if (price) {
-                changePrice(price, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
-            }
-        });
-
-// Action on change product tax
-        tableProduct.on('change', '.table-row-tax', function (e) {
-            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount');
-        });
-
-// Action on change product tax
-        tableProduct.on('change', '.table-row-discount', function (e) {
-            changeDiscount($(this)[0].value, $(this)[0].closest('tr'), tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            commonCalculate(tableProduct, row, true, false, false);
         });
 
 // Action on change total discount of product
@@ -255,23 +214,13 @@ $(function () {
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
         });
 
-// Action on change expense quantity
-        tableExpense.on('change', '.table-row-quantity', function (e) {
-            changeQuantity($(this)[0].value, $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
-        });
-
-// Action on change expense price
-        tableExpense.on('change', '.table-row-price', function (e) {
-            let price = $(this).valCurrency();
-            if (price) {
-                changePrice(price, $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+// ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
+        tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
+            let row = $(this)[0].closest('tr');
+            if ($(this).hasClass('table-row-item')) {
+                // loadDataProductSelect($(this));
             }
-        });
-
-// Action on change expense tax
-        tableExpense.on('change', '.table-row-tax', function (e) {
-            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableExpense[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            commonCalculate(tableExpense, row, false, false, true);
         });
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
@@ -299,7 +248,6 @@ $(function () {
 
                     let valueQuantity = "";
                     let valuePrice = "";
-                    let optionTax = ``;
                     let taxDataStr = "";
                     let valueTaxSelected = "";
                     let valueTaxAmount = "";
@@ -408,25 +356,19 @@ $(function () {
                         }
                     }
 
-
                 }
                 // update total
                 updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
             }
         });
 
-// Action on change cost price
-        tableCost.on('change', '.table-row-price', function (e) {
-            let price = $(this).valCurrency();
-            if (price) {
-                changePrice(price, $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+// ******** Action on change data of table row COST => calculate data for row & calculate data total
+        tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
+            let row = $(this)[0].closest('tr');
+            if ($(this).hasClass('table-row-item')) {
+                // loadDataProductSelect($(this));
             }
-        });
-
-// Action on change cost tax
-        tableCost.on('change', '.table-row-tax', function (e) {
-            let optionSelected = $(this)[0].options[$(this)[0].selectedIndex];
-            changeTax(optionSelected.getAttribute('data-value'), $(this)[0].closest('tr'), tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+            commonCalculate(tableCost, row, false, true, false);
         });
 
 // Action on click button collapse
@@ -447,7 +389,7 @@ $(function () {
             }
         });
 
-// Action on click choose shipping
+// Action on click choose billing
         modalBilling.on('click', '.choose-billing', function (e) {
             // Enable other buttons
             $('.choose-billing').prop('disabled', false);

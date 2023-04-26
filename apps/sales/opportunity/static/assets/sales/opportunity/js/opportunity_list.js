@@ -51,7 +51,7 @@ $(function () {
                     targets: 1,
                     render: (data, type, row) => {
                         const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.title}</a>`
+                        return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.code}</a>`
                     }
                 },
                 {

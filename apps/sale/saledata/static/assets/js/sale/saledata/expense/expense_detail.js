@@ -20,7 +20,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     chooseTaxCode.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
-                        if(item.id === id)
+                        if (item.id === id)
                             chooseTaxCode.append(`<option value="` + item.id + `" selected>` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                         else
                             chooseTaxCode.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -33,6 +33,7 @@ $(document).ready(function () {
 
     function loadUoM(group_id, id) {
         let chooseUom = $('#chooseUom');
+        chooseUom.html('');
         let frm = new SetupFormSubmit(chooseUom);
         $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -41,7 +42,7 @@ $(document).ready(function () {
                     chooseUom.append(`<option></option>`);
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.id === group_id) {
-                            if(item.id === id)
+                            if (item.id === id)
                                 chooseUom.append(`<option value="` + item.id + `" selected>` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                             else
                                 chooseUom.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -62,7 +63,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     chooseUoMGroup.append(`<option></option>`);
                     resp.data.unit_of_measure_group.map(function (item) {
-                        if(item.id === id)
+                        if (item.id === id)
                             chooseUoMGroup.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
                         else
                             chooseUoMGroup.append(`<option value="` + item.id + `">` + item.title + `</option>`);
@@ -270,24 +271,23 @@ $(document).ready(function () {
                     loadExpenseType(data.expense.general_information.expense_type.id);
                     loadUoMGroup(data.expense.general_information.uom_group.id);
                     loadUoM(data.expense.general_information.uom_group.id, data.expense.general_information.uom.id);
-                    if(data.expense.general_information.tax_code !== null)
+                    if (data.expense.general_information.tax_code !== null)
                         loadTaxCode(data.expense.general_information.tax_code.id);
                     else
                         loadTaxCode(null);
 
                     let price_list_expense = data.expense.general_information.price_list;
-                    price_list_expense.map(function (item){
-                        if (price_dict[item.id].auto_update === false){
+                    price_list_expense.map(function (item) {
+                        if (price_dict[item.id].auto_update === false) {
                             document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).disabled = false;
                         }
                         document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
-                        document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price_value;
+                        if (item.currency === currency_primary.id)
+                            document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price_value;
                     })
-
+                    autoSelectPriceListCopyFromSource(price_dict)
                 }
             }
-        }).then((resp)=>{
-            autoSelectPriceListCopyFromSource(price_dict)
         })
     }
 
@@ -309,7 +309,7 @@ $(document).ready(function () {
             'tax_code': frm.dataForm['tax_code'],
         }
 
-        let price_list = []
+        let price_list_add = []
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
             if (price_dict[$(this).attr('data-id')].auto_update === false) {
@@ -317,7 +317,7 @@ $(document).ready(function () {
             }
             if ($(`input[type="checkbox"][data-id="` + $(this).attr('data-id') + `"]`).prop('checked') === true) {
                 if ($(this).val() !== '') {
-                    price_list.push(
+                    price_list_add.push(
                         {
                             'id': $(this).attr('data-id'),
                             'value': parseFloat($(this).val().replace(/\./g, '').replace(',', '.')),
@@ -325,7 +325,7 @@ $(document).ready(function () {
                         }
                     )
                 } else {
-                    price_list.push(
+                    price_list_add.push(
                         {
                             'id': $(this).attr('data-id'),
                             'value': 0,
@@ -335,11 +335,9 @@ $(document).ready(function () {
                 }
             }
         })
+        frm.dataForm['general_information']['price_list'] = price_list_add;
+        frm.dataForm['general_information']['currency_using'] = currency_primary.id;
 
-        if (price_list.length > 0) {
-            frm.dataForm['general_information']['price_list'] = price_list;
-            frm.dataForm['general_information']['currency_using'] = currency_primary.id;
-        }
 
         $.fn.callAjax(frm.dataUrl.replace('1', pk), frm.dataMethod, frm.dataForm, csr)
             .then(

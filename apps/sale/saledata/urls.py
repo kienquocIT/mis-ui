@@ -6,9 +6,11 @@ from apps.sale.saledata.views.accounts import (
     ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
-    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail
+    IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
+    AccountDetail
 )
 from apps.sale.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
+from apps.sale.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, ExpenseDetailAPI
 from apps.sale.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI,
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
@@ -126,4 +128,12 @@ urlpatterns = [
         DeleteCurrencyFromPriceListAPI.as_view(),
         name='DeleteCurrencyFromPriceListAPI',
     )
+] + [
+    path('account/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
+] + [
+    path('expenses', ExpenseList.as_view(), name='ExpenseList'),
+    path('expenses/api', ExpenseListAPI.as_view(), name='ExpenseListAPI'),
+    path('expenses/create', ExpenseCreate.as_view(), name='ExpenseCreate'),
+    path('expense/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
+    path('expense/api/<str:pk>', ExpenseDetailAPI.as_view(), name='ExpenseDetailAPI'),
 ]

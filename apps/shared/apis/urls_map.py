@@ -144,11 +144,16 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
 
+    # expense
+    EXPENSE_LIST = StringUrl('saledata/expenses')
+    EXPENSE_DETAIL = StringUrl('saledata/expense/{expense_id}')
+
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')

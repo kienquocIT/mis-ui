@@ -105,7 +105,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
-    ACCOUNT_DETAIL = StringUrl('saledata/account')
+    ACCOUNT_DETAIL = StringUrl('saledata/account/')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
 
     # masterdata/product
@@ -149,3 +149,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    # address
+    COUNTRIES = StringUrl('base/location/countries')
+    CITIES = StringUrl('base/location/cities')
+    DISTRICTS = StringUrl('base/location/districts?city_id=')
+    WARDS = StringUrl('base/location/wards?district_id=')

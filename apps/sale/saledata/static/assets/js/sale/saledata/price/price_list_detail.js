@@ -26,29 +26,29 @@ $(document).ready(function () {
         }, {
             className: 'wrap-text',
             'data': 'code', render: (data, type, row, meta) => {
-                return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
-                            style="min-width: max-content; width: 70%" href="` + url_item_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
+                return `<span class="badge badge-soft-success" data-id="` + row.id + `"
+                            style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
             }
         }, {
             className: 'wrap-text',
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="` + url_item_detail.replace(0, row.id) + `" data-id="` + row.id + `">
-                        <span><b>` + row.title + `</b></span>
-                    </a>`
+                return `<span><b>` + row.title + `</b></span>`
             }
         }, {
             className: 'wrap-text',
             'data': 'uom_group', 'render': (data, type, row, meta) => {
-                return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span></div>
+                return `<div class="row"><center>
+                            <div class="col-10" style="padding-right: 5px">
+                                <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
+                            </div></center>
                         </div>`
             }
         }, {
             className: 'wrap-text',
             'data': 'uom', 'render': (data, type, row, meta) => {
-                return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
-                        </div>`
+                return `<div class="row"><center>
+                        <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
+                        </center></div>`
             }
         },]
     }

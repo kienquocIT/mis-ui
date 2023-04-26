@@ -85,9 +85,20 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Price
-
     PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Expense
+    EXPENSE_LIST_PAGE = BreadcrumbChildren(_('Expense list'), 'ExpenseList')
+    EXPENSE_CREATE_PAGE = BreadcrumbChildren(_('Expense create'), 'ExpenseCreate')
+    EXPENSE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Opportunity
+    OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
+
+    # Quotation
+    QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
+    QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
 
 
 class BreadcrumbView:
@@ -236,3 +247,18 @@ class BreadcrumbView:
         BreadcrumbItem.PRICE_LIST_PAGE
     ]
     PRICE_LIST_DETAIL_PAGE = PRICE_LIST_PAGE + [BreadcrumbItem.PRICE_LIST_DETAIL_PAGE]
+
+    EXPENSE_LIST_PAGE = [BreadcrumbItem.EXPENSE_LIST_PAGE]
+    EXPENSE_CREATE_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_CREATE_PAGE]
+    EXPENSE_DETAIL_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_DETAIL_PAGE]
+
+    # Opportunity
+    OPPORTUNITY_LIST_PAGE = [
+        BreadcrumbItem.OPPORTUNITY_LIST_PAGE
+    ]
+
+    # Quotation
+    QUOTATION_LIST_PAGE = [
+        BreadcrumbItem.QUOTATION_LIST_PAGE
+    ]
+    QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_CREATE_PAGE]

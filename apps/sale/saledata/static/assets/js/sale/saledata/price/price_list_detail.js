@@ -37,16 +37,18 @@ $(document).ready(function () {
         }, {
             className: 'wrap-text',
             'data': 'uom_group', 'render': (data, type, row, meta) => {
-                return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span></div>
+                return `<div class="row"><center>
+                            <div class="col-10" style="padding-right: 5px">
+                                <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
+                            </div></center>
                         </div>`
             }
         }, {
             className: 'wrap-text',
             'data': 'uom', 'render': (data, type, row, meta) => {
-                return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
-                        </div>`
+                return `<div class="row"><center>
+                        <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
+                        </center></div>`
             }
         },]
     }

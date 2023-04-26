@@ -98,6 +98,7 @@
                                                 class="form-select" id="select-box-quotation-create-opportunity"
                                                 data-url="{% url "OpportunityListAPI" %}"
                                                 data-method="GET"
+                                                data-link-detail="{% url "OpportunityList" %}"
                                                 name="opportunity"
                                             ></select>
                                         </span>
@@ -126,7 +127,7 @@
                                                     id="select-box-quotation-create-customer"
                                                     data-url="{% url "AccountListAPI" %}"
                                                     data-method="GET"
-                                                    data-link-detail=""
+                                                    data-link-detail="{% url "AccountList" %}"
                                                     name="customer"
                                                     required
                                             ></select>

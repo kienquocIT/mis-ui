@@ -81,14 +81,7 @@ $(function () {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input 
-                                        type="text" 
-                                        class="form-control mask-money" 
-                                        value="${row.total_product}"
-                                        data-return-type="number"
-                                    >
-                                </div>`
+                        return `<p>${row.total_product.toLocaleString('en-US').replace(/,/g, '.')} VND</p>`
                     }
                 },
                 {

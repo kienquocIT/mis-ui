@@ -105,6 +105,9 @@ function loadBoxQuotationContact(contact_id, valueToSelect = null) {
                         }
                         ele.append(dataAppend)
                     })
+                    if (valueToSelect) {
+                        loadInformationSelectBox(ele);
+                    }
                 }
             }
         }

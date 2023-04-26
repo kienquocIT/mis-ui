@@ -23,8 +23,8 @@ class OpportunityList(View):
     @mask_view(
         auth_require=True,
         template='sales/opportunity/opportunity_list.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_opportunity_list',
+        breadcrumb='OPPORTUNITY_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

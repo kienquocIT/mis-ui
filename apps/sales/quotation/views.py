@@ -24,8 +24,8 @@ class QuotationList(View):
     @mask_view(
         auth_require=True,
         template='sales/quotation/quotation_list.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_quotation_list',
+        breadcrumb='QUOTATION_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -35,8 +35,8 @@ class QuotationCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/quotation/quotation_create.html',
-        breadcrumb='',
         menu_active='',
+        breadcrumb='QUOTATION_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

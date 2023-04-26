@@ -221,20 +221,30 @@ function loadBoxQuotationProduct(product_id, box_id) {
         eleBox.attr('data-link-detail', linkDetail);
         let data = JSON.parse(ele.value);
         for (let i = 0; i < data.length; i++) {
+            let uom_title = "";
+            let default_uom = {};
+            let tax_code = {};
+            if (data[i].sale_information) {
+                if (data[i].sale_information.default_uom) {
+                    uom_title = data[i].sale_information.default_uom.title
+                }
+                default_uom = data[i].sale_information.default_uom;
+                tax_code = data[i].sale_information.tax_code;
+            }
             let dataStr = JSON.stringify({
                 'id': data[i].id,
                 'title': data[i].title,
                 'code': data[i].code,
-                'unit of measure': data[i].sale_information.default_uom.title,
+                'unit of measure': uom_title,
             }).replace(/"/g, "&quot;");
             let product_data = JSON.stringify({
                 'id': data[i].id,
                 'title': data[i].title,
                 'code': data[i].code,
-                'unit_of_measure': data[i].sale_information.default_uom,
+                'unit_of_measure': default_uom,
                 'unit_price': data[i].unit_price,
                 'cost_price': data[i].cost_price,
-                'tax': data[i].sale_information.tax_code,
+                'tax': tax_code,
             }).replace(/"/g, "&quot;");
             eleBox.append(`<option value="${data[i].id}">
                             <span class="product-title">${data[i].title}</span>

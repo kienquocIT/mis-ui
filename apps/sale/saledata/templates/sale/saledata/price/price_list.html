@@ -8,6 +8,7 @@
             type="text/css"
     />
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.0/dist/sweetalert2.min.css" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -32,10 +33,10 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-
-
     <table id="datatable-price-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceListAPI" %}"
-           data-url-detail="{% url "PriceListDetail" pk=0 %}" data-method="GET">
+           data-url-detail="{% url "PriceListDetail" pk=0 %}"
+           data-url-delete="{% url "PriceDeleteAPI" pk=0 %}"
+           data-method="GET">
         <thead>
         <th class="w-5">
             <span class="form-check">
@@ -164,4 +165,5 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.0/dist/sweetalert2.all.min.js"></script>
 {% endblock %}

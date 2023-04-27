@@ -376,7 +376,7 @@ $(document).ready(function () {
             }
         })
 
-//onchage checkbox auto-update
+// onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
@@ -637,7 +637,6 @@ $(document).ready(function () {
     })
 
 // delete item
-
     $(document).on('click', '.btn-del', function () {
         if (confirm("Confirm Delete ?") === true) {
             let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
@@ -693,8 +692,7 @@ $(document).ready(function () {
         }
     })
 
-    //display currency
-
+//display currency
     $(document).on('change', '.display-currency', function () {
         let dataId = $(this).attr('data-id')
         let col = $(`.price-currency-exists[data-id="` + dataId + `"]`);

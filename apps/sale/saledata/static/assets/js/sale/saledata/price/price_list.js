@@ -56,16 +56,27 @@ $(document).ready(function () {
             }, {
                 'data': 'status', render: (data, type, row, meta) => {
                     let badge_type = '';
-                    if (row.status === 'Valid') {badge_type = 'badge-green'}
-                    else if (row.status === 'Invalid') {badge_type = 'badge-orange'}
-                    else if (row.status === 'Expired') {badge_type = 'badge-red'}
-                    else {badge_type = 'badge-gray'}
+                    if (row.status === 'Valid') {
+                        badge_type = 'badge-green'
+                    } else if (row.status === 'Invalid') {
+                        badge_type = 'badge-orange'
+                    } else if (row.status === 'Expired') {
+                        badge_type = 'badge-red'
+                    } else {
+                        badge_type = 'badge-gray'
+                    }
 
-                    return `<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span>&nbsp;`+ row.status +`</span>`;
+                    return `<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span>&nbsp;` + row.status + `</span>`;
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
-                    return ``;
+                    if (row.is_default === false) {
+                        return `<a data-method="DELETE" data-id="` + row.id + `" class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button delete-price-list-btn">
+                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
+                                </a>`;
+                    } else {
+                        return ``
+                    }
                 }
             }]
         }
@@ -221,17 +232,85 @@ $(document).ready(function () {
             )
         })
 
+        // delete price list
+        // $(document).on('click', '.delete-price-list-btn', function () {
+        //     if (confirm("Confirm Delete ?") === true) {
+        //         let data_url = $(this).closest('table').attr('data-url-delete').replace(0, $(this).attr('data-id'))
+        //         let csr = $("input[name=csrfmiddlewaretoken]").val();
+        //         $.fn.callAjax(data_url, 'PUT', {}, csr)
+        //             .then(
+        //                 (resp) => {
+        //                     let data = $.fn.switcherResp(resp);
+        //                     if (data) {
+        //                         $.fn.notifyPopup({description: "Successfully"}, 'success')
+        //                         setTimeout(function () {
+        //                             location.reload()
+        //                         }, 1000);
+        //                     }
+        //                 },
+        //                 (errs) => {
+        //                     // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+        //                 })
+        //     }
+        // })
 
-		/* Date range picker with times*/
-		$('#valid_time').daterangepicker({
-			timePicker: true,
-			startDate: moment().startOf('millisecond').add(5, 'minutes'),
-			endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
-			"cancelClass": "btn-secondary",
-			locale: {
-			    format: 'YYYY-MM-DD HH:mm:00.00'
-			},
+        /* Date range picker with times*/
+        $('#valid_time').daterangepicker({
+            timePicker: true,
+            startDate: moment().startOf('millisecond').add(5, 'minutes'),
+            endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
+            "cancelClass": "btn-secondary",
+            locale: {
+                format: 'YYYY-MM-DD HH:mm:00.00'
+            },
             drops: 'down'
-		});
+        });
+
+
+        $(document).on("click", '.delete-price-list-btn', function (e) {
+            Swal.fire({
+                html:
+                    '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
+                    '<h6 class="text-danger">Delete Price List ?</h6>',
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value) {
+                    let data_url = $(this).closest('table').attr('data-url-delete').replace(0, $(this).attr('data-id'))
+                    let csr = $("input[name=csrfmiddlewaretoken]").val();
+                    $.fn.callAjax(data_url, 'PUT', {}, csr)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                    setTimeout(function () {
+                                        location.reload()
+                                    }, 1000);
+                                }
+                            },
+                            (errs) => {
+                                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                                Swal.fire({
+                                    html:
+                                        '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
+                                    customClass: {
+                                        content: 'text-center',
+                                        confirmButton: 'btn btn-primary',
+                                    },
+                                    buttonsStyling: false,
+                                })
+                            })
+                }
+            })
+        });
     })
 })

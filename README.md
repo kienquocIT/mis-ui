@@ -127,6 +127,12 @@ plugin using for combobox with auto init and search real time
 ```
 *[vendors/select2/dist/js/init-select2.js](/statics/vendors/select2/dist/js/init-select2.js)*
 
+3. select combobox with icon INFO
+![](README_IMG/select2_info_popup.png)
+```text
+ follow how to setup in init-select2.js line 18
+```
+
 ---
 
 ### dataTables how to use

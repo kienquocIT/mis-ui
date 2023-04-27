@@ -259,19 +259,5 @@ $(function () {
     Method.init();
 
     // custom select2 PopupInfo
-    let dumpData = [
-        {
-            id: 0,
-            text: 'Valid time'
-        },{
-            id: 1,
-            text: 'Week'
-        },{
-            id: 2,
-            text: 'Month'
-        },
-    ]
-    $('select[name="customer_per"]').select2({
-        data: dumpData,
-    });
+    initSelectBox($('select[name="customer_per"]'));
 });

@@ -42,10 +42,14 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShippi
                 if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
                     ele.append(`<option value=""></option>`);
                     data.account_list.map(function (item) {
+                        let ownerName = "";
+                        if (item.owner) {
+                            ownerName = item.owner.fullname;
+                        }
                         let dataStr = JSON.stringify({
                             'id': item.id,
                             'Name': item.name,
-                            'Owner name': item.owner.fullname,
+                            'Owner name': ownerName,
                         }).replace(/"/g, "&quot;");
                         let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
                         let dataAppend = `<option value="${item.id}">
@@ -412,12 +416,9 @@ function dataTableProduct(data, table_id) {
                 targets: 5,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-price" 
-                                    data-return-type="number"
-                                    required
-                                >
+                                <select class="form-select table-row-price" required>
+                                    <option value="0"></option>
+                                </select>
                             </div>`;
                 }
             },
@@ -852,8 +853,18 @@ function loadDataProductSelect(ele) {
             uom.value = data.unit_of_measure.id;
         }
         if (price) {
-            price.value = data.price_list;
-            $(price).maskMoney('mask', parseFloat(data.price_list));
+            for (let i = 0; i < data.price_list.length; i++) {
+                let option = `<option value="${data.price_list[i]}">
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money" 
+                                    data-return-type="number"
+                                    value="${data.price_list[i]}"
+                                    required
+                                >
+                            </option>`
+                $(price).append(option);
+            }
         }
         if (tax) {
             tax.value = data.tax.id;

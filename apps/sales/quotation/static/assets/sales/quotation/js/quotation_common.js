@@ -853,16 +853,18 @@ function loadDataProductSelect(ele) {
             uom.value = data.unit_of_measure.id;
         }
         if (price) {
+            let minVal = Math.min(...data.price_list);
             for (let i = 0; i < data.price_list.length; i++) {
-                let option = `<option value="${data.price_list[i]}">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money" 
-                                    data-return-type="number"
-                                    value="${data.price_list[i]}"
-                                    required
-                                >
+                let option = ``;
+                if (data.price_list[i] === minVal) {
+                    option = `<option value="${data.price_list[i]}" selected>
+                                ${CCurrency.convertCurrency(data.price_list[i])}
                             </option>`
+                } else {
+                    option = `<option value="${data.price_list[i]}">
+                                ${CCurrency.convertCurrency(data.price_list[i])}
+                            </option>`
+                }
                 $(price).append(option);
             }
         }

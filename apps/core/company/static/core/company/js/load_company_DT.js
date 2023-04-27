@@ -133,9 +133,9 @@ $(function () {
                 if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
                     data.currency_list.map(function (item) {
                         if (item.is_primary === true) {
-                            ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            ele.append(`<option value="` + item.id + `" selected>` + item.abbreviation + `</option>`)
                         } else {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            ele.append(`<option value="` + item.id + `">` + item.abbreviation + `</option>`)
                         }
                     })
                 }

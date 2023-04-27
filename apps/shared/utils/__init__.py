@@ -3,6 +3,8 @@ import string
 
 import random
 
+__all__ = ['RandomGenerate', 'LocaleInfo']
+
 
 class RandomGenerate:
     """general random"""
@@ -145,3 +147,38 @@ class RandomGenerate:
             # return
             return str(result)
         return ''
+
+
+class LocaleInfo:
+    currencies = {
+        'vi': {
+            'currency_name': 'Đồng',
+            'currency_symbol': 'VND',
+            'prefix': '',
+            'suffix': ' VND',
+            'affixesStay': True,
+            'thousands': '.',
+            'decimal': ',',
+            'precision': 0,
+            'allowZero': True,
+            'allowNegative': False,
+        },
+        'en': {
+            'currency_name': 'Dollar',
+            'currency_symbol': '$',
+            'prefix': '$ ',
+            'suffix': '',
+            'affixesStay': True,
+            'thousands': ',',
+            'decimal': '.',
+            'precision': 2,
+            'allowZero': True,
+            'allowNegative': True,
+        }
+    }
+
+    @classmethod
+    def get_currency(cls, locale_code):
+        if locale_code in cls.currencies:
+            return cls.currencies[locale_code]
+        return cls.currencies['vi']

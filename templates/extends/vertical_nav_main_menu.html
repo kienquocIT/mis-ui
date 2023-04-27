@@ -78,39 +78,6 @@
                                         </span>
                                     </a>
                                 </li>
-                                {#                                <li class="nav-item">#}
-                                {#                                    <a#}
-                                {#                                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"#}
-                                {#                                            data-bs-target="#menu_group_child"#}
-                                {#                                    >#}
-                                {#                                        <span class="nav-icon-wrap">#}
-                                {#                                            <span class="svg-icon menu-child-icon">#}
-                                {#                                                <i class="fas fa-users"></i>#}
-                                {#                                            </span>#}
-                                {#                                        </span>#}
-                                {#                                        <span class="nav-link-text">#}
-                                {#                                            {% trans 'Group' %}#}
-                                {#                                        </span>#}
-                                {#                                    </a>#}
-                                {#                                    <ul id="menu_group_child" class="nav flex-column collapse  nav-children">#}
-                                {#                                        <li class="nav-item">#}
-                                {#                                            <ul class="nav flex-column">#}
-                                {#                                                <li class="nav-item" id="menu_group_list">#}
-                                {#                                                    <a class="nav-link" href="{% url 'GroupList' %}">#}
-                                {#                                                        <span class="nav-icon-wrap">#}
-                                {#                                                            <span class="svg-icon menu-child-icon">#}
-                                {#                                                                <i class="fas fa-cogs"></i>#}
-                                {#                                                            </span>#}
-                                {#                                                        </span>#}
-                                {#                                                        <span class="nav-link-text">#}
-                                {#                                                            {% trans 'Settings' %}#}
-                                {#                                                        </span>#}
-                                {#                                                    </a>#}
-                                {#                                                </li>#}
-                                {#                                            </ul>#}
-                                {#                                        </li>#}
-                                {#                                    </ul>#}
-                                {#                                </li>#}
                             </ul>
                         </li>
                     </ul>
@@ -228,6 +195,26 @@
                             </span>
                         </span>
                         <span class="nav-link-text">{% trans 'Account' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="menu_opportunity_list">
+                    <a class="nav-link" href="{% url 'OpportunityList' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="far fa-lightbulb"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Opportunity' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="menu_quotation_list">
+                    <a class="nav-link" href="{% url 'QuotationList' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Quotation' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -349,6 +336,16 @@
                             </ul>
                         </li>
                     </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ExpenseList' %}">
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="bi bi-cash-coin"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Expense' %}</span>
+                    </a>
                 </li>
             </ul>
         </div>

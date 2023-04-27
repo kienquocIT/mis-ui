@@ -50,6 +50,9 @@ INSTALLED_APPS = \
     ] + [  # Another Application
         'apps.sale.saledata',
         'apps.sale.promotion',
+    ] + [  # Sales Application
+        'apps.sales.opportunity',
+        'apps.sales.quotation',
     ]
 
 MIDDLEWARE = [

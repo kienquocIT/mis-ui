@@ -5,18 +5,12 @@ $(document).ready(function () {
         ordering: false,
         paging: false,
         columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+            "searchable": false, "orderable": true, // "targets": [0,1,3,4,5,6,7,8,9]
         }],
-        order: [2, 'asc'],
+        order: [[2, 'asc']],
         language: {
             search: "",
             searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '?'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '?'
-            }
         },
         drawCallback: function () {
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
@@ -24,32 +18,37 @@ $(document).ready(function () {
         },
         data: [],
         columns: [{
+            className: 'wrap-text',
             'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                let currentId = String(meta.row + 1)
+                return currentId;
             }
         }, {
+            className: 'wrap-text',
             'data': 'code', render: (data, type, row, meta) => {
-                return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="` + row.id + `"
-                            style="min-width: max-content; width: 70%" href="` + url_item_detail.replace(0, row.id) + `"><center><span><b>` + row.code + `</b></span></center></a>`
+                return `<span class="badge badge-soft-success" data-id="` + row.id + `"
+                            style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="` + url_item_detail.replace(0, row.id) + `" data-id="` + row.id + `">
-                        <span><b>` + row.title + `</b></span>
-                    </a>`
+                return `<span><b>` + row.title + `</b></span>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'uom_group', 'render': (data, type, row, meta) => {
-                return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span></div>
+                return `<div class="row"><center>
+                            <div class="col-10" style="padding-right: 5px">
+                                <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
+                            </div></center>
                         </div>`
             }
         }, {
+            className: 'wrap-text',
             'data': 'uom', 'render': (data, type, row, meta) => {
-                return `<div class="row">
-                        <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
-                        </div>`
+                return `<div class="row"><center>
+                        <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
+                        </center></div>`
             }
         },]
     }
@@ -59,20 +58,23 @@ $(document).ready(function () {
         let dtb = $(id_table);
         if (dtb.length > 0) {
             var targetDt = dtb.DataTable(config);
+            // targetDt.column(2).order('asc').draw();
             /*Checkbox Add*/
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
             });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
+            let html = $('.waiter-miner-item').html();
+            $("div.blog-toolbar-left").html(html.replace('hidden', ''));
             dtb.parent().addClass('table-responsive');
         }
     }
 
+    // load for tab setting and dropdown add currency for price lust
     function loadCurrency(list_id) {
         $('#select-box-currency').select2();
         let ele = $('#select-box-currency');
-        let dropdown = $('#dropdown-currency')
+        let dropdown = $('.dropdown-currency')
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -87,6 +89,9 @@ $(document).ready(function () {
                             }).get().includes(item.id)
                             ) {
                                 dropdown.prepend(`<a class="dropdown-item bg-light bg-gradient" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
+                                if (item.is_primary === false) {
+                                    $('.dropdown-del-currency').append((`<a class="dropdown-item btn-del-price" href="#" data-id="` + item.id + `">` + item.abbreviation + `</a>`))
+                                }
                             } else {
                                 dropdown.append(`<a class="dropdown-item btn-add-price" href="#" data-id="` + item.id + `">` + item.abbreviation + `</a>`)
                             }
@@ -95,8 +100,10 @@ $(document).ready(function () {
                                     ele.append(`<option disabled data-primary="1" value="` + item.id + `" selected>` + item.title + `</option>`);
                                 } else
                                     ele.append(`<option disabled data-primary="0" value="` + item.id + `" selected>` + item.title + `</option>`);
+                            } else if (item.is_primary === true) {
+                                ele.append(`<option disabled data-primary="1" value="` + item.id + `">` + item.title + `</option>`);
                             } else
-                                ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
+                                ele.append(`<option disabled data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
                         })
                     }
                 }
@@ -140,46 +147,22 @@ $(document).ready(function () {
         },)
     }
 
-    function loadUoMGroup() {
-        let ele = $('#select-uom-group');
-        ele.html('');
+    function loadProduct(list_item) {
+        let ele = $('#select-box-product');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                    ele.append(`<option></option>`);
-                    resp.data.unit_of_measure_group.map(function (item) {
-                        if (Object.keys(item.referenced_unit).length !== 0)
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
+                    ele.append(`<option value="0"></option>`);
+                    resp.data.product_list.map(function (item) {
+                        if (!list_item.includes(item.id) && Object.keys(item.sale_information).length > 0)
+                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
                     })
                 }
             }
         }, (errs) => {
         },)
     }
-
-// onchange uom-group in modal create new product
-    $('#select-uom-group').on('change', function () {
-        let select_box_uom = $('#select-uom');
-        select_box_uom.html('');
-        if ($(this).val()) {
-            let data_url = $(this).attr('data-url-detail').replace(0, $(this).val());
-            let data_method = $(this).attr('data-method');
-            $.fn.callAjax(data_url, data_method).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                        select_box_uom.append(`<option></option>`);
-                        data.uom_group.uom.map(function (item) {
-                            select_box_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                        })
-                    }
-                }
-            }, (errs) => {
-            },)
-        }
-    })
-
 
     function getProductWithCurrency(list_product) {
         let list_result = []
@@ -216,7 +199,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (data.price.auto_update) {
+                if (data.price.auto_update || data.price.is_default) {
                     $('#btn-add-new-product').prop('hidden', true);
                 } else {
                     $('#btn-add-new-product').prop('hidden', false);
@@ -225,11 +208,11 @@ $(document).ready(function () {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
+                    $('#setting-nav').removeClass('disabled');
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
-                            <span class="badge badge-sm badge-soft-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
-                                <i class="bi bi-box-arrow-down-right"></i>
-                            </span>`
+                            <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
+                            </i>`
                         )
                     } else {
                         $('#price_list_name').text(data.price.title)
@@ -238,8 +221,11 @@ $(document).ready(function () {
                 $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)
-                    config['data'] = product_mapped;
+                    config['data'] = product_mapped.sort(function (a, b){
+                        return a.code - b.code;
+                    });
                     initDataTable(config, '#datatable-item-list');
+                    loadCurrency(data.price.currency);
 
                     // add column in table item list (Price Of currency and button Delete item)
                     if (product_mapped.length != 0) {
@@ -261,7 +247,7 @@ $(document).ready(function () {
                             });
                         });
 
-                        product_mapped.map(function (item){
+                        product_mapped.map(function (item) {
                             const order = price_longest.price.map(item => item.id);
                             item.price.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
                         })
@@ -269,29 +255,27 @@ $(document).ready(function () {
                         // create thead
                         for (let i = 0; i < price_longest.price.length; i++) {
                             if (i === price_longest.price.length - 1) {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `<br><center><button type="button" class="" style="background: none; border: none" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><a href="#" class="bi bi-patch-plus"></a></span></span></button><div role="menu" class="dropdown-menu" id="dropdown-currency"></div></center></th>`))
+                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
                             } else {
                                 table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
                             }
                             index_th += 1
                         }
 
-                        console.log(product_mapped)
                         // create tbody
                         for (let j = 0; j < body_table.length; j++) {
                             for (let i = 0; i < product_mapped[j].price.length; i++) {
                                 if (product_mapped[j].price[i].value === 0) {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" min="0" step="0.001" value="" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="" style="min-width: max-content"></td>`
                                 } else {
                                     if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center" type="number" min="0" step="0.001" value="` + product_mapped[j].price[i].value + `" disabled></td>`
+                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + `" disabled></td>`
                                     else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center" type="number" step="0.001" min="0" value="` + product_mapped[j].price[i].value + `" style="min-width: max-content"></td>`
+                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + `" style="min-width: max-content"></td>`
                                 }
-
                             }
                         }
 
@@ -306,17 +290,18 @@ $(document).ready(function () {
                                         body_table[i].innerHTML += '<td></td>'
                                     }
                                 } else
-                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                             }
                             feather.replace();
                         }
                     }
 
-
-                    loadCurrency(data.price.currency);
+                    loadProduct(product_mapped.map(obj => obj.id));
 
                     // load data tab settings
                     $('#select-box-type').val(data.price.price_list_type);
+                    $('#select-box-type').prop('disabled', true);
+                    $('#select-box-type').css({'border': 'None', 'color': 'black'});
                     $('#inp-factor').val(data.price.factor);
                     if (data.price.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
@@ -333,7 +318,6 @@ $(document).ready(function () {
                         $('#checkbox-update-auto').prop('disabled', false);
                     }
                     loadProDuctCategory();
-                    loadUoMGroup();
 
                     // edit field
                     $('.inp-can-edit select').mouseenter(function () {
@@ -386,9 +370,6 @@ $(document).ready(function () {
     })
 
 // submit form setting price list
-    let price_list_add_new_item = [];
-    price_list_add_new_item.push({'id': pk, 'factor': 1, 'id_source': ''});
-
     let price_list_update = [];
     price_list_update.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
@@ -404,20 +385,6 @@ $(document).ready(function () {
                                 price_list_update.push({
                                     'id': item.id,
                                     'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
-                                    'id_source': item.price_list_mapped
-                                });
-                        }
-                        if (item.is_default === true) {
-                            price_list_add_new_item.push({
-                                'id': item.id,
-                                'factor': item.factor,
-                                'id_source': ''
-                            });
-                        } else {
-                            if (price_list_add_new_item.map(obj => obj.id).includes(item.price_list_mapped))
-                                price_list_add_new_item.push({
-                                    'id': item.id,
-                                    'factor': item.factor * price_list_add_new_item.find(obj => obj.id === item.price_list_mapped).factor,
                                     'id_source': item.price_list_mapped
                                 });
                         }
@@ -441,13 +408,24 @@ $(document).ready(function () {
                 delete frm.dataForm.apply_for
             }
             frm.dataForm['price_list_child'] = price_list_update.map(obj => obj.id);
+
+            if (frm.dataForm['auto_update'] === undefined) {
+                frm.dataForm['auto_update'] = false
+            }
+
+            if (frm.dataForm['can_delete'] === undefined) {
+                frm.dataForm['can_delete'] = false
+            }
+
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -461,43 +439,51 @@ $(document).ready(function () {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
-            frm.dataForm['general_information'] = {
-                'uom_group': frm.dataForm['uom_group'],
-                'product_type': null,
-                'product_category': null
-            }
             let price_list = [];
-            price_list_add_new_item.map(function (item) {
-                let value = $('#inp-price').val()
-                if (item.id_source === '') {
-                    price_list.push({
-                        'price_list_id': item.id,
-                        'price_value': value,
-                        'is_auto_update': '0',
-                    })
-                } else {
-                    price_list.push({
-                        'price_list_id': item.id,
-                        'price_value': price_list.find(obj => obj.price_list_id === item.id_source).price_value * item.factor,
-                        'is_auto_update': '1',
-                    })
-                }
+            price_list_update.map(function (item) {
+                $('#table-price-of-currency tbody tr td').each(function () {
+                    let value = $(this).find('input').val()
+                    if (value === '') {
+                        value = 0;
+                    } else {
+                        value = parseFloat(value.replace(/\./g, '').replace(',', '.'))
+                    }
+                    if (item.id_source === '') {
+                        price_list.push({
+                            'price_list_id': item.id,
+                            'price_value': value,
+                            'is_auto_update': '0',
+                            'currency_using': $(this).find('input').attr('data-id')
+                        })
+                    } else {
+                        price_list.push({
+                            'price_list_id': item.id,
+                            'price_value': value * item.factor,
+                            'is_auto_update': '1',
+                            'currency_using': $(this).find('input').attr('data-id')
+                        })
+                    }
+                })
             })
 
-            frm.dataForm['sale_information'] = {
-                'default_uom': frm.dataForm['uom'],
-                'tax_code': null,
-                'price_list': price_list,
-                'currency_using': $('#select-box-currency').find('option[data-primary="1"]').val()
+            let data_product = {
+                'id': $('#select-box-product').val(),
+                'uom': $('#inp-uom').attr('data-id'),
+                'uom_group': $('#inp-uom-group').attr('data-id'),
             }
-            frm.dataForm['inventory_information'] = {}
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+
+            frm.dataForm['list_price_list'] = price_list;
+            frm.dataForm['product'] = data_product;
+
+            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -525,6 +511,8 @@ $(document).ready(function () {
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
                     if (price === '') {
                         price = 0;
+                    } else {
+                        price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
                     }
                     if ($(this).find('td:eq(' + index + ')').find('input').hasClass('inp-edited') === true) {
                         list_price_of_currency.push({
@@ -548,6 +536,8 @@ $(document).ready(function () {
                     let price = $(this).find('td:eq(' + index + ')').find('input').val();
                     if (price === '') {
                         price = 0;
+                    } else {
+                        price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
                     }
                     list_price_of_currency.push({
                         'product_id': product_id,
@@ -558,7 +548,6 @@ $(document).ready(function () {
                     })
                 });
             })
-            console.log(list_price_of_currency)
             frm.dataForm['list_item'] = list_price_of_currency
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
@@ -581,8 +570,10 @@ $(document).ready(function () {
     $(document).on('click', '.btn-add-price', function () {
         $(this).addClass('bg-light bg-gradient')
         $(this).removeClass('btn-add-price')
-        $('.th-dropdown .dropdown-menu').html($('#dropdown-currency').html().replaceAll('btn-add-price', 'btn-change-price'));
-        $('.th-dropdown .dropdown-menu').append(`<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li>`)
+
+        $('.dropdown-del-currency').append(`<a class="dropdown-item btn-del-price" href="#" data-id="` + $(this).attr('data-id') + `">` + $(this).text() + `</a>`);
+        // $('.th-dropdown .dropdown-menu').html($('.dropdown-currency').html().replaceAll('btn-add-price', 'btn-change-price'));
+        // $('.th-dropdown .dropdown-menu').append(`<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li>`)
         let table = document.getElementById('datatable-item-list')
         if (table.rows[1].childNodes.length !== 1) {
             let index = 0;
@@ -598,12 +589,12 @@ $(document).ready(function () {
             th.textContent = 'Price In ' + $(this).text();
             th.className = "dropdown th-dropdown"
             th.setAttribute('data-id', $(this).attr('data-id'));
-            th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementById('dropdown-currency').innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
+            // th.innerHTML += `<a class="ml-2 pb-3" data-bs-toggle="dropdown" href="#">...</a><div role="menu" class="dropdown-menu">` + document.getElementsByClassName('dropdown-currency')[document.getElementsByClassName('dropdown-currency').length - 1].innerHTML.replaceAll("btn-add-price", "btn-change-price") + `<li><hr class="dropdown-divider"></li><li><a class="dropdown-item btn-del-price" href="#">Delete</a></li></div>`
             cell.outerHTML = th.outerHTML;
             for (let i = 1; i < rows.length; i++) {
                 let input = document.createElement("input");
-                input.type = "number";
-                input.className = "form-control"
+                input.type = "text";
+                input.className = "form-control number-separator"
                 // input.setAttribute('disabled', true);
                 if (rows[i].lastElementChild.previousElementSibling.lastElementChild.hasAttribute('disabled')) {
                     input.setAttribute('disabled', true);
@@ -614,61 +605,74 @@ $(document).ready(function () {
         }
     })
 
-// change price currency in table list item
-    $(document).on('click', '.btn-change-price', function () {
-        let element = $(this).closest('th')
-        let thText = element.contents().filter(function () {
-            return this.nodeType === Node.TEXT_NODE;
-        }).text().trim();
-        let html = element.html().replace(thText, "Price In " + $(this).text())
-        element.html(html);
-        let old_dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + element.attr('data-id') + `"]`)
-        let new_dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
-        old_dropdown_primary.addClass('btn-add-price')
-        old_dropdown_primary.removeClass('bg-light bg-gradient')
-        new_dropdown_primary.removeClass('btn-add-price')
-        new_dropdown_primary.addClass('bg-light bg-gradient')
-
-        let old_dropdown = $(`.th-dropdown .dropdown-item[data-id="` + element.attr('data-id') + `"]`)
-        let new_dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
-        old_dropdown.addClass('btn-change-price')
-        old_dropdown.removeClass('bg-light bg-gradient')
-        new_dropdown.removeClass('btn-change-price')
-        new_dropdown.addClass('bg-light bg-gradient')
-
-        element.attr('data-id', $(this).attr('data-id'))
-    })
-
 // delete price for currency in table list item
     $(document).on('click', '.btn-del-price', function () {
-        let index = $(this).closest('th').index();
-        let dropdown_primary = $(`#dropdown-currency .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
-        dropdown_primary.addClass('btn-add-price')
-        dropdown_primary.removeClass('bg-light bg-gradient')
+        let th_tag = $(`thead tr th[data-id="` + $(this).attr('data-id') + `"]`);
+        let index = th_tag.index()
+        if (th_tag.hasClass('price-currency-exists') === true) {
+            if (confirm("Confirm Delete ?") === true) {
+                let url_del = $('#form-update-item-price').attr('data-url-update')
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                let dataForm = {'currency_id': $(this).attr('data-id')}
+                $.fn.callAjax(url_del.replace(0, pk), 'PUT', dataForm, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        })
+            }
+        } else {
+            let dropdown_primary = $(`.dropdown-currency .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
+            dropdown_primary.addClass('btn-add-price')
+            dropdown_primary.removeClass('bg-light bg-gradient')
 
-        let dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).closest('th').attr('data-id') + `"]`)
-        dropdown.addClass('btn-change-price')
-        dropdown.removeClass('bg-light bg-gradient')
-        let table = document.getElementById("datatable-item-list");
-        let rows = table.getElementsByTagName("tr");
+            let dropdown = $(`.th-dropdown .dropdown-item[data-id="` + $(this).attr('data-id') + `"]`)
+            dropdown.addClass('btn-change-price')
+            dropdown.removeClass('bg-light bg-gradient')
+            let table = document.getElementById("datatable-item-list");
+            let rows = table.getElementsByTagName("tr");
 
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].deleteCell(index);
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].deleteCell(index);
+            }
+            $(this).remove();
         }
     })
 
+    // add input price in modal create new product
     let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-product').on('click', function () {
         let table = $('#table-price-of-currency')
         table.html('');
         table.append(table_price_of_currency);
-        $('#datatable-item-list .th-dropdown').each(function () {
-            let thText = $(this).contents().filter(function () {
-                return this.nodeType === Node.TEXT_NODE;
-            }).text().trim();
-            table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control" placeholder="200000" type="number" min="0" step="0.001" data-id="` + $(this).attr('data-id') + `"></td>`)
-        })
+        if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
+            let currency = $('#select-box-currency').find('option[data-primary="1"]')
+            table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
+            table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + currency.val() + `"></td>`)
+        } else {
+            $('#datatable-item-list .price-currency-exists').each(function () {
+                let thText = $(this).contents().filter(function () {
+                    return this.nodeType === Node.TEXT_NODE;
+                }).text().trim();
+                table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
+            })
+            $('#datatable-item-list .th-dropdown').each(function () {
+                let thText = $(this).contents().filter(function () {
+                    return this.nodeType === Node.TEXT_NODE;
+                }).text().trim();
+                table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+                table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
+            })
+        }
     })
 
     $('#tab-select-table a').on('click', function () {
@@ -686,6 +690,7 @@ $(document).ready(function () {
             let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
             let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
             let data = {
+                'list_price': price_list_update,
                 'product_id': product_id,
             }
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -695,7 +700,9 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -704,7 +711,32 @@ $(document).ready(function () {
         }
     })
 
+    //on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
+    })
+
+    $('#select-box-product').on('change', function () {
+        if ($(this).val() !== '0') {
+            $('#save-product-selected').prop('disabled', false);
+            let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
+            $.fn.callAjax(data_url, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
+                        $('#inp-code').val(data.product.code);
+                        $('#inp-uom-group').val(data.product.general_information.uom_group.title);
+                        $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
+                        $('#inp-uom').val(data.product.sale_information.default_uom.title);
+                        $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
+                    }
+                }
+            })
+        } else {
+            $('#inp-code').val('');
+            $('#inp-uom-group').val('');
+            $('#inp-uom').val('');
+            $('#save-product-selected').prop('disabled', true);
+        }
     })
 })

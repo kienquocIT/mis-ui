@@ -15,3 +15,4 @@ class MDConfigMsg:  # pylint: disable=too-few-public-methods
     PT_AFTER_INVOICE = _('Invoice date')
     PT_AFTER_ACCEPTANCE = _('Acceptance date')
     PT_AFTER_EOI_MONTH = _('End of invoice month')
+    PT_AFTER_ORDER_DATE = _('Order date')

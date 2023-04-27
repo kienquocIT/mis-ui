@@ -39,8 +39,8 @@
                     <span class="nav-link-text">{% trans 'Price List' %}</span>
                 </a>
             </li>
-            <li class="nav-item" id="nav2">
-                <a id="setting-nav" class="nav-link" data-bs-toggle="tab" href="#tab-setting">
+            <li class="nav-item" id="nav2" >
+                <a id="setting-nav" class="nav-link disabled" data-bs-toggle="tab" href="#tab-setting">
                     <span class="nav-link-text">{% trans 'Setting' %}</span>
                 </a>
             </li>
@@ -54,44 +54,39 @@
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
-                        title="{% trans 'Add New Product' %}">
+                        title="{% trans 'Add Product' %}">
                     <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add New Product' %}
+                    {% trans 'Add Product' %}
                 </span>
             </button>
-            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}" data-method="PUT">
+            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
+                  data-method="PUT">
+                <div class="waiter-miner-item hidden">
+                    <div class="dropdown">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-soft-primary dropdown-toggle" role="button">Add new currency</a>
+                        <div role="menu" class="dropdown-menu dropdown-currency">
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-soft-danger dropdown-toggle" role="button">Delete currency</a>
+                        <div role="menu" class="dropdown-menu dropdown-del-currency">
+                        </div>
+                    </div>
+                </div>
                 <table id="datatable-item-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "PriceDetailAPI" pk=0 %}"
                        data-url-detail="{% url "ProductDetail" pk=0 %}"
                        data-url-delete="{% url "PriceListDeleteProductAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-            <span class="form-check">
-                <input
-                        type="checkbox"
-                        class="form-check-input check-select-all"
-                        id="customCheck1"
-                >
-                <label class="form-check-label" for="customCheck1"></label>
-            </span>
-                    </th>
-                    <th class="w-15">{% trans "Code" %}</th>
+                    <th class="w-5">#</th>
+                    <th class="w-10">{% trans "Code" %}</th>
                     <th class="w-25">{% trans "Item name" %}</th>
-                    <th class="w-10">{% trans "UoM group" %}</th>
-                    <th class="w-10">{% trans "UoM" %}</th>
-{#                    <th class="w-10 price-currency-primary">{% trans "Price in VND" %}#}
-{#                        <button type="button" class=""#}
-{#                                style="background: none; border: none" data-bs-toggle="dropdown">#}
-{#                            <span class="icon">#}
-{#                                <span class="feather-icon">#}
-{#                                    <a href="#" class="bi bi-patch-plus ml-3"></a>#}
-{#                                </span>#}
-{#                            </span>#}
-{#                        </button>#}
-{#                        <div role="menu" class="dropdown-menu" id="dropdown-currency">#}
-{#                        </div>#}
-{#                    </th>#}
+                    <th class="w-10 text-center">{% trans "UoM group" %}</th>
+                    <th class="w-10 text-center">{% trans "UoM" %}</th>
                     </thead>
                 </table>
             </form>
@@ -109,6 +104,7 @@
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Select price list" %}</label>
                         <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
+                                style="border: None; color: black"
                                 id="select-box-price-list" disabled="disabled" name="price_list_mapped"></select>
                     </div>
                     <div class="form-check ml-3">
@@ -168,26 +164,25 @@
     </div>
 
     <!-- Modal create new Product -->
-    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}">
+    <form id="form-create-product" data-method="PUT" data-url="{% url "ProductAddFromPriceListAPI" pk=0 %}">
         <div class="modal fade" id="modal-add-new-product" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Create New Product" %}</h5>
+                        <h5 class="modal-title">{% trans "Select a product" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row" hidden>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="P001" name="code"
-                                       oninput="this.value=this.value.toUpperCase()">
+                                <input type="text" class="form-control" id="inp-code" readonly>
                             </div>
                         </div>
                         <div class="row">
@@ -195,16 +190,16 @@
                                 <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" placeholder="Input Name" name="title">
+                                <select type="text" class="form-select" name="product" id="select-box-product"
+                                        data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                        data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <select class="form-select" name="uom_group" id="select-uom-group" data-method="GET"
-                                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                                        data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}">
+                                <input type="text" class="form-control" id="inp-uom-group">
                                 </select>
                             </div>
                         </div>
@@ -213,23 +208,17 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select class="form-select" name="uom" id="select-uom" data-method="GET"
-                                        data-url="{% url "UnitOfMeasureListAPI" %}">
-                                </select>
+                                <input type="text" class="form-control" id="inp-uom">
                             </div>
                         </div>
 
                         <div class="row mt-3 overflow-x-scroll">
                             <table class="table nowrap w-100 mb-5" id="table-price-of-currency">
                                 <thead>
-                                <th class="w-20">{% trans "Price in VND" %}&nbsp;<span class="field-required">*</span>
-                                </th>
+                                <tr></tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>
-                                        <input class="form-control" placeholder="200000" type="number" id="inp-price">
-                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -237,7 +226,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save-product-selected" disabled>
                             Save
                         </button>
                     </div>
@@ -249,5 +238,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static "assets/js/sale/saledata/product/vietnam-number-separator.js" %}"></script>
     <script src="{% static 'assets/js/sale/saledata/price/price_list_detail.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
 {% endblock %}

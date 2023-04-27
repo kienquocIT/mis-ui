@@ -107,8 +107,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    resp.data.account_detail.owner.map(function (item) {
-                    })
+                    console.log(data)
                     ele.text("");
                     ele.append(`<option selected>` + `</option>`)
                     data.account_detail.owner.map(function (item) {
@@ -235,11 +234,11 @@ $(document).ready(function () {
         };
 
         if (frm.dataForm['account_name'] === '') {
-            frm.dataForm['account_name'] = null;
+            delete frm.dataForm['account_name'];
         }
 
         if (frm.dataForm['report_to'] === '') {
-            frm.dataForm['report_to'] = null;
+            delete frm.dataForm['report_to'];
         }
 
         if (frm.dataForm['owner'] === '') {
@@ -247,11 +246,11 @@ $(document).ready(function () {
         }
 
         if (frm.dataForm['email'] === '') {
-            frm.dataForm['email'] = null;
+            delete frm.dataForm['email'];
         }
 
         if (frm.dataForm['mobile'] === '') {
-            frm.dataForm['mobile'] = null;
+            delete frm.dataForm['mobile'];
         }
 
         let pk = window.location.pathname.split('/').pop();

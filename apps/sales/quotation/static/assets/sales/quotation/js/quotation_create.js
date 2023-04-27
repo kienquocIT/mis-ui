@@ -64,6 +64,11 @@ $(function () {
                         for (let option of boxCustomer[0].options) {
                             if (option.value === valueToSelect) {
                                 option.setAttribute('selected', true);
+                                let eleData = option.querySelector('.data-default');
+                                if (eleData) {
+                                    let item = JSON.parse(eleData.value);
+                                    loadContactCustomer(boxContact, item);
+                                }
                                 break;
                             }
                         }

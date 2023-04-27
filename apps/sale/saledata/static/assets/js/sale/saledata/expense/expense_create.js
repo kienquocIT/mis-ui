@@ -29,6 +29,7 @@ $(document).ready(function () {
 
     function loadUoM(group_id) {
         let chooseUom = $('#chooseUom');
+        chooseUom.html('');
         let frm = new SetupFormSubmit(chooseUom);
         $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
             let data = $.fn.switcherResp(resp);

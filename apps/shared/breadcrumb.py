@@ -92,6 +92,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     EXPENSE_LIST_PAGE = BreadcrumbChildren(_('Expense list'), 'ExpenseList')
     EXPENSE_CREATE_PAGE = BreadcrumbChildren(_('Expense create'), 'ExpenseCreate')
     EXPENSE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    # Promotion
+    PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion List'), 'PromotionList')
+    PROMOTION_CREATE_PAGE = BreadcrumbChildren(_('Promotion create'), 'PromotionCreate')
+    PROMOTION_DETAIL_PAGE = BreadcrumbChildren(_('Promotion detail'))
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
@@ -251,6 +255,13 @@ class BreadcrumbView:
     EXPENSE_LIST_PAGE = [BreadcrumbItem.EXPENSE_LIST_PAGE]
     EXPENSE_CREATE_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_CREATE_PAGE]
     EXPENSE_DETAIL_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_DETAIL_PAGE]
+
+    PROMOTION_LIST_PAGE = [
+        BreadcrumbItem.PROMOTION_LIST_PAGE
+    ]
+
+    PROMOTION_CREATE_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_CREATE_PAGE]
+    PROMOTION_DETAIL_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_DETAIL_PAGE]
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = [

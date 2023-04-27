@@ -208,6 +208,7 @@ $(document).ready(function () {
                 if (data.price.is_default) {
                     $('#price_list_name').text(data.price.title.toUpperCase())
                 } else {
+                    $('#setting-nav').removeClass('disabled');
                     if (data.price.auto_update) {
                         $('#price_list_name').html(data.price.title + `
                             <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
@@ -299,6 +300,8 @@ $(document).ready(function () {
 
                     // load data tab settings
                     $('#select-box-type').val(data.price.price_list_type);
+                    $('#select-box-type').prop('disabled', true);
+                    $('#select-box-type').css({'border': 'None', 'color': 'black'});
                     $('#inp-factor').val(data.price.factor);
                     if (data.price.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
@@ -367,7 +370,6 @@ $(document).ready(function () {
     })
 
 // submit form setting price list
-
     let price_list_update = [];
     price_list_update.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {

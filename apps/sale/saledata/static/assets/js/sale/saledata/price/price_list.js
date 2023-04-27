@@ -92,7 +92,7 @@ $(document).ready(function () {
             $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data)
+                    // console.log(data)
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                         config['data'] = resp.data.price_list;
                         ele.append(`<option></option>`)

@@ -49,8 +49,8 @@
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
-            <button id="btn-add-new-product" class="mt-2 mb-3" data-bs-toggle="modal" hidden
-                    data-bs-target="#modal-add-new-product" type="button"
+            <button id="btn-add-new-item" class="mt-2 mb-3" data-bs-toggle="modal" hidden
+                    data-bs-target="#modal-add-new-item" type="button"
                     style="background: none;border: none; color: #007D88">
                 <span
                         data-bs-placement="bottom" data-bs-toggle="tooltip"
@@ -65,14 +65,8 @@
                 <div class="waiter-miner-item hidden">
                     <div class="dropdown">
                         <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-soft-primary dropdown-toggle" role="button">Add new currency</a>
+                           class="btn btn-soft-primary dropdown-toggle" role="button">{% trans "Show/Hidden Currency" %}</a>
                         <div role="menu" class="dropdown-menu dropdown-currency">
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-soft-danger dropdown-toggle" role="button">Delete currency</a>
-                        <div role="menu" class="dropdown-menu dropdown-del-currency">
                         </div>
                     </div>
                 </div>
@@ -130,7 +124,7 @@
                                     data-placeholder="{% trans 'Choose' %}"
                                     data-method="GET"
                                     data-url="{% url "CurrencyListAPI" %}"
-                                    id="select-box-currency" name="currency" readonly="readonly">
+                                    id="select-box-currency" name="currency">
                             </select>
                             <input type="text" id="inp-source" hidden>
                         </div>
@@ -165,7 +159,7 @@
 
     <!-- Modal create new Product -->
     <form id="form-create-product" data-method="PUT" data-url="{% url "ProductAddFromPriceListAPI" pk=0 %}">
-        <div class="modal fade" id="modal-add-new-product" tabindex="-1" role="dialog"
+        <div class="modal fade" id="modal-add-new-item" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -234,6 +228,7 @@
             </div>
         </div>
     </form>
+    {{ data.currency_list|json_script:"id-currency-list" }}
 
 {% endblock %}
 {% block jsFooter %}

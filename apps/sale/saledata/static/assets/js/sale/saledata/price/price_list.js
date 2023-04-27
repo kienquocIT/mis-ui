@@ -35,8 +35,7 @@ $(document).ready(function () {
                         return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
                             <span><b>` + row.title.toUpperCase() + `</b></span>
                         </a>`
-                    }
-                    else {
+                    } else {
                         return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
                             <span><b>` + row.title + `</b></span>
                         </a>`
@@ -55,10 +54,20 @@ $(document).ready(function () {
                     }
                 }
             }, {
+                'data': 'status', render: (data, type, row, meta) => {
+                    let badge_type = '';
+                    if (row.status === 'Valid') {badge_type = 'badge-green'}
+                    else if (row.status === 'Invalid') {badge_type = 'badge-orange'}
+                    else if (row.status === 'Expired') {badge_type = 'badge-red'}
+                    else {badge_type = 'badge-gray'}
+
+                    return `<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span>&nbsp;`+ row.status +`</span>`;
+                }
+            }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
                     return ``;
                 }
-            },]
+            }]
         }
 
         function initDataTable(config, id_table) {
@@ -83,6 +92,7 @@ $(document).ready(function () {
             $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    // console.log(data)
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                         config['data'] = resp.data.price_list;
                         ele.append(`<option></option>`)
@@ -147,6 +157,7 @@ $(document).ready(function () {
                 $('#checkbox-update-auto').attr('disabled', 'disabled');
                 $('#checkbox-can-delete').attr('disabled', 'disabled');
                 $('#select-box-currency').prop('disabled', false);
+                $('#factor-inp').val(1);
                 $('#factor-inp').prop('readonly', true);
             }
         })
@@ -175,9 +186,10 @@ $(document).ready(function () {
                 frm.dataForm['currency'] = null;
             }
 
-            // if (frm.dataForm['factor'] === undefined) {
-            //     frm.dataForm['factor'] =
-            // }
+            if ($('#valid_time').val()) {
+                frm.dataForm['valid_time_start'] = $('#valid_time').val().split(' - ')[0];
+                frm.dataForm['valid_time_end'] = $('#valid_time').val().split(' - ')[1]
+            }
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
@@ -208,5 +220,18 @@ $(document).ready(function () {
                 }
             )
         })
+
+
+		/* Date range picker with times*/
+		$('#valid_time').daterangepicker({
+			timePicker: true,
+			startDate: moment().startOf('millisecond').add(5, 'minutes'),
+			endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
+			"cancelClass": "btn-secondary",
+			locale: {
+			    format: 'YYYY-MM-DD HH:mm:00.00'
+			},
+            drops: 'down'
+		});
     })
 })

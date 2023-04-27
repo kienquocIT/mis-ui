@@ -7,6 +7,7 @@
             rel="stylesheet"
             type="text/css"
     />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -46,8 +47,9 @@
                 <label class="form-check-label" for="customCheck1"></label>
             </span>
         </th>
-        <th class="w-55">{% trans "Name" %}</th>
-        <th class="w-35 text-center">{% trans "Type" %}</th>
+        <th class="w-40">{% trans "Name" %}</th>
+        <th class="w-40 text-center">{% trans "Type" %}</th>
+        <th class="w-10">{% trans "Status" %}</th>
         <th class="w-5"></th>
         </thead>
     </table>
@@ -82,6 +84,8 @@
                                     {% trans "Copy from source price list" %}
                                 </label>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="collapse" id="collapseExample">
                                 <div class="card card-body mt-1 mb-1">
                                     <div class="form-group mt-2">
@@ -90,14 +94,14 @@
                                                 name="price_list_mapped"
                                                 id="select-box-price-list" disabled></select>
                                     </div>
-                                    <div class="form-check ml-3">
+                                    <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                                id="checkbox-update-auto" disabled name="auto_update">
                                         <label class="form-check-label" for="checkbox-update-auto">
                                             {% trans "update automatically when source price list changes" %}
                                         </label>
                                     </div>
-                                    <div class="form-check ml-3">
+                                    <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                                id="checkbox-can-delete" disabled name="can_delete">
                                         <label class="form-check-label" for="checkbox-can-delete">
@@ -106,6 +110,8 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="form-group mt-2">
                                 <label class="form-label">{% trans "Currency" %}<span class="field-required">*</span></label>
                                 <select
@@ -117,24 +123,29 @@
                                         id="select-box-currency" name="currency">
                                 </select>
                             </div>
-                            <div class="row">
-                                <div class="form-group col-6">
-                                    <label class="form-label">{% trans "Factor" %}<span class="field-required">*</span></label>
-                                    <input class="form-control" type="text" name="factor" id="factor-inp" readonly
-                                           value="1" placeholder="Input factor (0.8)">
-                                </div>
-                                <div class="form-group col-6">
-                                    <label class="form-label">{% trans "Select list type" %}<span class="field-required">*</span></label>
-                                    <select class="form-select" name="price_list_type">
-                                        <option></option>
-                                        <option value="0">{% trans "For Sale" %}</option>
-                                        <option value="1">{% trans "For Purchase" %}</option>
-                                        <option value="2">{% trans "For Expense" %}</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label class="form-label">{% trans "Factor" %}<span class="field-required">*</span></label>
+                                <input class="form-control" type="text" name="factor" id="factor-inp" readonly
+                                       value="1" placeholder="Input factor (0.8)">
+                            </div>
+                            <div class="form-group col-6">
+                                <label class="form-label">{% trans "Select list type" %}<span class="field-required">*</span></label>
+                                <select class="form-select" name="price_list_type">
+                                    <option></option>
+                                    <option value="0">{% trans "For Sale" %}</option>
+                                    <option value="1">{% trans "For Purchase" %}</option>
+                                    <option value="2">{% trans "For Expense" %}</option>
+                                </select>
                             </div>
                         </div>
-
+                        <div class="row mb-10">
+                            <div class="form-group col-12">
+                                <label class="form-label">{% trans "Valid time" %}<span class="field-required">*</span></label>
+                                <input class="form-control" type="text" id="valid_time" readonly>
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save</button>
@@ -150,4 +161,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/sale/saledata/price/price_list.js' %}"></script>
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 {% endblock %}

@@ -251,6 +251,11 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4" id="tab_terms">
+                                            <span class="nav-link-text">{% trans 'Terms' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" data-bs-toggle="tab" href="#tab_block_5">
                                             <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                         </a>
@@ -439,6 +444,66 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_block_4">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Select Price List' %}</label>
+                                        <select
+                                                class="form-control select2 select2-multiple"
+                                                multiple="multiple"
+                                                data-placeholder="{% trans 'Choose' %}"
+                                                name=""
+                                                id="select-box-quotation-create-price-list"
+                                                data-url="{% url "PriceListAPI" %}"
+                                                data-method="GET"
+                                        ></select>
+                                        <span class="form-text text-muted">{% trans 'Price list of quotation term' %}</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Select Discount List' %}</label>
+                                        <select
+                                                class="form-control select2 select2-multiple"
+                                                multiple="multiple"
+                                                data-placeholder="{% trans 'Choose' %}"
+                                                name=""
+                                                id="select-box-quotation-create-discount-list"
+                                                data-url=""
+                                                data-method="GET"
+                                        >
+                                        </select>
+                                        <span class="form-text text-muted">{% trans 'Discount list of quotation term' %}</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Select Payment Terms' %}</label>
+                                        <div class="input-group">
+	                                        <span class="input-affix-wrapper">
+		                                        <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                                class="fas fa-info-circle"
+                                                                data-bs-toggle="dropdown"
+                                                                data-dropdown-animation
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false"
+                                                                disabled
+                                                        ></i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select
+                                                        class="form-select"
+                                                        id="select-box-quotation-create-payment-term"
+                                                        data-url="{% url "PaymentsTermsListAPI" %}"
+                                                        data-link-detail=""
+                                                        data-method="GET"
+                                                        name="payment_term"
+                                                ></select>
+	                                        </span>
+                                        </div>
+                                        <span class="form-text text-muted">{% trans 'Payment terms quotation term' %}</span>
                                     </div>
                                 </div>
                             </div>

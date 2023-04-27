@@ -37,11 +37,11 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'job_title', render: (data, type, row, meta) => {
-                        return `<span>` + row.job_title +`</span>`
+                        return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-danger">` + row.job_title +`</span>`
                     }
                 }, {
                     'data': 'owner', 'render': (data, type, row, meta) => {
-                        return `<div class="row"><center><span style="width: 90%" class="badge badge-soft-indigo badge-outline">` + row.owner.fullname + `</span></center></div>`
+                        return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-indigo">` + row.owner.fullname + `</span>`
                     }
                 }, {
                     'data': 'account_name', 'render': (data, type, row, meta) => {

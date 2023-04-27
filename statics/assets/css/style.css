@@ -74638,7 +74638,7 @@ label {
   display: block;
   width: 100%;
   height: calc(2.25rem + 2px);
-  padding: .375rem 1rem;
+  padding: .375rem 1rem .375rem .5rem;
   font-size: 1rem;
   line-height: 1.5;
   color: #262a2e;

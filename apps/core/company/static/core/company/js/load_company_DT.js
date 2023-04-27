@@ -176,7 +176,6 @@ $(function () {
             let frm = new SetupFormSubmit($(this));
             let dataBody = frm.dataForm
             dataBody['currency_rule'] = $.fn.groupDataFromPrefix(dataBody, 'currency_rule__');
-            console.log('frm.dataForm: ', dataBody);
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp)=>{
                 let data = $.fn.switcherResp(resp);
                 if (data['status'] === 200){

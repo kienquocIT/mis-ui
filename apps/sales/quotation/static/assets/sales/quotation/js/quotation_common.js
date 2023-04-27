@@ -416,9 +416,22 @@ function dataTableProduct(data, table_id) {
                 targets: 5,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-price" required>
-                                    <option value="0"></option>
-                                </select>
+                                <div class="dropdown">
+                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <span class="input-affix-wrapper">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price" 
+                                            value="0"
+                                            data-return-type="number"
+                                        >
+                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                    </span>
+                                    </div>
+                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                    <a class="dropdown-item" data-value=""></a>
+                                    </div>
+                                </div>
                             </div>`;
                 }
             },
@@ -848,24 +861,29 @@ function loadDataProductSelect(ele) {
         let data = JSON.parse(productData.value);
         let uom = ele[0].closest('tr').querySelector('.table-row-uom');
         let price = ele[0].closest('tr').querySelector('.table-row-price');
+        let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
         let tax = ele[0].closest('tr').querySelector('.table-row-tax');
         if (uom) {
             uom.value = data.unit_of_measure.id;
         }
-        if (price) {
-            let minVal = Math.min(...data.price_list);
+        if (price && priceList) {
+            let valList = [];
+            $(priceList).empty();
             for (let i = 0; i < data.price_list.length; i++) {
-                let option = ``;
-                if (data.price_list[i] === minVal) {
-                    option = `<option value="${data.price_list[i]}" selected>
-                                ${CCurrency.convertCurrency(data.price_list[i])}
-                            </option>`
-                } else {
-                    option = `<option value="${data.price_list[i]}">
-                                ${CCurrency.convertCurrency(data.price_list[i])}
-                            </option>`
-                }
-                $(price).append(option);
+                valList.push(data.price_list[i].price);
+                let option = `<a class="dropdown-item table-row-price-option" data-value="${data.price_list[i].price}">
+                                    <div class="row">
+                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                        <div class="col-2"></div>
+                                        <div class="col-5"><span>${CCurrency.convertCurrency(data.price_list[i].price)}</span></div>
+                                    </div>
+                                </a>`;
+                $(priceList).append(option);
+            }
+            if (valList) {
+                let minVal = Math.min(...valList);
+                price.value = minVal;
+                $(price).maskMoney('mask', minVal);
             }
         }
         if (tax) {

@@ -218,6 +218,26 @@ $(document).ready(function () {
                         $('#price_list_name').text(data.price.title)
                     }
                 }
+
+                if (data.price.valid_time_start && data.price.valid_time_start) {
+                    if (data.price.is_default) {
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary">now</span>`)
+                    }
+                    else {
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_end +`</span>`)
+                    }
+                }
+
+                if (data.price.status) {
+                    let badge_type = '';
+                    if (data.price.status === 'Valid') {badge_type = 'badge-green'}
+                    else if (data.price.status === 'Invalid') {badge_type = 'badge-orange'}
+                    else if (data.price.status === 'Expired') {badge_type = 'badge-red'}
+                    else {badge_type = 'badge-gray'}
+
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span>&nbsp;`+ data.price.status +`</span>`)
+                }
+
                 $('#inp-source').val(data.price.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
                     let product_mapped = getProductWithCurrency(data.price.products_mapped)

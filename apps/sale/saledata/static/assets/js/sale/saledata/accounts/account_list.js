@@ -36,17 +36,17 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'account_type', render: (data, type, row, meta) => {
-                        let list_class_badge = ['badge-soft-success', 'badge-soft-danger', 'badge-soft-warning', 'badge-soft-light', 'badge-soft-dark', 'badge-soft-info', 'badge-soft-primary', 'badge-soft-secondary']
+                        let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
                         let element = ''
                         for (let i = 0; i < row.account_type.length; i++) {
-                            element += `<span class="badge ` + list_class_badge[i] + ` badge-outline mt-1 ml-1">` + row.account_type[i] + `</span>`;
+                            element += `<span class="badge ` + list_class_badge[i] + ` mt-1 ml-1">` + row.account_type[i] + `</span>`;
                         }
                         return `<div class="row">` + element + `</div>`
                     }
                 }, {
                     'data': 'owner', 'render': (data, type, row, meta) => {
                         if (row.owner.fullname) {
-                            return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-primary badge-outline">` + row.owner.fullname + `</span></center></div>`
+                            return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-orange">` + row.owner.fullname + `</span></center></div>`
                         } else {
                             return ``
                         }
@@ -63,7 +63,7 @@ $(document).ready(function () {
                     'data': 'manager', 'render': (data, type, row, meta) => {
                         let element = ''
                         for (let i = 0; i < row.manager.length; i++) {
-                            element += `<span class="badge badge-soft-secondary badge-outline mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
+                            element += `<span class="badge badge-soft-secondary mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
                         }
                         return `<div class="row">` + element + `</div>`
                     }

@@ -143,13 +143,28 @@
                 <div class="form-group d-md-flex align-items-center">
                     <input class="form-control mr-2" type="number" min="1" name="percent_value" placeholder="1"
                            id="form-create-percent_value">
-                    <label class="mr-4" for="form-create-customer_per">{% trans 'use  for each customer per' %}</label>
-                    <select name="customer_per" id="form-create-customer_per" class="form-select">
-                        <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
-                        <option value="0">{% trans 'Valid time' %}</option>
-                        <option value="1">{% trans 'Week' %}</option>
-                        <option value="2">{% trans 'Month' %}</option>
-                    </select>
+                    <label class="mr-4" for="form-creat e-customer_per">{% trans 'use  for each customer per' %}</label>
+                    <div class="input-group">
+                        <div class="input-affix-wrapper">
+                            <div class="dropdown input-prefix">
+                                <i class="fas fa-info-circle"
+                                   data-bs-toggle="dropdown"
+                                   data-dropdown-animation
+                                   aria-haspopup="true"
+                                   aria-expanded="false"
+                                   disabled
+                                ></i>
+                                <div class="dropdown-menu w-210p mt-4"></div>
+                            </div>
+                            <select name="customer_per" id="form-create-customer_per" class="form-select">
+                                <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
+                                <option value="0">{% trans 'Valid time' %}</option>
+                                <option value="1">{% trans 'Week' %}</option>
+                                <option value="2">{% trans 'Month' %}</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="sub-text-max_usages d-flex align-items-center">
                         <p class="mr-4">{% trans 'Max Usages' %}</p>
                         <input class="form-control" type="number" min="0" max="999999" name="max_usages"

@@ -234,60 +234,6 @@ class methodHandle{
 
 let Method = new methodHandle();
 
-function formatState(state, elm) {
-    if (elm.closest('.selection').find('p').length === 0)
-        elm.closest('.selection').prepend('<p><a data-href="#" class="detail-view"><i class="bi bi-file-text"></i></a></p>')
-    // t.closefind(".selection").append(``)
-    var $state = $(`<p class="ml-2"><span></span></p>`);
-
-    // Use .text() instead of HTML string concatenation to avoid script injection issues
-    $state.find("span").text(state.text);
-    // $state.find("a").attr("href", baseUrl);
-    return $state;
-};
-
-function popupInfo(event, data){
-    $(event.target).next('span.select2').find('.detail-view').on('click', function(evt){
-        $(event.target).select2('close');
-        let spanPosition = $(event.target).next('span.select2').offset()
-        //declare html and append HTML to body
-        let popupContent = defaultTemplate(data)
-        if ($.isFunction(localTemplateCustom)) popupContent = localTemplateCustom(data)
-        let htmlPopup = $('<div class="popup-info"><div class="popup-wrap"><div class="popup-content"></div>' +
-            '<div class="popup-btn"><a href="#" class="btn border-primary text-primary btn-sm" target="_blank">' +
-            'View Detail</a></div></div></div>')
-        htmlPopup.find('.popup-content').html(popupContent)
-        htmlPopup.find('.popup-wrap').css({left: spanPosition.left, top: spanPosition.top - 38})
-        //handle position of popup info
-        let divHeight = htmlPopup.height() + 16 // 16 is padding top + bottom
-
-        if ((popupContent + 38 + divHeight) > window.innerHeight)
-            // if position popup larger than window screen
-            htmlPopup.find('.popup-wrap').css({
-                left:spanPosition.left + 25,
-                top: window.innerHeight - divHeight
-            })
-
-        htmlPopup.appendTo('body');
-        htmlPopup.click(()=>htmlPopup.remove())
-    })
-}
-function localTemplateCustom(data){
-    return `<div class="row no-gutters">
-        <p class="form-label">Title</p>
-        <p class="form-text">${data.title}</
-        <p class="form-label">Code</p>
-        <p class="form-text">${data.code}</p>
-        </div>`
-}
-function defaultTemplate(data){
-    return `<div class="row no-gutters">
-        <p class="form-label">Title</p>
-        <p class="form-text">${data.title}</
-        <p class="form-label">Code</p>
-        <p class="form-text">${data.code}</p>
-        </div>`
-}
 $(function () {
     // modal select type show/hide content
     $('[name="select_customer_type"]').on('change', function () {
@@ -327,10 +273,5 @@ $(function () {
     ]
     $('select[name="customer_per"]').select2({
         data: dumpData,
-        templateSelection: formatState,
-        is_has_icon: true
-    }).on("select2:select", function (e) {
-        let item = e.params.data;
-        popupInfo(e, item)
     });
 });

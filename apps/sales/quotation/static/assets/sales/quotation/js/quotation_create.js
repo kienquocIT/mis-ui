@@ -64,6 +64,11 @@ $(function () {
                         for (let option of boxCustomer[0].options) {
                             if (option.value === valueToSelect) {
                                 option.setAttribute('selected', true);
+                                let eleData = option.querySelector('.data-default');
+                                if (eleData) {
+                                    let item = JSON.parse(eleData.value);
+                                    loadContactCustomer(boxContact, item);
+                                }
                                 break;
                             }
                         }
@@ -167,6 +172,20 @@ $(function () {
             e.stopPropagation();
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+        });
+
+// Action on click price list's option
+        tableProduct.on('click', '.table-row-price-option', function (e) {
+            let priceValRaw = $(this)[0].getAttribute('data-value');
+            if (priceValRaw) {
+                let row = $(this)[0].closest('tr');
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    elePrice.value = priceValRaw;
+                    $(elePrice).maskMoney('mask', priceValRaw);
+                    commonCalculate(tableProduct, row, true, false, false);
+                }
+            }
         });
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total

@@ -4,9 +4,11 @@
 {% block cssHeader %}{% endblock %}
 
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-        href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-        id="add_company_button" data-bs-original-title="Add Company">
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            id="add_company_button" data-bs-original-title="Add Company"
+    >
         <span class="icon" data-bs-toggle="modal" data-bs-target="#AddCompanyForms">
             <span class="feather-icon">
                 <i data-feather="plus"></i>
@@ -16,18 +18,24 @@
 {% endblock %}
 
 {% block pageContent %}
-    <input name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden/>
-    <table id="datable_company_list" class="table nowrap w-100 mb-5"
+    <input
+            name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden
+    />
+    <table
+            id="datable_company_list" class="table nowrap w-100 mb-5"
             data-url="{% url "CompanyListAPI" %}"
             data-url-redirect="/"
-            data-method="GET">
+            data-method="GET"
+    >
         <thead>
         <tr>
             <th>
                 <span class="form-check">
-                    <input type="checkbox"
+                    <input
+                            type="checkbox"
                             class="form-check-input check-select-all"
-                            id="customCheck1">
+                            id="customCheck1"
+                    >
                     <label class="form-check-label" for="customCheck1"></label>
                 </span>
             </th>
@@ -42,11 +50,13 @@
     </table>
 
     <!-- Add Company -->
-    <div class="modal fade"
+    <div
+            class="modal fade"
             id="AddCompanyForms"
             tabindex="-1"
             role="dialog"
-            aria-hidden="true">
+            aria-hidden="true"
+    >
         <div class="modal-dialog modal-lg mt-15" role="document">
             <div class="modal-content mb-7">
                 <div class="modal-header">
@@ -58,10 +68,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="frm-add-company"
+                    <form
+                            id="frm-add-company"
                             data-url="{% url "CompanyListAPI" %}"
                             data-url-redirect="/"
-                            data-method="POST">
+                            data-method="POST"
+                    >
                         {% csrf_token %}
                         <div class="row mb-3">
                             <div class="col-6">
@@ -70,10 +82,12 @@
                                         {% trans 'Company Name' %}
                                         <span class="required"></span>
                                     </label>
-                                    <input type="text" class="form-control"
+                                    <input
+                                            type="text" class="form-control"
                                             id="company_name_id" name="title"
                                             placeholder="MT Solution"
-                                            required/>
+                                            required
+                                    />
                                     <span class="form-text text-muted">{% trans 'Name of new company' %}</span>
                                 </div>
                             </div>
@@ -82,10 +96,12 @@
                                     <label class="form-label" for="parent_company_id">
                                         {% trans 'Parent Company' %}
                                     </label>
-                                    <select class="form-control form-select" id="parent_company_id"
+                                    <select
+                                            class="form-control form-select" id="parent_company_id"
                                             name="parent_company"
                                             disabled
-                                            required>
+                                            required
+                                    >
                                         <option value="" selected>{% trans 'No selected' %}</option>
                                         <option value="1">One</option>
                                         <option value="2">Two</option>
@@ -102,11 +118,13 @@
                                         {% trans 'Code' %}
                                         <span class="required"></span>
                                     </label>
-                                    <input type="text" class="form-control"
+                                    <input
+                                            type="text" class="form-control"
                                             id="code_id" name="code"
                                             oninput="this.value=this.value.toUpperCase()"
                                             placeholder="MIS001"
-                                            required/>
+                                            required
+                                    />
                                     <span class="form-text text-muted">{% trans 'Code new company' %}</span>
                                 </div>
                             </div>
@@ -116,10 +134,12 @@
                                         {% trans 'Address' %}
                                         <span class="required"></span>
                                     </label>
-                                    <input type="text" class="form-control"
+                                    <input
+                                            type="text" class="form-control"
                                             id="address_id" name="address"
                                             placeholder="{% trans 'No.20, 22 Street, Him Lam Quarter, Binh Hung Ward, Binh Chanh District, HCM city, VN country' %}"
-                                            required>
+                                            required
+                                    >
                                     <span class="form-text text-muted">{% trans 'Address new company' %}</span>
                                 </div>
                             </div>
@@ -131,9 +151,11 @@
                                         {% trans 'Representative' %}
                                         <span class="required"></span>
                                     </label>
-                                    <input type="text" class="form-control"
+                                    <input
+                                            type="text" class="form-control"
                                             id="representative_fullname_id" name="representative_fullname"
-                                            placeholder="Nguyen Van A" required/>
+                                            placeholder="Nguyen Van A" required
+                                    />
                                     <span class="form-text text-muted">{% trans 'Full name of Representative' %}</span>
                                 </div>
                             </div>
@@ -143,10 +165,12 @@
                                         {% trans 'Email' %}
                                         <span class="required"></span>
                                     </label>
-                                    <input type="text" class="form-control"
+                                    <input
+                                            type="text" class="form-control"
                                             id="email_id" name="email"
                                             placeholder="anv@mtsolution.com.vn"
-                                            required/>
+                                            required
+                                    />
                                     <span class="form-text text-muted">{% trans 'Email of Representative' %}</span>
                                 </div>
                             </div>
@@ -156,22 +180,28 @@
                                         {% trans 'Phone Number' %}
                                         <span class="required"></span>
                                     </label>
-                                    <input type="number" class="form-control"
+                                    <input
+                                            type="number" class="form-control"
                                             id="phone_id" name="phone"
                                             placeholder="+84987654321"
-                                            required/>
+                                            required
+                                    />
                                     <span class="form-text text-muted">{% trans 'Phone number of Representative' %}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="row mb-3 pb-3">
                             <div class="form-group">
-                                <input type="submit" class="btn btn-success" id="add-company-submit"
-                                        value="{% trans 'Add' %}"/>
-                                <input type="button"
+                                <input
+                                        type="submit" class="btn btn-success" id="add-company-submit"
+                                        value="{% trans 'Add' %}"
+                                />
+                                <input
+                                        type="button"
                                         class="btn btn-outline-dark"
                                         data-bs-dismiss="modal"
-                                        value="{% trans 'Cancel' %}"/>
+                                        value="{% trans 'Cancel' %}"
+                                />
                             </div>
                         </div>
                     </form>
@@ -182,37 +212,91 @@
     <!-- / Add Company -->
 
     <!-- Modal Setting Company -->
-    <form id="form-setting" data-method="PUT"
-          data-url="{% url "CurrencyDetailAPI" pk=0 %}">
-        {% csrf_token %}
-        <div class="modal fade" id="modal-setting" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Company Setting" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+    <div
+            class="modal fade" id="modal-setting" tabindex="-1" role="dialog"
+            aria-labelledby="modal-setting"
+            aria-hidden="true"
+            data-url-detail="{% url 'CompanyConfigDetailAPI' %}"
+            data-url-currency-list="{% url 'CurrencyListAPI' %}"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-cog mr-1"></i>
+                    <h5 class="modal-title">MTS - Minh Tâm Solution</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form
+                            id="tblCompanySetting"
+                            data-url="{% url 'CompanyConfigDetailAPI' %}"
+                            data-method="PUT"
+                    >
+                        {% csrf_token %}
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Primary Currency" %}<span
-                                        class="field-required">*</span></label>
-                                <select class="form-select" data-method="GET" data-url="{% url "CurrencyListAPI" %}" id="setting-currency"></select>
+                                <label class="form-label" for="idxLanguage">{% trans 'Language' %}</label>
+                                <select name="language" id="idxLanguage" class="form-control select2">
+                                    <option value="vi">Tiếng Việt</option>
+                                    <option value="en" selected>English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                        class="form-label" for="idxCurrencyDefault"
+                                >{% trans 'Currency Primary' %}: </label>
+                                <select class="form-control select2" name="currency" id="idxCurrencyDefault">
+                                    <option value="1">VND</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="form-label">{% trans 'Currency Mask' %}: <i>({% trans 'Allow space' %})</i></label>
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6 col-sm-9 col-12">
+                                        <div class="form-group">
+                                            <label for="idxCurrencyMaskPrefix" class="form-label">{% trans 'Prefix' %}</label>
+                                            <input type="text" id="idxCurrencyMaskPrefix" name="currency_rule__prefix" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-9 col-12">
+                                        <div class="form-group">
+                                            <label for="idxCurrencyMaskSuffix" class="form-label">{% trans 'Suffix' %}</label>
+                                            <input type="text" id="idxCurrencyMaskSuffix" name="currency_rule__suffix" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-9 col-12">
+                                        <div class="form-group">
+                                            <label for="idxCurrencyMaskThousand" class="form-label">{% trans 'Thousand' %}</label>
+                                            <input type="text" id="idxCurrencyMaskThousand" name="currency_rule__thousand" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-9 col-12">
+                                        <div class="form-group">
+                                            <label for="idxCurrencyMaskDecimal" class="form-label">{% trans 'Decimal' %}</label>
+                                            <input type="text" id="idxCurrencyMaskDecimal" name="currency_rule__decimal" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-9 col-12">
+                                        <div class="form-group">
+                                            <label for="idxCurrencyMaskPrecision" class="form-label">{% trans 'Precision' %}</label>
+                                            <input type="text" id="idxCurrencyMaskPrecision" name="currency_rule__precision" class="form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </div>
-                    </div>
+
+                    </form>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}

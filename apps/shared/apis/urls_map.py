@@ -59,6 +59,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_PARENT = StringUrl('hr/group/parent')
 
     # home/company
+    COMPANY_CONFIG = StringUrl('company/config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = 'company/list'
     COMPANY_OVERVIEW = StringUrl('company/overview')

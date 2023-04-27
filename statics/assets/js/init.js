@@ -1155,34 +1155,6 @@ $.fn.extend({
             if (companyConfigUrl) {
                 return await $.fn.callAjax(companyConfigUrl, 'GET').then((resp) => {
                     let data = $.fn.switcherResp(resp);
-                    // let data = {
-                    //     "currency": {
-                    //         "currency_name": "Đồng",
-                    //         "currency_symbol": "VND",
-                    //         "prefix": "",
-                    //         "suffix": " VND",
-                    //         "affixesStay": true,
-                    //         "thousands": ".",
-                    //         "decimal": ",",
-                    //         "precision": 0,
-                    //         "allowZero": true,
-                    //         "allowNegative": false
-                    //     }, "status": 200
-                    // }
-                    // let data = {
-                    //     "currency": {
-                    //         "currency_name": "Dollar",
-                    //         "currency_symbol": "$",
-                    //         "prefix": "$ ",
-                    //         "suffix": "",
-                    //         "affixesStay": true,
-                    //         "thousands": ",",
-                    //         "decimal": ".",
-                    //         "precision": 2,
-                    //         "allowZero": true,
-                    //         "allowNegative": true
-                    //     }, "status": 200
-                    // };
                     dataText = JSON.stringify(data);
                     $('#urlCompanyConfigData').text(dataText);
                     return data;
@@ -1194,7 +1166,7 @@ $.fn.extend({
     },
     getCompanyCurrencyConfig: async function () {
         let data = await $.fn.getCompanyConfig();
-        return data['currency'];
+        return data['config']['currency_rule'];
     },
 
     // FORM handler
@@ -1384,6 +1356,20 @@ $.fn.extend({
     hideLoading: function () {
         $('#loadingContainer').addClass('hidden');
     },
+    getRowData: function (){
+        // element call from in row of DataTable
+        let row = $(this).closest('tr');
+        return $($(this).closest('table')).DataTable().row(row).data();
+    },
+    groupDataFromPrefix: function (data, prefix){
+        let rs = {};
+        Object.keys(data).map((key)=>{
+            if (key.startsWith(prefix)){
+                rs[key.split(prefix)[1]] = data[key]
+            }
+        })
+        return rs;
+    }
 })
 
 // support for Form Submit

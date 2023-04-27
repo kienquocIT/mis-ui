@@ -79,3 +79,47 @@ class ApplicationPermissionAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class CityListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
+        if resp.state:
+            return {'cities': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class DistrictListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DISTRICTS + pk).get()  # noqa
+        if resp.state:
+            return {'districts': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class WardListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.WARDS + pk, user=request.user).get()
+        if resp.state:
+            return {'wards': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        else:
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

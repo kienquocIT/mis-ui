@@ -521,17 +521,48 @@ class AccountCreateAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class AccountDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sale/saledata/accounts/account_detail.html',
+        breadcrumb='ACCOUNT_DETAIL_PAGE',
+        menu_active='menu_account_detail',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class AccountDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + '/' + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + pk).get()
         if resp.state:
             return {'account_detail': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'account_detail': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class AccountsMapEmployeeAPI(APIView):

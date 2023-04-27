@@ -7,13 +7,18 @@
  * + url="{% url 'ApplicationPropertyListAPI' %}"
  * + params="{name: value}"
  * + onload={id="", title="name"}
+ * @param selectBoxElement: element of select
  *@note
  * select2 on change
  *     selectbox.on("select2:select", function (e) {
  *          let item = e.params.data
  *     });
  *     @variable e.params.data: full data of select store
- * @param selectBoxElement: element of select
+ * other callback
+ * select2:unselect: được gọi khi một mục bị hủy chọn.
+ * select2:open: được gọi khi mở danh sách chọn.
+ * select2:close: được gọi khi đóng danh sách chọn.
+ * select2:clear: được gọi khi xóa tất cả các mục đã chọn.
  */
 function initSelectBox(selectBoxElement = null) {
     let $select_box = selectBoxElement
@@ -95,11 +100,13 @@ function initSelectBox(selectBoxElement = null) {
             tags:false
 
         }
-        if ($this.attr('data-multiple') !== 'false'){
+        if ($this.attr('data-multiple') === 'true'){
             options['multiple'] = true
             options['tags'] = true
             $this.prop('multiple', true)
         }
+
+        // run select2
         $this.select2(options)
     });
 }

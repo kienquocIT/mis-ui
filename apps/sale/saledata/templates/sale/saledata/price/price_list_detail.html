@@ -39,8 +39,8 @@
                     <span class="nav-link-text">{% trans 'Price List' %}</span>
                 </a>
             </li>
-            <li class="nav-item" id="nav2">
-                <a id="setting-nav" class="nav-link" data-bs-toggle="tab" href="#tab-setting">
+            <li class="nav-item" id="nav2" >
+                <a id="setting-nav" class="nav-link disabled" data-bs-toggle="tab" href="#tab-setting">
                     <span class="nav-link-text">{% trans 'Setting' %}</span>
                 </a>
             </li>
@@ -83,10 +83,10 @@
                        data-method="GET">
                     <thead>
                     <th class="w-5">#</th>
-                    <th class="w-15">{% trans "Code" %}</th>
+                    <th class="w-10">{% trans "Code" %}</th>
                     <th class="w-25">{% trans "Item name" %}</th>
-                    <th class="w-10">{% trans "UoM group" %}</th>
-                    <th class="w-10">{% trans "UoM" %}</th>
+                    <th class="w-10 text-center">{% trans "UoM group" %}</th>
+                    <th class="w-10 text-center">{% trans "UoM" %}</th>
                     </thead>
                 </table>
             </form>
@@ -104,6 +104,7 @@
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Select price list" %}</label>
                         <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
+                                style="border: None; color: black"
                                 id="select-box-price-list" disabled="disabled" name="price_list_mapped"></select>
                     </div>
                     <div class="form-check ml-3">

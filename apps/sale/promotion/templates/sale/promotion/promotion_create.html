@@ -154,9 +154,16 @@
                                    aria-expanded="false"
                                    disabled
                                 ></i>
-                                <div class="dropdown-menu w-210p mt-4"></div>
+                                <div class="dropdown-menu w-210p mt-2">
+                                </div>
                             </div>
-                            <select name="customer_per" id="form-create-customer_per" class="form-select">
+                            <select name="customer_per" id="form-create-customer_per"
+                                    class="form-select dropdown-select_two"
+                                    data-url="{% url "EmployeeListAPI" %}"
+                                    data-prefix="employee_list"
+                                    data-link-detail="{% url 'EmployeeDetail' 1 %}"
+                                    data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                            >
                                 <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
                                 <option value="0">{% trans 'Valid time' %}</option>
                                 <option value="1">{% trans 'Week' %}</option>

@@ -460,6 +460,12 @@ function dataTableProduct(data, table_id) {
                                     data-return-type="number"
                                     hidden
                                 >
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-discount-amount-plus"
+                                    data-return-type="number"
+                                    hidden
+                                >
                             </div>`;
                 }
             },
@@ -473,6 +479,12 @@ function dataTableProduct(data, table_id) {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount-plus"
                                     data-return-type="number"
                                     hidden
                                 >
@@ -741,23 +753,9 @@ function dataTableExpense(data, table_id) {
     });
 }
 
-function updateDiscountTotal(discount, pretax_id, taxes_id, total_id, discount_id) {
-    let elePretaxAmount = document.getElementById(pretax_id);
-    let eleTaxes = document.getElementById(taxes_id);
-    let eleDiscount = document.getElementById(discount_id);
-    let eleTotal = document.getElementById(total_id);
-    let pretaxVal = $(elePretaxAmount).valCurrency();
-    let taxVal = $(eleTaxes).valCurrency();
-    let discountAmount = ((pretaxVal * Number(discount)) / 100);
-    eleDiscount.value = discountAmount;
-    $(eleDiscount).maskMoney('mask', discountAmount);
-    let total = pretaxVal - discountAmount + taxVal;
-    eleTotal.value = total;
-    $(eleTotal).maskMoney('mask', total);
-}
-
-function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
+function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null, is_discount_total = false) {
     let pretaxAmount = 0;
+    let discountAmount = 0;
     let taxAmount = 0;
     let elePretaxAmount = document.getElementById(pretax_id);
     let eleDiscount = document.getElementById(discount_id);
@@ -766,38 +764,54 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
     let tableLen = table.tBodies[0].rows.length;
     for (let i = 0; i < tableLen; i++) {
         let row = table.tBodies[0].rows[i];
+        // calculate Pretax Amount
         let subtotal = row.querySelector('.table-row-subtotal');
         if (subtotal) {
             if (subtotal.value) {
                 pretaxAmount += $(subtotal).valCurrency();
             }
         }
-        let subTaxAmount = row.querySelector('.table-row-tax-amount');
-        if (subTaxAmount) {
-            if (subTaxAmount.value) {
-                taxAmount += $(subTaxAmount).valCurrency();
+        // calculate Tax Amount
+        if (is_discount_total === false) {
+            let subTaxAmount = row.querySelector('.table-row-tax-amount');
+            if (subTaxAmount) {
+                if (subTaxAmount.value) {
+                    taxAmount += $(subTaxAmount).valCurrency();
+                }
+            }
+        } else {
+            let subTaxAmountPlus = row.querySelector('.table-row-tax-amount-plus');
+            if (subTaxAmountPlus) {
+                if (subTaxAmountPlus.value) {
+                    taxAmount += $(subTaxAmountPlus).valCurrency();
+                }
+            }
+        }
+        // calculate discount plus (discount on total)
+        if (is_discount_total === true) {
+            let subDiscountAmountPlus = row.querySelector('.table-row-discount-amount-plus');
+            if (subDiscountAmountPlus) {
+                if (subDiscountAmountPlus.value) {
+                    discountAmount += $(subDiscountAmountPlus).valCurrency();
+                }
             }
         }
     }
-    let total = (pretaxAmount + taxAmount);
-    if (eleDiscount) {
-        let discount = document.getElementById('quotation-create-product-discount');
-        if (discount.value) {
-            let discountAmount = ((pretaxAmount * Number(discount.value)) / 100);
-            eleDiscount.value = discountAmount;
-            total = (pretaxAmount - discountAmount + taxAmount);
-            $(eleDiscount).maskMoney('mask', discountAmount);
-        }
-    }
+    let totalFinal = (pretaxAmount - discountAmount + taxAmount);
+
     elePretaxAmount.value = pretaxAmount;
     $(elePretaxAmount).maskMoney('mask', pretaxAmount);
+    if (eleDiscount) {
+        eleDiscount.value = discountAmount;
+        $(eleDiscount).maskMoney('mask', discountAmount);
+    }
     eleTaxes.value = taxAmount;
     $(eleTaxes).maskMoney('mask', taxAmount);
-    eleTotal.value = total;
-    $(eleTotal).maskMoney('mask', total);
+    eleTotal.value = totalFinal;
+    $(eleTotal).maskMoney('mask', totalFinal);
 }
 
-function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false, discount_on_total = null) {
+function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false, discount_on_total = 0) {
     let price = 0;
     let quantity = 0;
     let elePrice = row.querySelector('.table-row-price');
@@ -815,6 +829,7 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
     let tax = 0;
     let discount = 0;
     let subtotal = (price * quantity);
+    let subtotalPlus = 0;
     // calculate discount
     let eleDiscount = row.querySelector('.table-row-discount');
     if (eleDiscount) {
@@ -832,6 +847,17 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
             subtotal = ((price - discountAmount) * quantity);
             $(eleDiscountAmount).maskMoney('mask', discountAmount);
         }
+        // calculate discount amount on total
+        if (discount_on_total || discount_on_total === 0) {
+            let eleDiscountAmountPlus = row.querySelector('.table-row-discount-amount-plus');
+            if (eleDiscountAmountPlus) {
+                let finalDiscountValue = (discount + discount_on_total);
+                let discountAmountPlus = ((price * finalDiscountValue) / 100);
+                eleDiscountAmountPlus.value = discountAmountPlus;
+                subtotalPlus = ((price - discountAmountPlus) * quantity);
+                $(eleDiscountAmountPlus).maskMoney('mask', discountAmountPlus);
+            }
+        }
     }
     // calculate tax
     let eleTax = row.querySelector('.table-row-tax');
@@ -848,6 +874,13 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
             eleTaxAmount.value = taxAmount;
             $(eleTaxAmount).maskMoney('mask', taxAmount);
         }
+        // calculate tax have discount on total
+        let eleTaxAmountPlus = row.querySelector('.table-row-tax-amount-plus');
+        if (eleTaxAmountPlus) {
+            let taxAmountPlus = ((subtotalPlus * tax) / 100);
+            eleTaxAmountPlus.value = taxAmountPlus;
+            $(eleTaxAmountPlus).maskMoney('mask', taxAmountPlus);
+        }
     }
     // set subtotal value
     let eleSubtotal = row.querySelector('.table-row-subtotal');
@@ -857,7 +890,11 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
     }
     // calculate total
     if (is_product === true) {
-        updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+        if (discount_on_total || discount_on_total === 0) {
+            updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount', true)
+        } else {
+            updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total')
+        }
     } else if (is_cost === true) {
         updateTotal(table[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total')
     } else if (is_expense === true) {

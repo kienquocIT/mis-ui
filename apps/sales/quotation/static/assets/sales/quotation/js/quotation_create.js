@@ -191,9 +191,9 @@ $(function () {
         $('#quotation-create-product-discount').on('change', function(e) {
             let discount = 0;
             if ($(this)[0].value) {
-                discount = $(this)[0].value;
+                discount = parseInt($(this)[0].value);
             }
-            updateDiscountTotal(discount, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            commonCalculate(tableProduct, row, true, false, false, discount)
         });
 
 // Action on click button add expense

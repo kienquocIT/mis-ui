@@ -43,6 +43,8 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShippi
             if (data) {
                 if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
                     ele.append(`<option value=""></option>`);
+                    let dataAppend = ``;
+                    let dataMapOpp = ``;
                     data.account_list.map(function (item) {
                         let ownerName = "";
                         if (item.owner) {
@@ -54,25 +56,28 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShippi
                             'Owner name': ownerName,
                         }).replace(/"/g, "&quot;");
                         let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                        let dataAppend = `<option value="${item.id}">
+                        dataAppend += `<option value="${item.id}">
                                             <span class="account-title">${item.name}</span>
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
                         if (item.id === valueToSelect) {
-                            dataAppend = `<option value="${item.id}" selected>
+                            dataMapOpp = `<option value="${item.id}" selected>
                                             <span class="account-title">${item.name}</span>
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-
                             loadShippingBillingCustomer(modalShipping, modalBilling, item);
                             if (item.id && item.owner) {
                                 loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
                             }
                         }
-                        ele.append(dataAppend)
                     })
+                    if (dataMapOpp) {
+                        ele.append(dataMapOpp)
+                    } else {
+                        ele.append(dataAppend)
+                    }
                     loadInformationSelectBox(ele);
                 }
             }
@@ -766,15 +771,12 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null, i
                 taxAmount += $(subTaxAmount).valCurrency();
             }
         }
-        // calculate discount plus (discount on total)
-        if (is_discount_total === true) {
-            let subDiscountAmountPlus = row.querySelector('.table-row-discount-amount');
-            if (subDiscountAmountPlus) {
-                if (subDiscountAmountPlus.value) {
-                    discountAmount += $(subDiscountAmountPlus).valCurrency();
-                }
-            }
-        }
+    }
+    let discount_on_total = 0;
+    let discountTotalRate = $('#quotation-create-product-discount').val();
+    if (discountTotalRate) {
+        discount_on_total = parseInt(discountTotalRate);
+        discountAmount = ((pretaxAmount * discount_on_total) / 100)
     }
     let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
@@ -790,7 +792,7 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null, i
     $(eleTotal).maskMoney('mask', totalFinal);
 }
 
-function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
+function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false, is_change_discount_total = false) {
     let price = 0;
     let quantity = 0;
     let elePrice = row.querySelector('.table-row-price');
@@ -818,52 +820,37 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
         }
     }
     let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-    // calculate discount + tax with discount
+    // calculate discount + tax
     let eleDiscount = row.querySelector('.table-row-discount');
-    if (eleDiscount) {
+    let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+    if (eleDiscount && eleDiscountAmount) {
         if (eleDiscount.value) {
             discount = parseInt(eleDiscount.value)
         } else if (!eleDiscount.value || eleDiscount.value === "0") {
             discount = 0
         }
-
-        if (discount || discount === 0) {
-            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-            if (eleDiscountAmount) {
-                let discount_on_total = 0;
-                let DiscountValRateTotal = $('#quotation-create-product-discount').val();
-                if (DiscountValRateTotal) {
-                    discount_on_total = parseInt(DiscountValRateTotal);
-                }
-                if (discount_on_total && discount_on_total !== 0) {
-                    is_discount_total = true;
-                    let finalDiscountRate = (discount + discount_on_total);
-                    let discountAmount = ((price * finalDiscountRate) / 100);
-                    eleDiscountAmount.value = discountAmount;
-                    subtotalPlus = ((price - discountAmount) * quantity);
-                    $(eleDiscountAmount).maskMoney('mask', discountAmount);
-                    // calculate tax
-                    if (eleTaxAmount) {
-                        let taxAmount = ((subtotalPlus * tax) / 100);
-                        eleTaxAmount.value = taxAmount;
-                        $(eleTaxAmount).maskMoney('mask', taxAmount);
-                    }
-                } else {
-                    let discountAmount = ((price * discount) / 100);
-                    eleDiscountAmount.value = 0;
-                    subtotal = ((price - discountAmount) * quantity);
-                    $(eleDiscountAmount).maskMoney('mask', 0);
-                    // calculate tax
-                    if (eleTaxAmount) {
-                        let taxAmount = ((subtotal * tax) / 100);
-                        eleTaxAmount.value = taxAmount;
-                        $(eleTaxAmount).maskMoney('mask', taxAmount);
-                    }
-                }
-            }
+        let discount_on_total = 0;
+        let discountTotalRate = $('#quotation-create-product-discount').val();
+        if (discountTotalRate) {
+            discount_on_total = parseInt(discountTotalRate);
         }
+        let finalDiscountRate = (discount + discount_on_total);
+
+        let discountAmount = ((price * discount) / 100);
+        subtotal = ((price - discountAmount) * quantity);
+
+        let discountAmountOnTotal = ((price * finalDiscountRate) / 100);
+        subtotalPlus = ((price - discountAmountOnTotal) * quantity);
+        // calculate tax
+        if (eleTaxAmount) {
+            let taxAmount = ((subtotalPlus * tax) / 100);
+            eleTaxAmount.value = taxAmount;
+            $(eleTaxAmount).maskMoney('mask', taxAmount);
+        }
+        eleDiscountAmount.value = discountAmountOnTotal;
+        $(eleDiscountAmount).maskMoney('mask', discountAmountOnTotal);
     } else {
-        // calculate tax no discount
+        // calculate tax no discount on total
         if (eleTaxAmount) {
             let taxAmount = ((subtotal * tax) / 100);
             eleTaxAmount.value = taxAmount;
@@ -1044,14 +1031,6 @@ function loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {
                                                 <br>`)
             }
         }
-    }
-}
-
-function loadContactCustomer(boxContact, item) {
-    if (item.id && item.owner) {
-        let valueToSelect = item.owner.id;
-        let customerID = item.id;
-        loadBoxQuotationContact('select-box-quotation-create-contact', valueToSelect, customerID);
     }
 }
 

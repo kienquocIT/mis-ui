@@ -7,7 +7,7 @@ $(document).ready(function () {
         return obj;
     }, {});
     let config = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        dom: '<"row"<"col-7"<"blog-toolbar-left">><"col-5"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         ordering: false,
         paging: false,
         columnDefs: [{
@@ -181,7 +181,6 @@ $(document).ready(function () {
     }
 
     function getProductWithCurrency(list_product, currency) {
-        console.log(list_product)
         let list_result = []
         list_product.map(function (item) {
             if (list_result.length === 0 || !list_result.find(obj => obj.id === item.id)) {
@@ -468,6 +467,9 @@ $(document).ready(function () {
                     })
                     $('#datatable-item-list .del-button').remove();
                 }
+
+                $('.dataTables_info').remove()
+                $('.btn-soft-primary').eq(1).remove()
             }
         })
 
@@ -810,4 +812,5 @@ $(document).ready(function () {
             });
         }
     })
+
 })

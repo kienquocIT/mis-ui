@@ -60,28 +60,30 @@
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
-            <button id="btn-add-new-item" class="mt-2 mb-3" data-bs-toggle="modal" hidden
-                    data-bs-target="#modal-add-new-item" type="button"
-                    style="background: none;border: none; color: #007D88">
-                <span
-                        data-bs-placement="bottom" data-bs-toggle="tooltip"
-                        title="{% trans 'Add Item' %}">
-                    <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add Item' %}
-                </span>
-            </button>
+            <div class="row">
+                <div class="col-6 text-left">
+                    <button id="btn-add-new-item" data-bs-toggle="modal" hidden
+                            data-bs-target="#modal-add-new-item" type="button"
+                            style="background: none;border: none; color: #007D88">
+                        <span data-bs-placement="bottom" data-bs-toggle="tooltip"
+                              title="{% trans 'Add Item' %}">
+                            <i class="fas fa-plus-circle"></i>
+                            {% trans 'Add Item' %}
+                        </span>
+                    </button>
+                </div>
+                <div class="col-6 text-right">
+                    <div class="dropdown waiter-miner-item">
+                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                           class="btn btn-soft-primary dropdown-toggle" role="button">{% trans "Visible currencies" %}</a>
+                        <div role="menu" class="dropdown-menu dropdown-currency"></div>
+                    </div>
+                </div>
+            </div>
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
                   data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
                   data-method="PUT">
-                <div class="waiter-miner-item hidden">
-                    <div class="dropdown">
-                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-soft-primary dropdown-toggle" role="button">{% trans "Show/Hidden Currency" %}</a>
-                        <div role="menu" class="dropdown-menu dropdown-currency">
-                        </div>
-                    </div>
-                </div>
-                <table id="datatable-item-list" class="table nowrap w-100 mb-5"
+                <table id="datatable-item-list" class="table nowrap"
                        data-url="{% url "PriceDetailAPI" pk=0 %}"
                        data-url-detail="{% url "ProductDetail" pk=0 %}"
                        data-url-delete="{% url "PriceListDeleteProductAPI" pk=0 %}"
@@ -219,17 +221,6 @@
                                 data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                             </div>
                         </div>
-{#                        <div class="row mt-3 overflow-x-scroll">#}
-{#                            <table class="table nowrap w-100 mb-5" id="table-price-of-currency">#}
-{#                                <thead>#}
-{#                                <tr></tr>#}
-{#                                </thead>#}
-{#                                <tbody>#}
-{#                                <tr>#}
-{#                                </tr>#}
-{#                                </tbody>#}
-{#                            </table>#}
-{#                        </div>#}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

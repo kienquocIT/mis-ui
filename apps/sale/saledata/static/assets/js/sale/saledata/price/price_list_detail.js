@@ -93,7 +93,6 @@ $(document).ready(function () {
         )
     }
 
-
     function loadSourcePriceList(id) {
         let ele = $('#select-box-price-list')
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
@@ -226,7 +225,6 @@ $(document).ready(function () {
                 }
             }
         })
-        console.log(list_result)
 
         list_result.map(function (item) {
             if (item.price.length !== currency.length) {
@@ -246,19 +244,15 @@ $(document).ready(function () {
     }
 
     function loadUoM(group_id, id) {
-        let ele = $('#chooseUoM');
+        let ele = $('#select-uom');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                     ele.append(`<option value="0"></option>`);
-                    console.log(data)
                     resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.id === group_id) {
-                            if (item.id === id) {
-                                ele.append(`<option value="` + item.id + `" selected>` + item.code + ` - ` + item.title + `</option>`);
-                            } else
-                                ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
+                        if (item.group.title === group_id) {
+                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
                         }
                     })
                 }
@@ -705,12 +699,11 @@ $(document).ready(function () {
         if ($('#select-box-type').val() === '0')
             loadProduct();
         else if ($('#select-box-type').val() === '2') {
-            loadExpense();
+            // loadExpense();
         }
         $('#select-box-product').empty();
         $('#inp-uom-group').val('')
         $('#select-uom').empty();
-        loadProduct();
         // let table = $('#table-price-of-currency')
         // table.html('');
         // table.append(table_price_of_currency);
@@ -785,11 +778,11 @@ $(document).ready(function () {
             $.fn.callAjax(data_url, 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data)
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
                         $('#inp-code').val(data.product.code);
                         $('#inp-uom-group').val(data.product.general_information.uom_group.title);
                         $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
+                        $('#select-uom').empty()
                         loadUoM(data.product.general_information.uom_group.title);
                     }
                 }

@@ -687,6 +687,11 @@
                                 data-url="{% url "TaxListAPI" %}"
                                 data-method="GET"
                         >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-request-employee-id"
+                                value="{{ data.data.employee_current_id }}"
+                        >
                     </div>
                 </div>
             </div>

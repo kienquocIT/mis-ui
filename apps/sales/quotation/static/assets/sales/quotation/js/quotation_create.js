@@ -13,6 +13,7 @@ $(function () {
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let tabPrice = $('#tab_terms');
+        loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
@@ -111,11 +112,11 @@ $(function () {
         });
 
 // Action on click dropdown sale person
-        boxSalePerson.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
-            }
-        });
+//         boxSalePerson.on('click', function(e) {
+//             if (!$(this)[0].innerHTML) {
+//                 loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+//             }
+//         });
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {

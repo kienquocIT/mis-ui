@@ -78,12 +78,15 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShippi
     )
 }
 
-function loadBoxQuotationContact(contact_id, valueToSelect = null) {
+function loadBoxQuotationContact(contact_id, valueToSelect = null, customerID = null) {
     let jqueryId = '#' + contact_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
-    $.fn.callAjax(url, method).then(
+    if (customerID) {
+        ele.empty();
+    }
+    $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -128,6 +131,7 @@ function loadBoxQuotationSalePerson(sale_person_id) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                    let employee_current_id = $('#data-init-quotation-create-request-employee-id').val();
                     ele.append(`<option value=""></option>`);
                     data.employee_list.map(function (item) {
                         let group = '';
@@ -140,10 +144,17 @@ function loadBoxQuotationSalePerson(sale_person_id) {
                             'Code': item.code,
                             'Group': group
                         }).replace(/"/g, "&quot;");
-                        ele.append(`<option value="${item.id}">
-                                        <span class="employee-title">${item.full_name}</span>
-                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                    </option>`)
+                        if (item.id === employee_current_id) {
+                            ele.append(`<option value="${item.id}" selected>
+                                            <span class="employee-title">${item.full_name}</span>
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`)
+                        } else {
+                            ele.append(`<option value="${item.id}">
+                                            <span class="employee-title">${item.full_name}</span>
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`)
+                        }
                     })
                 }
             }
@@ -788,7 +799,7 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
     $(eleTotal).maskMoney('mask', total);
 }
 
-function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
+function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false, discount_on_total = null) {
     let price = 0;
     let quantity = 0;
     let elePrice = row.querySelector('.table-row-price');
@@ -806,6 +817,7 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
     let tax = 0;
     let discount = 0;
     let subtotal = (price * quantity);
+    // calculate discount
     let eleDiscount = row.querySelector('.table-row-discount');
     if (eleDiscount) {
         if (eleDiscount.value) {
@@ -823,6 +835,7 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
             $(eleDiscountAmount).maskMoney('mask', discountAmount);
         }
     }
+    // calculate tax
     let eleTax = row.querySelector('.table-row-tax');
     if (eleTax) {
         let optionSelected = eleTax.options[eleTax.selectedIndex];
@@ -838,11 +851,13 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
             $(eleTaxAmount).maskMoney('mask', taxAmount);
         }
     }
+    // set subtotal value
     let eleSubtotal = row.querySelector('.table-row-subtotal');
     if (eleSubtotal) {
         eleSubtotal.value = subtotal;
         $(eleSubtotal).maskMoney('mask', subtotal);
     }
+    // calculate total
     if (is_product === true) {
         updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
     } else if (is_cost === true) {
@@ -1004,10 +1019,11 @@ function loadShippingBillingCustomer(modalShipping, modalBilling, item) {
 }
 
 function loadContactCustomer(boxContact, item) {
-    if (item.owner) {
+    if (item.id && item.owner) {
         let valueToSelect = item.owner.id;
+        let customerID = item.id;
         if (!boxContact[0].innerHTML) {
-            loadBoxQuotationContact('select-box-quotation-create-contact', valueToSelect);
+            loadBoxQuotationContact('select-box-quotation-create-contact', valueToSelect, customerID);
         } else {
             let optionSelectedContact = boxContact[0].options[boxContact[0].selectedIndex];
             if (optionSelectedContact) {

@@ -59,6 +59,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_PARENT = StringUrl('hr/group/parent')
 
     # home/company
+    COMPANY_CONFIG = StringUrl('company/config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = 'company/list'
     COMPANY_OVERVIEW = StringUrl('company/overview')
@@ -136,6 +137,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # price
     PRICE_LIST = StringUrl('saledata/prices')
     PRICE_DETAIL = StringUrl('saledata/price/')
+    PRICE_DELETE = StringUrl('saledata/delete-price/')
     PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/')
     PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/')
     PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/')

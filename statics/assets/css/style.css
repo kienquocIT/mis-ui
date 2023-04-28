@@ -74638,7 +74638,7 @@ label {
   display: block;
   width: 100%;
   height: calc(2.25rem + 2px);
-  padding: .375rem 1rem;
+  padding: .375rem 1rem .375rem .5rem;
   font-size: 1rem;
   line-height: 1.5;
   color: #262a2e;
@@ -91024,5 +91024,12 @@ Project:	Jampack
 .form-check-label{
     user-select: none;
     -webkit-user-select: none;
+}
+.input-affix-wrapper span.select2 .select2-selection{
+    padding-left: 1.9rem;
+}
+.input-affix-wrapper .dropdown i:not(:disabled){cursor:pointer}
+.dropdown-menu .dropdown-header.header-wth-bg {
+    background: #007D88;
 }
 /*# sourceMappingURL=style.css.map */

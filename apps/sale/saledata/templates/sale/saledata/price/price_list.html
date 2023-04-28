@@ -8,6 +8,7 @@
             type="text/css"
     />
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.0/dist/sweetalert2.min.css" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -32,10 +33,10 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-
-
     <table id="datatable-price-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceListAPI" %}"
-           data-url-detail="{% url "PriceListDetail" pk=0 %}" data-method="GET">
+           data-url-detail="{% url "PriceListDetail" pk=0 %}"
+           data-url-delete="{% url "PriceDeleteAPI" pk=0 %}"
+           data-method="GET">
         <thead>
         <th class="w-5">
             <span class="form-check">
@@ -47,9 +48,9 @@
                 <label class="form-check-label" for="customCheck1"></label>
             </span>
         </th>
-        <th class="w-40">{% trans "Name" %}</th>
-        <th class="w-40 text-center">{% trans "Type" %}</th>
-        <th class="w-10">{% trans "Status" %}</th>
+        <th class="w-25">{% trans "Name" %}</th>
+        <th class="w-50 text-center">{% trans "Type" %}</th>
+        <th class="w-15">{% trans "Status" %}</th>
         <th class="w-5"></th>
         </thead>
     </table>
@@ -164,4 +165,5 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.0/dist/sweetalert2.all.min.js"></script>
 {% endblock %}

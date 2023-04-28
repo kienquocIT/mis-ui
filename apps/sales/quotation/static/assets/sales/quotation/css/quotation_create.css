@@ -38,3 +38,8 @@ ul.quotation-tabs {
 ul.quotation-tabs li.quotation-tab-item {
   margin-right: 10px;
 }
+
+a.dropdown-item.table-row-price-option:hover {
+    background-color: blue;
+    color: white;
+}

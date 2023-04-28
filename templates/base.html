@@ -43,6 +43,7 @@
                 src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
             }
         </style>
+        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
@@ -144,6 +145,11 @@
         <span id="urlCompanyConfigData"></span>
     </div>
     <!-- /Message translate usually -->
+    <!-- /Message translate base -->
+    <input type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
+    data-more-info="{% trans 'More Information' %}">
+    <!-- /Message translate base -->
+
 </div>
 <!-- /Wrapper -->
 
@@ -242,6 +248,10 @@
             <!-- Init Mask Money -->
             init_mask_money();
             <!-- ## Init Mask Money -->
+
+            <!-- Init select2 -->
+            $(".select2").select2();
+            <!-- ## Init select2 -->
         });
     </script>
     {% block jsFooter %}

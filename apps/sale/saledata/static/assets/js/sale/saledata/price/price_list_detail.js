@@ -279,25 +279,36 @@ $(document).ready(function () {
 
                 if (data.price.valid_time_start && data.price.valid_time_start) {
                     if (data.price.is_default) {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary">now</span>`)
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
                     } else {
                         $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_end + `</span>`)
+                    }
+                    else {
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end +`</span>`)
                     }
                 }
 
                 if (data.price.status) {
                     let badge_type = '';
+                    let text_type = '';
                     if (data.price.status === 'Valid') {
                         badge_type = 'badge-green'
-                    } else if (data.price.status === 'Invalid') {
+                        text_type = 'text-green'
+                    }
+                    else if (data.price.status === 'Invalid') {
                         badge_type = 'badge-orange'
-                    } else if (data.price.status === 'Expired') {
+                        text_type = 'text-orange'
+                    }
+                    else if (data.price.status === 'Expired') {
                         badge_type = 'badge-red'
-                    } else {
+                        text_type = 'text-red'
+                    }
+                    else {
                         badge_type = 'badge-gray'
+                        text_type = 'text-gray'
                     }
 
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span>&nbsp;` + data.price.status + `</span>`)
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span class="`+text_type+`">&nbsp;`+ data.price.status +`</span>`)
                 }
 
                 $('#inp-source').val(data.price.price_list_mapped.id)
@@ -439,7 +450,7 @@ $(document).ready(function () {
             }
         })
 
-//onchage checkbox auto-update
+// onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
@@ -702,7 +713,6 @@ $(document).ready(function () {
     })
 
 // delete item
-
     $(document).on('click', '.btn-del', function () {
         if (confirm("Confirm Delete ?") === true) {
             let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
@@ -760,8 +770,7 @@ $(document).ready(function () {
         }
     })
 
-    //display currency
-
+//display currency
     $(document).on('change', '.display-currency', function () {
         let dataId = $(this).attr('data-id')
         let col = $(`.price-currency-exists[data-id="` + dataId + `"]`);

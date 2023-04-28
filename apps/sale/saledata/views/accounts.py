@@ -182,7 +182,7 @@ class ContactListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get(request.query_params.dict())
         if resp.state:
             return {'contact_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

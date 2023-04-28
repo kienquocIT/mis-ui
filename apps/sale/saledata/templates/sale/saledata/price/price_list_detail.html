@@ -199,6 +199,7 @@
                                 </label>
                                 <select type="text" class="form-select" name="product" id="select-box-product"
                                         data-method="GET" data-url="{% url "ProductListAPI" %}"
+                                        data-url-expense="{% url "ExpenseListAPI" %}"
                                         data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
@@ -215,7 +216,13 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="inp-uom">
+                                <select
+                                class="form-control select2"
+                                data-placeholder="{% trans 'Choose' %}"
+                                data-method="GET"
+                                data-url="{% url "UnitOfMeasureListAPI" %}"
+                                id="chooseUoM" name="uom">
+                        </select>
                             </div>
                         </div>
 

@@ -466,6 +466,7 @@ $(document).ready(function () {
                         'background': 'None'
                     })
                     $('#datatable-item-list .del-button').remove();
+                    $('#setting-nav').addClass('disabled');
                 }
 
                 $('.dataTables_info').remove()

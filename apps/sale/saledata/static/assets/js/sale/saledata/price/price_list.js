@@ -44,9 +44,9 @@ $(document).ready(function () {
             }, {
                 'data': 'type', render: (data, type, row, meta) => {
                     if (row.price_list_type.value === 0) {
-                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span></center>`
+                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span></center>`
                     } else if (row.price_list_type.value === 1) {
-                        return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span></center>`
+                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span></center>`
                     } else if (row.price_list_type.value === 2) {
                         return `<center><span style="width: 50%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span></center>`
                     } else {
@@ -56,17 +56,22 @@ $(document).ready(function () {
             }, {
                 'data': 'status', render: (data, type, row, meta) => {
                     let badge_type = '';
+                    let text_type = '';
                     if (row.status === 'Valid') {
                         badge_type = 'badge-green'
+                        text_type = 'text-green'
                     } else if (row.status === 'Invalid') {
                         badge_type = 'badge-orange'
+                        text_type = 'text-orange'
                     } else if (row.status === 'Expired') {
                         badge_type = 'badge-red'
+                        text_type = 'text-danger'
                     } else {
                         badge_type = 'badge-gray'
+                        text_type = 'text-gray'
                     }
 
-                    return `<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span>&nbsp;` + row.status + `</span>`;
+                    return `<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="`+text_type+`">&nbsp;` + row.status + `</span>`;
                 }
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {

@@ -228,12 +228,25 @@ $(document).ready(function () {
 
                 if (data.price.status) {
                     let badge_type = '';
-                    if (data.price.status === 'Valid') {badge_type = 'badge-green'}
-                    else if (data.price.status === 'Invalid') {badge_type = 'badge-orange'}
-                    else if (data.price.status === 'Expired') {badge_type = 'badge-red'}
-                    else {badge_type = 'badge-gray'}
+                    let text_type = '';
+                    if (data.price.status === 'Valid') {
+                        badge_type = 'badge-green'
+                        text_type = 'text-green'
+                    }
+                    else if (data.price.status === 'Invalid') {
+                        badge_type = 'badge-orange'
+                        text_type = 'text-orange'
+                    }
+                    else if (data.price.status === 'Expired') {
+                        badge_type = 'badge-red'
+                        text_type = 'text-red'
+                    }
+                    else {
+                        badge_type = 'badge-gray'
+                        text_type = 'text-gray'
+                    }
 
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span>&nbsp;`+ data.price.status +`</span>`)
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span class="`+text_type+`">&nbsp;`+ data.price.status +`</span>`)
                 }
 
                 $('#inp-source').val(data.price.price_list_mapped.id)

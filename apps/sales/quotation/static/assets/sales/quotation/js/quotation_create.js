@@ -188,12 +188,11 @@ $(function () {
         });
 
 // Action on change total discount of product
-        $('#quotation-create-product-discount').on('change', function(e) {
-            let discount = 0;
-            if ($(this)[0].value) {
-                discount = parseInt($(this)[0].value);
+        $('#quotation-create-product-discount').on('change', function (e) {
+            for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
+                let row = tableProduct[0].tBodies[0].rows[i];
+                commonCalculate(tableProduct, row, true, false, false)
             }
-            commonCalculate(tableProduct, row, true, false, false, discount)
         });
 
 // Action on click button add expense

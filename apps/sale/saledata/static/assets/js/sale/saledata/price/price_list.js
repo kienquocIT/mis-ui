@@ -237,28 +237,6 @@ $(document).ready(function () {
             )
         })
 
-        // delete price list
-        // $(document).on('click', '.delete-price-list-btn', function () {
-        //     if (confirm("Confirm Delete ?") === true) {
-        //         let data_url = $(this).closest('table').attr('data-url-delete').replace(0, $(this).attr('data-id'))
-        //         let csr = $("input[name=csrfmiddlewaretoken]").val();
-        //         $.fn.callAjax(data_url, 'PUT', {}, csr)
-        //             .then(
-        //                 (resp) => {
-        //                     let data = $.fn.switcherResp(resp);
-        //                     if (data) {
-        //                         $.fn.notifyPopup({description: "Successfully"}, 'success')
-        //                         setTimeout(function () {
-        //                             location.reload()
-        //                         }, 1000);
-        //                     }
-        //                 },
-        //                 (errs) => {
-        //                     // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-        //                 })
-        //     }
-        // })
-
         /* Date range picker with times*/
         $('#valid_time').daterangepicker({
             timePicker: true,
@@ -266,11 +244,10 @@ $(document).ready(function () {
             endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
             "cancelClass": "btn-secondary",
             locale: {
-                format: 'YYYY-MM-DD HH:mm:00.00'
+                format: 'YYYY-MM-DD HH:mm'
             },
-            drops: 'down'
+            drops: 'up'
         });
-
 
         $(document).on("click", '.delete-price-list-btn', function (e) {
             Swal.fire({

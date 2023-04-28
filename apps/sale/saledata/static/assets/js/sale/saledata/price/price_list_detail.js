@@ -147,6 +147,23 @@ $(document).ready(function () {
         },)
     }
 
+    function loadUoM(group) {
+        let ele = $('#select-uom');
+        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
+                    ele.append(`<option value="0"></option>`);
+                    resp.data.unit_of_measure.map(function (item) {
+                        if (item.group.title === group)
+                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
     function getProductWithCurrency(list_product, currency) {
         let list_result = []
         list_product.map(function (item) {
@@ -260,7 +277,6 @@ $(document).ready(function () {
                         </div>`)
                     })
                     let product_mapped = getProductWithCurrency(data.price.products_mapped, data.price.currency)
-                    console.log(product_mapped)
                     config['data'] = product_mapped.sort(function (a, b) {
                         return a.code - b.code;
                     });
@@ -386,8 +402,22 @@ $(document).ready(function () {
                         })
                     })
                 }
+
+                if ($('#status').find('.text-red').length > 0) {
+
+                    $('#btn-add-new-item').prop('hidden', true);
+                    $('#datatable-item-list input').prop('readonly', true);
+                    $('#datatable-item-list input').css({
+                        'color': 'black',
+                        'border': 'None',
+                        'background': 'None'
+                    })
+                    $('#datatable-item-list .del-button').remove();
+                }
             }
         })
+
+
 
 // onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
@@ -514,11 +544,10 @@ $(document).ready(function () {
 
             let data_product = {
                 'id': $('#select-box-product').val(),
-                'uom': $('#inp-uom').attr('data-id'),
+                'uom': $('#select-uom').val(),
                 'uom_group': $('#inp-uom-group').attr('data-id'),
             }
 
-            frm.dataForm['list_price_list'] = price_list;
             frm.dataForm['product'] = data_product;
 
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
@@ -613,32 +642,35 @@ $(document).ready(function () {
     })
 
 // add input price in modal create new product
-    let table_price_of_currency = $('#table-price-of-currency').html()
+//     let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-item').on('click', function () {
+        $('#select-box-product').empty();
+        $('#inp-uom-group').val('')
+        $('#select-uom').empty();
         loadProduct();
-        let table = $('#table-price-of-currency')
-        table.html('');
-        table.append(table_price_of_currency);
-        if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
-            let currency = $('#select-box-currency').find('option[data-primary="1"]')
-            table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
-            table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + currency.val() + `"></td>`)
-        } else {
-            $('#datatable-item-list .price-currency-exists').each(function () {
-                let thText = $(this).contents().filter(function () {
-                    return this.nodeType === Node.TEXT_NODE;
-                }).text().trim();
-                table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-                table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
-            })
-            $('#datatable-item-list .th-dropdown').each(function () {
-                let thText = $(this).contents().filter(function () {
-                    return this.nodeType === Node.TEXT_NODE;
-                }).text().trim();
-                table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-                table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
-            })
-        }
+        // let table = $('#table-price-of-currency')
+        // table.html('');
+        // table.append(table_price_of_currency);
+        // if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
+        //     let currency = $('#select-box-currency').find('option[data-primary="1"]')
+        //     table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
+        //     table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + currency.val() + `"></td>`)
+        // } else {
+        //     $('#datatable-item-list .price-currency-exists').each(function () {
+        //         let thText = $(this).contents().filter(function () {
+        //             return this.nodeType === Node.TEXT_NODE;
+        //         }).text().trim();
+        //         table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+        //         table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
+        //     })
+        //     $('#datatable-item-list .th-dropdown').each(function () {
+        //         let thText = $(this).contents().filter(function () {
+        //             return this.nodeType === Node.TEXT_NODE;
+        //         }).text().trim();
+        //         table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
+        //         table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
+        //     })
+        // }
     })
 
     $('#tab-select-table a').on('click', function () {
@@ -692,15 +724,13 @@ $(document).ready(function () {
                         $('#inp-code').val(data.product.code);
                         $('#inp-uom-group').val(data.product.general_information.uom_group.title);
                         $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
-                        $('#inp-uom').val(data.product.sale_information.default_uom.title);
-                        $('#inp-uom').attr('data-id', data.product.sale_information.default_uom.id);
+                        loadUoM(data.product.general_information.uom_group.title);
                     }
                 }
             })
         } else {
             $('#inp-code').val('');
             $('#inp-uom-group').val('');
-            $('#inp-uom').val('');
             $('#save-product-selected').prop('disabled', true);
         }
     })
@@ -723,4 +753,3 @@ $(document).ready(function () {
         }
     })
 })
-

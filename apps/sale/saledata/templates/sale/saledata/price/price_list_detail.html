@@ -206,8 +206,7 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <input type="text" class="form-control" id="inp-uom-group">
-                                </select>
+                                <input type="text" class="form-control" id="inp-uom-group" readonly style="color: black; background: None">
                             </div>
                         </div>
                         <div class="row">
@@ -215,21 +214,21 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="inp-uom">
+                                <select type="text" class="form-select" name="uom" id="select-uom"
+                                data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                             </div>
                         </div>
-
-                        <div class="row mt-3 overflow-x-scroll">
-                            <table class="table nowrap w-100 mb-5" id="table-price-of-currency">
-                                <thead>
-                                <tr></tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+{#                        <div class="row mt-3 overflow-x-scroll">#}
+{#                            <table class="table nowrap w-100 mb-5" id="table-price-of-currency">#}
+{#                                <thead>#}
+{#                                <tr></tr>#}
+{#                                </thead>#}
+{#                                <tbody>#}
+{#                                <tr>#}
+{#                                </tr>#}
+{#                                </tbody>#}
+{#                            </table>#}
+{#                        </div>#}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

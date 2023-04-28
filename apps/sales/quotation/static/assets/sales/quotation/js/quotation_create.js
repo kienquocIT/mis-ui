@@ -189,7 +189,11 @@ $(function () {
 
 // Action on change total discount of product
         $('#quotation-create-product-discount').on('change', function(e) {
-            updateDiscountTotal($(this)[0].value, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            let discount = 0;
+            if ($(this)[0].value) {
+                discount = $(this)[0].value;
+            }
+            updateDiscountTotal(discount, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
         });
 
 // Action on click button add expense

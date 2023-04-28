@@ -297,8 +297,6 @@ $(document).ready(function () {
                 if (data.price.valid_time_start && data.price.valid_time_start) {
                     if (data.price.is_default) {
                         $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
-                    } else {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary">` + data.price.valid_time_end + `</span>`)
                     }
                     else {
                         $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end +`</span>`)

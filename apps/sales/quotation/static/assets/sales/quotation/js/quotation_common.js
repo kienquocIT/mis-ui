@@ -30,11 +30,13 @@ function loadBoxQuotationOpportunity(opp_id) {
     )
 }
 
-function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, boxContact = null) {
+function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null) {
     let jqueryId = '#' + customer_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
+    ele.empty();
+    loadShippingBillingCustomer(modalShipping, modalBilling);
     $.fn.callAjax(url, method).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -65,13 +67,13 @@ function loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShippi
                                         </option>`
 
                             loadShippingBillingCustomer(modalShipping, modalBilling, item);
-                            loadContactCustomer(boxContact, item);
+                            if (item.id && item.owner) {
+                                loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                            }
                         }
                         ele.append(dataAppend)
                     })
-                    if (valueToSelect) {
-                        loadInformationSelectBox(ele);
-                    }
+                    loadInformationSelectBox(ele);
                 }
             }
         }
@@ -83,9 +85,7 @@ function loadBoxQuotationContact(contact_id, valueToSelect = null, customerID = 
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
-    if (customerID) {
-        ele.empty();
-    }
+    ele.empty();
     $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -112,9 +112,7 @@ function loadBoxQuotationContact(contact_id, valueToSelect = null, customerID = 
                         }
                         ele.append(dataAppend)
                     })
-                    if (valueToSelect) {
-                        loadInformationSelectBox(ele);
-                    }
+                    loadInformationSelectBox(ele);
                 }
             }
         }
@@ -929,12 +927,14 @@ function loadInformationSelectBox(ele) {
     let optionSelected = ele[0].options[ele[0].selectedIndex];
     let inputWrapper = ele[0].closest('.input-affix-wrapper');
     let dropdownContent = inputWrapper.querySelector('.dropdown-menu');
+    dropdownContent.innerHTML = ``;
+    let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
+    eleInfo.setAttribute('disabled', true);
+    let eleData = optionSelected.querySelector('.data-info');
     let link = "";
     if (optionSelected) {
-        let eleData = optionSelected.querySelector('.data-info');
         if (eleData) {
             // remove attr disabled
-            let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
             if (eleInfo) {
                 eleInfo.removeAttribute('disabled');
             }
@@ -962,7 +962,6 @@ function loadInformationSelectBox(ele) {
                         </div>
                         <div class="col-1"></div>
                     </div>`;
-            dropdownContent.innerHTML = ``;
             dropdownContent.innerHTML = info;
         }
     }
@@ -977,43 +976,49 @@ function init_mask_money_single(ele) {
     });
 }
 
-function loadShippingBillingCustomer(modalShipping, modalBilling, item) {
+function loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {
     let modalShippingContent = modalShipping[0].querySelector('.modal-body');
     if (modalShippingContent) {
-        for (let i = 0; i < item.shipping_address.length; i++) {
-            let address = item.shipping_address[i];
-            $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
-                                                <div class="row mb-1">
-                                                    <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-5"></div>
-                                                    <div class="col-4"></div>
-                                                    <div class="col-3">
-                                                        <button class="btn btn-primary choose-shipping">Select This Address</button>
+        $(modalShippingContent).empty();
+        if (item) {
+            for (let i = 0; i < item.shipping_address.length; i++) {
+                let address = item.shipping_address[i];
+                $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
+                                                    <div class="row mb-1">
+                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-5"></div>
+                                                        <div class="col-4"></div>
+                                                        <div class="col-3">
+                                                            <button class="btn btn-primary choose-shipping">Select This Address</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <br>`)
+                                                <br>`)
+            }
         }
     }
     let modalBillingContent = modalBilling[0].querySelector('.modal-body');
     if (modalBillingContent) {
-        for (let i = 0; i < item.billing_address.length; i++) {
-            let address = item.billing_address[i];
-            $(modalBillingContent).append(`<div class="row ml-1 billing-group">
-                                                <div class="row mb-1">
-                                                    <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-5"></div>
-                                                    <div class="col-4"></div>
-                                                    <div class="col-3">
-                                                        <button class="btn btn-primary choose-billing">Select This Address</button>
+        $(modalBillingContent).empty();
+        if (item) {
+            for (let i = 0; i < item.billing_address.length; i++) {
+                let address = item.billing_address[i];
+                $(modalBillingContent).append(`<div class="row ml-1 billing-group">
+                                                    <div class="row mb-1">
+                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-5"></div>
+                                                        <div class="col-4"></div>
+                                                        <div class="col-3">
+                                                            <button class="btn btn-primary choose-billing">Select This Address</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <br>`)
+                                                <br>`)
+            }
         }
     }
 }
@@ -1022,21 +1027,7 @@ function loadContactCustomer(boxContact, item) {
     if (item.id && item.owner) {
         let valueToSelect = item.owner.id;
         let customerID = item.id;
-        if (!boxContact[0].innerHTML) {
-            loadBoxQuotationContact('select-box-quotation-create-contact', valueToSelect, customerID);
-        } else {
-            let optionSelectedContact = boxContact[0].options[boxContact[0].selectedIndex];
-            if (optionSelectedContact) {
-                optionSelectedContact.removeAttribute('selected');
-            }
-            for (let option of boxContact[0].options) {
-                if (option.value === valueToSelect) {
-                    option.setAttribute('selected', true);
-                    break;
-                }
-            }
-            loadInformationSelectBox(boxContact);
-        }
+        loadBoxQuotationContact('select-box-quotation-create-contact', valueToSelect, customerID);
     }
 }
 

@@ -51,38 +51,22 @@ $(function () {
         boxOpportunity.on('change', function (e) {
             let eleData = $(this)[0].options[$(this)[0].selectedIndex].querySelector('.data-default');
             if (eleData) {
-                loadInformationSelectBox($(this));
                 let data = JSON.parse(eleData.value);
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
-                    if (!boxCustomer[0].innerHTML) {
-                        loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling, boxContact);
-                    } else {
-                        let optionSelectedCustomer = boxCustomer[0].options[boxCustomer[0].selectedIndex];
-                        if (optionSelectedCustomer) {
-                            optionSelectedCustomer.removeAttribute('selected');
-                        }
-                        for (let option of boxCustomer[0].options) {
-                            if (option.value === valueToSelect) {
-                                option.setAttribute('selected', true);
-                                let eleData = option.querySelector('.data-default');
-                                if (eleData) {
-                                    let item = JSON.parse(eleData.value);
-                                    loadContactCustomer(boxContact, item);
-                                }
-                                break;
-                            }
-                        }
-                        loadInformationSelectBox(boxCustomer);
-                    }
+                    loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling);
                 }
+            } else {
+                loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
+                loadBoxQuotationContact('select-box-quotation-create-contact');
             }
+            loadInformationSelectBox($(this));
         });
 
 // Action on click dropdown customer
         boxCustomer.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadBoxQuotationCustomer('select-box-quotation-create-customer');
+                loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
             }
         });
 
@@ -90,10 +74,15 @@ $(function () {
         boxCustomer.on('change', function (e) {
             let optionSelected = boxCustomer[0].options[boxCustomer[0].selectedIndex];
             if (optionSelected) {
+                loadShippingBillingCustomer(modalShipping, modalBilling);
                 if (optionSelected.querySelector('.data-default')) {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
                     loadShippingBillingCustomer(modalShipping, modalBilling, data);
-                    loadContactCustomer(boxContact, data);
+                    if (data.id && data.owner) {
+                        loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
+                    }
+                } else {
+                    loadBoxQuotationContact('select-box-quotation-create-contact');
                 }
             }
             loadInformationSelectBox($(this));

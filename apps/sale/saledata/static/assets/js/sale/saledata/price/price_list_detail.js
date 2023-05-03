@@ -502,8 +502,6 @@ $(document).ready(function () {
                 data.price_list.map(function (item) {
                     if (item.price_list_type.value === 0) {
                         if (item.status === 'Valid' || item.status === 'Invalid') {
-
-
                             if (price_list_update.length === 0) {
                                 price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
                             } else {

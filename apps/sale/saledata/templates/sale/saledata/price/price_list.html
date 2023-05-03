@@ -8,7 +8,7 @@
             type="text/css"
     />
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.0/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -165,5 +165,5 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.0/dist/sweetalert2.all.min.js"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 {% endblock %}

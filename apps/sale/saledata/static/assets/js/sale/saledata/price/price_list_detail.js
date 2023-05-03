@@ -198,7 +198,7 @@ $(document).ready(function () {
                     'is_auto_update': item.is_auto_update,
                 })
             } else {
-                let exists = list_result.filter(function (obj){
+                let exists = list_result.filter(function (obj) {
                     return obj.id === item.id;
                 })
                 if (!exists.find(obj => obj.uom.id === item.uom.id)) {
@@ -290,9 +290,8 @@ $(document).ready(function () {
                 if (data.price.valid_time_start && data.price.valid_time_start) {
                     if (data.price.is_default) {
                         $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
-                    }
-                    else {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end +`</span>`)
+                    } else {
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end + `</span>`)
                     }
                 }
 
@@ -302,21 +301,18 @@ $(document).ready(function () {
                     if (data.price.status === 'Valid') {
                         badge_type = 'badge-green'
                         text_type = 'text-green'
-                    }
-                    else if (data.price.status === 'Invalid') {
+                    } else if (data.price.status === 'Invalid') {
                         badge_type = 'badge-orange'
                         text_type = 'text-orange'
-                    }
-                    else if (data.price.status === 'Expired') {
+                    } else if (data.price.status === 'Expired') {
                         badge_type = 'badge-red'
                         text_type = 'text-red'
-                    }
-                    else {
+                    } else {
                         badge_type = 'badge-gray'
                         text_type = 'text-gray'
                     }
 
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span class="`+text_type+`">&nbsp;`+ data.price.status +`</span>`)
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + data.price.status + `</span>`)
                 }
 
                 $('#inp-source').val(data.price.price_list_mapped.id)
@@ -475,7 +471,6 @@ $(document).ready(function () {
         })
 
 
-
 // onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
@@ -573,29 +568,19 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(this));
             let price_list = [];
             price_list_update.map(function (item) {
-                $('#table-price-of-currency tbody tr td').each(function () {
-                    let value = $(this).find('input').val()
-                    if (value === '') {
-                        value = 0;
-                    } else {
-                        value = parseFloat(value.replace(/\./g, '').replace(',', '.'))
-                    }
-                    if (item.id_source === '') {
-                        price_list.push({
-                            'price_list_id': item.id,
-                            'price_value': value,
-                            'is_auto_update': '0',
-                            'currency_using': $(this).find('input').attr('data-id')
-                        })
-                    } else {
-                        price_list.push({
-                            'price_list_id': item.id,
-                            'price_value': value * item.factor,
-                            'is_auto_update': '1',
-                            'currency_using': $(this).find('input').attr('data-id')
-                        })
-                    }
-                })
+                if (item.id_source === '') {
+                    price_list.push({
+                        'price_list_id': item.id,
+                        'price_value': 0,
+                        'is_auto_update': '0',
+                    })
+                } else {
+                    price_list.push({
+                        'price_list_id': item.id,
+                        'price_value': 0,
+                        'is_auto_update': '1',
+                    })
+                }
             })
 
             let data_product = {
@@ -603,8 +588,9 @@ $(document).ready(function () {
                 'uom': $('#select-uom').val(),
                 'uom_group': $('#inp-uom-group').attr('data-id'),
             }
-
+            frm.dataForm['list_price_list'] = price_list;
             frm.dataForm['product'] = data_product;
+            console.log(frm.dataForm);
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {

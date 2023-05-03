@@ -162,7 +162,6 @@ $(document).ready(function () {
         },)
     }
 
-
     function loadUoM(group) {
         let ele = $('#select-uom');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
@@ -242,25 +241,7 @@ $(document).ready(function () {
         return list_result
     }
 
-    function loadUoM(group_id, id) {
-        let ele = $('#select-uom');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option value="0"></option>`);
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.title === group_id) {
-                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
-                        }
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-// load detail price list
+    // load detail price list
     let frm = $('#form-update-price-list')
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
@@ -452,8 +433,7 @@ $(document).ready(function () {
                     })
                 }
 
-                if ($('#status').find('.text-red').length > 0) {
-
+                if (data.price.status !== 'Invalid' && data.price.status !== 'Valid') {
                     $('#btn-add-new-item').prop('hidden', true);
                     $('#datatable-item-list input').prop('readonly', true);
                     $('#datatable-item-list input').css({
@@ -462,11 +442,17 @@ $(document).ready(function () {
                         'background': 'None'
                     })
                     $('#datatable-item-list .del-button').remove();
-                    $('#setting-nav').addClass('disabled');
+                    $('#inp-factor').prop('disabled', true);
+                    $('#inp-factor').css({'border': 'None'});
+                    $('#checkbox-update-auto').prop('disabled', true);
+                    $('#checkbox-can-delete').prop('disabled', true);
+                    $('#select-box-currency').prop('disabled', true);
+                    $('.select2-selection').css({'border': 'None', 'background-color': '#f7f7f7'});
+                    // $('#setting-nav').addClass('disabled');
                 }
 
                 $('.dataTables_info').remove()
-                $('.btn-soft-primary').eq(1).remove()
+                // $('.btn-soft-primary').eq(1).remove()
             }
         })
 

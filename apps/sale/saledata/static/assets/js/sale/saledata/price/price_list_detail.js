@@ -70,8 +70,8 @@ $(document).ready(function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
             });
-            let html = $('.waiter-miner-item').html();
-            $("div.blog-toolbar-left").html(html.replace('hidden', ''));
+            // let html = $('.waiter-miner-item').html();
+            // $("div.blog-toolbar-left").html(html.replace('hidden', ''));
             dtb.parent().addClass('table-responsive');
         }
     }
@@ -490,15 +490,19 @@ $(document).ready(function () {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                 data.price_list.map(function (item) {
                     if (item.price_list_type.value === 0) {
-                        if (price_list_update.length === 0) {
-                            price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
-                        } else {
-                            if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
-                                price_list_update.push({
-                                    'id': item.id,
-                                    'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
-                                    'id_source': item.price_list_mapped
-                                });
+                        if (item.status === 'Valid' || item.status === 'Invalid') {
+
+
+                            if (price_list_update.length === 0) {
+                                price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
+                            } else {
+                                if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
+                                    price_list_update.push({
+                                        'id': item.id,
+                                        'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
+                                        'id_source': item.price_list_mapped
+                                    });
+                            }
                         }
                     }
                 })

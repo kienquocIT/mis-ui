@@ -76,7 +76,7 @@ $(document).ready(function () {
         }
     }
 
-    // load for tab setting and dropdown add currency for price lust
+    // load for tab setting and dropdown add currency for price list
     function loadCurrency(list_id, currency_list) {
         let ele = $('#select-box-currency');
         currency_list.map(function (item) {
@@ -249,9 +249,9 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (data.price.auto_update || data.price.is_default) {
-                    $('#btn-add-new-item').prop('hidden', true);
+                    $('#btn-add-new-item').prop('disabled', true);
                 } else {
-                    $('#btn-add-new-item').prop('hidden', false);
+                    $('#btn-add-new-item').prop('disabled', false);
                 }
 
                 if (data.price.is_default) {
@@ -311,6 +311,17 @@ $(document).ready(function () {
                         return a.code - b.code;
                     });
                     initDataTable(config, '#datatable-item-list');
+
+                    for (let i = 0; i < data.price.products_mapped.length; i++) {
+                        if (data.price.products_mapped[i].price === 0) {
+                            let ele1 = $('#datatable-item-list').find(`span[data-id='`+data.price.products_mapped[i].id+`']`).parent().parent()
+                            let ele2 = ele1.find(`span[data-id='`+data.price.products_mapped[i].uom.id+`']`).parent().parent().parent().parent().parent()
+                            ele2.css({
+                                'background-color': '#fffffa'
+                            })
+                        }
+                    }
+
                     loadCurrency(data.price.currency, currency_list);
 
                     // add column in table item list (Price Of currency and button Delete item)
@@ -398,7 +409,7 @@ $(document).ready(function () {
                         $('#select-product-category').prop('disabled', 'disabled');
                         $('#select-box-currency').prop('disabled', 'disabled');
                         $('#checkbox-can-delete').prop('disabled', false);
-                        $('#btn-add-new-item').hide();
+                        $('#btn-add-new-item').prop('disabled', true);
                     }
                     if (data.price.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
@@ -434,7 +445,7 @@ $(document).ready(function () {
                 }
 
                 if (data.price.status !== 'Invalid' && data.price.status !== 'Valid') {
-                    $('#btn-add-new-item').prop('hidden', true);
+                    $('#btn-add-new-item').prop('disabled', true);
                     $('#datatable-item-list input').prop('readonly', true);
                     $('#datatable-item-list input').css({
                         'color': 'black',
@@ -442,13 +453,13 @@ $(document).ready(function () {
                         'background': 'None'
                     })
                     $('#datatable-item-list .del-button').remove();
+                    $('#notify').text(`* ` + data.price.status + ` price list does not allow configuration.`)
                     $('#inp-factor').prop('disabled', true);
                     $('#inp-factor').css({'border': 'None'});
                     $('#checkbox-update-auto').prop('disabled', true);
                     $('#checkbox-can-delete').prop('disabled', true);
                     $('#select-box-currency').prop('disabled', true);
                     $('.select2-selection').css({'border': 'None', 'background-color': '#f7f7f7'});
-                    // $('#setting-nav').addClass('disabled');
                 }
 
                 $('.dataTables_info').remove()
@@ -457,13 +468,13 @@ $(document).ready(function () {
         })
 
 
-// onchange checkbox auto-update
+    // onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
             $('#select-box-currency').prop('disabled', 'disabled');
             $('#checkbox-can-delete').removeAttr('disabled');
-            $('#btn-add-new-item').hide();
+            $('#btn-add-new-item').prop('disabled', true);
             if ($('#inp-source').val() !== '') {
                 $.fn.callAjax(frm.attr('data-url').replace(0, $('#inp-source').val()), 'GET').then(
                     (resp) => {
@@ -475,13 +486,13 @@ $(document).ready(function () {
             }
         } else {
             $('#checkbox-can-delete').prop('checked', false);
-            $('#btn-add-new-item').show();
+            $('#btn-add-new-item').prop('disabled', false);
             $('#select-product-category').removeAttr('disabled');
             $('#select-box-currency').removeAttr('disabled');
         }
     })
 
-// submit form setting price list
+    // submit form setting price list
     let price_list_update = [];
     price_list_update.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
@@ -655,25 +666,30 @@ $(document).ready(function () {
                 });
             })
             frm.dataForm['list_item'] = list_price_of_currency
-            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    })
+            if (frm.dataForm['list_item'].length > 0) {
+                $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
+            }
+            else {
+                $.fn.notifyB({description: 'Nothing to change'}, 'warning');
+            }
         })
     })
 
-// add input price in modal create new product
-//     let table_price_of_currency = $('#table-price-of-currency').html()
+    // add input price in modal create new product
+    // let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-item').on('click', function () {
         if ($('#select-box-type').val() === '0')
             loadProduct();
@@ -683,29 +699,6 @@ $(document).ready(function () {
         $('#select-box-product').empty();
         $('#inp-uom-group').val('')
         $('#select-uom').empty();
-        // let table = $('#table-price-of-currency')
-        // table.html('');
-        // table.append(table_price_of_currency);
-        // if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
-        //     let currency = $('#select-box-currency').find('option[data-primary="1"]')
-        //     table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
-        //     table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + currency.val() + `"></td>`)
-        // } else {
-        //     $('#datatable-item-list .price-currency-exists').each(function () {
-        //         let thText = $(this).contents().filter(function () {
-        //             return this.nodeType === Node.TEXT_NODE;
-        //         }).text().trim();
-        //         table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-        //         table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
-        //     })
-        //     $('#datatable-item-list .th-dropdown').each(function () {
-        //         let thText = $(this).contents().filter(function () {
-        //             return this.nodeType === Node.TEXT_NODE;
-        //         }).text().trim();
-        //         table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-        //         table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
-        //     })
-        // }
     })
 
     $('#tab-select-table a').on('click', function () {
@@ -716,36 +709,61 @@ $(document).ready(function () {
         }
     })
 
-// delete item
+    // delete item
     $(document).on('click', '.btn-del', function () {
-        if (confirm("Confirm Delete ?") === true) {
-            let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
-            let uom_id = $(this).closest('tr').find('.span-uom').attr('data-id');
-            let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
-            let data = {
-                'list_price': price_list_update,
-                'product_id': product_id,
-                'uom_id': uom_id
+        Swal.fire({
+            html:
+                '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
+                '<h6 class="text-danger">Delete this item ?</h6>',
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container: 'swal2-has-bg'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.value) {
+                let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
+                let uom_id = $(this).closest('tr').find('.span-uom').attr('data-id');
+                let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
+                let data = {
+                    'list_price': price_list_update,
+                    'product_id': product_id,
+                    'uom_id': uom_id
+                }
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                $.fn.callAjax(data_url, 'PUT', data, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                            Swal.fire({
+                                html:
+                                    '<div><h6 class="text-danger mb-0">Can not delete this item!</h6></div>',
+                                customClass: {
+                                    content: 'text-center',
+                                    confirmButton: 'btn btn-primary',
+                                },
+                                buttonsStyling: false,
+                            })
+                        })
             }
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(data_url, 'PUT', data, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                    })
-        }
+        })
     })
 
-//on change price in table item
+    // on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })
@@ -773,7 +791,7 @@ $(document).ready(function () {
         }
     })
 
-//display currency
+    // display currency
     $(document).on('change', '.display-currency', function () {
         let dataId = $(this).attr('data-id')
         let col = $(`.price-currency-exists[data-id="` + dataId + `"]`);

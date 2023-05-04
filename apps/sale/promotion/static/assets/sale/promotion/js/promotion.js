@@ -257,7 +257,4 @@ $(function () {
 
     // init select method action
     Method.init();
-
-    // custom select2 PopupInfo
-    initSelectBox($('select[name="customer_per"]'));
 });

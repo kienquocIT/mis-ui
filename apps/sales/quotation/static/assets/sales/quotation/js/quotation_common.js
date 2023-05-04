@@ -923,13 +923,13 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
         if (discountTotalRate) {
             discount_on_total = parseInt(discountTotalRate);
         }
-        let finalDiscountRate = (discount + discount_on_total);
 
         let discountAmount = ((price * discount) / 100);
-        subtotal = ((price - discountAmount) * quantity);
+        let priceDiscountOnRow = (price - discountAmount);
+        subtotal = (priceDiscountOnRow * quantity);
 
-        let discountAmountOnTotal = ((price * finalDiscountRate) / 100);
-        subtotalPlus = ((price - discountAmountOnTotal) * quantity);
+        let discountAmountOnTotal = ((priceDiscountOnRow * discount_on_total) / 100);
+        subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
         // calculate tax
         if (eleTaxAmount) {
             let taxAmount = ((subtotalPlus * tax) / 100);

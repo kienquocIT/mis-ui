@@ -863,7 +863,7 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null, i
     }
     let discount_on_total = 0;
     let discountTotalRate = $('#quotation-create-product-discount').val();
-    if (discountTotalRate) {
+    if (discountTotalRate && eleDiscount) {
         discount_on_total = parseInt(discountTotalRate);
         discountAmount = ((pretaxAmount * discount_on_total) / 100)
     }
@@ -1343,7 +1343,7 @@ function setupDataExpense() {
         }
         result.push(rowData);
     }
-    return []
+    return result
 }
 
 function setupDataLogistic() {

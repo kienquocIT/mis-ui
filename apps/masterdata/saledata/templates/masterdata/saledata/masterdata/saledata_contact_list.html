@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn-show-modal" id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-lookup-data"
+            style="background: none; border: none">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+        </span>
+    </button>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-3">
+            <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-salutation">
+                        <span class="nav-link-text">{% trans 'Salutations' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-interests">
+                        <span class="nav-link-text">{% trans 'Interests' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-8">
+
+            <!-- Section Salutation -->
+            <div class="lookup-data" id="section-salutation" style="display: block">
+                <table id="datatable_salutation_list" class="table nowrap w-100 mb-5"
+                       data-url="{% url "SalutationListAPI" %}"
+                       data-method="GET">
+                    <thead>
+                    <th class="w-5">
+                <span class="form-check">
+                    <input
+                            type="checkbox"
+                            class="form-check-input check-select-all"
+                            id="customCheck1"
+                    >
+                    <label class="form-check-label" for="customCheck1"></label>
+                </span>
+                    </th>
+                    <th class="w-30">{% trans "Code" %}</th>
+                    <th class="w-30">{% trans "Name" %}</th>
+                    <th class="w-30">{% trans "Description" %}</th>
+                    <th class="w-5">{% trans "Action" %}</th>
+                    </thead>
+                </table>
+            </div>
+            <!-- End section salutation-->
+            <div class="lookup-data" id="section-interests" style="display: none">
+                <table id="datatable_interests_list" class="table nowrap w-100 mb-5"
+                       data-url="{% url "InterestListAPI" %}"
+                       data-method="GET">
+                    <thead>
+                    <th class="w-5">
+                <span class="form-check">
+                    <input
+                            type="checkbox"
+                            class="form-check-input check-select-all"
+                            id="customCheck1"
+                    >
+                    <label class="form-check-label" for="customCheck1"></label>
+                </span>
+                    </th>
+                    <th class="w-30">{% trans "Code" %}</th>
+                    <th class="w-30">{% trans "Name" %}</th>
+                    <th class="w-30">{% trans "Description" %}</th>
+                    <th class="w-5">{% trans "Action" %}</th>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Modal Create Lookup Data -->
+    <form id="form-create-lookup" data-method="POST" data-lookup="salutation"
+          data-url-salutation="{% url "SalutationCreateAPI" %} "
+          data-url-interests="{% url "InterestCreateAPI" %} "
+          data-url-redirect="{% url "ContactMasterDataList" %}">
+        {% csrf_token %}
+        <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Salutation" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Code" %}</label>
+                                <input id="inp-code" class="form-control" type="text" name="code"
+                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <input class="form-control" type="text" name="description"
+                                       placeholder="Input text">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- End Modal Create Lookup Data-->
+
+    <!-- Modal Update Master Data>-->
+    <form id="form-update-masterdata" data-method="POST" data-lookup="salutation"
+          data-url-salutation="{% url "SalutationDetailAPI" pk=0 %} "
+          data-url-interests="{% url "InterestDetailAPI" pk=0    %} "
+          >
+        <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Edit Salutation" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Code" %}</label>
+                                <input id="code-update" class="form-control" type="text" name="code" readonly
+                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title" id="name-update"
+                                       placeholder="Input name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <input class="form-control" type="text" name="description"
+                                       id="description-update"
+                                       placeholder="Input text">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary edit-button">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Modal Update Master Data>-->
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_contact_create.js' %}"></script>
+{% endblock %}

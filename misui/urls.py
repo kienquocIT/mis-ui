@@ -11,7 +11,7 @@ urlpatterns = \
     [
         path('admin/', admin.site.urls),
         path('', include('apps.core.urls')),
-        path('', include('apps.sale.urls')),
+        path('', include('apps.masterdata.urls')),
         path('private-system/', include('apps.sharedapp.urls')),
         path('', include('apps.sales.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

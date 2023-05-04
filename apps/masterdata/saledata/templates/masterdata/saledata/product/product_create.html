@@ -1,0 +1,238 @@
+'{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="save-account" type="submit" form="form-create-product" style="background: none; border: none">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+           data-bs-original-title="Save">
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i data-feather="save"></i>
+                    </span>
+                </span>
+        </a>
+    </button>
+
+    {#    <button id="save-account-draft" type="submit" form="form-create-account" style="background: none; border: none">#}
+    {#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
+    {#           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
+    {#           data-bs-original-title="Save Draft">#}
+    {#                <span class="icon">#}
+    {#                    <span class="feather-icon">#}
+    {#                        <i class="bi bi-save2"></i>#}
+    {#                    </span>#}
+    {#                </span>#}
+    {#        </a>#}
+    {#    </button>#}
+
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="refresh-cw"></i>
+                </span>
+            </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}" data-url-redirect="{% url "ProductList" %}">
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Product Code" %}
+                            <span class="field-required">*</span>
+                            </label>
+                            <input type="text" name="code" placeholder="Input Code" class="form-control" oninput="this.value=this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="col-4 mt-5 text-center">
+                        <div class="form-check form-check-inline mt-2">
+                            <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1"
+                                   checked>
+                            <label class="form-check-label" for="check-tab-inventory">{% trans "Inventory" %}</label>
+                        </div>
+                        <div class="form-check form-check-inline mt-2">
+                            <input class="form-check-input" type="checkbox" id="check-tab-sale" value="option2" checked>
+                            <label class="form-check-label" for="check-tab-sale">{% trans "Sale" %}</label>
+                        </div>
+                        <div class="form-check form-check-inline mt-2">
+                            <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3"
+                                   disabled>
+                            <label class="form-check-label" for="check-tab-purchase">{% trans "Purchase" %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-8">
+                        <label class="form-label">{% trans "Product Name" %}
+                        <span class="field-required">*</span>
+                        </label>
+                        <input type="text" name="title" placeholder="Input Name" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group mt-5">
+                    <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
+                    <input id="input-photo" type="file" class="hidden" name="photo">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="nav nav-light nav-tabs" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                        <span class="nav-link-text">{% trans 'General' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
+                        <span class="nav-link-text">{% trans 'Sale' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
+                        <span class="nav-link-text">{% trans 'Inventory' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing">
+                        <span class="nav-link-text">{% trans 'Purchasing' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_general">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Product Type" %}
+                            <span class="field-required">*</span>
+                        </label>
+                        <select id="select-box-product-type" class="form-select" data-method="GET"
+                                data-url="{% url 'ProductTypeListAPI' %}" name="product_type"></select>
+                    </div>
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Product Category" %}
+                            <span class="field-required">*</span>
+                        </label>
+                        <select id="select-box-product-category" class="form-select" data-method="GET"
+                                data-url="{% url "ProductCategoryListAPI" %}" name="product_category"></select>
+                    </div>
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "UoM Group" %}
+                        <span class="field-required">*</span>
+                        </label>
+                        <select id="select-box-uom-group" class="form-select" data-method="GET"
+                                data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
+                                data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
+                    </div>
+                    <div class="form-group col-3" hidden>
+                        <label class="form-label"><s>{% trans "Management By" %}</s></label>
+                        <select id="select-box-manager" class="form-select" data-method="GET" data-url=""
+                                disabled name="management"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_sale">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Default UoM" %}
+                        <span class="field-required">*</span></label>
+                        <select id="select-box-default-uom" class="form-select" data-method="GET"
+                                data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
+                    </div>
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Tax Code" %}</label>
+                        <span class="field-required">*</span></label>
+                        <select id="select-box-tax-code" class="form-select" data-method="GET" data-url="{% url "TaxListAPI" %}"
+                                name="tax_code"></select>
+                    </div>
+                    <div class="col-6 form-group" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
+                        <label class="form-label">{% trans "Price List" %}</label>
+                        <span class="field-required">*</span></label>
+                        <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
+                               oninput="this.value=''"
+                               data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="tab_inventory">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "UoM Code" %}
+                        <span class="field-required">*</span></label>
+                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;" readonly>
+                    </div>
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "UoM Name" %}
+                        <span class="field-required">*</span></label>
+                        <select id="select-box-uom-name" class="form-select" data-method="GET"
+                                data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Inventory Level Min" %}</label>
+                        <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
+                               min="0" step="1" placeholder="Input number">
+                    </div>
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Inventory Level Max" %}</label>
+                        <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
+                               min="0" step="1" placeholder="Input number">
+                    </div>
+                </div>
+                <div class="row" hidden>
+                    <div class="form-group col-3">
+                        <label class="form-label"><s>{% trans "Valuation Method" %}</s></label>
+                        <select id="select-box-valuation-method" class="form-select" data-method="GET" data-url=""
+                                disabled name="valuation_method"></select>
+                    </div>
+                </div>
+                <div class="row mt-5" hidden>
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
+                               data-url="{% url "AccountListAPI" %}"
+                               data-method="GET">
+                            <thead>
+                            <th class="w-15">{% trans "Warehouse Code" %}</th>
+                            <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "Avalable" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
+                            <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static "assets/js/masterdata/saledata/product/product_create.js" %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>
+{% endblock %}

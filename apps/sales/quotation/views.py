@@ -83,3 +83,18 @@ class QuotationDetail(View):
         return {
                    'data': {'doc_id': pk},
                }, status.HTTP_200_OK
+
+
+class QuotationDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        if res.state:
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST

@@ -36,47 +36,32 @@
     </div>
 
     <form
-            data-url="{% url 'QuotationListAPI' %}"
+            data-url="{% url 'QuotationDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'QuotationList' %}"
-            data-method="POST"
-            id="frm_quotation_create"
+            data-method="PUT"
+            id="frm_quotation_detail"
             method="post"
     >
         {% csrf_token %}
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
-                    <div class="collapse show" id="collapseExample">
+                    <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>
                                     <input
-                                            type="text" class="form-control"
+                                            type="text"
+                                            class="form-control disabled-but-edit"
                                             placeholder="input title"
                                             name="title"
                                             id="quotation-create-title"
                                             required
+                                            disabled
                                     >
                                     <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Code' %}</label>
-                                    <input
-                                            type="text" class="form-control"
-                                            placeholder="auto generate"
-                                            name="code"
-                                            id="quotation-create-code"
-                                            disabled
-                                    >
-                                    <span class="form-text text-muted">{% trans 'code of quotation' %}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select Opportunity' %}</label>
                                     <div class="input-group">
@@ -95,11 +80,13 @@
                                                 </div>
                                             </span>
                                             <select
-                                                class="form-select" id="select-box-quotation-create-opportunity"
+                                                class="form-select disabled-but-edit"
+                                                id="select-box-quotation-create-opportunity"
                                                 data-url="{% url "OpportunityListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url "OpportunityList" %}"
                                                 name="opportunity"
+                                                disabled
                                             ></select>
                                         </span>
                                     </div>
@@ -123,13 +110,14 @@
                                                 </div>
                                             </span>
                                             <select
-                                                    class="form-select"
+                                                    class="form-select disabled-but-edit"
                                                     id="select-box-quotation-create-customer"
                                                     data-url="{% url "AccountListAPI" %}"
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
                                                     required
+                                                    disabled
                                             ></select>
                                         </span>
                                     </div>
@@ -153,12 +141,14 @@
                                                 </div>
                                             </span>
                                             <select
-                                                class="form-select"
+                                                class="form-select disabled-but-edit"
                                                 id="select-box-quotation-create-contact"
                                                 data-url="{% url "ContactListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
+                                                readonly
+                                                disabled
                                             ></select>
                                         </span>
                                     </div>
@@ -214,16 +204,47 @@
                                                 </div>
                                             </span>
                                             <select
-                                                class="form-select"
+                                                class="form-select disabled-but-edit"
                                                 id="select-box-quotation-create-sale-person"
                                                 data-url="{% url "EmployeeListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="sale_person"
+                                                disabled
                                             ></select>
                                         </span>
                                     </div>
                                     <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Select Payment Terms' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                    ></i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select
+                                                    class="form-select disabled-but-edit"
+                                                    id="select-box-quotation-create-payment-term"
+                                                    data-url="{% url "PaymentsTermsListAPI" %}"
+                                                    data-link-detail=""
+                                                    data-method="GET"
+                                                    name="payment_term"
+                                                    disabled
+                                            ></select>
+                                        </span>
+                                    </div>
+                                    <span class="form-text text-muted">{% trans 'Payment terms quotation term' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -248,11 +269,6 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
                                             <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_4" id="tab_terms">
-                                            <span class="nav-link-text">{% trans 'Terms' %}</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -444,66 +460,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="tab_block_4">
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Select Price List' %}</label>
-                                        <select
-                                                class="form-control select2 select2-multiple"
-                                                multiple="multiple"
-                                                data-placeholder="{% trans 'Choose' %}"
-                                                name=""
-                                                id="select-box-quotation-create-price-list"
-                                                data-url="{% url "PriceListAPI" %}"
-                                                data-method="GET"
-                                        ></select>
-                                        <span class="form-text text-muted">{% trans 'Price list of quotation term' %}</span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Select Discount List' %}</label>
-                                        <select
-                                                class="form-control select2 select2-multiple"
-                                                multiple="multiple"
-                                                data-placeholder="{% trans 'Choose' %}"
-                                                name=""
-                                                id="select-box-quotation-create-discount-list"
-                                                data-url=""
-                                                data-method="GET"
-                                        >
-                                        </select>
-                                        <span class="form-text text-muted">{% trans 'Discount list of quotation term' %}</span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Select Payment Terms' %}</label>
-                                        <div class="input-group">
-	                                        <span class="input-affix-wrapper">
-		                                        <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
-                                                        <i
-                                                                class="fas fa-info-circle"
-                                                                data-bs-toggle="dropdown"
-                                                                data-dropdown-animation
-                                                                aria-haspopup="true"
-                                                                aria-expanded="false"
-                                                                disabled
-                                                        ></i>
-                                                        <div class="dropdown-menu w-210p mt-4"></div>
-                                                    </div>
-                                                </span>
-                                                <select
-                                                        class="form-select"
-                                                        id="select-box-quotation-create-payment-term"
-                                                        data-url="{% url "PaymentsTermsListAPI" %}"
-                                                        data-link-detail=""
-                                                        data-method="GET"
-                                                        name="payment_term"
-                                                ></select>
-	                                        </span>
-                                        </div>
-                                        <span class="form-text text-muted">{% trans 'Payment terms quotation term' %}</span>
                                     </div>
                                 </div>
                             </div>
@@ -739,6 +695,9 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-expense"
+                                data-url="{% url "ExpenseListAPI" %}"
+                                data-link-detail="{% url "ExpenseDetail" 1 %}"
+                                data-method="GET"
                         >
                         <input
                                 type="hidden"
@@ -751,6 +710,11 @@
                                 id="data-init-quotation-create-tables-tax"
                                 data-url="{% url "TaxListAPI" %}"
                                 data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-request-employee-id"
+                                value="{{ data.data.employee_current_id }}"
                         >
                     </div>
                 </div>
@@ -778,6 +742,7 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 {% endblock %}

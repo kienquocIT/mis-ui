@@ -155,6 +155,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_DETAIL = StringUrl('quotation')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')

@@ -24,6 +24,11 @@ function loadDetailQuotation(data) {
             `<option class="data-detail" value="${data.sale_person.id}" selected>${data.sale_person.full_name}</option>`
         )
     }
+    if (data.payment_term) {
+        $('#select-box-quotation-create-payment-term').append(
+            `<option class="data-detail" value="${data.payment_term.id}" selected>${data.payment_term.title}</option>`
+        )
+    }
 }
 
 $(function () {

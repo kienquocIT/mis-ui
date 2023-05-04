@@ -429,16 +429,21 @@ $(function () {
                 'customer',
                 'contact',
                 'sale_person',
+                'payment_term',
+                // total amount of products
                 'total_product_pretax_amount',
                 'total_product_discount',
                 'total_product_tax',
                 'total_product',
+                // total amount of costs
                 'total_cost_pretax_amount',
                 'total_cost_tax',
                 'total_cost',
+                // total amount of expenses
                 'total_expense_pretax_amount',
                 'total_expense_tax',
                 'total_expense',
+                // quotation tabs
                 'quotation_products_data',
                 'quotation_term_data',
                 'quotation_logistic_data',

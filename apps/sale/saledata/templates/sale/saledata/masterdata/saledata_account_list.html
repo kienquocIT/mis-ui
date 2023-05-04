@@ -26,12 +26,18 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+
     <div class="row">
         <div class="col-3">
             <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-type">
                         <span class="nav-link-text">{% trans 'Account Types' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-group">
+                        <span class="nav-link-text">{% trans 'Account Groups' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -43,8 +49,6 @@
         </div>
         <div class="col-1"></div>
         <div class="col-8">
-
-            <!-- Section AccountType -->
             <div class="lookup-data" id="section-account-type" style="display: block">
                 <table id="datatable-account-type-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "AccountTypeListAPI" %}"
@@ -67,7 +71,28 @@
                     </thead>
                 </table>
             </div>
-            <!-- End section account-type-->
+            <div class="lookup-data" id="section-account-group" style="display: block">
+                <table id="datatable-account-group-list" class="table nowrap w-100 mb-5"
+                       data-url="{% url "AccountTypeListAPI" %}"
+                       data-method="GET">
+                    <thead>
+                    <th class="w-5">
+                        <span class="form-check">
+                            <input
+                                    type="checkbox"
+                                    class="form-check-input check-select-all"
+                                    id="customCheck1"
+                            >
+                            <label class="form-check-label" for="customCheck1"></label>
+                        </span>
+                    </th>
+                    <th class="w-30">{% trans "Code" %}</th>
+                    <th class="w-30">{% trans "Name" %}</th>
+                    <th class="w-30">{% trans "Description" %}</th>
+                    <th class="w-5">{% trans "Action" %}</th>
+                    </thead>
+                </table>
+            </div>
             <div class="lookup-data" id="section-industry" style="display: none">
                 <table id="datatable-industry-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "IndustryListAPI" %}"
@@ -92,10 +117,12 @@
             </div>
         </div>
     </div>
+
     <!-- Modal Modal Create Master Data -->
     <form id="form-create-lookup" data-method="POST" data-lookup="section-account-type"
-          data-url-account-type="{% url "AccountTypeCreateAPI" %} "
-          data-url-industry="{% url "IndustryCreateAPI" %} "
+          data-url-account-type="{% url "AccountTypeCreateAPI" %}"
+          data-url-account-group="{% url "AccountTypeCreateAPI" %}"
+          data-url-industry="{% url "IndustryCreateAPI" %}"
           data-url-redirect="{% url "AccountMasterDataList" %}">
         {% csrf_token %}
         <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
@@ -139,8 +166,9 @@
     <!-- End Modal Create Master Data-->
 
     <!-- Modal Modal Update Master Data -->
-    <form id="form-update-masterdata" data-method="POST"
+    <form id="form-update-masterdata" data-method="PUT"
           data-url-account-type="{% url "AccountTypeDetailAPI" pk=0 %}"
+          data-url-account-group="{% url "AccountTypeDetailAPI" pk=0 %}"
           data-url-industry="{% url "IndustryDetailAPI" pk=0 %}"
           data-url-redirect="">
         <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"

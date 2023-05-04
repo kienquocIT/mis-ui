@@ -36,7 +36,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-group">
+                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-account-group">
                         <span class="nav-link-text">{% trans 'Account Groups' %}</span>
                     </a>
                 </li>
@@ -71,9 +71,9 @@
                     </thead>
                 </table>
             </div>
-            <div class="lookup-data" id="section-account-group" style="display: block">
+            <div class="lookup-data" id="section-account-group" style="display: none">
                 <table id="datatable-account-group-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "AccountTypeListAPI" %}"
+                       data-url="{% url "AccountGroupListAPI" %}"
                        data-method="GET">
                     <thead>
                     <th class="w-5">
@@ -121,7 +121,7 @@
     <!-- Modal Modal Create Master Data -->
     <form id="form-create-lookup" data-method="POST" data-lookup="section-account-type"
           data-url-account-type="{% url "AccountTypeCreateAPI" %}"
-          data-url-account-group="{% url "AccountTypeCreateAPI" %}"
+          data-url-account-group="{% url "AccountGroupCreateAPI" %}"
           data-url-industry="{% url "IndustryCreateAPI" %}"
           data-url-redirect="{% url "AccountMasterDataList" %}">
         {% csrf_token %}
@@ -168,7 +168,7 @@
     <!-- Modal Modal Update Master Data -->
     <form id="form-update-masterdata" data-method="PUT"
           data-url-account-type="{% url "AccountTypeDetailAPI" pk=0 %}"
-          data-url-account-group="{% url "AccountTypeDetailAPI" pk=0 %}"
+          data-url-account-group="{% url "AccountGroupDetailAPI" pk=0 %}"
           data-url-industry="{% url "IndustryDetailAPI" pk=0 %}"
           data-url-redirect="">
         <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"

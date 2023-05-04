@@ -102,6 +102,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
     ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    ACCOUNT_GROUP_LIST = StringUrl('saledata/accountgroups')
+    ACCOUNT_GROUP_DETAIL = StringUrl('saledata/accountgroup/')
     INDUSTRY_DETAIL = StringUrl('saledata/industry/')
 
     # crm/account

@@ -76,7 +76,7 @@ $(document).ready(function () {
             }, {
                 'className': 'action-center', 'render': (data, type, row, meta) => {
                     if (row.is_default === false) {
-                        return `<a data-method="DELETE" data-id="` + row.id + `" class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button delete-price-list-btn">
+                        return `<a data-method="DELETE" data-id="` + row.id + `" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
                                 <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
                                 </a>`;
                     } else {

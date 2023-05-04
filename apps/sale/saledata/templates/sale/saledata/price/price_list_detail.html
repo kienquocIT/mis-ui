@@ -7,6 +7,7 @@
             rel="stylesheet"
             type="text/css"
     />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -61,23 +62,19 @@
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
             <div class="row">
-                <div class="col-6 text-left">
-                    <button id="btn-add-new-item" data-bs-toggle="modal" hidden
-                            data-bs-target="#modal-add-new-item" type="button"
-                            style="background: none;border: none; color: #007D88">
+                <div class="col-12 text-left">
+                    <button class="btn btn-soft-primary" id="btn-add-new-item" data-bs-toggle="modal"
+                            data-bs-target="#modal-add-new-item" type="button">
                         <span data-bs-placement="bottom" data-bs-toggle="tooltip"
                               title="{% trans 'Add Item' %}">
-                            <i class="fas fa-plus-circle"></i>
+                            <i class="fas fa-plus-circle"></i>&nbsp;
                             {% trans 'Add Item' %}
                         </span>
                     </button>
-                </div>
-                <div class="col-6 text-right">
-                    <div class="dropdown waiter-miner-item">
-                        <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                           class="btn btn-soft-primary dropdown-toggle" role="button">{% trans "Visible currencies" %}</a>
-                        <div role="menu" class="dropdown-menu dropdown-currency"></div>
-                    </div>
+
+                    <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
+                       class="btn btn-soft-primary dropdown-toggle" role="button">{% trans "Visible currencies" %}</a>
+                    <div role="menu" class="dropdown-menu dropdown-currency"></div>
                 </div>
             </div>
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
@@ -99,20 +96,30 @@
             </form>
         </div>
 
-        <!-- Tab Detail Price List -->
+        <!-- Tab setting -->
         <div class="tab-pane fade" id="tab-setting">
+            <h6 id="notify" class="text-red" style="font-style: italic"></h6>
             <form id="form-update-price-list" data-method="PUT"
                   data-url="{% url "PriceDetailAPI" pk=0 %}"
                   data-url-redirect="{% url "PriceList" %}"
                   data-url-list="{% url "PriceListAPI" %}"
             >
                 {% csrf_token %}
-                <div class="row">
+                <div class="row mt-3">
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Select price list" %}</label>
                         <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
                                 style="border: None; color: black"
                                 id="select-box-price-list" disabled="disabled" name="price_list_mapped"></select>
+                    </div>
+                    <div class="form-group col-6">
+                        <label class="form-label">{% trans "Select price list type" %}</label>
+                        <select class="form-select" name="price_list_type" id="select-box-type" readonly="readonly">
+                            <option></option>
+                            <option value="0">{% trans "For Sale" %}</option>
+                            <option value="1">{% trans "For Purchase" %}</option>
+                            <option value="2">{% trans "For Expense" %}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
@@ -131,7 +138,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Currency" %}</label>
                         <select
@@ -149,23 +156,6 @@
                         <input class="form-control" type="number" name="factor" id="inp-factor"
                                placeholder="Input factor (0.8)" readonly>
                         <input class="form-control" type="number" id="inp-factor-default" disabled hidden>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-6 inp-can-edit">
-                        <label class="form-label">{% trans "Select price list type" %}</label>
-                        <select class="form-select" name="price_list_type" id="select-box-type" readonly="readonly">
-                            <option></option>
-                            <option value="0">{% trans "For Sale" %}</option>
-                            <option value="1">{% trans "For Purchase" %}</option>
-                            <option value="2">{% trans "For Expense" %}</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-6 inp-can-edit">
-                        <label class="form-label">{% trans "Apply For" %}</label>
-                        <select class="form-select" name="apply_for" id="select-product-category" data-method="GET"
-                                data-url="{% url "ProductCategoryListAPI" %}" readonly="readonly">
-                        </select>
                     </div>
                 </div>
             </form>
@@ -240,4 +230,5 @@
     <script src="{% static "assets/js/sale/saledata/product/vietnam-number-separator.js" %}"></script>
     <script src="{% static 'assets/js/sale/saledata/price/price_list_detail.js' %}"></script>
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 {% endblock %}

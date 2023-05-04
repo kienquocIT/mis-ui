@@ -70,13 +70,13 @@ $(document).ready(function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
             });
-            let html = $('.waiter-miner-item').html();
-            $("div.blog-toolbar-left").html(html.replace('hidden', ''));
+            // let html = $('.waiter-miner-item').html();
+            // $("div.blog-toolbar-left").html(html.replace('hidden', ''));
             dtb.parent().addClass('table-responsive');
         }
     }
 
-    // load for tab setting and dropdown add currency for price lust
+    // load for tab setting and dropdown add currency for price list
     function loadCurrency(list_id, currency_list) {
         let ele = $('#select-box-currency');
         currency_list.map(function (item) {
@@ -162,7 +162,6 @@ $(document).ready(function () {
         },)
     }
 
-
     function loadUoM(group) {
         let ele = $('#select-uom');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
@@ -198,7 +197,7 @@ $(document).ready(function () {
                     'is_auto_update': item.is_auto_update,
                 })
             } else {
-                let exists = list_result.filter(function (obj){
+                let exists = list_result.filter(function (obj) {
                     return obj.id === item.id;
                 })
                 if (!exists.find(obj => obj.uom.id === item.uom.id)) {
@@ -242,25 +241,7 @@ $(document).ready(function () {
         return list_result
     }
 
-    function loadUoM(group_id, id) {
-        let ele = $('#select-uom');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option value="0"></option>`);
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.title === group_id) {
-                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
-                        }
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-// load detail price list
+    // load detail price list
     let frm = $('#form-update-price-list')
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
@@ -268,9 +249,9 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (data.price.auto_update || data.price.is_default) {
-                    $('#btn-add-new-item').prop('hidden', true);
+                    $('#btn-add-new-item').prop('disabled', true);
                 } else {
-                    $('#btn-add-new-item').prop('hidden', false);
+                    $('#btn-add-new-item').prop('disabled', false);
                 }
 
                 if (data.price.is_default) {
@@ -290,9 +271,8 @@ $(document).ready(function () {
                 if (data.price.valid_time_start && data.price.valid_time_start) {
                     if (data.price.is_default) {
                         $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
-                    }
-                    else {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end +`</span>`)
+                    } else {
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end + `</span>`)
                     }
                 }
 
@@ -302,21 +282,18 @@ $(document).ready(function () {
                     if (data.price.status === 'Valid') {
                         badge_type = 'badge-green'
                         text_type = 'text-green'
-                    }
-                    else if (data.price.status === 'Invalid') {
+                    } else if (data.price.status === 'Invalid') {
                         badge_type = 'badge-orange'
                         text_type = 'text-orange'
-                    }
-                    else if (data.price.status === 'Expired') {
+                    } else if (data.price.status === 'Expired') {
                         badge_type = 'badge-red'
                         text_type = 'text-red'
-                    }
-                    else {
+                    } else {
                         badge_type = 'badge-gray'
                         text_type = 'text-gray'
                     }
 
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl `+ badge_type +`"></span><span class="`+text_type+`">&nbsp;`+ data.price.status +`</span>`)
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + data.price.status + `</span>`)
                 }
 
                 $('#inp-source').val(data.price.price_list_mapped.id)
@@ -334,6 +311,17 @@ $(document).ready(function () {
                         return a.code - b.code;
                     });
                     initDataTable(config, '#datatable-item-list');
+
+                    for (let i = 0; i < data.price.products_mapped.length; i++) {
+                        if (data.price.products_mapped[i].price === 0) {
+                            let ele1 = $('#datatable-item-list').find(`span[data-id='`+data.price.products_mapped[i].id+`']`).parent().parent()
+                            let ele2 = ele1.find(`span[data-id='`+data.price.products_mapped[i].uom.id+`']`).parent().parent().parent().parent().parent()
+                            ele2.css({
+                                'background-color': '#fffffa'
+                            })
+                        }
+                    }
+
                     loadCurrency(data.price.currency, currency_list);
 
                     // add column in table item list (Price Of currency and button Delete item)
@@ -400,12 +388,12 @@ $(document).ready(function () {
                             for (let i = 0; i < body_table.length; i++) {
                                 if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
                                     if (data.price.can_delete === true) {
-                                        body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                        body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                                     } else {
                                         body_table[i].innerHTML += '<td></td>'
                                     }
                                 } else
-                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-dark btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
+                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                             }
                             feather.replace();
                         }
@@ -421,7 +409,7 @@ $(document).ready(function () {
                         $('#select-product-category').prop('disabled', 'disabled');
                         $('#select-box-currency').prop('disabled', 'disabled');
                         $('#checkbox-can-delete').prop('disabled', false);
-                        $('#btn-add-new-item').hide();
+                        $('#btn-add-new-item').prop('disabled', true);
                     }
                     if (data.price.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
@@ -456,9 +444,8 @@ $(document).ready(function () {
                     })
                 }
 
-                if ($('#status').find('.text-red').length > 0) {
-
-                    $('#btn-add-new-item').prop('hidden', true);
+                if (data.price.status !== 'Invalid' && data.price.status !== 'Valid') {
+                    $('#btn-add-new-item').prop('disabled', true);
                     $('#datatable-item-list input').prop('readonly', true);
                     $('#datatable-item-list input').css({
                         'color': 'black',
@@ -466,22 +453,28 @@ $(document).ready(function () {
                         'background': 'None'
                     })
                     $('#datatable-item-list .del-button').remove();
+                    $('#notify').text(`* ` + data.price.status + ` price list does not allow configuration.`)
+                    $('#inp-factor').prop('disabled', true);
+                    $('#inp-factor').css({'border': 'None'});
+                    $('#checkbox-update-auto').prop('disabled', true);
+                    $('#checkbox-can-delete').prop('disabled', true);
+                    $('#select-box-currency').prop('disabled', true);
+                    $('.select2-selection').css({'border': 'None', 'background-color': '#f7f7f7'});
                 }
 
                 $('.dataTables_info').remove()
-                $('.btn-soft-primary').eq(1).remove()
+                // $('.btn-soft-primary').eq(1).remove()
             }
         })
 
 
-
-// onchange checkbox auto-update
+    // onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
             $('#select-box-currency').prop('disabled', 'disabled');
             $('#checkbox-can-delete').removeAttr('disabled');
-            $('#btn-add-new-item').hide();
+            $('#btn-add-new-item').prop('disabled', true);
             if ($('#inp-source').val() !== '') {
                 $.fn.callAjax(frm.attr('data-url').replace(0, $('#inp-source').val()), 'GET').then(
                     (resp) => {
@@ -493,13 +486,13 @@ $(document).ready(function () {
             }
         } else {
             $('#checkbox-can-delete').prop('checked', false);
-            $('#btn-add-new-item').show();
+            $('#btn-add-new-item').prop('disabled', false);
             $('#select-product-category').removeAttr('disabled');
             $('#select-box-currency').removeAttr('disabled');
         }
     })
 
-// submit form setting price list
+    // submit form setting price list
     let price_list_update = [];
     price_list_update.push({'id': pk, 'factor': 1, 'id_source': ''});
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
@@ -508,15 +501,17 @@ $(document).ready(function () {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                 data.price_list.map(function (item) {
                     if (item.price_list_type.value === 0) {
-                        if (price_list_update.length === 0) {
-                            price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
-                        } else {
-                            if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
-                                price_list_update.push({
-                                    'id': item.id,
-                                    'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
-                                    'id_source': item.price_list_mapped
-                                });
+                        if (item.status === 'Valid' || item.status === 'Invalid') {
+                            if (price_list_update.length === 0) {
+                                price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
+                            } else {
+                                if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
+                                    price_list_update.push({
+                                        'id': item.id,
+                                        'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
+                                        'id_source': item.price_list_mapped
+                                    });
+                            }
                         }
                     }
                 })
@@ -572,29 +567,19 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(this));
             let price_list = [];
             price_list_update.map(function (item) {
-                $('#table-price-of-currency tbody tr td').each(function () {
-                    let value = $(this).find('input').val()
-                    if (value === '') {
-                        value = 0;
-                    } else {
-                        value = parseFloat(value.replace(/\./g, '').replace(',', '.'))
-                    }
-                    if (item.id_source === '') {
-                        price_list.push({
-                            'price_list_id': item.id,
-                            'price_value': value,
-                            'is_auto_update': '0',
-                            'currency_using': $(this).find('input').attr('data-id')
-                        })
-                    } else {
-                        price_list.push({
-                            'price_list_id': item.id,
-                            'price_value': value * item.factor,
-                            'is_auto_update': '1',
-                            'currency_using': $(this).find('input').attr('data-id')
-                        })
-                    }
-                })
+                if (item.id_source === '') {
+                    price_list.push({
+                        'price_list_id': item.id,
+                        'price_value': 0,
+                        'is_auto_update': '0',
+                    })
+                } else {
+                    price_list.push({
+                        'price_list_id': item.id,
+                        'price_value': 0,
+                        'is_auto_update': '1',
+                    })
+                }
             })
 
             let data_product = {
@@ -602,8 +587,9 @@ $(document).ready(function () {
                 'uom': $('#select-uom').val(),
                 'uom_group': $('#inp-uom-group').attr('data-id'),
             }
-
+            frm.dataForm['list_price_list'] = price_list;
             frm.dataForm['product'] = data_product;
+            console.log(frm.dataForm);
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
@@ -678,25 +664,30 @@ $(document).ready(function () {
                 });
             })
             frm.dataForm['list_item'] = list_price_of_currency
-            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    })
+            if (frm.dataForm['list_item'].length > 0) {
+                $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
+            }
+            else {
+                $.fn.notifyB({description: 'Nothing to change'}, 'warning');
+            }
         })
     })
 
-// add input price in modal create new product
-//     let table_price_of_currency = $('#table-price-of-currency').html()
+    // add input price in modal create new product
+    // let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-item').on('click', function () {
         if ($('#select-box-type').val() === '0')
             loadProduct();
@@ -706,29 +697,6 @@ $(document).ready(function () {
         $('#select-box-product').empty();
         $('#inp-uom-group').val('')
         $('#select-uom').empty();
-        // let table = $('#table-price-of-currency')
-        // table.html('');
-        // table.append(table_price_of_currency);
-        // if ($('#datatable-item-list tbody tr').first().find('td').length === 1) {
-        //     let currency = $('#select-box-currency').find('option[data-primary="1"]')
-        //     table.find('thead').find('tr').append(`<th class="w-20">` + currency.text() + `&nbsp;<span class="field-required">*</span></th>`)
-        //     table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + currency.val() + `"></td>`)
-        // } else {
-        //     $('#datatable-item-list .price-currency-exists').each(function () {
-        //         let thText = $(this).contents().filter(function () {
-        //             return this.nodeType === Node.TEXT_NODE;
-        //         }).text().trim();
-        //         table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-        //         table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
-        //     })
-        //     $('#datatable-item-list .th-dropdown').each(function () {
-        //         let thText = $(this).contents().filter(function () {
-        //             return this.nodeType === Node.TEXT_NODE;
-        //         }).text().trim();
-        //         table.find('thead').find('tr').append(`<th class="w-20">` + thText + `&nbsp;<span class="field-required">*</span></th>`)
-        //         table.find('tbody').find('tr').append(`<td><input class="form-control number-separator" placeholder="200000" type="text" data-id="` + $(this).attr('data-id') + `"></td>`)
-        //     })
-        // }
     })
 
     $('#tab-select-table a').on('click', function () {
@@ -739,36 +707,61 @@ $(document).ready(function () {
         }
     })
 
-// delete item
+    // delete item
     $(document).on('click', '.btn-del', function () {
-        if (confirm("Confirm Delete ?") === true) {
-            let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
-            let uom_id = $(this).closest('tr').find('.span-uom').attr('data-id');
-            let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
-            let data = {
-                'list_price': price_list_update,
-                'product_id': product_id,
-                'uom_id': uom_id
+        Swal.fire({
+            html:
+                '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
+                '<h6 class="text-danger">Delete this item ?</h6>',
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container: 'swal2-has-bg'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.value) {
+                let product_id = $(this).closest('tr').find('.btn-detail').attr('data-id');
+                let uom_id = $(this).closest('tr').find('.span-uom').attr('data-id');
+                let data_url = $(this).closest('table').attr('data-url-delete').replace(0, pk)
+                let data = {
+                    'list_price': price_list_update,
+                    'product_id': product_id,
+                    'uom_id': uom_id
+                }
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                $.fn.callAjax(data_url, 'PUT', data, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                            Swal.fire({
+                                html:
+                                    '<div><h6 class="text-danger mb-0">Can not delete this item!</h6></div>',
+                                customClass: {
+                                    content: 'text-center',
+                                    confirmButton: 'btn btn-primary',
+                                },
+                                buttonsStyling: false,
+                            })
+                        })
             }
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(data_url, 'PUT', data, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                    })
-        }
+        })
     })
 
-//on change price in table item
+    // on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })
@@ -796,7 +789,7 @@ $(document).ready(function () {
         }
     })
 
-//display currency
+    // display currency
     $(document).on('change', '.display-currency', function () {
         let dataId = $(this).attr('data-id')
         let col = $(`.price-currency-exists[data-id="` + dataId + `"]`);

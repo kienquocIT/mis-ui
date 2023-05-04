@@ -17,6 +17,7 @@ $(function () {
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
+        loadInitQuotationExpense('data-init-quotation-create-tables-expense');
 
         dataTableProduct([],'datable-quotation-create-product');
         dataTableCost([], 'datable-quotation-create-cost');
@@ -208,13 +209,15 @@ $(function () {
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             let addRow = tableExpense.DataTable().row.add({
+                'order': order,
+                'selectExpenseID': selectExpenseID,
                 'selectUOMID': selectUOMID,
-                'selectTaxID': selectTaxID,
-                'order': order
+                'selectTaxID': selectTaxID
             }).draw();
             let newRow = tableExpense.DataTable().row(addRow).node();
             let $newRow = $(newRow);
             init_mask_money_single($newRow);
+            loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
@@ -230,7 +233,7 @@ $(function () {
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                // loadDataProductSelect($(this));
+                loadDataProductSelect($(this));
             }
             commonCalculate(tableExpense, row, false, false, true);
         });

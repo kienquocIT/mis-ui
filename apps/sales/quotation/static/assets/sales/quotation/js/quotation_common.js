@@ -347,6 +347,67 @@ function loadBoxQuotationTax(tax_id, box_id) {
     }
 }
 
+function loadInitQuotationExpense(expense_id) {
+    let jqueryId = '#' + expense_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    $.fn.callAjax(url, method).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('expense_list') && Array.isArray(data.expense_list)) {
+                    ele.val(JSON.stringify(data.expense_list))
+                }
+            }
+        }
+    )
+}
+
+function loadBoxQuotationExpense(expense_id, box_id) {
+    let ele = document.getElementById(expense_id);
+    let jqueryId = '#' + box_id;
+    let eleBox = $(jqueryId);
+    if (ele && eleBox) {
+        let linkDetail = ele.getAttribute('data-link-detail');
+        eleBox.attr('data-link-detail', linkDetail);
+        let data = JSON.parse(ele.value);
+        for (let i = 0; i < data.length; i++) {
+            let uom_title = "";
+            let default_uom = {};
+            let tax_code = {};
+            let price_list = [];
+            if (data[i].general_information) {
+                if (data[i].general_information.uom) {
+                    uom_title = data[i].general_information.uom.title
+                }
+                default_uom = data[i].general_information.uom;
+                tax_code = data[i].general_information.tax_code;
+                price_list = data[i].general_information.price_list;
+            }
+            let dataStr = JSON.stringify({
+                'id': data[i].id,
+                'title': data[i].title,
+                'code': data[i].code,
+                'unit of measure': uom_title,
+            }).replace(/"/g, "&quot;");
+            let expense_data = JSON.stringify({
+                'id': data[i].id,
+                'title': data[i].title,
+                'code': data[i].code,
+                'unit_of_measure': default_uom,
+                'price_list': price_list,
+                'tax': tax_code,
+            }).replace(/"/g, "&quot;");
+            eleBox.append(`<option value="${data[i].id}">
+                            <span class="expense-title">${data[i].title}</span>
+                            <input type="hidden" class="data-default" value="${expense_data}">
+                            <input type="hidden" class="data-info" value="${dataStr}">
+                        </option>`)
+        }
+    }
+}
+
 function dataTableProduct(data, table_id) {
     // init dataTable
     let listData = data ? data : [];
@@ -664,12 +725,30 @@ function dataTableExpense(data, table_id) {
                 targets: 1,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <select class="form-select table-row-item" required>
-                                    <option value=""></option>
-                                    <option value="">Laptop HP</option>
-                                    <option value="">Laptop Dell</option>
-                                    <option value="">Laptop Lenovo</option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <div class="btn-group dropstart">
+                                                <i
+                                                    class="fas fa-info-circle"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                        </span>
+                                        <select 
+                                        class="form-select table-row-item" 
+                                        id="${row.selectExpenseID}"
+                                        required>
+                                            <option value=""></option>
+                                        </select>
+                                    </span>
+                                </div>
                             </div>`;
                 }
             },
@@ -695,12 +774,22 @@ function dataTableExpense(data, table_id) {
                 targets: 4,
                 render: (data, type, row) => {
                     return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-price" 
-                                    data-return-type="number"
-                                    required
-                                >
+                                <div class="dropdown">
+                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <span class="input-affix-wrapper">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price" 
+                                            value="0"
+                                            data-return-type="number"
+                                        >
+                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                    </span>
+                                    </div>
+                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                    <a class="dropdown-item" data-value=""></a>
+                                    </div>
+                                </div>
                             </div>`;
                 }
             },
@@ -894,12 +983,12 @@ function loadDataProductSelect(ele) {
             let valList = [];
             $(priceList).empty();
             for (let i = 0; i < data.price_list.length; i++) {
-                valList.push(data.price_list[i].price);
-                let option = `<a class="dropdown-item table-row-price-option" data-value="${data.price_list[i].price}">
+                valList.push(data.price_list[i].value);
+                let option = `<a class="dropdown-item table-row-price-option" data-value="${data.price_list[i].value}">
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
-                                        <div class="col-5"><span>${CCurrency.convertCurrency(data.price_list[i].price)}</span></div>
+                                        <div class="col-5"><span>${CCurrency.convertCurrency(data.price_list[i].value)}</span></div>
                                     </div>
                                 </a>`;
                 $(priceList).append(option);

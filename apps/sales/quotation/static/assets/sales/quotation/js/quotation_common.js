@@ -976,7 +976,7 @@ function loadDataProductSelect(ele) {
         let price = ele[0].closest('tr').querySelector('.table-row-price');
         let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
         let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-        if (uom) {
+        if (uom && data.unit_of_measure) {
             uom.value = data.unit_of_measure.id;
         }
         if (price && priceList) {
@@ -999,7 +999,7 @@ function loadDataProductSelect(ele) {
                 $(price).maskMoney('mask', minVal);
             }
         }
-        if (tax) {
+        if (tax && data.tax) {
             tax.value = data.tax.id;
         }
         loadInformationSelectBox(ele);

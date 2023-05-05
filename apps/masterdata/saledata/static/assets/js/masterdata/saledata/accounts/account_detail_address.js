@@ -94,7 +94,7 @@ $(document).ready(function () {
                     $('#modal-shipping-address').modal('hide');
                     $('#detail-modal-shipping-address').val('');
                 } else {
-                    alert("Missing address information!");
+                    $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
                 }
 
                 if (shipping_address !== '') {
@@ -107,6 +107,7 @@ $(document).ready(function () {
                         `<div class="form-check ml-5 mb-2">
                             <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
                             <label>` + shipping_address + `</label>
+                            <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                         </div>`
                     )
                 }
@@ -130,7 +131,7 @@ $(document).ready(function () {
                 billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
                 $('#modal-billing-address').modal('hide');
             } else {
-                alert("Missing billing address information!");
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
             }
 
             if (billing_address !== '') {
@@ -142,12 +143,13 @@ $(document).ready(function () {
                     `<div class="form-check ml-5">
                         <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
                         <label>` + billing_address + `</label>
+                        <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                     </div>`
                 )
 
             }
         } catch (error) {
-            alert("No address information!");
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
         }
     })
     })

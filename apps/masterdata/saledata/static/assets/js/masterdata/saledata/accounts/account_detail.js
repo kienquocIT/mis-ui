@@ -21,12 +21,14 @@ $(document).ready(function () {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
                                 <label>`+ data.shipping_address[i] +`</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                     else {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
                                 <label>`+ data.shipping_address[i] +`</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                 }
@@ -39,12 +41,14 @@ $(document).ready(function () {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
                                 <label>`+ billing_address + `</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                     else {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
                                 <label>`+ billing_address + `</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                 }
@@ -89,30 +93,29 @@ $(document).ready(function () {
                 load_contact_mapped(data.contact_mapped);
 
                 loadAccountType(data.account_type.map(obj => obj.id));
-                let account_type_view_html = '';
-                let account_type_title_list = data.account_type.map(obj => obj.title);
-                for (let i = 0; i < account_type_title_list.length; i++) {
-                    account_type_view_html += `<span class="badge badge-soft-red badge-outline mr-1 mt-1">` + account_type_title_list[i] + `</span>`
-                }
-                $('#account-type-view').html(account_type_view_html)
 
-                if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
-                    $('#inp-organization').attr('checked', true);
-                    $("#account-tax-code-label-id").addClass("required");
-                }
-                else {
+                if ($.inArray("Customer", data.account_type.map(obj => obj.title)) !== -1) {
+                    if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
+                        $('#inp-organization').attr('checked', true);
+                        $("#account-tax-code-label-id").addClass("required");
+                    }
                     if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
                         $('#inp-individual').prop('checked', true);
+                        $("#account-tax-code-label-id").removeClass("required");
                     }
-                    else {
-                        $('#account-type-customer-type-div-id').prop('hidden', true);
-                        $('#account-type-div').addClass('mb-10');
-                    }
-
+                    $('#account-type-customer-type-div-id').prop('hidden', false);
+                    $('#parent-account-div-id').prop('hidden', false);
+                }
+                else {
+                    $('#account-type-customer-type-div-id').prop('hidden', true);
                     $('#parent-account-div-id').prop('hidden', true);
                 }
 
                 $('#edit-account-on').on('click', function () {
+                    $('.select2-selection').css({'border': 'solid #aaa 1px', 'background': 'none'});
+                    $('#account-type-id').prop('disabled', false);
+                    $('#account-manager-id').prop('disabled', false);
+
                     $('.form-select').prop('disabled', false);
                     $('.input-can-edit').prop('readonly', false);
                     $('.form-check-input').prop('disabled', false);
@@ -124,6 +127,7 @@ $(document).ready(function () {
                     $('#save-account-on').prop('hidden', false);
                     $('#shipping-address-btn').prop('hidden', false);
                     $('#billing-address-btn').prop('hidden', false);
+                    $('.del-address-item').prop('hidden', false);
 
                     $('#account-industry-id').select2();
                     $('#parent-account-id').select2();
@@ -136,8 +140,11 @@ $(document).ready(function () {
                     $('#shipping-ward').select2();
 
                     $('#select-box-account-name').select2();
-                    $('#select-box-address').select2();
-                    $('.select2').show();
+                })
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).parent().remove();
                 })
 
                 loadIndustry(data.industry);
@@ -148,17 +155,19 @@ $(document).ready(function () {
                 loadParentAccount(data.parent_account, data.id);
 
                 loadAccountManager(data.manager.map(obj => obj.id))
-                let account_manager_view_html = '';
-                let account_manager_title_list = data.manager.map(obj => obj.fullname);
-                for (let i = 0; i < account_manager_title_list.length; i++) {
-                    account_manager_view_html += `<span class="badge badge-soft-primary badge-outline mr-1 mt-1">` + account_manager_title_list[i] + `</span>`
-                }
-                $('#account-manager-view').html(account_manager_view_html)
 
                 let current_owner = data.owner
                 loadAccountOwner(current_owner)
 
-                $('.select2').hide();
+                loadAccountGroup(data.account_group);
+
+                loadPaymentTerms('payment_terms_mapped');
+
+                loadPriceList('price_list_mapped');
+
+                $('#account-type-id').prop('disabled', true);
+                $('#account-manager-id').prop('disabled', true);
+                $('.select2-selection').css({'border': 'none', 'background': '#f7f7f7'});
             }
         })
 
@@ -194,11 +203,9 @@ $(document).ready(function () {
         })
 
         if (selected_acc_type.length > 0) {
-            $('#account-type-div').removeClass('mb-10');
             $('#parent-account-div-id').attr('hidden', false);
             $('#account-type-customer-type-div-id').attr('hidden', false);
         } else {
-            $('#account-type-div').addClass('mb-10');
             $('#parent-account-div-id').attr('hidden', true);
             $('#account-type-customer-type-div-id').attr('hidden', true);
         }
@@ -217,6 +224,56 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('industry_list') && Array.isArray(data.industry_list)) {
                         data.industry_list.map(function (item) {
                             if (industry_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Payment Terms SelectBox
+    function loadPaymentTerms(payment_terms_mapped) {
+        let ele = $('#payment-terms-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="0" selected></option>`)
+                    if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+                        data.payment_terms_list.map(function (item) {
+                            if (payment_terms_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Price List SelectBox
+    function loadPriceList(price_list_mapped) {
+        let ele = $('#price-list-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="0" selected></option>`)
+                    if (data.hasOwnProperty('price_list') && Array.isArray(data.price_list)) {
+                        data.price_list.map(function (item) {
+                            if (price_list_mapped === item.id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
@@ -312,6 +369,32 @@ $(document).ready(function () {
         )
     }
 
+    // load Account Group SelectBox
+    function loadAccountGroup(account_group_id) {
+        let ele = $('#account-group-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('account_group_list') && Array.isArray(data.account_group_list)) {
+                        ele.append(`<option value="" selected></option>`)
+                        data.account_group_list.map(function (item) {
+                            if (item.id === account_group_id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            }
+                            else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
     // load data for Shipping address modal
     $('#edit-shipping-address').on('click', function () {
         if ($('#list-shipping-address input').length === 0)
@@ -371,6 +454,64 @@ $(document).ready(function () {
         });
     })
 
+    // button event change select-box-account-name in modal billing address
+    $('#select-box-account-name').on('change', function () {
+        $('#edited-billing-address').val('');
+        let id_account = $(this).find('option:selected').val();
+        let select_box = $('#select-box-address');
+        select_box.empty();
+        select_box.append(`<option value="0" selected></option>`)
+
+        if (id_account === '') {
+            $('#button_add_new_billing_address').prop('hidden', true);
+            $('#inp-tax-code-address').val($('#inp-tax-code').val());
+            $('#inp-email-address').val($('#inp-email').val());
+
+            $('#list-shipping-address').children().each(function () {
+                if ($(this).find('input').prop('checked') === true)
+                    select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+                else
+                    select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+            });
+        } else {
+            $('#button_add_new_billing_address').prop('hidden', false);
+            let url = $(this).attr('data-url').replace(0, id_account);
+            let method = $(this).attr('data-method');
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('account_detail')) {
+                            $('#inp-email-address').val(data.account_detail.email);
+                            $('#inp-tax-code-address').val(data.account_detail.tax_code);
+                            data.account_detail.shipping_address.map(function (item) {
+                                $('#select-box-address').append(`<option value="` + item + `">` + item + `</option>`)
+                            })
+                        }
+                    }
+                }
+            )
+        }
+    })
+
+    // process address
+    $('#select-box-address').on('change', function () {
+        $('#edited-billing-address').val($(this).find('option:selected').text());
+    })
+
+    // click on edit billing address btn
+    $('#button_add_new_billing_address').on('click', function () {
+        if ($('#button_add_new_billing_address i').attr('class') === 'fas fa-plus-circle') {
+            $(this).html(`<i class="bi bi-backspace-fill"></i> Select`);
+            $('#select-box-address').prop('hidden', true);
+            $('#edited-billing-address').prop('hidden', false);
+        } else {
+            $(this).html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
+            $('#select-box-address').prop('hidden', false);
+            $('#edited-billing-address').prop('hidden', true);
+        }
+    })
+
     // ratio individual onchange
     $('#inp-individual').on('change', function () {
         $('#parent-account-div-id').prop('hidden', true);
@@ -390,6 +531,47 @@ $(document).ready(function () {
         $('#parent-account-div-id').prop('hidden', false);
         $("#account-tax-code-label-id").addClass("required");
     })
+
+    // add new card bank account
+    $('#save-changes-modal-bank-account').on('click', function () {
+        let old_html = $('#list-bank-account-information').html();
+        let bank_account_name = $('#bank-account-name-id').val();
+        let bank_name = $('#bank-name-id').val();
+        let bank_account_number = $('#bank-account-number-id').val();
+        let is_default = '';
+        if ($('#make-default-bank-account').is(':checked')) {
+            is_default = 'checked';
+        }
+        let new_html = old_html + `<div class="card col-5 mr-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input" type="radio" name="bank-account-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Bank account name: <a href="#"><b>` + bank_account_name + `</b></a></label>
+                                        <label class="ml-3">Bank name: <a href="#"><b>` + bank_name + `</b></a></label>
+                                        <label class="ml-3 mb-3">Bank account number: <a href="#"><b>` + bank_account_number + `</b></a></label>
+                                    </div>`
+        $('#list-bank-account-information').html(new_html);
+        $('#modal-bank-account-information').hide();
+
+        // delete bank account item
+        $('.btn-del-bank-account').on('click', function () {
+            $(this).closest('.card').remove()
+        })
+    })
+
+    /* Single table*/
+    $("#credit-card-exp-date").datepicker( {
+        format: "mm/yyyy",
+        startView: "months",
+        minViewMode: "months",
+    });
 
     // send data to update
     let frm = $('#form-detail-update-account')
@@ -473,3 +655,8 @@ $(document).ready(function () {
             )
     });
 })
+
+// delete credit card item
+$('.btn-del-credit-card').on('click', function () {
+            $(this).closest('.card').remove()
+        })

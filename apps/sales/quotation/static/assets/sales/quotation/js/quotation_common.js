@@ -1392,6 +1392,7 @@ function setupDataSubmit(_form) {
     }
     _form.dataForm['status'] = $('#quotation-create-status').val();
     _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
+    _form.dataForm['total_product_discount_rate'] = $('#quotation-create-product-discount').val();
     _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
     _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
     _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();

@@ -238,8 +238,10 @@ function loadTotal(data, pretaxID, taxID, totalID, discountID = null, is_product
         }
     }
     let discount = document.getElementById(discountID);
-    if (discount) {
+    let discountRate = document.getElementById('quotation-create-product-discount');
+    if (discount && discountRate) {
         discount.value = data.total_product_discount;
+        discountRate.value = data.total_product_discount_rate
     }
     let tax = document.getElementById(taxID);
     if (tax) {
@@ -301,6 +303,10 @@ function loadDetailQuotation(data) {
     }
     if (data.quotation_expenses_data) {
         loadTabExpense(data.quotation_expenses_data);
+    }
+    if (data.quotation_logistic_data) {
+        document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;
+        document.getElementById('quotation-create-billing-address').value = data.quotation_logistic_data.billing_address
     }
     // product totals
     loadTotal(data, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount', true, false, false);

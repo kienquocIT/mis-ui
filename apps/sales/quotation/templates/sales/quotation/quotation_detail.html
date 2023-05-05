@@ -467,9 +467,9 @@
                                 <div class="row logistics-body">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Shipping Address' %}
-                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"></i>
+                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" hidden></i>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address"></textarea>
+                                        <textarea class="form-control disabled-but-edit" rows="3" cols="50" name="" id="quotation-create-shipping-address" disabled></textarea>
                                     </div>
                                     <div
                                             class="modal fade" id="shippingModalCenter" tabindex="-1"
@@ -501,9 +501,9 @@
 
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Billing Address' %}
-                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#billingModalCenter"></i>
+                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#billingModalCenter" hidden></i>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address"></textarea>
+                                        <textarea class="form-control disabled-but-edit" rows="3" cols="50" name="" id="quotation-create-billing-address" disabled></textarea>
                                     </div>
                                     <div
                                             class="modal fade" id="billingModalCenter" tabindex="-1"

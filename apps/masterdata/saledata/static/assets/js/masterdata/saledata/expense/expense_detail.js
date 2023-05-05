@@ -283,7 +283,11 @@ $(document).ready(function () {
                         }
                         document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
                         if (item.currency === currency_primary.id)
-                            document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price_value;
+                            document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price_value.toLocaleString('de-DE', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        ;
                     })
                     autoSelectPriceListCopyFromSource(price_dict)
                 }

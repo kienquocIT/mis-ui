@@ -35,7 +35,7 @@
         <div class="row">
             <div class="col-3 form-group">
                 <label class="form-label required">{% trans 'Code' %}</label>
-                <input class="form-control" type="text" placeholder="CODE" id="expenseCode">
+                <input class="form-control" type="text" placeholder="CODE" id="expenseCode" disabled>
             </div>
             <div class="col-6">
                 <label class="form-label required">{% trans 'Name' %}</label>
@@ -125,5 +125,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/expense/expense_detail.js' %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 {% endblock %}

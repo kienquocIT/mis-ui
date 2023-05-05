@@ -332,7 +332,7 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create">
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create" disabled>
                                                 <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
                                             </button>
                                         </div>
@@ -628,7 +628,7 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create">
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create" disabled>
                                                 <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add expense</span></span>
                                             </button>
                                         </div>
@@ -715,6 +715,10 @@
                                 type="hidden"
                                 id="data-init-quotation-create-request-employee-id"
                                 value="{{ data.data.employee_current_id }}"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-company-currency-config"
                         >
                     </div>
                 </div>

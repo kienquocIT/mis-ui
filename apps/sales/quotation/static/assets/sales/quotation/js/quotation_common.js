@@ -835,7 +835,7 @@ function dataTableExpense(data, table_id) {
     });
 }
 
-function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null, is_discount_total = false) {
+function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
     let pretaxAmount = 0;
     let discountAmount = 0;
     let taxAmount = 0;
@@ -870,18 +870,18 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null, i
     let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
     elePretaxAmount.value = pretaxAmount;
-    $(elePretaxAmount).maskMoney('mask', pretaxAmount);
+    init_mask_money_ele($(elePretaxAmount));
     if (eleDiscount) {
         eleDiscount.value = discountAmount;
-        $(eleDiscount).maskMoney('mask', discountAmount);
+        init_mask_money_ele($(eleDiscount));
     }
     eleTaxes.value = taxAmount;
-    $(eleTaxes).maskMoney('mask', taxAmount);
+    init_mask_money_ele($(eleTaxes));
     eleTotal.value = totalFinal;
-    $(eleTotal).maskMoney('mask', totalFinal);
+    init_mask_money_ele($(eleTotal));
 }
 
-function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false, is_change_discount_total = false) {
+function calculate(row) {
     let price = 0;
     let quantity = 0;
     let elePrice = row.querySelector('.table-row-price');
@@ -900,7 +900,6 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
     let discount = 0;
     let subtotal = (price * quantity);
     let subtotalPlus = 0;
-    let is_discount_total = false;
     let eleTax = row.querySelector('.table-row-tax');
     if (eleTax) {
         let optionSelected = eleTax.options[eleTax.selectedIndex];
@@ -934,31 +933,31 @@ function commonCalculate(table, row, is_product = false, is_cost = false, is_exp
         if (eleTaxAmount) {
             let taxAmount = ((subtotalPlus * tax) / 100);
             eleTaxAmount.value = taxAmount;
-            $(eleTaxAmount).maskMoney('mask', taxAmount);
+            init_mask_money_ele($(eleTaxAmount));
         }
         eleDiscountAmount.value = discountAmountOnTotal;
-        $(eleDiscountAmount).maskMoney('mask', discountAmountOnTotal);
+        init_mask_money_ele($(eleDiscountAmount));
     } else {
         // calculate tax no discount on total
         if (eleTaxAmount) {
             let taxAmount = ((subtotal * tax) / 100);
             eleTaxAmount.value = taxAmount;
-            $(eleTaxAmount).maskMoney('mask', taxAmount);
+            init_mask_money_ele($(eleTaxAmount));
         }
     }
     // set subtotal value
     let eleSubtotal = row.querySelector('.table-row-subtotal');
     if (eleSubtotal) {
         eleSubtotal.value = subtotal;
-        $(eleSubtotal).maskMoney('mask', subtotal);
+        init_mask_money_ele($(eleSubtotal));
     }
+}
+
+function commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
+    calculate(row);
     // calculate total
     if (is_product === true) {
-        if (is_discount_total === true) {
-            updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount', true)
-        } else {
-            updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
-        }
+        updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
     } else if (is_cost === true) {
         updateTotal(table[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total')
     } else if (is_expense === true) {
@@ -996,7 +995,7 @@ function loadDataProductSelect(ele) {
             if (valList) {
                 let minVal = Math.min(...valList);
                 price.value = minVal;
-                $(price).maskMoney('mask', minVal);
+                init_mask_money_ele($(price));
             }
         }
         if (tax && data.tax) {
@@ -1067,13 +1066,46 @@ function loadInformationSelectBox(ele) {
     }
 }
 
-function init_mask_money_single(ele) {
+function init_company_currency_config() {
     $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
         if (currencyConfig) {
-            ele.find('.mask-money').initInputCurrency(currencyConfig);
-            ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
+            $('#data-init-quotation-create-company-currency-config').val(JSON.stringify(currencyConfig))
         } else throw  Error('Currency config is not found.')
     });
+}
+
+// function init_mask_money_single(ele) {
+//     $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
+//         if (currencyConfig) {
+//             ele.find('.mask-money').initInputCurrency(currencyConfig);
+//             ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
+//         } else throw  Error('Currency config is not found.')
+//     });
+// }
+
+function init_mask_money_single(ele) {
+    let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
+    if (currencyConfig) {
+        ele.find('.mask-money').initInputCurrency(currencyConfig);
+        ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
+    } else throw  Error('Currency config is not found.')
+}
+
+// function init_mask_money_ele(ele) {
+//     $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
+//         if (currencyConfig) {
+//             ele.initInputCurrency(currencyConfig);
+//             ele.parseCurrencyDisplay(currencyConfig);
+//         } else throw  Error('Currency config is not found.')
+//     });
+// }
+
+function init_mask_money_ele(ele) {
+    let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
+    if (currencyConfig) {
+        ele.initInputCurrency(currencyConfig);
+        ele.parseCurrencyDisplay(currencyConfig);
+    } else throw  Error('Currency config is not found.')
 }
 
 function loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {

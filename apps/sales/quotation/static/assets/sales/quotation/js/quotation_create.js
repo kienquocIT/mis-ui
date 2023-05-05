@@ -5,6 +5,7 @@ $(function () {
     $(document).ready(function () {
 
         $(".select2").select2();
+        init_company_currency_config();
 
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -173,7 +174,7 @@ $(function () {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     elePrice.value = priceValRaw;
-                    $(elePrice).maskMoney('mask', priceValRaw);
+                    init_mask_money_ele($(elePrice));
                     commonCalculate(tableProduct, row, true, false, false);
                 }
             }
@@ -192,8 +193,9 @@ $(function () {
         $('#quotation-create-product-discount').on('change', function (e) {
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
-                commonCalculate(tableProduct, row, true, false, false)
+                calculate(row);
             }
+            updateTotal(tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
         });
 
 // Action on click button add expense
@@ -366,7 +368,7 @@ $(function () {
                             if (valueTaxSelected) {
                                 valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100);
                                 rowTaxAmount.value = valueTaxAmount;
-                                $(rowTaxAmount).maskMoney('mask', valueTaxAmount)
+                                init_mask_money_ele($(rowTaxAmount));
                             }
                         }
                     }

@@ -226,7 +226,7 @@ function loadTabExpense(data_list) {
     }
 }
 
-function loadTotal(data, pretaxID, taxID, totalID, is_product = false, is_cost = false, is_expense = false) {
+function loadTotal(data, pretaxID, taxID, totalID, discountID = null, is_product = false, is_cost = false, is_expense = false) {
     let pretax = document.getElementById(pretaxID);
     if (pretax) {
         if (is_product === true) {
@@ -236,6 +236,10 @@ function loadTotal(data, pretaxID, taxID, totalID, is_product = false, is_cost =
         } else if (is_expense === true) {
             pretax.value = data.total_expense_pretax_amount
         }
+    }
+    let discount = document.getElementById(discountID);
+    if (discount) {
+        discount.value = data.total_product_discount;
     }
     let tax = document.getElementById(taxID);
     if (tax) {
@@ -299,11 +303,11 @@ function loadDetailQuotation(data) {
         loadTabExpense(data.quotation_expenses_data);
     }
     // product totals
-    loadTotal(data, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', true, false, false);
+    loadTotal(data, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount', true, false, false);
     init_mask_money_single($('#quotation-tab-product-totals'));
-    loadTotal(data, 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total', false, true, false);
+    loadTotal(data, 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total', null, false, true, false);
     init_mask_money_single($('#quotation-tab-cost-totals'));
-    loadTotal(data, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total', false, false, true);
+    loadTotal(data, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total', null, false, false, true);
     init_mask_money_single($('#quotation-tab-expense-totals'));
 }
 

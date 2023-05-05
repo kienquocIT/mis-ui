@@ -864,7 +864,7 @@ function updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
     let discount_on_total = 0;
     let discountTotalRate = $('#quotation-create-product-discount').val();
     if (discountTotalRate && eleDiscount) {
-        discount_on_total = parseInt(discountTotalRate);
+        discount_on_total = parseFloat(discountTotalRate);
         discountAmount = ((pretaxAmount * discount_on_total) / 100)
     }
     let totalFinal = (pretaxAmount - discountAmount + taxAmount);
@@ -913,14 +913,14 @@ function calculate(row) {
     let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
     if (eleDiscount && eleDiscountAmount) {
         if (eleDiscount.value) {
-            discount = parseInt(eleDiscount.value)
+            discount = parseFloat(eleDiscount.value)
         } else if (!eleDiscount.value || eleDiscount.value === "0") {
             discount = 0
         }
         let discount_on_total = 0;
         let discountTotalRate = $('#quotation-create-product-discount').val();
         if (discountTotalRate) {
-            discount_on_total = parseInt(discountTotalRate);
+            discount_on_total = parseFloat(discountTotalRate);
         }
 
         let discountAmount = ((price * discount) / 100);

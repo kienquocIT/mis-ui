@@ -1219,7 +1219,11 @@ function setupDataProduct() {
         }
         let eleDiscount = row.querySelector('.table-row-discount');
         if (eleDiscount) {
-            rowData['product_discount_value'] = parseInt(eleDiscount.value);
+            if (eleDiscount.value || eleDiscount.value === "0") {
+                rowData['product_discount_value'] = parseInt(eleDiscount.value);
+            } else {
+                rowData['product_discount_value'] = 0;
+            }
         }
         let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
         if (eleDiscountAmount) {

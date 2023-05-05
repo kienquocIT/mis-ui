@@ -6,7 +6,7 @@ $(document).ready(function () {
         return obj;
     }, {});
 
-    const currency_primary = JSON.parse($('#id-currency-list').text()).find(obj=>obj.is_primary === true);
+    const currency_primary = JSON.parse($('#id-currency-list').text()).find(obj => obj.is_primary === true);
 
     $(".select2").select2();
 
@@ -192,14 +192,14 @@ $(document).ready(function () {
                     ele.find('ul').append(`<div class="row">
                             <div class="col-6">
                                 <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
-                                    <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
-                                        value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
+                                    <input class="form-check-input" type="checkbox"
+                                        value="option1" data-id="` + dataTree[i].item.id + `">
                                     <label class="form-check-label">` + dataTree[i].item.title + `</label>
                                 </div>
                             </div>
                             <div class="col-6 form-group">
                                 <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                    <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
+                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
                                     <span class="input-suffix">` + currency + `</span>
                                 </span>
                             </div>
@@ -233,7 +233,7 @@ $(document).ready(function () {
                             </div>
                             <div class="col-6 form-group">
                                 <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
+                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>    
                                     <span class="input-suffix">` + currency + `</span>
                                 </span>
                             </div>
@@ -243,8 +243,6 @@ $(document).ready(function () {
             count += 1
             if (dataTree[i].child.length !== 0) {
                 count = appendHtmlForPriceList(dataTree[i].child, ele, currency, count)
-            } else {
-                continue;
             }
         }
         return count

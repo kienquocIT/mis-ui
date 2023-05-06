@@ -66,7 +66,7 @@ $(document).ready(function () {
                     if (data.bank_accounts_information[i].is_default) {
                         is_default = 'checked';
                     }
-                    list_bank_accounts_html += `<div class="card col-5 mr-3">
+                    list_bank_accounts_html += `<div class="card card-bank-account col-8 ml-3">
                                     <span class="mt-2">
                                         <div class="row">
                                             <div class="col-6">
@@ -83,10 +83,48 @@ $(document).ready(function () {
                                     <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
                                     <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
                                     <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
-                                    <label hidden class="ml-3">Is default: <a class="is-default-label" href="#"><b>` + is_default + `</b></a></label>
                                 </div>`
                 }
                 $('#list-bank-account-information').html(list_bank_accounts_html);
+
+                let list_credit_cards_html = ``
+                for (let i = 0; i < data.credit_cards_information.length; i++) {
+                    let credit_card_type = data.credit_cards_information[i].credit_card_type;
+                    let credit_card_number = data.credit_cards_information[i].credit_card_number;
+                    let credit_card_name = data.credit_cards_information[i].credit_card_name;
+                    let credit_card_exp_date = data.credit_cards_information[i].expired_date;
+                    let is_default = '';
+                    if (data.credit_cards_information[i].is_default) {
+                        is_default = 'checked';
+                    }
+                    list_credit_cards_html += `<div class="card card-credit-card col-8 ml-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-credit-card" hidden href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input credit-card-select-default" disabled type="radio" name="credit-card-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
+                                        <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
+                                        <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                        <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
+                                    </div>`
+                }
+                $('#list-credit-card-information').html(list_credit_cards_html);
+
+                // delete bank account item
+                $('.btn-del-bank-account').on('click', function () {
+                    $(this).closest('.card').remove()
+                })
+
+                // delete credit card item
+                $('.btn-del-credit-card').on('click', function () {
+                    $(this).closest('.card').remove()
+                })
 
                 function load_contact_mapped(contact_mapped) {
                     if (!$.fn.DataTable.isDataTable('#datatable_contact_mapped_list')) {
@@ -167,6 +205,9 @@ $(document).ready(function () {
 
                     $('.bank-account-select-default').prop('disabled', false);
                     $('.btn-del-bank-account').prop('hidden', false);
+
+                    $('.credit-card-select-default').prop('disabled', false);
+                    $('.btn-del-credit-card').prop('hidden', false);
 
                     $('#account-industry-id').select2();
                     $('#parent-account-id').select2();
@@ -600,9 +641,32 @@ $(document).ready(function () {
         $("#account-tax-code-label-id").addClass("required");
     })
 
+    // add default item bank first
+    $('#edit-bank-account-information').on('click', function () {
+        if ($('#list-bank-account-information input').length === 0) {
+            $('#make-default-bank-account').prop('checked', true);
+            $('#make-default-bank-account').prop('disabled', true);
+        }
+        else {
+            $('#make-default-bank-account').prop('checked', false);
+            $('#make-default-bank-account').prop('disabled', false);
+        }
+    })
+
+    // add default item credit card first
+    $('#edit-credit-card-information').on('click', function () {
+        if ($('#list-credit-card-information input').length === 0) {
+            $('#make-default-credit-card').prop('checked', true);
+            $('#make-default-credit-card').prop('disabled', true);
+        }
+        else {
+            $('#make-default-credit-card').prop('checked', false);
+            $('#make-default-credit-card').prop('disabled', false);
+        }
+    })
+
     // add new bank account
     $('#save-changes-modal-bank-account').on('click', function () {
-        let old_html = $('#list-bank-account-information').html();
         let country_id = $('#country-select-box-id').val();
         let bank_name = $('#bank-name-id').val();
         let bank_code = $('#bank-code-id').val();
@@ -613,7 +677,7 @@ $(document).ready(function () {
         if ($('#make-default-bank-account').is(':checked')) {
             is_default = 'checked';
         }
-        let new_html = old_html + `<div class="card col-5 mr-3">
+        $('#list-bank-account-information').append(`<div class="card card-bank-account col-8 ml-3">
                                         <span class="mt-2">
                                             <div class="row">
                                                 <div class="col-6">
@@ -630,9 +694,8 @@ $(document).ready(function () {
                                         <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
                                         <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
                                         <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
-                                        <label hidden class="ml-3">Is default: <a class="is-default-label" href="#"><b>` + is_default + `</b></a></label>
-                                    </div>`
-        $('#list-bank-account-information').html(new_html);
+                                    </div>`)
+
         $('#modal-bank-account-information').hide();
 
         // delete bank account item
@@ -643,7 +706,6 @@ $(document).ready(function () {
 
     // add new credit card
     $('#save-changes-modal-credit-card').on('click', function () {
-        let old_html = $('#list-credit-card-information').html();
         let credit_card_type = $('#credit-card-type-select-box-id').val();
         let credit_card_number = $('#credit-card-number-id').val();
         let credit_card_exp_date = $('#credit-card-exp-date').val();
@@ -652,23 +714,22 @@ $(document).ready(function () {
         if ($('#make-default-credit-card').is(':checked')) {
             is_default = 'checked';
         }
-        let new_html = old_html + `<div class="card col-5 mr-3">
+        $('#list-credit-card-information').append(`<div class="card card-credit-card col-8 ml-3">
                                         <span class="mt-2">
                                             <div class="row">
                                                 <div class="col-6">
                                                     <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
                                                 </div>
                                                 <div class="col-6 text-right">
-                                                    <input class="form-check-input" type="radio" name="credit-card-select-default"` + is_default + `>
+                                                    <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
                                                 </div>
                                             </div>
                                         </span>
-                                        <label class="ml-3">Card Type: <a href="#"><b>` + credit_card_type + `</b></a></label>
-                                        <label class="ml-3">Card Number: <a href="#"><b>` + credit_card_number + `</b></a></label>
-                                        <label class="ml-3">Card Exp: <a href="#"><b>` + credit_card_exp_date + `</b></a></label>
-                                        <label class="ml-3 mb-3">Card Name: <a href="#"><b>` + credit_card_name + `</b></a></label>
-                                    </div>`
-        $('#list-credit-card-information').html(new_html);
+                                        <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
+                                        <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
+                                        <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                        <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
+                                    </div>`)
         $('#modal-credit-card-information').hide();
 
         // delete credit card item
@@ -750,17 +811,13 @@ $(document).ready(function () {
         let bank_account_information = [];
         let list_bank = $('#list-bank-account-information').children();
         for (let i = 0; i < list_bank.length; i++) {
-            console.log($(list_bank[i]).find('a.is-default-label').text())
             let country_id = $(list_bank[i]).find('a.country-id-label').text();
             let bank_name = $(list_bank[i]).find('a.bank-name-label').text();
             let bank_code = $(list_bank[i]).find('a.bank-code-label').text();
             let bank_account_name = $(list_bank[i]).find('a.bank-account-name-label').text();
             let bank_account_number = $(list_bank[i]).find('a.bank-account-number-label').text();
             let bic_swift_code = $(list_bank[i]).find('a.bic-swift-code-label').text();
-            let is_default = false;
-            if ($(list_bank[i]).find('a.is-default-label').text() === 'checked') {
-                is_default = true;
-            }
+            let is_default = $(list_bank[i]).find('input[type=radio]').is(':checked');
 
             bank_account_information.push({
                 'country_id': country_id,
@@ -773,7 +830,31 @@ $(document).ready(function () {
             })
         }
 
-        frm.dataForm['bank_accounts_information'] = bank_account_information;
+        if (bank_account_information.length > 0) {
+            frm.dataForm['bank_accounts_information'] = bank_account_information;
+        }
+
+        let credit_cards_information = [];
+        let list_card = $('#list-credit-card-information').children();
+        for (let i = 0; i < list_card.length; i++) {
+            let credit_card_type = $(list_card[i]).find('a.credit_card_type').text();
+            let credit_card_number = $(list_card[i]).find('a.credit_card_number').text();
+            let credit_card_name = $(list_card[i]).find('a.credit_card_name').text();
+            let expired_date = $(list_card[i]).find('a.expired_date').text();
+            let is_default = $(list_card[i]).find('input[type=radio]').is(':checked');
+
+            credit_cards_information.push({
+                'credit_card_type': credit_card_type,
+                'credit_card_number': credit_card_number,
+                'credit_card_name': credit_card_name,
+                'expired_date': expired_date,
+                'is_default': is_default
+            })
+        }
+
+        if (credit_cards_information.length > 0) {
+            frm.dataForm['credit_cards_information'] = credit_cards_information;
+        }
 
         console.log(frm.dataForm)
 

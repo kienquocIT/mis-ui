@@ -395,8 +395,8 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="label-field form-label" for="payment-terms-id">{% trans "Payment Terms" %}</label>
-                                            <select id="payment-terms-id" name="payment_terms"
+                                            <label class="label-field form-label required" for="payment-terms-id">{% trans "Payment Terms" %}</label>
+                                            <select id="payment-terms-id" name="payment_term_mapped"
                                                     class="form-select" disabled
                                                     data-method="GET"
                                                     data-url="{% url "PaymentsTermsListAPI" %}">
@@ -405,20 +405,20 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="label-field form-label" for="credit-limit-id">{% trans "Credit Limit" %}</label>
-                                            <input type="text" class="form-control input-can-edit" id="credit-limit-id" name="credit_limit" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-5">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="label-field form-label" for="payment-terms-id">{% trans "Price List" %}</label>
-                                            <select id="price-list-id" name="price_list"
+                                            <label class="label-field form-label required" for="payment-terms-id">{% trans "Price List" %}</label>
+                                            <select id="price-list-id" name="price_list_mapped"
                                                     class="form-select" disabled
                                                     data-method="GET"
                                                     data-url="{% url "PriceListAPI" %}">
                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="label-field form-label required" for="credit-limit-id">{% trans "Credit Limit" %}</label>
+                                            <input type="text" class="form-control input-can-edit" id="credit-limit-id" name="credit_limit" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -432,7 +432,7 @@
                                                 <div class="col-12 text-right">
                                                     <button data-bs-toggle="modal" id="bank-account-information-btn"
                                                             data-bs-target="#modal-bank-account-information" type="button"
-                                                            style="background: none; border: none; color: #007D88"
+                                                            style="background: none; border: none; color: #007D88" hidden
                                                             class="btn" >
                                                         <span id="edit-bank-account-information" data-bs-toggle="tooltip"
                                                               data-bs-placement="bottom"
@@ -445,9 +445,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <div class="row" id="list-bank-account-information">
-
-                                                    </div>
+                                                    <div class="row mt-3" id="list-bank-account-information"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -463,7 +461,7 @@
                                                 <div class="col-12 text-right">
                                                     <button data-bs-toggle="modal" id="credit-card-information-btn"
                                                             data-bs-target="#modal-credit-card-information" type="button"
-                                                            style="background: none; border: none; color: #007D88"
+                                                            style="background: none; border: none; color: #007D88" hidden
                                                             class="btn" >
                                                         <span id="edit-credit-card-information" data-bs-toggle="tooltip"
                                                               data-bs-placement="bottom"
@@ -476,9 +474,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <div class="row" id="list-credit-card-information">
-
-                                                    </div>
+                                                    <div class="row mt-3" id="list-credit-card-information"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -636,8 +632,7 @@
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="label-field form-label required">{% trans "Country" %}</label>
-                                                    <select class="form-select" id="country-select-box-id">
-                                                        <option value="0084" selected>Vietnam</option>
+                                                    <select class="form-select" id="country-select-box-id" data-url="{% url "CountryListAPI" %}" data-method="GET">
                                                     </select>
                                                 </div>
                                             </div>
@@ -710,9 +705,9 @@
                                                     <label class="label-field form-label required">{% trans "Credit Card Type" %}</label>
                                                     <select class="form-select" id="credit-card-type-select-box-id">
                                                         <option value="" selected></option>
-                                                        <option value="0">Mastercard</option>
-                                                        <option value="1">Visa</option>
-                                                        <option value="2">American express</option>
+                                                        <option value="Mastercard">Mastercard</option>
+                                                        <option value="Visa">Visa</option>
+                                                        <option value="American express">American express</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -736,8 +731,8 @@
                                             </div>
                                             <div class="row">
                                                 <div class="form-check ml-3">
-                                                    <input class="form-check-input" type="checkbox" value="" id="make-default-bank-account">
-                                                    <label class="form-check-label" for="make-default-bank-account">
+                                                    <input class="form-check-input" type="checkbox" value="" id="make-default-credit-card">
+                                                    <label class="form-check-label" for="make-default-credit-card">
                                                         Make default bank account
                                                     </label>
                                                 </div>
@@ -745,7 +740,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" id="save-changes-modal-bank-account">
+                                            <button type="button" class="btn btn-primary" id="save-changes-modal-credit-card">
                                                 Save
                                             </button>
                                         </div>

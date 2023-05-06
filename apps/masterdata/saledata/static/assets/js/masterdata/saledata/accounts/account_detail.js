@@ -54,6 +54,40 @@ $(document).ready(function () {
                 }
                 $('#list-billing-address').html(list_billing_address)
 
+                let list_bank_accounts_html = ``
+                for (let i = 0; i < data.bank_accounts_information.length; i++) {
+                    let country_id = data.bank_accounts_information[i].country_id;
+                    let bank_name = data.bank_accounts_information[i].bank_name;
+                    let bank_code = data.bank_accounts_information[i].bank_code;
+                    let bank_account_name = data.bank_accounts_information[i].bank_account_name;
+                    let bank_account_number = data.bank_accounts_information[i].bank_account_number;
+                    let bic_swift_code = data.bank_accounts_information[i].bic_swift_code;
+                    let is_default = '';
+                    if (data.bank_accounts_information[i].is_default) {
+                        is_default = 'checked';
+                    }
+                    list_bank_accounts_html += `<div class="card col-5 mr-3">
+                                    <span class="mt-2">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a class="btn-del-bank-account" hidden href="#"><i class="bi bi-x"></i></a>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <input class="form-check-input ratio-select-bank-account-default" disabled type="radio" name="bank-account-select-default"` + is_default + `>
+                                            </div>
+                                        </div>
+                                    </span>
+                                    <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
+                                    <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
+                                    <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
+                                    <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
+                                    <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
+                                    <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
+                                    <label hidden class="ml-3">Is default: <a class="is-default-label" href="#"><b>` + is_default + `</b></a></label>
+                                </div>`
+                }
+                $('#list-bank-account-information').html(list_bank_accounts_html);
+
                 function load_contact_mapped(contact_mapped) {
                     if (!$.fn.DataTable.isDataTable('#datatable_contact_mapped_list')) {
                         let dtb = $('#datatable_contact_mapped_list');
@@ -127,7 +161,12 @@ $(document).ready(function () {
                     $('#save-account-on').prop('hidden', false);
                     $('#shipping-address-btn').prop('hidden', false);
                     $('#billing-address-btn').prop('hidden', false);
+                    $('#bank-account-information-btn').prop('hidden', false);
+                    $('#credit-card-information-btn').prop('hidden', false);
                     $('.del-address-item').prop('hidden', false);
+
+                    $('.bank-account-select-default').prop('disabled', false);
+                    $('.btn-del-bank-account').prop('hidden', false);
 
                     $('#account-industry-id').select2();
                     $('#parent-account-id').select2();
@@ -161,9 +200,13 @@ $(document).ready(function () {
 
                 loadAccountGroup(data.account_group);
 
-                loadPaymentTerms('payment_terms_mapped');
+                loadPaymentTerms(data.payment_term_mapped);
 
-                loadPriceList('price_list_mapped');
+                loadPriceList(data.price_list_mapped);
+
+                loadCountries('country_mapped');
+
+                $('#credit-limit-id').val(data.credit_limit);
 
                 $('#account-type-id').prop('disabled', true);
                 $('#account-manager-id').prop('disabled', true);
@@ -236,7 +279,7 @@ $(document).ready(function () {
     }
 
     // load Payment Terms SelectBox
-    function loadPaymentTerms(payment_terms_mapped) {
+    function loadPaymentTerms(payment_term_mapped) {
         let ele = $('#payment-terms-id');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -248,7 +291,7 @@ $(document).ready(function () {
                     ele.append(`<option value="0" selected></option>`)
                     if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                         data.payment_terms_list.map(function (item) {
-                            if (payment_terms_mapped === item.id) {
+                            if (payment_term_mapped === item.id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
@@ -274,6 +317,31 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('price_list') && Array.isArray(data.price_list)) {
                         data.price_list.map(function (item) {
                             if (price_list_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Countries SelectBox
+    function loadCountries(country_mapped) {
+        let ele = $('#country-select-box-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="0" selected></option>`)
+                    if (data.hasOwnProperty('countries') && Array.isArray(data.countries)) {
+                        data.countries.map(function (item) {
+                            if (country_mapped === item.id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
@@ -532,12 +600,15 @@ $(document).ready(function () {
         $("#account-tax-code-label-id").addClass("required");
     })
 
-    // add new card bank account
+    // add new bank account
     $('#save-changes-modal-bank-account').on('click', function () {
         let old_html = $('#list-bank-account-information').html();
-        let bank_account_name = $('#bank-account-name-id').val();
+        let country_id = $('#country-select-box-id').val();
         let bank_name = $('#bank-name-id').val();
+        let bank_code = $('#bank-code-id').val();
+        let bank_account_name = $('#bank-account-name-id').val();
         let bank_account_number = $('#bank-account-number-id').val();
+        let bic_swift_code = $('#bic-swift-code-id').val();
         let is_default = '';
         if ($('#make-default-bank-account').is(':checked')) {
             is_default = 'checked';
@@ -549,19 +620,59 @@ $(document).ready(function () {
                                                     <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
                                                 </div>
                                                 <div class="col-6 text-right">
-                                                    <input class="form-check-input" type="radio" name="bank-account-select-default"` + is_default + `>
+                                                    <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
                                                 </div>
                                             </div>
                                         </span>
-                                        <label class="ml-3">Bank account name: <a href="#"><b>` + bank_account_name + `</b></a></label>
-                                        <label class="ml-3">Bank name: <a href="#"><b>` + bank_name + `</b></a></label>
-                                        <label class="ml-3 mb-3">Bank account number: <a href="#"><b>` + bank_account_number + `</b></a></label>
+                                        <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
+                                        <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
+                                        <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
+                                        <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
+                                        <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
+                                        <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
+                                        <label hidden class="ml-3">Is default: <a class="is-default-label" href="#"><b>` + is_default + `</b></a></label>
                                     </div>`
         $('#list-bank-account-information').html(new_html);
         $('#modal-bank-account-information').hide();
 
         // delete bank account item
         $('.btn-del-bank-account').on('click', function () {
+            $(this).closest('.card').remove()
+        })
+    })
+
+    // add new credit card
+    $('#save-changes-modal-credit-card').on('click', function () {
+        let old_html = $('#list-credit-card-information').html();
+        let credit_card_type = $('#credit-card-type-select-box-id').val();
+        let credit_card_number = $('#credit-card-number-id').val();
+        let credit_card_exp_date = $('#credit-card-exp-date').val();
+        let credit_card_name = $('#credit-card-name-id').val();
+        let is_default = '';
+        if ($('#make-default-credit-card').is(':checked')) {
+            is_default = 'checked';
+        }
+        let new_html = old_html + `<div class="card col-5 mr-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input" type="radio" name="credit-card-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Card Type: <a href="#"><b>` + credit_card_type + `</b></a></label>
+                                        <label class="ml-3">Card Number: <a href="#"><b>` + credit_card_number + `</b></a></label>
+                                        <label class="ml-3">Card Exp: <a href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                        <label class="ml-3 mb-3">Card Name: <a href="#"><b>` + credit_card_name + `</b></a></label>
+                                    </div>`
+        $('#list-credit-card-information').html(new_html);
+        $('#modal-credit-card-information').hide();
+
+        // delete credit card item
+        $('.btn-del-credit-card').on('click', function () {
             $(this).closest('.card').remove()
         })
     })
@@ -636,7 +747,35 @@ $(document).ready(function () {
             frm.dataForm['account-owner'] = null;
         }
 
-        // console.log(frm.dataForm)
+        let bank_account_information = [];
+        let list_bank = $('#list-bank-account-information').children();
+        for (let i = 0; i < list_bank.length; i++) {
+            console.log($(list_bank[i]).find('a.is-default-label').text())
+            let country_id = $(list_bank[i]).find('a.country-id-label').text();
+            let bank_name = $(list_bank[i]).find('a.bank-name-label').text();
+            let bank_code = $(list_bank[i]).find('a.bank-code-label').text();
+            let bank_account_name = $(list_bank[i]).find('a.bank-account-name-label').text();
+            let bank_account_number = $(list_bank[i]).find('a.bank-account-number-label').text();
+            let bic_swift_code = $(list_bank[i]).find('a.bic-swift-code-label').text();
+            let is_default = false;
+            if ($(list_bank[i]).find('a.is-default-label').text() === 'checked') {
+                is_default = true;
+            }
+
+            bank_account_information.push({
+                'country_id': country_id,
+                'bank_name': bank_name,
+                'bank_code': bank_code,
+                'bank_account_name': bank_account_name,
+                'bank_account_number': bank_account_number,
+                'bic_swift_code': bic_swift_code,
+                'is_default': is_default
+            })
+        }
+
+        frm.dataForm['bank_accounts_information'] = bank_account_information;
+
+        console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
             .then(
@@ -655,8 +794,3 @@ $(document).ready(function () {
             )
     });
 })
-
-// delete credit card item
-$('.btn-del-credit-card').on('click', function () {
-            $(this).closest('.card').remove()
-        })

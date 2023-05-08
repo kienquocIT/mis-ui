@@ -183,8 +183,6 @@ $(document).ready(function () {
         let list_result = []
         list_product.map(function (item) {
             if (list_result.length === 0 || !list_result.find(obj => obj.id === item.id)) {
-                console.log(item)
-                console.log('__')
                 list_result.push({
                     'code': item.code,
                     'id': item.id,
@@ -199,7 +197,6 @@ $(document).ready(function () {
                     'is_auto_update': item.is_auto_update,
                 })
             } else {
-                console.log(item)
                 let exists = list_result.filter(function (obj) {
                     return obj.id === item.id;
                 })

@@ -171,6 +171,18 @@ $(document).ready(function () {
 
     function appendHtmlForPriceList(dataTree, ele, currency, count) {
         for (let i = 0; i < dataTree.length; i++) {
+            let fg_class = '';
+            switch (dataTree[i].item.status) {
+                case "Valid":
+                    fg_class = 'text-success';
+                    break;
+                case "Invalid":
+                    fg_class = 'text-warning';
+                    break;
+                case "Expired":
+                    fg_class = "text-danger";
+            }
+
             if (dataTree[i].item.price_list_mapped !== null) {
                 if (dataTree[i].item.auto_update === true) {
                     ele.find('ul').append(`<div class="row">
@@ -178,7 +190,7 @@ $(document).ready(function () {
                                 <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
                                     <input class="form-check-input" type="checkbox"
                                         value="option1" data-id="` + dataTree[i].item.id + `" disabled>
-                                    <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                                    <label class="form-check-label">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>
                                 </div>
                             </div>
                             <div class="col-6 form-group">
@@ -194,7 +206,7 @@ $(document).ready(function () {
                                 <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
                                     <input class="form-check-input" type="checkbox"
                                         value="option1" data-id="` + dataTree[i].item.id + `">
-                                    <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                                    <label class="form-check-label">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>
                                 </div>
                             </div>
                             <div class="col-6 form-group">
@@ -212,7 +224,7 @@ $(document).ready(function () {
                                 <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
                                     <input class="form-check-input" type="checkbox"
                                         value="option1" checked disabled data-id="` + dataTree[i].item.id + `">
-                                    <label class="form-check-label required">` + dataTree[i].item.title + `</label>
+                                    <label class="form-check-label required">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>
                                 </div>
                             </div>
                             <div class="col-6 form-group">
@@ -228,7 +240,7 @@ $(document).ready(function () {
                                 <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
                                     <input class="form-check-input" type="checkbox"
                                         value="option1" data-id="` + dataTree[i].item.id + `">
-                                    <label class="form-check-label">` + dataTree[i].item.title + `</label>
+                                    <label class="form-check-label">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>
                                 </div>
                             </div>
                             <div class="col-6 form-group">
@@ -240,6 +252,7 @@ $(document).ready(function () {
                         </div>`)
                 }
             }
+
             count += 1
             if (dataTree[i].child.length !== 0) {
                 count = appendHtmlForPriceList(dataTree[i].child, ele, currency, count)
@@ -272,7 +285,7 @@ $(document).ready(function () {
         for (let i = 0; i < element.length; i++) {
             let ele_id = element[i].getAttribute('data-id')
             if (price_dict[ele_id] !== undefined && price_dict[ele_id].price_list_mapped !== null) {
-                if (document.querySelector(`input[type="checkbox"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).checked) {
+                if (document.querySelector(`input[type="checkbox"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).checked && price_dict[ele_id].status !== 'Expired') {
                     element[i].checked = true;
                 } else {
                     element[i].checked = false;
@@ -283,12 +296,15 @@ $(document).ready(function () {
 
     // auto checked checkbox for price list copy from source
     $(document).on('click', '.ul-price-list .form-check-input', function () {
+        let data_id = $(this).attr('data-id');
+        if (price_dict[data_id].status === "Expired") {
+            $(this).prop('checked', false);
+        }
         autoSelectPriceListCopyFromSource(price_dict)
         if ($(this).prop('checked')) {
-            $(`input[type="text"][data-id="` + $(this).attr('data-id') + `"]`).prop('disabled', false)
+            $(`input[type="text"][data-id="` + data_id + `"]`).prop('disabled', false)
         } else {
-            $(`input[type="text"][data-id="` + $(this).attr('data-id') + `"]`).prop('disabled', true)
-            // $(`input[data-text="`+ $(this).attr('data-check') +`"]`).val(null);
+            $(`input[type="text"][data-id="` + data_id + `"]`).prop('disabled', true)
             let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input:not(:checked)')
             for (let i = 0; i < element.length; i++) {
                 document.querySelector(`input[type="text"][data-id="` + element[i].getAttribute('data-id') + `"]`).value = null;
@@ -302,7 +318,7 @@ $(document).ready(function () {
         for (let i = 0; i < element.length; i++) {
             let ele_id = element[i].getAttribute('data-id')
             if (price_dict[ele_id] !== undefined && price_dict[ele_id].price_list_mapped !== null) {
-                if (document.querySelector(`input[type="text"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).value !== '') {
+                if (document.querySelector(`input[type="text"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).value !== '' && price_dict[ele_id].status !== 'Expired') {
                     element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).value.replace(/\./g, '').replace(',', '.')) * price_dict[ele_id].factor).toLocaleString('de-DE', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2

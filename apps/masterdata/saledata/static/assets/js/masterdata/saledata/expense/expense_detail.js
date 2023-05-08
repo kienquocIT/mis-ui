@@ -240,7 +240,7 @@ $(document).ready(function () {
         }
     }
 
-    function autoSelectPriceListAfterCheckBox(price_dict){
+    function autoSelectPriceListAfterCheckBox(price_dict) {
         let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input[disabled]')
         for (let i = 0; i < element.length; i++) {
             let ele_id = element[i].getAttribute('data-id')
@@ -251,7 +251,7 @@ $(document).ready(function () {
                 } else {
                     element[i].checked = false;
                 }
-                if(price_dict[ele_id].status === 'Expired'){
+                if (price_dict[ele_id].status === 'Expired') {
                     element[i].checked = is_check;
                 }
             }

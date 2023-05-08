@@ -208,7 +208,7 @@
                                     <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Sale Person' %}</label>
+                                    <label class="form-label">{% trans 'Select Sale Person' %}<span class="field-required">(*)</span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -231,13 +231,14 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="sale_person"
+                                                required
                                             ></select>
                                         </span>
                                     </div>
                                     <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Payment Terms' %}</label>
+                                    <label class="form-label">{% trans 'Select Payment Terms' %}<span class="field-required">(*)</span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -260,6 +261,7 @@
                                                     data-link-detail=""
                                                     data-method="GET"
                                                     name="payment_term"
+                                                    required
                                             ></select>
                                         </span>
                                     </div>

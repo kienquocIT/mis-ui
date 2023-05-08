@@ -340,7 +340,7 @@ function loadBoxQuotationTax(tax_id, box_id) {
                 'value': data[i].rate,
             }).replace(/"/g, "&quot;");
             eleBox.append(`<option value="${data[i].id}" data-value="${data[i].rate}">
-                            <span class="tax-title">${data[i].title}</span>
+                            <span class="tax-title">${data[i].rate} %</span>
                             <input type="hidden" class="data-info" value="${dataStr}">
                         </option>`)
         }
@@ -1197,6 +1197,8 @@ function setupDataProduct() {
                     rowData['tax'] = dataInfo.id;
                     rowData['product_tax_title'] = dataInfo.title;
                     rowData['product_tax_value'] = dataInfo.value;
+                } else {
+                    rowData['product_tax_value'] = 0;
                 }
             }
 
@@ -1283,6 +1285,8 @@ function setupDataCost() {
                     rowData['tax'] = dataInfo.id;
                     rowData['product_tax_title'] = dataInfo.title;
                     rowData['product_tax_value'] = dataInfo.value;
+                } else {
+                    rowData['product_tax_value'] = 0;
                 }
             }
 
@@ -1353,6 +1357,8 @@ function setupDataExpense() {
                     rowData['tax'] = dataInfo.id;
                     rowData['expense_tax_title'] = dataInfo.title;
                     rowData['expense_tax_value'] = dataInfo.value;
+                } else {
+                    rowData['expense_tax_value'] = 0;
                 }
             }
 

@@ -768,7 +768,7 @@ $(document).ready(function () {
             })
         }
         else {
-            $.fn.notifyPopup({description: "Missing value Banking Account."}, 'failure');
+            $.fn.notifyPopup({description: "Missing value Credit Card."}, 'failure');
         }
     })
 

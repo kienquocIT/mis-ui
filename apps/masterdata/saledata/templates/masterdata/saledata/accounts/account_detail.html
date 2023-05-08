@@ -243,7 +243,7 @@
                         <div class="tab-pane fade show active" id="tab_detail">
                             <div class="row mt-6">
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-8">
                                         <div class="form-group">
                                             <label class="label-field form-label required" for="account-manager-id">{% trans "Account Manager" %}</label>
                                             <select id="account-manager-id" name="account-manager"
@@ -255,6 +255,16 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="label-field form-label required" for="currency-id">{% trans "Currency" %}</label>
+                                            <select id="currency-id" name="currency"
+                                                    class="form-select"
+                                                    data-method="GET" disabled
+                                                    data-url="{% url "CurrencyListAPI" %}">
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-4">
@@ -263,6 +273,7 @@
                                             <select id="account-revenue-id" name="annual_revenue" class="form-select"
                                                     data-method="GET" disabled
                                                     data-url="">
+                                                <option value=""></option>
                                                 <option value="1-10 billions">{% trans "1-10 billions" %}</option>
                                                 <option value="10-20 billions">{% trans "10-20 billions" %}</option>
                                                 <option value="20-50 billions">{% trans "20-50 billions" %}</option>
@@ -278,6 +289,7 @@
                                             <select id="total-employees-id" name="total_employees" class="form-select"
                                                     data-method="GET" disabled
                                                     data-url="">
+                                                <option value=""></option>
                                                 <option value="< 20 people">{% trans "< 20 people" %}</option>
                                                 <option value="20-50 people">{% trans "20-50 people" %}</option>
                                                 <option value="50-200 people">{% trans "50-200 people" %}</option>
@@ -402,7 +414,7 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="label-field form-label required" for="payment-terms-id">{% trans "Payment Terms" %}</label>
+                                            <label class="label-field form-label" for="payment-terms-id">{% trans "Payment Terms" %}</label>
                                             <select id="payment-terms-id" name="payment_term_mapped"
                                                     class="form-select" disabled
                                                     data-method="GET"
@@ -412,7 +424,7 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="label-field form-label required" for="payment-terms-id">{% trans "Price List" %}</label>
+                                            <label class="label-field form-label" for="payment-terms-id">{% trans "Price List" %}</label>
                                             <select id="price-list-id" name="price_list_mapped"
                                                     class="form-select" disabled
                                                     data-method="GET"
@@ -424,10 +436,11 @@
                                 <div class="row mb-5">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="label-field form-label required" for="credit-limit-id">{% trans "Credit Limit" %}</label>
+                                            <label class="label-field form-label" for="credit-limit-id">{% trans "Credit Limit" %}</label>
                                             <input type="text" class="form-control input-can-edit" id="credit-limit-id" name="credit_limit" readonly>
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                                 <div class="row">
                                     <div class="p-1 bg-light bg-opacity-75">

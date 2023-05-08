@@ -169,17 +169,17 @@ $(document).ready(function () {
                     if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
                         $('#inp-organization').attr('checked', true);
                         $("#account-tax-code-label-id").addClass("required");
+                        $('#parent-account-div-id').prop('hidden', false);
                     }
                     if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
                         $('#inp-individual').prop('checked', true);
                         $("#account-tax-code-label-id").removeClass("required");
+                        $('#parent-account-div-id').prop('hidden', true);
                     }
                     $('#account-type-customer-type-div-id').prop('hidden', false);
-                    $('#parent-account-div-id').prop('hidden', false);
                 }
                 else {
                     $('#account-type-customer-type-div-id').prop('hidden', true);
-                    $('#parent-account-div-id').prop('hidden', true);
                 }
 
                 $('#edit-account-on').on('click', function () {
@@ -208,11 +208,8 @@ $(document).ready(function () {
                     $('.credit-card-select-default').prop('disabled', false);
                     $('.btn-del-credit-card').prop('hidden', false);
 
-                    $('#account-industry-id').select2();
                     $('#parent-account-id').select2();
                     $('#account-owner-id').select2();
-                    $('#account-revenue-id').select2();
-                    $('#total-employees-id').select2();
 
                     $('#shipping-city').select2();
                     $('#shipping-district').select2();
@@ -233,7 +230,9 @@ $(document).ready(function () {
 
                 loadParentAccount(data.parent_account, data.id);
 
-                loadAccountManager(data.manager.map(obj => obj.id))
+                loadAccountManager(data.manager.map(obj => obj.id));
+
+                loadCurrency(data.currency);
 
                 let current_owner = data.owner
                 loadAccountOwner(current_owner)
@@ -304,9 +303,35 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
+                    ele.append(`<option value="" selected></option>`)
                     if (data.hasOwnProperty('industry_list') && Array.isArray(data.industry_list)) {
                         data.industry_list.map(function (item) {
                             if (industry_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // loaf Currency
+    function loadCurrency(currency_mapped) {
+        let ele = $('#currency-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected></option>`)
+                    if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
+                        data.currency_list.map(function (item) {
+                            if (currency_mapped === item.id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
@@ -328,7 +353,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="0" selected></option>`)
+                    ele.append(`<option value="" selected></option>`)
                     if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                         data.payment_terms_list.map(function (item) {
                             if (payment_term_mapped === item.id) {
@@ -353,7 +378,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="0" selected></option>`)
+                    ele.append(`<option value="" selected></option>`)
                     if (data.hasOwnProperty('price_list') && Array.isArray(data.price_list)) {
                         data.price_list.map(function (item) {
                             if (price_list_mapped === item.id) {
@@ -378,7 +403,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="0" selected></option>`)
+                    ele.append(`<option value="" selected></option>`)
                     if (data.hasOwnProperty('countries') && Array.isArray(data.countries)) {
                         data.countries.map(function (item) {
                             if (country_mapped === item.id) {
@@ -459,11 +484,11 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
+                    ele.append(`<option value=""></option>`)
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
                         if (Object.keys(current_account_owner).length > 0) {
                             data.contact_list_not_map_account.push(current_account_owner);
                         }
-                        ele.append(`<option selected></option>`)
                         data.contact_list_not_map_account.map(function (item) {
                             if (item.id === current_account_owner.id) {
                                 ele.append(`<option data-mobile="`+ item.mobile +`" data-email="`+ item.email +`" data-job-title="`+ item.job_title +`" value="` + item.id + `" selected>` + item.fullname + `</option>`)
@@ -553,7 +578,7 @@ $(document).ready(function () {
 
         let select_box = $('#select-box-address')
         select_box.empty();
-        select_box.append(`<option value="0" selected></option>`)
+        select_box.append(`<option value="" selected></option>`)
         $('#list-shipping-address').children().each(function () {
             if ($(this).find('input').prop('checked') === true)
                 select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
@@ -568,7 +593,7 @@ $(document).ready(function () {
         let id_account = $(this).find('option:selected').val();
         let select_box = $('#select-box-address');
         select_box.empty();
-        select_box.append(`<option value="0" selected></option>`)
+        select_box.append(`<option value="" selected></option>`)
 
         if (id_account === '') {
             $('#button_add_new_billing_address').prop('hidden', true);
@@ -803,6 +828,10 @@ $(document).ready(function () {
             frm.dataForm['parent_account'] = null;
         }
 
+        if (frm.dataForm['credit_limit'] === '') {
+            frm.dataForm['credit_limit'] = null;
+        }
+
         if ($('#account-owner-id').val() === '') {
             frm.dataForm['account-owner'] = null;
         }
@@ -828,10 +857,7 @@ $(document).ready(function () {
                 'is_default': is_default
             })
         }
-
-        if (bank_account_information.length > 0) {
-            frm.dataForm['bank_accounts_information'] = bank_account_information;
-        }
+        frm.dataForm['bank_accounts_information'] = bank_account_information;
 
         let credit_cards_information = [];
         let list_card = $('#list-credit-card-information').children();
@@ -850,10 +876,7 @@ $(document).ready(function () {
                 'is_default': is_default
             })
         }
-
-        if (credit_cards_information.length > 0) {
-            frm.dataForm['credit_cards_information'] = credit_cards_information;
-        }
+        frm.dataForm['credit_cards_information'] = credit_cards_information;
 
         // console.log(frm.dataForm)
 

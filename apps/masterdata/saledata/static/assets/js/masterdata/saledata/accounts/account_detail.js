@@ -697,35 +697,40 @@ $(document).ready(function () {
         let bank_account_name = $('#bank-account-name-id').val();
         let bank_account_number = $('#bank-account-number-id').val();
         let bic_swift_code = $('#bic-swift-code-id').val();
-        let is_default = '';
-        if ($('#make-default-bank-account').is(':checked')) {
-            is_default = 'checked';
-        }
-        $('#list-bank-account-information').append(`<div class="card card-bank-account col-8 ml-3">
-                                        <span class="mt-2">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
-                                                </div>
-                                                <div class="col-6 text-right">
-                                                    <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
-                                                </div>
-                                            </div>
-                                        </span>
-                                        <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
-                                        <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
-                                        <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
-                                        <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
-                                        <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
-                                        <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
-                                    </div>`)
 
-        $('#modal-bank-account-information').hide();
+        if (country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '' && bic_swift_code !== '') {
+            let is_default = '';
+            if ($('#make-default-bank-account').is(':checked')) {
+                is_default = 'checked';
+            }
+            $('#list-bank-account-information').append(`<div class="card card-bank-account col-8 ml-3">
+                                            <span class="mt-2">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                                    </div>
+                                                    <div class="col-6 text-right">
+                                                        <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                            <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
+                                            <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
+                                            <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
+                                            <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
+                                            <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
+                                            <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
+                                        </div>`)
+            $('#modal-bank-account-information').hide();
 
-        // delete bank account item
-        $('.btn-del-bank-account').on('click', function () {
+            // delete bank account item
+            $('.btn-del-bank-account').on('click', function () {
             $(this).closest('.card').remove()
         })
+        }
+        else {
+            $.fn.notifyPopup({description: "Missing value Banking Account."}, 'failure');
+        }
     })
 
     // add new credit card
@@ -734,32 +739,37 @@ $(document).ready(function () {
         let credit_card_number = $('#credit-card-number-id').val();
         let credit_card_exp_date = $('#credit-card-exp-date').val();
         let credit_card_name = $('#credit-card-name-id').val();
-        let is_default = '';
-        if ($('#make-default-credit-card').is(':checked')) {
-            is_default = 'checked';
-        }
-        $('#list-credit-card-information').append(`<div class="card card-credit-card col-8 ml-3">
-                                        <span class="mt-2">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
-                                                </div>
-                                                <div class="col-6 text-right">
-                                                    <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
-                                                </div>
-                                            </div>
-                                        </span>
-                                        <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
-                                        <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
-                                        <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
-                                        <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
-                                    </div>`)
-        $('#modal-credit-card-information').hide();
 
-        // delete credit card item
-        $('.btn-del-credit-card').on('click', function () {
-            $(this).closest('.card').remove()
-        })
+        if (credit_card_type !== '' && credit_card_number !== '' && credit_card_exp_date !== '' && credit_card_name !== '') {
+            let is_default = '';
+            if ($('#make-default-credit-card').is(':checked')) {
+                is_default = 'checked';
+            }
+            $('#list-credit-card-information').append(`<div class="card card-credit-card col-8 ml-3">
+                                            <span class="mt-2">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
+                                                    </div>
+                                                    <div class="col-6 text-right">
+                                                        <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                            <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
+                                            <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
+                                            <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                            <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
+                                        </div>`)
+            $('#modal-credit-card-information').hide();
+            // delete credit card item
+            $('.btn-del-credit-card').on('click', function () {
+                $(this).closest('.card').remove()
+            })
+        }
+        else {
+            $.fn.notifyPopup({description: "Missing value Banking Account."}, 'failure');
+        }
     })
 
     /* Single table*/

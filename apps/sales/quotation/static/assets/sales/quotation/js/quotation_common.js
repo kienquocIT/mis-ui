@@ -516,7 +516,7 @@ function dataTableProduct(data, table_id) {
                     return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount">
+                                        <input type="text" class="form-control table-row-discount non-negative-number">
                                         <span class="input-suffix">%</span>
                                     </span>
                                 </div>
@@ -1402,7 +1402,12 @@ function setupDataSubmit(_form) {
     }
     _form.dataForm['status'] = $('#quotation-create-status').val();
     _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
-    _form.dataForm['total_product_discount_rate'] = $('#quotation-create-product-discount').val();
+    let totalProductDiscountRate = $('#quotation-create-product-discount').val();
+    if (totalProductDiscountRate) {
+        _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+    } else {
+        _form.dataForm['total_product_discount_rate'] = 0;
+    }
     _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
     _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
     _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();

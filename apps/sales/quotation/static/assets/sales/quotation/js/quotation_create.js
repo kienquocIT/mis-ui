@@ -5,6 +5,7 @@ $(function () {
     $(document).ready(function () {
 
         $(".select2").select2();
+        init_company_currency_config();
 
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -17,6 +18,7 @@ $(function () {
         loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
+        loadInitQuotationExpense('data-init-quotation-create-tables-expense');
 
         dataTableProduct([],'datable-quotation-create-product');
         dataTableCost([], 'datable-quotation-create-cost');
@@ -172,7 +174,7 @@ $(function () {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     elePrice.value = priceValRaw;
-                    $(elePrice).maskMoney('mask', priceValRaw);
+                    init_mask_money_ele($(elePrice));
                     commonCalculate(tableProduct, row, true, false, false);
                 }
             }
@@ -191,8 +193,9 @@ $(function () {
         $('#quotation-create-product-discount').on('change', function (e) {
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
-                commonCalculate(tableProduct, row, true, false, false)
+                calculate(row);
             }
+            updateTotal(tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
         });
 
 // Action on click button add expense
@@ -208,13 +211,15 @@ $(function () {
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             let addRow = tableExpense.DataTable().row.add({
+                'order': order,
+                'selectExpenseID': selectExpenseID,
                 'selectUOMID': selectUOMID,
-                'selectTaxID': selectTaxID,
-                'order': order
+                'selectTaxID': selectTaxID
             }).draw();
             let newRow = tableExpense.DataTable().row(addRow).node();
             let $newRow = $(newRow);
             init_mask_money_single($newRow);
+            loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
@@ -230,7 +235,7 @@ $(function () {
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                // loadDataProductSelect($(this));
+                loadDataProductSelect($(this));
             }
             commonCalculate(tableExpense, row, false, false, true);
         });
@@ -363,7 +368,7 @@ $(function () {
                             if (valueTaxSelected) {
                                 valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100);
                                 rowTaxAmount.value = valueTaxAmount;
-                                $(rowTaxAmount).maskMoney('mask', valueTaxAmount)
+                                init_mask_money_ele($(rowTaxAmount));
                             }
                         }
                     }
@@ -426,16 +431,22 @@ $(function () {
                 'customer',
                 'contact',
                 'sale_person',
+                'payment_term',
+                // total amount of products
                 'total_product_pretax_amount',
+                'total_product_discount_rate',
                 'total_product_discount',
                 'total_product_tax',
                 'total_product',
+                // total amount of costs
                 'total_cost_pretax_amount',
                 'total_cost_tax',
                 'total_cost',
+                // total amount of expenses
                 'total_expense_pretax_amount',
                 'total_expense_tax',
                 'total_expense',
+                // quotation tabs
                 'quotation_products_data',
                 'quotation_term_data',
                 'quotation_logistic_data',

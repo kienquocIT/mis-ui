@@ -257,4 +257,15 @@ $(function () {
 
     // init select method action
     Method.init();
+
+    // daterange for valid time
+    let $validTime = $('[name="valid_time"]')
+    $validTime.daterangepicker({
+                singleDatePicker: false,
+                timePicker: false,
+                showDropdowns: true,
+                // minYear: 1901,
+                // "cancelClass": "btn-secondary",
+                // maxYear: parseInt(moment().format('YYYY'), 10)
+            });
 });

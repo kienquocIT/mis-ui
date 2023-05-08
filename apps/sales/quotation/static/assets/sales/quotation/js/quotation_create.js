@@ -189,6 +189,13 @@ $(function () {
             commonCalculate(tableProduct, row, true, false, false);
         });
 
+// Check no negative number for input
+        $('#tab-content-quotation-product').on('change', '.non-negative-number', function(e) {
+            if (parseInt($(this).val()) < 0) {
+                $(this)[0].value = "";
+            }
+        });
+
 // Action on change total discount of product
         $('#quotation-create-product-discount').on('change', function (e) {
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {

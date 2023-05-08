@@ -1,8 +1,9 @@
 $(document).ready(function () {
 
     let ele_account_type = $('#section-account-type').html()
+    let ele_account_group = $('#section-account-group').html()
     let ele_industry = $('#section-industry').html()
-// load Data
+    // load Data
     "use strict";
     let config_account_type = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
@@ -46,6 +47,53 @@ $(document).ready(function () {
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
                 let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                return bt2;
+            }
+        },]
+    }
+    let config_account_group = {
+        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        ordering: false,
+        columnDefs: [{
+            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+        }],
+        order: [2, 'asc'],
+        language: {
+            search: "",
+            searchPlaceholder: "Search",
+            info: "_START_ - _END_ of _TOTAL_",
+            sLengthMenu: "View  _MENU_",
+            paginate: {
+                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
+                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
+            }
+        },
+        drawCallback: function () {
+            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
+            feather.replace();
+        },
+        data: [],
+        columns: [{
+            'render': (data, type, row, meta) => {
+                let currentId = "chk_sel_" + String(meta.row + 1)
+                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+            }
+        }, {
+            'data': 'code', render: (data, type, row, meta) => {
+                return `<a href="#"><span><b>` + row.code + `</b></span></a>`
+            }
+        }, {
+            'data': 'title', render: (data, type, row, meta) => {
+                return `<span><b>` + row.title + `</b></span>`
+            }
+        }, {
+            'data': 'description', 'render': (data, type, row, meta) => {
+                return `<span><b>` + row.description + `</b></span>`
+            }
+        }, {
+            'className': 'action-center', 'render': (data, type, row, meta) => {
+                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                 // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                 return bt2;
             }
@@ -114,7 +162,6 @@ $(document).ready(function () {
         }
     }
 
-
     let tb_account_type = $('#datatable-account-type-list');
     $.fn.callAjax(tb_account_type.attr('data-url'), tb_account_type.attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
@@ -128,6 +175,18 @@ $(document).ready(function () {
         initDataTable(config_account_type, '#datatable-account-type-list');
     },)
 
+    let tb_account_group = $('#datatable-account-group-list');
+    $.fn.callAjax(tb_account_group.attr('data-url'), tb_account_group.attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_group_list')) {
+                config_account_group['data'] = resp.data.account_group_list;
+            }
+            initDataTable(config_account_group, '#datatable-account-group-list');
+        }
+    }, (errs) => {
+        initDataTable(config_account_group, '#datatable-account-group-list');
+    },)
 
     let tb_industry = $('#datatable-industry-list');
     $.fn.callAjax(tb_industry.attr('data-url'), tb_industry.attr('data-method')).then((resp) => {
@@ -142,28 +201,29 @@ $(document).ready(function () {
         initDataTable(config_industry, '#datatable-industry-list');
     },)
 
-
     $('#btn-show-modal-create').on('click', function (){
         $('.modal-body input').val('');
     })
 
-
-//Switch view table
+    // Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')
         $(".lookup-data").hide()
         let id_tag = `#` + section
-        if(section === 'section-account-type'){
+        if (section === 'section-account-type') {
             $('#modal-lookup-data h5').text('Account Type');
         }
-        else{
+        if (section === 'section-account-group') {
+            $('#modal-lookup-data h5').text('Account Group');
+        }
+        if (section === 'section-industry') {
             $('#modal-lookup-data h5').text('Industry');
         }
         $('#form-create-lookup').attr('data-lookup', section)
         $(id_tag).show();
     })
 
-// submit form create lookup data
+    // submit form create lookup data
     let frm = $('#form-create-lookup');
     frm.submit(function (event) {
         event.preventDefault();
@@ -174,7 +234,11 @@ $(document).ready(function () {
         let data_url = ''
         if (lookup === 'section-account-type') {
             data_url = $('#form-create-lookup').attr('data-url-account-type');
-        } else if (lookup === 'section-industry') {
+        }
+        if (lookup === 'section-account-group') {
+            data_url = $('#form-create-lookup').attr('data-url-account-group');
+        }
+        if (lookup === 'section-industry') {
             data_url = $('#form-create-lookup').attr('data-url-industry');
         }
 
@@ -214,7 +278,24 @@ $(document).ready(function () {
                     }, (errs) => {
                         initDataTable(config_account_type, '#datatable-account-type-list');
                     },)
-                } else {
+                }
+                if (lookup === 'section-account-group') {
+                    $('#section-account-group').empty();
+                    $('#section-account-group').append(ele_account_group);
+                    let tb_account_group = $('#datatable-account-group-list');
+                    $.fn.callAjax(tb_account_group.attr('data-url'), tb_account_group.attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_group_list')) {
+                                config_account_group['data'] = resp.data.account_group_list;
+                                initDataTable(config_account_group, '#datatable-account-group-list');
+                            }
+                        }
+                    }, (errs) => {
+                        initDataTable(config_account_group, '#datatable-account-group-list');
+                    },)
+                }
+                if (lookup === 'section-industry') {
                     $('#section-industry').empty();
                     $('#section-industry').append(ele_industry);
                     let tb_industry = $('#datatable-industry-list');
@@ -234,7 +315,7 @@ $(document).ready(function () {
         )
     })
 
-// Select checkbox in table
+    // Select checkbox in table
     function selectAllCheckBox(id_table) {
         $(document).on('click', id_table + ` .check-select`, function () {
             if ($(this).is(":checked")) {
@@ -244,7 +325,6 @@ $(document).ready(function () {
                 $(id_table + ` .check-select-all`).prop('checked', false);
             }
         });
-
         $(document).on('click', id_table + ` .check-select-all`, function () {
             $(id_table + ` .check-select`).attr('checked', true);
             let table = $(id_table).DataTable();
@@ -268,20 +348,28 @@ $(document).ready(function () {
     }
 
     selectAllCheckBox('#datatable-account-type-list');
+    selectAllCheckBox('#datatable-account-group-list');
     selectAllCheckBox('#datatable-industry-list');
 
-    //show modal edit
+    // show modal edit
     $(document).on('click', '#datatable-account-type-list .edit-button, #datatable-industry-list .edit-button', function () {
         let frm_update = $('#form-update-masterdata')
-        let check_type = false;
+        let check_type = 0;
         let data_url;
         if ($(this).attr('data-type') === 'account_type') {
             $('#modal-update-data h5').text('Edit Account Type');
             data_url = frm_update.attr('data-url-account-type').replace(0, $(this).attr('data-id'))
-            check_type = true;
-        } else {
+            check_type = 1;
+        }
+        if ($(this).attr('data-type') === 'account_group') {
+            $('#modal-update-data h5').text('Edit Account Group');
+            data_url = frm_update.attr('data-url-account-group').replace(0, $(this).attr('data-id'))
+            check_type = 2;
+        }
+        if ($(this).attr('data-type') === 'industry') {
             $('#modal-update-data h5').text('Edit Industry');
             data_url = frm_update.attr('data-url-industry').replace(0, $(this).attr('data-id'))
+            check_type = 3;
         }
         $.fn.callAjax(data_url, 'GET').then(
             (resp) => {
@@ -335,7 +423,7 @@ $(document).ready(function () {
                     }
                 ).then(
                 (resp) => {// reload after save edit
-                    if (check_type) {
+                    if (check_type === 1) {
                         $('#section-account-type').empty();
                         $('#section-account-type').append(ele_account_type);
                         let tb_account_type = $('#datatable-account-type-list');
@@ -350,7 +438,24 @@ $(document).ready(function () {
                         }, (errs) => {
                             initDataTable(config_account_type, '#datatable-account-type-list');
                         },)
-                    } else {
+                    }
+                    if (check_type === 2) {
+                        $('#section-account-group').empty();
+                        $('#section-account-group').append(ele_account_group);
+                        let tb_account_group = $('#datatable-account-group-list');
+                        $.fn.callAjax(tb_account_group.attr('data-url'), tb_account_group.attr('data-method')).then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_group_list')) {
+                                    config_account_group['data'] = resp.data.account_group_list;
+                                    initDataTable(config_account_group, '#datatable-account-group-list');
+                                }
+                            }
+                        }, (errs) => {
+                            initDataTable(config_account_group, '#datatable-account-group-list');
+                        },)
+                    }
+                    if (check_type === 3) {
                         $('#section-industry').empty();
                         $('#section-industry').append(ele_industry);
                         let tb_industry = $('#datatable-industry-list');

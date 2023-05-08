@@ -23,24 +23,9 @@
                 </span>
         </a>
     </button>
-
-{#    <button id="save-account-draft" type="submit" form="form-create-account" style="background: none; border: none">#}
-{#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
-{#           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
-{#           data-bs-original-title="Save Draft">#}
-{#                <span class="icon">#}
-{#                    <span class="feather-icon">#}
-{#                        <i class="bi bi-save2"></i>#}
-{#                    </span>#}
-{#                </span>#}
-{#        </a>#}
-{#    </button>#}
-
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh">
             <span class="icon">
                 <span class="feather-icon">
                     <i data-feather="refresh-cw"></i>
@@ -55,35 +40,29 @@
         <div class="row">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-4 mt-5">
+                    <div class="col-2">
                         <div class="form-group">
-                            <div id="upload-area" class="form-control">{% trans "logo" %}</div>
+                            <div id="upload-area" class="form-control"><i class="bi bi-person-circle"></i></div>
                             <input id="input-avatar" type="file" class="hidden" name="avatar">
                         </div>
                     </div>
-                    <div class="col-8">
+                    <div class="col-10">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}
-                                    <span class="field-required">*</span>
-                                </label>
+                                <label class="form-label required">{% trans "Name" %}</label>
                                 <input id="inp-account-name" class="form-control inp-required"
-                                       placeholder="{% trans "Company ABC" %}" name="name">
+                                       placeholder="{% trans "Cong ty phan mem MT Solutions" %}" name="name">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Account Code" %}
-                                    <span class="field-required">*</span>
-                                </label>
-                                <input id="inp-account-code" class="form-control" placeholder="{% trans "CODE" %}" name="code"
+                            <div class="form-group col-5">
+                                <label class="form-label required">{% trans "Account Code" %}</label>
+                                <input id="inp-account-code" class="form-control" placeholder="{% trans "MT001" %}" name="code"
                                        oninput="this.value=this.value.toUpperCase()">
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
+                            <div class="form-group col-7">
                                 <label class="form-label">{% trans "Website" %}</label>
-                                <input class="form-control" placeholder="{% trans "www.xyz.com" %}" name="website">
+                                <input class="form-control" placeholder="{% trans "www.mt001.com" %}" name="website">
                             </div>
                         </div>
                     </div>
@@ -91,9 +70,9 @@
             </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-10">
                         <div class="row">
-                            <div class="form-group">
+                            <div class="form-group col-7">
                                 <label class="form-label">{% trans "Account Owner" %}</label>
                                 <select id="select-box-contact" name="owner" class="form-select"
                                         data-method="GET"
@@ -101,17 +80,27 @@
                                         data-url-detail="{% url "ContactDetailAPI" pk=0 %}">
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
+                            <div class="form-group col-5">
                                 <label class="form-label">{% trans "Job Title" %}</label>
                                 <input class="form-control" type="text" id="job_title" readonly>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Account Manager" %}</label>
+                                <select id="select-box-acc-manager" name=""
+                                        class="form-control select2 select2-multiple select2-required"
+                                        multiple
+                                        data-method="GET"
+                                        data-url="{% url "EmployeeListAPI" %}"
+                                        data-url-accounts = {% url "AccountsMapEmployeeAPI" %}>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <div class="form-group mt-5">
-                            <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <div id="upload-photo" class="form-control"><i class="bi bi-person-circle"></i></div>
                             <input id="input-photo" type="file" class="hidden" name="photo">
                         </div>
                     </div>
@@ -119,174 +108,173 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Account Type" %}
-                        <span class="field-required">*</span>
-                    </label>
-                    <select id="select-box-acc-type" name=""
-                            class="form-control select2 select2-multiple select2-required"
-                            multiple
-                            data-method="GET"
-                            data-url="{% url "AccountTypeListAPI" %}">
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Account Manager" %}
-                        <span class="field-required">*</span>
-                    </label>
-                    <select id="select-box-acc-manager" name=""
-                            class="form-control select2 select2-multiple select2-required"
-                            multiple
-                            data-method="GET"
-                            data-url="{% url "EmployeeListAPI" %}"
-                            data-url-accounts = {% url "AccountsMapEmployeeAPI" %}>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Parent Account" %}</label>
-                    <select id="select-box-parent-account" name="parent_account" class="form-select"
-                            data-method="GET"
-                            data-url="{% url "AccountListAPI" %}" disabled>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4 mt-2">
-                <div class="row radio-btn">
-                    <div class="col-6 text-center">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual"
-                               disabled checked>
-                        <label class="form-check-label" for="inp-individual">
-                            {% trans "individual" %}
-                        </label>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Account Type" %}</label>
+                                <select id="select-box-acc-type" name=""
+                                        class="form-control select2 select2-multiple select2-required"
+                                        multiple
+                                        data-method="GET"
+                                        data-url="{% url "AccountTypeListAPI" %}">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="row radio-btn">
+                                <div class="col-5 ml-4">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual"
+                                           disabled checked>
+                                    <label class="form-check-label" for="inp-individual">
+                                        {% trans "individual" %}
+                                    </label>
+                                </div>
+                                <div class="col-6 ml-2">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-organization"
+                                           disabled>
+                                    <label class="form-check-label" for="inp-organization">
+                                        {% trans "organization" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6 text-center">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-organization"
-                               disabled>
-                        <label class="form-check-label" for="inp-organization">
-                            {% trans "organization" %}
-                        </label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Parent Account" %}</label>
+                            <select id="select-box-parent-account" name="parent_account" class="form-select"
+                                    data-method="GET"
+                                    data-url="{% url "AccountListAPI" %}" disabled>
+                            </select>
+                        </div>
                     </div>
-
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
-                    <input type="text" class="form-control" name="tax_code" id="inp-tax-code"
-                           placeholder="Input tax code">
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Industry" %}
-                        <span class="field-required">*</span>
-                    </label>
-                    <select id="select-box-industry" name="industry" class="form-select select-required"
-                            data-method="GET"
-                            data-url="{% url "IndustryListAPI" %}">
-                    </select>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Annual Revenue" %}</label>
-                    <select id="select-box-annual-revenue" name="annual_revenue" class="form-select"
-                            data-method="GET"
-                            data-url="">
-                        <option></option>
-                        <option value="1-10 billions">{% trans "1-10 billions" %}</option>
-                        <option value="10-20 billions">{% trans "10-20 billions" %}</option>
-                        <option value="20-50 billions">{% trans "20-50 billions" %}</option>
-                        <option value="50-200 billions">{% trans "50-200 billions" %}</option>
-                        <option value="200-1000 billions">{% trans "200-1000 billions" %}</option>
-                        <option value="> 1000 billions">{% trans "> 1000 billions" %}</option>
-                    </select>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
+                                <input type="text" class="form-control" name="tax_code" id="inp-tax-code"
+                                       placeholder="Input tax code">
+                            </div>
+                            <div class="form-group col-7">
+                                <label class="form-label required">{% trans "Industry" %}</label>
+                                <select id="select-box-industry" name="industry" class="form-select select-required"
+                                        data-method="GET"
+                                        data-url="{% url "IndustryListAPI" %}">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label class="form-label">{% trans "Annual Revenue" %}</label>
+                                <select id="select-box-annual-revenue" name="annual_revenue" class="form-select"
+                                        data-method="GET"
+                                        data-url="">
+                                    <option></option>
+                                    <option value="1-10 billions">{% trans "1-10 billions" %}</option>
+                                    <option value="10-20 billions">{% trans "10-20 billions" %}</option>
+                                    <option value="20-50 billions">{% trans "20-50 billions" %}</option>
+                                    <option value="50-200 billions">{% trans "50-200 billions" %}</option>
+                                    <option value="200-1000 billions">{% trans "200-1000 billions" %}</option>
+                                    <option value="> 1000 billions">{% trans "> 1000 billions" %}</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-7">
+                                <label class="form-label required">{% trans "Total Employees" %}</label>
+                                <select id="select-box-total-emp" name="total_employees" class="form-select select-required"
+                                        data-method="GET"
+                                        data-url="">
+                                    <option selected></option>
+                                    <option value="< 20 people">{% trans "< 20 people" %}</option>
+                                    <option value="20-50 people">{% trans "20-50 people" %}</option>
+                                    <option value="50-200 people">{% trans "50-200 people" %}</option>
+                                    <option value="200-500 people">{% trans "200-500 people" %}</option>
+                                    <option value="> 500 people">{% trans "> 500 people" %}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Total Employees" %}
-                        <span class="field-required">*</span>
-                    </label>
-                    <select id="select-box-total-emp" name="total_employees" class="form-select select-required"
-                            data-method="GET"
-                            data-url="">
-                        <option selected></option>
-                        <option value="< 20 people">{% trans "< 20 people" %}</option>
-                        <option value="20-50 people">{% trans "20-50 people" %}</option>
-                        <option value="50-200 people">{% trans "50-200 people" %}</option>
-                        <option value="200-500 people">{% trans "200-500 people" %}</option>
-                        <option value="> 500 people">{% trans "> 500 people" %}</option>
-                    </select>
+            <div class="col-6">
+                <div class="row">
+                    <div class="form-group col-10">
+                        <label class="form-label required">{% trans "Account Group" %}</label>
+                        <select id="select-box-account-group" name="account_group" class="form-select"
+                                data-method="GET"
+                                data-url="{% url "AccountGroupListAPI" %}">
+                        </select>
+                    </div>
+                    <div class="col-2"></div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Phone Number" %}</label>
-                    <input type="text" class="form-control" name="phone" placeholder="+843756323455">
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                    <label class="form-label">{% trans "Email" %}</label>
-                    <input type="text" class="form-control" name="email" placeholder="abc@gmail.com" id="inp-email">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label class="form-label">{% trans "Phone Number" %}</label>
+                                <input type="text" class="form-control" name="phone" placeholder="+843756323455">
+                            </div>
+                            <div class="form-group col-7">
+                                <label class="form-label">{% trans "Email" %}</label>
+                                <input type="text" class="form-control" name="email" placeholder="abc@gmail.com" id="inp-email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Address -->
-        <div class="w-100 p-1 bg-light mt-3">
+        <!-- Shipping Address -->
+        <div class="w-100 p-1 bg-light mt-10">
             <h5>{% trans "Shipping Address" %}</h5>
         </div>
         <div class="row mt-3">
-            {#            <button type="button"#}
-            {#                    style="background: none;border: none; color: #007D88" class="text-left mb-3">#}
-            {#                <span id="add-shipping-address-btn" data-bs-toggle="tooltip"#}
-            {#                      data-bs-placement="bottom"#}
-            {#                      title="{% trans 'Add Shipping Address' %}">#}
-            {#                    <i class="fas fa-plus-circle"></i>#}
-            {#                    {% trans 'Add Address' %}#}
-            {#                </span>#}
-            {#            </button>#}
             <div class="form-group">
                 <div class="row">
-                    <div class="col-4 text-left">
+                    <div class="col-5 text-left">
                         <button data-bs-toggle="modal" data-bs-target="#modal-shipping-address" type="button"
                                 style="background: none;border: none; color: #007D88">
                             <span id="edit-shipping-address-btn" data-bs-toggle="tooltip"
                                   data-bs-placement="bottom"
                                   title="{% trans 'Add new shipping address' %}">
-{#                                <i class="bi bi-pencil-square"></i>#}
-{#                                {% trans 'Edit' %}#}
                                 <i class="fas fa-plus-circle"></i>
                                 {% trans 'Add new shipping address' %}
                             </span>
                         </button>
                     </div>
-                    <div id="list-shipping-address" class="col-8"></div>
+                    <div id="list-shipping-address" class="col-7"></div>
                 </div>
             </div>
         </div>
+        <!-- End Shipping Address -->
 
+        <!-- Billing Address -->
         <div class="w-100 p-1 bg-light mt-3">
             <h5>{% trans "Billing/Invoice Address" %}</h5>
         </div>
         <div class="row mt-3">
             <div class="form-group">
                 <div class="row">
-                    <div class="col-4 text-left">
+                    <div class="col-5 text-left">
                         <button data-bs-toggle="modal" data-bs-target="#modal-billing-address" type="button"
                                 style="background: none;border: none; color: #007D88">
                             <span id="edit-billing-address-btn" data-bs-toggle="tooltip"
@@ -297,11 +285,11 @@
                             </span>
                         </button>
                     </div>
-                    <div id="list-billing-address" class="col-8"></div>
+                    <div id="list-billing-address" class="col-7"></div>
                 </div>
             </div>
         </div>
-        <!-- End Address -->
+        <!-- End Billing Address -->
 
         <!-- Contact -->
         <div class="w-100 p-1 bg-light mt-3">
@@ -336,6 +324,7 @@
         </div>
         <!-- End Contact -->
     </form>
+
     <!-- Modal Shipping Address -->
     <div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenter" aria-hidden="true">
@@ -477,7 +466,7 @@
     </div>
     <!-- End Modal Billing Address-->
 
-    <!--Offcanvas Add Contact-->
+    <!-- Off canvas Add Contact-->
     <div class="offcanvas offcanvas-end w-70 mt-9" tabindex="-1" id="offcanvasRight"
          aria-labelledby="offcanvasTopLabel">
         <div class="offcanvas-header">
@@ -523,7 +512,7 @@
             </div>
         </div>
     </div>
-    <!-- Offcanvas Add Contact-->
+    <!-- Off canvas Add Contact-->
 
     <!-- Modal Add new Contact -->
     <div class="modal fade" id="modal-add-new-contact" tabindex="-1" role="dialog"
@@ -599,7 +588,7 @@
             </div>
         </div>
     </div>
-    <!-- End modal add new Contact -->
+    <!-- End modal Add new Contact -->
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

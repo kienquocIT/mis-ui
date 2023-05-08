@@ -7,7 +7,6 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['account_detail'];
-                console.log(data);
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
                 $('#account-website-id').val(data.website);
@@ -21,12 +20,14 @@ $(document).ready(function () {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
                                 <label>`+ data.shipping_address[i] +`</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                     else {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
                                 <label>`+ data.shipping_address[i] +`</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                 }
@@ -39,16 +40,90 @@ $(document).ready(function () {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
                                 <label>`+ billing_address + `</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                     else {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                 <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
                                 <label>`+ billing_address + `</label>
+                                <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                            </div>`;
                     }
                 }
                 $('#list-billing-address').html(list_billing_address)
+
+                let list_bank_accounts_html = ``
+                for (let i = 0; i < data.bank_accounts_information.length; i++) {
+                    let country_id = data.bank_accounts_information[i].country_id;
+                    let bank_name = data.bank_accounts_information[i].bank_name;
+                    let bank_code = data.bank_accounts_information[i].bank_code;
+                    let bank_account_name = data.bank_accounts_information[i].bank_account_name;
+                    let bank_account_number = data.bank_accounts_information[i].bank_account_number;
+                    let bic_swift_code = data.bank_accounts_information[i].bic_swift_code;
+                    let is_default = '';
+                    if (data.bank_accounts_information[i].is_default) {
+                        is_default = 'checked';
+                    }
+                    list_bank_accounts_html += `<div class="card card-bank-account col-8 ml-3">
+                                    <span class="mt-2">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a class="btn-del-bank-account" hidden href="#"><i class="bi bi-x"></i></a>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <input class="form-check-input ratio-select-bank-account-default" disabled type="radio" name="bank-account-select-default"` + is_default + `>
+                                            </div>
+                                        </div>
+                                    </span>
+                                    <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
+                                    <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
+                                    <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
+                                    <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
+                                    <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
+                                    <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
+                                </div>`
+                }
+                $('#list-bank-account-information').html(list_bank_accounts_html);
+
+                let list_credit_cards_html = ``
+                for (let i = 0; i < data.credit_cards_information.length; i++) {
+                    let credit_card_type = data.credit_cards_information[i].credit_card_type;
+                    let credit_card_number = data.credit_cards_information[i].credit_card_number;
+                    let credit_card_name = data.credit_cards_information[i].credit_card_name;
+                    let credit_card_exp_date = data.credit_cards_information[i].expired_date;
+                    let is_default = '';
+                    if (data.credit_cards_information[i].is_default) {
+                        is_default = 'checked';
+                    }
+                    list_credit_cards_html += `<div class="card card-credit-card col-8 ml-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-credit-card" hidden href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input credit-card-select-default" disabled type="radio" name="credit-card-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
+                                        <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
+                                        <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                        <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
+                                    </div>`
+                }
+                $('#list-credit-card-information').html(list_credit_cards_html);
+
+                // delete bank account item
+                $('.btn-del-bank-account').on('click', function () {
+                    $(this).closest('.card').remove()
+                })
+
+                // delete credit card item
+                $('.btn-del-credit-card').on('click', function () {
+                    $(this).closest('.card').remove()
+                })
 
                 function load_contact_mapped(contact_mapped) {
                     if (!$.fn.DataTable.isDataTable('#datatable_contact_mapped_list')) {
@@ -89,30 +164,29 @@ $(document).ready(function () {
                 load_contact_mapped(data.contact_mapped);
 
                 loadAccountType(data.account_type.map(obj => obj.id));
-                let account_type_view_html = '';
-                let account_type_title_list = data.account_type.map(obj => obj.title);
-                for (let i = 0; i < account_type_title_list.length; i++) {
-                    account_type_view_html += `<span class="badge badge-soft-red badge-outline mr-1 mt-1">` + account_type_title_list[i] + `</span>`
-                }
-                $('#account-type-view').html(account_type_view_html)
 
-                if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
-                    $('#inp-organization').attr('checked', true);
-                    $("#account-tax-code-label-id").addClass("required");
-                }
-                else {
+                if ($.inArray("Customer", data.account_type.map(obj => obj.title)) !== -1) {
+                    if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
+                        $('#inp-organization').attr('checked', true);
+                        $("#account-tax-code-label-id").addClass("required");
+                    }
                     if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
                         $('#inp-individual').prop('checked', true);
+                        $("#account-tax-code-label-id").removeClass("required");
                     }
-                    else {
-                        $('#account-type-customer-type-div-id').prop('hidden', true);
-                        $('#account-type-div').addClass('mb-10');
-                    }
-
+                    $('#account-type-customer-type-div-id').prop('hidden', false);
+                    $('#parent-account-div-id').prop('hidden', false);
+                }
+                else {
+                    $('#account-type-customer-type-div-id').prop('hidden', true);
                     $('#parent-account-div-id').prop('hidden', true);
                 }
 
                 $('#edit-account-on').on('click', function () {
+                    $('.select2-selection').css({'border': 'solid #aaa 1px', 'background': 'none'});
+                    $('#account-type-id').prop('disabled', false);
+                    $('#account-manager-id').prop('disabled', false);
+
                     $('.form-select').prop('disabled', false);
                     $('.input-can-edit').prop('readonly', false);
                     $('.form-check-input').prop('disabled', false);
@@ -124,6 +198,15 @@ $(document).ready(function () {
                     $('#save-account-on').prop('hidden', false);
                     $('#shipping-address-btn').prop('hidden', false);
                     $('#billing-address-btn').prop('hidden', false);
+                    $('#bank-account-information-btn').prop('hidden', false);
+                    $('#credit-card-information-btn').prop('hidden', false);
+                    $('.del-address-item').prop('hidden', false);
+
+                    $('.bank-account-select-default').prop('disabled', false);
+                    $('.btn-del-bank-account').prop('hidden', false);
+
+                    $('.credit-card-select-default').prop('disabled', false);
+                    $('.btn-del-credit-card').prop('hidden', false);
 
                     $('#account-industry-id').select2();
                     $('#parent-account-id').select2();
@@ -136,8 +219,11 @@ $(document).ready(function () {
                     $('#shipping-ward').select2();
 
                     $('#select-box-account-name').select2();
-                    $('#select-box-address').select2();
-                    $('.select2').show();
+                })
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).parent().remove();
                 })
 
                 loadIndustry(data.industry);
@@ -148,17 +234,23 @@ $(document).ready(function () {
                 loadParentAccount(data.parent_account, data.id);
 
                 loadAccountManager(data.manager.map(obj => obj.id))
-                let account_manager_view_html = '';
-                let account_manager_title_list = data.manager.map(obj => obj.fullname);
-                for (let i = 0; i < account_manager_title_list.length; i++) {
-                    account_manager_view_html += `<span class="badge badge-soft-primary badge-outline mr-1 mt-1">` + account_manager_title_list[i] + `</span>`
-                }
-                $('#account-manager-view').html(account_manager_view_html)
 
                 let current_owner = data.owner
                 loadAccountOwner(current_owner)
 
-                $('.select2').hide();
+                loadAccountGroup(data.account_group);
+
+                loadPaymentTerms(data.payment_term_mapped);
+
+                loadPriceList(data.price_list_mapped);
+
+                loadCountries('country_mapped');
+
+                $('#credit-limit-id').val(data.credit_limit);
+
+                $('#account-type-id').prop('disabled', true);
+                $('#account-manager-id').prop('disabled', true);
+                $('.select2-selection').css({'border': 'none', 'background': '#f7f7f7'});
             }
         })
 
@@ -194,11 +286,9 @@ $(document).ready(function () {
         })
 
         if (selected_acc_type.length > 0) {
-            $('#account-type-div').removeClass('mb-10');
             $('#parent-account-div-id').attr('hidden', false);
             $('#account-type-customer-type-div-id').attr('hidden', false);
         } else {
-            $('#account-type-div').addClass('mb-10');
             $('#parent-account-div-id').attr('hidden', true);
             $('#account-type-customer-type-div-id').attr('hidden', true);
         }
@@ -217,6 +307,81 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('industry_list') && Array.isArray(data.industry_list)) {
                         data.industry_list.map(function (item) {
                             if (industry_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Payment Terms SelectBox
+    function loadPaymentTerms(payment_term_mapped) {
+        let ele = $('#payment-terms-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="0" selected></option>`)
+                    if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+                        data.payment_terms_list.map(function (item) {
+                            if (payment_term_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Price List SelectBox
+    function loadPriceList(price_list_mapped) {
+        let ele = $('#price-list-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="0" selected></option>`)
+                    if (data.hasOwnProperty('price_list') && Array.isArray(data.price_list)) {
+                        data.price_list.map(function (item) {
+                            if (price_list_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Countries SelectBox
+    function loadCountries(country_mapped) {
+        let ele = $('#country-select-box-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="0" selected></option>`)
+                    if (data.hasOwnProperty('countries') && Array.isArray(data.countries)) {
+                        data.countries.map(function (item) {
+                            if (country_mapped === item.id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
@@ -312,6 +477,32 @@ $(document).ready(function () {
         )
     }
 
+    // load Account Group SelectBox
+    function loadAccountGroup(account_group_id) {
+        let ele = $('#account-group-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('account_group_list') && Array.isArray(data.account_group_list)) {
+                        ele.append(`<option value="" selected></option>`)
+                        data.account_group_list.map(function (item) {
+                            if (item.id === account_group_id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            }
+                            else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
+                }
+            }
+        )
+    }
+
     // load data for Shipping address modal
     $('#edit-shipping-address').on('click', function () {
         if ($('#list-shipping-address input').length === 0)
@@ -371,6 +562,64 @@ $(document).ready(function () {
         });
     })
 
+    // button event change select-box-account-name in modal billing address
+    $('#select-box-account-name').on('change', function () {
+        $('#edited-billing-address').val('');
+        let id_account = $(this).find('option:selected').val();
+        let select_box = $('#select-box-address');
+        select_box.empty();
+        select_box.append(`<option value="0" selected></option>`)
+
+        if (id_account === '') {
+            $('#button_add_new_billing_address').prop('hidden', true);
+            $('#inp-tax-code-address').val($('#inp-tax-code').val());
+            $('#inp-email-address').val($('#inp-email').val());
+
+            $('#list-shipping-address').children().each(function () {
+                if ($(this).find('input').prop('checked') === true)
+                    select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+                else
+                    select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+            });
+        } else {
+            $('#button_add_new_billing_address').prop('hidden', false);
+            let url = $(this).attr('data-url').replace(0, id_account);
+            let method = $(this).attr('data-method');
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('account_detail')) {
+                            $('#inp-email-address').val(data.account_detail.email);
+                            $('#inp-tax-code-address').val(data.account_detail.tax_code);
+                            data.account_detail.shipping_address.map(function (item) {
+                                $('#select-box-address').append(`<option value="` + item + `">` + item + `</option>`)
+                            })
+                        }
+                    }
+                }
+            )
+        }
+    })
+
+    // process address
+    $('#select-box-address').on('change', function () {
+        $('#edited-billing-address').val($(this).find('option:selected').text());
+    })
+
+    // click on edit billing address btn
+    $('#button_add_new_billing_address').on('click', function () {
+        if ($('#button_add_new_billing_address i').attr('class') === 'fas fa-plus-circle') {
+            $(this).html(`<i class="bi bi-backspace-fill"></i> Select`);
+            $('#select-box-address').prop('hidden', true);
+            $('#edited-billing-address').prop('hidden', false);
+        } else {
+            $(this).html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
+            $('#select-box-address').prop('hidden', false);
+            $('#edited-billing-address').prop('hidden', true);
+        }
+    })
+
     // ratio individual onchange
     $('#inp-individual').on('change', function () {
         $('#parent-account-div-id').prop('hidden', true);
@@ -390,6 +639,110 @@ $(document).ready(function () {
         $('#parent-account-div-id').prop('hidden', false);
         $("#account-tax-code-label-id").addClass("required");
     })
+
+    // add default item bank first
+    $('#edit-bank-account-information').on('click', function () {
+        if ($('#list-bank-account-information input').length === 0) {
+            $('#make-default-bank-account').prop('checked', true);
+            $('#make-default-bank-account').prop('disabled', true);
+        }
+        else {
+            $('#make-default-bank-account').prop('checked', false);
+            $('#make-default-bank-account').prop('disabled', false);
+        }
+    })
+
+    // add default item credit card first
+    $('#edit-credit-card-information').on('click', function () {
+        if ($('#list-credit-card-information input').length === 0) {
+            $('#make-default-credit-card').prop('checked', true);
+            $('#make-default-credit-card').prop('disabled', true);
+        }
+        else {
+            $('#make-default-credit-card').prop('checked', false);
+            $('#make-default-credit-card').prop('disabled', false);
+        }
+    })
+
+    // add new bank account
+    $('#save-changes-modal-bank-account').on('click', function () {
+        let country_id = $('#country-select-box-id').val();
+        let bank_name = $('#bank-name-id').val();
+        let bank_code = $('#bank-code-id').val();
+        let bank_account_name = $('#bank-account-name-id').val();
+        let bank_account_number = $('#bank-account-number-id').val();
+        let bic_swift_code = $('#bic-swift-code-id').val();
+        let is_default = '';
+        if ($('#make-default-bank-account').is(':checked')) {
+            is_default = 'checked';
+        }
+        $('#list-bank-account-information').append(`<div class="card card-bank-account col-8 ml-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
+                                        <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
+                                        <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
+                                        <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
+                                        <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
+                                        <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
+                                    </div>`)
+
+        $('#modal-bank-account-information').hide();
+
+        // delete bank account item
+        $('.btn-del-bank-account').on('click', function () {
+            $(this).closest('.card').remove()
+        })
+    })
+
+    // add new credit card
+    $('#save-changes-modal-credit-card').on('click', function () {
+        let credit_card_type = $('#credit-card-type-select-box-id').val();
+        let credit_card_number = $('#credit-card-number-id').val();
+        let credit_card_exp_date = $('#credit-card-exp-date').val();
+        let credit_card_name = $('#credit-card-name-id').val();
+        let is_default = '';
+        if ($('#make-default-credit-card').is(':checked')) {
+            is_default = 'checked';
+        }
+        $('#list-credit-card-information').append(`<div class="card card-credit-card col-8 ml-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
+                                        <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
+                                        <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                        <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
+                                    </div>`)
+        $('#modal-credit-card-information').hide();
+
+        // delete credit card item
+        $('.btn-del-credit-card').on('click', function () {
+            $(this).closest('.card').remove()
+        })
+    })
+
+    /* Single table*/
+    $("#credit-card-exp-date").datepicker( {
+        format: "mm/yyyy",
+        startView: "months",
+        minViewMode: "months",
+    });
 
     // send data to update
     let frm = $('#form-detail-update-account')
@@ -452,6 +805,54 @@ $(document).ready(function () {
 
         if ($('#account-owner-id').val() === '') {
             frm.dataForm['account-owner'] = null;
+        }
+
+        let bank_account_information = [];
+        let list_bank = $('#list-bank-account-information').children();
+        for (let i = 0; i < list_bank.length; i++) {
+            let country_id = $(list_bank[i]).find('a.country-id-label').text();
+            let bank_name = $(list_bank[i]).find('a.bank-name-label').text();
+            let bank_code = $(list_bank[i]).find('a.bank-code-label').text();
+            let bank_account_name = $(list_bank[i]).find('a.bank-account-name-label').text();
+            let bank_account_number = $(list_bank[i]).find('a.bank-account-number-label').text();
+            let bic_swift_code = $(list_bank[i]).find('a.bic-swift-code-label').text();
+            let is_default = $(list_bank[i]).find('input[type=radio]').is(':checked');
+
+            bank_account_information.push({
+                'country_id': country_id,
+                'bank_name': bank_name,
+                'bank_code': bank_code,
+                'bank_account_name': bank_account_name,
+                'bank_account_number': bank_account_number,
+                'bic_swift_code': bic_swift_code,
+                'is_default': is_default
+            })
+        }
+
+        if (bank_account_information.length > 0) {
+            frm.dataForm['bank_accounts_information'] = bank_account_information;
+        }
+
+        let credit_cards_information = [];
+        let list_card = $('#list-credit-card-information').children();
+        for (let i = 0; i < list_card.length; i++) {
+            let credit_card_type = $(list_card[i]).find('a.credit_card_type').text();
+            let credit_card_number = $(list_card[i]).find('a.credit_card_number').text();
+            let credit_card_name = $(list_card[i]).find('a.credit_card_name').text();
+            let expired_date = $(list_card[i]).find('a.expired_date').text();
+            let is_default = $(list_card[i]).find('input[type=radio]').is(':checked');
+
+            credit_cards_information.push({
+                'credit_card_type': credit_card_type,
+                'credit_card_number': credit_card_number,
+                'credit_card_name': credit_card_name,
+                'expired_date': expired_date,
+                'is_default': is_default
+            })
+        }
+
+        if (credit_cards_information.length > 0) {
+            frm.dataForm['credit_cards_information'] = credit_cards_information;
         }
 
         // console.log(frm.dataForm)

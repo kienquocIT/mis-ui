@@ -39,6 +39,22 @@ function loadTotal(data, pretaxID, taxID, totalID, discountID = null, is_product
     }
 }
 
+function init_mask_money_detail(ele) {
+    $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
+        if (currencyConfig) {
+            ele.find('.mask-money').initInputCurrency(currencyConfig);
+            ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
+        } else throw  Error('Currency config is not found.')
+    });
+}
+
+function maskMoneyData() {
+    init_mask_money_detail($('#tab_block_3'));
+    init_mask_money_detail($('#tab_block_6'));
+    init_mask_money_detail($('#tab_block_7'));
+}
+
+
 function loadDetailQuotation(data) {
     if (data.title) {
         document.getElementById('quotation-create-title').value = data.title
@@ -70,18 +86,15 @@ function loadDetailQuotation(data) {
     }
     // product totals
     loadTotal(data, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount', true, false, false);
-    init_mask_money_single($('#quotation-tab-product-totals'));
     loadTotal(data, 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total', null, false, true, false);
-    init_mask_money_single($('#quotation-tab-cost-totals'));
     loadTotal(data, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total', null, false, false, true);
-    init_mask_money_single($('#quotation-tab-expense-totals'));
 }
 
 $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_detail');
-        init_company_currency_config();
+        let dataTableClass = new dataTableHandle();
 
         // call ajax get info quotation detail
         $.fn.callAjax($form.data('url'), 'GET')
@@ -90,15 +103,14 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         loadDetailQuotation(data);
-                        dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
-                        init_mask_money_single($('#tab_block_3'));
-                        dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
-                        init_mask_money_single($('#tab_block_6'));
-                        dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
-                        init_mask_money_single($('#tab_block_7'));
+                        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
+                        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
+                        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
                     }
                 }
             )
+
+        maskMoneyData();
 
 
     });

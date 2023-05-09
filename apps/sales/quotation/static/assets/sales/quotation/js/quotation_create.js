@@ -7,6 +7,7 @@ $(function () {
         let loadDataClass = new loadDataHandle();
         let dataTableClass = new dataTableHandle();
         let calculateClass = new calculateCaseHandle();
+        let submitClass = new submitHandle();
 
         $(".select2").select2();
         init_company_currency_config();
@@ -67,7 +68,7 @@ $(function () {
                 loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
-            loadInformationSelectBox($(this));
+            loadDataClass.loadInformationSelectBox($(this));
         });
 
 // Action on click dropdown customer
@@ -81,10 +82,10 @@ $(function () {
         boxCustomer.on('change', function (e) {
             let optionSelected = boxCustomer[0].options[boxCustomer[0].selectedIndex];
             if (optionSelected) {
-                loadShippingBillingCustomer(modalShipping, modalBilling);
+                loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling);
                 if (optionSelected.querySelector('.data-default')) {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
-                    loadShippingBillingCustomer(modalShipping, modalBilling, data);
+                    loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling, data);
                     if (data.id && data.owner) {
                         loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
                     }
@@ -92,7 +93,7 @@ $(function () {
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
                 }
             }
-            loadInformationSelectBox($(this));
+            loadDataClass.loadInformationSelectBox($(this));
         });
 
 // Action on click dropdown contact
@@ -104,12 +105,12 @@ $(function () {
 
 // Action on change dropdown contact
         boxContact.on('change', function (e) {
-            loadInformationSelectBox($(this));
+            loadDataClass.loadInformationSelectBox($(this));
         });
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
-            loadInformationSelectBox($(this));
+            loadDataClass.loadInformationSelectBox($(this));
         });
 
 // Action on click dropdown price list
@@ -128,7 +129,7 @@ $(function () {
 
 // Action on change dropdown payment term
         boxPaymentTerm.on('change', function(e) {
-            loadInformationSelectBox($(this));
+            loadDataClass.loadInformationSelectBox($(this));
         });
 
 // Action on click button add product
@@ -209,7 +210,7 @@ $(function () {
         tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function (e) {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                loadDataProductSelect($(this));
+                loadDataClass.loadDataProductSelect($(this));
             }
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
@@ -291,7 +292,7 @@ $(function () {
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                loadDataProductSelect($(this));
+                loadDataClass.loadDataProductSelect($(this));
             }
             calculateClass.commonCalculate(tableExpense, row, false, false, true);
         });
@@ -406,7 +407,7 @@ $(function () {
                                                     <input type="hidden" class="data-default" value="${product_data}">
                                                     <input type="hidden" class="data-info" value="${productDataStr}">
                                                 </option>`)
-                        loadInformationSelectBox($(rowProduct))
+                        loadDataClass.loadInformationSelectBox($(rowProduct))
                     }
                     let rowUOM = $newRow[0].querySelector('.table-row-uom');
                     if (rowUOM) {
@@ -515,7 +516,7 @@ $(function () {
             e.preventDefault()
             let $form = document.getElementById('frm_quotation_create');
             let _form = new SetupFormSubmit($('#frm_quotation_create'));
-            setupDataSubmit(_form);
+            submitClass.setupDataSubmit(_form);
             let submitFields = [
                 'title',
                 'opportunity',

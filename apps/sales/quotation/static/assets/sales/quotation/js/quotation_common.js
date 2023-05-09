@@ -38,7 +38,7 @@ class loadDataHandle {
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         ele.empty();
-        loadShippingBillingCustomer(modalShipping, modalBilling);
+        self.loadShippingBillingCustomer(modalShipping, modalBilling);
         $.fn.callAjax(url, method).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -69,7 +69,7 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-                                loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
                                 if (item.id && item.owner) {
                                     self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
                                 }
@@ -80,7 +80,7 @@ class loadDataHandle {
                         } else {
                             ele.append(dataAppend)
                         }
-                        loadInformationSelectBox(ele);
+                        self.loadInformationSelectBox(ele);
                     }
                 }
             }
@@ -88,6 +88,7 @@ class loadDataHandle {
     }
 
     loadBoxQuotationContact(contact_id, valueToSelect = null, customerID = null) {
+        let self = this;
         let jqueryId = '#' + contact_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -119,7 +120,7 @@ class loadDataHandle {
                             }
                             ele.append(dataAppend)
                         })
-                        loadInformationSelectBox(ele);
+                        self.loadInformationSelectBox(ele);
                     }
                 }
             }
@@ -409,8 +410,138 @@ class loadDataHandle {
             }
         }
     }
-}
 
+    loadDataProductSelect(ele) {
+        let self = this;
+        let optionSelected = ele[0].options[ele[0].selectedIndex];
+        let productData = optionSelected.querySelector('.data-default');
+        if (productData) {
+            let data = JSON.parse(productData.value);
+            let uom = ele[0].closest('tr').querySelector('.table-row-uom');
+            let price = ele[0].closest('tr').querySelector('.table-row-price');
+            let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
+            let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+            if (uom && data.unit_of_measure) {
+                uom.value = data.unit_of_measure.id;
+            }
+            if (price && priceList) {
+                let valList = [];
+                $(priceList).empty();
+                for (let i = 0; i < data.price_list.length; i++) {
+                    valList.push(data.price_list[i].value);
+                    let option = `<a class="dropdown-item table-row-price-option" data-value="${data.price_list[i].value}">
+                                    <div class="row">
+                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                        <div class="col-2"></div>
+                                        <div class="col-5"><span>${CCurrency.convertCurrency(data.price_list[i].value)}</span></div>
+                                    </div>
+                                </a>`;
+                    $(priceList).append(option);
+                }
+                if (valList) {
+                    let minVal = Math.min(...valList);
+                    price.value = minVal;
+                    init_mask_money_ele($(price));
+                }
+            }
+            if (tax && data.tax) {
+                tax.value = data.tax.id;
+            }
+            self.loadInformationSelectBox(ele);
+        }
+    }
+
+    loadInformationSelectBox(ele) {
+        let optionSelected = ele[0].options[ele[0].selectedIndex];
+        let inputWrapper = ele[0].closest('.input-affix-wrapper');
+        let dropdownContent = inputWrapper.querySelector('.dropdown-menu');
+        dropdownContent.innerHTML = ``;
+        let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
+        eleInfo.setAttribute('disabled', true);
+        let eleData = optionSelected.querySelector('.data-info');
+        let link = "";
+        if (optionSelected) {
+            if (eleData) {
+                // remove attr disabled
+                if (eleInfo) {
+                    eleInfo.removeAttribute('disabled');
+                }
+                // end
+                let data = JSON.parse(eleData.value);
+                let info = ``;
+                info += `<h6 class="dropdown-header header-wth-bg">More Information</h6>`;
+                for (let key in data) {
+                    if (key === 'id') {
+                        let linkDetail = ele.data('link-detail');
+                        if (linkDetail) {
+                            link = linkDetail.format_url_with_uuid(data[key]);
+                        }
+                    } else {
+                        info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
+                    }
+                }
+                info += `<div class="dropdown-divider"></div>
+                    <div class="row">
+                        <div class="col-4"></div>
+                        <div class="col-7">
+                            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                                <span><span>View Detail</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>`;
+                dropdownContent.innerHTML = info;
+            }
+        }
+    }
+
+    loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {
+    let modalShippingContent = modalShipping[0].querySelector('.modal-body');
+    if (modalShippingContent) {
+        $(modalShippingContent).empty();
+        if (item) {
+            for (let i = 0; i < item.shipping_address.length; i++) {
+                let address = item.shipping_address[i];
+                $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
+                                                    <div class="row mb-1">
+                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-5"></div>
+                                                        <div class="col-4"></div>
+                                                        <div class="col-3">
+                                                            <button class="btn btn-primary choose-shipping">Select This Address</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>`)
+            }
+        }
+    }
+    let modalBillingContent = modalBilling[0].querySelector('.modal-body');
+    if (modalBillingContent) {
+        $(modalBillingContent).empty();
+        if (item) {
+            for (let i = 0; i < item.billing_address.length; i++) {
+                let address = item.billing_address[i];
+                $(modalBillingContent).append(`<div class="row ml-1 billing-group">
+                                                    <div class="row mb-1">
+                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-5"></div>
+                                                        <div class="col-4"></div>
+                                                        <div class="col-3">
+                                                            <button class="btn btn-primary choose-billing">Select This Address</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>`)
+            }
+        }
+    }
+}
+}
 
 class dataTableHandle {
     dataTableProduct(data, table_id) {
@@ -678,7 +809,7 @@ class dataTableHandle {
                                     type="text" 
                                     class="form-control mask-money table-row-price" 
                                     data-return-type="number"
-                                    value="${row.product_unit_price}"
+                                    value="${row.product_cost_price}"
                                     required
                                 >
                             </div>`;
@@ -687,8 +818,15 @@ class dataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
+                        let taxID = "";
+                        let taxRate = "";
+                        if (row.tax) {
+                            taxID = row.tax.id;
+                            taxRate = row.tax.value;
+                        }
                         return `<div class="row">
                                 <select class="form-select table-row-tax">
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input
                                     type="text"
@@ -1031,89 +1169,276 @@ class calculateCaseHandle {
 
 }
 
-
-
-
-function loadDataProductSelect(ele) {
-    let optionSelected = ele[0].options[ele[0].selectedIndex];
-    let productData = optionSelected.querySelector('.data-default');
-    if (productData) {
-        let data = JSON.parse(productData.value);
-        let uom = ele[0].closest('tr').querySelector('.table-row-uom');
-        let price = ele[0].closest('tr').querySelector('.table-row-price');
-        let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
-        let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-        if (uom && data.unit_of_measure) {
-            uom.value = data.unit_of_measure.id;
-        }
-        if (price && priceList) {
-            let valList = [];
-            $(priceList).empty();
-            for (let i = 0; i < data.price_list.length; i++) {
-                valList.push(data.price_list[i].value);
-                let option = `<a class="dropdown-item table-row-price-option" data-value="${data.price_list[i].value}">
-                                    <div class="row">
-                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                        <div class="col-2"></div>
-                                        <div class="col-5"><span>${CCurrency.convertCurrency(data.price_list[i].value)}</span></div>
-                                    </div>
-                                </a>`;
-                $(priceList).append(option);
-            }
-            if (valList) {
-                let minVal = Math.min(...valList);
-                price.value = minVal;
-                init_mask_money_ele($(price));
-            }
-        }
-        if (tax && data.tax) {
-            tax.value = data.tax.id;
-        }
-        loadInformationSelectBox(ele);
-    }
-}
-
-function loadInformationSelectBox(ele) {
-    let optionSelected = ele[0].options[ele[0].selectedIndex];
-    let inputWrapper = ele[0].closest('.input-affix-wrapper');
-    let dropdownContent = inputWrapper.querySelector('.dropdown-menu');
-    dropdownContent.innerHTML = ``;
-    let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
-    eleInfo.setAttribute('disabled', true);
-    let eleData = optionSelected.querySelector('.data-info');
-    let link = "";
-    if (optionSelected) {
-        if (eleData) {
-            // remove attr disabled
-            if (eleInfo) {
-                eleInfo.removeAttribute('disabled');
-            }
-            // end
-            let data = JSON.parse(eleData.value);
-            let info = ``;
-            info += `<h6 class="dropdown-header header-wth-bg">More Information</h6>`;
-            for (let key in data) {
-                if (key === 'id') {
-                    let linkDetail = ele.data('link-detail');
-                    if (linkDetail) {
-                        link = linkDetail.format_url_with_uuid(data[key]);
+class submitHandle {
+    setupDataProduct() {
+        let result = [];
+        let table = document.getElementById('datable-quotation-create-product');
+        let tableBody = table.tBodies[0];
+        for (let i = 0; i < tableBody.rows.length; i++) {
+            let rowData = {};
+            let row = tableBody.rows[i];
+            let eleProduct = row.querySelector('.table-row-item');
+            if (eleProduct) {
+                let optionSelected = eleProduct.options[eleProduct.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['product'] = dataInfo.id;
+                        rowData['product_title'] = dataInfo.title;
+                        rowData['product_code'] = dataInfo.code;
                     }
+                }
+
+            }
+            let eleUOM = row.querySelector('.table-row-uom');
+            if (eleUOM) {
+                let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['unit_of_measure'] = dataInfo.id;
+                        rowData['product_uom_title'] = dataInfo.title;
+                        rowData['product_uom_code'] = dataInfo.code;
+                    }
+                }
+
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                let optionSelected = eleTax.options[eleTax.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['tax'] = dataInfo.id;
+                        rowData['product_tax_title'] = dataInfo.title;
+                        rowData['product_tax_value'] = dataInfo.value;
+                    } else {
+                        rowData['product_tax_value'] = 0;
+                    }
+                }
+
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+            if (eleTaxAmount) {
+                rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
+            }
+            let eleDescription = row.querySelector('.table-row-description');
+            if (eleDescription) {
+                rowData['product_description'] = eleDescription.value;
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                rowData['product_quantity'] = eleQuantity.value;
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['product_unit_price'] = $(elePrice).valCurrency();
+            }
+            let eleDiscount = row.querySelector('.table-row-discount');
+            if (eleDiscount) {
+                if (eleDiscount.value || eleDiscount.value === "0") {
+                    rowData['product_discount_value'] = parseInt(eleDiscount.value);
                 } else {
-                    info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
+                    rowData['product_discount_value'] = 0;
                 }
             }
-            info += `<div class="dropdown-divider"></div>
-                    <div class="row">
-                        <div class="col-4"></div>
-                        <div class="col-7">
-                            <a href="${link}" target="_blank" class="link-primary underline_hover">
-                                <span><span>View Detail</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
-                            </a>
-                        </div>
-                        <div class="col-1"></div>
-                    </div>`;
-            dropdownContent.innerHTML = info;
+            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+            if (eleDiscountAmount) {
+                rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
+            }
+            let eleSubtotal = row.querySelector('.table-row-subtotal');
+            if (eleSubtotal) {
+                rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
+            }
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+            result.push(rowData);
         }
+        return result
+    }
+
+    setupDataCost() {
+        let result = [];
+        let table = document.getElementById('datable-quotation-create-cost');
+        let tableBody = table.tBodies[0];
+        for (let i = 0; i < tableBody.rows.length; i++) {
+            let rowData = {};
+            let row = tableBody.rows[i];
+            let eleProduct = row.querySelector('.table-row-item');
+            if (eleProduct) {
+                let optionSelected = eleProduct.options[eleProduct.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['product'] = dataInfo.id;
+                        rowData['product_title'] = dataInfo.title;
+                        rowData['product_code'] = dataInfo.code;
+                    }
+                }
+            }
+            let eleUOM = row.querySelector('.table-row-uom');
+            if (eleUOM) {
+                let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['unit_of_measure'] = dataInfo.id;
+                        rowData['product_uom_title'] = dataInfo.title;
+                        rowData['product_uom_code'] = dataInfo.code;
+                    }
+                }
+
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                let optionSelected = eleTax.options[eleTax.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['tax'] = dataInfo.id;
+                        rowData['product_tax_title'] = dataInfo.title;
+                        rowData['product_tax_value'] = dataInfo.value;
+                    } else {
+                        rowData['product_tax_value'] = 0;
+                    }
+                }
+
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+            if (eleTaxAmount) {
+                rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                rowData['product_quantity'] = eleQuantity.value;
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['product_cost_price'] = $(elePrice).valCurrency();
+            }
+            let eleSubtotal = row.querySelector('.table-row-subtotal');
+            if (eleSubtotal) {
+                rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
+            }
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+            result.push(rowData);
+        }
+        return result
+    }
+
+    setupDataExpense() {
+        let result = [];
+        let table = document.getElementById('datable-quotation-create-expense');
+        let tableBody = table.tBodies[0];
+        for (let i = 0; i < tableBody.rows.length; i++) {
+            let rowData = {};
+            let row = tableBody.rows[i];
+            let eleExpense = row.querySelector('.table-row-item');
+            if (eleExpense) {
+                let optionSelected = eleExpense.options[eleExpense.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['expense'] = dataInfo.id;
+                        rowData['expense_title'] = dataInfo.title;
+                        rowData['expense_code'] = dataInfo.code;
+                    }
+                }
+            }
+            let eleUOM = row.querySelector('.table-row-uom');
+            if (eleUOM) {
+                let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['unit_of_measure'] = dataInfo.id;
+                        rowData['expense_uom_title'] = dataInfo.title;
+                        rowData['expense_uom_code'] = dataInfo.code;
+                    }
+                }
+
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                let optionSelected = eleTax.options[eleTax.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['tax'] = dataInfo.id;
+                        rowData['expense_tax_title'] = dataInfo.title;
+                        rowData['expense_tax_value'] = dataInfo.value;
+                    } else {
+                        rowData['expense_tax_value'] = 0;
+                    }
+                }
+
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+            if (eleTaxAmount) {
+                rowData['expense_tax_amount'] = $(eleTaxAmount).valCurrency();
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                rowData['expense_quantity'] = eleQuantity.value;
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['expense_price'] = $(elePrice).valCurrency();
+            }
+            let eleSubtotal = row.querySelector('.table-row-subtotal');
+            if (eleSubtotal) {
+                rowData['expense_subtotal_price'] = $(eleSubtotal).valCurrency();
+            }
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+            result.push(rowData);
+        }
+        return result
+    }
+
+    setupDataLogistic() {
+        return {
+            'shipping_address': $('#quotation-create-shipping-address').val(),
+            'billing_address': $('#quotation-create-billing-address').val(),
+        }
+    }
+
+    setupDataSubmit(_form) {
+        let self = this;
+        let dateCreatedVal = $('#quotation-create-date-created').val();
+        if (dateCreatedVal) {
+            _form.dataForm['data_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
+        }
+        _form.dataForm['status'] = $('#quotation-create-status').val();
+        _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
+        let totalProductDiscountRate = $('#quotation-create-product-discount').val();
+        if (totalProductDiscountRate) {
+            _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+        } else {
+            _form.dataForm['total_product_discount_rate'] = 0;
+        }
+        _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
+        _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
+        _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();
+        _form.dataForm['total_cost_pretax_amount'] = $('#quotation-create-cost-pretax-amount').valCurrency();
+        _form.dataForm['total_cost_tax'] = $('#quotation-create-cost-taxes').valCurrency();
+        _form.dataForm['total_cost'] = $('#quotation-create-cost-total').valCurrency();
+        _form.dataForm['total_expense_pretax_amount'] = $('#quotation-create-expense-pretax-amount').valCurrency();
+        _form.dataForm['total_expense_tax'] = $('#quotation-create-expense-taxes').valCurrency();
+        _form.dataForm['total_expense'] = $('#quotation-create-expense-total').valCurrency();
+
+        _form.dataForm['quotation_products_data'] = self.setupDataProduct();
+        _form.dataForm['quotation_costs_data'] = self.setupDataCost();
+        _form.dataForm['quotation_expenses_data'] = self.setupDataExpense();
+
+        _form.dataForm['quotation_logistic_data'] = self.setupDataLogistic();
     }
 }
 
@@ -1141,319 +1466,3 @@ function init_mask_money_ele(ele) {
     } else throw  Error('Currency config is not found.')
 }
 
-function loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {
-    let modalShippingContent = modalShipping[0].querySelector('.modal-body');
-    if (modalShippingContent) {
-        $(modalShippingContent).empty();
-        if (item) {
-            for (let i = 0; i < item.shipping_address.length; i++) {
-                let address = item.shipping_address[i];
-                $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
-                                                    <div class="row mb-1">
-                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-5"></div>
-                                                        <div class="col-4"></div>
-                                                        <div class="col-3">
-                                                            <button class="btn btn-primary choose-shipping">Select This Address</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <br>`)
-            }
-        }
-    }
-    let modalBillingContent = modalBilling[0].querySelector('.modal-body');
-    if (modalBillingContent) {
-        $(modalBillingContent).empty();
-        if (item) {
-            for (let i = 0; i < item.billing_address.length; i++) {
-                let address = item.billing_address[i];
-                $(modalBillingContent).append(`<div class="row ml-1 billing-group">
-                                                    <div class="row mb-1">
-                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-5"></div>
-                                                        <div class="col-4"></div>
-                                                        <div class="col-3">
-                                                            <button class="btn btn-primary choose-billing">Select This Address</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <br>`)
-            }
-        }
-    }
-}
-
-function setupDataProduct() {
-    let result = [];
-    let table = document.getElementById('datable-quotation-create-product');
-    let tableBody = table.tBodies[0];
-    for (let i = 0; i < tableBody.rows.length; i++) {
-        let rowData = {};
-        let row = tableBody.rows[i];
-        let eleProduct = row.querySelector('.table-row-item');
-        if (eleProduct) {
-            let optionSelected = eleProduct.options[eleProduct.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['product'] = dataInfo.id;
-                    rowData['product_title'] = dataInfo.title;
-                    rowData['product_code'] = dataInfo.code;
-                }
-            }
-
-        }
-        let eleUOM = row.querySelector('.table-row-uom');
-        if (eleUOM) {
-            let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['unit_of_measure'] = dataInfo.id;
-                    rowData['product_uom_title'] = dataInfo.title;
-                    rowData['product_uom_code'] = dataInfo.code;
-                }
-            }
-
-        }
-        let eleTax = row.querySelector('.table-row-tax');
-        if (eleTax) {
-            let optionSelected = eleTax.options[eleTax.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['tax'] = dataInfo.id;
-                    rowData['product_tax_title'] = dataInfo.title;
-                    rowData['product_tax_value'] = dataInfo.value;
-                } else {
-                    rowData['product_tax_value'] = 0;
-                }
-            }
-
-        }
-        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-        if (eleTaxAmount) {
-            rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
-        }
-        let eleDescription = row.querySelector('.table-row-description');
-        if (eleDescription) {
-            rowData['product_description'] = eleDescription.value;
-        }
-        let eleQuantity = row.querySelector('.table-row-quantity');
-        if (eleQuantity) {
-            rowData['product_quantity'] = eleQuantity.value;
-        }
-        let elePrice = row.querySelector('.table-row-price');
-        if (elePrice) {
-            rowData['product_unit_price'] = $(elePrice).valCurrency();
-        }
-        let eleDiscount = row.querySelector('.table-row-discount');
-        if (eleDiscount) {
-            if (eleDiscount.value || eleDiscount.value === "0") {
-                rowData['product_discount_value'] = parseInt(eleDiscount.value);
-            } else {
-                rowData['product_discount_value'] = 0;
-            }
-        }
-        let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-        if (eleDiscountAmount) {
-            rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
-        }
-        let eleSubtotal = row.querySelector('.table-row-subtotal');
-        if (eleSubtotal) {
-            rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
-        }
-        let eleOrder = row.querySelector('.table-row-order');
-        if (eleOrder) {
-            rowData['order'] = parseInt(eleOrder.innerHTML);
-        }
-        result.push(rowData);
-    }
-    return result
-}
-
-function setupDataCost() {
-    let result = [];
-    let table = document.getElementById('datable-quotation-create-cost');
-    let tableBody = table.tBodies[0];
-    for (let i = 0; i < tableBody.rows.length; i++) {
-        let rowData = {};
-        let row = tableBody.rows[i];
-        let eleProduct = row.querySelector('.table-row-item');
-        if (eleProduct) {
-            let optionSelected = eleProduct.options[eleProduct.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['product'] = dataInfo.id;
-                    rowData['product_title'] = dataInfo.title;
-                    rowData['product_code'] = dataInfo.code;
-                }
-            }
-        }
-        let eleUOM = row.querySelector('.table-row-uom');
-        if (eleUOM) {
-            let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['unit_of_measure'] = dataInfo.id;
-                    rowData['product_uom_title'] = dataInfo.title;
-                    rowData['product_uom_code'] = dataInfo.code;
-                }
-            }
-
-        }
-        let eleTax = row.querySelector('.table-row-tax');
-        if (eleTax) {
-            let optionSelected = eleTax.options[eleTax.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['tax'] = dataInfo.id;
-                    rowData['product_tax_title'] = dataInfo.title;
-                    rowData['product_tax_value'] = dataInfo.value;
-                } else {
-                    rowData['product_tax_value'] = 0;
-                }
-            }
-
-        }
-        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-        if (eleTaxAmount) {
-            rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
-        }
-        let eleQuantity = row.querySelector('.table-row-quantity');
-        if (eleQuantity) {
-            rowData['product_quantity'] = eleQuantity.value;
-        }
-        let elePrice = row.querySelector('.table-row-price');
-        if (elePrice) {
-            rowData['product_cost_price'] = $(elePrice).valCurrency();
-        }
-        let eleSubtotal = row.querySelector('.table-row-subtotal');
-        if (eleSubtotal) {
-            rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
-        }
-        let eleOrder = row.querySelector('.table-row-order');
-        if (eleOrder) {
-            rowData['order'] = parseInt(eleOrder.innerHTML);
-        }
-        result.push(rowData);
-    }
-    return result
-}
-
-function setupDataExpense() {
-    let result = [];
-    let table = document.getElementById('datable-quotation-create-expense');
-    let tableBody = table.tBodies[0];
-    for (let i = 0; i < tableBody.rows.length; i++) {
-        let rowData = {};
-        let row = tableBody.rows[i];
-        let eleExpense = row.querySelector('.table-row-item');
-        if (eleExpense) {
-            let optionSelected = eleExpense.options[eleExpense.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['expense'] = dataInfo.id;
-                    rowData['expense_title'] = dataInfo.title;
-                    rowData['expense_code'] = dataInfo.code;
-                }
-            }
-        }
-        let eleUOM = row.querySelector('.table-row-uom');
-        if (eleUOM) {
-            let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['unit_of_measure'] = dataInfo.id;
-                    rowData['expense_uom_title'] = dataInfo.title;
-                    rowData['expense_uom_code'] = dataInfo.code;
-                }
-            }
-
-        }
-        let eleTax = row.querySelector('.table-row-tax');
-        if (eleTax) {
-            let optionSelected = eleTax.options[eleTax.selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    rowData['tax'] = dataInfo.id;
-                    rowData['expense_tax_title'] = dataInfo.title;
-                    rowData['expense_tax_value'] = dataInfo.value;
-                } else {
-                    rowData['expense_tax_value'] = 0;
-                }
-            }
-
-        }
-        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-        if (eleTaxAmount) {
-            rowData['expense_tax_amount'] = $(eleTaxAmount).valCurrency();
-        }
-        let eleQuantity = row.querySelector('.table-row-quantity');
-        if (eleQuantity) {
-            rowData['expense_quantity'] = eleQuantity.value;
-        }
-        let elePrice = row.querySelector('.table-row-price');
-        if (elePrice) {
-            rowData['expense_price'] = $(elePrice).valCurrency();
-        }
-        let eleSubtotal = row.querySelector('.table-row-subtotal');
-        if (eleSubtotal) {
-            rowData['expense_subtotal_price'] = $(eleSubtotal).valCurrency();
-        }
-        let eleOrder = row.querySelector('.table-row-order');
-        if (eleOrder) {
-            rowData['order'] = parseInt(eleOrder.innerHTML);
-        }
-        result.push(rowData);
-    }
-    return result
-}
-
-function setupDataLogistic() {
-    return {
-        'shipping_address': $('#quotation-create-shipping-address').val(),
-        'billing_address': $('#quotation-create-billing-address').val(),
-    }
-}
-
-function setupDataSubmit(_form) {
-    let dateCreatedVal = $('#quotation-create-date-created').val();
-    if (dateCreatedVal) {
-        _form.dataForm['data_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
-    }
-    _form.dataForm['status'] = $('#quotation-create-status').val();
-    _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
-    let totalProductDiscountRate = $('#quotation-create-product-discount').val();
-    if (totalProductDiscountRate) {
-        _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
-    } else {
-        _form.dataForm['total_product_discount_rate'] = 0;
-    }
-    _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
-    _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
-    _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();
-    _form.dataForm['total_cost_pretax_amount'] = $('#quotation-create-cost-pretax-amount').valCurrency();
-    _form.dataForm['total_cost_tax'] = $('#quotation-create-cost-taxes').valCurrency();
-    _form.dataForm['total_cost'] = $('#quotation-create-cost-total').valCurrency();
-    _form.dataForm['total_expense_pretax_amount'] = $('#quotation-create-expense-pretax-amount').valCurrency();
-    _form.dataForm['total_expense_tax'] = $('#quotation-create-expense-taxes').valCurrency();
-    _form.dataForm['total_expense'] = $('#quotation-create-expense-total').valCurrency();
-
-    _form.dataForm['quotation_products_data'] = setupDataProduct();
-    _form.dataForm['quotation_costs_data'] = setupDataCost();
-    _form.dataForm['quotation_expenses_data'] = setupDataExpense();
-
-    _form.dataForm['quotation_logistic_data'] = setupDataLogistic();
-}

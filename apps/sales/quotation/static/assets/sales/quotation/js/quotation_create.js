@@ -354,16 +354,28 @@ $(function () {
                                         taxDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
                                     }
                                 if (option.selected === true) {
-                                    $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
-                                                        <span class="tax-title">${option.text}</span>
-                                                        <input type="hidden" class="data-info" value="${taxDataStr}">
-                                                    </option>`)
+                                    if (taxDataStr) {
+                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
+                                                            <span class="tax-title">${option.text}</span>
+                                                            <input type="hidden" class="data-info" value="${taxDataStr}">
+                                                        </option>`)
+                                    } else {
+                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
+                                                            <span class="tax-title">${option.text}</span>
+                                                        </option>`)
+                                    }
                                     valueTaxSelected = option.value;
                                 } else {
-                                    $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
-                                                        <span class="tax-title">${option.text}</span>
-                                                        <input type="hidden" class="data-info" value="${taxDataStr}">
-                                                    </option>`)
+                                    if (taxDataStr) {
+                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
+                                                            <span class="tax-title">${option.text}</span>
+                                                            <input type="hidden" class="data-info" value="${taxDataStr}">
+                                                        </option>`)
+                                    } else {
+                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
+                                                            <span class="tax-title">${option.text}</span>
+                                                        </option>`)
+                                    }
                                 }
                             }
                         }

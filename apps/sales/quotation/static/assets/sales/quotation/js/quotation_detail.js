@@ -77,10 +77,12 @@ function loadTabProduct(data_list) {
         if (rowTax) {
             rowTax.setAttribute('disabled', true);
             rowTax.classList.add('disabled-but-edit');
-            for (let t = 0; t < rowTax.options.length; t++) {
-                let option = rowTax.options[t];
-                if (option.value === data.tax.id) {
-                    option.setAttribute('selected', true);
+            if (data.tax) {
+                for (let t = 0; t < rowTax.options.length; t++) {
+                    let option = rowTax.options[t];
+                    if (option.value === data.tax.id) {
+                        option.setAttribute('selected', true);
+                    }
                 }
             }
         }
@@ -135,9 +137,11 @@ function loadTabCost(data_list) {
         if (rowTax) {
             rowTax.setAttribute('disabled', true);
             rowTax.classList.add('disabled-but-edit');
-            $(rowTax).append(`<option value="${data.tax.id}" selected>
-                                        <span class="uom-title">${data.tax.title}</span>
-                                    </option>`)
+            if (data.tax) {
+                $(rowTax).append(`<option value="${data.tax.id}" selected>
+                                    <span class="uom-title">${data.tax.title}</span>
+                                </option>`)
+            }
         }
         init_mask_money_single($newRow);
         order++;
@@ -207,10 +211,12 @@ function loadTabExpense(data_list) {
         if (rowTax) {
             rowTax.setAttribute('disabled', true);
             rowTax.classList.add('disabled-but-edit');
-            for (let t = 0; t < rowTax.options.length; t++) {
-                let option = rowTax.options[t];
-                if (option.value === data.tax.id) {
-                    option.setAttribute('selected', true);
+            if (data.tax) {
+                for (let t = 0; t < rowTax.options.length; t++) {
+                    let option = rowTax.options[t];
+                    if (option.value === data.tax.id) {
+                        option.setAttribute('selected', true);
+                    }
                 }
             }
         }

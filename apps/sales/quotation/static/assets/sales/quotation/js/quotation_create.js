@@ -4,6 +4,10 @@ $(function () {
 
     $(document).ready(function () {
 
+        let loadDataClass = new loadDataHandle();
+        let dataTableClass = new dataTableHandle();
+        let calculateClass = new calculateCaseHandle();
+
         $(".select2").select2();
         init_company_currency_config();
 
@@ -15,15 +19,15 @@ $(function () {
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let tabPrice = $('#tab_terms');
-        loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
-        loadInitQuotationProduct('data-init-quotation-create-tables-product');
-        loadInitQuotationUOM('data-init-quotation-create-tables-uom');
-        loadInitQuotationTax('data-init-quotation-create-tables-tax');
-        loadInitQuotationExpense('data-init-quotation-create-tables-expense');
+        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
+        loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
+        loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
+        loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
 
-        dataTableProduct(data,'datable-quotation-create-product');
-        dataTableCost(data, 'datable-quotation-create-cost');
-        dataTableExpense(data, 'datable-quotation-create-expense');
+        dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
+        dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
+        dataTableClass.dataTableExpense(data, 'datable-quotation-create-expense');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -46,7 +50,7 @@ $(function () {
 // Action on click dropdown opportunity
         boxOpportunity.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
+                loadDataClass.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
             }
         });
 
@@ -57,11 +61,11 @@ $(function () {
                 let data = JSON.parse(eleData.value);
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
-                    loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling);
+                    loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling);
                 }
             } else {
-                loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
-                loadBoxQuotationContact('select-box-quotation-create-contact');
+                loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
+                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadInformationSelectBox($(this));
         });
@@ -69,7 +73,7 @@ $(function () {
 // Action on click dropdown customer
         boxCustomer.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
+                loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
             }
         });
 
@@ -82,10 +86,10 @@ $(function () {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
                     loadShippingBillingCustomer(modalShipping, modalBilling, data);
                     if (data.id && data.owner) {
-                        loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
+                        loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
                     }
                 } else {
-                    loadBoxQuotationContact('select-box-quotation-create-contact');
+                    loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
                 }
             }
             loadInformationSelectBox($(this));
@@ -94,7 +98,7 @@ $(function () {
 // Action on click dropdown contact
         boxContact.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadBoxQuotationContact('select-box-quotation-create-contact');
+                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
         });
 
@@ -111,14 +115,14 @@ $(function () {
 // Action on click dropdown price list
         tabPrice.on('click', function(e) {
             if (!boxPriceList[0].innerHTML) {
-                loadBoxQuotationPrice('select-box-quotation-create-price-list');
+                loadDataClass.loadBoxQuotationPrice('select-box-quotation-create-price-list');
             }
         });
 
 // Action on click dropdown payment term
         boxPaymentTerm.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+                loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
             }
         });
 
@@ -175,16 +179,16 @@ $(function () {
             let newRow = tableProduct.DataTable().row(addRow).node();
             let $newRow = $(newRow);
             init_mask_money_single($newRow);
-            loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
-            loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
-            loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+            loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
+            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
         });
 
 // Action on delete row product
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
         });
 
 // Action on click price list's option
@@ -196,7 +200,7 @@ $(function () {
                 if (elePrice) {
                     elePrice.value = priceValRaw;
                     init_mask_money_ele($(elePrice));
-                    commonCalculate(tableProduct, row, true, false, false);
+                    calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }
             }
         });
@@ -207,7 +211,7 @@ $(function () {
             if ($(this).hasClass('table-row-item')) {
                 loadDataProductSelect($(this));
             }
-            commonCalculate(tableProduct, row, true, false, false);
+            calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
 // Check no negative number for input
@@ -221,9 +225,9 @@ $(function () {
         $('#quotation-create-product-discount').on('change', function (e) {
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
-                calculate(row);
+                calculateClass.calculate(row);
             }
-            updateTotal(tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            calculateClass.updateTotal(tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
         });
 
 // Action on click button add expense
@@ -271,16 +275,16 @@ $(function () {
             let newRow = tableExpense.DataTable().row(addRow).node();
             let $newRow = $(newRow);
             init_mask_money_single($newRow);
-            loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
-            loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
-            loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
+            loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
+            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
 
 // Action on delete row expense
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
@@ -289,7 +293,7 @@ $(function () {
             if ($(this).hasClass('table-row-item')) {
                 loadDataProductSelect($(this));
             }
-            commonCalculate(tableExpense, row, false, false, true);
+            calculateClass.commonCalculate(tableExpense, row, false, false, true);
         });
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
@@ -462,7 +466,7 @@ $(function () {
 
                 }
                 // update total
-                updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+                calculateClass.updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
             }
         });
 
@@ -472,7 +476,7 @@ $(function () {
             if ($(this).hasClass('table-row-item')) {
                 // loadDataProductSelect($(this));
             }
-            commonCalculate(tableCost, row, false, true, false);
+            calculateClass.commonCalculate(tableCost, row, false, true, false);
         });
 
 // Action on click button collapse

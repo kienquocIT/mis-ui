@@ -7,6 +7,7 @@ $(function () {
         $(".select2").select2();
         init_company_currency_config();
 
+        let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
         let boxContact = $('#select-box-quotation-create-contact');
@@ -20,9 +21,9 @@ $(function () {
         loadInitQuotationTax('data-init-quotation-create-tables-tax');
         loadInitQuotationExpense('data-init-quotation-create-tables-expense');
 
-        dataTableProduct([],'datable-quotation-create-product');
-        dataTableCost([], 'datable-quotation-create-cost');
-        dataTableExpense([], 'datable-quotation-create-expense');
+        dataTableProduct(data,'datable-quotation-create-product');
+        dataTableCost(data, 'datable-quotation-create-cost');
+        dataTableExpense(data, 'datable-quotation-create-expense');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -102,13 +103,6 @@ $(function () {
             loadInformationSelectBox($(this));
         });
 
-// Action on click dropdown sale person
-//         boxSalePerson.on('click', function(e) {
-//             if (!$(this)[0].innerHTML) {
-//                 loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
-//             }
-//         });
-
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadInformationSelectBox($(this));
@@ -145,12 +139,39 @@ $(function () {
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
             let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
-            let addRow = tableProduct.DataTable().row.add({
-                'order': order,
-                'selectProductID': selectProductID,
-                'selectUOMID': selectUOMID,
-                'selectTaxID': selectTaxID
-            }).draw();
+            let dataAdd = {
+                "tax": {
+                    "id": "",
+                    "code": "",
+                    "title": "",
+                    "value": 0
+                },
+                "order": order,
+                "product": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "product_code": "",
+                "product_title": "",
+                "unit_of_measure": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "product_quantity": 0,
+                "product_uom_code": "",
+                "product_tax_title": "",
+                "product_tax_value": 0,
+                "product_uom_title": "",
+                "product_tax_amount": 0,
+                "product_unit_price": 0,
+                "product_description": "",
+                "product_discount_value": 0,
+                "product_subtotal_price": 0,
+                "product_discount_amount": 0
+            }
+            let addRow = tableProduct.DataTable().row.add(dataAdd).draw();
             let newRow = tableProduct.DataTable().row(addRow).node();
             let $newRow = $(newRow);
             init_mask_money_single($newRow);
@@ -217,12 +238,36 @@ $(function () {
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
-            let addRow = tableExpense.DataTable().row.add({
-                'order': order,
-                'selectExpenseID': selectExpenseID,
-                'selectUOMID': selectUOMID,
-                'selectTaxID': selectTaxID
-            }).draw();
+            let dataAdd = {
+                "tax": {
+                    "id": "",
+                    "code": "",
+                    "title": "",
+                    "value": 0
+                },
+                "order": order,
+                "expense": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "expense_code": "",
+                "expense_price": 0,
+                "expense_title": "",
+                "unit_of_measure": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "expense_quantity": 0,
+                "expense_uom_code": "",
+                "expense_tax_title": "",
+                "expense_tax_value": 0,
+                "expense_uom_title": "",
+                "expense_tax_amount": 0,
+                "expense_subtotal_price": 0
+            }
+            let addRow = tableExpense.DataTable().row.add(dataAdd).draw();
             let newRow = tableExpense.DataTable().row(addRow).node();
             let $newRow = $(newRow);
             init_mask_money_single($newRow);
@@ -317,13 +362,36 @@ $(function () {
                     if (order) {
                         valueOrder = order.innerHTML;
                     }
-
-                    let addRow = tableCost.DataTable().row.add({
-                        'valueQuantity': valueQuantity,
-                        'valuePrice': valuePrice,
-                        'valueSubtotal': valueSubtotal,
-                        'valueOrder': valueOrder
-                    }).draw();
+                    let dataAdd = {
+                        "tax": {
+                            "id": "",
+                            "code": "",
+                            "title": "",
+                            "value": 0
+                        },
+                        "order": valueOrder,
+                        "product": {
+                            "id": "",
+                            "code": "",
+                            "title": ""
+                        },
+                        "product_code": "",
+                        "product_title": "",
+                        "unit_of_measure": {
+                            "id": "",
+                            "code": "",
+                            "title": ""
+                        },
+                        "product_quantity": valueQuantity,
+                        "product_uom_code": "",
+                        "product_tax_title": "",
+                        "product_tax_value": 0,
+                        "product_uom_title": "",
+                        "product_cost_price": valuePrice,
+                        "product_tax_amount": 0,
+                        "product_subtotal_price": valueSubtotal
+                    }
+                    let addRow = tableCost.DataTable().row.add(dataAdd).draw();
                     let newRow = tableCost.DataTable().row(addRow).node();
                     let $newRow = $(newRow);
                     init_mask_money_single($newRow);

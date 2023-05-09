@@ -435,6 +435,7 @@ function dataTableProduct(data, table_id) {
             {
                 targets: 1,
                 render: (data, type, row) => {
+                    let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
                     return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -454,9 +455,9 @@ function dataTableProduct(data, table_id) {
                                         </span>
                                         <select 
                                         class="form-select table-row-item" 
-                                        id="${row.selectProductID}"
+                                        id="${selectProductID}"
                                         required>
-                                            <option value=""></option>
+                                            <option value="${row.product.id}">${row.product.title}</option>
                                         </select>
                                     </span>
                                 </div>
@@ -466,16 +467,19 @@ function dataTableProduct(data, table_id) {
             {
                 targets: 2,
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-description"></div>`;
+                    return `<div class="row">
+                                <input type="text" class="form-control table-row-description" value="${row.product_description}">
+                            </div>`;
                 }
             },
             {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
+                    let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
                     return `<div class="row">
-                                <select class="form-select table-row-uom" id="${row.selectUOMID}" required>
-                                    <option value=""></option>
+                                <select class="form-select table-row-uom" id="${selectUOMID}" required>
+                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
                                 </select>
                             </div>`;
                 },
@@ -484,7 +488,9 @@ function dataTableProduct(data, table_id) {
                 targets: 4,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`;
+                    return `<div class="row">
+                                <input type="text" class="form-control table-row-quantity" value="${row.product_quantity}" required>
+                            </div>`;
                 }
             },
             {
@@ -497,7 +503,7 @@ function dataTableProduct(data, table_id) {
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price" 
-                                            value="0"
+                                            value="${row.product_unit_price}"
                                             data-return-type="number"
                                         >
                                         <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
@@ -516,7 +522,7 @@ function dataTableProduct(data, table_id) {
                     return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount non-negative-number">
+                                        <input type="text" class="form-control table-row-discount non-negative-number" value="${row.product_discount_value}">
                                         <span class="input-suffix">%</span>
                                     </span>
                                 </div>
@@ -532,14 +538,27 @@ function dataTableProduct(data, table_id) {
             {
                 targets: 7,
                 render: (data, type, row) => {
+                    let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
+                    let taxID = "";
+                    let taxRate = "";
+                    if (row.tax) {
+                        taxID = row.tax.id;
+                        taxRate = row.tax.value;
+                    }
                     return `<div class="row">
-                                <select class="form-select table-row-tax" id="${row.selectTaxID}">
-                                    <option value="" data-value="0"></option>
+                                <select class="form-select table-row-tax" id="${selectTaxID}">
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
                                     data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
                                     hidden
                                 >
                             </div>`;
@@ -552,7 +571,7 @@ function dataTableProduct(data, table_id) {
                                 <input 
                                     type="text" 
                                     class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="0"
+                                    value="${row.product_subtotal_price}"
                                     data-return-type="number"
                                     disabled
                                 >
@@ -594,7 +613,7 @@ function dataTableCost(data, table_id) {
                 targets: 0,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<span class="table-row-order">${row.valueOrder}</span>`
+                    return `<span class="table-row-order">${row.order}</span>`
                 }
             },
             {
@@ -618,6 +637,7 @@ function dataTableCost(data, table_id) {
                                             </div>
                                         </span>
                                         <select class="form-select table-row-item disabled-custom-show" disabled>
+                                            <option value="${row.product.id}">${row.product.title}</option>
                                         </select>
                                     </span>
                                 </div>
@@ -630,6 +650,7 @@ function dataTableCost(data, table_id) {
                 render: (data, type, row) => {
                     return `<div class="row">
                                 <select class="form-select table-row-uom disabled-custom-show" disabled>
+                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
                                 </select>
                             </div>`;
                 },
@@ -638,7 +659,9 @@ function dataTableCost(data, table_id) {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.valueQuantity}" disabled></div>`;
+                    return `<div class="row">
+                                <input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>
+                            </div>`;
                 }
             },
             {
@@ -649,7 +672,7 @@ function dataTableCost(data, table_id) {
                                     type="text" 
                                     class="form-control mask-money table-row-price" 
                                     data-return-type="number"
-                                    value="${row.valuePrice}"
+                                    value="${row.product_unit_price}"
                                     required
                                 >
                             </div>`;
@@ -664,6 +687,7 @@ function dataTableCost(data, table_id) {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
                                     data-return-type="number"
                                     hidden
                                 >
@@ -677,7 +701,7 @@ function dataTableCost(data, table_id) {
                                 <input 
                                     type="text" 
                                     class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="${row.valueSubtotal}"
+                                    value="${row.product_subtotal_price}"
                                     data-return-type="number"
                                     disabled
                                 >
@@ -724,6 +748,7 @@ function dataTableExpense(data, table_id) {
             {
                 targets: 1,
                 render: (data, type, row) => {
+                    let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
                     return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -743,9 +768,9 @@ function dataTableExpense(data, table_id) {
                                         </span>
                                         <select 
                                         class="form-select table-row-item" 
-                                        id="${row.selectExpenseID}"
+                                        id="${selectExpenseID}"
                                         required>
-                                            <option value=""></option>
+                                            <option value="${row.expense.id}">${row.expense.title}</option>
                                         </select>
                                     </span>
                                 </div>
@@ -756,9 +781,10 @@ function dataTableExpense(data, table_id) {
                 targets: 2,
                 width: "1%",
                 render: (data, type, row) => {
+                    let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
                     return `<div class="row">
-                                <select class="form-select table-row-uom" id="${row.selectUOMID}" required>
-                                    <option value=""></option>
+                                <select class="form-select table-row-uom" id="${selectUOMID}" required>
+                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
                                 </select>
                             </div>`;
                 },
@@ -767,7 +793,9 @@ function dataTableExpense(data, table_id) {
                 targets: 3,
                 width: "1%",
                 render: (data, type, row) => {
-                    return `<div class="row"><input type="text" class="form-control table-row-quantity" required></div>`;
+                    return `<div class="row">
+                                <input type="text" class="form-control table-row-quantity" value="${row.expense_quantity}" required>
+                            </div>`;
                 }
             },
             {
@@ -780,7 +808,7 @@ function dataTableExpense(data, table_id) {
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price" 
-                                            value="0"
+                                            value="${row.expense_price}"
                                             data-return-type="number"
                                         >
                                         <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
@@ -796,13 +824,21 @@ function dataTableExpense(data, table_id) {
             {
                 targets: 5,
                 render: (data, type, row) => {
+                    let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
+                    let taxID = "";
+                    let taxRate = "";
+                    if (row.tax) {
+                        taxID = row.tax.id;
+                        taxRate = row.tax.value
+                    }
                     return `<div class="row">
-                                <select class="form-select table-row-tax" id="${row.selectTaxID}">
-                                    <option value="" data-value="0"></option>
+                                <select class="form-select table-row-tax" id="${selectTaxID}">
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
+                                    value="${row.expense_tax_amount}"
                                     data-return-type="number"
                                     hidden
                                 >
@@ -816,7 +852,7 @@ function dataTableExpense(data, table_id) {
                                 <input 
                                     type="text" 
                                     class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="0"
+                                    value="${row.expense_subtotal_price}"
                                     data-return-type="number"
                                     disabled
                                 >
@@ -1074,15 +1110,6 @@ function init_company_currency_config() {
     });
 }
 
-// function init_mask_money_single(ele) {
-//     $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-//         if (currencyConfig) {
-//             ele.find('.mask-money').initInputCurrency(currencyConfig);
-//             ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
-//         } else throw  Error('Currency config is not found.')
-//     });
-// }
-
 function init_mask_money_single(ele) {
     let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
     if (currencyConfig) {
@@ -1090,15 +1117,6 @@ function init_mask_money_single(ele) {
         ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
     } else throw  Error('Currency config is not found.')
 }
-
-// function init_mask_money_ele(ele) {
-//     $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-//         if (currencyConfig) {
-//             ele.initInputCurrency(currencyConfig);
-//             ele.parseCurrencyDisplay(currencyConfig);
-//         } else throw  Error('Currency config is not found.')
-//     });
-// }
 
 function init_mask_money_ele(ele) {
     let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());

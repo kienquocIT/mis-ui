@@ -50,7 +50,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>
+                                    <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
                                     <input
                                             type="text"
                                             class="form-control disabled-but-edit"
@@ -93,7 +93,7 @@
                                     <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
+                                    <label class="form-label">{% trans 'Select Customer' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -316,11 +316,11 @@
                                         <thead>
                                         <tr>
                                             <th>STT</th>
-                                            <th>{% trans 'Product' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Product' %}<span class="required"></span></th>
                                             <th>{% trans 'Description' %}</th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Quantity' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Unit Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
+                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                            <th>{% trans 'Unit Price' %}<span class="required"></span></th>
                                             <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
@@ -545,7 +545,7 @@
                                             <th>{% trans 'Product' %}</th>
                                             <th>{% trans 'Unit Of Measure' %}</th>
                                             <th>{% trans 'Quantity' %}</th>
-                                            <th>{% trans 'Cost Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Cost Price' %}<span class="required"></span></th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th>{% trans 'Actions' %}</th>
@@ -614,10 +614,10 @@
                                         <thead>
                                         <tr>
                                             <th>STT</th>
-                                            <th>{% trans 'Expense' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Quantity' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Expense Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Expense' %}<span class="required"></span></th>
+                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
+                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                            <th>{% trans 'Expense Price' %}<span class="required"></span></th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th>{% trans 'Actions' %}</th>
@@ -720,6 +720,11 @@
                                 type="hidden"
                                 id="data-init-quotation-create-company-currency-config"
                         >
+                        <input
+                                type="hidden"
+                                id="data-quotation"
+                                value="[]"
+                        >
                     </div>
                 </div>
             </div>
@@ -747,6 +752,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
-    <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
 {% endblock %}

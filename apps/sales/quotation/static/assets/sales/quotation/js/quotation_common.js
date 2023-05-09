@@ -340,7 +340,7 @@ function loadBoxQuotationTax(tax_id, box_id) {
                 'value': data[i].rate,
             }).replace(/"/g, "&quot;");
             eleBox.append(`<option value="${data[i].id}" data-value="${data[i].rate}">
-                            <span class="tax-title">${data[i].title}</span>
+                            <span class="tax-title">${data[i].rate} %</span>
                             <input type="hidden" class="data-info" value="${dataStr}">
                         </option>`)
         }
@@ -516,7 +516,7 @@ function dataTableProduct(data, table_id) {
                     return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount">
+                                        <input type="text" class="form-control table-row-discount non-negative-number">
                                         <span class="input-suffix">%</span>
                                     </span>
                                 </div>
@@ -1197,6 +1197,8 @@ function setupDataProduct() {
                     rowData['tax'] = dataInfo.id;
                     rowData['product_tax_title'] = dataInfo.title;
                     rowData['product_tax_value'] = dataInfo.value;
+                } else {
+                    rowData['product_tax_value'] = 0;
                 }
             }
 
@@ -1283,6 +1285,8 @@ function setupDataCost() {
                     rowData['tax'] = dataInfo.id;
                     rowData['product_tax_title'] = dataInfo.title;
                     rowData['product_tax_value'] = dataInfo.value;
+                } else {
+                    rowData['product_tax_value'] = 0;
                 }
             }
 
@@ -1353,6 +1357,8 @@ function setupDataExpense() {
                     rowData['tax'] = dataInfo.id;
                     rowData['expense_tax_title'] = dataInfo.title;
                     rowData['expense_tax_value'] = dataInfo.value;
+                } else {
+                    rowData['expense_tax_value'] = 0;
                 }
             }
 
@@ -1396,7 +1402,12 @@ function setupDataSubmit(_form) {
     }
     _form.dataForm['status'] = $('#quotation-create-status').val();
     _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
-    _form.dataForm['total_product_discount_rate'] = $('#quotation-create-product-discount').val();
+    let totalProductDiscountRate = $('#quotation-create-product-discount').val();
+    if (totalProductDiscountRate) {
+        _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+    } else {
+        _form.dataForm['total_product_discount_rate'] = 0;
+    }
     _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
     _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
     _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();

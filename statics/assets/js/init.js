@@ -1245,6 +1245,15 @@ $.fn.extend({
             'data-money-pared', eleInput.val()
         ).text(eleInput.val());
     },
+    getCurrencyDisplay: function (configData, numberData) {
+        let eleInput = $('<input>', {
+            "type": 'text',
+            "class": "mask-money",
+            "value": numberData,
+        });
+        eleInput.initInputCurrency(configData);
+        return eleInput.val();
+    },
 
     // HTTP response, redirect, Ajax
     switcherResp: function (resp) {
@@ -1556,13 +1565,7 @@ class ExtendCurrency{
     }
 
     convertCurrency(isNumber){
-        let strNumber = '';
-        let html = jQuery('<input>')
-        html.attr('type', 'hidden')
-        html.appendTo('body')
-        strNumber = $(html).maskMoney(this.getConfig).maskMoney('mask', parseFloat(isNumber)).val();
-        html.remove()
-        return strNumber;
+        return $.fn.getCurrencyDisplay(this.getConfig, isNumber);
     }
 }
 let CCurrency = new ExtendCurrency();

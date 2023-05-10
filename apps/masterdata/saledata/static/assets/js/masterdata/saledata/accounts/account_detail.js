@@ -236,7 +236,6 @@ $(document).ready(function () {
 
                 let current_owner = data.owner;
                 let current_contact = data.contact_mapped;
-                console.log(data)
                 loadAccountOwner(current_owner, current_contact)
 
                 loadAccountGroup(data.account_group);

@@ -696,6 +696,7 @@ class dataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
                                     hidden
                                 >
                             </div>`;
@@ -711,6 +712,12 @@ class dataTableHandle {
                                     value="${row.product_subtotal_price}"
                                     data-return-type="number"
                                     disabled
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-subtotal-raw"
+                                    value="${row.product_subtotal_price}"
+                                    hidden
                                 >
                             </div>`;
                     }
@@ -835,6 +842,12 @@ class dataTableHandle {
                                     data-return-type="number"
                                     hidden
                                 >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
+                                    hidden
+                                >
                             </div>`;
                     }
                 },
@@ -848,6 +861,12 @@ class dataTableHandle {
                                     value="${row.product_subtotal_price}"
                                     data-return-type="number"
                                     disabled
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-subtotal-raw"
+                                    value="${row.product_subtotal_price}"
+                                    hidden
                                 >
                             </div>`;
                     }
@@ -986,6 +1005,12 @@ class dataTableHandle {
                                     data-return-type="number"
                                     hidden
                                 >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.expense_tax_amount}"
+                                    hidden
+                                >
                             </div>`;
                     }
                 },
@@ -999,6 +1024,12 @@ class dataTableHandle {
                                     value="${row.expense_subtotal_price}"
                                     data-return-type="number"
                                     disabled
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-subtotal-raw"
+                                    value="${row.expense_subtotal_price}"
+                                    hidden
                                 >
                             </div>`;
                     }
@@ -1017,50 +1048,84 @@ class dataTableHandle {
 }
 
 class calculateCaseHandle {
-    updateTotal(table, pretax_id, taxes_id, total_id, discount_id = null) {
+    updateTotal(table, is_product, is_cost, is_expense) {
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
-        let elePretaxAmount = document.getElementById(pretax_id);
-        let eleDiscount = document.getElementById(discount_id);
-        let eleTaxes = document.getElementById(taxes_id);
-        let eleTotal = document.getElementById(total_id);
-        let tableLen = table.tBodies[0].rows.length;
-        for (let i = 0; i < tableLen; i++) {
-            let row = table.tBodies[0].rows[i];
-            // calculate Pretax Amount
-            let subtotal = row.querySelector('.table-row-subtotal');
-            if (subtotal) {
-                if (subtotal.value) {
-                    pretaxAmount += $(subtotal).valCurrency();
+        let elePretaxAmount = null;
+        let eleTaxes = null;
+        let eleTotal = null;
+        let eleDiscount = null;
+        let elePretaxAmountRaw = null;
+        let eleTaxesRaw = null;
+        let eleTotalRaw = null;
+        let eleDiscountRaw = null;
+        if (is_product === true) {
+            elePretaxAmount = document.getElementById('quotation-create-product-pretax-amount');
+            eleTaxes = document.getElementById('quotation-create-product-taxes');
+            eleTotal = document.getElementById('quotation-create-product-total');
+            eleDiscount = document.getElementById('quotation-create-product-discount-amount');
+            elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
+            eleTaxesRaw = document.getElementById('quotation-create-product-taxes-raw');
+            eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
+            eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
+        } else if (is_cost === true) {
+            elePretaxAmount = document.getElementById('quotation-create-cost-pretax-amount');
+            eleTaxes = document.getElementById('quotation-create-cost-taxes');
+            eleTotal = document.getElementById('quotation-create-cost-total');
+            elePretaxAmountRaw = document.getElementById('quotation-create-cost-pretax-amount-raw');
+            eleTaxesRaw = document.getElementById('quotation-create-cost-taxes-raw');
+            eleTotalRaw = document.getElementById('quotation-create-cost-total-raw');
+        } else if (is_expense === true) {
+            elePretaxAmount = document.getElementById('quotation-create-expense-pretax-amount');
+            eleTaxes = document.getElementById('quotation-create-expense-taxes');
+            eleTotal = document.getElementById('quotation-create-expense-total');
+            elePretaxAmountRaw = document.getElementById('quotation-create-expense-pretax-amount-raw');
+            eleTaxesRaw = document.getElementById('quotation-create-expense-taxes-raw');
+            eleTotalRaw = document.getElementById('quotation-create-expense-total-raw');
+        }
+        if (elePretaxAmount && eleTaxes && eleTotal) {
+            let tableLen = table.tBodies[0].rows.length;
+            for (let i = 0; i < tableLen; i++) {
+                let row = table.tBodies[0].rows[i];
+                // calculate Pretax Amount
+                let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                if (subtotalRaw) {
+                    if (subtotalRaw.value) {
+                        pretaxAmount += parseFloat(subtotalRaw.value)
+                    }
+                }
+                // calculate Tax Amount
+                let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                if (subTaxAmountRaw) {
+                    if (subTaxAmountRaw.value) {
+                        taxAmount += parseFloat(subTaxAmountRaw.value)
+                    }
                 }
             }
-            // calculate Tax Amount
-            let subTaxAmount = row.querySelector('.table-row-tax-amount');
-            if (subTaxAmount) {
-                if (subTaxAmount.value) {
-                    taxAmount += $(subTaxAmount).valCurrency();
-                }
+            let discount_on_total = 0;
+            let discountTotalRate = $('#quotation-create-product-discount').val();
+            if (discountTotalRate && eleDiscount) {
+                discount_on_total = parseFloat(discountTotalRate);
+                discountAmount = ((pretaxAmount * discount_on_total) / 100)
             }
-        }
-        let discount_on_total = 0;
-        let discountTotalRate = $('#quotation-create-product-discount').val();
-        if (discountTotalRate && eleDiscount) {
-            discount_on_total = parseFloat(discountTotalRate);
-            discountAmount = ((pretaxAmount * discount_on_total) / 100)
-        }
-        let totalFinal = (pretaxAmount - discountAmount + taxAmount);
+            let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
-        elePretaxAmount.value = pretaxAmount;
-        init_mask_money_ele($(elePretaxAmount));
-        if (eleDiscount) {
-            eleDiscount.value = discountAmount;
-            init_mask_money_ele($(eleDiscount));
+            elePretaxAmount.value = pretaxAmount;
+            elePretaxAmountRaw.value = pretaxAmount;
+            init_mask_money_ele($(elePretaxAmount));
+            if (eleDiscount) {
+                eleDiscount.value = discountAmount;
+                eleDiscountRaw.value = discountAmount;
+                init_mask_money_ele($(eleDiscount));
+            }
+            eleTaxes.value = taxAmount;
+            eleTaxesRaw.value = taxAmount;
+            init_mask_money_ele($(eleTaxes));
+            eleTotal.value = totalFinal;
+            eleTotalRaw.value = totalFinal;
+            init_mask_money_ele($(eleTotal));
         }
-        eleTaxes.value = taxAmount;
-        init_mask_money_ele($(eleTaxes));
-        eleTotal.value = totalFinal;
-        init_mask_money_ele($(eleTotal));
     }
 
     calculate(row) {
@@ -1090,6 +1155,7 @@ class calculateCaseHandle {
             }
         }
         let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+        let eleTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
         // calculate discount + tax
         let eleDiscount = row.querySelector('.table-row-discount');
         let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
@@ -1115,6 +1181,7 @@ class calculateCaseHandle {
             if (eleTaxAmount) {
                 let taxAmount = ((subtotalPlus * tax) / 100);
                 eleTaxAmount.value = taxAmount;
+                eleTaxAmountRaw.value = taxAmount;
                 init_mask_money_ele($(eleTaxAmount));
             }
             eleDiscountAmount.value = discountAmountOnTotal;
@@ -1124,13 +1191,16 @@ class calculateCaseHandle {
             if (eleTaxAmount) {
                 let taxAmount = ((subtotal * tax) / 100);
                 eleTaxAmount.value = taxAmount;
+                eleTaxAmountRaw.value = taxAmount;
                 init_mask_money_ele($(eleTaxAmount));
             }
         }
         // set subtotal value
         let eleSubtotal = row.querySelector('.table-row-subtotal');
+        let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
         if (eleSubtotal) {
             eleSubtotal.value = subtotal;
+            eleSubtotalRaw.value = subtotal;
             init_mask_money_ele($(eleSubtotal));
         }
     }
@@ -1140,16 +1210,16 @@ class calculateCaseHandle {
         self.calculate(row);
         // calculate total
         if (is_product === true) {
-            self.updateTotal(table[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            self.updateTotal(table[0], true, false, false)
         } else if (is_cost === true) {
-            self.updateTotal(table[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total')
+            self.updateTotal(table[0], false, true, false)
         } else if (is_expense === true) {
-            self.updateTotal(table[0], 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total')
+            self.updateTotal(table[0], false, false, true)
         }
 
     }
 
-    deleteRow(currentRow, tableBody, table, pretax_id, taxes_id, total_id, discount_id = null) {
+    deleteRow(currentRow, tableBody, table) {
         let self = this;
         table.DataTable().row(currentRow).remove().draw();
         let order = 0;
@@ -1164,7 +1234,6 @@ class calculateCaseHandle {
                 }
             }
         }
-        self.updateTotal(table[0], pretax_id, taxes_id, total_id, discount_id);
     }
 
 }
@@ -1218,9 +1287,9 @@ class submitHandle {
                 }
 
             }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
             if (eleTaxAmount) {
-                rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
+                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
             }
             let eleDescription = row.querySelector('.table-row-description');
             if (eleDescription) {
@@ -1228,7 +1297,7 @@ class submitHandle {
             }
             let eleQuantity = row.querySelector('.table-row-quantity');
             if (eleQuantity) {
-                rowData['product_quantity'] = eleQuantity.value;
+                rowData['product_quantity'] = parseInt(eleQuantity.value);
             }
             let elePrice = row.querySelector('.table-row-price');
             if (elePrice) {
@@ -1246,9 +1315,9 @@ class submitHandle {
             if (eleDiscountAmount) {
                 rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
             }
-            let eleSubtotal = row.querySelector('.table-row-subtotal');
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
             if (eleSubtotal) {
-                rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
+                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
             }
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {
@@ -1306,21 +1375,21 @@ class submitHandle {
                 }
 
             }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
             if (eleTaxAmount) {
-                rowData['product_tax_amount'] = $(eleTaxAmount).valCurrency();
+                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value)
             }
             let eleQuantity = row.querySelector('.table-row-quantity');
             if (eleQuantity) {
-                rowData['product_quantity'] = eleQuantity.value;
+                rowData['product_quantity'] = parseInt(eleQuantity.value);
             }
             let elePrice = row.querySelector('.table-row-price');
             if (elePrice) {
                 rowData['product_cost_price'] = $(elePrice).valCurrency();
             }
-            let eleSubtotal = row.querySelector('.table-row-subtotal');
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
             if (eleSubtotal) {
-                rowData['product_subtotal_price'] = $(eleSubtotal).valCurrency();
+                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
             }
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {
@@ -1378,21 +1447,21 @@ class submitHandle {
                 }
 
             }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
             if (eleTaxAmount) {
-                rowData['expense_tax_amount'] = $(eleTaxAmount).valCurrency();
+                rowData['expense_tax_amount'] = parseFloat(eleTaxAmount.value)
             }
             let eleQuantity = row.querySelector('.table-row-quantity');
             if (eleQuantity) {
-                rowData['expense_quantity'] = eleQuantity.value;
+                rowData['expense_quantity'] = parseInt(eleQuantity.value);
             }
             let elePrice = row.querySelector('.table-row-price');
             if (elePrice) {
                 rowData['expense_price'] = $(elePrice).valCurrency();
             }
-            let eleSubtotal = row.querySelector('.table-row-subtotal');
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
             if (eleSubtotal) {
-                rowData['expense_subtotal_price'] = $(eleSubtotal).valCurrency();
+                rowData['expense_subtotal_price'] = parseFloat(eleSubtotal.value)
             }
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {
@@ -1417,22 +1486,22 @@ class submitHandle {
             _form.dataForm['data_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
         }
         _form.dataForm['status'] = $('#quotation-create-status').val();
-        _form.dataForm['total_product_pretax_amount'] = $('#quotation-create-product-pretax-amount').valCurrency();
+        _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
         let totalProductDiscountRate = $('#quotation-create-product-discount').val();
         if (totalProductDiscountRate) {
             _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
         } else {
             _form.dataForm['total_product_discount_rate'] = 0;
         }
-        _form.dataForm['total_product_discount'] = $('#quotation-create-product-discount-amount').valCurrency();
-        _form.dataForm['total_product_tax'] = $('#quotation-create-product-taxes').valCurrency();
-        _form.dataForm['total_product'] = $('#quotation-create-product-total').valCurrency();
-        _form.dataForm['total_cost_pretax_amount'] = $('#quotation-create-cost-pretax-amount').valCurrency();
-        _form.dataForm['total_cost_tax'] = $('#quotation-create-cost-taxes').valCurrency();
-        _form.dataForm['total_cost'] = $('#quotation-create-cost-total').valCurrency();
-        _form.dataForm['total_expense_pretax_amount'] = $('#quotation-create-expense-pretax-amount').valCurrency();
-        _form.dataForm['total_expense_tax'] = $('#quotation-create-expense-taxes').valCurrency();
-        _form.dataForm['total_expense'] = $('#quotation-create-expense-total').valCurrency();
+        _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
+        _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
+        _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+        _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
+        _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
+        _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
+        _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
+        _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
+        _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
 
         _form.dataForm['quotation_products_data'] = self.setupDataProduct();
         _form.dataForm['quotation_costs_data'] = self.setupDataCost();

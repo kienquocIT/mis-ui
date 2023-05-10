@@ -1045,6 +1045,46 @@ class dataTableHandle {
             ],
         });
     }
+
+    dataTablePromotion(data, table_id) {
+        // init dataTable
+        let listData = data ? data : [];
+        let jqueryId = '#' + table_id;
+        let $tables = $(jqueryId);
+        $tables.DataTable({
+            data: listData,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            info: false,
+            drawCallback: function (row, data) {
+                // render icon after table callback
+                feather.replace();
+            },
+            rowCallback: function (row, data) {
+            },
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row.order}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row.title}</span>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<button type="button" class="btn btn-primary">Apply</button>`;
+                    },
+                }
+            ],
+        });
+    }
 }
 
 class calculateCaseHandle {

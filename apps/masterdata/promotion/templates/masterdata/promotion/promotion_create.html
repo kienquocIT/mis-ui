@@ -8,7 +8,7 @@
     <link href="{% static 'assets/masterdata/promotion/css/promotion.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="promo_create"
+    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="promo_form"
             data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
             data-bs-original-title="Save">
         <span class="icon">
@@ -29,7 +29,7 @@
 {% endblock %}
 {% block pageContent %}
     <!-- Form Create-->
-    <form id="promo_create" data-url="{% url 'PromotionCreateAPI' %}" data-method="POST" method="post" novalidate
+    <form id="promo_form" data-url="{% url 'PromotionCreateAPI' %}" data-method="POST" method="post" novalidate
     data-url-redirect="{% url 'PromotionList' %}">
         {% csrf_token %}
         <div class="row">
@@ -81,7 +81,7 @@
                     </label>
                     <input type="hidden" name="customer_type" value="0">
                     <textarea class="form-control" type="text" name="customer_remark"
-                              id="customer"></textarea>
+                              id="customer_remark"></textarea>
                 </div>
             </div>
         </div>

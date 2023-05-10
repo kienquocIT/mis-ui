@@ -8,7 +8,7 @@
     <link href="{% static 'assets/masterdata/promotion/css/promotion.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="promo_create"
+    <button class="btn btn-flush-success btn-animated mr-1 font-5 hidden" type="submit" form="promo_form"
             data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
             data-bs-original-title="Save">
         <span class="icon">
@@ -28,15 +28,20 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <!-- Form Create-->
-    <form id="promo_create" data-url="{% url 'PromotionCreateAPI' %}" data-method="POST" method="post" novalidate
-    data-url-redirect="{% url 'PromotionList' %}">
+    <!-- Form Create -->
+
+    <form id="promo_form" data-url="{% url 'PromotionDetailAPI' data.doc_id %}" data-method="PUT" method="post"
+          novalidate data-url-redirect="{% url 'PromotionList' %}" readonly>
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label required" for="title">{% trans 'Name' %}</label>
-                    <input class="form-control" type="text" name="title" id="title" required>
+                    <div class="readonly">
+                        <input class="form-control" type="text" name="title" id="title"  value="ahihi" required
+                               readonly>
+                        <span></span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
@@ -91,9 +96,11 @@
             </div>
             <div class="row row-cols-md-6 mb-2 row-method">
                 <div class="col">
-                    <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount" checked>
+                    <div class="form-check form-check-lg readonly">
+                        <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount"
+                               checked readonly>
                         <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
+                        <span></span>
                     </div>
                 </div>
                 <div class="col">
@@ -152,12 +159,15 @@
                     <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
                            id="use_count" required>
                     <label class="mr-4" for="use_count">{% trans 'use  for each customer per' %}</label>
-                    <select name="times_condition" id="times_condition" class="form-select" required>
-                        <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
-                        <option value="1">{% trans 'Valid time' %}</option>
-                        <option value="2">{% trans 'Week' %}</option>
-                        <option value="3">{% trans 'Month' %}</option>
-                    </select>
+                    <dev class="readonly">
+                        <select name="times_condition" id="times_condition" class="form-select" required readonly>
+                            <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
+                            <option value="1">{% trans 'Valid time' %}</option>
+                            <option value="2">{% trans 'Week' %}</option>
+                            <option value="3">{% trans 'Month' %}</option>
+                        </select>
+                        <span></span>
+                    </dev>
                     <div class="sub-text-max_usages d-flex align-items-center">
                         <p class="mr-4">{% trans 'Max Usages' %}</p>
                         <input class="form-control" type="number" min="0" max="999999" name="max_usages"
@@ -191,7 +201,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                        <div class="input-group">
+                        <div class="input-group readonly">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
                                     <i class="fas fa-info-circle"
@@ -204,7 +214,7 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two"
+                                <select class="form-control dropdown-select_two" readonly
                                         name="product_selected"
                                         id="product_selected"
                                         data-multiple="false"
@@ -470,4 +480,3 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/masterdata/promotion/js/promotion.js' %}"></script>
 {% endblock %}
-

@@ -165,3 +165,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DISTRICTS = StringUrl('base/location/districts?city_id=')
     WARDS = StringUrl('base/location/wards?district_id=')
     BASE_CURRENCY = StringUrl('base/currencies')
+
+    # master-data/ promotion
+    PROMOTION_LIST = StringUrl('promotion/list')
+    PROMOTION_DETAIL = StringUrl('promotion/detail')

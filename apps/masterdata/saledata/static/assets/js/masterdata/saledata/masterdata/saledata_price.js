@@ -842,7 +842,7 @@ $(document).ready(function () {
             }
             else if (parseInt(unit) === 1){
                 $add_teams.find('[name="value_amount"]').val(data.value)
-                $add_teams.find('[name="value_amount"]').initInputCurrency(CCurrency.getConfig)
+                $add_teams.find('[name="value_amount"]').initInputCurrency(CCurrency.getConfigR)
                 $add_teams.find('[name="value"]').addClass('hidden')
             }
             $add_teams.find('[name="unit_type"]').val(unit).trigger('change')

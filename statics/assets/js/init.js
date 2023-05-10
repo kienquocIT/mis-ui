@@ -1012,6 +1012,9 @@ $(document).ready(function () {
             location.href = url;
         }
     });
+
+    // init dblclick form field to edit
+    $.fn.formDetailToUpdateAction();
 });
 
 
@@ -1166,7 +1169,7 @@ $.fn.extend({
     },
     getCompanyCurrencyConfig: async function () {
         let data = await $.fn.getCompanyConfig();
-        return data['config']['currency_rule'];
+        return data['config'];
     },
 
     // FORM handler
@@ -1253,6 +1256,16 @@ $.fn.extend({
         });
         eleInput.initInputCurrency(configData);
         return eleInput.val();
+    },
+    formDetailToUpdateAction: function(){
+        let $DetailForm = $('form[readonly]');
+        if ($DetailForm){
+            $('.readonly > * + span').on('click', function(){
+                $('[readonly]', $(this).parent('.readonly')).attr('readonly', false);
+                $(this).parent('.readonly').removeClass('readonly');
+                $(`button[form="${$DetailForm.attr('id')}"]`).removeClass('hidden')
+            });
+        }
     },
 
     // HTTP response, redirect, Ajax
@@ -1379,6 +1392,7 @@ $.fn.extend({
         })
         return rs;
     }
+
 })
 
 // support for Form Submit
@@ -1552,20 +1566,25 @@ var DataTableAction = {
  * class support for currency function in base.html
  * @func: convertCurrency => return string with format currency
  * @param isNumber string number get from API
+ * @param ConfigOpt with two object {currency:{...}, currency_rule: {...}}
  */
 class ExtendCurrency{
-    ConfigOption = [];
+    ConfigOpt = {}
 
     set setConfig(data){
-        this.ConfigOption = data
+        this.ConfigOpt = data
+    }
+
+    get getConfigR(){
+        return this.ConfigOpt['currency_rule']
     }
 
     get getConfig(){
-        return this.ConfigOption
+        return this.ConfigOpt['currency']
     }
 
     convertCurrency(isNumber){
-        return $.fn.getCurrencyDisplay(this.getConfig, isNumber);
+        return $.fn.getCurrencyDisplay(this.getConfigR, isNumber);
     }
 }
 let CCurrency = new ExtendCurrency();

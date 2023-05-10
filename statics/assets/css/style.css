@@ -91032,4 +91032,37 @@ Project:	Jampack
 .dropdown-menu .dropdown-header.header-wth-bg {
     background: #007D88;
 }
+
+.readonly [readonly]{
+    border-color:transparent;
+    background-color: transparent;
+}
+.readonly:hover [readonly]{
+    border-color: #cdcdcd;
+}
+.readonly{position: relative}
+.readonly:hover > * + span:before {
+    content: "\F4CB";
+    font-family: "bootstrap-icons";
+}
+.readonly:hover > * + span{
+    background-color:#f3f3f3;
+    width: 38px;
+    height: calc(100% - 2px);
+    top:1px;
+    right:1px;
+    position: absolute;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-left: solid 1px #cdcdcd;
+}
+.form-check.readonly:hover{
+    box-shadow: 0px 0px 0px 1px #cdcdcd inset;
+    border-radius:6px;
+}
+
 /*# sourceMappingURL=style.css.map */
+

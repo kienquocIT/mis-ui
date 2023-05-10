@@ -18,7 +18,8 @@ $(function(){
             {
                 targets: 1,
                 render: (row, type, data) => {
-                    return `<p>${data.title}</p>`;
+                    let url = $('#url-factory').attr('data-detail').format_url_with_uuid(data.id)
+                    return `<p><a href="${url}" target="_blank" class="text-decoration-underline">${data.title}</a></p>`;
                 }
             },
             {

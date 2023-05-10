@@ -84,6 +84,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    # Advance
+    ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Advance list'), 'AdvanceList')
+    ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Advance create'), 'AdvanceCreate')
+    ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
     # Price
     PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -246,6 +251,12 @@ class BreadcrumbView:
     ]
     PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
     PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]
+
+    ADVANCE_LIST_PAGE = [
+        BreadcrumbItem.ADVANCE_LIST_PAGE
+    ]
+    ADVANCE_CREATE_PAGE = ADVANCE_LIST_PAGE + [BreadcrumbItem.ADVANCE_CREATE_PAGE]
+    ADVANCE_DETAIL_PAGE = ADVANCE_LIST_PAGE + [BreadcrumbItem.ADVANCE_DETAIL_PAGE]
 
     PRICE_LIST_PAGE = [
         BreadcrumbItem.PRICE_LIST_PAGE

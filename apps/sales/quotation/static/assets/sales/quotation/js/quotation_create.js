@@ -189,7 +189,8 @@ $(function () {
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click price list's option
@@ -228,7 +229,7 @@ $(function () {
                 let row = tableProduct[0].tBodies[0].rows[i];
                 calculateClass.calculate(row);
             }
-            calculateClass.updateTotal(tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click button add expense
@@ -285,7 +286,8 @@ $(function () {
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
+            calculateClass.updateTotal(tableExpense[0], false, false, true)
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
@@ -320,13 +322,13 @@ $(function () {
                     let uomDataStr = "";
                     let optionUOM = ``;
 
-                    let valueQuantity = "";
-                    let valuePrice = "";
+                    let valueQuantity = 0;
+                    let valuePrice = 0;
                     let taxDataStr = "";
-                    let valueTaxSelected = "";
-                    let valueTaxAmount = "";
+                    let valueTaxSelected = 0;
+                    let valueTaxAmount = 0;
                     let valueOrder = "";
-                    let valueSubtotal = "";
+                    let valueSubtotal = 0;
                     let row = tableProduct[0].tBodies[0].rows[i];
                     let product = row.querySelector('.table-row-item');
                     if (product) {
@@ -336,7 +338,7 @@ $(function () {
                             showProduct = optionSelected.text;
                             if (optionSelected.querySelector('.data-default')) {
                                 let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                                valuePrice = product_data_json.cost_price;
+                                valuePrice = parseFloat(product_data_json.cost_price);
                                 product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
                             }
                             if (optionSelected.querySelector('.data-info')) {
@@ -361,7 +363,14 @@ $(function () {
                     }
                     let quantity = row.querySelector('.table-row-quantity');
                     if (quantity) {
-                        valueQuantity = quantity.value;
+                        valueQuantity = parseInt(quantity.value);
+                    }
+                    valueTaxSelected = parseInt(row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].getAttribute('data-value'));
+                    if (valuePrice && valueQuantity) {
+                        valueSubtotal = (valuePrice * valueQuantity);
+                        if (valueTaxSelected) {
+                            valueTaxAmount = ((valueSubtotal * valueTaxSelected) / 100);
+                        }
                     }
                     let order = row.querySelector('.table-row-order');
                     if (order) {
@@ -393,7 +402,7 @@ $(function () {
                         "product_tax_value": 0,
                         "product_uom_title": "",
                         "product_cost_price": valuePrice,
-                        "product_tax_amount": 0,
+                        "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal
                     }
                     let addRow = tableCost.DataTable().row.add(dataAdd).draw();
@@ -437,7 +446,6 @@ $(function () {
                                                             <span class="tax-title">${option.text}</span>
                                                         </option>`)
                                     }
-                                    valueTaxSelected = option.value;
                                 } else {
                                     if (taxDataStr) {
                                         $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
@@ -453,21 +461,9 @@ $(function () {
                             }
                         }
                     }
-                    let rowTaxAmount = $newRow[0].querySelector('.table-row-tax-amount');
-                    if (rowTaxAmount) {
-                        if (valuePrice && valueQuantity) {
-                            valueSubtotal = (Number(valuePrice) * Number(valueQuantity));
-                            if (valueTaxSelected) {
-                                valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100);
-                                rowTaxAmount.value = valueTaxAmount;
-                                init_mask_money_ele($(rowTaxAmount));
-                            }
-                        }
-                    }
-
                 }
                 // update total
-                calculateClass.updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+                calculateClass.updateTotal(tableCost[0], false, true, false);
             }
         });
 

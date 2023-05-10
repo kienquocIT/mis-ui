@@ -29,6 +29,10 @@ $(function () {
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
         dataTableClass.dataTableExpense(data, 'datable-quotation-create-expense');
+        dataTableClass.dataTablePromotion([{
+            'order': 1,
+            'title': "Miễn phí vận chuyển",
+        }], 'datable-quotation-create-promotion');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');

@@ -1261,7 +1261,15 @@ $.fn.extend({
         let $DetailForm = $('form[readonly]');
         if ($DetailForm){
             $('.readonly > * + span').on('click', function(){
+                // for input/select
                 $('[readonly]', $(this).parent('.readonly')).attr('readonly', false);
+                // for radio/checkbox
+                $('[type="checkbox"][disabled], [type="radio"][disabled]', $(this).parent('.readonly'))
+                    .attr('disabled', false);
+                // for select2 with icon info
+                $('[disabled]', $(this).closest('.input-group.readonly')).attr('disabled', false);
+                // for select2 with icon info
+                $('select[disabled]', $(this).parent('.readonly')).attr('disabled', false);
                 $(this).parent('.readonly').removeClass('readonly');
                 $(`button[form="${$DetailForm.attr('id')}"]`).removeClass('hidden')
             });

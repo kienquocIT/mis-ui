@@ -236,12 +236,14 @@ function getDetailPage($form){
     $.fn.callAjax($form.attr('data-url'), 'get')
         .then(
             (resp) => {
-                // let data = $.fn.switcherResp(resp);
-                // if (data) {
-                //     $.fn.notifyPopup({description: data.message}, 'success')
-                //     $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
-                // }
-                console.log('get detail done')
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $('#title').val(data.title)
+                    $('#remark').val(data.remark)
+                    $('#customer_remark').val(data.customer_remark)
+                    $(`#select_customer_type option[value="${data.select_customer_type}"]`).attr('selected', true)
+
+                }
             },
         )
 }

@@ -133,7 +133,7 @@ function initSelectBox(selectBoxElement = null) {
             options['tags'] = true
             $this.prop('multiple', true)
         }
-        if ($this.attr('readonly')) options['disabled'] = true
+        // if ($this.attr('readonly')) options['disabled'] = true
 
         // run select2
         $this.select2(options)

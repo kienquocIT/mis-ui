@@ -38,7 +38,7 @@
                 <div class="form-group">
                     <label class="form-label required" for="title">{% trans 'Name' %}</label>
                     <div class="readonly">
-                        <input class="form-control" type="text" name="title" id="title"  value="ahihi" required
+                        <input class="form-control" type="text" name="title" id="title" required
                                readonly>
                         <span></span>
                     </div>
@@ -47,9 +47,12 @@
             <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
                 <div class="form-group">
                     <label class="form-label required" for="valid_time">{% trans 'Valid time' %}</label>
-                    <input class="form-control" type="text" name="valid_time" id="valid_time"
-                           placeholder="{% trans 'Select valid date' %}" autocomplete="off"
-                           required>
+                    <div class="readonly">
+                        <input class="form-control" type="text" name="valid_time" id="valid_time"
+                               placeholder="{% trans 'Select valid date' %}" autocomplete="off"
+                               required readonly>
+                        <span></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,19 +60,26 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="form-label" for="remark">{% trans 'Description' %}</label>
-                    <input class="form-control" type="text" name="remark" id="remark"/>
+                    <div class="readonly">
+                        <input class="form-control" type="text" name="remark" id="remark" readonly/>
+                        <span></span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
                 <div class="form-group">
                     <label class="form-label" for="currency">{% trans 'Currency' %}</label>
-                    <select class="form-control"
-                            name="currency"
-                            id="currency"
-                            data-multiple="false"
-                            data-prefix="currency_list"
-                            data-url="{% url 'CurrencyListAPI' %}"
-                    ></select>
+                    <div class="readonly">
+                        <select class="form-control"
+                                name="currency"
+                                id="currency"
+                                data-multiple="false"
+                                data-prefix="currency_list"
+                                data-url="{% url 'CurrencyListAPI' %}"
+                                disabled
+                        ></select>
+                        <span></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,8 +95,11 @@
                         </button>
                     </label>
                     <input type="hidden" name="customer_type" value="0">
-                    <textarea class="form-control" type="text" name="customer_remark"
-                              id="customer"></textarea>
+                    <div class="readonly">
+                        <textarea class="form-control" type="text" name="customer_remark"
+                                  id="customer_remark" readonly></textarea>
+                        <span></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,7 +111,7 @@
                 <div class="col">
                     <div class="form-check form-check-lg readonly">
                         <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount"
-                               checked readonly>
+                               checked disabled>
                         <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
                         <span></span>
                     </div>
@@ -110,56 +123,71 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" name="is_gift" id="is_gift">
+                    <div class="form-check form-check-lg readonly">
+                        <input type="checkbox" class="form-check-input" name="is_gift" id="is_gift" disabled>
                         <label class="form-check-label" for="is_gift">{% trans 'Gift' %}</label>
+                        <span></span>
                     </div>
                 </div>
             </div>
             <div class="row row-cols-md-6 mb-2 row-tax">
                 <div class="col">
-                    <div class="form-check">
-                        <input type="radio" id="tax_position_01" name="before_after_tax" class="form-check-input"
-                               required>
+                    <div class="form-check readonly">
+                            <input type="radio" id="tax_position_01" name="before_after_tax" class="form-check-input"
+                                   required disabled>
+                        <span></span>
                         <label class="form-check-label" for="tax_position_01">{% trans 'Before Tax' %}</label>
+
                     </div>
                 </div>
                 <div class="col">
-                    <div class="form-check">
+                    <div class="form-check readonly">
                         <input type="radio" id="tax_position_02" name="before_after_tax" class="form-check-input"
-                               required>
+                               required disabled>
+                        <span></span>
                         <label class="form-check-label" for="tax_position_02">{% trans 'After Tax' %}</label>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-xs-12 d-md-flex justify-content-start align-items-center mb-3 row-percent">
-                <div class="form-check mr-4">
-                    <input type="radio" id="percent_01" name="percent_fix_amount" class="form-check-input" required>
+                <div class="form-check mr-4 readonly">
+                        <input type="radio" id="percent_01" name="percent_fix_amount" class="form-check-input" required
+                               disabled>
+                    <span></span>
                     <label class="form-check-label" for="percent_01">{% trans '%' %}</label>
                 </div>
-                <div class="form-check mr-4">
-                    <input type="radio" id="percent_02" name="percent_fix_amount" class="form-check-input" required>
+                <div class="form-check mr-4 readonly">
+                    <div class="readonly">
+                        <input type="radio" id="percent_02" name="percent_fix_amount" class="form-check-input" required
+                               disabled>
+                    </div>
+                    <span></span>
                     <label class="form-check-label" for="percent_02">{% trans 'Fixed Amount' %}</label>
                 </div>
-                <div class="form-group mb-0">
+                <div class="form-group mb-0 readonly">
                     <input class="form-control" type="text" name="percent_value"
-                           id="percent_value" placeholder="10%">
+                           id="percent_value" placeholder="10%" readonly>
                     <input class="form-control mask-money hidden" type="text" name="fix_value"
-                           id="fix_value" data-return-type="number">
+                           id="fix_value" data-return-type="number" readonly>
+                    <span></span>
                 </div>
-                <div class="form-group ml-auto mb-0 d-flex align-items-center">
+                <div class="form-group ml-auto mb-0 d-flex align-items-center readonly">
                     <label for="percent_value" class="mr-4">{% trans 'Max amount' %}</label>
                     <input class="form-control mask-money" type="text" name="max_percent_value"
-                           data-return-type="number" id="max_percent_value">
+                           data-return-type="number" id="max_percent_value" readonly>
+                    <span></span>
                 </div>
             </div>
             <div class="clearfix"></div>
             <div class="col-md-6 col-xs-12 mb-2">
                 <div class="form-group d-md-flex align-items-center">
-                    <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
-                           id="use_count" required>
+                    <div class="readonly">
+                        <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
+                               id="use_count" required readonly>
+                        <span></span>
+                    </div>
                     <label class="mr-4" for="use_count">{% trans 'use  for each customer per' %}</label>
-                    <dev class="readonly">
+                    <div class="readonly">
                         <select name="times_condition" id="times_condition" class="form-select" required readonly>
                             <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
                             <option value="1">{% trans 'Valid time' %}</option>
@@ -167,35 +195,43 @@
                             <option value="3">{% trans 'Month' %}</option>
                         </select>
                         <span></span>
-                    </dev>
+                    </div>
                     <div class="sub-text-max_usages d-flex align-items-center">
                         <p class="mr-4">{% trans 'Max Usages' %}</p>
-                        <input class="form-control" type="number" min="0" max="999999" name="max_usages"
-                               id="max_usages">
+                        <div class="readonly">
+                            <input class="form-control" type="number" min="0" max="999999" name="max_usages"
+                                   id="max_usages">
+                            <span></span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="clearfix"></div>
             <div class="group-select-box col-md-6">
-                <div class="form-check form-check-lg form-check-inline">
-                    <input type="checkbox" class="form-check-input" id="is_on_order" name="is_on_order">
+                <div class="form-check form-check-lg form-check-inline readonly">
+                    <input type="checkbox" class="form-check-input" id="is_on_order" name="is_on_order" disabled>
+                    <span></span>
                     <label class="form-check-label" for="is_discount_order">
                         {% trans 'Discount on order' %}&nbsp;&nbsp;&nbsp;&nbsp;{% trans 'When' %}</label>
                 </div>
-                <div class="form-check form-check-lg form-check-inline">
-                    <input type="checkbox" class="form-check-input" id="is_minimum" name="is_minimum">
+                <div class="form-check form-check-lg form-check-inline readonly">
+                    <input type="checkbox" class="form-check-input" id="is_minimum" name="is_minimum" disabled>
+                    <span></span>
                     <label class="form-check-label" for="is_discount_order_opt">
                         {% trans 'Minimum purchase value' %}</label>
                 </div>
-                <div class="form-group d-inline-block">
+                <div class="form-group d-inline-block readonly">
                     <input class="form-control mask-money" type="text" name="minimum_value"
-                           id="minimum_value" data-return-type="number">
+                           id="minimum_value" data-return-type="number" readonly>
+                    <span></span>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row mb-3">
                     <div class="col-md-6 col-xs-12">
-                        <div class="form-check form-check-lg">
-                            <input type="checkbox" class="form-check-input" id="is_on_product" name="is_on_product">
+                        <div class="form-check form-check-lg readonly">
+                            <input type="checkbox" class="form-check-input" id="is_on_product" name="is_on_product"
+                                   readonly>
+                            <span></span>
                             <label class="form-check-label" for="is_on_product">
                                 {% trans 'Discount on special product' %}</label>
                         </div>
@@ -214,7 +250,7 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two" readonly
+                                <select class="form-control dropdown-select_two" disabled
                                         name="product_selected"
                                         id="product_selected"
                                         data-multiple="false"
@@ -224,25 +260,35 @@
                                         data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
                                 ></select>
                             </div>
+                            <span></span>
                         </div>
                     </div>
                 </div>
                 <div class="d-md-flex justify-content-end align-items-center">
                     <div class="form-label mr-4 mb-0">{% trans 'When' %}</div>
-                    <div class="form-check form-check-lg mr-4">
-                        <input type="checkbox" class="form-check-input" id="is_min_quantity" name="is_min_quantity">
+                    <div class="form-check form-check-lg mr-4 readonly">
+                        <input type="checkbox" class="form-check-input" id="is_min_quantity" name="is_min_quantity"
+                               readonly>
+                        <span></span>
                         <label class="form-check-label" for="is_min_quantity">
                             {% trans 'Minimum quantity' %}</label>
                     </div>
-                    <div class="form-group mb-0">
+                    <div class="form-group mb-0 readonly">
                         <input class="form-control" type="text" name="num_minimum"
-                               id="num_minimum">
+                               id="num_minimum" readonly>
+                        <span></span>
                     </div>
                 </div>
-                <div class="form-check form-check-lg">
-                    <input type="checkbox" class="form-check-input" id="is_free_shipping" name="free_shipping">
-                    <label class="form-check-label" for="is_free_shipping">
-                        {% trans 'Free shipping' %}</label>
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-check form-check-lg readonly">
+                            <input type="checkbox" class="form-check-input" id="is_free_shipping" name="free_shipping"
+                                   readonly>
+                            <span></span>
+                            <label class="form-check-label" for="is_free_shipping">
+                                {% trans 'Free shipping' %}</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="group-gift-box col-md-6" style="display: none;">
@@ -469,7 +515,7 @@
            data-invalid-product-selected="{% trans 'Special product is missing' %}"
            data-invalid-minimum-quantity="{% trans 'Minimum quantity is missing' %}"
     >
-    <input type="hidden" id="url-factory" data-cus_params="{% url 'CustomerParamFieldAPI'%}">
+    <input type="hidden" id="url-factory" data-cus_params="{% url 'CustomerParamFieldAPI' %}">
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->

@@ -1522,16 +1522,16 @@ function init_company_currency_config() {
 function init_mask_money_single(ele) {
     let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
     if (currencyConfig) {
-        ele.find('.mask-money').initInputCurrency(currencyConfig);
-        ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
+        ele.find('.mask-money').initInputCurrency(currencyConfig['currency_rule']);
+        ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig['currency_rule']);
     } else throw  Error('Currency config is not found.')
 }
 
 function init_mask_money_ele(ele) {
     let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
     if (currencyConfig) {
-        ele.initInputCurrency(currencyConfig);
-        ele.parseCurrencyDisplay(currencyConfig);
+        ele.initInputCurrency(currencyConfig['currency_rule']);
+        ele.parseCurrencyDisplay(currencyConfig['currency_rule']);
     } else throw  Error('Currency config is not found.')
 }
 

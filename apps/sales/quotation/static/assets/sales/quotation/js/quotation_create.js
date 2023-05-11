@@ -29,10 +29,6 @@ $(function () {
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
         dataTableClass.dataTableExpense(data, 'datable-quotation-create-expense');
-        dataTableClass.dataTablePromotion([{
-            'order': 1,
-            'title': "Miễn phí vận chuyển",
-        }], 'datable-quotation-create-promotion');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -73,6 +69,7 @@ $(function () {
                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadDataClass.loadInformationSelectBox($(this));
+            dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion')
         });
 
 // Action on click dropdown customer
@@ -98,6 +95,8 @@ $(function () {
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
+            // load promotion for this customer
+            dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion')
         });
 
 // Action on click dropdown contact

@@ -127,6 +127,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
 
+    # advance payment
+    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/')
+
     # masterdata/price
     TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
     TAX_LIST = StringUrl('saledata/taxes')

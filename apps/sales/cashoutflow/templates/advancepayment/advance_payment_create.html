@@ -1,0 +1,303 @@
+'{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        .dropdown-menu { !important;
+            width: max-content;
+            border: solid 1px #d8d8d8;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="save-advance" type="submit" form="form-create-advance" style="background: none; border: none">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+           data-bs-original-title="Save">
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i data-feather="save"></i>
+                    </span>
+                </span>
+        </a>
+    </button>
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Refresh"
+    >
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="refresh-cw"></i>
+                </span>
+            </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
+          data-url="{% url "AdvancePaymentListAPI" %}">
+        {% csrf_token %}
+        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-6 pr-4">
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required">Name</label>
+                        <div class="col-9">
+                            <input class="form-control" name="title" placeholder="Tam ung tien di cong tac gap doi tac">
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label">Sale/Purchase code</label>
+                        <div class="col-7">
+                            <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
+                                    data-url="{% url 'OpportunityListAPI' %}" disabled>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
+                                    data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
+                            <div role="menu" class="dropdown-menu">
+                                <span>Select one</span>
+                                <div class="dropdown-divider"></div>
+                                <span class="text-center">
+                                    <input type="radio" name="sale_code_type" value="non-sale" class="sale_code_type" checked>
+                                    <label class="col-form-label">Non-sale</label>
+                                </span><br>
+                                <span class="text-center">
+                                    <input type="radio" name="sale_code_type" value="sale" class="sale_code_type">
+                                    <label class="col-form-label">Sale</label>
+                                </span><br>
+                                <span class="text-center">
+                                    <input type="radio" name="sale_code_type" value="purchase" class="sale_code_type" disabled>
+                                    <label class="col-form-label">Purchase</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required">Type</label>
+                        <div class="col-9">
+                            <select class="form-select" name="type" id="type-select-box">
+                                <option selected></option>
+                                <option value="0">To employee</option>
+                                <option value="1">To supplier</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label" id="supplier-label">Supplier name</label>
+                        <div class="col-9">
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="supplier-detail-span" hidden>
+                                    <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu pl-3 pr-3 pt-3 pb-3">
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Supplier</span>
+                                            <span class="col-9 text-primary" id="supplier-name"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Code</span>
+                                            <span class="col-9 text-primary" id="supplier-code"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Owner</span>
+                                            <span class="col-9 text-primary" id="supplier-owner"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Industry</span>
+                                            <span class="col-9 text-primary" id="supplier-industry"></span>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <span class="col-7"></span>
+                                            <a class="col-5 text-right" href="#">
+                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                    </span>
+                                </span>
+                                <select class="form-select" name="supplier" data-method="GET" id="supplier-select-box"
+                                        data-url="{% url 'AccountListAPI' %}" disabled></select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required" id="supplier-label">Method</label>
+                        <div class="col-9">
+                            <select class="form-select" name="method">
+                                <option selected></option>
+                                <option value="0">Cash</option>
+                                <option value="1">Bank transfer</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 pl-5">
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required" id="supplier-label">Created date</label>
+                        <div class="col-9">
+                            <input class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required" id="supplier-label">Creator</label>
+                        <div class="col-9">
+                            <select class="form-select" name="creator_name" id="creator-select-box" data-method="GET"
+                                    data-url="{% url 'EmployeeListAPI' %}"></select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required" id="supplier-label">Beneficiary</label>
+                        <div class="col-9">
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="beneficiary-detail-span" hidden>
+                                    <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu pl-3 pr-3 pt-3 pb-3">
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Employee</span>
+                                            <span class="col-9 text-primary" id="supplier-name"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Code</span>
+                                            <span class="col-9 text-primary" id="supplier-code"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Department</span>
+                                            <span class="col-9 text-primary" id="supplier-owner"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-3" style="font-style: italic">Department manager</span>
+                                            <span class="col-9 text-primary" id="supplier-industry"></span>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <span class="col-7"></span>
+                                            <a class="col-5 text-right" href="#">
+                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                    </span>
+                                </span>
+                                <select class="form-select" name="beneficiary" id="beneficiary-select-box" data-method="GET"
+                                        data-url="{% url 'EmployeeListAPI' %}"></select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label required" id="supplier-label">Return AP date</label>
+                        <div class="col-9">
+                            <input class="form-control" name="return_date" id="return-date-id" readonly>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-5">
+                        <label class="col-3 col-form-label" id="supplier-label">Status</label>
+                        <div class="col-9">
+                            <input class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row collapse-arrow text-center">
+            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area" data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area" id="advance-info-collapse"></i>
+        </div>
+        <div class="row ml-3 mr-3">
+            <ul class="nav nav-light nav-tabs" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_plan">
+                        <span class="nav-link-text">{% trans 'Plan' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_bank_info">
+                        <span class="nav-link-text">{% trans 'Bank info' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_to_payment">
+                        <span class="nav-link-text">{% trans 'To payment' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content ml-4 mr-4">
+            <div class="tab-pane fade show active mb-25" id="tab_line_detail">
+                <div class="row">
+                    <table id="tab_line_detail_datatable" class="table nowrap w-100">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Number' %}</th>
+                            <th>{% trans 'Expense/Cost items' %}</th>
+                            <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'UoM' %}</th>
+                            <th class="w-5">{% trans 'Quantity' %}</th>
+                            <th>{% trans 'Unit price' %}</th>
+                            <th>{% trans 'Tax' %}</th>
+                            <th>{% trans 'Subtotal price' %}</th>
+                            <th>{% trans 'After tax subtotal' %}</th>
+                            <th>{% trans 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <i id="btn-add-row-line-detail" style="padding: 3px;" class="btn btn-animated btn-outline-primary bi bi-plus text-primary"></i>
+            </div>
+            <div class="tab-pane fade" id="tab_plan">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Label 2" %}</label>
+                        <select class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_bank_info">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Label 3" %}</label>
+                        <select class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_to_payment">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Label 4" %}</label>
+                        <select class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_attachment">
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label class="form-label">{% trans "Label 5" %}</label>
+                        <select class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}

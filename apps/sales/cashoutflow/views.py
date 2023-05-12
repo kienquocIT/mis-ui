@@ -5,65 +5,65 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
 
-class AdvanceList(View):
+class AdvancePaymentList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='advance/advance_list.html',
-        breadcrumb='ADVANCE_LIST_PAGE',
-        menu_active='menu_advance_list',
+        template='advancepayment/advance_payment_list.html',
+        breadcrumb='ADVANCE_PAYMENT_LIST_PAGE',
+        menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class AdvanceCreate(View):
+class AdvancePaymentCreate(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='advance/advance_create.html',
-        breadcrumb='ADVANCE_CREATE_PAGE',
-        menu_active='menu_advance_list',
+        template='advancepayment/advance_payment_create.html',
+        breadcrumb='ADVANCE_PAYMENT_CREATE_PAGE',
+        menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
-#
-#
-# class AdvanceListAPI(APIView):
-#     permission_classes = [IsAuthenticated]
-#
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def get(self, request, *args, **kwargs):
-#         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
-#         if resp.state:
-#             return {'product_list': resp.result}, status.HTTP_200_OK
-#         elif resp.status == 401:
-#             return {}, status.HTTP_401_UNAUTHORIZED
-#         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-#
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def post(self, request, *arg, **kwargs):
-#         data = request.data
-#         response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).post(data)
-#         if response.state:
-#             return response.result, status.HTTP_200_OK
-#         if response.errors:
-#             if isinstance(response.errors, dict):
-#                 err_msg = ""
-#                 for key, value in response.errors.items():
-#                     err_msg += str(key) + ': ' + str(value)
-#                     break
-#                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-#             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-#         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class AdvancePaymentListAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    # @mask_view(
+    #     auth_require=True,
+    #     is_api=True,
+    # )
+    # def get(self, request, *args, **kwargs):
+    #     resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
+    #     if resp.state:
+    #         return {'product_list': resp.result}, status.HTTP_200_OK
+    #     elif resp.status == 401:
+    #         return {}, status.HTTP_401_UNAUTHORIZED
+    #     return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 #
 #
 # class AdvanceDetail(View):

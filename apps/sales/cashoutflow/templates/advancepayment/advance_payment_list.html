@@ -7,7 +7,7 @@
 {% endblock %}
 {% block pageAction %}
     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "AdvanceCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       href="{% url "AdvancePaymentCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
        data-bs-original-title="Add">
         <span class="icon">
             <span class="feather-icon">
@@ -56,5 +56,5 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/advance/advance_list.js' %}"></script>
+    <script src="{% static 'assets/js/advancepayment/advance_payment_list.js' %}"></script>
 {% endblock %}

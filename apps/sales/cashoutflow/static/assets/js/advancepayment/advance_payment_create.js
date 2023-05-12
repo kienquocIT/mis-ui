@@ -74,7 +74,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
                     ele.append(`<option></option>`);
                     resp.data.employee_list.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`);
+                        ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
                     })
                 }
             }
@@ -146,10 +146,9 @@ $(document).ready(function () {
     $('#beneficiary-select-box').on('change', function () {
         if ($(this).val() !== '') {
             $('#beneficiary-detail-span').prop('hidden', false);
-            // $('#supplier-name').text($('#supplier-select-box option:selected').attr('data-name'));
-            // $('#supplier-code').text($('#supplier-select-box option:selected').attr('data-code'));
-            // $('#supplier-owner').text($('#supplier-select-box option:selected').attr('data-owner'));
-            // $('#supplier-industry').text($('#supplier-select-box option:selected').attr('data-industry'));
+            $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+            $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+            $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
         }
         else {
             $('#beneficiary-detail-span').prop('hidden', true);

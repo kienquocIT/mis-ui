@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
+{% block title %}{% trans 'Promotion list' %}{% endblock %}
 {% block cssHeader %}
     <!-- Select2 -->
 {#    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>#}
@@ -32,40 +32,28 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-md-12">
-            <table id="datatable-currency" class="table nowrap w-100 mb-5"
-                       data-url="{% url "CurrencyListAPI" %}"
-                       data-method="GET">
+            <table id="promotion-list" class="table nowrap w-100 mb-5"
+                       data-url="{% url "PromotionListAPI" %}">
                     <thead>
-                    <th class="w-5">
-                        <span class="form-check">
-                            <input
-                                    type="checkbox"
-                                    class="form-check-input check-select-all"
-                                    id="customCheck1"
-                            >
-                            <label class="form-check-label" for="customCheck1"></label>
-                        </span>
-                    </th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-20">{% trans "Abbreviation" %}</th>
-                    <th class="w-25">{% trans "Selling rate" %}&nbsp;&nbsp;&nbsp;
-                        <a href="#" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}"
-                           style="background: None; width: 60%" id="sync-from-VCB-button" class="badge badge-soft-primary">
-                            Sync with VCB &nbsp;<i class="bi bi-arrow-repeat"></i>
-                        </a>
-{#                        &nbsp;<span id="sync-status"></span>&nbsp;#}
-                    </th>
-                    <th class="w-5"></th>
+                    <th class="w-5">#</th>
+                    <th class="w-60">{% trans "Promotion name" %}</th>
+                    <th class="w-20">{% trans "Status" %}</th>
+                    <th class="w-15"></th>
                     </thead>
                 </table>
         </div>
     </div>
-    <input type="hidden" id="trans-factory">
-    <input type="hidden" id="url-factory">
+    {% csrf_token %}
+    <input type="hidden" id="trans-factory"
+           data-valid="{% trans 'Valid' %}"
+           data-expired="{% trans 'Expired' %}"
+    >
+    <input type="hidden" id="url-factory"
+    data-detail="{% url 'PromotionDetail' 1 %}">
 {% endblock %}
 {% block jsFooter %}
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_price.js' %}"></script>
+    <script src="{% static 'assets/masterdata/promotion/js/list.js' %}"></script>
 {% endblock %}
 

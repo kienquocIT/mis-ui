@@ -18,6 +18,11 @@
     color: #0c0c0c;
 }
 
+.disabled-but-edit:disabled {
+    color: #0c0c0c;
+    background-color: white;
+}
+
 .fa-angle-double-up {
     color: #007D88;
     text-align: center;

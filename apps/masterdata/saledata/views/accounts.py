@@ -388,6 +388,79 @@ class AccountTypeDetailAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+class AccountGroupListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_LIST).get()
+        if resp.state:
+            return {'account_group_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class AccountGroupCreateAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_LIST).post(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class AccountGroupDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_DETAIL + pk).get()
+        if resp.state:
+            return {'account_group': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_DETAIL + pk).put(request.data)
+        if resp.state:
+            return {'account_group': resp.result}, status.HTTP_200_OK
+        if resp.errors:
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class IndustryListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

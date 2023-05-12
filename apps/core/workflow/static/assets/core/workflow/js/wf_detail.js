@@ -215,6 +215,7 @@ $(function () {
     }
 
     function loadPropertyCollabInFrom(current_property) {
+        if (!current_property?.id) return false
         let optionProperty = `<option></option>`;
         let initDataOptions = document.getElementById('data-init-property-in-form-detail').options;
         for (let i = 0; i < initDataOptions.length; i++) {

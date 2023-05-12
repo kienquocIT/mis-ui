@@ -3,6 +3,7 @@
 {% block cssHeader %}
     <!--CONDITIONS--- css file for component conditions -->
     <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/plugins/form-layout.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block pageContent %}
@@ -33,6 +34,18 @@
         <label for=""></label>
         <p class="mask-money-value" data-mask-value="77.89"></p>
     </div>
+
+    <hr>
+    <h3>Drag and Drop sample</h3>
+    <div class="row mb-5">
+        <div class="col-6">
+            {% include 'extends/form-layouts/design-dnd.html' %}
+        </div>
+        <div class="col-6">
+            {% include 'extends/form-layouts/design-preview.html' %}
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block jsFooter %}
@@ -42,4 +55,7 @@
     <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <!--END CONDITIONS -->
+
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/form-layout.js' %}"></script>
 {% endblock %}

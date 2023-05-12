@@ -102,6 +102,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
     ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    ACCOUNT_GROUP_LIST = StringUrl('saledata/accountgroups')
+    ACCOUNT_GROUP_DETAIL = StringUrl('saledata/accountgroup/')
     INDUSTRY_DETAIL = StringUrl('saledata/industry/')
 
     # crm/account
@@ -155,12 +157,18 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_DETAIL = StringUrl('quotation')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')
     DISTRICTS = StringUrl('base/location/districts?city_id=')
     WARDS = StringUrl('base/location/wards?district_id=')
+    BASE_CURRENCY = StringUrl('base/currencies')
+
+    # master-data/ promotion
+    PROMOTION_LIST = StringUrl('promotion/list')
+    PROMOTION_DETAIL = StringUrl('promotion/detail')
 
     # shipping
     SHIPPING_LIST = StringUrl('saledata/shippings')

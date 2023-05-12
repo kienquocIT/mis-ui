@@ -1,11 +1,10 @@
 $(document).ready(function () {
-
     const city_list = JSON.parse($('#id-city-list').text());
     const city_dict = city_list.reduce((obj, item) => {
         obj[item.id] = item;
         return obj;
     }, {});
-    // $('.select2').select2();
+    $('.select2').select2();
     $(document).on('change', '.cbFixedPrice', function () {
         let divNotFixed = $(this).closest('div .row').find('.divNotFixed')
         if ($(this).is(':checked')) {
@@ -34,7 +33,6 @@ $(document).ready(function () {
 
     function loadCities(city_list) {
         let ele = $('#chooseCityDefault');
-        ele.append('<option></option>')
         city_list.map(function (item) {
             ele.append(`<option value="` + item.id + `"><span>` + item.title + `</span></option>`);
         })
@@ -63,8 +61,6 @@ $(document).ready(function () {
         }, (errs) => {
         },)
     })
-    loadUoMGroup();
-    loadCities(city_list);
 
     function loadCurrency() {
         let ele = $('#chooseCurrency');
@@ -111,6 +107,7 @@ $(document).ready(function () {
         $(this).closest('.formulaCondition').remove();
     })
 
+    // onchange cost method
     $(document).on('change', '.ratioMethod', function () {
         switch ($(this).val()) {
             case '0':
@@ -120,6 +117,8 @@ $(document).ready(function () {
             case '1':
                 $('.condition-content').removeClass('hidden');
                 $('#inputAmount').prop('disabled', true);
+                loadUoMGroup();
+                loadCities(city_list);
                 break;
         }
     })
@@ -137,12 +136,12 @@ $(document).ready(function () {
                 delete frm.dataForm['fixed_price'];
                 let condition = [];
                 let ele_condition = $('.condition-content .line-condition');
-                ele_condition.each(function (){
+                ele_condition.each(function () {
                     let ele_formula = $(this).find('.formulaCondition');
                     let formula = []
-                    ele_formula.each(function (){
+                    ele_formula.each(function () {
                         let amount_extra = 0;
-                        if(!$(this).find('.cbFixedPrice').is(':checked')){
+                        if (!$(this).find('.cbFixedPrice').is(':checked')) {
                             amount_extra = $(this).find('.inpAmountExtra').val();
                         }
                         let data_formula = {
@@ -156,8 +155,8 @@ $(document).ready(function () {
                         formula.push(data_formula)
                     })
                     let data_condition = {
-                        'location':$(this).find('.chooseCity').val(),
-                        'formula':formula
+                        'location': $(this).find('.chooseCity').val(),
+                        'formula': formula
                     }
                     condition.push(data_condition);
                 })

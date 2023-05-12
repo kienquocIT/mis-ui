@@ -24,7 +24,7 @@ $(document).ready(function () {
                     {
                         data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
                             return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
-                                '#', data
+                                frm.getUrlDetail(row.id), data
                             )
                         }
                     },

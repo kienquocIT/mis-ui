@@ -107,6 +107,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Shipping
     SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping list'), 'ShippingList')
     SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
+    SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
 
 class BreadcrumbView:
@@ -283,3 +284,4 @@ class BreadcrumbView:
         BreadcrumbItem.SHIPPING_LIST_PAGE
     ]
     SHIPPING_CREATE_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_CREATE_PAGE]
+    SHIPPING_DETAIL_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_DETAIL_PAGE]

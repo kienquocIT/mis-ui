@@ -8,7 +8,7 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="" type="submit" form="frmCreateShipping"
+            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="" type="submit" form="frmDetailShipping"
             data-bs-original-title="Save">
         <span class="icon">
             <span class="feather-icon">
@@ -28,18 +28,19 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmCreateShipping" data-method="POST" data-url="{% url "ShippingListAPI" %}" data-url-redirect="{% url "ShippingList" %}">
-    {% csrf_token %}
-    <!--Field required-->
+    <form id="frmDetailShipping" data-method="PUT" data-url-detail="{% url "ShippingDetailAPI" pk=0 %}"
+          data-url-redirect="{% url "ShippingList" %}">
+        {% csrf_token %}
+        <!--Field required-->
         <div class="row">
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Title" %}</label>
-                <input type="text" class="form-control" placeholder="Input Name" name="title">
+                <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle">
             </div>
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Margin" %}</label>
                 <span class="input-affix-wrapper affix-wth-text ">
-                <input class="form-control" type="number" name="margin">
+                <input class="form-control" type="number" name="margin" id="inpMargin">
                 <span class="input-suffix">%</span>
             </span>
             </div>
@@ -75,7 +76,8 @@
         <div class="row mt-3">
             <div class=" col-4 form-group">
                 <label class="form-label">{% trans "Amount" %}</label>
-                <input class="form-control" type="number" placeholder="Input Amount" id="inputAmount" name="fixed_price">
+                <input class="form-control" type="number" placeholder="Input Amount" id="inputAmount"
+                       name="fixed_price">
             </div>
         </div>
     </form>
@@ -101,6 +103,10 @@
                         <label class="form-label">{% trans "If" %}</label>
                         <select class="form-select chooseUoMGroup" data-method="GET"
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group">
+                            <option></option>
+                            {% for item in data.uom_group %}
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-1 mt-2 form-group">
@@ -120,6 +126,10 @@
                         <label class="form-label">{% trans "UoM" %}</label>
                         <select class="form-select chooseUoM" data-method="GET"
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
+                            <option class="hidden"></option>
+                            {% for item in data.uom %}
+                                <option class="hidden" value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-1"></div>
@@ -139,7 +149,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">+</span>
                                 </div>
-                                <input type="number" class="form-control inpAmountExtra" aria-label="Amount (to the nearest dollar)">
+                                <input type="number" class="form-control inpAmountExtra"
+                                       aria-label="Amount (to the nearest dollar)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">*</span>
                                 </div>
@@ -172,6 +183,10 @@
                     <label class="form-label">{% trans "If" %}</label>
                     <select class="form-select chooseUoMGroup" data-method="GET"
                             data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group">
+                        <option></option>
+                        {% for item in data.uom_group %}
+                            <option value="{{ item.id }}">{{ item.title }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-1 mt-2 form-group">
@@ -191,6 +206,10 @@
                     <label class="form-label">{% trans "UoM" %}</label>
                     <select class="form-select chooseUoM" data-method="GET"
                             data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
+                        <option class="hidden"></option>
+                        {% for item in data.uom %}
+                            <option class="hidden" value="{{ item.id }}">{{ item.title }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-1"></div>
@@ -210,7 +229,8 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">+</span>
                             </div>
-                            <input type="number" class="form-control inpAmountExtra" aria-label="Amount (to the nearest dollar)">
+                            <input type="number" class="form-control inpAmountExtra"
+                                   aria-label="Amount (to the nearest dollar)">
                             <div class="input-group-append">
                                 <span class="input-group-text">*</span>
                             </div>
@@ -254,6 +274,10 @@
                         <label class="form-label">{% trans "If" %}</label>
                         <select class="form-select chooseUoMGroup" data-method="GET"
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group">
+                            <option></option>
+                            {% for item in data.uom_group %}
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-1 mt-2 form-group">
@@ -273,6 +297,10 @@
                         <label class="form-label">{% trans "UoM" %}</label>
                         <select class="form-select chooseUoM" data-method="GET"
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
+                            <option class="hidden"></option>
+                            {% for item in data.uom %}
+                                <option class="hidden" value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-1">
@@ -297,7 +325,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">+</span>
                                 </div>
-                                <input type="number" class="form-control inpAmountExtra" aria-label="Amount (to the nearest dollar)">
+                                <input type="number" class="form-control inpAmountExtra"
+                                       aria-label="Amount (to the nearest dollar)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">*</span>
                                 </div>
@@ -323,9 +352,11 @@
 
     <!--City Data-->
     {{ data.cities | json_script:"id-city-list" }}
+    {{ data.uom_group | json_script:"id-uom-group" }}
+    {{ data.uom | json_script:"id-uom-list" }}
 
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_create.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_detail.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 {% endblock %}

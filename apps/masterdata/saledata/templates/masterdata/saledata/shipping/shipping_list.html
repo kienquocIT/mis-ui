@@ -28,7 +28,8 @@
 {% endblock %}
 {% block pageContent %}
     <table id="dtbShipping" class="table nowrap w-100 mb-5"
-           data-method="GET" data-url="{% url "ShippingListAPI" %}">
+           data-method="GET" data-url="{% url "ShippingListAPI" %}"
+           data-url-detail="{%url "ShippingDetail" pk=0 %}">
         <thead>
         <tr>
             <th>

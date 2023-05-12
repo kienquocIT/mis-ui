@@ -164,3 +164,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # shipping
     SHIPPING_LIST = StringUrl('saledata/shippings')
+    SHIPPING_DETAIL = StringUrl('saledata/shipping/{shipping_id}')

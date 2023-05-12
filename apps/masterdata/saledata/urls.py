@@ -23,6 +23,8 @@ from apps.masterdata.saledata.views.price import (
     UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
     PriceDeleteAPI
 )
+from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
+    ShippingDetailAPI
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -141,4 +143,10 @@ urlpatterns = [
     path('expenses/create', ExpenseCreate.as_view(), name='ExpenseCreate'),
     path('expense/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
     path('expense/api/<str:pk>', ExpenseDetailAPI.as_view(), name='ExpenseDetailAPI'),
+] + [
+    path('shippings', ShippingList.as_view(), name='ShippingList'),
+    path('shippings/create', ShippingCreate.as_view(), name='ShippingCreate'),
+    path('shippings/api', ShippingListAPI.as_view(), name='ShippingListAPI'),
+    path('shipping/<str:pk>', ShippingDetail.as_view(), name='ShippingDetail'),
+    path('shipping/api/<str:pk>', ShippingDetailAPI.as_view(), name='ShippingDetailAPI'),
 ]

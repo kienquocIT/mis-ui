@@ -37,7 +37,8 @@
     <div class="row mb-5">
         <h6>Enter currency number with "." is decimal fraction</h6>
         <label for="enterCurrency" class="form-label">Enter number then "Focus Out"</label>
-        <input type="text" class="form-control mm-focus" data-mm-value="10.23" value=123456.789 id="enterCurrency"/>
+        <input type="text" class="mb-2 form-control mm-focus" data-mm-value="10.23" value=123456.789 id="enterCurrency"/>
+        <button class="btn btn-soft-primary" id="btnReloadMaskMoney">Reload Mask Money</button>
     </div>
 
     <hr>
@@ -56,6 +57,26 @@
 {% block jsFooter %}
     <!-- Customize JS -->
     <script>
+
+        $(document).on('focus', 'input.mm-focus', function () {
+            $(this).css("background-color", "#ffcdcd");
+            let [realData, parseData] = MaskMoney2.applyInputMoney($(this).attr('data-init-value'));
+            $(this).attr('value', realData).val(parseData);
+        });
+        $(document).on('blur', 'input.mm-focus', function () {
+            MaskMoney2.applyMaskMoney($(this));
+            $(this).css("background-color", "#daffd1");
+        });
+        $(document).on('input', 'input.mm-focus', function () {
+            let [realData, parseData] = MaskMoney2.applyInputMoney($(this).val());
+            $(this).attr('value', realData).val(parseData);
+        });
+
+        $('#btnReloadMaskMoney').click(function (event){
+            event.preventDefault();
+            MaskMoney2.initMaskMoney2();
+        });
+
         class MaskMoney2 {
             static stopLimitFloatJS(strNum) {
                 if (0 <= strNum.length && strNum.length <= 15) return strNum;
@@ -86,7 +107,7 @@
             static normalizedData(strData) {
                 if (strData) {
                     // allow rule: [0-9.]
-                    let realData = removeDotKeepFirst(
+                    let realData = MaskMoney2.removeDotKeepFirst(
                         strData.normalize("NFC").replace(/[^0-9.]+$/g, "").replaceAll(" ", "")
                     );
                     // make sure length float before parseFloat is 17 number
@@ -95,13 +116,7 @@
                     } else if (realData.indexOf('.') === -1 && realData.length > 17) {
                         realData = realData.slice(0, 17)
                     }
-                    // stop limited Float in JS with max = 10^15
-                    let arrTmp = realData.split(".");
-                    let integerPart = stopLimitFloatJS(arrTmp[0]);
-                    let decimalIcon = arrTmp.length === 2 ? "." : "";
-                    let fractionalPart = arrTmp.length === 2 ? stopLimitFloatJS(arrTmp[1]) : "";
-                    // set data after convert display
-                    return appendSpaceThousand(integerPart, decimalIcon, fractionalPart);
+                    return realData;
                 }
                 return ""
             }
@@ -111,7 +126,14 @@
             }
 
             static applyInputMoney(floatData) {
-                return normalizedData(floatData);
+                let realData = MaskMoney2.normalizedData(floatData);
+                // stop limited Float in JS with max = 10^15
+                let arrTmp = realData.split(".");
+                let integerPart = MaskMoney2.stopLimitFloatJS(arrTmp[0]);
+                let decimalIcon = arrTmp.length === 2 ? "." : "";
+                let fractionalPart = arrTmp.length === 2 ? MaskMoney2.stopLimitFloatJS(arrTmp[1]) : "";
+                // set data after convert display
+                return [realData, MaskMoney2.appendSpaceThousand(integerPart, decimalIcon, fractionalPart)];
             }
 
             static applyMaskMoney($ele = null, strData = null) {
@@ -128,7 +150,7 @@
                     let arrData = strNormalized.split(".");
                     let parseData = arrData[0] + (arrData.length === 2 ? "," + arrData[1] : "") + ' VND'; // apply mask-money config
                     if ($ele) {
-                        $($ele).attr('data-real-value', currentData ? currentData : 0);
+                        $($ele).attr('data-init-value', currentData ? currentData : 0);
                         $($ele).val(parseData);
                     }
                     return parseData;
@@ -139,17 +161,6 @@
 
         $(document).ready(function () {
             MaskMoney2.initMaskMoney2();
-            $(document).on('focus', 'input.mm-focus', function () {
-                $(this).css("background-color", "#ffcdcd");
-                $(this).val(MaskMoney2.applyInputMoney($(this).attr('data-real-value')));
-            });
-            $(document).on('blur', 'input.mm-focus', function () {
-                MaskMoney2.applyMaskMoney($(this));
-                $(this).css("background-color", "#daffd1");
-            });
-            $(document).on('input', 'input.mm-focus', function () {
-                $(this).val(MaskMoney2.applyInputMoney($(this).val()));
-            });
         });
     </script>
 

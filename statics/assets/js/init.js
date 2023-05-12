@@ -1312,22 +1312,23 @@ $.fn.extend({
         // }).maskMoney('mask', valueCurrency);
     },
     valCurrency: function () {
-        let precision = this.attr('data-precision');
-        let decimal = this.attr('data-decimal');
-        let realValue = $.fn.val.apply(this, arguments);
-        let reg = $.fn.regexCurrency(precision, decimal);
-        let replaceValue = realValue.replace(reg, "");
-        let result = replaceValue.replace(decimal, ".");
-        if (realValue[0] === '-') result = '-' + result;
-
-        let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
-        switch (returnType) {
-            case 'text':
-                return result;
-            case 'number':
-                return Number(result);
-        }
-        throw Error("The money must be return type text or number, don't support: " + returnType);
+        // let precision = this.attr('data-precision');
+        // let decimal = this.attr('data-decimal');
+        // let realValue = $.fn.val.apply(this, arguments);
+        // let reg = $.fn.regexCurrency(precision, decimal);
+        // let replaceValue = realValue.replace(reg, "");
+        // let result = replaceValue.replace(decimal, ".");
+        // if (realValue[0] === '-') result = '-' + result;
+        //
+        // let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
+        // switch (returnType) {
+        //     case 'text':
+        //         return result;
+        //     case 'number':
+        //         return Number(result);
+        // }
+        // throw Error("The money must be return type text or number, don't support: " + returnType);
+        return this.val();
     },
     parseCurrencyDisplay: function (configData) {
         // let eleInput = $('<input>', {

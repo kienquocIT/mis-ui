@@ -220,10 +220,12 @@ $(function () {
         });
 
 // Check no negative number for input
-        $('#tab-content-quotation-product').on('change', '.non-negative-number', function(e) {
-            if (parseInt($(this).val()) < 0) {
-                $(this)[0].value = "";
-            }
+        $('#tab-content-quotation-product').on('change', '.validated-number', function (e) {
+            let value = this.value;
+            // Remove unnecessary zeros from the integer part
+            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+            // Update value of input
+            this.value = value;
         });
 
 // Action on change total discount of product
@@ -327,7 +329,7 @@ $(function () {
 
                     let valueQuantity = 0;
                     let valuePrice = 0;
-                    let taxDataStr = "";
+                    let valueTax = "";
                     let valueTaxSelected = 0;
                     let valueTaxAmount = 0;
                     let valueOrder = "";
@@ -368,6 +370,7 @@ $(function () {
                     if (quantity) {
                         valueQuantity = parseInt(quantity.value);
                     }
+                    valueTax = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].value;
                     valueTaxSelected = parseInt(row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].getAttribute('data-value'));
                     if (valuePrice && valueQuantity) {
                         valueSubtotal = (valuePrice * valueQuantity);
@@ -379,6 +382,9 @@ $(function () {
                     if (order) {
                         valueOrder = order.innerHTML;
                     }
+                    let selectProductID = 'quotation-create-cost-box-product-' + String(valueOrder);
+                    let selectUOMID = 'quotation-create-cost-box-uom-' + String(valueOrder);
+                    let selectTaxID = 'quotation-create-cost-box-tax-' + String(valueOrder);
                     let dataAdd = {
                         "tax": {
                             "id": "",
@@ -412,58 +418,9 @@ $(function () {
                     let newRow = tableCost.DataTable().row(addRow).node();
                     let $newRow = $(newRow);
                     init_mask_money_single($newRow);
-                    let rowProduct = $newRow[0].querySelector('.table-row-item');
-                    if (rowProduct) {
-                        $(rowProduct).append(`<option value="${valueProduct}" selected>
-                                                    <span class="product-title">${showProduct}</span>
-                                                    <input type="hidden" class="data-default" value="${product_data}">
-                                                    <input type="hidden" class="data-info" value="${productDataStr}">
-                                                </option>`)
-                        loadDataClass.loadInformationSelectBox($(rowProduct))
-                    }
-                    let rowUOM = $newRow[0].querySelector('.table-row-uom');
-                    if (rowUOM) {
-                        $(rowUOM).append(`<option value="${valueUOM}" selected>
-                                                <span class="uom-title">${showUOM}</span>
-                                                <input type="hidden" class="data-info" value="${uomDataStr}">
-                                        </option>`)
-                    }
-                    let rowTax = $newRow[0].querySelector('.table-row-tax');
-                    if (rowTax) {
-                        let tax = row.querySelector('.table-row-tax');
-                        if (tax) {
-                            for (let t = 0; t < tax.options.length; t++) {
-                                let option = tax.options[t];
-                                if (option.querySelector('.data-info')) {
-                                        let dataStrJson = JSON.parse(option.querySelector('.data-info').value);
-                                        taxDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
-                                    }
-                                if (option.selected === true) {
-                                    if (taxDataStr) {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
-                                                            <span class="tax-title">${option.text}</span>
-                                                            <input type="hidden" class="data-info" value="${taxDataStr}">
-                                                        </option>`)
-                                    } else {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
-                                                            <span class="tax-title">${option.text}</span>
-                                                        </option>`)
-                                    }
-                                } else {
-                                    if (taxDataStr) {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
-                                                            <span class="tax-title">${option.text}</span>
-                                                            <input type="hidden" class="data-info" value="${taxDataStr}">
-                                                        </option>`)
-                                    } else {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
-                                                            <span class="tax-title">${option.text}</span>
-                                                        </option>`)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);
                 }
                 // update total
                 calculateClass.updateTotal(tableCost[0], false, true, false);

@@ -314,8 +314,8 @@ $(document).ready(function () {
 
                     for (let i = 0; i < data.price.products_mapped.length; i++) {
                         if (data.price.products_mapped[i].price === 0) {
-                            let ele1 = $('#datatable-item-list').find(`span[data-id='`+data.price.products_mapped[i].id+`']`).parent().parent()
-                            let ele2 = ele1.find(`span[data-id='`+data.price.products_mapped[i].uom.id+`']`).parent().parent().parent().parent().parent()
+                            let ele1 = $('#datatable-item-list').find(`span[data-id='` + data.price.products_mapped[i].id + `']`).parent().parent()
+                            let ele2 = ele1.find(`span[data-id='` + data.price.products_mapped[i].uom.id + `']`).parent().parent().parent().parent().parent()
                             ele2.css({
                                 'background-color': '#fffffa'
                             })
@@ -500,18 +500,16 @@ $(document).ready(function () {
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                 data.price_list.map(function (item) {
-                    if (item.price_list_type.value === 0) {
-                        if (item.status === 'Valid' || item.status === 'Invalid') {
-                            if (price_list_update.length === 0) {
-                                price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
-                            } else {
-                                if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
-                                    price_list_update.push({
-                                        'id': item.id,
-                                        'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
-                                        'id_source': item.price_list_mapped
-                                    });
-                            }
+                    if (item.status === 'Valid' || item.status === 'Invalid') {
+                        if (price_list_update.length === 0) {
+                            price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
+                        } else {
+                            if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
+                                price_list_update.push({
+                                    'id': item.id,
+                                    'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
+                                    'id_source': item.price_list_mapped
+                                });
                         }
                     }
                 })
@@ -559,7 +557,7 @@ $(document).ready(function () {
                     })
         })
 
-        // form add new product
+        // form add new item
         let frm_create_product = $('#form-create-product')
         frm_create_product.submit(function (event) {
             event.preventDefault();
@@ -589,7 +587,6 @@ $(document).ready(function () {
             }
             frm.dataForm['list_price_list'] = price_list;
             frm.dataForm['product'] = data_product;
-            console.log(frm.dataForm);
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
@@ -679,8 +676,7 @@ $(document).ready(function () {
                         (errs) => {
                             $.fn.notifyB({description: errs.data.errors}, 'failure');
                         })
-            }
-            else {
+            } else {
                 $.fn.notifyB({description: 'Nothing to change'}, 'warning');
             }
         })
@@ -689,10 +685,14 @@ $(document).ready(function () {
     // add input price in modal create new product
     // let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-item').on('click', function () {
-        if ($('#select-box-type').val() === '0')
-            loadProduct();
-        else if ($('#select-box-type').val() === '2') {
-            // loadExpense();
+        let type = $('#select-box-type').val()
+        switch (type) {
+            case '0':
+                loadProduct();
+                break;
+            case '2':
+                loadExpense()
+                break;
         }
         $('#select-box-product').empty();
         $('#inp-uom-group').val('')
@@ -769,19 +769,41 @@ $(document).ready(function () {
     $('#select-box-product').on('change', function () {
         if ($(this).val() !== '0') {
             $('#save-product-selected').prop('disabled', false);
-            let data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
-            $.fn.callAjax(data_url, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                        $('#inp-code').val(data.product.code);
-                        $('#inp-uom-group').val(data.product.general_information.uom_group.title);
-                        $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
-                        $('#select-uom').empty()
-                        loadUoM(data.product.general_information.uom_group.title);
-                    }
-                }
-            })
+            let type = $('#select-box-type').val();
+            let data_url;
+            switch (type) {
+                case '0':
+                    data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
+                    $.fn.callAjax(data_url, 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
+                                $('#inp-code').val(data.product.code);
+                                $('#inp-uom-group').val(data.product.general_information.uom_group.title);
+                                $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
+                                $('#select-uom').empty()
+                                loadUoM(data.product.general_information.uom_group.title);
+                            }
+                        }
+                    })
+                    break;
+                case '2':
+                    data_url = $(this).closest('select').attr('data-url-detail-expense').replace(0, $(this).val());
+                    $.fn.callAjax(data_url, 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
+                                $('#inp-code').val(data.expense.code);
+                                $('#inp-uom-group').val(data.expense.general_information.uom_group.title);
+                                $('#inp-uom-group').attr('data-id', data.expense.general_information.uom_group.id);
+                                $('#select-uom').empty()
+                                loadUoM(data.expense.general_information.uom_group.title);
+                            }
+                        }
+                    })
+                    break;
+            }
+
         } else {
             $('#inp-code').val('');
             $('#inp-uom-group').val('');

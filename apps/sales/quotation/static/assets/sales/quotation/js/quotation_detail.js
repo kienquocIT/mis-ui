@@ -73,22 +73,6 @@ function loadTotal(data, is_product, is_cost, is_expense) {
     }
 }
 
-function init_mask_money_detail(ele) {
-    $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-        if (currencyConfig) {
-            ele.find('.mask-money').initInputCurrency(currencyConfig['currency_rule']);
-            ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig['currency_rule']);
-        } else throw  Error('Currency config is not found.')
-    });
-}
-
-function maskMoneyData() {
-    init_mask_money_detail($('#tab_block_3'));
-    init_mask_money_detail($('#tab_block_6'));
-    init_mask_money_detail($('#tab_block_7'));
-}
-
-
 function loadDetailQuotation(data) {
     if (data.title) {
         document.getElementById('quotation-create-title').value = data.title
@@ -131,21 +115,17 @@ $(function () {
         let dataTableClass = new dataTableHandle();
 
         // call ajax get info quotation detail
-        $.fn.callAjax($form.data('url'), 'GET')
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        loadDetailQuotation(data);
-                        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
-                        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
-                        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
-                    }
+        $.fn.callAjax($form.data('url'), 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    loadDetailQuotation(data);
+                    dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
+                    dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
+                    dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
                 }
-            )
-
-        maskMoneyData();
-
-
+            }
+        )
+        init_mask_money();
     });
 });

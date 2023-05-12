@@ -134,6 +134,26 @@ $(document).ready(function () {
         )
     }
 
+    function loadAccountGroup() {
+        let ele = $('#select-box-account-group');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    if (data.hasOwnProperty('account_group_list') && Array.isArray(data.account_group_list)) {
+                        ele.append(`<option value="" selected></option>`)
+                        data.account_group_list.map(function (item) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
     function loadParentAccount() {
         let ele = $('#select-box-parent-account');
         let url = ele.attr('data-url');
@@ -198,8 +218,9 @@ $(document).ready(function () {
     loadAccountOwner(null);
     loadParentAccount();
     loadTableContact();
+    loadAccountGroup();
 
-    //button add contact in offCanvas
+    // button add contact in offCanvas
     function tableContactAdd() {
         let tableShowBodyOffModal = $('#datatable_contact_list tbody');
 
@@ -232,7 +253,7 @@ $(document).ready(function () {
         }
     })
 
-    //Change  Account Owner
+    // Change  Account Owner
     $('#select-box-contact').on('change', function () {
         let oldValue = $(this).data('oldValue');
         let newValue = $(this).val();
@@ -286,7 +307,7 @@ $(document).ready(function () {
         $(this).data('oldValue', $(this).val());
     });
 
-    //Conditions for choosing a parent account
+    // Conditions for choosing a parent account
     $('#select-box-acc-type').on('change', function () {
         let selected_acc_type = $('#select-box-acc-type option:selected').filter(function () {
             return $(this).text().toLowerCase() === 'customer'
@@ -307,12 +328,12 @@ $(document).ready(function () {
     $('#inp-individual').on('change', function () {
         $('#select-box-parent-account').prop('selectedIndex', -1);
         $('#select-box-parent-account').attr('disabled', true);
-        $("#tax-code-label").text("Tax Code");
+        $("#tax-code-label").removeClass("required");
     })
 
     $('#inp-organization').on('change', function () {
         $('#select-box-parent-account').attr('disabled', false);
-        $("#tax-code-label").html("Tax Code<span class='field-required'>*</span>");
+        $("#tax-code-label").addClass("required");
     })
 
     // Button add billing address
@@ -409,13 +430,13 @@ $(document).ready(function () {
         }
     })
 
-    //Button add shipping address
+    // Button add shipping address
     $('#edit-shipping-address-btn').on('click', function () {
         if ($('#list-shipping-address input').length === 0)
             $('#make-default-shipping-address').prop('checked', true);
     })
 
-    //Button save in modal billing address
+    // Button save in modal billing address
     $('#save-changes-modal-billing-address').on('click', function () {
         try {
             let acc_name = $('#select-box-account-name').find(`option:selected`).text();
@@ -593,7 +614,7 @@ $(document).ready(function () {
         }
     })
 
-    //show modal add new contact
+    // show modal add new contact
     $('#btn-add-new-contact').on('click', function () {
         let ele = $('#select-box-contact-owner');
         let url = ele.attr('data-url');

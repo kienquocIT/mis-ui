@@ -9,9 +9,6 @@ $(function () {
         let calculateClass = new calculateCaseHandle();
         let submitClass = new submitHandle();
 
-        $(".select2").select2();
-        init_company_currency_config();
-
         let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -180,10 +177,8 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0
             }
-            let addRow = tableProduct.DataTable().row.add(dataAdd).draw();
-            let newRow = tableProduct.DataTable().row(addRow).node();
-            let $newRow = $(newRow);
-            init_mask_money_single($newRow);
+            tableProduct.DataTable().row.add(dataAdd).draw();
+            init_mask_money();
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -204,8 +199,8 @@ $(function () {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    elePrice.value = priceValRaw;
-                    init_mask_money_ele($(elePrice));
+                    $(elePrice).val(priceValRaw);
+                    init_mask_money();
                     calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }
             }
@@ -277,10 +272,7 @@ $(function () {
                 "expense_tax_amount": 0,
                 "expense_subtotal_price": 0
             }
-            let addRow = tableExpense.DataTable().row.add(dataAdd).draw();
-            let newRow = tableExpense.DataTable().row(addRow).node();
-            let $newRow = $(newRow);
-            init_mask_money_single($newRow);
+            init_mask_money();
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
@@ -412,7 +404,7 @@ $(function () {
                     let addRow = tableCost.DataTable().row.add(dataAdd).draw();
                     let newRow = tableCost.DataTable().row(addRow).node();
                     let $newRow = $(newRow);
-                    init_mask_money_single($newRow);
+                    init_mask_money();
                     let rowProduct = $newRow[0].querySelector('.table-row-item');
                     if (rowProduct) {
                         $(rowProduct).append(`<option value="${valueProduct}" selected>

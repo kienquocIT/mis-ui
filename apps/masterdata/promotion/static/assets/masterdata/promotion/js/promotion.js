@@ -273,15 +273,15 @@ $(function () {
     });
 
     // run default currency form field
-    let $currencyElm = $('[name="currency"]')
-    let currencyCheck = setInterval(function(){
-        let defaultCurrency = CCurrency.getConfig
-        if (defaultCurrency){
-            $currencyElm.attr('data-onload', JSON.stringify(defaultCurrency))
-            initSelectBox($currencyElm);
-            clearInterval(currencyCheck)
-        }
-    }, 200);
+    $.fn.getCompanyConfig().then((configData)=>{
+        let $currencyElm = $('[name="currency"]');
+        $currencyElm.attr('data-onload', JSON.stringify({
+            "id": configData?.['currency']?.['id'],
+            "title": configData?.['currency']?.['title'],
+            "code": configData?.['currency']?.['code'],
+        }))
+        initSelectBox($currencyElm);
+    });
 
     /**
      * -------handle event onclick show/hide element in form-------

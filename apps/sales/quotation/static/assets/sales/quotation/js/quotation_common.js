@@ -433,7 +433,7 @@ class loadDataHandle {
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
-                                        <div class="col-5"><span>${CCurrency.convertCurrency(data.price_list[i].value)}</span></div>
+                                        <div class="col-5"><span class="mask-money-value" data-mask-value="${data.price_list[i].value}"></span></div>
                                     </div>
                                 </a>`;
                     $(priceList).append(option);
@@ -441,7 +441,6 @@ class loadDataHandle {
                 if (valList) {
                     let minVal = Math.min(...valList);
                     price.value = minVal;
-                    init_mask_money_ele($(price));
                 }
             }
             if (tax && data.tax) {
@@ -449,6 +448,8 @@ class loadDataHandle {
             }
             self.loadInformationSelectBox(ele);
         }
+        console.log('loadDataProductSelect: init money')
+        init_mask_money();
     }
 
     loadInformationSelectBox(ele) {
@@ -1149,23 +1150,21 @@ class calculateCaseHandle {
                 discount_on_total = parseFloat(discountTotalRate);
                 discountAmount = ((pretaxAmount * discount_on_total) / 100)
             }
+            console.log('discountAmount: ', discountAmount, typeof discountAmount);
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
             elePretaxAmount.value = pretaxAmount;
             elePretaxAmountRaw.value = pretaxAmount;
-            init_mask_money_ele($(elePretaxAmount));
             if (eleDiscount) {
                 eleDiscount.value = discountAmount;
                 eleDiscountRaw.value = discountAmount;
-                init_mask_money_ele($(eleDiscount));
             }
             eleTaxes.value = taxAmount;
             eleTaxesRaw.value = taxAmount;
-            init_mask_money_ele($(eleTaxes));
             eleTotal.value = totalFinal;
             eleTotalRaw.value = totalFinal;
-            init_mask_money_ele($(eleTotal));
         }
+        init_mask_money();
     }
 
     calculate(row) {
@@ -1222,17 +1221,14 @@ class calculateCaseHandle {
                 let taxAmount = ((subtotalPlus * tax) / 100);
                 eleTaxAmount.value = taxAmount;
                 eleTaxAmountRaw.value = taxAmount;
-                init_mask_money_ele($(eleTaxAmount));
             }
             eleDiscountAmount.value = discountAmountOnTotal;
-            init_mask_money_ele($(eleDiscountAmount));
         } else {
             // calculate tax no discount on total
             if (eleTaxAmount) {
                 let taxAmount = ((subtotal * tax) / 100);
                 eleTaxAmount.value = taxAmount;
                 eleTaxAmountRaw.value = taxAmount;
-                init_mask_money_ele($(eleTaxAmount));
             }
         }
         // set subtotal value
@@ -1241,8 +1237,8 @@ class calculateCaseHandle {
         if (eleSubtotal) {
             eleSubtotal.value = subtotal;
             eleSubtotalRaw.value = subtotal;
-            init_mask_money_ele($(eleSubtotal));
         }
+        init_mask_money();
     }
 
     commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
@@ -1550,28 +1546,3 @@ class submitHandle {
         _form.dataForm['quotation_logistic_data'] = self.setupDataLogistic();
     }
 }
-
-function init_company_currency_config() {
-    $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-        if (currencyConfig) {
-            $('#data-init-quotation-create-company-currency-config').val(JSON.stringify(currencyConfig))
-        } else throw  Error('Currency config is not found.')
-    });
-}
-
-function init_mask_money_single(ele) {
-    let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
-    if (currencyConfig) {
-        ele.find('.mask-money').initInputCurrency(currencyConfig['currency_rule']);
-        ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig['currency_rule']);
-    } else throw  Error('Currency config is not found.')
-}
-
-function init_mask_money_ele(ele) {
-    let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
-    if (currencyConfig) {
-        ele.initInputCurrency(currencyConfig['currency_rule']);
-        ele.parseCurrencyDisplay(currencyConfig['currency_rule']);
-    } else throw  Error('Currency config is not found.')
-}
-

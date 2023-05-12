@@ -428,12 +428,12 @@ class loadDataHandle {
                 let valList = [];
                 $(priceList).empty();
                 for (let i = 0; i < data.price_list.length; i++) {
-                    valList.push(data.price_list[i].value);
-                    let option = `<a class="dropdown-item table-row-price-option" data-value="${data.price_list[i].value}">
+                    valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
+                    let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value.toFixed(2))}">
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money-value" data-mask-value="${data.price_list[i].value}"></span></div>
+                                        <div class="col-5"><span class="mask-money-value" data-mask-value="${parseFloat(data.price_list[i].value.toFixed(2))}"></span></div>
                                     </div>
                                 </a>`;
                     $(priceList).append(option);
@@ -448,7 +448,6 @@ class loadDataHandle {
             }
             self.loadInformationSelectBox(ele);
         }
-        console.log('loadDataProductSelect: init money')
         init_mask_money();
     }
 
@@ -1067,14 +1066,14 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order">${row.order}</span>`
+                    render: (data, type, row, meta) => {
+                        return `<span class="table-row-order">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row.title}</span>`
+                        return `<span class="table-row-title">${row.title}</span>`
                     }
                 },
                 {
@@ -1085,6 +1084,25 @@ class dataTableHandle {
                 }
             ],
         });
+    }
+
+    loadTableQuotationPromotion(promotion_id) {
+        let self = this;
+        let jqueryId = '#' + promotion_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('promotion_list') && Array.isArray(data.promotion_list)) {
+                        $('#datable-quotation-create-promotion').DataTable().destroy();
+                        self.dataTablePromotion(data.promotion_list, 'datable-quotation-create-promotion');
+                    }
+                }
+            }
+        )
     }
 }
 
@@ -1150,7 +1168,6 @@ class calculateCaseHandle {
                 discount_on_total = parseFloat(discountTotalRate);
                 discountAmount = ((pretaxAmount * discount_on_total) / 100)
             }
-            console.log('discountAmount: ', discountAmount, typeof discountAmount);
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
             elePretaxAmount.value = pretaxAmount;

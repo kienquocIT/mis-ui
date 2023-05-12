@@ -699,7 +699,7 @@ $(document).ready(function () {
         let bank_account_number = $('#bank-account-number-id').val();
         let bic_swift_code = $('#bic-swift-code-id').val();
 
-        if (country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '' && bic_swift_code !== '') {
+        if (country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '') {
             let is_default = '';
             if ($('#make-default-bank-account').is(':checked')) {
                 is_default = 'checked';

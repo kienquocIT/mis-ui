@@ -271,6 +271,7 @@ $(function () {
                 "expense_tax_amount": 0,
                 "expense_subtotal_price": 0
             }
+            tableExpense.DataTable().row.add(dataAdd).draw();
             init_mask_money();
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);

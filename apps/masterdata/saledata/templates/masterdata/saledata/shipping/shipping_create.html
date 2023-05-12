@@ -56,17 +56,17 @@
             <div class="col-6">
                 <div class="form-check form-check-inline mt-2">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="0" name="cost_method"
-                           checked>
-                    <label class="form-check-label" for="check-tab-inventory">{% trans "Fixed price" %}</label>
+                           checked id="check-method-0">
+                    <label class="form-check-label" for="check-method-0">{% trans "Fixed price" %}</label>
                 </div>
                 <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input mt-1 ratioMethod" type="radio" value="1" name="cost_method">
-                    <label class="form-check-label" for="check-tab-sale">{% trans "Formula" %}</label>
+                    <input class="form-check-input mt-1 ratioMethod" type="radio" value="1" name="cost_method" id="check-method-1">
+                    <label class="form-check-label" for="check-method-1">{% trans "Formula" %}</label>
                 </div>
                 <div class="form-check form-check-inline mt-2">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="2" name="cost_method"
-                           disabled>
-                    <label class="form-check-label" for="check-tab-purchase">{% trans "Service provider" %}</label>
+                           disabled id="check-method-2">
+                    <label class="form-check-label" for="check-method-2">{% trans "Service provider" %}</label>
                 </div>
             </div>
         </div>
@@ -105,7 +105,7 @@
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>
-                        <select class="form-select chooseOperator" name="comparison_operators">
+                        <select class="form-select chooseOperator">
                             <option value="1"><</option>
                             <option value="2">></option>
                             <option value="3">≤</option>
@@ -114,12 +114,12 @@
                     </div>
                     <div class="col-2 mt-2 form-group">
                         <label class="form-label"></label>
-                        <input type="number" class="form-control inpThreshold" name="threshold">
+                        <input type="number" class="form-control inpThreshold">
                     </div>
                     <div class="col-2">
                         <label class="form-label">{% trans "UoM" %}</label>
                         <select class="form-select chooseUoM" data-method="GET"
-                                data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
+                                data-url="{% url "UnitOfMeasureListAPI" %}">
                         </select>
                     </div>
                     <div class="col-1"></div>
@@ -132,7 +132,7 @@
                                 <input type="checkbox" class="form-check-input cbFixedPrice" checked>
                                 <label class="form-label">{% trans "Fixed price" %}</label>
                             </div>
-                            <input type="number" class="form-control inpAmount" name="amount_condition">
+                            <input type="number" class="form-control inpAmount">
                         </div>
                         <div class="col-4 mt-5 hidden divNotFixed">
                             <div class="input-group">

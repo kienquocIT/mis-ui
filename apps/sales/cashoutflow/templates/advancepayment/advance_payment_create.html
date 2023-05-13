@@ -47,7 +47,7 @@
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-6 pr-4">
+                <div class="col-7 pr-5">
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label required">Name</label>
                         <div class="col-9">
@@ -56,11 +56,6 @@
                     </div>
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label">Sale/Purchase code</label>
-                        <div class="col-7">
-                            <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url="{% url 'OpportunityListAPI' %}" disabled>
-                            </select>
-                        </div>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
@@ -81,6 +76,11 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="col-7">
+                            <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
+                                    data-url="{% url 'OpportunityListAPI' %}" disabled>
+                            </select>
+                        </div>
                     </div>
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label required">Type</label>
@@ -98,7 +98,14 @@
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="supplier-detail-span" hidden>
                                     <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                    <span role="menu" class="dropdown-menu pl-3 pr-3 pt-3 pb-3">
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
+                                        <div class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">Detail information</span>
+                                            <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
                                         <div class="row">
                                             <span class="col-3" style="font-style: italic">Supplier</span>
                                             <span class="col-9 text-primary" id="supplier-name"></span>
@@ -114,12 +121,6 @@
                                         <div class="row">
                                             <span class="col-3" style="font-style: italic">Industry</span>
                                             <span class="col-9 text-primary" id="supplier-industry"></span>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <span class="col-7"></span>
-                                            <a class="col-5 text-right" href="#">
-                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                            </a>
                                         </div>
                                     </span>
                                 </span>
@@ -139,7 +140,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 pl-5">
+                <div class="col-5">
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label required" id="supplier-label">Created date</label>
                         <div class="col-9">
@@ -149,8 +150,34 @@
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label required" id="supplier-label">Creator</label>
                         <div class="col-9">
-                            <select class="form-select" name="creator_name" id="creator-select-box" data-method="GET"
-                                    data-url="{% url 'EmployeeListAPI' %}"></select>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="creator-detail-span" hidden>
+                                    <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                        <div class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">Detail information</span>
+                                            <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">Employee</span>
+                                            <span class="col-7 text-primary" id="creator-name"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">Code</span>
+                                            <span class="col-7 text-primary" id="creator-code"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">Department</span>
+                                            <span class="col-7 text-primary" id="creator-department"></span>
+                                        </div>
+                                    </span>
+                                </span>
+                                <select class="form-select" name="creator_name" id="creator-select-box" data-method="GET"
+                                        data-url="{% url 'EmployeeListAPI' %}"></select>
+                            </span>
                         </div>
                     </div>
                     <div class="row form-group mb-5">
@@ -159,7 +186,14 @@
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="beneficiary-detail-span" hidden>
                                     <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                    <span role="menu" class="dropdown-menu pl-3 pr-3 pt-3 pb-3">
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                        <div class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">Detail information</span>
+                                            <a id="btn-detail-beneficiary-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
                                         <div class="row">
                                             <span class="col-5" style="font-style: italic">Employee</span>
                                             <span class="col-7 text-primary" id="beneficiary-name"></span>
@@ -172,12 +206,6 @@
                                             <span class="col-5" style="font-style: italic">Department</span>
                                             <span class="col-7 text-primary" id="beneficiary-department"></span>
                                         </div>
-                                        <div class="row mt-3">
-                                            <span class="col-7"></span>
-                                            <a class="col-5 text-right" href="#">
-                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                            </a>
-                                        </div>
                                     </span>
                                 </span>
                                 <select class="form-select" name="beneficiary" id="beneficiary-select-box" data-method="GET"
@@ -186,7 +214,7 @@
                         </div>
                     </div>
                     <div class="row form-group mb-5">
-                        <label class="col-3 col-form-label required" id="supplier-label">Return AP date</label>
+                        <label class="col-3 col-form-label required" id="supplier-label">Return date</label>
                         <div class="col-9">
                             <input class="form-control" name="return_date" id="return-date-id" readonly>
                         </div>

@@ -78,7 +78,7 @@
                         </div>
                         <div class="col-7">
                             <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url="{% url 'OpportunityListAPI' %}" disabled>
+                                    data-url="{% url 'QuotationListAPI' %}" disabled>
                             </select>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                                     <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
                                         <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">Detail information</span>
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
                                             <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
                                                 <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
@@ -144,18 +144,18 @@
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label required" id="supplier-label">Created date</label>
                         <div class="col-9">
-                            <input class="form-control" readonly>
+                            <input class="form-control" id="created_date_id" style="color: #262a2e" disabled>
                         </div>
                     </div>
                     <div class="row form-group mb-5">
-                        <label class="col-3 col-form-label required" id="supplier-label">Creator</label>
+                        <label class="col-3 col-form-label required">Creator</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="creator-detail-span" hidden>
                                     <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">Detail information</span>
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
                                             <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
                                                 <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
@@ -176,19 +176,21 @@
                                     </span>
                                 </span>
                                 <select class="form-select" name="creator_name" id="creator-select-box" data-method="GET"
-                                        data-url="{% url 'EmployeeListAPI' %}"></select>
+                                        data-url="{% url 'EmployeeListAPI' %}" disabled></select>
+                                <input id="data-init-advance-create-request-employee-id"
+                                        value="{{ data.data.employee_current_id }}" hidden>
                             </span>
                         </div>
                     </div>
                     <div class="row form-group mb-5">
-                        <label class="col-3 col-form-label required" id="supplier-label">Beneficiary</label>
+                        <label class="col-3 col-form-label required">Beneficiary</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="beneficiary-detail-span" hidden>
                                     <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">Detail information</span>
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
                                             <a id="btn-detail-beneficiary-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
                                                 <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
@@ -222,7 +224,7 @@
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label" id="supplier-label">Status</label>
                         <div class="col-9">
-                            <input class="form-control" readonly>
+                            <input class="form-control" value="Approved" readonly>
                         </div>
                     </div>
                 </div>

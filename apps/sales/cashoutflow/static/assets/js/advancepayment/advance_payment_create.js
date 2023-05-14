@@ -37,10 +37,10 @@ $(document).ready(function () {
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('quotation_list')) {
                     ele.append(`<option></option>`);
-                    resp.data.opportunity_list.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
+                    resp.data.quotation_list.map(function (item) {
+                        ele.append(`<option data-sale-code-id="` + item.sale_person.id + `" value="` + item.opportunity.id + `">` + item.opportunity.code + ` - ` + item.opportunity.title + `</option>`);
                     })
                 }
             }
@@ -57,7 +57,18 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
                     ele.append(`<option></option>`);
                     resp.data.employee_list.map(function (item) {
-                        ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                        if (item.id === $('#data-init-advance-create-request-employee-id').val()) {
+                            ele.append(`<option selected data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                            $('#creator-detail-span').prop('hidden', false);
+                            $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
+                            $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
+                            $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
+                            let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
+                            $('#btn-detail-creator-tab').attr('href', url);
+                        }
+                        else {
+                            ele.append(`<option data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                        }
                     })
                 }
             }
@@ -65,7 +76,7 @@ $(document).ready(function () {
         },)
     }
 
-    function loadBeneficiary() {
+    function loadBeneficiary(sale_person_id) {
         let ele = $('#beneficiary-select-box');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
@@ -73,9 +84,36 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
                     ele.append(`<option></option>`);
-                    resp.data.employee_list.map(function (item) {
-                        ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                    })
+                    if (sale_person_id) {
+                        resp.data.employee_list.map(function (item) {
+                            if (item.id === sale_person_id) {
+                                ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                                $('#beneficiary-detail-span').prop('hidden', false);
+                                $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+                                $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+                                $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
+                                let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
+                                $('#btn-detail-beneficiary-tab').attr('href', url);
+                            }
+                        })
+                    }
+                    else {
+                        resp.data.employee_list.map(function (item) {
+                            if (item.group.id === $('#creator-select-box option:selected').attr('data-department-id')) {
+                                if (item.id === $('#data-init-advance-create-request-employee-id').val()) {
+                                    ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                                    $('#beneficiary-detail-span').prop('hidden', false);
+                                    $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+                                    $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+                                    $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
+                                    let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
+                                    $('#btn-detail-beneficiary-tab').attr('href', url);
+                                } else {
+                                    ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                                }
+                            }
+                        })
+                    }
                 }
             }
         }, (errs) => {
@@ -101,7 +139,7 @@ $(document).ready(function () {
 
     loadCreator();
     $('#creator-select-box').select2();
-    loadBeneficiary();
+    loadBeneficiary(sale_person_id=null);
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
@@ -118,16 +156,35 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY'),10)
     });
 
+    $('#created_date_id').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        locale: {
+            format: 'YYYY-MM-DD'
+        },
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'),10)
+    });
+
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
             $('#sale-code-select-box').prop('disabled', false);
             loadSaleCode();
+            $('#beneficiary-select-box').prop('disabled', true);
         }
         if ($(this).val() === 'non-sale') {
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
+            $('#beneficiary-select-box').prop('disabled', false);
         }
+    })
+
+    $('#sale-code-select-box').on('change', function () {
+        $('#sale-code-select-box option:selected').attr('data-sale-code-id');
+        loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
     })
 
     $('#supplier-select-box').on('change', function () {
@@ -146,6 +203,23 @@ $(document).ready(function () {
         }
     })
 
+    $('#creator-select-box').on('change', function () {
+        if ($(this).val() !== '') {
+            $('#creator-detail-span').prop('hidden', false);
+            $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
+            $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
+            $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
+            let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
+            $('#btn-detail-creator-tab').attr('href', url);
+            loadBeneficiary();
+            $('#beneficiary-detail-span').prop('hidden', true);
+        }
+        else {
+            $('#creator-detail-span').prop('hidden', true);
+            $('#btn-detail-creator-tab').attr('href', '#');
+        }
+    })
+
     $('#beneficiary-select-box').on('change', function () {
         if ($(this).val() !== '') {
             $('#beneficiary-detail-span').prop('hidden', false);
@@ -158,21 +232,6 @@ $(document).ready(function () {
         else {
             $('#beneficiary-detail-span').prop('hidden', true);
             $('#btn-detail-beneficiary-tab').attr('href', '#');
-        }
-    })
-
-    $('#creator-select-box').on('change', function () {
-        if ($(this).val() !== '') {
-            $('#creator-detail-span').prop('hidden', false);
-            $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
-            $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
-            $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
-            let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
-            $('#btn-detail-creator-tab').attr('href', url);
-        }
-        else {
-            $('#beneficiary-detail-span').prop('hidden', true);
-            $('#btn-detail-creator-tab').attr('href', '#');
         }
     })
 
@@ -223,6 +282,21 @@ $(document).ready(function () {
         else {
             frm.dataForm['type'] = 2;
         }
+
+        if ($('#creator-select-box').val() !== null) {
+            frm.dataForm['creator_name'] = $('#creator-select-box').val();
+        }
+        else {
+            frm.dataForm['creator_name'] = null;
+        }
+
+        if ($('#beneficiary-select-box').val() !== null) {
+            frm.dataForm['beneficiary'] = $('#beneficiary-select-box').val();
+        }
+        else {
+            frm.dataForm['beneficiary'] = null;
+        }
+
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

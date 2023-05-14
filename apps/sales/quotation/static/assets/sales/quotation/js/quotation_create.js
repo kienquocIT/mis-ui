@@ -16,6 +16,7 @@ $(function () {
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
+        let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
         loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
@@ -130,6 +131,13 @@ $(function () {
 // Action on change dropdown payment term
         boxPaymentTerm.on('change', function(e) {
             loadDataClass.loadInformationSelectBox($(this));
+        });
+
+// Action on click dropdown contact
+        boxQuotation.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadDataClass.loadBoxSaleOrderQuotation('select-box-quotation');
+            }
         });
 
 // Action on click button add product
@@ -464,8 +472,12 @@ $(function () {
         $('#btn-create_quotation').on('click', function (e) {
             e.preventDefault()
             let $form = document.getElementById('frm_quotation_create');
+            let is_sale_order = false;
+            if ($form.classList.contains('sale-order')) {
+                is_sale_order = true;
+            }
             let _form = new SetupFormSubmit($('#frm_quotation_create'));
-            submitClass.setupDataSubmit(_form);
+            submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
                 'opportunity',
@@ -495,6 +507,36 @@ $(function () {
                 'quotation_expenses_data',
                 'is_customer_confirm',
             ]
+            if (is_sale_order === true) {
+                submitFields = [
+                    'title',
+                    'opportunity',
+                    'customer',
+                    'contact',
+                    'sale_person',
+                    'payment_term',
+                    'quotation',
+                    // total amount of products
+                    'total_product_pretax_amount',
+                    'total_product_discount_rate',
+                    'total_product_discount',
+                    'total_product_tax',
+                    'total_product',
+                    // total amount of costs
+                    'total_cost_pretax_amount',
+                    'total_cost_tax',
+                    'total_cost',
+                    // total amount of expenses
+                    'total_expense_pretax_amount',
+                    'total_expense_tax',
+                    'total_expense',
+                    // sale order tabs
+                    'sale_order_products_data',
+                    'sale_order_logistic_data',
+                    'sale_order_costs_data',
+                    'sale_order_expenses_data',
+                ]
+            }
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]

@@ -563,6 +563,30 @@ class loadDataHandle {
         }
     }
 }
+
+    loadBoxSaleOrderQuotation(quotation_id) {
+        let jqueryId = '#' + quotation_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                        ele.append(`<option value=""></option>`);
+                        data.quotation_list.map(function (item) {
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            ele.append(`<option value="${item.id}">
+                                        <span class="quotation-title">${item.title}</span>
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
 }
 
 class dataTableHandle {
@@ -1561,8 +1585,18 @@ class submitHandle {
         }
     }
 
-    setupDataSubmit(_form) {
+    setupDataSubmit(_form, is_sale_order = false) {
         let self = this;
+        let quotation_products_data = 'quotation_products_data';
+        let quotation_costs_data = 'quotation_costs_data';
+        let quotation_expenses_data = 'quotation_expenses_data';
+        let quotation_logistic_data = 'quotation_logistic_data';
+        if (is_sale_order === true) {
+            quotation_products_data = 'sale_order_products_data';
+            quotation_costs_data = 'sale_order_costs_data';
+            quotation_expenses_data = 'sale_order_expenses_data';
+            quotation_logistic_data = 'sale_order_logistic_data';
+        }
         let dateCreatedVal = $('#quotation-create-date-created').val();
         if (dateCreatedVal) {
             _form.dataForm['data_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
@@ -1585,13 +1619,13 @@ class submitHandle {
         _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
         _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
 
-        _form.dataForm['quotation_products_data'] = self.setupDataProduct();
-        _form.dataForm['quotation_costs_data'] = self.setupDataCost();
-        let quotation_expenses_data = self.setupDataExpense();
-        if (quotation_expenses_data.length > 0) {
-            _form.dataForm['quotation_expenses_data'] = quotation_expenses_data
+        _form.dataForm[quotation_products_data] = self.setupDataProduct();
+        _form.dataForm[quotation_costs_data] = self.setupDataCost();
+        let quotation_expenses_data_setup = self.setupDataExpense();
+        if (quotation_expenses_data_setup.length > 0) {
+            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup
         }
 
-        _form.dataForm['quotation_logistic_data'] = self.setupDataLogistic();
+        _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
     }
 }

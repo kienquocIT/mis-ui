@@ -36,10 +36,11 @@
     </div>
 
     <form
-            data-url="{% url 'QuotationListAPI' %}"
-            data-url-redirect="{% url 'QuotationList' %}"
+            data-url="{% url 'SaleOrderListAPI' %}"
+            data-url-redirect="{% url 'SaleOrderList' %}"
             data-method="POST"
             id="frm_quotation_create"
+            class="sale-order"
             method="post"
     >
         {% csrf_token %}

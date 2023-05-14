@@ -1655,8 +1655,14 @@ var DataTableAction = {
                     .then((res) => {
                         if (res.hasOwnProperty('status')) {
                             div.modal('hide');
-                            if ($(row).length) $(row).closest('.table').DataTable().rows(row).remove().draw();
-                            $.fn.notifyPopup({description: 'Delete item successfully'}, 'success')
+                            div.remove();
+                            if ($(row).length)
+                                $(row).closest('.table').DataTable().rows(row).remove().draw();
+                            $.fn.notifyPopup(
+                                {
+                                    description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                                },
+                                'success')
                         }
                     })
             }

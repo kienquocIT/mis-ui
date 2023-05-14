@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg
 
 
-def create_update_quotation(request, url, msg):
+def create_update_sale_order(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
         resp.result['message'] = msg
@@ -23,9 +23,9 @@ class SaleOrderList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/quotation/quotation_list.html',
-        menu_active='menu_quotation_list',
-        breadcrumb='QUOTATION_LIST_PAGE',
+        template='sales/saleorder/sale_order_list.html',
+        menu_active='',
+        breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -50,9 +50,9 @@ class SaleOrderListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
         if resp.state:
-            return {'quotation_list': resp.result}, status.HTTP_200_OK
+            return {'sale_order_list': resp.result}, status.HTTP_200_OK
 
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
@@ -63,10 +63,10 @@ class SaleOrderListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_update_quotation(
+        return create_update_sale_order(
             request=request,
-            url=ApiURL.QUOTATION_LIST,
-            msg=SaleMsg.QUOTATION_CREATE
+            url=ApiURL.SALE_ORDER_LIST,
+            msg=SaleMsg.SALE_ORDER_CREATE
         )
 
 
@@ -75,7 +75,7 @@ class SaleOrderDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/quotation/quotation_detail.html',
+        template='sales/saleorder/sale_order_detail.html',
         menu_active='',
         breadcrumb='',
     )
@@ -92,7 +92,7 @@ class SaleOrderDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        res = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_DETAIL.push_id(pk)).get()
         if res.state:
             return res.result, status.HTTP_200_OK
         elif res.status == 401:

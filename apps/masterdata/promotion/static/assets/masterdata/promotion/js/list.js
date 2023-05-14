@@ -26,8 +26,11 @@ $(function(){
                 targets: 2,
                 class: 'text-center',
                 render: (row, type, data) => {
-                    let code = data.is_active, $trans = $('#trans-factory');
-                    let text = code ? $trans.attr('data-valid') : $trans.attr('data-expired')
+                    const currentTime = new Date(),
+                    promoDate = new Date(moment(data.valid_date_end, 'YYYY-MM-DD').format('DD/MM/YYYY')).getTime(),
+                    $trans = $('#trans-factory');
+                    let text = $trans.attr('data-valid')
+                    if (promoDate < currentTime.getTime()) text = $trans.attr('data-expired')
                     return `<p>${text}</p>`;
                 }
             },
@@ -49,13 +52,14 @@ $(function(){
                 },
             },
         ],
-        rowCallback(row, data){
+        rowCallback: function(row, data, index){
+            $('td:eq(0)', row).html(index + 1)
             $('.actions-btn a', row).off().on('click', function (e) {
                 e.stopPropagation();
-                let crf = $('[name=csrfmiddlewaretoken]', '#form-create-payment-term').val()
-                let url = $('#url-factory').data('detail').format_url_with_uuid(data.id)
+                let crf = $('[name="csrfmiddlewaretoken"]').val()
+                let url = $('#url-factory').attr('data-detail-api').format_url_with_uuid(data.id)
                 DataTableAction.delete(url, data, crf, row)
             })
         }
-    }, true);
+    }, false);
 });

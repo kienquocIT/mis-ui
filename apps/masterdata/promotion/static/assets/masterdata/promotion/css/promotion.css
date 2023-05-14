@@ -50,3 +50,15 @@ input[name="min_purchase_cost"]{
     column-gap: 10px;
 }
 label[for="percent_value"]{white-space: nowrap}
+
+#percent_value{
+    appearance: none;
+}
+#percent_value::after{
+    content:"%";
+    margin-left:5px;
+}
+#percent_value::-webkit-inner-spin-button,
+#percent_value::-webkit-outer-spin-button {
+    display: none;
+}

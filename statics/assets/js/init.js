@@ -1555,16 +1555,19 @@ var DataTableAction = {
             if ($(this).attr('data-type') === 'cancel') div.remove();
             else {
                 $.fn.callAjax(url, 'DELETE', data, crf)
-                    .then(
-                        (res) => {
-                            if (res.hasOwnProperty('status')) {
-                                div.modal('hide');
-                                if ($(row).length)
-                                    $(row).closest('.table').DataTable().rows(row).remove().draw();
-                                $.fn.notifyPopup({description: 'Delete item successfully'}, 'success')
-                            }
+                    .then((res) => {
+                        if (res.hasOwnProperty('status')) {
+                            div.modal('hide');
+                            div.remove();
+                            if ($(row).length)
+                                $(row).closest('.table').DataTable().rows(row).remove().draw();
+                            $.fn.notifyPopup(
+                                {
+                                    description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                                },
+                                'success')
                         }
-                    )
+                    })
             }
         })
     },

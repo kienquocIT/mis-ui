@@ -14,15 +14,15 @@ $(document).ready(function () {
         }
     })
 
-    function loadUoMGroup() {
-        let ele = $('.chooseUoMGroup');
+    function loadUnit() {
+        let ele = $('.chooseUnit');
         let frm = new SetupFormSubmit(ele);
         $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('base_shipping_units')) {
                     ele.append(`<option></option>`);
-                    resp.data.unit_of_measure_group.map(function (item) {
+                    resp.data.base_shipping_units.map(function (item) {
                         ele.append(`<option value="` + item.id + `"><span>` + item.title + `</span></option>`);
                     })
                 }
@@ -39,27 +39,23 @@ $(document).ready(function () {
     }
 
     //onchange select box choose Unit Of Measure Group
-    $(document).on('change', '.chooseUoMGroup', function () {
-        let ele = $(this).closest('div .row').find('.chooseUoM');
-        $(this).closest('.formulaCondition').find('.displayUoMGroup').text($(this).find('option:selected').text());
-        ele.html('');
-        let id = $(this).val();
-        let frm = new SetupFormSubmit(ele);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option></option>`);
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.id === id) {
-                            ele.append(`<option value="` + item.id + `"><span>` + item.title + `</span></option>`);
-
-                        }
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
+    $(document).on('change', '.chooseUnit', function () {
+        let ele = $(this).closest('div .row').find('.spanUnit');
+        // switch ():
+        switch ($(this).find('option:selected').text()) {
+            case 'price':
+                ele.text($('#chooseCurrency').find('option:selected').text());
+                break;
+            case 'quantity':
+                ele.text('unit');
+                break;
+            case 'volume':
+                ele.text('cm³');
+                break;
+            case 'weight':
+                ele.text('g')
+                break;
+        }
     })
 
     function loadCurrency() {
@@ -117,7 +113,7 @@ $(document).ready(function () {
             case '1':
                 $('.condition-content').removeClass('hidden');
                 $('#inputAmount').prop('disabled', true);
-                loadUoMGroup();
+                loadUnit();
                 loadCities(city_list);
                 break;
         }
@@ -145,8 +141,7 @@ $(document).ready(function () {
                             amount_extra = $(this).find('.inpAmountExtra').val();
                         }
                         let data_formula = {
-                            'uom_group': $(this).find(".chooseUoMGroup").val(),
-                            'uom': $(this).find(".chooseUoM").val(),
+                            'unit': $(this).find(".chooseUnit").val(),
                             'comparison_operators': $(this).find(".chooseOperator").val(),
                             'threshold': $(this).find(".inpThreshold").val(),
                             'amount_condition': $(this).find('.inpAmount').val(),

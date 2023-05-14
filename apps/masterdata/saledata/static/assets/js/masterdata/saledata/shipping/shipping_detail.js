@@ -2,7 +2,7 @@ $(document).ready(function () {
     let isChangeCondition = false;
     const pk = window.location.pathname.split('/').pop();
     const city_list = JSON.parse($('#id-city-list').text());
-    const uom_list = JSON.parse($('#id-uom-list').text());
+    const unit_list = JSON.parse($('#id-unit-list').text());
 
     $('.select2').select2();
 
@@ -25,15 +25,23 @@ $(document).ready(function () {
     }
 
     //onchange select box choose Unit Of Measure Group
-    $(document).on('change', '.chooseUoMGroup', function () {
-        let ele = $(this).closest('div .row').find('.chooseUoM');
-        ele.find('option').addClass('hidden');
-        ele.val('');
-        $(this).closest('.formulaCondition').find('.displayUoMGroup').text($(this).find('option:selected').text());
-        let id = $(this).val();
-        uom_list.filter(obj => obj.group.id === id).map(obj => obj.id).map(function (item) {
-            ele.find(`option[value="` + item + `"]`).removeClass('hidden');
-        });
+    $(document).on('change', '.chooseUnit', function () {
+        let ele = $(this).closest('div .row').find('.spanUnit');
+        // switch ():
+        switch ($(this).find('option:selected').text()) {
+            case 'price':
+                ele.text($('#chooseCurrency').find('option:selected').text());
+                break;
+            case 'quantity':
+                ele.text('unit');
+                break;
+            case 'volume':
+                ele.text('cm³');
+                break;
+            case 'weight':
+                ele.text('g')
+                break;
+        }
     })
 
     function loadCurrency(id) {
@@ -99,12 +107,22 @@ $(document).ready(function () {
     })
 
     function loadEachFormula(ele, firstFormula) {
-        ele.find('.chooseUoMGroup').val(firstFormula.uom_group.id);
+        ele.find('.chooseUnit').val(firstFormula.unit.id);
+        switch (firstFormula.unit.title) {
+            case 'price':
+                ele.find('.spanUnit').text($('#chooseCurrency').find('option:selected').text());
+                break;
+            case 'quantity':
+                ele.find('.spanUnit').text('unit');
+                break;
+            case 'volume':
+                ele.find('.spanUnit').text('cm³');
+                break;
+            case 'weight':
+                ele.find('.spanUnit').text('g')
+                break;
 
-        uom_list.filter(obj => obj.group.id === firstFormula.uom_group.id).map(obj => obj.id).map(function (item) {
-            ele.find('.chooseUoM').find(`option[value="` + item + `"]`).removeClass('hidden');
-        });
-        ele.find('.chooseUoM').val(firstFormula.uom.id);
+        }
         ele.find('.chooseOperator').val(firstFormula.comparison_operators);
         ele.find('.inpThreshold').val(firstFormula.threshold);
         ele.find('.inpAmount').val(firstFormula.amount_condition);
@@ -112,7 +130,6 @@ $(document).ready(function () {
             ele.find('.inpAmountExtra').val(firstFormula.extra_amount)
             ele.find('.cbFixedPrice').prop('checked', false);
             ele.find('.divNotFixed').removeClass('hidden');
-            ele.find('.displayUoMGroup').text(firstFormula.uom_group.title);
         } else {
             ele.find('.inpAmountExtra').val('');
         }
@@ -202,8 +219,7 @@ $(document).ready(function () {
                             amount_extra = $(this).find('.inpAmountExtra').val();
                         }
                         let data_formula = {
-                            'uom_group': $(this).find(".chooseUoMGroup").val(),
-                            'uom': $(this).find(".chooseUoM").val(),
+                            'unit': $(this).find(".chooseUnit").val(),
                             'comparison_operators': $(this).find(".chooseOperator").val(),
                             'threshold': $(this).find(".inpThreshold").val(),
                             'amount_condition': $(this).find('.inpAmount').val(),

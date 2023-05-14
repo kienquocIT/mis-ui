@@ -61,7 +61,8 @@
                     <label class="form-check-label" for="check-method-0">{% trans "Fixed price" %}</label>
                 </div>
                 <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input mt-1 ratioMethod" type="radio" value="1" name="cost_method" id="check-method-1">
+                    <input class="form-check-input mt-1 ratioMethod" type="radio" value="1" name="cost_method"
+                           id="check-method-1">
                     <label class="form-check-label" for="check-method-1">{% trans "Formula" %}</label>
                 </div>
                 <div class="form-check form-check-inline mt-2">
@@ -101,10 +102,9 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUoMGroup" data-method="GET"
-                                data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group">
+                        <select class="form-select chooseUnit">
                             <option></option>
-                            {% for item in data.uom_group %}
+                            {% for item in data.unit %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
                             {% endfor %}
                         </select>
@@ -118,19 +118,13 @@
                             <option value="4">≥</option>
                         </select>
                     </div>
-                    <div class="col-2 mt-2 form-group">
+                    <div class="col-4 mt-2 form-group">
                         <label class="form-label"></label>
-                        <input type="number" class="form-control inpThreshold" name="threshold">
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">{% trans "UoM" %}</label>
-                        <select class="form-select chooseUoM" data-method="GET"
-                                data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
-                            <option class="hidden"></option>
-                            {% for item in data.uom %}
-                                <option class="hidden" value="{{ item.id }}">{{ item.title }}</option>
-                            {% endfor %}
-                        </select>
+                        <span class="input-affix-wrapper affix-wth-text">
+                            <input type="number" class="form-control inpThreshold"
+                                   aria-describedby="basic-addon1">
+                            <span class="input-suffix spanUnit"></span>
+                        </span>
                     </div>
                     <div class="col-1"></div>
                 </div>
@@ -181,10 +175,9 @@
                 <div class="col-3 form-group"></div>
                 <div class="col-3 form-group">
                     <label class="form-label">{% trans "If" %}</label>
-                    <select class="form-select chooseUoMGroup" data-method="GET"
-                            data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group">
+                    <select class="form-select chooseUnit">
                         <option></option>
-                        {% for item in data.uom_group %}
+                        {% for item in data.unit %}
                             <option value="{{ item.id }}">{{ item.title }}</option>
                         {% endfor %}
                     </select>
@@ -198,19 +191,13 @@
                         <option value="4">≥</option>
                     </select>
                 </div>
-                <div class="col-2 mt-2 form-group">
+                <div class="col-4 mt-2 form-group">
                     <label class="form-label"></label>
-                    <input type="number" class="form-control inpThreshold" name="threshold">
-                </div>
-                <div class="col-2">
-                    <label class="form-label">{% trans "UoM" %}</label>
-                    <select class="form-select chooseUoM" data-method="GET"
-                            data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
-                        <option class="hidden"></option>
-                        {% for item in data.uom %}
-                            <option class="hidden" value="{{ item.id }}">{{ item.title }}</option>
-                        {% endfor %}
-                    </select>
+                    <span class="input-affix-wrapper affix-wth-text">
+                        <input type="number" class="form-control inpThreshold"
+                               aria-describedby="basic-addon1">
+                        <span class="input-suffix spanUnit"></span>
+                    </span>
                 </div>
                 <div class="col-1"></div>
             </div>
@@ -272,10 +259,9 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUoMGroup" data-method="GET"
-                                data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group">
+                        <select class="form-select chooseUnit">
                             <option></option>
-                            {% for item in data.uom_group %}
+                            {% for item in data.unit %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
                             {% endfor %}
                         </select>
@@ -289,19 +275,13 @@
                             <option value="4">≥</option>
                         </select>
                     </div>
-                    <div class="col-2 mt-2 form-group">
+                    <div class="col-4 mt-2 form-group">
                         <label class="form-label"></label>
-                        <input type="number" class="form-control inpThreshold" name="threshold">
-                    </div>
-                    <div class="col-2">
-                        <label class="form-label">{% trans "UoM" %}</label>
-                        <select class="form-select chooseUoM" data-method="GET"
-                                data-url="{% url "UnitOfMeasureListAPI" %}" name="uom">
-                            <option class="hidden"></option>
-                            {% for item in data.uom %}
-                                <option class="hidden" value="{{ item.id }}">{{ item.title }}</option>
-                            {% endfor %}
-                        </select>
+                        <span class="input-affix-wrapper affix-wth-text">
+                            <input type="number" class="form-control inpThreshold"
+                                   aria-describedby="basic-addon1">
+                            <span class="input-suffix spanUnit"></span>
+                        </span>
                     </div>
                     <div class="col-1">
                         <button type="button" class="btn btn-link btn-animated btnDelCondition">
@@ -352,8 +332,7 @@
 
     <!--City Data-->
     {{ data.cities | json_script:"id-city-list" }}
-    {{ data.uom_group | json_script:"id-uom-group" }}
-    {{ data.uom | json_script:"id-uom-list" }}
+    {{ data.unit | json_script:"id-unit-list" }}
 
 {% endblock %}
 {% block jsFooter %}

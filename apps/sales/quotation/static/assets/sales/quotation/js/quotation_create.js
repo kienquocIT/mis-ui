@@ -185,7 +185,6 @@ $(function () {
                 "product_discount_amount": 0
             }
             tableProduct.DataTable().row.add(dataAdd).draw();
-            $.fn.initMaskMoney2();
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -282,7 +281,6 @@ $(function () {
                 "expense_subtotal_price": 0
             }
             tableExpense.DataTable().row.add(dataAdd).draw();
-            $.fn.initMaskMoney2();
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
@@ -344,7 +342,9 @@ $(function () {
                             showProduct = optionSelected.text;
                             if (optionSelected.querySelector('.data-default')) {
                                 let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                                valuePrice = parseFloat(product_data_json.cost_price);
+                                if (product_data_json.cost_price) {
+                                    valuePrice = parseFloat(product_data_json.cost_price);
+                                }
                                 product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
                             }
                             if (optionSelected.querySelector('.data-info')) {
@@ -416,7 +416,6 @@ $(function () {
                         "product_subtotal_price": valueSubtotal
                     }
                     tableCost.DataTable().row.add(dataAdd).draw();
-                    $.fn.initMaskMoney2();
                     loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
                     loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
                     loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);

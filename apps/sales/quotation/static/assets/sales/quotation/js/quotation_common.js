@@ -455,7 +455,7 @@ class loadDataHandle {
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money-value" data-mask-value="${parseFloat(data.price_list[i].value.toFixed(2))}"></span></div>
+                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value.toFixed(2))}"></span></div>
                                     </div>
                                 </a>`;
                     $(priceList).append(option);
@@ -606,6 +606,7 @@ class dataTableHandle {
                 feather.replace();
             },
             rowCallback: function (row, data) {
+                $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -797,6 +798,7 @@ class dataTableHandle {
                 feather.replace();
             },
             rowCallback: function (row, data) {
+                $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -948,6 +950,7 @@ class dataTableHandle {
                 feather.replace();
             },
             rowCallback: function (row, data) {
+                $.fn.initMaskMoney2();
             },
             columns: [
                 {

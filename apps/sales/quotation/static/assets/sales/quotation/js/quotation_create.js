@@ -467,8 +467,15 @@ $(function () {
 
 // Action on click button copy quotation on sale order page
         $('#btn-copy-quotation').on('click', function(e) {
-            let opp_id = $('#select-box-quotation-create-opportunity').val();
-            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation')
+            let opp_id = null;
+            let sale_person_id = null;
+            if (boxOpportunity.val()) {
+                opp_id = boxOpportunity.val()
+            }
+            if (boxSalePerson.val()) {
+                sale_person_id = boxSalePerson.val()
+            }
+            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
         });
 
 // Submit form quotation

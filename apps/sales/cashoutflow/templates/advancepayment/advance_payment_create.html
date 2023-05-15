@@ -13,6 +13,9 @@
             width: max-content;
             border: solid 1px #d8d8d8;
         }
+        .table td, .table th {
+            padding: 0.5rem;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -144,7 +147,7 @@
                     <div class="row form-group mb-5">
                         <label class="col-3 col-form-label required" id="supplier-label">Created date</label>
                         <div class="col-9">
-                            <input class="form-control" id="created_date_id" style="color: #262a2e" disabled>
+                            <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
                         </div>
                     </div>
                     <div class="row form-group mb-5">
@@ -265,19 +268,23 @@
         <div class="tab-content ml-4 mr-4">
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
-                    <table id="tab_line_detail_datatable" class="table nowrap w-100">
+                    <table id="tab_line_detail_datatable" class="table nowrap w-100"
+                           data-url-expense-list="{% url 'ExpenseListAPI' %}"
+                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                           data-url-tax-list="{% url 'TaxListAPI' %}"
+                           data-url-unit-price-list="{% url 'ExpenseDetailAPI' '0' %}">
                         <thead>
                         <tr>
-                            <th>{% trans 'Number' %}</th>
-                            <th>{% trans 'Expense/Cost items' %}</th>
-                            <th>{% trans 'Type' %}</th>
-                            <th>{% trans 'UoM' %}</th>
-                            <th class="w-5">{% trans 'Quantity' %}</th>
-                            <th>{% trans 'Unit price' %}</th>
-                            <th>{% trans 'Tax' %}</th>
-                            <th>{% trans 'Subtotal price' %}</th>
-                            <th>{% trans 'After tax subtotal' %}</th>
-                            <th>{% trans 'Action' %}</th>
+                            <th class="text-center" style="width: 2%">{% trans '#' %}</th>
+                            <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
+                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th style="width: 7%">{% trans 'UoM' %}</th>
+                            <th style="width: 5%">{% trans 'Quantity' %}</th>
+                            <th style="width: 14%">{% trans 'Unit price' %}</th>
+                            <th style="width: 10%">{% trans 'Tax' %}</th>
+                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
+                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th style="width: 2%">{% trans 'Action' %}</th>
                         </tr>
                         </thead>
                         <tbody>

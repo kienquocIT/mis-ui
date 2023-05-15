@@ -102,6 +102,18 @@ function loadDetailQuotation(data) {
             `<option class="data-detail" value="${data.payment_term.id}" selected>${data.payment_term.title}</option>`
         )
     }
+    if (data.quotation) {
+        $('#select-box-quotation').append(
+            `<option class="data-detail" value="${data.quotation.id}" selected>${data.quotation.title}</option>`
+        )
+    }
+    if (data.quotation_logistic_data) {
+        document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;
+        document.getElementById('quotation-create-billing-address').value = data.quotation_logistic_data.billing_address;
+    } else if (data.sale_order_logistic_data) {
+        document.getElementById('quotation-create-shipping-address').value = data.sale_order_logistic_data.shipping_address;
+        document.getElementById('quotation-create-billing-address').value = data.sale_order_logistic_data.billing_address;
+    }
     // product totals
     loadTotal(data, true, false, false);
     loadTotal(data, false, true, false);
@@ -120,9 +132,15 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     loadDetailQuotation(data);
-                    dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
-                    dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
-                    dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+                    if (!$form.hasClass('sale-order-detail')) {
+                        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
+                        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
+                        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+                    } else {
+                        dataTableClass.dataTableProduct(data.sale_order_products_data, 'datable-quotation-create-product');
+                        dataTableClass.dataTableCost(data.sale_order_costs_data, 'datable-quotation-create-cost');
+                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense');
+                    }
                 }
             }
         )

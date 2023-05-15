@@ -1,11 +1,12 @@
 from django.urls import path
 
-from apps.sales.saleorder.views import SaleOrderCreate
+from apps.sales.saleorder.views import SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail, \
+    SaleOrderDetailAPI
 
 urlpatterns = [
-    # path('lists', QuotationList.as_view(), name='QuotationList'),
-    # path('api/lists', QuotationListAPI.as_view(), name='QuotationListAPI'),
+    path('lists', SaleOrderList.as_view(), name='SaleOrderList'),
+    path('api/lists', SaleOrderListAPI.as_view(), name='SaleOrderListAPI'),
     path('create', SaleOrderCreate.as_view(), name='SaleOrderCreate'),
-    # path('detail/<str:pk>', QuotationDetail.as_view(), name='QuotationDetail'),
-    # path('detail-api/<str:pk>', QuotationDetailAPI.as_view(), name='QuotationDetailAPI'),
+    path('detail/<str:pk>', SaleOrderDetail.as_view(), name='SaleOrderDetail'),
+    path('detail-api/<str:pk>', SaleOrderDetailAPI.as_view(), name='SaleOrderDetailAPI'),
 ]

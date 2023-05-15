@@ -14,6 +14,8 @@ $(document).ready(function () {
             divNotFixed.addClass('hidden');
         } else {
             divNotFixed.removeClass('hidden');
+            let text = $('#chooseUnit').find('option:selected').text();
+            $(this).closest('.formulaCondition').find('.displayUoMGroup').text(text);
         }
     })
 
@@ -30,7 +32,7 @@ $(document).ready(function () {
         let ele = $('.spanUnit');
         let inpUnit = $('.inpUnit');
         inpUnit.val($(this).find('option:selected').text());
-
+        $('.displayUoMGroup').text($(this).find('option:selected').text());
         switch ($(this).find('option:selected').text()) {
             case 'price':
                 ele.text($('#chooseCurrency').find('option:selected').text());
@@ -114,6 +116,8 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
+        let fixed_price = $('[name="fixed_price"]').valCurrency()
+        frm.dataForm['fixed_price'] = fixed_price;
         let is_submit = true;
         let arr_location = []
         let data_location = []
@@ -137,13 +141,13 @@ $(document).ready(function () {
                         ele_formula.each(function () {
                             let amount_extra = 0;
                             if (!$(this).find('.cbFixedPrice').is(':checked')) {
-                                amount_extra = $(this).find('.inpAmountExtra').val();
+                                amount_extra = $(this).find('.inpAmountExtra').valCurrency();
                             }
                             let data_formula = {
                                 'unit': $("#chooseUnit").val(),
                                 'comparison_operators': $(this).find(".chooseOperator").val(),
                                 'threshold': $(this).find(".inpThreshold").val(),
-                                'amount_condition': $(this).find('.inpAmount').val(),
+                                'amount_condition': $(this).find('.inpAmount').valCurrency(),
                                 'extra_amount': amount_extra,
                             }
                             formula.push(data_formula)

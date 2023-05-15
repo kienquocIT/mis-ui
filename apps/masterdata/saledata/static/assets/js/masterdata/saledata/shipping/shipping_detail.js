@@ -16,7 +16,7 @@ $(document).ready(function () {
             divNotFixed.addClass('hidden');
         } else {
             divNotFixed.removeClass('hidden');
-            let text = $(this).closest('.formulaCondition').find('.chooseUoMGroup').find('option:selected').text();
+            let text = $('#chooseUnit').find('option:selected').text();
             $(this).closest('.formulaCondition').find('.displayUoMGroup').text(text);
         }
     })
@@ -34,6 +34,7 @@ $(document).ready(function () {
         let ele = $('.spanUnit');
         let inpUnit = $('.inpUnit');
         inpUnit.val($(this).find('option:selected').text());
+        $('.displayUoMGroup').text($(this).find('option:selected').text());
 
         switch ($(this).find('option:selected').text()) {
             case 'price':
@@ -135,11 +136,12 @@ $(document).ready(function () {
         }
         ele.find('.chooseOperator').val(firstFormula.comparison_operators);
         ele.find('.inpThreshold').val(firstFormula.threshold);
-        ele.find('.inpAmount').val(firstFormula.amount_condition);
+        ele.find('.inpAmount').attr('value', firstFormula.amount_condition);
         if (firstFormula.extra_amount > 0) {
-            ele.find('.inpAmountExtra').val(firstFormula.extra_amount)
+            ele.find('.inpAmountExtra').attr('value', firstFormula.extra_amount)
             ele.find('.cbFixedPrice').prop('checked', false);
             ele.find('.divNotFixed').removeClass('hidden');
+            ele.find('.displayUoMGroup').text(firstFormula.unit.title)
         } else {
             ele.find('.inpAmountExtra').val('');
         }
@@ -198,7 +200,7 @@ $(document).ready(function () {
                     loadCurrency(data.shipping.currency);
                     switch (data.shipping.cost_method) {
                         case 0:
-                            $('#inputAmount').val(data.shipping.fixed_price)
+                            $('#inputAmount').attr('value', data.shipping.fixed_price);
                             break;
                         case 1:
                             $(`input[name="cost_method"][value="` + data.shipping.cost_method + `"]`).prop('checked', true);
@@ -208,6 +210,7 @@ $(document).ready(function () {
                             loadCondition(data.shipping.formula_condition);
                             break;
                     }
+                    $.fn.initMaskMoney2();
                     $('.condition-content').on('change', 'select, input', function () {
                         isChangeCondition = true;
                     });
@@ -246,13 +249,13 @@ $(document).ready(function () {
                         ele_formula.each(function () {
                             let amount_extra = 0;
                             if (!$(this).find('.cbFixedPrice').is(':checked')) {
-                                amount_extra = $(this).find('.inpAmountExtra').val();
+                                amount_extra = $(this).find('.inpAmountExtra').valCurrency();
                             }
                             let data_formula = {
                                 'unit': $("#chooseUnit").val(),
                                 'comparison_operators': $(this).find(".chooseOperator").val(),
                                 'threshold': $(this).find(".inpThreshold").val(),
-                                'amount_condition': $(this).find('.inpAmount').val(),
+                                'amount_condition': $(this).find('.inpAmount').valCurrency(),
                                 'extra_amount': amount_extra,
                             }
                             formula.push(data_formula)

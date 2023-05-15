@@ -114,7 +114,8 @@ var jampack = function () {
     $(document).on('click', '.selectable-dropdown .dropdown-menu .dropdown-item', function (e) {
         var selText = $(this).text(), selbg = $(this).attr('data-color');
         $(this).parents('.selectable-dropdown').find('.dropdown-toggle').css({
-            "border-color": selbg, "background": selbg
+            "border-color": selbg,
+            "background": selbg
         }).html(selText);
     });
     $(document).on('click', '.selectable-split-dropdown .dropdown-menu .dropdown-item', function (e) {
@@ -144,7 +145,9 @@ var jampack = function () {
             $(this).prop('Counter', 0).animate({
                 Counter: $(this).find('span').text()
             }, {
-                duration: delay, easing: 'swing', step: function (now) {
+                duration: delay,
+                easing: 'swing',
+                step: function (now) {
                     $(this).find('span').text(Math.ceil(now) + '%');
                 }
             });
@@ -203,7 +206,8 @@ var jampack = function () {
     var counterAnim = $('.counter-anim');
     if (counterAnim.length > 0) {
         counterAnim.counterUp({
-            delay: 10, time: 1000
+            delay: 10,
+            time: 1000
         });
     }
 
@@ -291,7 +295,10 @@ var jampack = function () {
         } else if ($(this).attr('data-drawer') == "push-wth-nav") {
             if ($(targetDrawer).hasClass('drawer-left')) $wrapper.addClass('hk-drawer-push hk-drawer-wth-nav-push hk-drawer-pushleft'); else $wrapper.addClass('hk-drawer-push hk-drawer-wth-nav-push hk-drawer-pushright');
         } else if ($(this).attr('data-drawer') == "overlay") {
-            $(targetDrawer).css({"border": "none", "box-shadow": "0 8px 32px rgba(0, 0, 0, 0.1)"});
+            $(targetDrawer).css({
+                "border": "none",
+                "box-shadow": "0 8px 32px rgba(0, 0, 0, 0.1)"
+            });
             if ($(this).attr('data-backdrop') == "active") $wrapper.append('<div class="hk-drawer-backdrop"></div>');
         }
         $(targetDrawer).addClass('drawer-toggle');
@@ -527,7 +534,10 @@ var chatApp = function () {
     /*Demo ChatApp*/
     if ($('.chatapp-wrap #chat_body').length > 0) {
         var demoScroll = document.querySelector('#chat_body .simplebar-content-wrapper');
-        demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+        demoScroll.scrollTo({
+            top: 100000,
+            behavior: "smooth"
+        });
         $(document).on('click', '.chat-contacts-list > .list-group-item > div.media', function (e) {
             $('.chat-contacts-list > .list-group-item > div.media').removeClass('active-user');
             $(this).addClass('read-chat active-user').find('.badge-pill').remove();
@@ -550,10 +560,16 @@ var chatApp = function () {
                 $('.chat-body .start-conversation').remove();
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + $(this).val() + '</p><span class="chat-time">7:57 PM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat  ul.list-unstyled");
                 $(this).val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('<li class="media received"><div class="avatar avatar-xs"><img src="' + $('.chat-header .avatar img').attr('src') + '" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat .chat-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else if (e.which == 13) {
                 alert('Please type somthing!');
@@ -566,10 +582,16 @@ var chatApp = function () {
                 $('.chat-body .start-conversation').remove();
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + targetInput.val() + '</p><span class="chat-time">7:57 PM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat  ul.list-unstyled");
                 targetInput.val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('<li class="media received"><div class="avatar avatar-xs"><img src="' + $('.chat-header .avatar img').attr('src') + '" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat .chat-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else {
                 alert('Please type somthing!');
@@ -603,23 +625,35 @@ var chatApp = function () {
     /*ChatPopup*/
     if ($('.hk-chat-popup .chat-popup-body').length > 0) {
         var demoScroll = document.querySelector('.chat-popup-body .simplebar-content-wrapper');
-        demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+        demoScroll.scrollTo({
+            top: 100000,
+            behavior: "smooth"
+        });
         $(document).on("click", ".btn-popup-open", function (e) {
             $(this).addClass('d-none');
             $('.chat-popover').fadeOut('fast');
             $('.hk-chat-popup').addClass('d-flex');
-            demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+            demoScroll.scrollTo({
+                top: 100000,
+                behavior: "smooth"
+            });
             return false;
         });
         $(document).on("keypress", "#input_msg_chat_popup", function (e) {
             if ((e.which == 13) && (!$(this).val().length == 0)) {
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + $(this).val() + '</p> <span class="chat-time">7:57 PM</span><div class="msg-action"><a href="#" class="btn btn-sm btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Reply</a><a class="dropdown-item" href="#">Forward</a><a class="dropdown-item" href="#">Copy</a></div></div></div></div></div></div></li>').appendTo(".hk-chat-popup  ul.list-unstyled");
                 $(this).val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('.typing-wrap').remove();
                     $('<li class="media received"><div class="avatar avatar-xs"> <img src="" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span><div class="msg-action"><a href="#" class="btn btn-sm btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Reply</a><a class="dropdown-item" href="#">Forward</a><a class="dropdown-item" href="#">Copy</a></div></div></div></div></div></div></li>').appendTo(".hk-chat-popup .chat-popup-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else if (e.which == 13) {
                 alert('Please type somthing!');
@@ -654,12 +688,18 @@ var chatApp = function () {
     /*ChatBot*/
     if ($('.hk-chatbot-popup .chatbot-popup-body').length > 0) {
         var demoScroll = document.querySelector('.chatbot-popup-body .simplebar-content-wrapper');
-        demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+        demoScroll.scrollTo({
+            top: 100000,
+            behavior: "smooth"
+        });
         $(document).on("click", ".btn-popup-open", function (e) {
             $(this).addClass('btn-popup-close').removeClass('btn-popup-open');
             $('.chat-popover').fadeOut('fast');
             $('.hk-chatbot-popup').addClass('d-md-block d-flex');
-            demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+            demoScroll.scrollTo({
+                top: 100000,
+                behavior: "smooth"
+            });
             return false;
         });
         $(document).on("click", ".btn-popup-close", function (e) {
@@ -676,11 +716,17 @@ var chatApp = function () {
             if ((e.which == 13) && (!$(this).val().length == 0)) {
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + $(this).val() + '</p> </div></div></div></li>').appendTo(".hk-chatbot-popup  ul.list-unstyled");
                 $(this).val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('.typing-wrap').remove();
                     $('<li class="media received"><div class="avatar avatar-xs avatar-soft-primary avatar-icon avatar-rounded"><span class="initial-wrap"><i class="ri-customer-service-2-line"></i></span></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p></div></div></div></li>').appendTo(".hk-chatbot-popup .chatbot-popup-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else if (e.which == 13) {
                 alert('Please type somthing!');
@@ -942,7 +988,11 @@ $('.advance-list li .dropdown').on('hide.bs.dropdown', function () {
 /***** Scroll function Start *****/
 if ($('[data-scroll]').length > 0) {
     smoothScroll.init({
-        speed: 100, easing: 'easeInOutCubic', offset: 80, updateURL: false, callbackBefore: function (toggle, anchor) {
+        speed: 100,
+        easing: 'easeInOutCubic',
+        offset: 80,
+        updateURL: false,
+        callbackBefore: function (toggle, anchor) {
         },
     });
 }
@@ -1043,25 +1093,30 @@ $.fn.extend({
         }).join("");
     },
     DataTableDefault: function (opts, rowIdx = true) {
+        let reloadCurrency = opts?.['reloadCurrency'];
+        if (reloadCurrency !== undefined) {
+            delete opts['reloadCurrency'];
+        }
         let defaultConfig = {
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
             ordering: false,
             paginate: true,
             pageLength: 10,
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
-                "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
-                "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
             language: {
                 url: $('#msg-datatable-language-config').text().trim(),
             },
             drawCallback: function () {
                 feather.replace();
+                if (reloadCurrency === true) {
+                    // reload all currency
+                    init_mask_money();
+                }
             },
-            data: [],
-            ...opts
+            data: [], ...opts
         }
-        if (opts.ajax) delete defaultConfig['data'];
+        if (opts?.['ajax']) delete defaultConfig['data'];
         if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
         let tbl = $(this).DataTable(defaultConfig);
         tbl.on('init.dt', function () {
@@ -1111,8 +1166,10 @@ $.fn.extend({
         }
         let alert_config = {
             animate: {
-                enter: 'animated bounceInDown', exit: 'animated bounceOutUp'
-            }, type: "dismissible alert-primary",
+                enter: 'animated bounceInDown',
+                exit: 'animated bounceOutUp'
+            },
+            type: "dismissible alert-primary",
         }
         if (typeAlert === 'success') {
             alert_config['type'] = "dismissible alert-success";
@@ -1145,7 +1202,10 @@ $.fn.extend({
         if (errs && typeof errs === 'object') {
             let errors_converted = jQuery.fn.cleanDataNotify(errs);
             Object.keys(errors_converted).map((key) => {
-                jQuery.fn.notifyB({'title': key, 'description': errors_converted[key]}, 'failure');
+                jQuery.fn.notifyB({
+                    'title': key,
+                    'description': errors_converted[key]
+                }, 'failure');
             });
         }
     },
@@ -1174,9 +1234,15 @@ $.fn.extend({
 
     // FORM handler
     serializerObject: function (formSelected) {
-        return formSelected.serializeArray().reduce((o, kv) => ({...o, [kv.name]: kv.value}), {});
+        return formSelected.serializeArray().reduce((o, kv) => ({
+            ...o,
+            [kv.name]: kv.value
+        }), {});
     },
-    formSubmit: function (formElement, notify = {'success': true, 'failure': true}, enableRedirect = true,) {
+    formSubmit: function (formElement, notify = {
+        'success': true,
+        'failure': true
+    }, enableRedirect = true,) {
         return new Promise(function (resolve, reject) {
             let frm = new SetupFormSubmit($(formElement));
             if (frm.dataUrl && frm.dataMethod) {
@@ -1195,72 +1261,10 @@ $.fn.extend({
             } else throw 'Setup call raise exception with URL or method is incorrect.!';
         });
     },
-    regexCurrency: (precision, decimal) => {
-        if (precision > 0 && decimal) return new RegExp(`[^\\d${decimal}]`, 'g');
-        return new RegExp(`\\D`, 'g');
-    },
-    initInputCurrency: function (configData) {
-        return this.attr(
-            'data-precision', configData.precision
-        ).attr(
-            'data-decimal', configData.decimal
-        ).maskMoney({
-            prefix: configData.prefix,
-            suffix: configData.suffix,
-            affixesStay: configData.affixesStay,
-            thousands: configData.thousands,
-            decimal: configData.decimal,
-            precision: configData.precision,
-            allowZero: configData.allowZero,
-            allowNegative: configData.allowNegative,
-        }).maskMoney('mask', parseFloat(this.val()));
-    },
-    valCurrency: function () {
-        let precision = this.attr('data-precision');
-        let decimal = this.attr('data-decimal');
-        let realValue = $.fn.val.apply(this, arguments);
-        let reg = $.fn.regexCurrency(precision, decimal);
-        let replaceValue = realValue.replace(reg, "");
-        let result = replaceValue.replace(decimal, ".");
-        if (realValue[0] === '-') result = '-' + result;
-
-        let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
-        switch (returnType) {
-            case 'text':
-                return result;
-            case 'number':
-                return Number(result);
-        }
-        throw Error("The money must be return type text or number, don't support: " + returnType);
-    },
-    parseCurrencyDisplay: function (configData) {
-        let eleInput = $('<input>', {
-            "type": 'text',
-            "class": "mask-money",
-            "value": this.attr('data-mask-value'),
-        });
-        eleInput.initInputCurrency(configData);
-        this.attr(
-            'data-precision', eleInput.attr('precision')
-        ).attr(
-            'data-decimal', eleInput.attr('decimal')
-        ).attr(
-            'data-money-pared', eleInput.val()
-        ).text(eleInput.val());
-    },
-    getCurrencyDisplay: function (configData, numberData) {
-        let eleInput = $('<input>', {
-            "type": 'text',
-            "class": "mask-money",
-            "value": numberData,
-        });
-        eleInput.initInputCurrency(configData);
-        return eleInput.val();
-    },
-    formDetailToUpdateAction: function(){
+    formDetailToUpdateAction: function () {
         let $DetailForm = $('form[readonly]');
-        if ($DetailForm){
-            $('.readonly > * + span').on('click', function(){
+        if ($DetailForm) {
+            $('.readonly > * + span').on('click', function () {
                 // for input/select
                 $('[readonly]', $(this).parent('.readonly')).attr('readonly', false);
                 // for radio/checkbox
@@ -1274,6 +1278,77 @@ $.fn.extend({
                 $(`button[form="${$DetailForm.attr('id')}"]`).removeClass('hidden')
             });
         }
+    },
+
+    // CURRENCY handler
+    regexCurrency: (precision, decimal) => {
+        if (precision > 0 && decimal) return new RegExp(`[^\\d${decimal}]`, 'g');
+        return new RegExp(`\\D`, 'g');
+    },
+    initInputCurrency: function (configData) {
+        // let valueCurrency = 0;
+        // if (this.attr('data-init-mask-money') === undefined || !/[.,a-zA-Z]/.test(this.val())) {
+        //     valueCurrency = Number.isFinite(this.val()) ? this.val(): parseFloat(this.val());
+        // } else {
+        //     console.log('Reject: ', this.attr('data-init-mask-money'), this.val(), "|", this.valCurrency());
+        //     valueCurrency = parseFloat(this.valCurrency());
+        // }
+        // return this.attr(
+        //     'data-precision', configData?.['precision']
+        // ).attr(
+        //     'data-decimal', configData?.['decimal']
+        // ).attr(
+        //     'data-init-mask-money',
+        //     this.val()
+        // ).maskMoney({
+        //     prefix: configData?.['prefix'],
+        //     suffix: configData?.['suffix'],
+        //     affixesStay: configData?.['affixesStay'],
+        //     thousands: configData?.['thousands'],
+        //     decimal: configData?.['decimal'],
+        //     precision: configData?.['precision'],
+        //     allowZero: configData?.['allowZero'],
+        //     allowNegative: configData?.['allowNegative'],
+        // }).maskMoney('mask', valueCurrency);
+    },
+    valCurrency: function () {
+        // let precision = this.attr('data-precision');
+        // let decimal = this.attr('data-decimal');
+        // let realValue = $.fn.val.apply(this, arguments);
+        // let reg = $.fn.regexCurrency(precision, decimal);
+        // let replaceValue = realValue.replace(reg, "");
+        // let result = replaceValue.replace(decimal, ".");
+        // if (realValue[0] === '-') result = '-' + result;
+        //
+        // let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
+        // switch (returnType) {
+        //     case 'text':
+        //         return result;
+        //     case 'number':
+        //         return Number(result);
+        // }
+        // throw Error("The money must be return type text or number, don't support: " + returnType);
+        return this.val();
+    },
+    parseCurrencyDisplay: function (configData) {
+        // let eleInput = $('<input>', {
+        //     "type": 'text',
+        //     "class": "mask-money",
+        //     "value": this.attr('data-mask-value'),
+        // });
+        // eleInput.initInputCurrency(configData);
+        // this.attr('data-precision', eleInput.attr('precision')).attr('data-decimal', eleInput.attr('decimal')).attr('data-money-pared', eleInput.val()).text(eleInput.val());
+        this.text(this.attr('data-mask-value'));
+    },
+    getCurrencyDisplay: function (configData, numberData) {
+        // let eleInput = $('<input>', {
+        //     "type": 'text',
+        //     "class": "mask-money",
+        //     "value": numberData,
+        // });
+        // eleInput.initInputCurrency(configData);
+        // return eleInput.val();
+        return numberData;
     },
 
     // HTTP response, redirect, Ajax
@@ -1377,24 +1452,21 @@ $.fn.extend({
     showLoading: function (timeout) {
         $('#loadingContainer').removeClass('hidden');
         if (timeout) {
-            setTimeout(
-                $.fn.hideLoading,
-                (timeout > 100 ? timeout : 1000)
-            );
+            setTimeout($.fn.hideLoading, (timeout > 100 ? timeout : 1000));
         }
     },
     hideLoading: function () {
         $('#loadingContainer').addClass('hidden');
     },
-    getRowData: function (){
+    getRowData: function () {
         // element call from in row of DataTable
         let row = $(this).closest('tr');
         return $($(this).closest('table')).DataTable().row(row).data();
     },
-    groupDataFromPrefix: function (data, prefix){
+    groupDataFromPrefix: function (data, prefix) {
         let rs = {};
-        Object.keys(data).map((key)=>{
-            if (key.startsWith(prefix)){
+        Object.keys(data).map((key) => {
+            if (key.startsWith(prefix)) {
                 rs[key.split(prefix)[1]] = data[key]
             }
         })
@@ -1476,6 +1548,38 @@ class SetupFormSubmit {
     }
 }
 
+
+// CURRENCY CLASS UTILS
+class MaskMoney {
+    static initTextDisplayMoney($ele) {
+        $.fn.getCompanyCurrencyConfig().then((configData) => {
+            $ele.text($.fn.getCurrencyDisplay(configData['currency_rule'], $ele.attr('data-mask-value')));
+        });
+    }
+
+    static initClassTextDisplayMoney(clsName) { // '.x-mask-money'
+        $.fn.getCompanyCurrencyConfig().then((configData) => {
+            $(clsName).map((idx, item) => {
+                $(item).text($.fn.getCurrencyDisplay(configData['currency_rule'], $(item).attr('data-mask-value')));
+            });
+        });
+    }
+
+    static initInputMoney($ele) {
+        $.fn.getCompanyCurrencyConfig().then((configData) => {
+            $($ele).initInputCurrency(configData['currency_rule']);
+        });
+    }
+
+    static initClassInputMoney(clsName) {
+        $.fn.getCompanyCurrencyConfig().then((configData) => {
+            $(clsName).map((idx, item) => {
+                $(item).initInputCurrency(configData['currency_rule']);
+            });
+        });
+    }
+}
+
 // Extend and improvement base package
 String.format = function () {
     // String.format("{0} : {1}", "Fullname", "Nguyen Van A") => "Fullname : Nguyen Van A"
@@ -1540,31 +1644,27 @@ var DataTableAction = {
     'delete': function (url, data, crf, row) {
         let div = jQuery('<div>');
         let $transElm = $('#trans-factory')
-        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' +
-            `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` +
-            `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` +
-            '<div class="modal-footer justify-content-between">' +
-            `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` +
-            `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` +
-            '</button></div></div></div>';
+        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' + `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` + `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` + '<div class="modal-footer justify-content-between">' + `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` + `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` + '</button></div></div></div>';
         div.addClass('modal fade')
         div.html($content)
         div.appendTo('body');
         div.modal('show');
         div.find('.btn').off().on('click', function (e) {
-            if ($(this).attr('data-type') === 'cancel') div.remove();
-            else {
+            if ($(this).attr('data-type') === 'cancel') div.remove(); else {
                 $.fn.callAjax(url, 'DELETE', data, crf)
-                    .then(
-                        (res) => {
-                            if (res.hasOwnProperty('status')) {
-                                div.modal('hide');
-                                if ($(row).length)
-                                    $(row).closest('.table').DataTable().rows(row).remove().draw();
-                                $.fn.notifyPopup({description: 'Delete item successfully'}, 'success')
-                            }
+                    .then((res) => {
+                        if (res.hasOwnProperty('status')) {
+                            div.modal('hide');
+                            div.remove();
+                            if ($(row).length)
+                                $(row).closest('.table').DataTable().rows(row).remove().draw();
+                            $.fn.notifyPopup(
+                                {
+                                    description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                                },
+                                'success')
                         }
-                    )
+                    })
             }
         })
     },
@@ -1576,23 +1676,24 @@ var DataTableAction = {
  * @param isNumber string number get from API
  * @param ConfigOpt with two object {currency:{...}, currency_rule: {...}}
  */
-class ExtendCurrency{
+class ExtendCurrency {
     ConfigOpt = {}
 
-    set setConfig(data){
+    set setConfig(data) {
         this.ConfigOpt = data
     }
 
-    get getConfigR(){
+    get getConfigR() {
         return this.ConfigOpt['currency_rule']
     }
 
-    get getConfig(){
+    get getConfig() {
         return this.ConfigOpt['currency']
     }
 
-    convertCurrency(isNumber){
+    convertCurrency(isNumber) {
         return $.fn.getCurrencyDisplay(this.getConfigR, isNumber);
     }
 }
+
 let CCurrency = new ExtendCurrency();

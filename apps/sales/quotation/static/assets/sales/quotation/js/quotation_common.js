@@ -233,7 +233,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationProduct(product_id, box_id) {
+    loadBoxQuotationProduct(product_id, box_id, valueToSelect = null) {
         let ele = document.getElementById(product_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -267,11 +267,19 @@ class loadDataHandle {
                     'cost_price': data[i].cost_price,
                     'tax': tax_code,
                 }).replace(/"/g, "&quot;");
-                eleBox.append(`<option value="${data[i].id}">
-                            <span class="product-title">${data[i].title}</span>
-                            <input type="hidden" class="data-default" value="${product_data}">
-                            <input type="hidden" class="data-info" value="${dataStr}">
-                        </option>`)
+                let option = `<option value="${data[i].id}">
+                                <span class="product-title">${data[i].title}</span>
+                                <input type="hidden" class="data-default" value="${product_data}">
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </option>`
+                if (valueToSelect && valueToSelect === data[i].id) {
+                    option = `<option value="${data[i].id}" selected>
+                                <span class="product-title">${data[i].title}</span>
+                                <input type="hidden" class="data-default" value="${product_data}">
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </option>`
+                }
+                eleBox.append(option)
             }
         }
     }
@@ -293,7 +301,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationUOM(uom_id, box_id) {
+    loadBoxQuotationUOM(uom_id, box_id, valueToSelect = null) {
         let ele = document.getElementById(uom_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -305,10 +313,17 @@ class loadDataHandle {
                     'title': data[i].title,
                     'code': data[i].code,
                 }).replace(/"/g, "&quot;");
-                eleBox.append(`<option value="${data[i].id}">
+                let option = `<option value="${data[i].id}">
                                 <span class="uom-title">${data[i].title}</span>
                                 <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`)
+                            </option>`
+                if (valueToSelect && valueToSelect === data[i].id) {
+                    option = `<option value="${data[i].id}" selected>
+                                <span class="uom-title">${data[i].title}</span>
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </option>`
+                }
+                eleBox.append(option)
             }
         }
     }
@@ -330,7 +345,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationTax(tax_id, box_id) {
+    loadBoxQuotationTax(tax_id, box_id, valueToSelect = null) {
         let ele = document.getElementById(tax_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -342,10 +357,17 @@ class loadDataHandle {
                     'title': data[i].title,
                     'value': data[i].rate,
                 }).replace(/"/g, "&quot;");
-                eleBox.append(`<option value="${data[i].id}" data-value="${data[i].rate}">
-                            <span class="tax-title">${data[i].rate} %</span>
-                            <input type="hidden" class="data-info" value="${dataStr}">
-                        </option>`)
+                let option = `<option value="${data[i].id}" data-value="${data[i].rate}">
+                                <span class="tax-title">${data[i].rate} %</span>
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </option>`
+                if (valueToSelect && valueToSelect === data[i].id) {
+                    option = `<option value="${data[i].id}" data-value="${data[i].rate}" selected>
+                                <span class="tax-title">${data[i].rate} %</span>
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </option>`
+                }
+                eleBox.append(option)
             }
         }
     }
@@ -433,7 +455,7 @@ class loadDataHandle {
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
-                                        <div class="col-5"><span>${CCurrency.convertCurrency(parseFloat(data.price_list[i].value.toFixed(2)))}</span></div>
+                                        <div class="col-5"><span class="mask-money-value" data-mask-value="${parseFloat(data.price_list[i].value.toFixed(2))}"></span></div>
                                     </div>
                                 </a>`;
                     $(priceList).append(option);
@@ -441,7 +463,6 @@ class loadDataHandle {
                 if (valList) {
                     let minVal = Math.min(...valList);
                     price.value = minVal;
-                    init_mask_money_ele($(price));
                 }
             }
             if (tax && data.tax) {
@@ -449,6 +470,7 @@ class loadDataHandle {
             }
             self.loadInformationSelectBox(ele);
         }
+        init_mask_money();
     }
 
     loadInformationSelectBox(ele) {
@@ -541,6 +563,30 @@ class loadDataHandle {
         }
     }
 }
+
+    loadBoxSaleOrderQuotation(quotation_id) {
+        let jqueryId = '#' + quotation_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                        ele.append(`<option value=""></option>`);
+                        data.quotation_list.map(function (item) {
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            ele.append(`<option value="${item.id}">
+                                        <span class="quotation-title">${item.title}</span>
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
 }
 
 class dataTableHandle {
@@ -626,7 +672,7 @@ class dataTableHandle {
                     width: "1%",
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity" value="${row.product_quantity}" required>
+                                <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
                             </div>`;
                     }
                 },
@@ -659,7 +705,7 @@ class dataTableHandle {
                         return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount non-negative-number" value="${row.product_discount_value}">
+                                        <input type="text" class="form-control table-row-discount validated-number" value="${row.product_discount_value}">
                                         <span class="input-suffix">%</span>
                                     </span>
                                 </div>
@@ -763,6 +809,7 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        let selectProductID = 'quotation-create-cost-box-product-' + String(row.order);
                         return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -780,7 +827,7 @@ class dataTableHandle {
                                                 <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
-                                        <select class="form-select table-row-item disabled-custom-show" disabled>
+                                        <select class="form-select table-row-item disabled-custom-show" id="${selectProductID}" disabled>
                                             <option value="${row.product.id}">${row.product.title}</option>
                                         </select>
                                     </span>
@@ -792,8 +839,9 @@ class dataTableHandle {
                     targets: 2,
                     width: "1%",
                     render: (data, type, row) => {
+                        let selectUOMID = 'quotation-create-cost-box-uom-' + String(row.order);
                         return `<div class="row">
-                                <select class="form-select table-row-uom disabled-custom-show" disabled>
+                                <select class="form-select table-row-uom disabled-custom-show" id="${selectUOMID}" disabled>
                                     <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
                                 </select>
                             </div>`;
@@ -825,6 +873,7 @@ class dataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
+                        let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
                         let taxID = "";
                         let taxRate = "";
                         if (row.tax) {
@@ -832,7 +881,7 @@ class dataTableHandle {
                             taxRate = row.tax.value;
                         }
                         return `<div class="row">
-                                <select class="form-select table-row-tax">
+                                <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input
@@ -957,7 +1006,7 @@ class dataTableHandle {
                     width: "1%",
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity" value="${row.expense_quantity}" required>
+                                <input type="text" class="form-control table-row-quantity validated-number" value="${row.expense_quantity}" required>
                             </div>`;
                     }
                 },
@@ -1172,19 +1221,16 @@ class calculateCaseHandle {
 
             elePretaxAmount.value = pretaxAmount;
             elePretaxAmountRaw.value = pretaxAmount;
-            init_mask_money_ele($(elePretaxAmount));
             if (eleDiscount) {
                 eleDiscount.value = discountAmount;
                 eleDiscountRaw.value = discountAmount;
-                init_mask_money_ele($(eleDiscount));
             }
             eleTaxes.value = taxAmount;
             eleTaxesRaw.value = taxAmount;
-            init_mask_money_ele($(eleTaxes));
             eleTotal.value = totalFinal;
             eleTotalRaw.value = totalFinal;
-            init_mask_money_ele($(eleTotal));
         }
+        init_mask_money();
     }
 
     calculate(row) {
@@ -1241,17 +1287,14 @@ class calculateCaseHandle {
                 let taxAmount = ((subtotalPlus * tax) / 100);
                 eleTaxAmount.value = taxAmount;
                 eleTaxAmountRaw.value = taxAmount;
-                init_mask_money_ele($(eleTaxAmount));
             }
             eleDiscountAmount.value = discountAmountOnTotal;
-            init_mask_money_ele($(eleDiscountAmount));
         } else {
             // calculate tax no discount on total
             if (eleTaxAmount) {
                 let taxAmount = ((subtotal * tax) / 100);
                 eleTaxAmount.value = taxAmount;
                 eleTaxAmountRaw.value = taxAmount;
-                init_mask_money_ele($(eleTaxAmount));
             }
         }
         // set subtotal value
@@ -1260,8 +1303,8 @@ class calculateCaseHandle {
         if (eleSubtotal) {
             eleSubtotal.value = subtotal;
             eleSubtotalRaw.value = subtotal;
-            init_mask_money_ele($(eleSubtotal));
         }
+        init_mask_money();
     }
 
     commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
@@ -1462,6 +1505,10 @@ class submitHandle {
     setupDataExpense() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-expense');
+        let tableEmpty = table.querySelector('.dataTables_empty');
+        if (tableEmpty) {
+            return []
+        }
         let tableBody = table.tBodies[0];
         for (let i = 0; i < tableBody.rows.length; i++) {
             let rowData = {};
@@ -1538,8 +1585,18 @@ class submitHandle {
         }
     }
 
-    setupDataSubmit(_form) {
+    setupDataSubmit(_form, is_sale_order = false) {
         let self = this;
+        let quotation_products_data = 'quotation_products_data';
+        let quotation_costs_data = 'quotation_costs_data';
+        let quotation_expenses_data = 'quotation_expenses_data';
+        let quotation_logistic_data = 'quotation_logistic_data';
+        if (is_sale_order === true) {
+            quotation_products_data = 'sale_order_products_data';
+            quotation_costs_data = 'sale_order_costs_data';
+            quotation_expenses_data = 'sale_order_expenses_data';
+            quotation_logistic_data = 'sale_order_logistic_data';
+        }
         let dateCreatedVal = $('#quotation-create-date-created').val();
         if (dateCreatedVal) {
             _form.dataForm['data_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
@@ -1562,35 +1619,13 @@ class submitHandle {
         _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
         _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
 
-        _form.dataForm['quotation_products_data'] = self.setupDataProduct();
-        _form.dataForm['quotation_costs_data'] = self.setupDataCost();
-        _form.dataForm['quotation_expenses_data'] = self.setupDataExpense();
+        _form.dataForm[quotation_products_data] = self.setupDataProduct();
+        _form.dataForm[quotation_costs_data] = self.setupDataCost();
+        let quotation_expenses_data_setup = self.setupDataExpense();
+        if (quotation_expenses_data_setup.length > 0) {
+            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup
+        }
 
-        _form.dataForm['quotation_logistic_data'] = self.setupDataLogistic();
+        _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
     }
 }
-
-function init_company_currency_config() {
-    $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-        if (currencyConfig) {
-            $('#data-init-quotation-create-company-currency-config').val(JSON.stringify(currencyConfig))
-        } else throw  Error('Currency config is not found.')
-    });
-}
-
-function init_mask_money_single(ele) {
-    let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
-    if (currencyConfig) {
-        ele.find('.mask-money').initInputCurrency(currencyConfig['currency_rule']);
-        ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig['currency_rule']);
-    } else throw  Error('Currency config is not found.')
-}
-
-function init_mask_money_ele(ele) {
-    let currencyConfig = JSON.parse($('#data-init-quotation-create-company-currency-config').val());
-    if (currencyConfig) {
-        ele.initInputCurrency(currencyConfig['currency_rule']);
-        ele.parseCurrencyDisplay(currencyConfig['currency_rule']);
-    } else throw  Error('Currency config is not found.')
-}
-

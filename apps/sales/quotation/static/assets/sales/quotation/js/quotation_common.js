@@ -1188,7 +1188,7 @@ class dataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row, meta) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-check"></div>`
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-check" data-id="${row.id}"></div>`
                     }
                 },
                 {
@@ -1207,23 +1207,34 @@ class dataTableHandle {
         });
     }
 
-    loadTableCopyQuotation(quotation_id) {
+    loadTableCopyQuotation(quotation_id, opp_id = null, sale_person_id = null) {
         let self = this;
         let jqueryId = '#' + quotation_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                        $('#datable-copy-quotation').DataTable().destroy();
-                        self.dataTableCopyQuotation(data.quotation_list, 'datable-copy-quotation');
-                    }
+        $('#datable-copy-quotation').DataTable().destroy();
+        if (sale_person_id) {
+            let data_filter = {'sale_person': sale_person_id};
+            if (opp_id) {
+                data_filter = {
+                    'sale_person': sale_person_id,
+                    'opportunity': opp_id
                 }
             }
-        )
+            $.fn.callAjax(url, method, data_filter).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                            self.dataTableCopyQuotation(data.quotation_list, 'datable-copy-quotation');
+                        }
+                    }
+                }
+            )
+        } else {
+            self.dataTableCopyQuotation([], 'datable-copy-quotation');
+        }
     }
 }
 

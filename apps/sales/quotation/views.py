@@ -50,7 +50,8 @@ class QuotationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get(data)
         if resp.state:
             return {'quotation_list': resp.result}, status.HTTP_200_OK
 

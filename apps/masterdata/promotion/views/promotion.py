@@ -1,11 +1,14 @@
+import json
+
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg
+from apps.core.workflow.views.config import WORKFLOW_TYPE
+from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REVENUE, COMPANY_SIZE
 from django.utils.translation import gettext_lazy as _
 
-__all__ = ['PromotionList', 'PromotionCreate', 'CustomerParamFieldAPI', 'PromotionListAPI', 'PromotionCreateAPI',
+__all__ = ['PromotionList', 'PromotionCreate', 'PromotionListAPI', 'PromotionCreateAPI',
            'PromotionDetail', 'PromotionDetailAPI']
 
 
@@ -43,7 +46,11 @@ class PromotionCreate(View):
         menu_active='menu_pricing',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+                   'revenue': CUSTOMER_REVENUE,
+                   'company_size': COMPANY_SIZE,
+                   'cus_operator': WORKFLOW_TYPE[4],
+               }, status.HTTP_200_OK
 
 
 class PromotionCreateAPI(APIView):
@@ -62,6 +69,7 @@ class PromotionCreateAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
+
 class PromotionDetail(View):
     @mask_view(
         auth_require=True,
@@ -70,7 +78,12 @@ class PromotionDetail(View):
         menu_active='menu_pricing',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'doc_id': pk}, status.HTTP_200_OK
+        return {
+                   'doc_id': pk,
+                   'revenue': CUSTOMER_REVENUE,
+                   'company_size': COMPANY_SIZE,
+                   'cus_operator': WORKFLOW_TYPE[4],
+               }, status.HTTP_200_OK
 
 
 class PromotionDetailAPI(APIView):
@@ -86,17 +99,28 @@ class PromotionDetailAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
-
-class CustomerParamFieldAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get()
-        if resp.state:
-            return {'customer_param_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
+    def put(self, request, pk, *args, **kwargs):
+        req = ServerAPI(user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).put(request.data)
+        if req.state:
+            return req.result, status.HTTP_200_OK
+        elif req.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        req = ServerAPI(user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).delete(request.data)
+        if req.state:
+            req.result['message'] = PromotionMsg.DELETE
+            return req.result, status.HTTP_200_OK
+        elif req.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+

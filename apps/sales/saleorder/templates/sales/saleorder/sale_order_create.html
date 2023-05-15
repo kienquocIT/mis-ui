@@ -36,10 +36,11 @@
     </div>
 
     <form
-            data-url="{% url 'QuotationListAPI' %}"
-            data-url-redirect="{% url 'QuotationList' %}"
+            data-url="{% url 'SaleOrderListAPI' %}"
+            data-url-redirect="{% url 'SaleOrderList' %}"
             data-method="POST"
             id="frm_quotation_create"
+            class="sale-order"
             method="post"
     >
         {% csrf_token %}
@@ -48,18 +49,20 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="input title"
+                                        name="title"
+                                        id="quotation-create-title"
+                                        required
+                                >
+                                <span class="form-text text-muted">{% trans 'title of sale order' %}</span>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
-                                    <input
-                                            type="text" class="form-control"
-                                            placeholder="input title"
-                                            name="title"
-                                            id="quotation-create-title"
-                                            required
-                                    >
-                                    <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
-                                </div>
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select Opportunity' %}</label>
                                     <div class="input-group">
@@ -86,7 +89,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
+                                    <span class="form-text text-muted">{% trans 'Opportunity link to sale order' %}</span>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select Customer' %}<span class="required"></span></label>
@@ -116,7 +119,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
+                                    <span class="form-text text-muted">{% trans 'Customer link to sale order' %}</span>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select Contact' %}</label>
@@ -145,69 +148,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Date Created' %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                placeholder="dd/mm/yyyy"
-                                                name="date_created"
-                                                id="quotation-create-date-created"
-                                                disabled
-                                            >
-                                        </span>
-                                    </div>
-                                    <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Status' %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                value="Open"
-                                                name="status"
-                                                id="quotation-create-status"
-                                                disabled
-                                            >
-                                        </span>
-                                    </div>
-                                    <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Sale Person' %}<span class="required"></span></label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-sale-person"
-                                                data-url="{% url "EmployeeListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'EmployeeDetail' 1 %}"
-                                                name="sale_person"
-                                                required
-                                            ></select>
-                                        </span>
-                                    </div>
-                                    <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+                                    <span class="form-text text-muted">{% trans 'Contact link to sale order' %}</span>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
@@ -237,7 +178,97 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Payment term of quotation' %}</span>
+                                    <span class="form-text text-muted">{% trans 'Payment term of sale order' %}</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Date Created' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <input
+                                                type="text" class="form-control disabled-custom-show"
+                                                placeholder="dd/mm/yyyy"
+                                                name="date_created"
+                                                id="quotation-create-date-created"
+                                                disabled
+                                            >
+                                        </span>
+                                    </div>
+                                    <span class="form-text text-muted">{% trans 'Date create sale order' %}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Status' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <input
+                                                type="text" class="form-control disabled-custom-show"
+                                                value="Open"
+                                                name="status"
+                                                id="quotation-create-status"
+                                                disabled
+                                            >
+                                        </span>
+                                    </div>
+                                    <span class="form-text text-muted">{% trans 'Status of sale order' %}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Select Sale Person' %}<span class="required"></span></label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                    ></i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select
+                                                class="form-select"
+                                                id="select-box-quotation-create-sale-person"
+                                                data-url="{% url "EmployeeListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url 'EmployeeDetail' 1 %}"
+                                                name="sale_person"
+                                                required
+                                            ></select>
+                                        </span>
+                                    </div>
+                                    <span class="form-text text-muted">{% trans 'Sale person of sale order' %}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Select Quotation' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                    ></i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select
+                                                class="form-select" id="select-box-quotation"
+                                                data-url="{% url "QuotationListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "QuotationDetail" 1 %}"
+                                                name="quotation"
+                                            ></select>
+                                        </span>
+                                    </div>
+                                    <span class="form-text text-muted">{% trans 'Quotation link to sale order' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -286,14 +317,11 @@
                                     <div class="col-2">
                                         <button type="button" class="btn btn-soft-primary">Print</button>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-7">
                                         <button type="button" class="btn btn-soft-primary">Send Email</button>
                                     </div>
-                                    <div class="col-4">
-                                        <button type="button" class="btn btn-soft-primary">Customer Confirm</button>
-                                    </div>
                                     <div class="col-3">
-                                        <button type="button" class="btn btn-soft-primary">Create Order</button>
+                                        <button type="button" class="btn btn-soft-primary">Copy Quotation</button>
                                     </div>
                                 </div>
                             </div>

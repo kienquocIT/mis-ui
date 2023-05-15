@@ -3,7 +3,7 @@
 {% block title %}{% trans 'Promotion list' %}{% endblock %}
 {% block cssHeader %}
     <!-- Select2 -->
-{#    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>#}
+    {#    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>#}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -33,25 +33,32 @@
     <div class="row">
         <div class="col-md-12">
             <table id="promotion-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "PromotionListAPI" %}">
-                    <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-60">{% trans "Promotion name" %}</th>
-                    <th class="w-20">{% trans "Status" %}</th>
-                    <th class="w-15"></th>
-                    </thead>
-                </table>
+                   data-url="{% url "PromotionListAPI" %}">
+                <thead>
+                <th class="w-5">#</th>
+                <th class="w-60">{% trans "Promotion name" %}</th>
+                <th class="w-20">{% trans "Status" %}</th>
+                <th class="w-15"></th>
+                </thead>
+            </table>
         </div>
     </div>
     {% csrf_token %}
     <input type="hidden" id="trans-factory"
            data-valid="{% trans 'Valid' %}"
            data-expired="{% trans 'Expired' %}"
+           data-terms-config="{% trans 'Confirm' %}"
+           data-terms-cancel="{% trans 'Cancel' %}"
+           data-terms-mess_tit="{% trans 'Delete Item' %}"
+           data-terms-mess="{% trans 'Do you really want to delete this item' %}"
     >
     <input type="hidden" id="url-factory"
-    data-detail="{% url 'PromotionDetail' 1 %}">
+           data-detail-api="{% url 'PromotionDetailAPI' 1 %}"
+           data-detail="{% url 'PromotionDetail' 1 %}"
+    >
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/masterdata/promotion/js/list.js' %}"></script>

@@ -8,3 +8,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_UPDATE = _('Opportunity update successfully')
     QUOTATION_CREATE = _('Quotation create successfully')
     QUOTATION_UPDATE = _('Quotation update successfully')
+    SALE_ORDER_CREATE = _('Sale order create successfully')
+    SALE_ORDER_UPDATE = _('Sale order update successfully')

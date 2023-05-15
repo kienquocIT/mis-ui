@@ -409,7 +409,7 @@
                         <div class="col-md-8 col-xs-12">
                             <select class="form-select" name="select_customer_type">
                                 <option value="0">{% trans 'All' %}</option>
-                                <option value="1">{% trans 'Select form list' %}</option>
+                                <option value="1">{% trans 'Select from list' %}</option>
                                 <option value="2">{% trans 'Edit conditions' %}</option>
                             </select>
                         </div>
@@ -419,14 +419,17 @@
                             <table id="table_customer_list" data-url="{% url 'AccountListAPI' %}" class="table w-100">
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input check_all">
+                                        </div>
+                                    </th>
                                     <th>{% trans 'Customer name' %}</th>
                                     <th>{% trans 'Code' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <script class="hidden" id="cus_list_data"></script>
                         </div>
                     </div>
                     <div class="customer_condition hidden">

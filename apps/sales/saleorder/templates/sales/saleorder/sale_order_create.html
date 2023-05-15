@@ -321,7 +321,57 @@
                                         <button type="button" class="btn btn-soft-primary">Send Email</button>
                                     </div>
                                     <div class="col-3">
-                                        <button type="button" class="btn btn-soft-primary">Copy Quotation</button>
+                                        <button
+                                                type="button"
+                                                class="btn btn-soft-primary"
+                                                id="btn-copy-quotation"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#quotationModalCenter"
+                                        >Copy Quotation</button>
+                                        <div
+                                                    class="modal fade" id="quotationModalCenter" tabindex="-1"
+                                                    role="dialog" aria-labelledby="quotationModalCenter"
+                                                    aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>
+                                                            <button
+                                                                    type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"
+                                                            >
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table
+                                                                    id="datable-copy-quotation"
+                                                                    class="table nowrap w-100 mb-5"
+                                                            >
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>{% trans 'Title' %}</th>
+                                                                    <th>{% trans 'Code' %}</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button
+                                                                    type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal"
+                                                            >Close
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary">Save changes
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -813,6 +863,12 @@
                                 type="hidden"
                                 id="data-init-quotation-create-promotion"
                                 data-url="{% url "PromotionListAPI" %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-copy-quotation"
+                                data-url="{% url "QuotationListAPI" %}"
                                 data-method="GET"
                         >
                     </div>

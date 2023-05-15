@@ -206,7 +206,7 @@ $(function () {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).val(priceValRaw);
+                    $(elePrice).attr('value', String(priceValRaw));
                     $.fn.initMaskMoney2();
                     calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }
@@ -415,9 +415,7 @@ $(function () {
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal
                     }
-                    let addRow = tableCost.DataTable().row.add(dataAdd).draw();
-                    let newRow = tableCost.DataTable().row(addRow).node();
-                    let $newRow = $(newRow);
+                    tableCost.DataTable().row.add(dataAdd).draw();
                     $.fn.initMaskMoney2();
                     loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
                     loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
@@ -466,6 +464,12 @@ $(function () {
             if (eleContent && eleShow) {
                 eleShow[0].value = eleContent.value;
             }
+        });
+
+// Action on click button copy quotation on sale order page
+        $('#btn-copy-quotation').on('click', function(e) {
+            let opp_id = $('#select-box-quotation-create-opportunity').val();
+            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation')
         });
 
 // Submit form quotation

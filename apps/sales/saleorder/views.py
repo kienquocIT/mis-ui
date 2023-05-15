@@ -25,7 +25,7 @@ class SaleOrderList(View):
         auth_require=True,
         template='sales/saleorder/sale_order_list.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='SALE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -36,7 +36,7 @@ class SaleOrderCreate(View):
         auth_require=True,
         template='sales/saleorder/sale_order_create.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='SALE_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {

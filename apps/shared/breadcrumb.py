@@ -112,6 +112,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Sale order
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
+    
+    # WareHouse
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
 
 
 class BreadcrumbView:
@@ -295,3 +298,8 @@ class BreadcrumbView:
         BreadcrumbItem.SALE_ORDER_LIST_PAGE
     ]
     SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_CREATE_PAGE]
+
+    # Warehouse
+    WAREHOUSE_LIST_PAGE = [
+        BreadcrumbItem.WAREHOUSE_LIST_PAGE
+    ]

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+            data-bs-toggle="tooltip" data-bs-placement="top" title=""
+            data-bs-original-title="Add"
+    >
+        <span class="icon" data-bs-toggle="modal" data-bs-target="#addWareHouse">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="dtbWareHouseList"
+            class="table nowrap w-100 mb-5"
+            data-method="GET"
+            data-url="{% url "WareHouseListAPI" %}"
+            data-url-remove="{% url 'WareHouseDetailAPI' pk=1 %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Description' %}</th>
+            <th>{% trans 'Active' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div
+            class="modal fade" id="addWareHouse" tabindex="-1" role="dialog" aria-labelledby="updateWareHouse"
+            aria-hidden="true"
+            data-method="POST" data-url="{% url "WareHouseListAPI" %}"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans 'Add new' %}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="inputTextNewTitle">{% trans 'Name' %} <span class="required"></span></label>
+                        <input type="text" class="form-control" name="title" id="inputTextNewTitle" maxlength="100"/>
+                        <small class="form-text text-muted">{% trans 'Name of warehouse' %}.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTextNewCode" class="form-label">{% trans 'Code' %} <span class="required"></span></label>
+                        <input type="text" name="code" class="form-control" id="inputTextNewCode" maxlength="100"/>
+                        <small class="form-text text-muted">{% trans 'Code of warehouse' %}.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTextNewRemarks" class="form-label">{% trans 'Description' %}</label>
+                        <textarea name="remarks" class="form-control" id="inputTextNewRemarks"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-switch mb-1">
+                            <input type="checkbox" class="form-check-input" id="inputNewActive">
+                            <label for="inputNewActive" class="form-label">{% trans 'Active' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary" id="btnSubmitNewModal">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+            class="modal fade mt-3" id="updateWareHouse" tabindex="-1" role="dialog" aria-labelledby="addWareHouse"
+            aria-hidden="true"
+            data-method="PUT"
+            data-url-detail="{% url 'WareHouseDetailAPI' pk=1 %}"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Update' %} : <span class="title-warehouse-update"></span></h5>
+                    <span class="hidden" id="idxObjectUpdateID"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="inputTextUpdateTitle">{% trans 'Name' %} <span class="required"></span></label>
+                        <input type="text" class="form-control" name="title" id="inputTextUpdateTitle" maxlength="100"/>
+                        <small class="form-text text-muted">{% trans 'Name of warehouse' %}.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTextUpdateCode" class="form-label">{% trans 'Code' %} <span class="required"></span></label>
+                        <input type="text" name="code" class="form-control" id="inputTextUpdateCode" maxlength="100"/>
+                        <small class="form-text text-muted">{% trans 'Code of warehouse' %}.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTextUpdateRemarks" class="form-label">{% trans 'Description' %}</label>
+                        <textarea name="remarks" class="form-control" id="inputTextUpdateRemarks"></textarea>
+                        <small class="form-text text-muted">{% trans 'Descriptions of warehouse' %}.</small>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-switch mb-1">
+                            <input type="checkbox" class="form-check-input" id="inputUpdateActive">
+                            <label for="inputUpdateActive" class="form-label">{% trans 'Active' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary" id="btnSubmitUpdateModal">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hidden">
+        <span id="msgConfirmDelete">{% trans 'Are you sure you want to remove "{0}"?' %}</span>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/warehouse_list.js' %}"></script>
+    <script>
+
+    </script>
+{% endblock %}

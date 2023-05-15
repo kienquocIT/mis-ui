@@ -177,3 +177,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
+
+    # warehouse
+    WAREHOUSE_LIST = StringUrl('saledata/warehouses')
+    WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')

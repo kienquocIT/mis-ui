@@ -1325,6 +1325,11 @@ $.fn.extend({
                     return resp.data
                 case 201:
                     return resp.data
+                case 204:
+                    $.fn.notifyB({
+                        'description': $('#msgSuccess').text()
+                    }, 'success')
+                    return {'status': status}
                 case 400:
                     let mess = resp.data;
                     if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
@@ -1391,18 +1396,17 @@ $.fn.extend({
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 headers: {"X-CSRFToken": headers},
-                success: function (rest) {
+                success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
-                    if (data) {
-                        resolve(rest);
-                    }
+                    if (data) resolve(rest);
+                    else resolve({'status': jqXHR.status});
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     let resp_data = jqXHR.responseJSON;
                     if (resp_data && typeof resp_data === 'object') {
                         $.fn.switcherResp(resp_data);
                         reject(resp_data);
-                    }
+                    } else if (jqXHR.status === 204) reject({'status': 204});
                 },
             };
             if (method.toLowerCase() === 'get') ctx.data = data

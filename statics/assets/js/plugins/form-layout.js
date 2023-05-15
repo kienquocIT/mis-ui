@@ -92,7 +92,6 @@ $(document).ready(function () {
                     parentX = elementDrop.closest('.my-col');
                     placeInsert = 'append';
                 }
-                console.log('PARENT: ', parentX);
                 return [parentX, (!!existTab), placeInsert]
             }
             return [null, false, placeInsert]

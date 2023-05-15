@@ -185,7 +185,7 @@ $(function () {
                 "product_discount_amount": 0
             }
             tableProduct.DataTable().row.add(dataAdd).draw();
-            init_mask_money();
+            $.fn.initMaskMoney2();
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -207,7 +207,7 @@ $(function () {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     $(elePrice).val(priceValRaw);
-                    init_mask_money();
+                    $.fn.initMaskMoney2();
                     calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }
             }
@@ -282,7 +282,7 @@ $(function () {
                 "expense_subtotal_price": 0
             }
             tableExpense.DataTable().row.add(dataAdd).draw();
-            init_mask_money();
+            $.fn.initMaskMoney2();
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
@@ -418,7 +418,7 @@ $(function () {
                     let addRow = tableCost.DataTable().row.add(dataAdd).draw();
                     let newRow = tableCost.DataTable().row(addRow).node();
                     let $newRow = $(newRow);
-                    init_mask_money();
+                    $.fn.initMaskMoney2();
                     loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
                     loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
                     loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);

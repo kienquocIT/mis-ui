@@ -4,21 +4,36 @@ $(function () {
     $(document).ready(function () {
         let company_current_id = $('#company-current-id').attr('data-id')
         let config = {
-            ordering: false, paginate: false, language: {
-                search: "", searchPlaceholder: "Search", info: "", sLengthMenu: "View  MENU",
-            }, drawCallback: function () {
+            ordering: false,
+            paginate: false,
+            language: {
+                search: "",
+                searchPlaceholder: "Search",
+                info: "",
+                sLengthMenu: "View  MENU",
+            },
+            drawCallback: function () {
                 $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
                 feather.replace();
-            }, data: [], columns: [{
-                width: '5%', render: () => {
+            },
+            data: [],
+            columns: [{
+                width: '5%',
+                render: () => {
                     return '';
                 },
             }, {
-                width: '10%', data: 'code', className: 'wrap-text', render: (data, type, row, meta) => {
+                width: '10%',
+                data: 'code',
+                className: 'wrap-text',
+                render: (data, type, row, meta) => {
                     return `<a href="/company/detail/` + row.id + `">` + data + `</a>`
                 }
             }, {
-                width: '30%', data: 'title', className: 'wrap-text', 'render': (data, type, row, meta) => {
+                width: '30%',
+                data: 'title',
+                className: 'wrap-text',
+                'render': (data, type, row, meta) => {
                     if (data) {
                         return `<div class="media align-items-center">
                                         <div class="media-head me-2">
@@ -38,13 +53,20 @@ $(function () {
                 }
 
             }, {
-                width: '20%', data: 'date_created', render: (data, type, row, meta) => {
+                width: '20%',
+                data: 'date_created',
+                render: (data, type, row, meta) => {
                     let date = new Date(data).toLocaleDateString("en-GB")
-                    let time = new Date(data).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+                    let time = new Date(data).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    });
                     return date + ' ' + time;
                 }
             }, {
-                width: '20%', data: 'representative_fullname', render: (data, type, row, meta) => {
+                width: '20%',
+                data: 'representative_fullname',
+                render: (data, type, row, meta) => {
                     if (data) {
                         return `<div class="representative_fullname"><span class="badge badge-primary">` + data + `</span></div>`;
                     } else {
@@ -52,7 +74,9 @@ $(function () {
                     }
                 }
             }, {
-                width: '15%', className: 'action-center', render: (data, type, row, meta) => {
+                width: '15%',
+                className: 'action-center',
+                render: (data, type, row, meta) => {
                     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-setting" data-bs-toggle="modal" data-bs-target="#modal-setting" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>`;
@@ -114,7 +138,7 @@ $(function () {
                 if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
                     config['data'] = resp.data['company_list'] ? resp.data['company_list'] : [];
                 }
-                if (resp.data.company_list[0].tenant_auto_create_company === false) {
+                if (resp.data?.['company_list']?.[0]?.['tenant_auto_create_company'] === false) {
                     const add_company_div = document.getElementById("add_company_button");
                     add_company_div.remove();
                 }
@@ -127,7 +151,7 @@ $(function () {
         // Load Data Config
         $('html').on('click', '.btn-setting', function (e) {
             e.preventDefault();
-
+            let rowData = $(this).getRowData();
             let modalControl = $('#modal-setting');
             Promise.all([
                 $.ajax(
@@ -142,6 +166,9 @@ $(function () {
                 let data1 = $.fn.switcherResp(result1);
                 let data2 = $.fn.switcherResp(result2);
                 let myCurrency = $('#idxCurrencyDefault');
+                myCurrency.closest('.modal').find('.modal-title').text(
+                    $(this).getRowData()?.['title']
+                )
                 if (data2['currency_list']) {
                     myCurrency.empty();
                     for (let i = 0; i < data2['currency_list'].length; i++) {
@@ -170,20 +197,42 @@ $(function () {
 
         $('#tblCompanySetting').on('submit', function (e) {
             $.fn.showLoading();
-            e.preventDefault();
 
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
             let dataBody = frm.dataForm
             dataBody['currency_rule'] = $.fn.groupDataFromPrefix(dataBody, 'currency_rule__');
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp)=>{
-                let data = $.fn.switcherResp(resp);
-                if (data['status'] === 200){
-                    window.location.reload();
-                }
-            }, (errs)=>{
+
+            if (
+                dataBody['currency_rule'] &&
+                (
+                        dataBody['currency_rule']['thousands'] &&
+                        dataBody['currency_rule']['decimal'] &&
+                        dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
+                )
+            ) {
                 $.fn.hideLoading();
-            });
+                $.fn.notifyB({
+                    'description': "Decimal values are not allowed to be the same as thousands"
+                }, 'failure');
+                e.preventDefault();
+            } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']){
+                $.fn.hideLoading();
+                $.fn.notifyB({
+                    'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
+                }, 'failure');
+                e.preventDefault();
+            }
+            else {
+                $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 200) {
+                        window.location.reload();
+                    }
+                }, (errs) => {
+                    $.fn.hideLoading();
+                });
+            }
         })
     })
 });

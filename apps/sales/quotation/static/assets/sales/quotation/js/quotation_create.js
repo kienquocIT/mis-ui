@@ -415,9 +415,7 @@ $(function () {
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal
                     }
-                    let addRow = tableCost.DataTable().row.add(dataAdd).draw();
-                    let newRow = tableCost.DataTable().row(addRow).node();
-                    let $newRow = $(newRow);
+                    tableCost.DataTable().row.add(dataAdd).draw();
                     init_mask_money();
                     loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
                     loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
@@ -466,6 +464,12 @@ $(function () {
             if (eleContent && eleShow) {
                 eleShow[0].value = eleContent.value;
             }
+        });
+
+// Action on click button copy quotation on sale order page
+        $('#btn-copy-quotation').on('click', function(e) {
+            let opp_id = $('#select-box-quotation-create-opportunity').val();
+            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation')
         });
 
 // Submit form quotation

@@ -1153,6 +1153,75 @@ class dataTableHandle {
             }
         )
     }
+
+    dataTableCopyQuotation(data, table_id) {
+        // init dataTable
+        let listData = data ? data : [];
+        let jqueryId = '#' + table_id;
+        let $tables = $(jqueryId);
+        $tables.DataTable({
+            data: listData,
+            searching: false,
+            language: {
+                // search: "_INPUT_",
+                // searchPlaceholder: "Search...",
+                paginate: {
+                    "previous": '<i data-feather="chevron-left"></i>',
+                    "next": '<i data-feather="chevron-right"></i>'
+                },
+                info: 'Showing _START_ to _END_ of _TOTAL_ rows',
+                lengthMenu: '_MENU_ rows per page',
+            },
+            ordering: false,
+            // paginate: false,
+            info: false,
+            drawCallback: function (row, data) {
+                // render icon after table callback
+                feather.replace();
+            },
+            rowCallback: function (row, data) {
+            },
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row, meta) => {
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-check"></div>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-title">${row.title}</span>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-code">${row.code}</span>`
+                    },
+                }
+            ],
+        });
+    }
+
+    loadTableCopyQuotation(quotation_id) {
+        let self = this;
+        let jqueryId = '#' + quotation_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                        $('#datable-copy-quotation').DataTable().destroy();
+                        self.dataTableCopyQuotation(data.quotation_list, 'datable-copy-quotation');
+                    }
+                }
+            }
+        )
+    }
 }
 
 class calculateCaseHandle {

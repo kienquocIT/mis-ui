@@ -187,7 +187,8 @@ class CurrencyListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get(params)
         if resp.state:
             return {'currency_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

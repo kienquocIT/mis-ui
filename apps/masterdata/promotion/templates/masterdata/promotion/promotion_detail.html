@@ -530,7 +530,9 @@
     >
     <input type="hidden" id="url-factory"
            data-customer_group="{% url 'AccountGroupListAPI' %}"
-           data-customer_industry="{% url 'IndustryListAPI' %}">
+           data-customer_industry="{% url 'IndustryListAPI' %}"
+           data-currency_list="{% url 'CurrencyListAPI' %}"
+    >
     {{ data.revenue|json_script:'customer_revenue' }}
     {{ data.company_size|json_script:'customer_com_size' }}
 {% endblock %}

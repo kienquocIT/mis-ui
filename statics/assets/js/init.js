@@ -1111,7 +1111,7 @@ $.fn.extend({
                 feather.replace();
                 if (reloadCurrency === true) {
                     // reload all currency
-                    init_mask_money();
+                    $.fn.initMaskMoney2();
                 }
             },
             data: [], ...opts
@@ -1229,7 +1229,7 @@ $.fn.extend({
     },
     getCompanyCurrencyConfig: async function () {
         let data = await $.fn.getCompanyConfig();
-        return data['config'];
+        return data['config']?.['currency_rule'];
     },
 
     // FORM handler
@@ -1281,74 +1281,36 @@ $.fn.extend({
     },
 
     // CURRENCY handler
-    regexCurrency: (precision, decimal) => {
-        if (precision > 0 && decimal) return new RegExp(`[^\\d${decimal}]`, 'g');
-        return new RegExp(`\\D`, 'g');
+    valCurrency: function (returnType = 'string') { // returnType choice in ['string', 'number']
+        let result = $(this).attr('value'); // don't change attr('value') to .val() !!!!
+        switch (returnType) {
+            case 'string':
+                result = result.toString();
+                break
+            case 'number':
+                result = parseFloat(result);
+                break
+            default:
+                break
+        }
+        return result;
     },
-    initInputCurrency: function (configData) {
-        // let valueCurrency = 0;
-        // if (this.attr('data-init-mask-money') === undefined || !/[.,a-zA-Z]/.test(this.val())) {
-        //     valueCurrency = Number.isFinite(this.val()) ? this.val(): parseFloat(this.val());
-        // } else {
-        //     console.log('Reject: ', this.attr('data-init-mask-money'), this.val(), "|", this.valCurrency());
-        //     valueCurrency = parseFloat(this.valCurrency());
-        // }
-        // return this.attr(
-        //     'data-precision', configData?.['precision']
-        // ).attr(
-        //     'data-decimal', configData?.['decimal']
-        // ).attr(
-        //     'data-init-mask-money',
-        //     this.val()
-        // ).maskMoney({
-        //     prefix: configData?.['prefix'],
-        //     suffix: configData?.['suffix'],
-        //     affixesStay: configData?.['affixesStay'],
-        //     thousands: configData?.['thousands'],
-        //     decimal: configData?.['decimal'],
-        //     precision: configData?.['precision'],
-        //     allowZero: configData?.['allowZero'],
-        //     allowNegative: configData?.['allowNegative'],
-        // }).maskMoney('mask', valueCurrency);
-    },
-    valCurrency: function () {
-        // let precision = this.attr('data-precision');
-        // let decimal = this.attr('data-decimal');
-        // let realValue = $.fn.val.apply(this, arguments);
-        // let reg = $.fn.regexCurrency(precision, decimal);
-        // let replaceValue = realValue.replace(reg, "");
-        // let result = replaceValue.replace(decimal, ".");
-        // if (realValue[0] === '-') result = '-' + result;
-        //
-        // let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
-        // switch (returnType) {
-        //     case 'text':
-        //         return result;
-        //     case 'number':
-        //         return Number(result);
-        // }
-        // throw Error("The money must be return type text or number, don't support: " + returnType);
-        return this.val();
-    },
-    parseCurrencyDisplay: function (configData) {
-        // let eleInput = $('<input>', {
-        //     "type": 'text',
-        //     "class": "mask-money",
-        //     "value": this.attr('data-mask-value'),
-        // });
-        // eleInput.initInputCurrency(configData);
-        // this.attr('data-precision', eleInput.attr('precision')).attr('data-decimal', eleInput.attr('decimal')).attr('data-money-pared', eleInput.val()).text(eleInput.val());
-        this.text(this.attr('data-mask-value'));
-    },
-    getCurrencyDisplay: function (configData, numberData) {
-        // let eleInput = $('<input>', {
-        //     "type": 'text',
-        //     "class": "mask-money",
-        //     "value": numberData,
-        // });
-        // eleInput.initInputCurrency(configData);
-        // return eleInput.val();
-        return numberData;
+    initMaskMoney2: function ($eleSelected = null, selectType = null) {
+        // $eleSelected && selectType are required when apply Mask-Money for concrete element.
+        // ELSE: apply all element have 'input.mask-money' & 'span.mask-money'
+        let inputElement = $(document).find('input.mask-money');
+        let spanElement = $(document).find('span.mask-money');
+        if (inputElement.length > 0 || spanElement.length > 0) {
+            $.fn.getCompanyCurrencyConfig().then((configData) => {
+                let clsMaskMoney2 = new MaskMoney2(configData);
+                if ($eleSelected && selectType) {
+                    clsMaskMoney2.applyMaskMoney($($eleSelected), selectType)
+                } else {
+                    inputElement.map((idx, item) => clsMaskMoney2.applyMaskMoney($(item), 'input'));
+                    spanElement.map((idx, item) => clsMaskMoney2.applyMaskMoney($(item), 'display'));
+                }
+            });
+        }
     },
 
     // HTTP response, redirect, Ajax
@@ -1550,33 +1512,91 @@ class SetupFormSubmit {
 
 
 // CURRENCY CLASS UTILS
-class MaskMoney {
-    static initTextDisplayMoney($ele) {
+class MaskMoney2 {
+    static _beforeParseFloatAndLimit(strData) {
+        let data = strData.replace(/^0+0+$/, "");
+        if (data.indexOf('.') > -1 && data.length > 18) {
+            return data.slice(0, 18);
+        } else if (data.indexOf('.') === -1 && data.length > 17) {
+            return data.slice(0, 17);
+        }
+        return data;
+    }
+
+    static focusInputMoney($ele) {
+        return $($ele).val($($ele).attr('value'));
+    }
+
+    static blurInputMoney($eleSelected) {
         $.fn.getCompanyCurrencyConfig().then((configData) => {
-            $ele.text($.fn.getCurrencyDisplay(configData['currency_rule'], $ele.attr('data-mask-value')));
+            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected).attr('value')));
         });
     }
 
-    static initClassTextDisplayMoney(clsName) { // '.x-mask-money'
-        $.fn.getCompanyCurrencyConfig().then((configData) => {
-            $(clsName).map((idx, item) => {
-                $(item).text($.fn.getCurrencyDisplay(configData['currency_rule'], $(item).attr('data-mask-value')));
-            });
-        });
+    static realtimeInputMoney($ele) {
+        $($ele).attr(
+            'value',
+            parseFloat(
+                MaskMoney2._beforeParseFloatAndLimit($($ele).val())
+            )
+        );
     }
 
-    static initInputMoney($ele) {
-        $.fn.getCompanyCurrencyConfig().then((configData) => {
-            $($ele).initInputCurrency(configData['currency_rule']);
-        });
+    constructor(configData) {
+        this.configData = configData;
     }
 
-    static initClassInputMoney(clsName) {
-        $.fn.getCompanyCurrencyConfig().then((configData) => {
-            $(clsName).map((idx, item) => {
-                $(item).initInputCurrency(configData['currency_rule']);
-            });
-        });
+    applyConfig(strAttrValue) {
+        let strDataParsed = parseFloat(strAttrValue);
+        if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
+            strAttrValue = strDataParsed.toString();
+
+            // apply mask-money config
+            let prefix = this.configData?.['prefix'];
+            let suffix = this.configData?.['suffix'];
+            let decimal = this.configData?.['decimal'];
+            let thousand = this.configData?.['thousands'];
+            let precision = parseInt(this.configData?.['precision']);
+            let parsedFloatData = parseFloat(MaskMoney2._beforeParseFloatAndLimit(strAttrValue));
+            if (Number.isInteger(precision)) parsedFloatData = parseFloat(parsedFloatData.toFixed(precision));
+            if (Number.isFinite(parsedFloatData)) {
+                let result = '';
+                let arrData = parsedFloatData.toString().split(".");
+                if (arrData[0].length > 0) {
+                    let rs = [];
+                    arrData[0].split("").reverse().map((item, idx, {length}) => {
+                        rs.push(item);
+                        if (idx !== length - 1 && idx !== 0 && (idx + 1) % 3 === 0) rs.push(thousand ? thousand : "");
+                    });
+                    if (arrData.length === 2 && arrData[1].length > 0) {
+                        result = rs.reverse().join("") + (decimal ? decimal : ".") + arrData[1];
+                    } else result = rs.reverse().join("");
+                }
+                return (prefix ? prefix : "") + result + (suffix ? suffix : "");
+            }
+        }
+    }
+
+    applyMaskMoney($ele, inputOrDisplay) {
+        // inputOrDisplay choice in ['input', 'display']
+        switch (inputOrDisplay) {
+            case 'input':
+                $($ele).val(
+                    this.applyConfig(
+                        $($ele).attr('value')
+                    )
+                );
+                break
+            case 'display':
+                $($ele).text(
+                    this.applyConfig(
+                        $($ele).attr('data-init-money')
+                    )
+                );
+                break
+            default:
+                throw Error('strData must be required!')
+        }
     }
 }
 
@@ -1655,39 +1675,17 @@ var DataTableAction = {
                     .then((res) => {
                         if (res.hasOwnProperty('status')) {
                             div.modal('hide');
-                            if ($(row).length) $(row).closest('.table').DataTable().rows(row).remove().draw();
-                            $.fn.notifyPopup({description: 'Delete item successfully'}, 'success')
+                            div.remove();
+                            if ($(row).length)
+                                $(row).closest('.table').DataTable().rows(row).remove().draw();
+                            $.fn.notifyPopup(
+                                {
+                                    description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                                },
+                                'success')
                         }
                     })
             }
         })
     },
 }
-
-/**
- * class support for currency function in base.html
- * @func: convertCurrency => return string with format currency
- * @param isNumber string number get from API
- * @param ConfigOpt with two object {currency:{...}, currency_rule: {...}}
- */
-class ExtendCurrency {
-    ConfigOpt = {}
-
-    set setConfig(data) {
-        this.ConfigOpt = data
-    }
-
-    get getConfigR() {
-        return this.ConfigOpt['currency_rule']
-    }
-
-    get getConfig() {
-        return this.ConfigOpt['currency']
-    }
-
-    convertCurrency(isNumber) {
-        return $.fn.getCurrencyDisplay(this.getConfigR, isNumber);
-    }
-}
-
-let CCurrency = new ExtendCurrency();

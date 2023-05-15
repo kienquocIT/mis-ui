@@ -30,7 +30,7 @@
 {% block pageContent %}
     <!-- Form Create-->
     <form id="promo_form" data-url="{% url 'PromotionCreateAPI' %}" data-method="POST" method="post" novalidate
-    data-url-redirect="{% url 'PromotionList' %}">
+          data-url-redirect="{% url 'PromotionList' %}" autocomplete="off">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 col-xs-12">
@@ -71,7 +71,7 @@
         <div class="row">
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
-                    <label class="form-label w-100" for="customer">
+                    <label class="form-label w-100" for="customer_remark">
                         <span>{% trans 'Customer' %}</span>
                         <button type="button" class="float-right btn btn-flush-success btn-animated"
                                 data-bs-target="#customer_modal" data-bs-toggle="modal">
@@ -79,7 +79,7 @@
                             {% trans 'Edit' %}
                         </button>
                     </label>
-                    <input type="hidden" name="customer_type" value="0">
+                    <input type="hidden" name="customer_type" value="0" id="customer_type">
                     <textarea class="form-control" type="text" name="customer_remark"
                               id="customer_remark"></textarea>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
                 <div class="form-group mb-0">
                     <input class="form-control" type="text" name="percent_value"
-                           id="percent_value" placeholder="10%">
+                           id="percent_value" placeholder="10%" data-type_percent="">
                     <input class="form-control mask-money hidden" type="text" name="fix_value"
                            id="fix_value" data-return-type="number">
                 </div>
@@ -169,12 +169,12 @@
             <div class="group-select-box col-md-6">
                 <div class="form-check form-check-lg form-check-inline">
                     <input type="checkbox" class="form-check-input" id="is_on_order" name="is_on_order">
-                    <label class="form-check-label" for="is_discount_order">
+                    <label class="form-check-label" for="is_on_order">
                         {% trans 'Discount on order' %}&nbsp;&nbsp;&nbsp;&nbsp;{% trans 'When' %}</label>
                 </div>
                 <div class="form-check form-check-lg form-check-inline">
                     <input type="checkbox" class="form-check-input" id="is_minimum" name="is_minimum">
-                    <label class="form-check-label" for="is_discount_order_opt">
+                    <label class="form-check-label" for="is_minimum">
                         {% trans 'Minimum purchase value' %}</label>
                 </div>
                 <div class="form-group d-inline-block">
@@ -276,7 +276,7 @@
                     align-items-center column-gap mb-3">
                         <div class="form-check d-inline-block">
                             <input type="checkbox" class="form-check-input" id="is_min_purchase" name="is_min_purchase">
-                            <label class="form-check-label" for="is_discount_order">
+                            <label class="form-check-label" for="is_min_purchase">
                                 {% trans 'When minimum purchase total value' %}</label>
                         </div>
                         <select class="form-select"
@@ -343,7 +343,7 @@
                     </div>
                     <div class="row customer_list hidden">
                         <div class="col">
-                            <table id="table_customer_list" data-url="{% url 'EmployeeListAPI' %}" class="table w-100">
+                            <table id="table_customer_list" data-url="{% url 'AccountListAPI' %}" class="table w-100">
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -370,12 +370,9 @@
                                 <div class="col-xs-4 col-md-4">
                                     <select class="form-select cus-operator">
                                         <option value="" selected disabled hidden>{% trans 'operator' %}</option>
-                                        <option value="=">=</option>
-                                        <option value="!=">≠</option>
-                                        <option value=">">></option>
-                                        <option value="<"><</option>
-                                        <option value=">=">≥</option>
-                                        <option value="<=">≤</option>
+                                        {% for item in data.cus_operator %}
+                                            <option value="{{ item.value }}">{{ item.text }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-xs-4 col-md-4">
@@ -431,12 +428,9 @@
                 <div class="col-xs-4 col-md-4">
                     <select class="form-select cus-operator">
                         <option value="" selected disabled hidden>{% trans 'operator' %}</option>
-                        <option value="=">=</option>
-                        <option value="!=">≠</option>
-                        <option value=">">></option>
-                        <option value="<"><</option>
-                        <option value=">=">≥</option>
-                        <option value="<=">≤</option>
+                        {% for item in data.cus_operator %}
+                            <option value="{{ item.value }}">{{ item.text }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-xs-4 col-md-4">
@@ -448,6 +442,7 @@
         </div>
     </div>
     <input type="hidden" id="trans-factory"
+           data-select-result="{% trans 'Select result' %}"
            data-customer-list="{% trans 'Customer list is missing' %}"
            data-customer-cond="{% trans 'Customer condition is missing' %}"
            data-valid-time="{% trans 'Valid time is required' %}"
@@ -459,7 +454,13 @@
            data-invalid-product-selected="{% trans 'Special product is missing' %}"
            data-invalid-minimum-quantity="{% trans 'Minimum quantity is missing' %}"
     >
-    <input type="hidden" id="url-factory" data-cus_params="{% url 'CustomerParamFieldAPI'%}">
+    <input type="hidden" id="url-factory"
+           data-customer_group="{% url 'AccountGroupListAPI' %}"
+           data-customer_industry="{% url 'IndustryListAPI' %}"
+           data-currency_list="{% url 'CurrencyListAPI' %}"
+    >
+    {{ data.revenue|json_script:'customer_revenue' }}
+    {{ data.company_size|json_script:'customer_com_size' }}
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->

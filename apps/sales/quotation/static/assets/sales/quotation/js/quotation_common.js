@@ -470,7 +470,7 @@ class loadDataHandle {
             }
             self.loadInformationSelectBox(ele);
         }
-        init_mask_money();
+        $.fn.initMaskMoney2();
     }
 
     loadInformationSelectBox(ele) {
@@ -1299,7 +1299,7 @@ class calculateCaseHandle {
             eleTotal.value = totalFinal;
             eleTotalRaw.value = totalFinal;
         }
-        init_mask_money();
+        $.fn.initMaskMoney2();
     }
 
     calculate(row) {
@@ -1373,7 +1373,7 @@ class calculateCaseHandle {
             eleSubtotal.value = subtotal;
             eleSubtotalRaw.value = subtotal;
         }
-        init_mask_money();
+        $.fn.initMaskMoney2();
     }
 
     commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {

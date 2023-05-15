@@ -9,36 +9,14 @@
 {% block pageContent %}
     {% include 'plugins/condition/condition_component.html' %}
     <div class="row mb-5">
-        <h6>Value of currency round to the nearest value.</h6>
-        <span>Example 1: <b>123.99 round to 124</b> if config have <b>decimal is zero</b>.</span>
-        <span>Example 2: <b>123.99 round to 123.99</b> if config have <b>decimal is two</b>.</span>
-    </div>
-    <div class="row mb-5">
-        <h6>Recommendation: </h6>
-        <span class="badge badge-warning" style="text-align: left">
-            Don't change decimal config and input currency decimal the same with config for display value is correct.
-        </span>
-    </div>
-    <div class="row mb-5">
-        <h6>Test Mask Money with input[type=text].mask-money: </h6>
-        <label class="form-label" for="input-test-mask"></label>
-        <input
-                type="text" id="input-test-mask"
-                class="form-control mask-money"
-                value="123.99"
-                data-return-type="number"
-        />
-    </div>
-    <div class="row mb-5">
-        <h6>Test Mask Money with p.mask-money-value</h6>
-        <label for=""></label>
-        <p class="mask-money-value" data-mask-value="77.89"></p>
-    </div>
-    <div class="row mb-5">
         <h6>Enter currency number with "." is decimal fraction</h6>
+        <span class="mask-money" data-init-money=4156.789></span>
         <label for="enterCurrency" class="form-label">Enter number then "Focus Out"</label>
-        <input type="text" class="mb-2 form-control mm-focus" data-mm-value="10.23" value=123456.789 id="enterCurrency"/>
-        <button class="btn btn-soft-primary" id="btnReloadMaskMoney">Reload Mask Money</button>
+        <input
+                type="text" class="mb-2 form-control mask-money" value=123456.789 id="enterCurrency"
+        />
+        <button class="btn btn-soft-primary mb-2" id="btnReloadMaskMoney">Reload Mask Money</button>
+        <button class="btn btn-soft-primary mb-2" id="btnChangeMaskMoney">Change Mask Money</button>
     </div>
 
     <hr>
@@ -57,110 +35,14 @@
 {% block jsFooter %}
     <!-- Customize JS -->
     <script>
-
-        $(document).on('focus', 'input.mm-focus', function () {
-            $(this).css("background-color", "#ffcdcd");
-            let [realData, parseData] = MaskMoney2.applyInputMoney($(this).attr('data-init-value'));
-            $(this).attr('value', realData).val(parseData);
-        });
-        $(document).on('blur', 'input.mm-focus', function () {
-            MaskMoney2.applyMaskMoney($(this));
-            $(this).css("background-color", "#daffd1");
-        });
-        $(document).on('input', 'input.mm-focus', function () {
-            let [realData, parseData] = MaskMoney2.applyInputMoney($(this).val());
-            $(this).attr('value', realData).val(parseData);
-        });
-
-        $('#btnReloadMaskMoney').click(function (event){
+        $('#btnReloadMaskMoney').click(function (event) {
             event.preventDefault();
-            MaskMoney2.initMaskMoney2();
+            $.fn.initMaskMoney2();
         });
-
-        class MaskMoney2 {
-            static stopLimitFloatJS(strNum) {
-                if (0 <= strNum.length && strNum.length <= 15) return strNum;
-                return strNum.slice(0, 15);
-            }
-
-            static appendSpaceThousand(integerPart, decimalIcon, fractionalPart) {
-                // Separate the thousandths with a space
-                if (integerPart.length > 0) {
-                    let rs = [];
-                    integerPart.split("").reverse().map((item, idx, {length}) => {
-                        rs.push(item);
-                        if (idx !== length - 1 && idx !== 0 && (idx + 1) % 3 === 0) rs.push(" ");
-                    });
-                    return rs.reverse().join("") + decimalIcon + fractionalPart;
-                }
-                return "";
-            }
-
-            static removeDotKeepFirst(strData) {
-                let arrSplitDot = strData.split(".");
-                if (arrSplitDot.length - 1 > 1) {
-                    return arrSplitDot[0] + "." + arrSplitDot.slice(1).join("");
-                }
-                return strData;
-            }
-
-            static normalizedData(strData) {
-                if (strData) {
-                    // allow rule: [0-9.]
-                    let realData = MaskMoney2.removeDotKeepFirst(
-                        strData.normalize("NFC").replace(/[^0-9.]+$/g, "").replaceAll(" ", "")
-                    );
-                    // make sure length float before parseFloat is 17 number
-                    if (realData.indexOf('.') > -1 && realData.length > 18) {
-                        realData = realData.slice(0, 18)
-                    } else if (realData.indexOf('.') === -1 && realData.length > 17) {
-                        realData = realData.slice(0, 17)
-                    }
-                    return realData;
-                }
-                return ""
-            }
-
-            static initMaskMoney2() {
-                $(document).find('input.mm-focus').map((idx, item) => MaskMoney2.applyMaskMoney($(item)));
-            }
-
-            static applyInputMoney(floatData) {
-                let realData = MaskMoney2.normalizedData(floatData);
-                // stop limited Float in JS with max = 10^15
-                let arrTmp = realData.split(".");
-                let integerPart = MaskMoney2.stopLimitFloatJS(arrTmp[0]);
-                let decimalIcon = arrTmp.length === 2 ? "." : "";
-                let fractionalPart = arrTmp.length === 2 ? MaskMoney2.stopLimitFloatJS(arrTmp[1]) : "";
-                // set data after convert display
-                return [realData, MaskMoney2.appendSpaceThousand(integerPart, decimalIcon, fractionalPart)];
-            }
-
-            static applyMaskMoney($ele = null, strData = null) {
-                if ($ele) strData = $($ele).val();
-                if (strData !== null) {
-                    // input
-                    // apply remove input rule (float str make sure float format success)
-                    let strNormalized = strData.replaceAll("VND", "").replaceAll(" ", "").replace(",", ".");
-
-                    // convert to Number
-                    let currentData = parseFloat(strNormalized);
-
-                    // apply mask again.
-                    let arrData = strNormalized.split(".");
-                    let parseData = arrData[0] + (arrData.length === 2 ? "," + arrData[1] : "") + ' VND'; // apply mask-money config
-                    if ($ele) {
-                        $($ele).attr('data-init-value', currentData ? currentData : 0);
-                        $($ele).val(parseData);
-                    }
-                    return parseData;
-                }
-                return "";
-            }
-        }
-
-        $(document).ready(function () {
-            MaskMoney2.initMaskMoney2();
+        $('#btnChangeMaskMoney').click(function (event) {
+            event.preventDefault();
+            $('#enterCurrency').attr('value', 1234.56);
+            $.fn.initMaskMoney2();
         });
     </script>
 

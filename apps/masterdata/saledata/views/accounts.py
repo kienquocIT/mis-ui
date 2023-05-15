@@ -552,7 +552,10 @@ class AccountListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
+        filter = request.query_params.dict()
+        if 'account_types_mapped__account_type_order' in filter:
+            filter['account_types_mapped__account_type_order'] = int(filter['account_types_mapped__account_type_order'])
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get(filter)
         if resp.state:
             return {'account_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

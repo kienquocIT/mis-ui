@@ -177,3 +177,84 @@ $('#input-test-mask').valCurrency();
    3. data-mask-value="77.89" là giá trị được hiển thị
    4. JS sẽ thực thi replace các giá trị này để hiển thị tự động nếu kế thừa từ base.html
 ---
+
+### form template detail and update
+#### 1. intro
+```html
+mặc định load update page là detail page, khi click vào input thì sẽ bật chức năng edit cho form đó
+```
+#### 2. HTML setup
+```html
+tham khảo page promotion_detail.html
+    1. INPUT, TEXTAREA, DATEPICKED,
+        <div class="readonly">
+            <input class="form-control" type="text" name="title" id="title" required
+                   readonly>
+            <span></span>
+        </div>
+        I. 1 div có class readonly bao ngoài
+        II. thẻ input có attribute "readonly"
+        III. cùng cấp thẻ input sẽ có một tag span rỗng
+    2. SELECT dropdown mặc định, SELECT COMBOBOX có sử dụng plugin SELECT2
+        <div class="readonly">
+            <select class="form-control"
+                    name="currency"
+                    id="currency"
+                    data-multiple="false"
+                    data-prefix="currency_list"
+                    data-url="{% url 'CurrencyListAPI' %}"
+                    disabled
+            ></select>
+            <span></span>
+        </div>
+        I. 1 div có class readonly bao ngoài
+        II. thẻ select có attribute **disabled**
+        III. cùng cấp thẻ select sẽ có một tag span rỗng.
+    3. CHECKBOX, RADIO
+        <div class="form-check form-check-lg readonly">
+            <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount"
+                   checked disabled>
+            <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
+            <span></span>
+        </div>
+        I. 1 div có class readonly bao ngoài
+        II. thẻ input có attribute **disabled**
+        III. cùng cấp thẻ input sẽ có một tag span rỗng.
+    4. SELECT COMBOBOX có ICON info 
+        <div class="input-group readonly">
+             <div class="input-affix-wrapper">
+                 <div class="dropdown input-prefix">
+                     <i class="fas fa-info-circle"
+                        data-bs-toggle="dropdown"
+                        data-dropdown-animation
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        disabled
+                     ></i>
+                     <div class="dropdown-menu w-210p mt-2">
+                     </div>
+                 </div>
+                 <select class="form-control dropdown-select_two" disabled
+                         name="product_selected"
+                         id="product_selected"
+                         data-multiple="false"
+                         data-prefix="product_list"
+                         data-url="{% url 'ProductListAPI' %}"
+                         data-link-detail="{% url 'ProductDetail' 1 %}"
+                         data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                 ></select>
+             </div>
+             <span></span>
+        </div>
+        I. div ngoài cùng có class readonly
+        II. thẻ select có attribute **disabled**
+        III. cùng cấp div.input-affix-wrapper sẽ có một tag span rỗng.
+```
+#### 3. js setup
+ờ function submit form thêm đoạn code sau, do form sẽ không tự động lấy các field có attribute là disabled nên. 
+chúng ta sẽ remove tạm thời các attr này, đồng thời sau khi update. 
+sẽ redirect về page list tránh trường hợp bật lại disabled 
+sau khi submit hoặc có thể reload lại page
+```js
+    $('.readonly [disabled]:not([hidden]):not(i)', $form).attr('disabled', false)
+```

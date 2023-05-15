@@ -185,7 +185,6 @@ $(function () {
                 "product_discount_amount": 0
             }
             tableProduct.DataTable().row.add(dataAdd).draw();
-            init_mask_money();
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -206,8 +205,8 @@ $(function () {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).val(priceValRaw);
-                    init_mask_money();
+                    $(elePrice).attr('value', String(priceValRaw));
+                    $.fn.initMaskMoney2();
                     calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }
             }
@@ -282,7 +281,6 @@ $(function () {
                 "expense_subtotal_price": 0
             }
             tableExpense.DataTable().row.add(dataAdd).draw();
-            init_mask_money();
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
@@ -344,7 +342,9 @@ $(function () {
                             showProduct = optionSelected.text;
                             if (optionSelected.querySelector('.data-default')) {
                                 let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                                valuePrice = parseFloat(product_data_json.cost_price);
+                                if (product_data_json.cost_price) {
+                                    valuePrice = parseFloat(product_data_json.cost_price);
+                                }
                                 product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
                             }
                             if (optionSelected.querySelector('.data-info')) {
@@ -415,10 +415,7 @@ $(function () {
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal
                     }
-                    let addRow = tableCost.DataTable().row.add(dataAdd).draw();
-                    let newRow = tableCost.DataTable().row(addRow).node();
-                    let $newRow = $(newRow);
-                    init_mask_money();
+                    tableCost.DataTable().row.add(dataAdd).draw();
                     loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
                     loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
                     loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);
@@ -466,6 +463,19 @@ $(function () {
             if (eleContent && eleShow) {
                 eleShow[0].value = eleContent.value;
             }
+        });
+
+// Action on click button copy quotation on sale order page
+        $('#btn-copy-quotation').on('click', function(e) {
+            let opp_id = null;
+            let sale_person_id = null;
+            if (boxOpportunity.val()) {
+                opp_id = boxOpportunity.val()
+            }
+            if (boxSalePerson.val()) {
+                sale_person_id = boxSalePerson.val()
+            }
+            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
         });
 
 // Submit form quotation

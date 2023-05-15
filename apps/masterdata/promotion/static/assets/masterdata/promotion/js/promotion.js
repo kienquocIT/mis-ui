@@ -382,12 +382,22 @@ $(function () {
     // run default currency form field
     $.fn.getCompanyConfig().then((configData)=>{
         let $currencyElm = $('[name="currency"]');
-        //$currencyElm.attr('data-onload', JSON.stringify({
-        //    "id": configData?.['currency']?.['id'],
-        //    "title": configData?.['currency']?.['title'],
-        //    "code": configData?.['currency']?.['code'],
-        //}))
-        initSelectBox($currencyElm);
+        $.fn.callAjax(
+            $('#url-factory').attr('data-currency_list'),
+            'GET',
+            {"currency__code": configData?.['currency']?.['code']}
+        )
+            .then(
+                (resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    let defaultCurrency = data.currency_list[0]
+                    $currencyElm.attr('data-onload', JSON.stringify({
+                        "id": defaultCurrency?.id,
+                        "title": defaultCurrency?.title,
+                        "code": defaultCurrency?.currency?.code,
+                    }))
+                    initSelectBox($currencyElm);
+                })
     });
 
     /** account_types_mapped__account_type_order

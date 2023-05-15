@@ -35,39 +35,49 @@ function loadTotal(data, is_product, is_cost, is_expense) {
     }
     if (pretax && tax && total) {
         if (is_product === true) {
-            pretax.value = Math.round(data.total_product_pretax_amount);
+            // pretax.value = Math.round(data.total_product_pretax_amount);
+            $(pretax).attr('value', String(data.total_product_pretax_amount));
             pretaxRaw.value = data.total_product_pretax_amount
         } else if (is_cost === true) {
-            pretax.value = Math.round(data.total_cost_pretax_amount);
+            // pretax.value = Math.round(data.total_cost_pretax_amount);
+            $(pretax).attr('value', String(data.total_cost_pretax_amount));
             pretaxRaw.value = data.total_cost_pretax_amount
         } else if (is_expense === true) {
-            pretax.value = Math.round(data.total_expense_pretax_amount);
+            // pretax.value = Math.round(data.total_expense_pretax_amount);
+            $(pretax).attr('value', String(data.total_expense_pretax_amount));
             pretaxRaw.value = data.total_expense_pretax_amount
         }
         let discountRate = document.getElementById('quotation-create-product-discount');
         if (discount && discountRate) {
-            discount.value = Math.round(data.total_product_discount);
+            // discount.value = Math.round(data.total_product_discount);
+            $(discount).attr('value', String(data.total_product_discount));
             discountRaw.value = data.total_product_discount;
             discountRate.value = data.total_product_discount_rate
         }
         if (is_product === true) {
-            tax.value = Math.round(data.total_product_tax);
+            // tax.value = Math.round(data.total_product_tax);
+            $(tax).attr('value', String(data.total_product_tax));
             taxRaw.value = data.total_product_tax
         } else if (is_cost === true) {
-            tax.value = Math.round(data.total_cost_tax);
+            // tax.value = Math.round(data.total_cost_tax);
+            $(tax).attr('value', String(data.total_cost_tax));
             taxRaw.value = data.total_cost_tax
         } else if (is_expense === true) {
-            tax.value = Math.round(data.total_expense_tax);
+            // tax.value = Math.round(data.total_expense_tax);
+            $(tax).attr('value', String(data.total_expense_tax));
             taxRaw.value = data.total_expense_tax
         }
         if (is_product === true) {
-            total.value = Math.round(data.total_product);
+            // total.value = Math.round(data.total_product);
+            $(total).attr('value', String(data.total_product));
             totalRaw.value = data.total_product
         } else if (is_cost === true) {
-            total.value = Math.round(data.total_cost);
+            // total.value = Math.round(data.total_cost);
+            $(total).attr('value', String(data.total_cost));
             totalRaw.value = data.total_cost
         } else if (is_expense === true) {
-            total.value = Math.round(data.total_expense);
+            // total.value = Math.round(data.total_expense);
+            $(total).attr('value', String(data.total_expense));
             totalRaw.value = data.total_expense
         }
     }

@@ -1371,7 +1371,8 @@ class calculateCaseHandle {
                 $(eleTaxAmount).attr('value', String(taxAmount));
                 eleTaxAmountRaw.value = taxAmount;
             }
-            eleDiscountAmount.value = discountAmountOnTotal;
+            // eleDiscountAmount.value = discountAmountOnTotal;
+            $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
         } else {
             // calculate tax no discount on total
             if (eleTaxAmount) {

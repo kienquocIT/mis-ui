@@ -102,7 +102,7 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUnit">
+                        <select class="form-select" id="chooseUnit">
                             <option></option>
                             {% for item in data.unit %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
@@ -175,12 +175,7 @@
                 <div class="col-3 form-group"></div>
                 <div class="col-3 form-group">
                     <label class="form-label">{% trans "If" %}</label>
-                    <select class="form-select chooseUnit">
-                        <option></option>
-                        {% for item in data.unit %}
-                            <option value="{{ item.id }}">{{ item.title }}</option>
-                        {% endfor %}
-                    </select>
+                    <input type="text" class="form-control inpUnit" readonly value="">
                 </div>
                 <div class="col-1 mt-2 form-group">
                     <label class="form-label"></label>
@@ -250,8 +245,8 @@
                 <div class="row">
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "At Location" %}</label>
-                        <select class="form-control chooseCity" multiple data-method="GET"
-                                data-url="{% url "CityListAPI" %}" name="location">
+                        <select class="form-control chooseCity" multiple>
+                            <option value="1">Other cities</option>
                             {% for item in data.cities %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
                             {% endfor %}
@@ -259,12 +254,7 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUnit">
-                            <option></option>
-                            {% for item in data.unit %}
-                                <option value="{{ item.id }}">{{ item.title }}</option>
-                            {% endfor %}
-                        </select>
+                        <input type="text" class="form-control inpUnit" readonly value="">
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>

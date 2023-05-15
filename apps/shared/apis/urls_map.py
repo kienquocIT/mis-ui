@@ -179,4 +179,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_DETAIL = StringUrl('saleorder')
 
 # shipping unit
-    SHIPPING_UNIT_LIST = StringUrl('base/shipping-units')
+    ITEM_UNIT_LIST = StringUrl('base/item-units')

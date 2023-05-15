@@ -24,8 +24,9 @@ class ShippingCreate(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
-        if resp.state:
-            return {'cities': resp.result}, status.HTTP_200_OK
+        resp_unit = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state and resp_unit.state:
+            return {'cities': resp.result, 'unit': resp_unit.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -72,7 +73,7 @@ class ShippingDetail(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
-        resp_unit = ServerAPI(url=ApiURL.SHIPPING_UNIT_LIST, user=request.user).get()
+        resp_unit = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
         if resp.state and resp_unit:
             return {
                        'cities': resp.result, 'unit': resp_unit.result

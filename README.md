@@ -153,13 +153,15 @@ good luck..
         type="text" 
         id="input-test-mask"
         class="form-control mask-money"
-        value="123.99"
+        value=123.99
         data-return-type="text"
 />
 <!-- display number to currency -->
-<p class="mask-money-value" data-mask-value="77.89"></p>
+<span class="mask-money" data-init-money=77.89></span>
 ```
 ```js
+// init mask money
+$.fn.initMaskMoney2();
 // get value of input currency
 $('#input-test-mask').valCurrency();
 ```

@@ -225,20 +225,17 @@
             if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
         }
 
-        function init_mask_money() {
-            $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-                if (currencyConfig) {
-                    $(document).find('input[type=text].mask-money').each((idx, item) => {
-                        $(item).initInputCurrency(currencyConfig['currency_rule']);
-                    });
-                    $(document).find('.mask-money-value').each((idx, item) => {
-                        $(item).parseCurrencyDisplay(currencyConfig['currency_rule']);
-                    });
-                } else throw  Error('Currency config is not found.')
-            });
-        }
-
         <!-- ## function utils -->
+
+        $(document).on('focus', 'input.mask-money', function () {
+            return MaskMoney2.focusInputMoney($(this));
+        });
+        $(document).on('blur', 'input.mask-money', function () {
+            return MaskMoney2.blurInputMoney($(this));
+        });
+        $(document).on('input', 'input.mask-money', function () {
+            return MaskMoney2.realtimeInputMoney($(this));
+        });
 
         $(document).ready(function () {
             <!-- Loading table ajax -->
@@ -253,7 +250,7 @@
             <!-- ## Active menu -->
 
             <!-- Init Mask Money -->
-            init_mask_money();
+            $.fn.initMaskMoney2();
             <!-- ## Init Mask Money -->
 
             <!-- Init select2 -->

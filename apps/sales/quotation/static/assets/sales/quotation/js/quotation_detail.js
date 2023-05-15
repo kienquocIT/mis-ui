@@ -126,6 +126,6 @@ $(function () {
                 }
             }
         )
-        init_mask_money();
+        $.fn.initMaskMoney2();
     });
 });

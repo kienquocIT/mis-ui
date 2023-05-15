@@ -206,7 +206,7 @@ $(function () {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).val(priceValRaw);
+                    $(elePrice).attr('value', String(priceValRaw));
                     $.fn.initMaskMoney2();
                     calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }

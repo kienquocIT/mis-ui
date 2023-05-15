@@ -462,7 +462,7 @@ class loadDataHandle {
                 }
                 if (valList) {
                     let minVal = Math.min(...valList);
-                    price.value = minVal;
+                    $(price).attr('value', String(minVal));
                 }
             }
             if (tax && data.tax) {
@@ -1288,15 +1288,15 @@ class calculateCaseHandle {
             }
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
-            elePretaxAmount.value = pretaxAmount;
+            $(elePretaxAmount).attr('value', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
             if (eleDiscount) {
-                eleDiscount.value = discountAmount;
+                $(eleDiscount).attr('value', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
             }
-            eleTaxes.value = taxAmount;
+            $(eleTaxes).attr('value', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
-            eleTotal.value = totalFinal;
+            $(eleTotal).attr('value', String(totalFinal));
             eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();
@@ -1354,7 +1354,7 @@ class calculateCaseHandle {
             // calculate tax
             if (eleTaxAmount) {
                 let taxAmount = ((subtotalPlus * tax) / 100);
-                eleTaxAmount.value = taxAmount;
+                $(eleTaxAmount).attr('value', String(taxAmount));
                 eleTaxAmountRaw.value = taxAmount;
             }
             eleDiscountAmount.value = discountAmountOnTotal;
@@ -1362,7 +1362,7 @@ class calculateCaseHandle {
             // calculate tax no discount on total
             if (eleTaxAmount) {
                 let taxAmount = ((subtotal * tax) / 100);
-                eleTaxAmount.value = taxAmount;
+                $(eleTaxAmount).attr('value', String(taxAmount));
                 eleTaxAmountRaw.value = taxAmount;
             }
         }
@@ -1370,7 +1370,7 @@ class calculateCaseHandle {
         let eleSubtotal = row.querySelector('.table-row-subtotal');
         let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
         if (eleSubtotal) {
-            eleSubtotal.value = subtotal;
+            $(eleSubtotal).attr('value', String(subtotal));
             eleSubtotalRaw.value = subtotal;
         }
         $.fn.initMaskMoney2();

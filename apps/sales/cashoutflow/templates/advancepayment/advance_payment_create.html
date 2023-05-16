@@ -275,23 +275,78 @@
                            data-url-unit-price-list="{% url 'ExpenseDetailAPI' '0' %}">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 2%">{% trans '#' %}</th>
+                            <th class="text-center" style="width: 2%"></th>
                             <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
                             <th style="width: 12%">{% trans 'Type' %}</th>
                             <th style="width: 7%">{% trans 'UoM' %}</th>
-                            <th style="width: 5%">{% trans 'Quantity' %}</th>
+                            <th style="width: 6%">{% trans 'Quantity' %}</th>
                             <th style="width: 14%">{% trans 'Unit price' %}</th>
                             <th style="width: 10%">{% trans 'Tax' %}</th>
                             <th style="width: 14%">{% trans 'Subtotal price' %}</th>
                             <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
-                            <th style="width: 2%">{% trans 'Action' %}</th>
+                            <th style="width: 1%"></th>
                         </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-                <i id="btn-add-row-line-detail" style="padding: 3px;" class="btn btn-animated btn-outline-primary bi bi-plus text-primary"></i>
+                <div class="row">
+                    <div class="col-2">
+                        <button type="button" class="btn btn-link btn-animated" id="btn-add-row-line-detail">
+                            <span><span class="icon">
+                                <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
+                                <span>Add new row</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8"></div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-refresh">
+                                    <div class="refresh-container">
+                                        <div class="loader-pendulums"></div>
+                                    </div>
+                                    <div id="content-card" class="collapse show">
+                                        <div class="card-action-wrap text-right mr-2">
+                                            <a title="Click to calculate price." class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover refresh" id="recalculate-price" href="#">
+                                                <span class="icon">
+                                                    <span class="feather-icon"><i class="bi bi-calculator"></i></span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div class="card-body text-primary">
+                                            <div class="row mb-3">
+                                                <div class="col-4">Pretax Price</div>
+                                                <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-4">Taxes</div>
+                                                <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                            </div>
+                                            <div class="dropdown-divider mb-3"></div>
+                                            <div class="row mb-5" style="font-weight: bold">
+                                                <div class="col-4">Total</div>
+                                                <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                            </div>
+                                            <div class="row mt-5">
+                                                <div class="col-12">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="money-gave">
+                                                        <label class="text-primary">Money gave/transferred</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="tab_plan">
                 <div class="row">

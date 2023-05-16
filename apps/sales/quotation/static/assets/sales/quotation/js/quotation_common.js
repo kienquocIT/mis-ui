@@ -18,7 +18,7 @@ class loadDataHandle {
                                 'customer': item.customer.title
                             }).replace(/"/g, "&quot;");
                             let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                            let data_show = `${item.title}` + `-` + `${item.code}`;
+                            let data_show = `${item.code}` + ` - ` + `${item.title}`;
                             ele.append(`<option value="${item.id}">
                                         <span class="opp-title">${data_show}</span>
                                         <input type="hidden" class="data-default" value="${opportunity_data}">
@@ -451,11 +451,11 @@ class loadDataHandle {
                 $(priceList).empty();
                 for (let i = 0; i < data.price_list.length; i++) {
                     valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                    let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value.toFixed(2))}">
+                    let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value.toFixed(2))}"></span></div>
+                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                     </div>
                                 </a>`;
                     $(priceList).append(option);
@@ -583,6 +583,21 @@ class loadDataHandle {
                                     </option>`)
                         })
                     }
+                }
+            }
+        )
+    }
+
+    loadDetailQuotation(quotation_id, select_id) {
+        let jqueryId = '#' + quotation_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $('#data-copy-quotation-detail').val(JSON.stringify(data))
                 }
             }
         )
@@ -1188,7 +1203,13 @@ class dataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row, meta) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-check" data-id="${row.id}"></div>`
+                        return `<div class="form-check">
+                                    <input 
+                                        type="checkbox"
+                                        class="form-check-input table-row-check"
+                                        data-id="${row.id}"
+                                    >
+                                </div>`
                     }
                 },
                 {
@@ -1235,6 +1256,52 @@ class dataTableHandle {
         } else {
             self.dataTableCopyQuotation([], 'datable-copy-quotation');
         }
+    }
+
+    dataTableCopyQuotationProduct(data, table_id) {
+        // init dataTable
+        let listData = data ? data : [];
+        let jqueryId = '#' + table_id;
+        let $tables = $(jqueryId);
+        $tables.DataTable({
+            data: listData,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            info: false,
+            drawCallback: function (row, data) {
+                // render icon after table callback
+                feather.replace();
+            },
+            rowCallback: function (row, data) {
+            },
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row, meta) => {
+                        return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-title">${row.product_title}</span>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity">${row.product_quantity}</span>`
+                    },
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-quantity-input" value="${row.product_quantity}">`
+                    },
+                }
+            ],
+        });
     }
 }
 

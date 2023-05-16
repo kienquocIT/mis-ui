@@ -30,6 +30,7 @@ $(function () {
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
+        let tableCopyQuotation = $('#datable-copy-quotation');
 
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
@@ -467,6 +468,9 @@ $(function () {
 
 // Action on click button copy quotation on sale order page
         $('#btn-copy-quotation').on('click', function(e) {
+            tableCopyQuotation[0].removeAttribute('hidden');
+            $('#copy-quotation-option')[0].setAttribute('hidden', true);
+            $('#datable-copy-quotation-product')[0].setAttribute('hidden', true);
             let opp_id = null;
             let sale_person_id = null;
             if (boxOpportunity.val()) {
@@ -476,6 +480,32 @@ $(function () {
                 sale_person_id = boxSalePerson.val()
             }
             dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
+        });
+
+// Action on check quotation for copy
+        tableCopyQuotation.on('click', '.table-row-check', function (e) {
+            loadDataClass.loadDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
+        });
+
+// Action on click button copy quotation on sale order page
+        $('#btn-select-quotation-copy').on('click', function(e) {
+            tableCopyQuotation[0].setAttribute('hidden', true);
+            tableCopyQuotation.DataTable().clear().draw();
+            tableCopyQuotation.empty();
+            tableCopyQuotation.DataTable().destroy();
+            $('#copy-quotation-option')[0].removeAttribute('hidden');
+            let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
+            $('#datable-copy-quotation-product').DataTable().destroy();
+            dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product')
+        });
+
+// Action on check copy option
+        $('#copy-quotation-option').on('change', '.check-option', function(e) {
+            if ($(this)[0].checked === false) {
+                $('#datable-copy-quotation-product')[0].removeAttribute('hidden');
+            } else {
+                $('#datable-copy-quotation-product')[0].setAttribute('hidden', true);
+            }
         });
 
 // Submit form quotation

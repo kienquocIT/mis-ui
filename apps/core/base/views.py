@@ -151,3 +151,17 @@ class BaseCurrencyListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class ShippingUnitListAPI(APIView):
+    @mask_view( # noqa
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.SHIPPING_UNIT_LIST, user=request.user).get()
+        if resp.state:
+            return {'base_shipping_units': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

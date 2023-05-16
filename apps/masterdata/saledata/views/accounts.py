@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared.constant import COMPANY_SIZE, CUSTOMER_REVENUE
 
 
 class ContactMasterDataList(View):
@@ -573,7 +574,7 @@ class AccountCreate(View):
         menu_active='menu_account_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'company_size': COMPANY_SIZE, 'customer_revenue': CUSTOMER_REVENUE}, status.HTTP_200_OK
 
 
 class AccountCreateAPI(APIView):

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="{% url "ShippingCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Add">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+        </span>
+    </a>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table id="dtbShipping" class="table nowrap w-100 mb-5"
+           data-method="GET" data-url="{% url "ShippingListAPI" %}"
+           data-url-detail="{%url "ShippingDetail" pk=0 %}">
+        <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th class="wrap-text">
+                {% trans 'Code' %}
+                <i
+                        class="fas fa-info-circle icon-info"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open detail page.' %}"
+                ></i>
+            </th>
+            <th class="wrap-text">{% trans 'Shipping Services Name' %}</th>
+            <th class="wrap-text">{% trans "Status" %}</th>
+        </tr>
+        </thead>
+    </table>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_list.js' %}"></script>
+{% endblock %}

@@ -73457,7 +73457,6 @@ div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-n
   align-items: center;
   justify-content: space-between;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: space-between;
 }
 .card .card-header > h1, .card .card-header > h2, .card .card-header > h3, .card .card-header > h4, .card .card-header > h5, .card .card-header > h6, .card .card-header > .h1, .card .card-header > .h2, .card .card-header > .h3, .card .card-header > .h4, .card .card-header > .h5, .card .card-header > .h6 {
   margin-bottom: 0;
@@ -87570,7 +87569,6 @@ Project:	Jampack
   align-items: center;
   justify-content: space-between;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: space-between;
   padding: 1.25rem;
   border-radius: 0.5rem 0.5rem 0 0;
   height: 65px;
@@ -87602,20 +87600,24 @@ Project:	Jampack
   -ms-flex-align: center;
   align-items: center;
 }
-.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star > .feather-icon > svg, .task-detail-modal .modal-body header.task-header .task-options-wrap .task-star .svg-icon > svg {
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star > .feather-icon > svg,
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star .svg-icon > svg {
   height: 21px;
   width: 21px;
   cursor: pointer;
 }
-.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star > .feather-icon > svg:hover, .task-detail-modal .modal-body header.task-header .task-options-wrap .task-star .svg-icon > svg:hover {
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star > .feather-icon > svg:hover,
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star .svg-icon > svg:hover {
   fill: #FFC400;
   stroke: #FFC400;
 }
-.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked > .feather-icon > svg, .task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked .svg-icon > svg {
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked > .feather-icon > svg,
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked .svg-icon > svg {
   fill: #FFC400;
   stroke: #FFC400;
 }
-.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked > .feather-icon > svg:hover, .task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked .svg-icon > svg:hover {
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked > .feather-icon > svg:hover,
+.task-detail-modal .modal-body header.task-header .task-options-wrap .task-star.marked .svg-icon > svg:hover {
   fill: none;
   stroke: currentColor;
 }
@@ -91025,6 +91027,9 @@ Project:	Jampack
     user-select: none;
     -webkit-user-select: none;
 }
+.input-affix-wrapper{
+    max-width:100%;
+}
 .input-affix-wrapper span.select2 .select2-selection{
     padding-left: 1.9rem;
 }
@@ -91032,4 +91037,41 @@ Project:	Jampack
 .dropdown-menu .dropdown-header.header-wth-bg {
     background: #007D88;
 }
+
+.readonly [readonly]:not([type="checkbox"],[type="radio"], select){
+    border-color:rgb(199 199 199 / 25%);
+    background-color: rgb(247 247 247 / 15%);
+}
+.readonly:hover [readonly]{
+    border-color: #cdcdcd;
+}
+.readonly{position: relative}
+.readonly:hover > * + span:not(.select2):before {
+    content: "\F4CB";
+    font-family: "bootstrap-icons";
+}
+.readonly:hover > * + span:not(.select2){
+    background-color:#f3f3f3;
+    width: 38px;
+    height: calc(100% - 2px);
+    top:1px;
+    right:1px;
+    position: absolute;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-left: solid 1px #cdcdcd;
+}
+.input-group.readonly > * + span,
+.readonly > select ~ span:not(.select2){
+    background-color: #fff!important;
+}
+.form-check.readonly:hover{
+    box-shadow: 0px 0px 0px 1px #cdcdcd inset;
+    border-radius:6px;
+}
+
 /*# sourceMappingURL=style.css.map */
+

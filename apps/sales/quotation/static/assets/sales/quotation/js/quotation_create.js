@@ -9,9 +9,6 @@ $(function () {
         let calculateClass = new calculateCaseHandle();
         let submitClass = new submitHandle();
 
-        $(".select2").select2();
-        init_company_currency_config();
-
         let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -19,6 +16,7 @@ $(function () {
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
+        let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
         loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
@@ -69,6 +67,7 @@ $(function () {
                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadDataClass.loadInformationSelectBox($(this));
+            dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion')
         });
 
 // Action on click dropdown customer
@@ -94,6 +93,8 @@ $(function () {
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
+            // load promotion for this customer
+            dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion')
         });
 
 // Action on click dropdown contact
@@ -130,6 +131,13 @@ $(function () {
 // Action on change dropdown payment term
         boxPaymentTerm.on('change', function(e) {
             loadDataClass.loadInformationSelectBox($(this));
+        });
+
+// Action on click dropdown contact
+        boxQuotation.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadDataClass.loadBoxSaleOrderQuotation('select-box-quotation');
+            }
         });
 
 // Action on click button add product
@@ -176,10 +184,7 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0
             }
-            let addRow = tableProduct.DataTable().row.add(dataAdd).draw();
-            let newRow = tableProduct.DataTable().row(addRow).node();
-            let $newRow = $(newRow);
-            init_mask_money_single($newRow);
+            tableProduct.DataTable().row.add(dataAdd).draw();
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -189,7 +194,8 @@ $(function () {
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total');
+            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click price list's option
@@ -199,8 +205,8 @@ $(function () {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    elePrice.value = priceValRaw;
-                    init_mask_money_ele($(elePrice));
+                    $(elePrice).attr('value', String(priceValRaw));
+                    $.fn.initMaskMoney2();
                     calculateClass.commonCalculate(tableProduct, row, true, false, false);
                 }
             }
@@ -216,10 +222,12 @@ $(function () {
         });
 
 // Check no negative number for input
-        $('#tab-content-quotation-product').on('change', '.non-negative-number', function(e) {
-            if (parseInt($(this).val()) < 0) {
-                $(this)[0].value = "";
-            }
+        $('#tab-content-quotation-product').on('change', '.validated-number', function (e) {
+            let value = this.value;
+            // Remove unnecessary zeros from the integer part
+            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+            // Update value of input
+            this.value = value;
         });
 
 // Action on change total discount of product
@@ -228,7 +236,7 @@ $(function () {
                 let row = tableProduct[0].tBodies[0].rows[i];
                 calculateClass.calculate(row);
             }
-            calculateClass.updateTotal(tableProduct[0], 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount')
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click button add expense
@@ -272,10 +280,7 @@ $(function () {
                 "expense_tax_amount": 0,
                 "expense_subtotal_price": 0
             }
-            let addRow = tableExpense.DataTable().row.add(dataAdd).draw();
-            let newRow = tableExpense.DataTable().row(addRow).node();
-            let $newRow = $(newRow);
-            init_mask_money_single($newRow);
+            tableExpense.DataTable().row.add(dataAdd).draw();
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
@@ -285,7 +290,8 @@ $(function () {
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total');
+            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
+            calculateClass.updateTotal(tableExpense[0], false, false, true)
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
@@ -320,13 +326,13 @@ $(function () {
                     let uomDataStr = "";
                     let optionUOM = ``;
 
-                    let valueQuantity = "";
-                    let valuePrice = "";
-                    let taxDataStr = "";
-                    let valueTaxSelected = "";
-                    let valueTaxAmount = "";
+                    let valueQuantity = 0;
+                    let valuePrice = 0;
+                    let valueTax = "";
+                    let valueTaxSelected = 0;
+                    let valueTaxAmount = 0;
                     let valueOrder = "";
-                    let valueSubtotal = "";
+                    let valueSubtotal = 0;
                     let row = tableProduct[0].tBodies[0].rows[i];
                     let product = row.querySelector('.table-row-item');
                     if (product) {
@@ -336,7 +342,9 @@ $(function () {
                             showProduct = optionSelected.text;
                             if (optionSelected.querySelector('.data-default')) {
                                 let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                                valuePrice = product_data_json.cost_price;
+                                if (product_data_json.cost_price) {
+                                    valuePrice = parseFloat(product_data_json.cost_price);
+                                }
                                 product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
                             }
                             if (optionSelected.querySelector('.data-info')) {
@@ -361,12 +369,23 @@ $(function () {
                     }
                     let quantity = row.querySelector('.table-row-quantity');
                     if (quantity) {
-                        valueQuantity = quantity.value;
+                        valueQuantity = parseInt(quantity.value);
+                    }
+                    valueTax = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].value;
+                    valueTaxSelected = parseInt(row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].getAttribute('data-value'));
+                    if (valuePrice && valueQuantity) {
+                        valueSubtotal = (valuePrice * valueQuantity);
+                        if (valueTaxSelected) {
+                            valueTaxAmount = ((valueSubtotal * valueTaxSelected) / 100);
+                        }
                     }
                     let order = row.querySelector('.table-row-order');
                     if (order) {
                         valueOrder = order.innerHTML;
                     }
+                    let selectProductID = 'quotation-create-cost-box-product-' + String(valueOrder);
+                    let selectUOMID = 'quotation-create-cost-box-uom-' + String(valueOrder);
+                    let selectTaxID = 'quotation-create-cost-box-tax-' + String(valueOrder);
                     let dataAdd = {
                         "tax": {
                             "id": "",
@@ -393,81 +412,16 @@ $(function () {
                         "product_tax_value": 0,
                         "product_uom_title": "",
                         "product_cost_price": valuePrice,
-                        "product_tax_amount": 0,
+                        "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal
                     }
-                    let addRow = tableCost.DataTable().row.add(dataAdd).draw();
-                    let newRow = tableCost.DataTable().row(addRow).node();
-                    let $newRow = $(newRow);
-                    init_mask_money_single($newRow);
-                    let rowProduct = $newRow[0].querySelector('.table-row-item');
-                    if (rowProduct) {
-                        $(rowProduct).append(`<option value="${valueProduct}" selected>
-                                                    <span class="product-title">${showProduct}</span>
-                                                    <input type="hidden" class="data-default" value="${product_data}">
-                                                    <input type="hidden" class="data-info" value="${productDataStr}">
-                                                </option>`)
-                        loadDataClass.loadInformationSelectBox($(rowProduct))
-                    }
-                    let rowUOM = $newRow[0].querySelector('.table-row-uom');
-                    if (rowUOM) {
-                        $(rowUOM).append(`<option value="${valueUOM}" selected>
-                                                <span class="uom-title">${showUOM}</span>
-                                                <input type="hidden" class="data-info" value="${uomDataStr}">
-                                        </option>`)
-                    }
-                    let rowTax = $newRow[0].querySelector('.table-row-tax');
-                    if (rowTax) {
-                        let tax = row.querySelector('.table-row-tax');
-                        if (tax) {
-                            for (let t = 0; t < tax.options.length; t++) {
-                                let option = tax.options[t];
-                                if (option.querySelector('.data-info')) {
-                                        let dataStrJson = JSON.parse(option.querySelector('.data-info').value);
-                                        taxDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
-                                    }
-                                if (option.selected === true) {
-                                    if (taxDataStr) {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
-                                                            <span class="tax-title">${option.text}</span>
-                                                            <input type="hidden" class="data-info" value="${taxDataStr}">
-                                                        </option>`)
-                                    } else {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}" selected>
-                                                            <span class="tax-title">${option.text}</span>
-                                                        </option>`)
-                                    }
-                                    valueTaxSelected = option.value;
-                                } else {
-                                    if (taxDataStr) {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
-                                                            <span class="tax-title">${option.text}</span>
-                                                            <input type="hidden" class="data-info" value="${taxDataStr}">
-                                                        </option>`)
-                                    } else {
-                                        $(rowTax).append(`<option value="${option.value}" data-value="${option.getAttribute('data-value')}">
-                                                            <span class="tax-title">${option.text}</span>
-                                                        </option>`)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    let rowTaxAmount = $newRow[0].querySelector('.table-row-tax-amount');
-                    if (rowTaxAmount) {
-                        if (valuePrice && valueQuantity) {
-                            valueSubtotal = (Number(valuePrice) * Number(valueQuantity));
-                            if (valueTaxSelected) {
-                                valueTaxAmount = ((valueSubtotal * Number(valueTaxSelected)) / 100);
-                                rowTaxAmount.value = valueTaxAmount;
-                                init_mask_money_ele($(rowTaxAmount));
-                            }
-                        }
-                    }
-
+                    tableCost.DataTable().row.add(dataAdd).draw();
+                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);
                 }
                 // update total
-                calculateClass.updateTotal(tableCost[0], 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total');
+                calculateClass.updateTotal(tableCost[0], false, true, false);
             }
         });
 
@@ -511,12 +465,29 @@ $(function () {
             }
         });
 
+// Action on click button copy quotation on sale order page
+        $('#btn-copy-quotation').on('click', function(e) {
+            let opp_id = null;
+            let sale_person_id = null;
+            if (boxOpportunity.val()) {
+                opp_id = boxOpportunity.val()
+            }
+            if (boxSalePerson.val()) {
+                sale_person_id = boxSalePerson.val()
+            }
+            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
+        });
+
 // Submit form quotation
         $('#btn-create_quotation').on('click', function (e) {
             e.preventDefault()
             let $form = document.getElementById('frm_quotation_create');
+            let is_sale_order = false;
+            if ($form.classList.contains('sale-order')) {
+                is_sale_order = true;
+            }
             let _form = new SetupFormSubmit($('#frm_quotation_create'));
-            submitClass.setupDataSubmit(_form);
+            submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
                 'opportunity',
@@ -546,6 +517,36 @@ $(function () {
                 'quotation_expenses_data',
                 'is_customer_confirm',
             ]
+            if (is_sale_order === true) {
+                submitFields = [
+                    'title',
+                    'opportunity',
+                    'customer',
+                    'contact',
+                    'sale_person',
+                    'payment_term',
+                    'quotation',
+                    // total amount of products
+                    'total_product_pretax_amount',
+                    'total_product_discount_rate',
+                    'total_product_discount',
+                    'total_product_tax',
+                    'total_product',
+                    // total amount of costs
+                    'total_cost_pretax_amount',
+                    'total_cost_tax',
+                    'total_cost',
+                    // total amount of expenses
+                    'total_expense_pretax_amount',
+                    'total_expense_tax',
+                    'total_expense',
+                    // sale order tabs
+                    'sale_order_products_data',
+                    'sale_order_logistic_data',
+                    'sale_order_costs_data',
+                    'sale_order_expenses_data',
+                ]
+            }
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]

@@ -109,6 +109,18 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
 
+    # Shipping
+    SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping list'), 'ShippingList')
+    SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
+    SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Sale order
+    SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
+    SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
+    
+    # WareHouse
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -284,3 +296,21 @@ class BreadcrumbView:
         BreadcrumbItem.QUOTATION_LIST_PAGE
     ]
     QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_CREATE_PAGE]
+
+    # Shipping
+    SHIPPING_LIST_PAGE = [
+        BreadcrumbItem.SHIPPING_LIST_PAGE
+    ]
+    SHIPPING_CREATE_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_CREATE_PAGE]
+    SHIPPING_DETAIL_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_DETAIL_PAGE]
+
+    # Sale order
+    SALE_ORDER_LIST_PAGE = [
+        BreadcrumbItem.SALE_ORDER_LIST_PAGE
+    ]
+    SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_CREATE_PAGE]
+
+    # Warehouse
+    WAREHOUSE_LIST_PAGE = [
+        BreadcrumbItem.WAREHOUSE_LIST_PAGE
+    ]

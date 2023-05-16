@@ -866,7 +866,7 @@ $(document).ready(function () {
             }
             else if (parseInt(unit) === 1){
                 $add_teams.find('[name="value_amount"]').val(data.value)
-                $add_teams.find('[name="value_amount"]').initInputCurrency(CCurrency.getConfig)
+                $.fn.initMaskMoney2();
                 $add_teams.find('[name="value"]').addClass('hidden')
             }
             $add_teams.find('[name="unit_type"]').val(unit).trigger('change')
@@ -886,6 +886,9 @@ $(document).ready(function () {
             paginate: false,
             info: false,
             drawCallback: function (settings) { // two parameter is row, data is available
+                // reload Init Mask Money
+                $.fn.initMaskMoney2();
+
                 // render icon after table callback
                 feather.replace();
                 // generator index of row
@@ -937,8 +940,7 @@ $(document).ready(function () {
                     render: (row, type, data) => {
                         let textValue = data.value
                         let UnitType = parseInt(data.unit_type.value ? data.unit_type.value : data.unit_type)
-                        if(UnitType === 1) textValue = CCurrency.convertCurrency(textValue)
-                        return `<p>${textValue}</p>`
+                        return `<p><span class="mask-money">${textValue}</span></p>`
                     }
                 },
                 {

@@ -1,59 +1,87 @@
 "use strict";
 
-function loadTotal(data, pretaxID, taxID, totalID, discountID = null, is_product = false, is_cost = false, is_expense = false) {
-    let pretax = document.getElementById(pretaxID);
-    if (pretax) {
+function loadTotal(data, is_product, is_cost, is_expense) {
+    let pretax = null;
+    let tax = null;
+    let total = null;
+    let discount = null;
+    let pretaxRaw = null;
+    let taxRaw = null;
+    let totalRaw = null;
+    let discountRaw = null;
+    if (is_product === true) {
+        pretax = document.getElementById('quotation-create-product-pretax-amount');
+        tax = document.getElementById('quotation-create-product-taxes');
+        total = document.getElementById('quotation-create-product-total');
+        discount = document.getElementById('quotation-create-product-discount-amount');
+        pretaxRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
+        taxRaw = document.getElementById('quotation-create-product-taxes-raw');
+        totalRaw = document.getElementById('quotation-create-product-total-raw');
+        discountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
+    } else if (is_cost === true) {
+        pretax = document.getElementById('quotation-create-cost-pretax-amount');
+        tax = document.getElementById('quotation-create-cost-taxes');
+        total = document.getElementById('quotation-create-cost-total');
+        pretaxRaw = document.getElementById('quotation-create-cost-pretax-amount-raw');
+        taxRaw = document.getElementById('quotation-create-cost-taxes-raw');
+        totalRaw = document.getElementById('quotation-create-cost-total-raw');
+    } else if (is_expense === true) {
+        pretax = document.getElementById('quotation-create-expense-pretax-amount');
+        tax = document.getElementById('quotation-create-expense-taxes');
+        total = document.getElementById('quotation-create-expense-total');
+        pretaxRaw = document.getElementById('quotation-create-expense-pretax-amount-raw');
+        taxRaw = document.getElementById('quotation-create-expense-taxes-raw');
+        totalRaw = document.getElementById('quotation-create-expense-total-raw');
+    }
+    if (pretax && tax && total) {
         if (is_product === true) {
-            pretax.value = data.total_product_pretax_amount
+            // pretax.value = Math.round(data.total_product_pretax_amount);
+            $(pretax).attr('value', String(data.total_product_pretax_amount));
+            pretaxRaw.value = data.total_product_pretax_amount
         } else if (is_cost === true) {
-            pretax.value = data.total_cost_pretax_amount
+            // pretax.value = Math.round(data.total_cost_pretax_amount);
+            $(pretax).attr('value', String(data.total_cost_pretax_amount));
+            pretaxRaw.value = data.total_cost_pretax_amount
         } else if (is_expense === true) {
-            pretax.value = data.total_expense_pretax_amount
+            // pretax.value = Math.round(data.total_expense_pretax_amount);
+            $(pretax).attr('value', String(data.total_expense_pretax_amount));
+            pretaxRaw.value = data.total_expense_pretax_amount
         }
-    }
-    let discount = document.getElementById(discountID);
-    let discountRate = document.getElementById('quotation-create-product-discount');
-    if (discount && discountRate) {
-        discount.value = data.total_product_discount;
-        discountRate.value = data.total_product_discount_rate
-    }
-    let tax = document.getElementById(taxID);
-    if (tax) {
-        if (is_product === true) {
-            tax.value = data.total_product_tax
-        } else if (is_cost === true) {
-            tax.value = data.total_cost_tax
-        } else if (is_expense === true) {
-            tax.value = data.total_expense_tax
+        let discountRate = document.getElementById('quotation-create-product-discount');
+        if (discount && discountRate) {
+            // discount.value = Math.round(data.total_product_discount);
+            $(discount).attr('value', String(data.total_product_discount));
+            discountRaw.value = data.total_product_discount;
+            discountRate.value = data.total_product_discount_rate
         }
-    }
-    let total = document.getElementById(totalID);
-    if (total) {
         if (is_product === true) {
-            total.value = data.total_product
+            // tax.value = Math.round(data.total_product_tax);
+            $(tax).attr('value', String(data.total_product_tax));
+            taxRaw.value = data.total_product_tax
         } else if (is_cost === true) {
-            total.value = data.total_cost
+            // tax.value = Math.round(data.total_cost_tax);
+            $(tax).attr('value', String(data.total_cost_tax));
+            taxRaw.value = data.total_cost_tax
         } else if (is_expense === true) {
-            total.value = data.total_expense
+            // tax.value = Math.round(data.total_expense_tax);
+            $(tax).attr('value', String(data.total_expense_tax));
+            taxRaw.value = data.total_expense_tax
+        }
+        if (is_product === true) {
+            // total.value = Math.round(data.total_product);
+            $(total).attr('value', String(data.total_product));
+            totalRaw.value = data.total_product
+        } else if (is_cost === true) {
+            // total.value = Math.round(data.total_cost);
+            $(total).attr('value', String(data.total_cost));
+            totalRaw.value = data.total_cost
+        } else if (is_expense === true) {
+            // total.value = Math.round(data.total_expense);
+            $(total).attr('value', String(data.total_expense));
+            totalRaw.value = data.total_expense
         }
     }
 }
-
-function init_mask_money_detail(ele) {
-    $.fn.getCompanyCurrencyConfig().then((currencyConfig) => {
-        if (currencyConfig) {
-            ele.find('.mask-money').initInputCurrency(currencyConfig);
-            ele.find('.mask-money-value').parseCurrencyDisplay(currencyConfig);
-        } else throw  Error('Currency config is not found.')
-    });
-}
-
-function maskMoneyData() {
-    init_mask_money_detail($('#tab_block_3'));
-    init_mask_money_detail($('#tab_block_6'));
-    init_mask_money_detail($('#tab_block_7'));
-}
-
 
 function loadDetailQuotation(data) {
     if (data.title) {
@@ -84,10 +112,22 @@ function loadDetailQuotation(data) {
             `<option class="data-detail" value="${data.payment_term.id}" selected>${data.payment_term.title}</option>`
         )
     }
+    if (data.quotation) {
+        $('#select-box-quotation').append(
+            `<option class="data-detail" value="${data.quotation.id}" selected>${data.quotation.title}</option>`
+        )
+    }
+    if (data.quotation_logistic_data) {
+        document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;
+        document.getElementById('quotation-create-billing-address').value = data.quotation_logistic_data.billing_address;
+    } else if (data.sale_order_logistic_data) {
+        document.getElementById('quotation-create-shipping-address').value = data.sale_order_logistic_data.shipping_address;
+        document.getElementById('quotation-create-billing-address').value = data.sale_order_logistic_data.billing_address;
+    }
     // product totals
-    loadTotal(data, 'quotation-create-product-pretax-amount', 'quotation-create-product-taxes', 'quotation-create-product-total', 'quotation-create-product-discount-amount', true, false, false);
-    loadTotal(data, 'quotation-create-cost-pretax-amount', 'quotation-create-cost-taxes', 'quotation-create-cost-total', null, false, true, false);
-    loadTotal(data, 'quotation-create-expense-pretax-amount', 'quotation-create-expense-taxes', 'quotation-create-expense-total', null, false, false, true);
+    loadTotal(data, true, false, false);
+    loadTotal(data, false, true, false);
+    loadTotal(data, false, false, true);
 }
 
 $(function () {
@@ -97,21 +137,23 @@ $(function () {
         let dataTableClass = new dataTableHandle();
 
         // call ajax get info quotation detail
-        $.fn.callAjax($form.data('url'), 'GET')
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        loadDetailQuotation(data);
+        $.fn.callAjax($form.data('url'), 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    loadDetailQuotation(data);
+                    if (!$form.hasClass('sale-order-detail')) {
                         dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
                         dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
                         dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+                    } else {
+                        dataTableClass.dataTableProduct(data.sale_order_products_data, 'datable-quotation-create-product');
+                        dataTableClass.dataTableCost(data.sale_order_costs_data, 'datable-quotation-create-cost');
+                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense');
                     }
                 }
-            )
-
-        maskMoneyData();
-
-
+            }
+        )
+        $.fn.initMaskMoney2();
     });
 });

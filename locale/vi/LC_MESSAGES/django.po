@@ -1722,3 +1722,11 @@ msgstr "Không có dữ liệu"
 #
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
+
+#
+msgid "Are you sure you want to remove \"{0}\"?"
+msgstr "Bạn có chắc muốn xóa \"{0}\" không?"
+
+#
+msgid "Add new"
+msgstr "Thêm mới"

@@ -234,8 +234,9 @@ $(document).ready(function () {
 
                 loadCurrency(data.currency);
 
-                let current_owner = data.owner
-                loadAccountOwner(current_owner)
+                let current_owner = data.owner;
+                let current_contact = data.contact_mapped;
+                loadAccountOwner(current_owner, current_contact)
 
                 loadAccountGroup(data.account_group);
 
@@ -471,7 +472,7 @@ $(document).ready(function () {
     $('#account-manager-id').select2();
 
     // load Account Owner SelectBox
-    function loadAccountOwner(current_account_owner) {
+    function loadAccountOwner(current_account_owner, contacts_mapped) {
         $('#owner-job-title-id').val(current_account_owner.job_title);
         $('#owner-email-id').val(current_account_owner.email);
         $('#owner-mobile-id').val(current_account_owner.mobile);
@@ -486,8 +487,8 @@ $(document).ready(function () {
                     ele.text("");
                     ele.append(`<option value=""></option>`)
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
-                        if (Object.keys(current_account_owner).length > 0) {
-                            data.contact_list_not_map_account.push(current_account_owner);
+                        for (let i = 0; i < contacts_mapped.length; i++) {
+                            data.contact_list_not_map_account.push(contacts_mapped[i]);
                         }
                         data.contact_list_not_map_account.map(function (item) {
                             if (item.id === current_account_owner.id) {
@@ -698,7 +699,7 @@ $(document).ready(function () {
         let bank_account_number = $('#bank-account-number-id').val();
         let bic_swift_code = $('#bic-swift-code-id').val();
 
-        if (country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '' && bic_swift_code !== '') {
+        if (country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '') {
             let is_default = '';
             if ($('#make-default-bank-account').is(':checked')) {
                 is_default = 'checked';

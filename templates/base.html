@@ -143,13 +143,24 @@
         </span>
         <span id="urlCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
         <span id="urlCompanyConfigData"></span>
+
+        <span id="urlCompanyConfig1" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
+        <span id="urlCompanyConfigData1"></span>
+
+        <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
+        <span id="msgSuccess">{% trans 'Successfully' %}</span>
     </div>
     <!-- /Message translate usually -->
     <!-- /Message translate base -->
-    <input type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
-    data-more-info="{% trans 'More Information' %}">
+    <input
+            type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
+            data-more-info="{% trans 'More Information' %}"
+    >
     <!-- /Message translate base -->
 
+    <!-- Render Company Config -->
+    {{ config|json_script:"idConfigValue" }}
+    <!-- // Render Company Config -->
 </div>
 <!-- /Wrapper -->
 
@@ -178,9 +189,6 @@
     <!-- Select2 JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
-    <!-- Mask Money jQuery -->
-    <script src="{% static 'assets/js/cdn-clone/jquery/jquery.maskMoney.min.js' %}"></script>
-
     <!-- Init JS -->
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
@@ -190,50 +198,46 @@
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
     <script>
+        <!-- util -->
+
+        function active_menu(item) {
+            if (item.length > 0) {
+                item.first().addClass('active')
+                let parent = item.first().parents('.nav-item');
+                if (parent.length > 0) {
+                    parent.first().addClass('active');
+                    active_menu(parent.first());
+                }
+            }
+            return null;
+        }
+
+        function menu_handler() {
+            let nav_data = $('#get-menu-active');
+            let menu_id_active = nav_data.attr('data-nav-menu');
+            if (menu_id_active) {
+                let ele_menu = $('#' + menu_id_active);
+                if (ele_menu) {
+                    active_menu(ele_menu);
+                }
+            }
+            let tenant_code_active = nav_data.attr('data-nav-tenant');
+            if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
+        }
+
+        <!-- ## function utils -->
+
+        $(document).on('focus', 'input.mask-money', function () {
+            return MaskMoney2.focusInputMoney($(this));
+        });
+        $(document).on('blur', 'input.mask-money', function () {
+            return MaskMoney2.blurInputMoney($(this));
+        });
+        $(document).on('input', 'input.mask-money', function () {
+            return MaskMoney2.realtimeInputMoney($(this));
+        });
+
         $(document).ready(function () {
-            <!-- function utils -->
-            function active_menu(item) {
-                if (item.length > 0) {
-                    item.first().addClass('active')
-                    let parent = item.first().parents('.nav-item');
-                    if (parent.length > 0) {
-                        parent.first().addClass('active');
-                        active_menu(parent.first());
-                    }
-                }
-                return null;
-            }
-
-            function menu_handler() {
-                let nav_data = $('#get-menu-active');
-                let menu_id_active = nav_data.attr('data-nav-menu');
-                if (menu_id_active) {
-                    let ele_menu = $('#' + menu_id_active);
-                    if (ele_menu) {
-                        active_menu(ele_menu);
-                    }
-                }
-                let tenant_code_active = nav_data.attr('data-nav-tenant');
-                if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
-            }
-
-            function init_mask_money() {
-                $.fn.getCompanyCurrencyConfig().then((currencyConfig)=>{
-                    if (currencyConfig) {
-                        // store config to global variable and then can export to other js file
-                        CCurrency.setConfig = currencyConfig;
-                        $('input[type=text].mask-money').each((idx, item) => {
-                            $(item).initInputCurrency(currencyConfig);
-                        });
-                        $('.mask-money-value').each((idx, item)=>{
-                            $(item).parseCurrencyDisplay(currencyConfig);
-                        });
-                    } else throw  Error('Currency config is not found.')
-                });
-            }
-
-            <!-- ## function utils -->
-
             <!-- Loading table ajax -->
             $(document).find('table').each((idx, tbl) => {
                 $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
@@ -246,7 +250,7 @@
             <!-- ## Active menu -->
 
             <!-- Init Mask Money -->
-            init_mask_money();
+            $.fn.initMaskMoney2();
             <!-- ## Init Mask Money -->
 
             <!-- Init select2 -->

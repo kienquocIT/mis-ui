@@ -9,13 +9,13 @@
  * + onload={id="", title="name"}
  * @param selectBoxElement: element of select
  *@note
- * select2 on change
+ * +++++++++ select2 on change
  *     selectbox.on("select2:select", function (e) {
  *          let item = e.params.data
  *     });
  *     @variable e.params.data: full data of select store
  *---------------------------------------------------------------------
- * setup select2 with info icon
+ * +++++++++ setup select2 with info icon
  * step 1: append HTML with format follow there code bellow
  * ==> <div class="input-group">
  *         <div class="input-affix-wrapper">
@@ -133,6 +133,7 @@ function initSelectBox(selectBoxElement = null) {
             options['tags'] = true
             $this.prop('multiple', true)
         }
+        // if ($this.attr('readonly')) options['disabled'] = true
 
         // run select2
         $this.select2(options)

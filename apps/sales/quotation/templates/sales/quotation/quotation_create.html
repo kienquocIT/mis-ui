@@ -258,7 +258,7 @@
                     <div class="row">
                         <div class="row">
                             <div class="col-7">
-                                <ul class="nav nav-light nav-pills" id="quotation-tabs">
+                                <ul class="nav nav-light nav-tabs" id="quotation-tabs">
                                     <li class="nav-item">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
                                             <span class="nav-link-text">{% trans 'Line Detail' %}</span>
@@ -347,6 +347,12 @@
                                                     name="total_product_pretax_amount"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-product-pretax-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -355,7 +361,7 @@
                                                 <div class="row">
                                                     <div class="input-group">
                                                         <span class="input-affix-wrapper">
-                                                            <input type="text" class="form-control non-negative-number" id="quotation-create-product-discount">
+                                                            <input type="text" class="form-control validated-number" id="quotation-create-product-discount">
                                                             <span class="input-suffix">%</span>
                                                         </span>
                                                     </div>
@@ -369,6 +375,12 @@
                                                     data-return-type="number"
                                                     name="total_product_discount"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-product-discount-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -384,6 +396,12 @@
                                                     name="total_product_tax"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-product-taxes-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
@@ -398,6 +416,12 @@
                                                     data-return-type="number"
                                                     name="total_product"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-product-total-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -564,6 +588,12 @@
                                                     name="total_cost_pretax_amount"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-cost-pretax-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -577,6 +607,12 @@
                                                     data-return-type="number"
                                                     name="total_cost_tax"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-cost-taxes-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -592,6 +628,12 @@
                                                     data-return-type="number"
                                                     name="total_cost"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-cost-total-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -643,6 +685,13 @@
                                                     name="total_expense_pretax_amount"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-expense-pretax-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -656,6 +705,13 @@
                                                     data-return-type="number"
                                                     name="total_expense_tax"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-expense-taxes-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -671,6 +727,13 @@
                                                     data-return-type="number"
                                                     name="total_expense"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-expense-total-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -717,6 +780,12 @@
                                 type="hidden"
                                 id="data-quotation"
                                 value="[]"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-promotion"
+                                data-url="{% url "PromotionListAPI" %}"
+                                data-method="GET"
                         >
                     </div>
                 </div>

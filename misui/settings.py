@@ -53,6 +53,7 @@ INSTALLED_APPS = \
     ] + [  # Sales Application
         'apps.sales.opportunity',
         'apps.sales.quotation',
+        'apps.sales.saleorder',
         'apps.sales.cashoutflow',
     ]
 

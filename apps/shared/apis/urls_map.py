@@ -169,3 +169,19 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DISTRICTS = StringUrl('base/location/districts?city_id=')
     WARDS = StringUrl('base/location/wards?district_id=')
     BASE_CURRENCY = StringUrl('base/currencies')
+
+    # master-data/ promotion
+    PROMOTION_LIST = StringUrl('promotion/list')
+    PROMOTION_DETAIL = StringUrl('promotion/detail')
+
+    # shipping
+    SHIPPING_LIST = StringUrl('saledata/shippings')
+    SHIPPING_DETAIL = StringUrl('saledata/shipping/{shipping_id}')
+
+    # sale order
+    SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_DETAIL = StringUrl('saleorder')
+
+    # warehouse
+    WAREHOUSE_LIST = StringUrl('saledata/warehouses')
+    WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')

@@ -91,7 +91,7 @@ class customerHandle {
             $('[name="customer_type"]').val(tempVal);
             if (tempVal === 1) {
                 let dataTemp = []
-                $('input[type="checkbox"]:checked', $('#table_customer_list')).each(function(){
+                $('input[type="checkbox"]:checked:not(.check_all)', $('#table_customer_list')).each(function(){
                     let item =  $('#table_customer_list').DataTable().rows($(this).closest('tr').index()).data();
                     dataTemp.push(item[0].id)
                 });
@@ -327,7 +327,7 @@ function getDetailPage($form){
                     $('#title').val(data.title)
                     $('#remark').val(data.remark)
                     $('#customer_remark').val(data.customer_remark)
-                    $(`#select_customer_type option[value="${data.select_customer_type}"]`).attr('selected', true)
+                    $('[name="select_customer_type"]').val(data.customer_type).trigger('change');
                     if (data?.customer_by_list.length)
                         Customer.setCustomerList = data.customer_by_list
                     if (data?.customer_by_condition.length)
@@ -471,12 +471,12 @@ $(function () {
     let $percentFixed =  $('[name="percent_fix_amount"]')
     $percentFixed.on('change', function (e){
         if ($(this).attr('id') === 'percent_01'){
-            $('[name="percent_value"]').removeClass('hidden')
+            $('[name="percent_value"], .input-suffix').removeClass('hidden')
             $('[name="max_percent_value"]').parent('.form-group').css('visibility', 'visible')
             $('[name="fix_value"]').addClass('hidden')
         }
         else if ($(this).attr('id') === 'percent_02'){
-            $('[name="percent_value"]').addClass('hidden')
+            $('[name="percent_value"], .input-suffix').addClass('hidden')
             $('[name="max_percent_value"]').parent('.form-group').css('visibility', 'hidden')
             $('[name="fix_value"]').removeClass('hidden')
         }
@@ -676,7 +676,7 @@ $(function () {
                     $('[name="min_purchase_cost"]').addClass('is-invalid cl-red')
                     return false
                 }
-                _form.dataForm['gift_method']['min_purchase_cost'] = _form.dataForm['min_purchase_cost']
+                _form.dataForm['gift_method']['min_purchase_cost'] = $('[name="min_purchase_cost"]').valCurrency()
             } else {
                 _form.dataForm['gift_method']['is_purchase'] = _form.dataForm['is_purchase']
                 if (!_form.dataForm['purchase_num']) {

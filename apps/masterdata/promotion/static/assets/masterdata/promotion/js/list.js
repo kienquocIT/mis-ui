@@ -28,13 +28,22 @@ $(function(){
                 render: (row, type, data) => {
                     let isValid = '<span class="badge badge-indicator badge-indicator-xl badge-green"></span>'
                     const currentTime = new Date().getTime(),
-                    promoDate = new Date(moment(data.valid_date_end).format('YYYY-MM-DD')).getTime(),
+                    promoDateEnd = new Date(moment(data.valid_date_end).format('YYYY-MM-DD')).getTime(),
+                    promoDateStart = new Date(moment(data.valid_date_start).format('YYYY-MM-DD')).getTime(),
                     $trans = $('#trans-factory');
                     let text = $trans.attr('data-valid'), color = 'text-green'
-                    if (promoDate < currentTime){
+                    if (promoDateEnd < currentTime){
+                        // expired time
+                        isValid = '<span class="badge badge-indicator badge-indicator-xl badge-danger"></span>'
                         text = $trans.attr('data-expired')
                         color = 'text-danger'
                     }
+                    else if (promoDateStart > currentTime){
+                        isValid = '<span class="badge badge-indicator badge-indicator-xl badge-orange"></span>'
+                        text = $trans.attr('data-invalid')
+                        color = 'text-orange'
+                    }
+
                     let stt = `<span class="${color}">${text}</span>`
                     return isValid + stt;
                 }

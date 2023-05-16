@@ -290,7 +290,7 @@ class methodHandle{
         $('#is_discount').on('change', function(){
             if ($(this).prop('checked')){
                 $('.group-select-box, .row-tax, .row-percent').removeClass('hidden');
-                $('.group-gift-box').hide()
+                $('.group-gift-box').addClass('hidden')
             }
         });
     };
@@ -299,7 +299,7 @@ class methodHandle{
         $('#is_gift').on('change', function(){
             if ($(this).prop('checked')){
                 $('.group-select-box, .row-tax, .row-percent').addClass('hidden');
-                $('.group-gift-box').show()
+                $('.group-gift-box').removeClass('hidden')
             }
         });
     }
@@ -346,11 +346,14 @@ function getDetailPage($form){
                         $('#fix_value').addClass('hidden')
                     }
                     if(data?.discount_method?.fix_value){
-                        $('#fix_value').val(data.discount_method.fix_value).removeClass('hidden')
+                        $('#fix_value').attr('value', data.discount_method.fix_value).removeClass('hidden')
                         $('#percent_value').addClass('hidden')
+                        $.fn.initMaskMoney2($('#fix_value'),'input')
                     }
-                    if(data?.discount_method?.max_percent_value)
-                        $('#max_percent_value').val(data?.discount_method?.max_percent_value).removeClass('hidden')
+                    if(data?.discount_method?.max_percent_value){
+                        $('#max_percent_value').attr('value', data?.discount_method?.max_percent_value).removeClass('hidden')
+                        $.fn.initMaskMoney2($('#max_percent_value'),'input')
+                    }
                     if(data?.discount_method?.use_count || data?.gift_method?.use_count)
                         $('#use_count').val(data.discount_method.use_count)
                     if(data?.discount_method?.times_condition)
@@ -361,8 +364,10 @@ function getDetailPage($form){
                         $('#is_on_order').prop('checked', data.discount_method.is_on_order)
                     if(data?.discount_method?.is_minimum)
                         $('#is_minimum').prop('checked', data.discount_method.is_minimum)
-                    if(data?.discount_method?.minimum_value)
-                        $('#minimum_value').val(data.discount_method.minimum_value)
+                    if(data?.discount_method?.minimum_value){
+                        $('#minimum_value').attr('value', data.discount_method.minimum_value)
+                        $.fn.initMaskMoney2($('#minimum_value'),'input')
+                    }
                     if(data?.discount_method?.is_on_product){
                         $('#is_on_product').prop('checked', data.discount_method.is_on_product)
                         let proSelect = $('#product_selected')
@@ -373,7 +378,11 @@ function getDetailPage($form){
                         $('#num_minimum').val(data.discount_method.num_minimum)
                     if(data?.discount_method?.free_shipping)
                         $('#is_free_shipping').attr('checked', data.discount_method.free_shipping)
-                    if (data?.is_gift) $('#is_gift').attr('checked', true)
+                    if (data?.is_gift){
+                        $('#is_gift').attr('checked', true)
+                        $('.row-tax, .group-select-box').addClass('hidden')
+                        $('.group-gift-box').removeClass('hidden')
+                    }
                     if(data?.gift_method?.is_free_product){
                         $('#is_free_product').prop('checked', true)
                         $('#num_product_received').val(data?.gift_method?.num_product_received)
@@ -384,7 +393,8 @@ function getDetailPage($form){
                     if(data?.gift_method?.is_min_purchase){
                         $('#is_min_purchase').attr('checked', true)
                         $(`#gift_before_after_tax option[value="${data.gift_method.is_min_purchase}"]`).attr('selected', true)
-                        $('#min_purchase_cost').val(data.gift_method.min_purchase_cost)
+                        $('#min_purchase_cost').attr('value', data.gift_method.min_purchase_cost)
+                        $.fn.initMaskMoney2($('#min_purchase_cost'),'input')
                     }
                     if(data?.gift_method?.is_purchase) {
                         $('#is_purchase').attr('checked', true)

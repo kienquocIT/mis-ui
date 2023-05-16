@@ -291,7 +291,7 @@
                     </div>
                 </div>
             </div>
-            <div class="group-gift-box col-md-6" style="display: none;">
+            <div class="group-gift-box col-md-6 hidden">
                 <div class="row">
                     <div class="col-md-12 col-xs-6 d-md-flex justify-content-md-evenly align-items-center mb-3">
                         <div class="form-check w-md-40 readonly">
@@ -351,7 +351,7 @@
                         </div>
                         <div class="readonly">
                             <input class="form-control mask-money" type="text" name="min_purchase_cost"
-                                   id="min_purchase_cost" data-return-type="number">
+                                   id="min_purchase_cost" data-return-type="number" readonly>
                             <span></span>
                         </div>
 
@@ -383,6 +383,7 @@
                                     </div>
                                 </div>
                                 <select class="form-control dropdown-select_two" id="purchase_product"
+                                        disabled
                                         name="purchase_product"
                                         data-multiple="false"
                                         data-prefix="product_list"

@@ -361,7 +361,7 @@
                                                             </table>
                                                             <div class="row" id="copy-quotation-option" hidden>
                                                                 <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input check-option" id="customCheck1">
+                                                                    <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
                                                                     <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation to sale order' %}</label>
                                                                 </div>
                                                             </div>
@@ -388,6 +388,7 @@
                                                                     data-bs-dismiss="modal"
                                                             >Close</button>
                                                             <button type="button" class="btn btn-primary" id="btn-select-quotation-copy">Select</button>
+                                                            <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" hidden>Copy</button>
                                                             <input type="hidden" id="data-copy-quotation-detail">
                                                         </div>
                                                     </div>

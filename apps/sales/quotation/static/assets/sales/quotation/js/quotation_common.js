@@ -1428,18 +1428,30 @@ class dataTableHandle {
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.product_title}</span>`
+                    render: (data, type, row, meta) => {
+                        return `<div class="form-check">
+                                    <input 
+                                        type="checkbox"
+                                        class="form-check-input table-row-check-product"
+                                        data-id="${row.product.id}"
+                                    >
+                                </div>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        return `<span class="table-row-title">${row.product_title}</span>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
                         return `<span class="table-row-quantity">${row.product_quantity}</span>`
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<input type="text" class="form-control table-row-quantity-input" value="${row.product_quantity}">`
                     },

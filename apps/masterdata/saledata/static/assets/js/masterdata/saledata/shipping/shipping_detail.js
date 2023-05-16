@@ -29,6 +29,12 @@ $(document).ready(function () {
         })
     }
 
+    function removeClass(ele_condition) {
+        ele_condition.find('.inpThreshold').remove('mask-money');
+        ele_condition.find('.inpThreshold').removeAttr('data-return-type');
+        ele_condition.find('.inpThreshold').attr('type', 'number');
+    }
+
     //onchange select box choose Unit Of Measure Group
     $(document).on('change', '#chooseUnit', function () {
         let ele = $('.spanUnit');
@@ -36,20 +42,18 @@ $(document).ready(function () {
         inpUnit.val($(this).find('option:selected').text());
         $('.displayUoMGroup').text($(this).find('option:selected').text());
 
+        let eleThreshold = $('.inpThreshold')
+        eleThreshold.attr('value', '')
+        ele.text(item_unit_dict[$(this).val()].measure)
+        removeClass(eleThreshold)
         switch ($(this).find('option:selected').text()) {
             case 'price':
-                ele.text($('#chooseCurrency').find('option:selected').text());
-                break;
-            case 'quantity':
-                ele.text(item_unit_dict[$(this).val()].measure);
-                break;
-            case 'volume':
-                ele.text(item_unit_dict[$(this).val()].measure);
-                break;
-            case 'weight':
-                ele.text(item_unit_dict[$(this).val()].measure)
+                eleThreshold.addClass('mask-money');
+                eleThreshold.attr('data-return-type', 'number');
+                eleThreshold.attr('type', 'text');
                 break;
         }
+        $.fn.initMaskMoney2();
     })
 
     function loadCurrency(id) {
@@ -117,25 +121,21 @@ $(document).ready(function () {
     })
 
     function loadEachFormula(ele, firstFormula) {
+
         $('#chooseUnit').val(firstFormula.unit.id)
         ele.find('.inpUnit').val(firstFormula.unit.title);
+        ele.find('.spanUnit').text(item_unit_dict[firstFormula.unit.id].measure);
         switch (firstFormula.unit.title) {
             case 'price':
-                ele.find('.spanUnit').text($('#chooseCurrency').find('option:selected').text());
-                break;
-            case 'quantity':
-                ele.find('.spanUnit').text(item_unit_dict[firstFormula.unit.id].measure);
-                break;
-            case 'volume':
-                ele.find('.spanUnit').text(item_unit_dict[firstFormula.unit.id].measure);
-                break;
-            case 'weight':
-                ele.find('.spanUnit').text(item_unit_dict[firstFormula.unit.id].measure);
+                let eleThreshold = $('.inpThreshold')
+                eleThreshold.addClass('mask-money');
+                eleThreshold.attr('data-return-type', 'number');
+                eleThreshold.attr('type', 'text');
                 break;
 
         }
         ele.find('.chooseOperator').val(firstFormula.comparison_operators);
-        ele.find('.inpThreshold').val(firstFormula.threshold);
+        ele.find('.inpThreshold').attr('value', firstFormula.threshold);
         ele.find('.inpAmount').attr('value', firstFormula.amount_condition);
         if (firstFormula.extra_amount > 0) {
             ele.find('.inpAmountExtra').attr('value', firstFormula.extra_amount)
@@ -248,13 +248,17 @@ $(document).ready(function () {
                         let formula = []
                         ele_formula.each(function () {
                             let amount_extra = 0;
+                            let threshold = $(this).find(".inpThreshold").val();
                             if (!$(this).find('.cbFixedPrice').is(':checked')) {
                                 amount_extra = $(this).find('.inpAmountExtra').valCurrency();
+                            }
+                            if ($("#chooseUnit").find('option:selected').text() === 'price') {
+                                threshold = $(this).find(".inpThreshold").valCurrency();
                             }
                             let data_formula = {
                                 'unit': $("#chooseUnit").val(),
                                 'comparison_operators': $(this).find(".chooseOperator").val(),
-                                'threshold': $(this).find(".inpThreshold").val(),
+                                'threshold': threshold,
                                 'amount_condition': $(this).find('.inpAmount').valCurrency(),
                                 'extra_amount': amount_extra,
                             }

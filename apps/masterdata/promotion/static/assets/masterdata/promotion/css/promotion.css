@@ -41,7 +41,9 @@ input[name="min_purchase_cost"]{
 #customer_modal .modal-body {
     min-height: 350px;
 }
-
+[name="num_product_received"]{
+    width: 50px;
+}
 #customer_modal .modal-body{
     max-height: 450px;
     overflow-y: scroll;

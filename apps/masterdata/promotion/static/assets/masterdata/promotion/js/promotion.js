@@ -13,24 +13,24 @@ class customerHandle {
     get getCustomerCond(){
         return this.customerCond
     }
-    get getArrayList(){
-        return this.customerList
-    }
 
     onOpenModal() {
         let $this = this
         $('#customer_modal').on('show.bs.modal', function (){
-            let type = $('[name="customer_type"]').val() ? $('[name="customer_type"]').val() : '0';
+            let getType = parseInt($('[name="customer_type"]').val())
+            let type = getType ? getType : 0;
             if (!type || type === 0) $('.customer_list, .customer_condition').addClass('hidden');
             else if (type === 1) {
                 $('.customer_list').removeClass('hidden');
                 $('.customer_condition').addClass('hidden');
+                Customer.loadCustomerList();
             }
             else {
                 $('.customer_list').addClass('hidden');
                 $('.customer_condition').removeClass('hidden');
             }
             $(`[name="select_customer_type"] option[value="${type}"]`).trigger('change');
+            this.getCustomerList
         });
     }
 
@@ -55,8 +55,6 @@ class customerHandle {
                     render: (row, type, data) => {
                         let checked = '';
                         if (data.checked) checked = 'checked';
-                        let checkValid = _this.getArrayList;
-                        if (checkValid.includes(data.id)) checked = 'checked';
                         return `<div class="form-check"><input type="checkbox" class="form-check-input" ${checked}></div>`
                     }
                 },
@@ -264,6 +262,16 @@ class customerHandle {
         }
     }
 
+    loadCustomerList(){
+        const dataList = this.getCustomerList;
+        const $table = $('#table_customer_list')
+        let tableList = $table.DataTable().data().toArray();
+            for (let item of tableList){
+                if (dataList.includes(item.id)) item.checked = true
+            }
+            $table.DataTable().clear().draw()
+            $table.DataTable().rows.add(tableList).draw();
+    }
     init() {
         // handle when modal is open
         this.onOpenModal();
@@ -328,8 +336,9 @@ function getDetailPage($form){
                     $('#remark').val(data.remark)
                     $('#customer_remark').val(data.customer_remark)
                     $('[name="select_customer_type"]').val(data.customer_type).trigger('change');
-                    if (data?.customer_by_list.length)
+                    if (data?.customer_by_list.length){
                         Customer.setCustomerList = data.customer_by_list
+                    }
                     if (data?.customer_by_condition.length)
                         Customer.setCustomerCond = data.customer_by_condition
                     $('#currency').attr('data-onload', JSON.stringify(data.currency))
@@ -456,7 +465,7 @@ $(function () {
                 })
     });
 
-    /** account_types_mapped__account_type_order
+    /**
      * -------handle event onclick show/hide element in form-------
      **/
     // modal select type show/hide content

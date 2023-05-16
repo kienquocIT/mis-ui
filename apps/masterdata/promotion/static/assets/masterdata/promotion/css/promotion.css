@@ -33,9 +33,11 @@ input[name="max_usages"] {
 
 input[name="fix_value"],
 input[name="percent_value"],
-select[name="gift_before_after_tax"],
-input[name="min_purchase_cost"]{
+select[name="gift_before_after_tax"]{
     width: 140px;
+}
+input[name="min_purchase_cost"]{
+    width: 190px;
 }
 
 #customer_modal .modal-body {

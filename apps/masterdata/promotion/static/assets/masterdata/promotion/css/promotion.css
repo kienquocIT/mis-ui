@@ -9,10 +9,10 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
-
+[name="num_product_received"],
 input[name="purchase_num"],
 input[name="use_count"]{
-    width: 40px;
+    width: 50px;
     text-align: center;
 }
 
@@ -40,9 +40,6 @@ input[name="min_purchase_cost"]{
 
 #customer_modal .modal-body {
     min-height: 350px;
-}
-[name="num_product_received"]{
-    width: 50px;
 }
 #customer_modal .modal-body{
     max-height: 450px;

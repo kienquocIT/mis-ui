@@ -26,12 +26,17 @@ $(function(){
                 targets: 2,
                 class: 'text-center',
                 render: (row, type, data) => {
-                    const currentTime = new Date(),
-                    promoDate = new Date(moment(data.valid_date_end, 'YYYY-MM-DD').format('DD/MM/YYYY')).getTime(),
+                    let isValid = '<span class="badge badge-indicator badge-indicator-xl badge-green"></span>'
+                    const currentTime = new Date().getTime(),
+                    promoDate = new Date(moment(data.valid_date_end).format('YYYY-MM-DD')).getTime(),
                     $trans = $('#trans-factory');
-                    let text = $trans.attr('data-valid')
-                    if (promoDate < currentTime.getTime()) text = $trans.attr('data-expired')
-                    return `<p>${text}</p>`;
+                    let text = $trans.attr('data-valid'), color = 'text-green'
+                    if (promoDate < currentTime){
+                        text = $trans.attr('data-expired')
+                        color = 'text-danger'
+                    }
+                    let stt = `<span class="${color}">${text}</span>`
+                    return isValid + stt;
                 }
             },
             {

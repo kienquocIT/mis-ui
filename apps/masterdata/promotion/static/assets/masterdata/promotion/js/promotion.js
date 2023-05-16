@@ -92,7 +92,7 @@ class customerHandle {
             if (tempVal === 1) {
                 let dataTemp = []
                 $('input[type="checkbox"]:checked', $('#table_customer_list')).each(function(){
-                    let item =  $('#table_customer_list').DataTable().rows($(this).closest('tr')).data().toArray();
+                    let item =  $('#table_customer_list').DataTable().rows($(this).closest('tr').index()).data();
                     dataTemp.push(item[0].id)
                 });
                 _this.setCustomerList = dataTemp;

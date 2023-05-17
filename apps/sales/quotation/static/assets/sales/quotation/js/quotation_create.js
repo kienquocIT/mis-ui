@@ -674,6 +674,13 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
+            // validate none & blank
+            let check_none_blank_list = ['', "", null, "undefined"];
+            if (_form.dataForm.hasOwnProperty('opportunity')) {
+                if (check_none_blank_list.includes(_form.dataForm['opportunity'])) {
+                    delete _form.dataForm['opportunity']
+                }
+            }
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)

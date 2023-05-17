@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from django.views import View
 from rest_framework import status
@@ -39,8 +41,15 @@ class SaleOrderCreate(View):
         breadcrumb='SALE_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
+        data_copy_to = []
+        data_copy_to_raw = request.GET.get('data_copy_to')
+        if data_copy_to_raw:
+            data_copy_to = json.loads(data_copy_to_raw)
         return {
-                   'data': {'employee_current_id': request.user.employee_current_data.get('id', None)}
+                   'data': {
+                       'employee_current_id': request.user.employee_current_data.get('id', None),
+                       'data_copy_to': data_copy_to
+                   }
                }, status.HTTP_200_OK
 
 

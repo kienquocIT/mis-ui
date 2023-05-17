@@ -16,6 +16,12 @@ $(document).ready(function () {
     $('#check-tab-inventory').change(function () {
         disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');
+        if (this.checked) {
+            $('.dimensionControl').show();
+        } else {
+            $('.dimensionControl').hide();
+        }
+
     });
 
     $('#check-tab-sale').change(function () {
@@ -101,7 +107,10 @@ $(document).ready(function () {
     function getTreePriceList(dataTree, parent_id, child) {
         for (let i = 0; i < dataTree.length; i++) {
             if (dataTree[i].item.id === parent_id) {
-                dataTree[i].child.push({'item': child, 'child': []})
+                dataTree[i].child.push({
+                    'item': child,
+                    'child': []
+                })
             } else {
                 if (dataTree[i].child.length === 0)
                     continue;
@@ -222,7 +231,10 @@ $(document).ready(function () {
                             data.price_list.map(function (item) {
                                 if (item.price_list_type.value === 0) {
                                     if (item.price_list_mapped === null) {
-                                        dataTree.push({'item': item, 'child': []})
+                                        dataTree.push({
+                                            'item': item,
+                                            'child': []
+                                        })
                                     } else {
                                         dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
                                     }
@@ -410,9 +422,39 @@ $(document).ready(function () {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
                 if (document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value !== '') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
                 }
             }
         }
+    })
+
+    const inpDimensionEle = $('.inpDimension')
+    const inpVolumeEle = $('input[name="volume"]');
+    inpDimensionEle.on('change', function () {
+        inpDimensionEle.each(function () {
+            if ($(this).val() === '') {
+                $(this).val(1);
+            }
+        });
+
+        let dimensions = $('.inpDimension').map(function () {
+            return $(this).val();
+        }).get();
+
+        let volume = dimensions.reduce(function (a, b) {
+            return (a * b).toFixed(2);
+        }, 1);
+
+        inpVolumeEle.val(volume);
+    });
+
+    $(document).on('click', '.btnClear', function (){
+        $('[name="length"]').val('');
+        $('[name="width"]').val('');
+        $('[name="height"]').val('');
+        $('[name="volume"]').val('');
     })
 })

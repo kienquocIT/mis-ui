@@ -2,7 +2,8 @@
 {% load i18n %}
 {% load static %}
 {% block cssHeader %}
-    <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet"
+          type="text/css"/>
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
             rel="stylesheet"
@@ -49,17 +50,19 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}" data-url-redirect="{% url "ProductList" %}">
-    {% csrf_token %}
+    <form id="form-create-product" data-method="POST" data-url="{% url "ProductListAPI" %}"
+          data-url-redirect="{% url "ProductList" %}">
+        {% csrf_token %}
         <div class="row">
             <div class="col-9">
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
                             <label class="form-label">{% trans "Product Code" %}
-                            <span class="field-required">*</span>
+                                <span class="field-required">*</span>
                             </label>
-                            <input type="text" name="code" placeholder="Input Code" class="form-control" oninput="this.value=this.value.toUpperCase()">
+                            <input type="text" name="code" placeholder="Input Code" class="form-control"
+                                   oninput="this.value=this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="col-4 mt-5 text-center">
@@ -82,7 +85,7 @@
                 <div class="row">
                     <div class="form-group col-8">
                         <label class="form-label">{% trans "Product Name" %}
-                        <span class="field-required">*</span>
+                            <span class="field-required">*</span>
                         </label>
                         <input type="text" name="title" placeholder="Input Name" class="form-control">
                     </div>
@@ -139,7 +142,7 @@
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Group" %}
-                        <span class="field-required">*</span>
+                            <span class="field-required">*</span>
                         </label>
                         <select id="select-box-uom-group" class="form-select" data-method="GET"
                                 data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
@@ -156,17 +159,19 @@
                 <div class="row">
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Default UoM" %}
-                        <span class="field-required">*</span></label>
+                            <span class="field-required">*</span></label>
                         <select id="select-box-default-uom" class="form-select" data-method="GET"
                                 data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "Tax Code" %}</label>
                         <span class="field-required">*</span></label>
-                        <select id="select-box-tax-code" class="form-select" data-method="GET" data-url="{% url "TaxListAPI" %}"
+                        <select id="select-box-tax-code" class="form-select" data-method="GET"
+                                data-url="{% url "TaxListAPI" %}"
                                 name="tax_code"></select>
                     </div>
-                    <div class="col-6 form-group" id="select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
+                    <div class="col-6 form-group" id="select-price-list" data-method="GET"
+                         data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
                         <span class="field-required">*</span></label>
                         <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
@@ -176,18 +181,72 @@
                         </ul>
                     </div>
                 </div>
+                <div class="row mt-3 dimensionControl">
+                    <h6>{% trans "Product Dimension and Weight Control" %}</h6>
+                    <div class="row">
+                        <div class="col-3 form-group">
+                            <label class="form-label">{% trans "Length" %}</label>
+                            <span class="input-affix-wrapper affix-wth-text">
+                                <input type="number" class="form-control inpDimension" name="length"
+                                       aria-describedby="basic-addon1">
+                                <span class="input-suffix">cm</span>
+                            </span>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label class="form-label">{% trans "Width" %}</label>
+                            <span class="input-affix-wrapper affix-wth-text">
+                                <input type="number" class="form-control inpDimension" name="width"
+                                       aria-describedby="basic-addon1">
+                                <span class="input-suffix">cm</span>
+                            </span>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label class="form-label">{% trans "Height" %}</label>
+                            <span class="input-affix-wrapper affix-wth-text">
+                                <input type="number" class="form-control inpDimension" name="height"
+                                       aria-describedby="basic-addon1">
+                                <span class="input-suffix">cm</span>
+                            </span>
+                        </div>
+                        <div class="col-3 mt-5">
+                            <button type="button" class="btn btn-link btn-animated btnClear">
+                                <span><span class="icon text-danger"><span class="feather-icon"><i
+                            data-feather="x-square"></i></span></span><span class="text-danger">{% trans "Clear Demension" %}</span></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row" id="frmBaseItemUnit" data-method="GET" data-url="{% url "" %}">
+                        <div class="col-3 form-group">
+                            <label class="form-label">{% trans "Volume" %}</label>
+                            <span class="input-affix-wrapper affix-wth-text">
+                                <input type="number" class="form-control" name="volume"
+                                       aria-describedby="basic-addon1" readonly>
+                                <span class="input-suffix">cm³</span>
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">{% trans "Weigth" %}</label>
+                            <span class="input-affix-wrapper affix-wth-text">
+                                <input type="number" class="form-control" name="weight"
+                                       aria-describedby="basic-addon1">
+                                <span class="input-suffix">gram</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <div class="tab-pane fade" id="tab_inventory">
                 <div class="row">
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Code" %}
-                        <span class="field-required">*</span></label>
-                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;" readonly>
+                            <span class="field-required">*</span></label>
+                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;"
+                               readonly>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Name" %}
-                        <span class="field-required">*</span></label>
+                            <span class="field-required">*</span></label>
                         <select id="select-box-uom-name" class="form-select" data-method="GET"
                                 data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
                         </select>

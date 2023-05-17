@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let plan_db = $('#tab_plan_datatable_div').html();
     $(document).on("click", '#btn-add-row-line-detail', function () {
         let table_body = $('#tab_line_detail tbody');
         table_body.append(`<tr id="" class="row-number">
@@ -259,7 +260,7 @@ $(document).ready(function () {
                     ele.append(`<option></option>`);
                     resp.data.quotation_list.map(function (item) {
                         if (item.opportunity.id) {
-                            ele.append(`<option data-sale-code-id="` + item.sale_person.id + `" value="` + item.opportunity.id + `">` + item.opportunity.code + ` - ` + item.opportunity.title + `</option>`);
+                            ele.append(`<option data-quotation-id="` + item.id + `" data-sale-code-id="` + item.sale_person.id + `" value="` + item.opportunity.id + `">` + item.opportunity.code + ` - ` + item.opportunity.title + `</option>`);
                         }
                     })
                 }
@@ -405,9 +406,12 @@ $(document).ready(function () {
         if ($('#sale-code-select-box option:selected').attr('data-sale-code-id')) {
             $('#notify-none-sale-code').prop('hidden', true);
             loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
+            loadQuotationExpense($('#sale-code-select-box option:selected').attr('data-quotation-id'));
+            $('#tab_plan_datatable').prop('hidden', false);
         }
         else {
             $('#notify-none-sale-code').prop('hidden', false);
+            $('#tab_plan_datatable').prop('hidden', true);
         }
     })
 
@@ -570,4 +574,94 @@ $(document).ready(function () {
                 }
             )
     })
+
+
+
+    function loadQuotationExpense(filter_quotation) {
+        $('#tab_plan_datatable').remove();
+        $('#tab_plan_datatable_div').html(plan_db);
+        let dtb = $('#tab_plan_datatable');
+        let frm = new SetupFormSubmit(dtb);
+        dtb.DataTableDefault({
+            dom: '',
+            ajax: {
+                url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        console.log(data)
+                        return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    render: (data, type, row, meta) => {
+                        return ''
+                    }
+                },
+                {
+                    data: 'expense_title',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
+                    }
+                },
+                {
+                    data: 'tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        if (row.tax.title) {
+                            return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    data: 'plan_after_tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.plan_after_tax + `</span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                }
+            ],
+        });
+    }
 })

@@ -346,25 +346,21 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_plan">
-                <div class="row">
-                    <table id="tab_plan_datatable" class="table nowrap w-100"
-                           data-url-expense-list="{% url 'ExpenseListAPI' %}"
-                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                           data-url-tax-list="{% url 'TaxListAPI' %}"
-                           data-url-unit-price-list="{% url 'ExpenseDetailAPI' '0' %}">
+            <div class="tab-pane fade mb-25" id="tab_plan">
+                <div class="row" id="tab_plan_datatable_div">
+                    <table id="tab_plan_datatable" class="table nowrap w-100" data-method="GET"
+                           data-url="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
-                            <th style="width: 12%">{% trans 'Type' %}</th>
-                            <th style="width: 7%">{% trans 'UoM' %}</th>
-                            <th style="width: 6%">{% trans 'Quantity' %}</th>
-                            <th style="width: 14%">{% trans 'Unit price' %}</th>
-                            <th style="width: 10%">{% trans 'Tax' %}</th>
-                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
-                            <th style="width: 1%"></th>
+                            <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'Tax' %}</th>
+                            <th>{% trans 'Plan After Tax' %}</th>
+                            <th>{% trans 'AP Approved' %}</th>
+                            <th>{% trans 'Return' %}</th>
+                            <th>{% trans 'To Payment' %}</th>
+                            <th>{% trans 'Other Payment' %}</th>
+                            <th>{% trans 'Available' %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -372,16 +368,10 @@
                     </table>
                 </div>
                 <div class="row">
-                    <div class="col-2">
-                        <button type="button" class="btn btn-link btn-animated" id="btn-add-row-plan">
-                            <span><span class="icon">
-                                <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
-                                <span>Add new row</span>
-                            </span>
-                        </button>
+                    <div class="col-6">
+                        <h6 id="notify-none-sale-code" class="text-danger text-left" style="font-style: italic">Quotation/Sale Order is empty!</h6>
                     </div>
-                    <div class="col-10">
-                        <h6 id="notify-none-sale-code" class="text-danger text-right mt-2" style="font-style: italic">Quotation/Sale Order is empty!</h6>
+                    <div class="col-6">
                     </div>
                 </div>
             </div>

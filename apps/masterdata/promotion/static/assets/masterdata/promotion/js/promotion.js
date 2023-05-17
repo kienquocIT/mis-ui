@@ -366,7 +366,7 @@ function getDetailPage($form){
                     if(data?.discount_method?.times_condition || data?.gift_method?.times_condition){
                         let valueTemp = data?.discount_method?.times_condition ? data.discount_method.times_condition :
                             data.gift_method.times_condition
-                        $(`#times_condition option[value="${data.discount_method.times_condition}"]`).attr('selected', true)
+                        $(`#times_condition option[value="${valueTemp}"]`).attr('selected', true)
                     }
                     if(data?.discount_method?.max_usages || data?.gift_method?.max_usages )
                         $('#max_usages').val(data?.discount_method?.max_usages ?
@@ -592,6 +592,7 @@ $(function () {
         _form.dataForm['valid_date_end'] = moment(validDate.split(' - ')[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
         if (_form.dataForm['is_discount']) {
             _form.dataForm['is_gift'] = false
+            _form.dataForm['gift_method'] = {}
             _form.dataForm['discount_method'] = {
                 before_after_tax: _form.dataForm['before_after_tax'],
                 percent_fix_amount: _form.dataForm['percent_fix_amount'],
@@ -675,6 +676,7 @@ $(function () {
         }
         if (_form.dataForm['is_gift']) {
             _form.dataForm['is_discount'] = false
+            _form.dataForm['discount_method'] = {}
             _form.dataForm['gift_method'] = {
                 use_count: parseInt(_form.dataForm['use_count']),
                 times_condition: parseInt(_form.dataForm['times_condition']),

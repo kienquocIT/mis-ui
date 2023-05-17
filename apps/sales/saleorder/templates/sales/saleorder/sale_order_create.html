@@ -260,11 +260,13 @@
                                                 </div>
                                             </span>
                                             <select
-                                                class="form-select" id="select-box-quotation"
+                                                class="form-select disabled-custom-show"
+                                                id="select-box-quotation"
                                                 data-url="{% url "QuotationListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url "QuotationDetail" 1 %}"
                                                 name="quotation"
+                                                disabled
                                             ></select>
                                         </span>
                                     </div>
@@ -451,6 +453,7 @@
                                                     id="quotation-create-product-pretax-amount-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -480,6 +483,7 @@
                                                     id="quotation-create-product-discount-amount-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -500,6 +504,7 @@
                                                     id="quotation-create-product-taxes-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -521,6 +526,7 @@
                                                     id="quotation-create-product-total-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -692,6 +698,7 @@
                                                     id="quotation-create-cost-pretax-amount-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -712,6 +719,7 @@
                                                     id="quotation-create-cost-taxes-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -733,6 +741,7 @@
                                                     id="quotation-create-cost-total-raw"
                                                     type="text"
                                                     class="form-control"
+                                                    value="0"
                                                     hidden
                                                 >
                                             </div>
@@ -897,7 +906,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-copy-to"
-                                value="{{ data.data.product_copy }}"
+                                value="{{ data.data.data_copy_to }}"
                         >
                     </div>
                 </div>

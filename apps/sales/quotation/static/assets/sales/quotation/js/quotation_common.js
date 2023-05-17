@@ -735,8 +735,8 @@ class loadDataHandle {
         if (data.payment_term) {
             self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term.id)
         }
-        if (data.quotation) {
-            self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id)
+        if (data.quotation && data.sale_person) {
+            self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }
         if (is_copy === true) {
             $('#select-box-quotation').append(`<option value="${data.id}" selected>${data.title}</option>`)
@@ -2007,6 +2007,13 @@ class submitHandle {
             quotation_costs_data = 'sale_order_costs_data';
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
+
+            let eleQuotation = $('#select-box-quotation');
+            if (eleQuotation) {
+                if (eleQuotation.val()) {
+                    _form.dataForm['quotation'] = eleQuotation.val()
+                }
+            }
         }
         let dateCreatedVal = $('#quotation-create-date-created').val();
         if (dateCreatedVal) {

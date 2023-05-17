@@ -13,24 +13,24 @@ class customerHandle {
     get getCustomerCond(){
         return this.customerCond
     }
-    get getArrayList(){
-        return this.customerList
-    }
 
     onOpenModal() {
         let $this = this
         $('#customer_modal').on('show.bs.modal', function (){
-            let type = $('[name="customer_type"]').val() ? $('[name="customer_type"]').val() : '0';
+            let getType = parseInt($('[name="customer_type"]').val())
+            let type = getType ? getType : 0;
             if (!type || type === 0) $('.customer_list, .customer_condition').addClass('hidden');
             else if (type === 1) {
                 $('.customer_list').removeClass('hidden');
                 $('.customer_condition').addClass('hidden');
+                Customer.loadCustomerList();
             }
             else {
                 $('.customer_list').addClass('hidden');
                 $('.customer_condition').removeClass('hidden');
             }
             $(`[name="select_customer_type"] option[value="${type}"]`).trigger('change');
+            this.getCustomerList
         });
     }
 
@@ -55,8 +55,6 @@ class customerHandle {
                     render: (row, type, data) => {
                         let checked = '';
                         if (data.checked) checked = 'checked';
-                        let checkValid = _this.getArrayList;
-                        if (checkValid.includes(data.id)) checked = 'checked';
                         return `<div class="form-check"><input type="checkbox" class="form-check-input" ${checked}></div>`
                     }
                 },
@@ -91,7 +89,7 @@ class customerHandle {
             $('[name="customer_type"]').val(tempVal);
             if (tempVal === 1) {
                 let dataTemp = []
-                $('input[type="checkbox"]:checked', $('#table_customer_list')).each(function(){
+                $('input[type="checkbox"]:checked:not(.check_all)', $('#table_customer_list')).each(function(){
                     let item =  $('#table_customer_list').DataTable().rows($(this).closest('tr').index()).data();
                     dataTemp.push(item[0].id)
                 });
@@ -264,6 +262,16 @@ class customerHandle {
         }
     }
 
+    loadCustomerList(){
+        const dataList = this.getCustomerList;
+        const $table = $('#table_customer_list')
+        let tableList = $table.DataTable().data().toArray();
+            for (let item of tableList){
+                if (dataList.includes(item.id)) item.checked = true
+            }
+            $table.DataTable().clear().draw()
+            $table.DataTable().rows.add(tableList).draw();
+    }
     init() {
         // handle when modal is open
         this.onOpenModal();
@@ -290,7 +298,7 @@ class methodHandle{
         $('#is_discount').on('change', function(){
             if ($(this).prop('checked')){
                 $('.group-select-box, .row-tax, .row-percent').removeClass('hidden');
-                $('.group-gift-box').hide()
+                $('.group-gift-box').addClass('hidden')
             }
         });
     };
@@ -299,7 +307,7 @@ class methodHandle{
         $('#is_gift').on('change', function(){
             if ($(this).prop('checked')){
                 $('.group-select-box, .row-tax, .row-percent').addClass('hidden');
-                $('.group-gift-box').show()
+                $('.group-gift-box').removeClass('hidden')
             }
         });
     }
@@ -327,9 +335,10 @@ function getDetailPage($form){
                     $('#title').val(data.title)
                     $('#remark').val(data.remark)
                     $('#customer_remark').val(data.customer_remark)
-                    $(`#select_customer_type option[value="${data.select_customer_type}"]`).attr('selected', true)
-                    if (data?.customer_by_list.length)
+                    $('[name="select_customer_type"]').val(data.customer_type).trigger('change');
+                    if (data?.customer_by_list.length){
                         Customer.setCustomerList = data.customer_by_list
+                    }
                     if (data?.customer_by_condition.length)
                         Customer.setCustomerCond = data.customer_by_condition
                     $('#currency').attr('data-onload', JSON.stringify(data.currency))
@@ -346,11 +355,14 @@ function getDetailPage($form){
                         $('#fix_value').addClass('hidden')
                     }
                     if(data?.discount_method?.fix_value){
-                        $('#fix_value').val(data.discount_method.fix_value).removeClass('hidden')
+                        $('#fix_value').attr('value', data.discount_method.fix_value).removeClass('hidden')
                         $('#percent_value').addClass('hidden')
+                        $.fn.initMaskMoney2($('#fix_value'),'input')
                     }
-                    if(data?.discount_method?.max_percent_value)
-                        $('#max_percent_value').val(data?.discount_method?.max_percent_value).removeClass('hidden')
+                    if(data?.discount_method?.max_percent_value){
+                        $('#max_percent_value').attr('value', data?.discount_method?.max_percent_value).removeClass('hidden')
+                        $.fn.initMaskMoney2($('#max_percent_value'),'input')
+                    }
                     if(data?.discount_method?.use_count || data?.gift_method?.use_count)
                         $('#use_count').val(data.discount_method.use_count)
                     if(data?.discount_method?.times_condition)
@@ -361,8 +373,10 @@ function getDetailPage($form){
                         $('#is_on_order').prop('checked', data.discount_method.is_on_order)
                     if(data?.discount_method?.is_minimum)
                         $('#is_minimum').prop('checked', data.discount_method.is_minimum)
-                    if(data?.discount_method?.minimum_value)
-                        $('#minimum_value').val(data.discount_method.minimum_value)
+                    if(data?.discount_method?.minimum_value){
+                        $('#minimum_value').attr('value', data.discount_method.minimum_value)
+                        $.fn.initMaskMoney2($('#minimum_value'),'input')
+                    }
                     if(data?.discount_method?.is_on_product){
                         $('#is_on_product').prop('checked', data.discount_method.is_on_product)
                         let proSelect = $('#product_selected')
@@ -373,7 +387,11 @@ function getDetailPage($form){
                         $('#num_minimum').val(data.discount_method.num_minimum)
                     if(data?.discount_method?.free_shipping)
                         $('#is_free_shipping').attr('checked', data.discount_method.free_shipping)
-                    if (data?.is_gift) $('#is_gift').attr('checked', true)
+                    if (data?.is_gift){
+                        $('#is_gift').attr('checked', true)
+                        $('.row-tax, .group-select-box').addClass('hidden')
+                        $('.group-gift-box').removeClass('hidden')
+                    }
                     if(data?.gift_method?.is_free_product){
                         $('#is_free_product').prop('checked', true)
                         $('#num_product_received').val(data?.gift_method?.num_product_received)
@@ -384,7 +402,8 @@ function getDetailPage($form){
                     if(data?.gift_method?.is_min_purchase){
                         $('#is_min_purchase').attr('checked', true)
                         $(`#gift_before_after_tax option[value="${data.gift_method.is_min_purchase}"]`).attr('selected', true)
-                        $('#min_purchase_cost').val(data.gift_method.min_purchase_cost)
+                        $('#min_purchase_cost').attr('value', data.gift_method.min_purchase_cost)
+                        $.fn.initMaskMoney2($('#min_purchase_cost'),'input')
                     }
                     if(data?.gift_method?.is_purchase) {
                         $('#is_purchase').attr('checked', true)
@@ -446,7 +465,7 @@ $(function () {
                 })
     });
 
-    /** account_types_mapped__account_type_order
+    /**
      * -------handle event onclick show/hide element in form-------
      **/
     // modal select type show/hide content
@@ -471,12 +490,12 @@ $(function () {
     let $percentFixed =  $('[name="percent_fix_amount"]')
     $percentFixed.on('change', function (e){
         if ($(this).attr('id') === 'percent_01'){
-            $('[name="percent_value"]').removeClass('hidden')
+            $('[name="percent_value"], .input-suffix').removeClass('hidden')
             $('[name="max_percent_value"]').parent('.form-group').css('visibility', 'visible')
             $('[name="fix_value"]').addClass('hidden')
         }
         else if ($(this).attr('id') === 'percent_02'){
-            $('[name="percent_value"]').addClass('hidden')
+            $('[name="percent_value"], .input-suffix').addClass('hidden')
             $('[name="max_percent_value"]').parent('.form-group').css('visibility', 'hidden')
             $('[name="fix_value"]').removeClass('hidden')
         }
@@ -676,7 +695,7 @@ $(function () {
                     $('[name="min_purchase_cost"]').addClass('is-invalid cl-red')
                     return false
                 }
-                _form.dataForm['gift_method']['min_purchase_cost'] = _form.dataForm['min_purchase_cost']
+                _form.dataForm['gift_method']['min_purchase_cost'] = $('[name="min_purchase_cost"]').valCurrency()
             } else {
                 _form.dataForm['gift_method']['is_purchase'] = _form.dataForm['is_purchase']
                 if (!_form.dataForm['purchase_num']) {

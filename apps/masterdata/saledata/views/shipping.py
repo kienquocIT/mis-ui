@@ -24,8 +24,9 @@ class ShippingCreate(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
-        if resp.state:
-            return {'cities': resp.result}, status.HTTP_200_OK
+        resp_unit = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state and resp_unit.state:
+            return {'cities': resp.result, 'unit': resp_unit.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -72,11 +73,10 @@ class ShippingDetail(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
-        resp_uom_group = ServerAPI(url=ApiURL.UNIT_OF_MEASURE_GROUP, user=request.user).get()
-        resp_uom = ServerAPI(url=ApiURL.UNIT_OF_MEASURE, user=request.user).get()  # noqa
-        if resp.state and resp_uom_group.state and resp_uom.state:
+        resp_unit = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state and resp_unit:
             return {
-                       'cities': resp.result, 'uom_group': resp_uom_group.result, 'uom': resp_uom.result
+                       'cities': resp.result, 'unit': resp_unit.result
                    }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
@@ -99,12 +99,12 @@ class ShippingDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SHIPPING_DETAIL.fill_key(shipping_id=pk)).put( # noqa
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIPPING_DETAIL.fill_key(shipping_id=pk)).put(  # noqa
             request.data
         )
         if resp.state:
             return {'shipping': resp.result}, status.HTTP_200_OK
-        if resp.errors: # noqa
+        if resp.errors:  # noqa
             if isinstance(resp.errors, dict):
                 err_msg = ""
                 for key, value in resp.errors.items():

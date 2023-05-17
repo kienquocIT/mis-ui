@@ -98,13 +98,12 @@ class customerHandle {
             else if (tempVal === 2) {
                 let $elmRow = $('.cc-content .row'),
                     listCond = [],
-                    isLogic = '';
+                    isLogic = $('.row[data-idx="1"]', '.cc-content').find('.row-operator').val();
                 $elmRow.each(function () {
                     let idx = $(this).data('idx'),
                         pro = $(this).find('.cus-property').val(),
                         ope = $(this).find('.cus-operator').val(),
                         rel = $(this).find('.cus-result').val();
-                    isLogic = $(this).find('.row-operator').val();
                     if (pro && ope && rel){
                         let condTemp = {
                             order: idx,
@@ -114,7 +113,8 @@ class customerHandle {
                             result_detail: (parseInt(pro) <= 1) ? {
                                 id: '',
                                 title: ''
-                            } : ''
+                            } : '',
+                            logic: isLogic,
                         }
                         if (parseInt(pro) <= 1) {
                             let dataList = $(this).find('.cus-result').select2('data')
@@ -128,8 +128,6 @@ class customerHandle {
                         listCond.push(condTemp)
                     }
                 });
-                if (listCond.length)
-                    listCond.push({"logic": isLogic,})
                 _this.setCustomerCond = listCond
             }
             $(this).closest('.modal').modal('hide');
@@ -202,9 +200,7 @@ class customerHandle {
 
     initEventNewRowCondition(){
         let _this = this
-        $('#new-cus-cond a').on('click', function (e) {
-            e.preventDefault()
-            e.stopPropagation()
+        $('#new-cus-cond a').off().on('click', function (e) {
             let isOpe = $(this).data('operator');
             let newHTML = $('.t-conditions').html();
             $('.cc-content').append(newHTML)
@@ -240,25 +236,21 @@ class customerHandle {
     loadCustomerCond(){
         const dataList = this.getCustomerCond;
         const modal = $('#customer_modal .modal-body')
-        // lấy logic tại phần tử cuối của mảng
-        const logic = dataList[dataList.length - 1].logic
         for (let [idx, item] of dataList.entries()){
-            if(!item.hasOwnProperty('logic')){
-                const isParent = $(`.cc-content .row[data-idx="${idx}"]`);
-                $('.cus-property', isParent).val(parseInt(item.property)).trigger("change")
-                $('.cus-operator', isParent).val(item.operator).trigger("change")
-                if (parseInt(item.property) <= 1){
-                    $('.cus-result', isParent).attr('data-onload', JSON.stringify(item.result_detail))
-                    initSelectBox(isParent.find('.cus-result'))
-                }
-                else
-                    $('.cus-result', isParent).val(item.result).trigger("change")
-
-                $('.row-operator', isParent).val(logic).trigger("change")
-                if (idx > 1) $('.row-operator', isParent).attr('disabled', true)
-                if (idx !== (dataList.length - 2))
-                    $(`a[data-operator="${logic}"]`, modal).trigger('click')
+            const isParent = $(`.cc-content .row[data-idx="${idx}"]`);
+            $('.cus-property', isParent).val(parseInt(item.property)).trigger("change")
+            $('.cus-operator', isParent).val(item.operator).trigger("change")
+            if (parseInt(item.property) <= 1){
+                $('.cus-result', isParent).attr('data-onload', JSON.stringify(item.result_detail))
+                initSelectBox(isParent.find('.cus-result'))
             }
+            else $('.cus-result', isParent).val(item.result).trigger("change")
+
+            $('.row-operator', isParent).val(item.logic).trigger("change")
+            if (idx > 1) $('.row-operator', isParent).attr('disabled', true)
+            if (idx < (dataList.length - 1))
+                modal.find('a.click_'+ item.logic).trigger('click');
+
         }
     }
 
@@ -272,6 +264,7 @@ class customerHandle {
             $table.DataTable().clear().draw()
             $table.DataTable().rows.add(tableList).draw();
     }
+
     init() {
         // handle when modal is open
         this.onOpenModal();
@@ -347,16 +340,19 @@ function getDetailPage($form){
                     $('#is_gift').prop('checked', data.is_gift ? data.is_gift : false)
                     if (data?.discount_method.before_after_tax) $('#tax_position_01').prop('checked', true)
                     else $('#tax_position_02').prop('checked', true)
-                    if (data?.discount_method.percent_fix_amount) $('#percent_01').prop('checked', true)
-                    else $('#percent_02').prop('checked', true)
-                    if (data?.discount_method?.percent_value){
+                    if (data?.discount_method.percent_fix_amount){
+                        // is percent
+                        $('#percent_01').prop('checked', true);
                         $('#percent_value').val(data.discount_method.percent_value + '%').removeClass('hidden')
                             .attr('data-value', data.discount_method.percent_value)
                         $('#fix_value').addClass('hidden')
+                        $('#max_percent_value').removeClass('hidden')
                     }
-                    if(data?.discount_method?.fix_value){
-                        $('#fix_value').attr('value', data.discount_method.fix_value).removeClass('hidden')
-                        $('#percent_value').addClass('hidden')
+                    else{
+                        // is fixed amount
+                        $('#percent_02').prop('checked', true);
+                        $('#percent_value, #max_percent_value').addClass('hidden');
+                        $('#fix_value').removeClass('hidden').attr('value', data.discount_method.fix_value);
                         $.fn.initMaskMoney2($('#fix_value'),'input')
                     }
                     if(data?.discount_method?.max_percent_value){
@@ -389,7 +385,7 @@ function getDetailPage($form){
                         $('#is_free_shipping').attr('checked', data.discount_method.free_shipping)
                     if (data?.is_gift){
                         $('#is_gift').attr('checked', true)
-                        $('.row-tax, .group-select-box').addClass('hidden')
+                        $('.row-tax, .group-select-box, .row-percent').addClass('hidden')
                         $('.group-gift-box').removeClass('hidden')
                     }
                     if(data?.gift_method?.is_free_product){
@@ -491,12 +487,12 @@ $(function () {
     $percentFixed.on('change', function (e){
         if ($(this).attr('id') === 'percent_01'){
             $('[name="percent_value"], .input-suffix').removeClass('hidden')
-            $('[name="max_percent_value"]').parent('.form-group').css('visibility', 'visible')
+            $('[name="max_percent_value"]').parent('.form-group').removeClass('hidden')
             $('[name="fix_value"]').addClass('hidden')
         }
         else if ($(this).attr('id') === 'percent_02'){
             $('[name="percent_value"], .input-suffix').addClass('hidden')
-            $('[name="max_percent_value"]').parent('.form-group').css('visibility', 'hidden')
+            $('[name="max_percent_value"]').parent('.form-group').addClass('hidden')
             $('[name="fix_value"]').removeClass('hidden')
         }
     });
@@ -588,7 +584,6 @@ $(function () {
         let validDate = _form.dataForm['valid_time']
         _form.dataForm['valid_date_start'] = moment(validDate.split(' - ')[0], 'DD/MM/YYYY').format('YYYY-MM-DD');
         _form.dataForm['valid_date_end'] = moment(validDate.split(' - ')[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
-
         if (_form.dataForm['is_discount']) {
             _form.dataForm['discount_method'] = {
                 before_after_tax: _form.dataForm['before_after_tax'],
@@ -607,6 +602,7 @@ $(function () {
                 _form.dataForm['discount_method']['percent_value'] = parseInt(_form.dataForm['percent_value'])
                 let maxVal = $('[name="max_percent_value"]').valCurrency()
                 if (maxVal) _form.dataForm['discount_method']['max_percent_value'] = maxVal
+                delete _form.dataForm['fix_value']
             } else {
                 // fixed amount is checked
                 let fixedVal = $('[name="fix_value"]').valCurrency()
@@ -616,6 +612,8 @@ $(function () {
                     return false
                 }
                 _form.dataForm['discount_method']['fix_value'] = fixedVal
+                delete _form.dataForm['percent_value']
+                delete _form.dataForm['max_percent_value']
             }
             if (_form.dataForm['is_on_order']) {
                 _form.dataForm['discount_method']['is_on_order'] = true

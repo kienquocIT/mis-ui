@@ -596,7 +596,22 @@ $(function () {
                 }
             }
         }
-        loadDataCopyTo();
+        // loadDataCopyTo();
+
+        function checkElementValues() {
+            let element1 = $('#data-init-quotation-create-tables-product').val();
+            let element2 = $('#data-init-quotation-create-tables-uom').val();
+            let element3 = $('#data-init-quotation-create-tables-tax').val();
+            let element4 = $('#data-init-quotation-create-tables-expense').val();
+
+            if (element1 && element2 && element3 && element4) {
+                loadDataCopyTo();  // call loadDataCopyTo() if all condition pass
+            } else {
+                setTimeout(checkElementValues, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+
+        checkElementValues();
 
 // Submit form quotation + sale order
         $('#btn-create_quotation').on('click', function (e) {

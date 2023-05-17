@@ -592,15 +592,16 @@ $(function () {
         _form.dataForm['valid_date_end'] = moment(validDate.split(' - ')[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
         if (_form.dataForm['is_discount']) {
             _form.dataForm['is_gift'] = false
-            _form.dataForm['gift_method'] = {}
+            let isPerFixed = $('[name="percent_fix_amount"]:checked').attr('id') !== 'percent_02'
+            let baTax = $('[name="before_after_tax"]:checked').attr('id') !== 'tax_position_02'
             _form.dataForm['discount_method'] = {
-                before_after_tax: _form.dataForm['before_after_tax'],
-                percent_fix_amount: _form.dataForm['percent_fix_amount'],
+                before_after_tax: baTax,
+                percent_fix_amount: isPerFixed,
                 use_count: parseInt(_form.dataForm['use_count']),
                 times_condition: parseInt(_form.dataForm['times_condition']),
                 max_usages: _form.dataForm['max_usages'] ? parseInt(_form.dataForm['max_usages']) : 0,
             }
-            if (_form.dataForm['percent_fix_amount']) {
+            if (isPerFixed) {
                 // if percent is checked
                 if (!_form.dataForm['percent_value']) {
                     $.fn.notifyPopup({description: $transFactory.attr('data-percent-invalid')}, 'failure')
@@ -676,7 +677,6 @@ $(function () {
         }
         if (_form.dataForm['is_gift']) {
             _form.dataForm['is_discount'] = false
-            _form.dataForm['discount_method'] = {}
             _form.dataForm['gift_method'] = {
                 use_count: parseInt(_form.dataForm['use_count']),
                 times_condition: parseInt(_form.dataForm['times_condition']),

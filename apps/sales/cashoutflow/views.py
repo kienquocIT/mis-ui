@@ -34,17 +34,17 @@ class AdvancePaymentCreate(View):
 class AdvancePaymentListAPI(APIView):
     permission_classes = [IsAuthenticated] # noqa
 
-    # @mask_view(
-    #     auth_require=True,
-    #     is_api=True,
-    # )
-    # def get(self, request, *args, **kwargs):
-    #     resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
-    #     if resp.state:
-    #         return {'product_list': resp.result}, status.HTTP_200_OK
-    #     elif resp.status == 401:
-    #         return {}, status.HTTP_401_UNAUTHORIZED
-    #     return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
+        if resp.state:
+            return {'advance_payment_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,

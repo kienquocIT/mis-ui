@@ -51,13 +51,13 @@
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-7 pr-5">
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required">Name</label>
                         <div class="col-9">
                             <input class="form-control" name="title" placeholder="Tam ung tien di cong tac gap doi tac">
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label">Sale/Purchase code</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
@@ -85,7 +85,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required">Type</label>
                         <div class="col-9">
                             <select class="form-select" name="type" id="type-select-box">
@@ -95,7 +95,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label" id="supplier-label">Supplier name</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
@@ -132,7 +132,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required" id="supplier-label">Method</label>
                         <div class="col-9">
                             <select class="form-select" name="method">
@@ -144,13 +144,13 @@
                     </div>
                 </div>
                 <div class="col-5">
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required" id="supplier-label">Created date</label>
                         <div class="col-9">
                             <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required">Creator</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
@@ -185,7 +185,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required">Beneficiary</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
@@ -218,13 +218,13 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label required" id="supplier-label">Return date</label>
                         <div class="col-9">
                             <input class="form-control" name="return_date" id="return-date-id" readonly>
                         </div>
                     </div>
-                    <div class="row form-group mb-5">
+                    <div class="row form-group mb-3">
                         <label class="col-3 col-form-label" id="supplier-label">Status</label>
                         <div class="col-9">
                             <input class="form-control" value="Approved" readonly>
@@ -300,9 +300,7 @@
                             </span>
                         </button>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-8"></div>
+                    <div class="col-6"></div>
                     <div class="col-4">
                         <div class="row">
                             <div class="col-12">
@@ -311,13 +309,6 @@
                                         <div class="loader-pendulums"></div>
                                     </div>
                                     <div id="content-card" class="collapse show">
-                                        <div class="card-action-wrap text-right mr-2">
-                                            <a title="Click to calculate price." class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover refresh" id="recalculate-price" href="#">
-                                                <span class="icon">
-                                                    <span class="feather-icon"><i class="bi bi-calculator"></i></span>
-                                                </span>
-                                            </a>
-                                        </div>
                                         <div class="card-body text-primary">
                                             <div class="row mb-3">
                                                 <div class="col-4">Pretax Price</div>
@@ -333,11 +324,18 @@
                                                 <span class="col-8 text-right mask-money" id="total-value">0</span>
                                             </div>
                                             <div class="row mt-5">
-                                                <div class="col-12">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="money-gave">
+                                                <div class="col-6">
+                                                    <div class="form-check mt-2">
+                                                        <input type="checkbox" name="money_gave" class="form-check-input" id="money-gave">
                                                         <label class="text-primary">Money gave/transferred</label>
                                                     </div>
+                                                </div>
+                                                <div class="col-6 text-right pr-0">
+                                                    <a title="Click to calculate price." class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover refresh" id="recalculate-price" href="#">
+                                                        <span class="icon">
+                                                            <span class="feather-icon"><i class="bi bi-arrow-repeat"></i></span>
+                                                        </span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -350,9 +348,40 @@
             </div>
             <div class="tab-pane fade" id="tab_plan">
                 <div class="row">
-                    <div class="form-group col-3">
-                        <label class="form-label">{% trans "Label 2" %}</label>
-                        <select class="form-select"></select>
+                    <table id="tab_plan_datatable" class="table nowrap w-100"
+                           data-url-expense-list="{% url 'ExpenseListAPI' %}"
+                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                           data-url-tax-list="{% url 'TaxListAPI' %}"
+                           data-url-unit-price-list="{% url 'ExpenseDetailAPI' '0' %}">
+                        <thead>
+                        <tr>
+                            <th class="text-center" style="width: 2%"></th>
+                            <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
+                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th style="width: 7%">{% trans 'UoM' %}</th>
+                            <th style="width: 6%">{% trans 'Quantity' %}</th>
+                            <th style="width: 14%">{% trans 'Unit price' %}</th>
+                            <th style="width: 10%">{% trans 'Tax' %}</th>
+                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
+                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th style="width: 1%"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <button type="button" class="btn btn-link btn-animated" id="btn-add-row-plan">
+                            <span><span class="icon">
+                                <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
+                                <span>Add new row</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-10">
+                        <h6 id="notify-none-sale-code" class="text-danger text-right mt-2" style="font-style: italic">Quotation/Sale Order is empty!</h6>
                     </div>
                 </div>
             </div>

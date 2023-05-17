@@ -77,7 +77,6 @@ $(document).ready(function () {
             if (data) {
                 console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option></option>`);
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.id === uom_group_id) {
                             if (item.id === uom_mapped_id) {
@@ -232,20 +231,20 @@ $(document).ready(function () {
         let row_count = table_body.find('tr').length;
         let sum_subtotal_price_value = 0;
         let sum_price_after_tax_value = 0;
+        let sum_tax_value = 0;
         for (let i = 1; i <= row_count; i++) {
             let row_id = '#row-' + i.toString();
             let subtotal_price_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price').attr('value'));
             let price_after_tax_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
-            if (!isNaN(subtotal_price_value)) {
+            let tax_value = parseFloat(table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('data-rate')) / 100 * subtotal_price_value;
+            if (!isNaN(subtotal_price_value) && !isNaN(price_after_tax_value) && !isNaN(tax_value)) {
                 sum_subtotal_price_value = sum_subtotal_price_value + subtotal_price_value;
-            }
-            if (!isNaN(price_after_tax_value)) {
                 sum_price_after_tax_value = sum_price_after_tax_value + price_after_tax_value;
+                sum_tax_value = sum_tax_value + tax_value;
             }
         }
-        let taxes_value = sum_price_after_tax_value - sum_subtotal_price_value;
         pretax_div.attr('data-init-money', sum_subtotal_price_value);
-        taxes_div.attr('data-init-money', taxes_value);
+        taxes_div.attr('data-init-money', sum_tax_value);
         total_div.attr('data-init-money', sum_price_after_tax_value);
     }
 
@@ -255,10 +254,13 @@ $(document).ready(function () {
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('quotation_list')) {
                     ele.append(`<option></option>`);
                     resp.data.quotation_list.map(function (item) {
-                        ele.append(`<option data-sale-code-id="` + item.sale_person.id + `" value="` + item.opportunity.id + `">` + item.opportunity.code + ` - ` + item.opportunity.title + `</option>`);
+                        if (item.opportunity.id) {
+                            ele.append(`<option data-sale-code-id="` + item.sale_person.id + `" value="` + item.opportunity.id + `">` + item.opportunity.code + ` - ` + item.opportunity.title + `</option>`);
+                        }
                     })
                 }
             }
@@ -400,8 +402,13 @@ $(document).ready(function () {
     })
 
     $('#sale-code-select-box').on('change', function () {
-        $('#sale-code-select-box option:selected').attr('data-sale-code-id');
-        loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
+        if ($('#sale-code-select-box option:selected').attr('data-sale-code-id')) {
+            $('#notify-none-sale-code').prop('hidden', true);
+            loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
+        }
+        else {
+            $('#notify-none-sale-code').prop('hidden', false);
+        }
     })
 
     $('#supplier-select-box').on('change', function () {
@@ -518,6 +525,36 @@ $(document).ready(function () {
             frm.dataForm['beneficiary'] = null;
         }
 
+        if ($('#tab_line_detail tbody').find('tr').length > 0) {
+            let table_body = $('#tab_line_detail tbody');
+            let row_count = table_body.find('tr').length;
+            let expense_valid_list = [];
+            for (let i = 1; i <= row_count; i++) {
+                let row_id = '#row-' + i.toString();
+                let expense_selected = table_body.find(row_id + ' .expense-select-box option:selected');
+                let subtotal_price_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price').attr('value'));
+                let price_after_tax_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
+                let tax_value = parseFloat(table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('data-rate')) / 100 * subtotal_price_value;
+                if (!isNaN(subtotal_price_value) && !isNaN(price_after_tax_value) && !isNaN(tax_value)) {
+                    expense_valid_list.push({
+                        'expense_id': expense_selected.attr('value'),
+                        'unit_of_measure_id': expense_selected.attr('data-uom-id'),
+                        'quantity': table_body.find(row_id + ' .expense-quantity').val(),
+                        'tax_id': table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('value'),
+                        'unit_price': parseFloat(table_body.find(row_id + ' .expense-unit-price-select-box').attr('value')),
+                        'tax_price': tax_value,
+                        'subtotal_price': subtotal_price_value,
+                        'after_tax_price': price_after_tax_value,
+                    })
+                }
+            }
+            frm.dataForm['expense_valid_list'] = expense_valid_list;
+        }
+
+        frm.dataForm['money_gave'] = false;
+        if ($('#money-gave').is(':checked')) {
+            frm.dataForm['money_gave'] = true;
+        }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

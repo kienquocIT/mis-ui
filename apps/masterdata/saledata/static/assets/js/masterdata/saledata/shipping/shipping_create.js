@@ -121,8 +121,8 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        let fixed_price = $('[name="fixed_price"]').valCurrency()
-        frm.dataForm['fixed_price'] = fixed_price;
+        frm.dataForm['fixed_price'] = $('[name="fixed_price"]').valCurrency();
+        frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
         let is_submit = true;
         let arr_location = []
         let data_location = []

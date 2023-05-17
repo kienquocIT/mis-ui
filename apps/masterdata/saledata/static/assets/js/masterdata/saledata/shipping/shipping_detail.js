@@ -197,6 +197,9 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('shipping')) {
                     $('#inpTitle').val(data.shipping.title);
                     $('#inpMargin').val(data.shipping.margin);
+                    if(data.shipping.is_active === true){
+                        $('#inputActive').prop('checked', true)
+                    }
                     loadCurrency(data.shipping.currency);
                     switch (data.shipping.cost_method) {
                         case 0:
@@ -229,6 +232,8 @@ $(document).ready(function () {
         let is_submit = true;
         let arr_location = []
         let data_location = []
+        frm.dataForm['fixed_price'] = $('[name="fixed_price"]').valCurrency();
+        frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
         switch (frm.dataForm['cost_method']) {
             case "0":
                 frm.dataForm['formula_condition'] = [];
@@ -294,6 +299,8 @@ $(document).ready(function () {
                 frm.dataForm['formula_condition'] = condition;
                 break;
         }
+
+        frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
         frm.dataForm['is_change_condition'] = isChangeCondition;
         if (is_submit) {
             $.fn.callAjax(frm.getUrlDetail(pk), frm.dataMethod, frm.dataForm, csr)

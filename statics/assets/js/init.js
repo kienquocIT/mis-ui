@@ -1281,8 +1281,10 @@ $.fn.extend({
     },
 
     // CURRENCY handler
-    valCurrency: function (returnType = 'string') { // returnType choice in ['string', 'number']
+    valCurrency: function (returnType = null) { // returnType choice in ['string', 'number']
+        if (!returnType) returnType = $(this).attr('data-return-type');
         let result = $(this).attr('value'); // don't change attr('value') to .val() !!!!
+        if (!result) result = '0';
         switch (returnType) {
             case 'string':
                 result = result.toString();

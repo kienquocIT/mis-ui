@@ -21,7 +21,6 @@ $(document).ready(function () {
         } else {
             $('.dimensionControl').hide();
         }
-
     });
 
     $('#check-tab-sale').change(function () {
@@ -348,7 +347,7 @@ $(document).ready(function () {
                     price_list.push(
                         {
                             'price_list_id': $(this).attr('data-id'),
-                            'price_value': null,
+                            'price_value': 0,
                             'is_auto_update': is_auto_update,
                         }
                     )
@@ -368,6 +367,37 @@ $(document).ready(function () {
                 frm.dataForm['price_list'] = null;
                 frm.dataForm['sale_information']['currency_using'] = null;
             }
+            frm.dataForm['sale_information']['measure'] = [];
+            frm.dataForm['sale_information']['length'] = null;
+            frm.dataForm['sale_information']['width'] = null;
+            frm.dataForm['sale_information']['weight'] = null;
+            if ($('#check-tab-inventory').is(':checked') === true) {
+                let inpLength = $('[name="length"]');
+                let inpWidth = $('[name="width"]');
+                let inpHeight = $('[name="height"]');
+
+                frm.dataForm['sale_information']['length'] = inpLength.val() !== '' ? parseFloat(inpLength.val()) : null;
+                frm.dataForm['sale_information']['width'] = inpWidth.val() !== '' ? parseFloat(inpWidth.val()) : null;
+                frm.dataForm['sale_information']['height'] = inpHeight.val() !== '' ? parseFloat(inpHeight.val()) : null;
+
+                let measurementList = []
+
+                let inpVolume = $('[name="volume"]');
+                let inpWeight = $('[name="weight"]');
+                if (inpVolume.val() !== '') {
+                    measurementList.push({
+                        'unit': inpVolume.attr('data-id'),
+                        'value': parseFloat(inpVolume.val())
+                    })
+                }
+                if (inpWeight.val() !== '') {
+                    measurementList.push({
+                        'unit': inpWeight.attr('data-id'),
+                        'value': parseFloat(inpWeight.val())
+                    })
+                }
+                frm.dataForm['sale_information']['measure'] = measurementList;
+            }
         } else {
             delete frm.dataForm['sale_information']
         }
@@ -382,7 +412,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })
@@ -451,10 +481,29 @@ $(document).ready(function () {
         inpVolumeEle.val(volume);
     });
 
-    $(document).on('click', '.btnClear', function (){
+    $(document).on('click', '.btnClear', function () {
         $('[name="length"]').val('');
         $('[name="width"]').val('');
         $('[name="height"]').val('');
         $('[name="volume"]').val('');
     })
+
+
+    const item_unit_list = JSON.parse($('#id-unit-list').text());
+    const item_unit_dict = item_unit_list.reduce((obj, item) => {
+        obj[item.title] = item;
+        return obj;
+    }, {});
+
+    function loadBaseItemUnit() {
+        let eleVolume = $('#divVolume');
+        let eleWeight = $('#divWeight');
+
+        eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
+        eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
+        eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
+        eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
+    }
+
+    loadBaseItemUnit()
 })

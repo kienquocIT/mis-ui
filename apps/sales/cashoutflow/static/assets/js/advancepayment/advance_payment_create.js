@@ -1,5 +1,8 @@
 $(document).ready(function () {
     let plan_db = $('#tab_plan_datatable_div').html();
+    const sale_order_list = JSON.parse($('#sale_order_list').text());
+    const quotation_list = JSON.parse($('#quotation_list').text());
+    const expense_list = JSON.parse($('#expense_list').text());
     $(document).on("click", '#btn-add-row-line-detail', function () {
         let table_body = $('#tab_line_detail tbody');
         table_body.append(`<tr id="" class="row-number">
@@ -51,23 +54,14 @@ $(document).ready(function () {
         let ele = $('#' + row_id + ' .expense-select-box');
         ele.select2();
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-expense-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                console.log(data)
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.expense_list.map(function (item) {
-                        let tax_code_id = '';
-                        if (item.general_information.tax_code) {
-                            tax_code_id = item.general_information.tax_code.id;
-                        }
-                        ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
-                    })
-                }
+        ele.append(`<option></option>`);
+        expense_list.map(function (item) {
+            let tax_code_id = '';
+            if (item.general_information.tax_code) {
+                tax_code_id = item.general_information.tax_code.id;
             }
-        }, (errs) => {
-        },)
+            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+        })
     }
 
     function loadExpenseUomList(row_id, uom_group_id, uom_mapped_id) {
@@ -250,24 +244,53 @@ $(document).ready(function () {
     }
 
     function loadSaleCode() {
-        let ele = $('#sale-code-select-box');
+        let ele = $('#sale-code-select-box2');
         ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                console.log(data)
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('quotation_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.quotation_list.map(function (item) {
-                        if (item.opportunity.id) {
-                            ele.append(`<option data-quotation-id="` + item.id + `" data-sale-code-id="` + item.sale_person.id + `" value="` + item.opportunity.id + `">` + item.opportunity.code + ` - ` + item.opportunity.title + `</option>`);
-                        }
-                    })
-                }
+
+        ele.append(`<optgroup label="Sale Order" class="text-primary">`)
+        sale_order_list.map(function (item) {
+            if (item.opportunity.id) {
+                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">` + item.opportunity.code + `</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
             }
-        }, (errs) => {
-        },)
+            else {
+                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">SALE.CODE.XXXX</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+            }
+        })
+        ele.append(`</optgroup>`)
+        ele.append(`<optgroup label="Quotation" class="text-primary">`)
+        quotation_list.map(function (item) {
+            if (item.opportunity.id) {
+                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">` + item.opportunity.code + `</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+            }
+            else {
+                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">SALE.CODE.XXXX</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+            }
+        })
+        ele.append(`</optgroup>`)
+
+        // ele.append(`<option></option>`);
+        // ele.append(`<optgroup label="Sale Order">`);
+        // sale_order_list.map(function (item) {
+        //     if (item.opportunity.id) {
+        //         ele.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+        //     }
+        //     else {
+        //         ele.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(SALE.CODE) ` + item.title +`</option>`);
+        //     }
+        // })
+        // ele.append(`</optgroup>`);
+        // ele.append(`<optgroup label="Quotation">`);
+        // quotation_list.map(function (item) {
+        //     if (item.opportunity.id) {
+        //         ele.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+        //     }
+        //     else {
+        //         ele.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(QUOTATION.CODE) ` + item.title +`</option>`);
+        //     }
+        // })
+        // ele.append(`</optgroup>`);
     }
+
 
     function loadCreator() {
         let ele = $('#creator-select-box');
@@ -403,10 +426,15 @@ $(document).ready(function () {
     })
 
     $('#sale-code-select-box').on('change', function () {
-        if ($('#sale-code-select-box option:selected').attr('data-sale-code-id')) {
+        if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
             $('#notify-none-sale-code').prop('hidden', true);
-            loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
-            loadQuotationExpense($('#sale-code-select-box option:selected').attr('data-quotation-id'));
+            loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));
+            if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
+                loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('value'));
+            }
+            if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
+                loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
+            }
             $('#tab_plan_datatable').prop('hidden', false);
         }
         else {
@@ -582,6 +610,7 @@ $(document).ready(function () {
         $('#tab_plan_datatable_div').html(plan_db);
         let dtb = $('#tab_plan_datatable');
         let frm = new SetupFormSubmit(dtb);
+        frm.dataUrl = dtb.attr('data-url-quotation');
         dtb.DataTableDefault({
             dom: '',
             ajax: {
@@ -623,7 +652,96 @@ $(document).ready(function () {
                     data: 'plan_after_tax',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.plan_after_tax + `</span>`
+                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                    }
+                }
+            ],
+        });
+    }
+
+    function loadSaleOrderExpense(filter_sale_order) {
+        $('#tab_plan_datatable').remove();
+        $('#tab_plan_datatable_div').html(plan_db);
+        let dtb = $('#tab_plan_datatable');
+        let frm = new SetupFormSubmit(dtb);
+        frm.dataUrl = dtb.attr('data-url-sale-order');
+        dtb.DataTableDefault({
+            dom: '',
+            ajax: {
+                url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        console.log(data)
+                        return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    render: (data, type, row, meta) => {
+                        return ''
+                    }
+                },
+                {
+                    data: 'expense_title',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
+                    }
+                },
+                {
+                    data: 'tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        if (row.tax.title) {
+                            return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    data: 'plan_after_tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {

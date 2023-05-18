@@ -45,6 +45,9 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.sale_order_list | json_script:"sale_order_list" }}
+    {{ data.data.quotation_list | json_script:"quotation_list" }}
+    {{ data.data.expense_list | json_script:"expense_list" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url="{% url "AdvancePaymentListAPI" %}">
         {% csrf_token %}
@@ -81,8 +84,20 @@
                         </div>
                         <div class="col-7">
                             <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url="{% url 'QuotationListAPI' %}" disabled>
+                                    data-url-quotation="{% url 'QuotationListAPI' %}"
+                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-3 col-form-label">Sale/Purchase code</label>
+                        <div class="col-9">
+                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" readonly>
+                            <div class="dropdown-menu dropdown-bordered" style="width: 100%" id="sale-code-select-box2">
+                                <a class="dropdown-item" href="#"><span>A</span></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#"><span>B</span></a>
+                            </div>
                         </div>
                     </div>
                     <div class="row form-group mb-3">
@@ -349,7 +364,8 @@
             <div class="tab-pane fade mb-25" id="tab_plan">
                 <div class="row" id="tab_plan_datatable_div">
                     <table id="tab_plan_datatable" class="table nowrap w-100" data-method="GET"
-                           data-url="{% url 'QuotationExpenseListAPI' %}">
+                           data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
+                           data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>

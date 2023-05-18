@@ -141,14 +141,14 @@ $(document).ready(function () {
                 if (dataTree[i].item.auto_update === true) {
                     ele.find('ul').append(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
                                     value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `" disabled>
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" readonly>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -157,14 +157,14 @@ $(document).ready(function () {
                 } else {
                     ele.find('ul').append(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
                                     value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -175,14 +175,14 @@ $(document).ready(function () {
                 if (dataTree[i].item.is_default === true) {
                     ele.find('ul').prepend(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input data-is-default="1" class="form-check-input" type="checkbox"
                                     value="option1" checked data-check="check-` + count + `" disabled data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label required">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-is-default="1" data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="">
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -191,14 +191,14 @@ $(document).ready(function () {
                 } else {
                     ele.find('ul').append(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input class="form-check-input" type="checkbox"
                                     value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -366,11 +366,11 @@ $(document).ready(function () {
 
 
                             $('.inp-can-edit').focusin(function () {
-                                $(this).find('input[class=form-control]').prop('readonly', false);
+                                $(this).find('input.form-control').prop('readonly', false);
                                 $(this).find('select').removeAttr('readonly');
                             });
                             $('.inp-can-edit').focusout(function () {
-                                $(this).find('input[class=form-control]').prop('readonly', true);
+                                $(this).find('input.form-control').prop('readonly', true);
                                 $(this).find('select').attr('readonly', 'readonly');
                             });
                             $('.inp-can-edit').on('change', function () {

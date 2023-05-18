@@ -230,6 +230,13 @@ $(function () {
             if ($(this).hasClass('table-row-item')) {
                 loadDataClass.loadDataProductSelect($(this));
             }
+            // Clear table COST if item or quantity change
+            if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                tableCost.DataTable().clear().draw();
+                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
+                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
+                document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            }
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
@@ -319,14 +326,8 @@ $(function () {
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
         $('#quotation-tabs').on('click', '.quotation-cost', function (e) {
-            let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
-            if (!tableEmpty) {
-                // clear table
-                let tableCost = $('#datable-quotation-create-cost');
-                tableCost.DataTable().clear();
-                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-                document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            let tableEmpty = tableCost[0].querySelector('.dataTables_empty');
+            if (tableEmpty) {
                 // copy data
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                     let valueProduct = "";

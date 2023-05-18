@@ -1307,23 +1307,26 @@ class dataTableHandle {
         });
     }
 
-    loadTableQuotationPromotion(promotion_id) {
+    loadTableQuotationPromotion(promotion_id, customer_id = null) {
         let self = this;
         let jqueryId = '#' + promotion_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('promotion_list') && Array.isArray(data.promotion_list)) {
-                        $('#datable-quotation-create-promotion').DataTable().destroy();
-                        self.dataTablePromotion(data.promotion_list, 'datable-quotation-create-promotion');
+        if (customer_id) {
+            let data_filter = {'customer': customer_id};
+            $.fn.callAjax(url, method, data_filter).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('promotion_list') && Array.isArray(data.promotion_list)) {
+                            $('#datable-quotation-create-promotion').DataTable().destroy();
+                            self.dataTablePromotion(data.promotion_list, 'datable-quotation-create-promotion');
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 
     dataTableCopyQuotation(data, table_id) {

@@ -788,8 +788,9 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
-                        return `<div class="row">
+                        if (!row.hasOwnProperty('is_promotion')) {
+                            let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
+                            return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
@@ -815,26 +816,50 @@ class dataTableHandle {
                                     </span>
                                 </div>
                             </div>`;
+                        } else {
+                        return `<div class="row">
+                                    <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product.title}" disabled>
+                                    </span>
+                                </div>
+                                </div>`;
+                        }
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (!row.hasOwnProperty('is_promotion')) {
+                            return `<div class="row">
                                 <input type="text" class="form-control table-row-description" value="${row.product_description}">
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <input type="text" class="form-control table-row-description disabled-custom-show" value="${row.product_description}" disabled>
+                                    </div>`;
+                        }
                     }
                 },
                 {
                     targets: 3,
                     width: "1%",
                     render: (data, type, row) => {
-                        let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
-                        return `<div class="row">
-                                <select class="form-select table-row-uom" id="${selectUOMID}" required>
-                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
-                                </select>
-                            </div>`;
+                        if (!row.hasOwnProperty('is_promotion')) {
+                            let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
+                            return `<div class="row">
+                                        <select class="form-select table-row-uom" id="${selectUOMID}" required>
+                                            <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                                        </select>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <select class="form-select table-row-uom disabled-custom-show" required disabled>
+                                            <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                                        </select>
+                                    </div>`;
+                        }
+
                     },
                 },
                 {
@@ -1300,7 +1325,8 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-primary">Apply</button>`;
+                        return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
+                                <input type="hidden" class="table-row-data" value="${row}">`;
                     },
                 }
             ],
@@ -1314,14 +1340,17 @@ class dataTableHandle {
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (customer_id) {
-            let data_filter = {'customer': customer_id};
+            let data_filter = {
+                'customer_type': 1,
+                'customers_map_promotion__customer': customer_id
+            };
             $.fn.callAjax(url, method, data_filter).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('promotion_list') && Array.isArray(data.promotion_list)) {
+                        if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
                             $('#datable-quotation-create-promotion').DataTable().destroy();
-                            self.dataTablePromotion(data.promotion_list, 'datable-quotation-create-promotion');
+                            self.dataTablePromotion(data.promotion_check_list, 'datable-quotation-create-promotion');
                         }
                     }
                 }
@@ -1644,18 +1673,8 @@ class calculateCaseHandle {
     deleteRow(currentRow, tableBody, table) {
         let self = this;
         table.DataTable().row(currentRow).remove().draw();
-        let order = 0;
-        if (tableBody.rows.length === 0) {
-            table.DataTable().clear();
-        } else {
-            for (let idx = 0; idx < tableBody.rows.length; idx++) {
-                order++;
-                let productOrder = tableBody.rows[idx].querySelector('.table-row-order');
-                if (productOrder) {
-                    productOrder.innerHTML = order;
-                }
-            }
-        }
+        // ReOrder STT
+        ReOrderSTT(tableBody, table)
     }
 
     loadProductCopy(dataCopy, table, is_product = false, is_expense = false) {
@@ -2054,5 +2073,36 @@ class submitHandle {
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
+    }
+}
+
+// COMMON FUNCTIONS
+function ReOrderSTT(tableBody, table) {
+    let order = 0;
+    if (tableBody.rows.length === 0) {
+        table.DataTable().clear();
+    } else {
+        for (let idx = 0; idx < tableBody.rows.length; idx++) {
+            order++;
+            let productOrder = tableBody.rows[idx].querySelector('.table-row-order');
+            if (productOrder) {
+                productOrder.innerHTML = order;
+            }
+        }
+    }
+}
+
+function CheckAvailablePromotion(data_promotion) {
+    let tableProd = document.getElementById('#datable-quotation-create-product');
+    if (data_promotion.is_discount === true) {
+        let conditionCheck = data_promotion.discount_method;
+        // discount on specific product
+        if (conditionCheck.is_on_product === true) {
+            let prodID = conditionCheck.product_selected.id;
+            if (conditionCheck.percent_fix_amount === true) {
+                let percentValue = conditionCheck.percent_value;
+                let maxPercentValue = conditionCheck.max_percent_value;
+            }
+        }
     }
 }

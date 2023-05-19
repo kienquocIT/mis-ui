@@ -9,7 +9,7 @@ from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REV
 from django.utils.translation import gettext_lazy as _
 
 __all__ = ['PromotionList', 'PromotionCreate', 'PromotionListAPI', 'PromotionCreateAPI',
-           'PromotionDetail', 'PromotionDetailAPI']
+           'PromotionDetail', 'PromotionDetailAPI', 'PromotionCheckListAPI']
 
 
 class PromotionList(View):
@@ -123,4 +123,20 @@ class PromotionDetailAPI(APIView):
         elif req.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class PromotionCheckListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROMOTION_CHECK_LIST).get(data)
+        if resp.state:
+            return {'promotion_check_list': resp.result}, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 

@@ -14,8 +14,8 @@ $(document).ready(function () {
             divNotFixed.addClass('hidden');
         } else {
             divNotFixed.removeClass('hidden');
-            let text = $('#chooseUnit').find('option:selected').text();
-            $(this).closest('.formulaCondition').find('.displayUoMGroup').text(text);
+            let text = $(this).closest('.line-condition').find('.chooseUnit').find('option:selected').text();
+            $(this).closest('.line-condition').find('.displayUoMGroup').text(text);
         }
     })
 
@@ -34,21 +34,24 @@ $(document).ready(function () {
     }
 
     //onchange select box choose Unit Of Measure Group
-    $(document).on('change', '#chooseUnit', function () {
-        let ele = $('.spanUnit');
-        let inpUnit = $('.inpUnit');
+    $(document).on('change', '.chooseUnit', function () {
+        let eleParent = $(this).closest('.line-condition')
+        let ele = eleParent.find('.spanUnit');
+        let inpUnit = eleParent.find('.inpUnit');
         inpUnit.val($(this).find('option:selected').text());
-        $('.displayUoMGroup').text($(this).find('option:selected').text());
+        eleParent.find('.displayUoMGroup').text($(this).find('option:selected').text());
 
-        let eleThreshold = $('.inpThreshold')
+        let eleThreshold = eleParent.find('.inpThreshold')
         eleThreshold.attr('value', '')
         ele.text(item_unit_dict[$(this).val()].measure)
-        removeClass(eleThreshold)
         switch ($(this).find('option:selected').text()) {
             case 'price':
                 eleThreshold.addClass('mask-money');
                 eleThreshold.attr('data-return-type', 'number');
                 eleThreshold.attr('type', 'text');
+                break;
+            default:
+                removeClass(eleThreshold)
                 break;
         }
         $.fn.initMaskMoney2();
@@ -75,16 +78,19 @@ $(document).ready(function () {
 
     // Add new Formula for condition
     $(document).on('click', '.btnAddFormula', function () {
-        $('.inpUnit').attr('value', $('#chooseUnit').find('option:selected').text());
         let html = $('#ifInCondition').html();
         $(this).closest('.line-condition').append(html);
+        let eleParent = $(this).closest('.line-condition')
+        let text_unit = eleParent.find('.chooseUnit').find('option:selected').text();
+        if (text_unit !== '') {
+            eleParent.find('.inpUnit').attr('value', text_unit);
+            eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
+        }
         $(this).remove();
-
     })
 
     //Add new condition
     $(document).on('click', '#btnAddCondition', function () {
-        $('.inpUnit').attr('value', $('#chooseUnit').find('option:selected').text());
         let html = $('#newCondition').html();
         $('.condition-content').append(html);
         $('.condition-content').children().last().find('.chooseCity').select2();
@@ -121,8 +127,8 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        let fixed_price = $('[name="fixed_price"]').valCurrency()
-        frm.dataForm['fixed_price'] = fixed_price;
+        frm.dataForm['fixed_price'] = $('[name="fixed_price"]').valCurrency();
+        frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
         let is_submit = true;
         let arr_location = []
         let data_location = []
@@ -143,17 +149,18 @@ $(document).ready(function () {
                     } else {
                         let ele_formula = $(this).find('.formulaCondition');
                         let formula = []
+                        let chooseUnit = $(this).find(".chooseUnit");
                         ele_formula.each(function () {
                             let amount_extra = 0;
                             let threshold = $(this).find(".inpThreshold").val();
                             if (!$(this).find('.cbFixedPrice').is(':checked')) {
                                 amount_extra = $(this).find('.inpAmountExtra').valCurrency();
                             }
-                            if ($("#chooseUnit").find('option:selected').text() === 'price'){
+                            if (chooseUnit.find('option:selected').text() === 'price') {
                                 threshold = $(this).find(".inpThreshold").valCurrency();
                             }
                             let data_formula = {
-                                'unit': $("#chooseUnit").val(),
+                                'unit': chooseUnit.val(),
                                 'comparison_operators': $(this).find(".chooseOperator").val(),
                                 'threshold': threshold,
                                 'amount_condition': $(this).find('.inpAmount').valCurrency(),

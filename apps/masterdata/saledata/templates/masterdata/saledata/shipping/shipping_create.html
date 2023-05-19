@@ -50,6 +50,12 @@
                         data-url="{% url "CurrencyListAPI" %}" name="currency"></select>
             </div>
         </div>
+        <div class="form-group">
+            <div class="form-check form-switch mb-1">
+                <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active">
+                <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
+            </div>
+        </div>
         <div class="row mt-3">
             <h5>{% trans "Cost Method" %}</h5>
         </div>
@@ -77,7 +83,8 @@
         <div class="row mt-3">
             <div class=" col-4 form-group">
                 <label class="form-label">{% trans "Amount" %}</label>
-                <input class="form-control mask-money" type="text" data-return-type="number" placeholder="Input Amount" id="inputAmount"
+                <input class="form-control mask-money" type="text" data-return-type="number" placeholder="Input Amount"
+                       id="inputAmount"
                        name="fixed_price" value="">
             </div>
         </div>
@@ -102,7 +109,7 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select" id="chooseUnit">
+                        <select class="form-select chooseUnit">
                             <option></option>
                             {% for item in data.unit %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
@@ -205,7 +212,8 @@
                             <input type="checkbox" class="form-check-input cbFixedPrice" checked>
                             <label class="form-label">{% trans "Fixed price" %}</label>
                         </div>
-                        <input type="text" class="form-control inpAmount mask-money" name="amount_condition" data-return-type="number">
+                        <input type="text" class="form-control inpAmount mask-money" name="amount_condition"
+                               data-return-type="number">
                     </div>
                     <div class="col-4 mt-5 hidden divNotFixed">
                         <div class="input-group">
@@ -255,7 +263,12 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <input class="form-control inpUnit" readonly type="text" value="">
+                        <select class="form-select chooseUnit">
+                            <option></option>
+                            {% for item in data.unit %}
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>
@@ -289,7 +302,8 @@
                                 <input type="checkbox" class="form-check-input cbFixedPrice" checked>
                                 <label class="form-label">{% trans "Fixed price" %}</label>
                             </div>
-                            <input type="text" class="form-control inpAmount mask-money" data-return-type="number" name="amount_condition">
+                            <input type="text" class="form-control inpAmount mask-money" data-return-type="number"
+                                   name="amount_condition">
                         </div>
                         <div class="col-4 mt-5 hidden divNotFixed">
                             <div class="input-group">

@@ -116,6 +116,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # WareHouse
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
 
+    # Transition Data Config
+    DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
+    DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking'), 'OrderPickingList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -301,5 +305,15 @@ class BreadcrumbView:
 
     # Warehouse
     WAREHOUSE_LIST_PAGE = [
-        BreadcrumbItem.WAREHOUSE_LIST_PAGE
+        BreadcrumbItem.WAREHOUSE_LIST_PAGE,
+    ]
+
+    # Delivery
+    ORDER_PICKING_LIST_PAGE = [
+        BreadcrumbItem.DELIVERY_PICKING_LIST_PAGE,
+    ]
+
+    # Transition Data Config
+    DELIVERY_CONFIG = [
+        BreadcrumbItem.DELIVERY_CONFIG_PAGE
     ]

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    {#        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">#}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row mb-3">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <div class="form-group">
+                <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
+                <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly disabled/>
+                <div class="form-text">Sale Order đó nè</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+            <div class="form-group">
+                <label for="inputEstimateDeliveryDate" class="form-label">{% trans 'Estimate Delivery Date' %}</label>
+                <input
+                        type="text" name="estimate_delivery_date" id="inputEstimateDeliveryDate"
+                        class="form-control date-picker"
+                />
+                <div class="form-text">Ngày dự tính giao hàng đó nè</div>
+            </div>
+        </div>
+        <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
+            <div class="form-group">
+                <label for="inputWareHouse" class="form-label">{% trans 'WareHouse' %}</label>
+                <select class="form-control select2" name="warehouse_id" id="inputWareHouse">
+                    <option value="1">1 nè</option>
+                    <option value="2">2 nè</option>
+                    <option value="3">3 nè</option>
+                </select>
+                <div class="form-text">Kho hàng đó nè</div>
+            </div>
+        </div>
+        <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
+            <div class="form-group">
+                <label for="inputWareHouse" class="form-label">{% trans 'Status' %}</label>
+                <input
+                        type="text" class="form-control" name="inputState" id="inputState" readonly disabled
+                        value="Đang đợi á"
+                />
+                <div class="form-text">Kho hàng đó nè</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+            <div class="form-group">
+                <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
+                <textarea type="text" class="form-control" name="inputToLocation" id="inputToLocation"></textarea>
+                <div class="form-text">Gửi tới đâu đó nè</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+            <div class="form-group">
+                <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
+                <textarea class="form-control" name="inputRemarks" id="inputRemarks"></textarea>
+                <div class="form-text">Ghi chú của picking đó nè</div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <ul class="nav nav-light nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                    <span class="nav-link-text">{% trans 'Detail' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_detail">
+                {% csrf_token %}
+                <table
+                        id="dtbPickingProductList"
+                        class="table nowrap w-100 mb-5"
+                        data-method="GET"
+                        data-url="{% url "OrderPickingListAPI" %}"
+                        data-url-detail="{% url 'OrderPickingDetail' pk=1 %}"
+                >
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            {% trans 'Product' %}
+                            <i
+                                    class="fas fa-info-circle icon-info"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="{% trans 'Press row here to open detail page.' %}"
+                            ></i>
+                        </th>
+                        <th>{% trans 'UoM' %}</th>
+                        <th>{% trans 'Total' %}</th>
+                        <th>{% trans 'Picked Before' %}</th>
+                        <th>{% trans 'Remain' %}</th>
+                        <th>
+                            {% trans 'Done' %}
+                            <input type="checkbox" id="idxDoneAll"/>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="hidden">
+        <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script>
+        $('input[type=text].date-picker').dateRangePickerDefault();
+
+        $(document).ready(function () {
+            $.fn.callAjax(
+                $('#idxUrlPickingDetail').text(),
+                'GET',
+                {},
+                true,
+            ).then(
+                (resp) => {
+                    console.log('resp: ', resp);
+                    let data = $.fn.switcherResp(resp);
+
+                    if (data && data.hasOwnProperty('picking_detail') && data.picking_detail.hasOwnProperty('sub') && data.picking_detail.sub.hasOwnProperty('products')) {
+                        loadProductList(
+                            data.picking_detail.sub['products']
+                        );
+                    }
+                }
+            )
+
+            function loadProductList(data) {
+                console.log('data: ', data);
+                $('#dtbPickingProductList').DataTableDefault({
+                    rowIdx: true,
+                    visibleSearchField: false,
+                    visiblePaging: false,
+                    data: data,
+                    columns: [
+                        {
+                            render: (data, type, row, meta) => {
+                                return ``;
+                            }
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                return row?.['product_data']?.['title'];
+                            }
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                return row?.['uom_data']?.['title'];
+                            }
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                return row?.['picked_quantity'];
+                            }
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                return row?.['picked_quantity_before'];
+                            }
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                return row?.['remaining_quantity'];
+                            }
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                return 0;
+                            }
+                        },
+                    ]
+                });
+            }
+        });
+    </script>
+{% endblock %}

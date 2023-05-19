@@ -418,10 +418,12 @@ var horizontalMenu = function () {
             $(this).removeAttr("style"), liTotalWidth += $(this).outerWidth(!0), liCount++
         }), !(window.innerWidth < 1199)) {
             var visibleLi = parseInt(horMenuRect.width / (liTotalWidth / liCount)) - 2;
-            if ((visibleLi -= extraLiHide) < liCount) for (var horWrapper = function (horMenu) {
-                horMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='svg-icon'><svg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-dots' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'> <path stroke='none' d='M0 0h24v24H0z' fill='none'></path> <circle cx='5' cy='12' r='1'></circle> <circle cx='12' cy='12' r='1'></circle> <circle cx='19' cy='12' r='1'></circle></svg></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
-                return horMenu.children("ul").children("li.more-nav-item")
-            }(horMenu), i = visibleLi; i < liCount; i++) {
+            if ((visibleLi -= extraLiHide) < liCount) for (
+                var horWrapper = function (horMenu) {
+                    horMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='svg-icon'><svg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-dots' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'> <path stroke='none' d='M0 0h24v24H0z' fill='none'></path> <circle cx='5' cy='12' r='1'></circle> <circle cx='12' cy='12' r='1'></circle> <circle cx='19' cy='12' r='1'></circle></svg></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
+                    return horMenu.children("ul").children("li.more-nav-item")
+                }(horMenu), i = visibleLi; i < liCount; i++
+            ) {
                 var currentLi = horMenu.children("ul").children("li").eq(i), clone = currentLi.clone();
                 horWrapper.children("ul").append(clone), currentLi.hide();
                 if ($('.feather-icon').length > 0) feather.replace();
@@ -455,10 +457,12 @@ var navheadMenu = function () {
             $(this).removeAttr("style"), liTotalWidth += $(this).outerWidth(!0), liCount++
         }), !(window.innerWidth < 1199)) {
             var visibleLi = parseInt(navbarMenuRect.width / (liTotalWidth / liCount)) - 2;
-            if ((visibleLi -= extraLiHide) < liCount) for (var navWrapper = function (navbarMenu) {
-                navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
-                return navbarMenu.children("ul").children("li.more-nav-item")
-            }(navbarMenu), i = visibleLi; i < liCount; i++) {
+            if ((visibleLi -= extraLiHide) < liCount) for (
+                var navWrapper = function (navbarMenu) {
+                    navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
+                    return navbarMenu.children("ul").children("li.more-nav-item")
+                }(navbarMenu), i = visibleLi; i < liCount; i++
+            ) {
                 var currentLi = navbarMenu.children("ul").children("li").eq(i), clone = currentLi.clone();
                 navWrapper.children("ul").append(clone), currentLi.hide();
                 if ($('.feather-icon').length > 0) feather.replace();
@@ -1092,18 +1096,90 @@ $.fn.extend({
             return item ? item.charAt(0) : ""
         }).join("");
     },
-    DataTableDefault: function (opts, rowIdx = true) {
-        let reloadCurrency = opts?.['reloadCurrency'];
-        if (reloadCurrency !== undefined) {
-            delete opts['reloadCurrency'];
+    isBoolean(value) {
+        return typeof value === 'boolean';
+    },
+    _parseDomDtl: function (opts) {
+        let domDTL = "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        let utilsDom = {
+            // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
+            // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
+            // "t": Đại diện cho bảng (table) chứa dữ liệu.
+            // "i": Đại diện cho thông tin về số hàng hiển thị và tổng số hàng.
+            // "p": Đại diện cho thanh phân trang (pagination).
+            // "r": Đại diện cho sắp xếp (ordering) của các cột.
+            // "s": Đại diện cho hộp chọn số hàng hiển thị.
+            visiblePaging: true, // "l"
+            visibleSearchField: true,   // "f"
+            visibleDisplayRowTotal: true,   // "i"
+            visiblePagination: true,   // "p"
+            visibleOrder: true,   // "r"
+            visibleRowQuantity: true,   // "s"
         }
-        let defaultConfig = {
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePaging')) {
+            if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
+            if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
+            delete opts['visiblePaging']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleSearchField')) {
+            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
+            if (utilsDom.visibleSearchField === false) domDTL = domDTL.replace('f>', '>');
+            delete opts['visibleSearchField']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
+            if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
+            if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
+            delete opts['visibleDisplayRowTotal']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePagination')) {
+            if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
+            if (utilsDom.visiblePagination === false) domDTL = domDTL.replace('p>', '>');
+            delete opts['visiblePagination']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleOrder')) {
+            if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
+            if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
+            delete opts['visibleOrder']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleRowQuantity')) {
+            if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
+            if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
+            delete opts['visibleRowQuantity']
+        }
+
+        return [opts, domDTL];
+    },
+    parseDtlOpts: function (opts) {
+        // init table
+        let [parsedOpts, domDTL] = $.fn._parseDomDtl(opts);
+
+        // reload currency in table
+        let reloadCurrency = opts?.['reloadCurrency'];
+        if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
+        reloadCurrency = $.fn.isBoolean(reloadCurrency)? reloadCurrency: false;
+
+        // row callback |  rowIdx = true
+        let rowIdx = opts?.['rowIdx'];
+        if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
+
+        // ajax
+        if (opts?.['ajax']) delete opts['data'];
+
+        // return data
+        return {
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
             ordering: false,
             paginate: true,
             pageLength: 10,
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            dom: domDTL,
             language: {
                 url: $('#msg-datatable-language-config').text().trim(),
             },
@@ -1114,11 +1190,16 @@ $.fn.extend({
                     $.fn.initMaskMoney2();
                 }
             },
-            data: [], ...opts
+            rowCallback: function (row, data, index){
+                if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
+            },
+            data: [],
+            ...parsedOpts,
         }
-        if (opts?.['ajax']) delete defaultConfig['data'];
-        if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
-        let tbl = $(this).DataTable(defaultConfig);
+    },
+    DataTableDefault: function (opts) {
+        // init DataTable
+        let tbl = $(this).DataTable($.fn.parseDtlOpts(opts));
         tbl.on('init.dt', function () {
             let minerGroup = $(this).closest('.waiter-miner-group');
             if (minerGroup.length > 0) {
@@ -1138,6 +1219,22 @@ $.fn.extend({
         return array.reduce(function (acc, currentValue) {
             return acc + currentValue;
         }, 0);
+    },
+
+    // default components
+    dateRangePickerDefault: function (opts){
+        $(this).daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            startDate: moment().startOf('hour'),
+            showDropdowns: true,
+            minYear: 1901,
+            "cancelClass": "btn-secondary",
+            locale: {
+                format: 'MM/DD/YYYY hh:mm A'
+            },
+            ...(opts && typeof opts === 'object'  ? opts : {})
+        });
     },
 
     // notify
@@ -1170,15 +1267,21 @@ $.fn.extend({
                 exit: 'animated bounceOutUp'
             },
             type: "dismissible alert-primary",
+            z_index: 2147483647, /* Maximum index */
         }
-        if (typeAlert === 'success') {
-            alert_config['type'] = "dismissible alert-success";
-        } else if (typeAlert === 'failure') {
-            alert_config['type'] = "dismissible alert-danger";
-        } else if (typeAlert === 'warning') {
-            alert_config['type'] = "dismissible alert-warning";
-        } else if (typeAlert === 'info') {
-            alert_config['type'] = "dismissible alert-info";
+        switch (typeAlert) {
+            case 'success':
+                alert_config['type'] = "dismissible alert-success";
+                break
+            case 'failure':
+                alert_config['type'] = "dismissible alert-danger";
+                break
+            case 'warning':
+                alert_config['type'] = "dismissible alert-warning";
+                break
+            case 'info':
+                alert_config['type'] = "dismissible alert-info";
+                break
         }
         $.notify(msg, alert_config);
     },
@@ -1386,7 +1489,7 @@ $.fn.extend({
             }
         }, timeout);
     },
-    callAjax: function (url, method, data, headers = {}) {
+    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}) {
 
         return new Promise(function (resolve, reject) {
             let ctx = {
@@ -1395,7 +1498,7 @@ $.fn.extend({
                 dataType: 'json',
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                headers: {"X-CSRFToken": headers},
+                headers: {"X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers},
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
                     if (data) resolve(rest);
@@ -1686,7 +1789,8 @@ var DataTableAction = {
                                 {
                                     description: res?.data?.message ? res.data.message : 'Delete item successfully'
                                 },
-                                'success')
+                                'success'
+                            )
                         }
                     })
             }

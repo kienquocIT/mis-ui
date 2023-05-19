@@ -181,3 +181,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
+
+    # transition data config
+    DELIVERY_CONFIG = StringUrl('delivery/config')
+    DELIVERY_PICKING_LIST = StringUrl('delivery/picking')
+    DELIVERY_PICKING_DETAIL = StringUrl('delivery/picking/{pk}')
+    DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')

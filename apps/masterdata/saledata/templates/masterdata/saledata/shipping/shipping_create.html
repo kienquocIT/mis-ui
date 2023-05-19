@@ -109,7 +109,7 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select" id="chooseUnit">
+                        <select class="form-select chooseUnit">
                             <option></option>
                             {% for item in data.unit %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
@@ -263,7 +263,12 @@
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <input class="form-control inpUnit" readonly type="text" value="">
+                        <select class="form-select chooseUnit">
+                            <option></option>
+                            {% for item in data.unit %}
+                                <option value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>

@@ -3,6 +3,12 @@ $(document).ready(function () {
     const sale_order_list = JSON.parse($('#sale_order_list').text());
     const quotation_list = JSON.parse($('#quotation_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
+    const account_list = JSON.parse($('#account_list').text());
+    const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
+        obj[item.id] = item.bank_accounts_information;
+        return obj;
+    }, {});
+    console.log(account_bank_accounts_information_dict)
     $(document).on("click", '#btn-add-row-line-detail', function () {
         let table_body = $('#tab_line_detail tbody');
         table_body.append(`<tr id="" class="row-number">
@@ -70,7 +76,6 @@ $(document).ready(function () {
         $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-uom-list'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.id === uom_group_id) {
@@ -94,7 +99,6 @@ $(document).ready(function () {
         $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-tax-list'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     ele.append(`<option data-rate="0" selected></option>`);
                     resp.data.tax_list.map(function (item) {
@@ -112,7 +116,6 @@ $(document).ready(function () {
         $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + expense_item_id), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
                     let primary_currency = 'VND';
                     resp.data.expense.general_information.price_list.map(function (item) {
@@ -246,51 +249,76 @@ $(document).ready(function () {
     function loadSaleCode() {
         let ele = $('#sale-code-select-box2');
         ele.html('');
-
+        let sale_not_opp = '';
+        let quotation_not_opp = '';
         ele.append(`<optgroup label="Sale Order" class="text-primary">`)
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">` + item.opportunity.code + `</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">` + item.opportunity.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
             }
             else {
-                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">SALE.CODE.XXXX</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">SALE.CODE.XXXX</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
-        ele.append(`</optgroup>`)
-        ele.append(`<optgroup label="Quotation" class="text-primary">`)
+        ele.append(sale_not_opp);
+        ele.append(`</optgroup>`);
+        ele.append(`<optgroup label="Quotation" class="text-primary">`);
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">` + item.opportunity.code + `</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">` + item.opportunity.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
             }
             else {
-                ele.append(`<a class="dropdown-item" href="#"><div class="row"><span class="col-4 text-left">SALE.CODE.XXXX</span><span class="col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">QUO.CODE.XXXX</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
-        ele.append(`</optgroup>`)
+        ele.append(quotation_not_opp);
+        ele.append(`</optgroup>`);
 
-        // ele.append(`<option></option>`);
-        // ele.append(`<optgroup label="Sale Order">`);
-        // sale_order_list.map(function (item) {
-        //     if (item.opportunity.id) {
-        //         ele.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
-        //     }
-        //     else {
-        //         ele.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(SALE.CODE) ` + item.title +`</option>`);
-        //     }
-        // })
-        // ele.append(`</optgroup>`);
-        // ele.append(`<optgroup label="Quotation">`);
-        // quotation_list.map(function (item) {
-        //     if (item.opportunity.id) {
-        //         ele.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
-        //     }
-        //     else {
-        //         ele.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(QUOTATION.CODE) ` + item.title +`</option>`);
-        //     }
-        // })
-        // ele.append(`</optgroup>`);
+        $('#sale-code-select-box2 .dropdown-item').on('click', function () {
+            $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
+            $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
+            if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
+                loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));
+                if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
+                    loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('value'));
+                }
+                if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
+                    loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
+                }
+                $('#notify-none-sale-code').prop('hidden', true);
+                $('#tab_plan_datatable').prop('hidden', false);
+            }
+            else {
+                $('#notify-none-sale-code').prop('hidden', false);
+                $('#tab_plan_datatable').prop('hidden', true);
+            }
+        })
+
+
+        let ele2 = $('#sale-code-select-box');
+        ele2.html('');
+        ele2.append(`<option></option>`);
+        ele2.append(`<optgroup label="Sale Order">`);
+        sale_order_list.map(function (item) {
+            if (item.opportunity.id) {
+                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+            }
+            else {
+                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(SALE.CODE) ` + item.title +`</option>`);
+            }
+        })
+        ele2.append(`</optgroup>`);
+        ele2.append(`<optgroup label="Quotation">`);
+        quotation_list.map(function (item) {
+            if (item.opportunity.id) {
+                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+            }
+            else {
+                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(QUOTATION.CODE) ` + item.title +`</option>`);
+            }
+        })
+        ele2.append(`</optgroup>`);
     }
-
 
     function loadCreator() {
         let ele = $('#creator-select-box');
@@ -366,24 +394,41 @@ $(document).ready(function () {
 
     function loadSupplier() {
         let ele = $('#supplier-select-box');
+        console.log(account_list);
         ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.account_list.map(function (item) {
-                        ele.append(`<option data-name="` + item.name + `" data-industry="` + item.industry.title + `" data-owner="` + item.owner.fullname + `" data-code="` + item.code + `" value="` + item.id + `">` + item.name + `</option>`);
-                    })
+        ele.append(`<option></option>`);
+        account_list.map(function (item) {
+            ele.append(`<option data-name="` + item.name + `" data-industry="` + item.industry.title + `" data-owner="` + item.owner.fullname + `" data-code="` + item.code + `" value="` + item.id + `">` + item.name + `</option>`);
+        })
+    }
+
+    function loadCountries(country_mapped) {
+        let ele = $('#country-select-box-id');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected></option>`)
+                    if (data.hasOwnProperty('countries') && Array.isArray(data.countries)) {
+                        data.countries.map(function (item) {
+                            if (country_mapped === item.id) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                        })
+                    }
                 }
             }
-        }, (errs) => {
-        },)
+        )
     }
 
     loadCreator();
     $('#creator-select-box').select2();
-    loadBeneficiary(sale_person_id=null);
+    loadBeneficiary(null);
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
@@ -415,31 +460,24 @@ $(document).ready(function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
             $('#sale-code-select-box').prop('disabled', false);
+            $('#sale-code-select-box2-show').css({
+                'background': 'none',
+            });
+            $('#sale-code-select-box2-show').attr('disabled', false);
+            $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
             loadSaleCode();
             $('#beneficiary-select-box').prop('disabled', true);
         }
         if ($(this).val() === 'non-sale') {
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
+            $('#sale-code-select-box2-show').attr('style', '');
+            $('#sale-code-select-box2-show').attr('disabled', true);
+            $('#sale-code-select-box2-show').attr('placeholder', 'Can not select with Non-Sale');
             $('#beneficiary-select-box').prop('disabled', false);
-        }
-    })
-
-    $('#sale-code-select-box').on('change', function () {
-        if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
-            $('#notify-none-sale-code').prop('hidden', true);
-            loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));
-            if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
-                loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('value'));
-            }
-            if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
-                loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
-            }
-            $('#tab_plan_datatable').prop('hidden', false);
-        }
-        else {
             $('#notify-none-sale-code').prop('hidden', false);
             $('#tab_plan_datatable').prop('hidden', true);
+            $('#sale-code-select-box2-show').val('');
         }
     })
 
@@ -489,6 +527,175 @@ $(document).ready(function () {
             $('#beneficiary-detail-span').prop('hidden', true);
             $('#btn-detail-beneficiary-tab').attr('href', '#');
         }
+    })
+
+    $('#supplier-select-box').on('change', function () {
+        let supplier_id = $(this).find('option:selected').attr('value');
+        let bank_info = account_bank_accounts_information_dict[supplier_id];
+        let list_bank_accounts_html = ``;
+        for (let i = 0; i < bank_info.length; i++) {
+            let country_id = bank_info[i].country_id;
+            let bank_name = bank_info[i].bank_name;
+            let bank_code = bank_info[i].bank_code;
+            let bank_account_name = bank_info[i].bank_account_name;
+            let bank_account_number = bank_info[i].bank_account_number;
+            let bic_swift_code = bank_info[i].bic_swift_code;
+            let is_default = '';
+            if (bank_info[i].is_default) {
+                is_default = 'checked';
+            }
+            list_bank_accounts_html += `<div id="bank-account-` + i + `" style="border: solid 2px #ddd;" class="card card-bank-account col-5 ml-3">
+                            <span class="mt-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <input disabled class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                    </div>
+                                </div>
+                            </span>
+                            <label class="ml-4">Bank account name: <a href="#" class="bank-account-name-label"><b>` + bank_account_name + `</b></a></label>
+                            <label class="ml-4">Bank name: <a href="#" class="bank-name-label"><b>` + bank_name + `</b></a></label>
+                            <label class="ml-4">Bank account number: <a href="#" class="bank-account-number-label"><b>` + bank_account_number + `</b></a></label>
+                            <label hidden class="ml-4">Country ID: <a class="country-id-label"><b>` + country_id + `</b></a></label>
+                            <label hidden class="ml-4">Bank code: <a class="bank-code-label"><b>` + bank_code + `</b></a></label>
+                            <label hidden class="ml-4">BIC/SWIFT Code: <a class="bic-swift-code-label"><b>` + bic_swift_code + `</b></a></label>
+                            <span class="mb-2">
+                                <div class="row">
+                                    <div class="col-12 text-right">
+                                        <a data-bs-toggle="offcanvas" data-bs-target="#modal-bank-account-information" type="button"
+                                           class="btn-edit-bank-account mr-1" href="#">
+                                           <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>`
+        }
+        $('#list-bank-account-information').html(list_bank_accounts_html);
+        // delete bank account item
+        $('.btn-del-bank-account').on('click', function () {
+            $(this).closest('.card').remove()
+        })
+        // edit bank account item
+        $('.btn-edit-bank-account').on('click', function () {
+            loadCountries($(this).closest('.card').find('a.country-id-label').text());
+            $('#bank-account-order').val($(this).closest('.card').attr('id'))
+            $('#bank-name-id').val($(this).closest('.card').find('a.bank-name-label').text())
+            $('#bank-code-id').val($(this).closest('.card').find('a.bank-code-label').text())
+            $('#bank-account-name-id').val($(this).closest('.card').find('a.bank-account-name-label').text())
+            $('#bank-account-number-id').val($(this).closest('.card').find('a.bank-account-number-label').text())
+            $('#bic-swift-code-id').val($(this).closest('.card').find('a.bic-swift-code-label').text())
+            if ($(this).closest('.card').find('input[name="bank-account-select-default"]').is(':checked')) {
+                $('#make-default-shipping-address').prop('checked', true);
+                $('#make-default-shipping-address').prop('disabled', true);
+            }
+            else {
+                $('#make-default-shipping-address').prop('checked', false);
+                $('#make-default-shipping-address').prop('disabled', false);
+            }
+        })
+    })
+
+    $('#save-changes-modal-bank-account').on('click', function () {
+        let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
+        let bank_order = parseInt($('#bank-account-order').val().replace('bank-account-', ''));
+        let is_default = false;
+        if ($('#make-default-shipping-address').is(':checked')) {
+            is_default = true;
+        }
+        for (let i = 0; i < account_bank_accounts_information_dict[supplier_id].length; i++) {
+            if (is_default) {
+                if (i !== bank_order) {
+                    account_bank_accounts_information_dict[supplier_id][i].is_default = false;
+                }
+                else {
+                    account_bank_accounts_information_dict[supplier_id][i] = {
+                        "bank_code": $('#bank-code-id').val(),
+                        "bank_name": $('#bank-name-id').val(),
+                        "country_id": $('#country-select-box-id option:selected').attr('value'),
+                        "is_default": is_default,
+                        "bic_swift_code": $('#bic-swift-code-id').val(),
+                        "bank_account_name": $('#bank-account-name-id').val(),
+                        "bank_account_number": $('#bank-account-number-id').val()
+                    }
+                }
+            }
+            else {
+                if (i === bank_order) {
+                    account_bank_accounts_information_dict[supplier_id][i] = {
+                        "bank_code": $('#bank-code-id').val(),
+                        "bank_name": $('#bank-name-id').val(),
+                        "country_id": $('#country-select-box-id option:selected').attr('value'),
+                        "is_default": is_default,
+                        "bic_swift_code": $('#bic-swift-code-id').val(),
+                        "bank_account_name": $('#bank-account-name-id').val(),
+                        "bank_account_number": $('#bank-account-number-id').val()
+                    }
+                }
+            }
+        }
+
+        let bank_info = account_bank_accounts_information_dict[supplier_id];
+        let list_bank_accounts_html = ``;
+        for (let i = 0; i < bank_info.length; i++) {
+            let country_id = bank_info[i].country_id;
+            let bank_name = bank_info[i].bank_name;
+            let bank_code = bank_info[i].bank_code;
+            let bank_account_name = bank_info[i].bank_account_name;
+            let bank_account_number = bank_info[i].bank_account_number;
+            let bic_swift_code = bank_info[i].bic_swift_code;
+            let is_default = '';
+            if (bank_info[i].is_default) {
+                is_default = 'checked';
+            }
+            list_bank_accounts_html += `<div id="bank-account-` + i + `" style="border: solid 2px #ddd;" class="card card-bank-account col-5 ml-3">
+                            <span class="mt-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <input disabled class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                    </div>
+                                </div>
+                            </span>
+                            <label class="ml-4">Bank account name: <a href="#" class="bank-account-name-label"><b>` + bank_account_name + `</b></a></label>
+                            <label class="ml-4">Bank name: <a href="#" class="bank-name-label"><b>` + bank_name + `</b></a></label>
+                            <label class="ml-4">Bank account number: <a href="#" class="bank-account-number-label"><b>` + bank_account_number + `</b></a></label>
+                            <label hidden class="ml-4">Country ID: <a class="country-id-label"><b>` + country_id + `</b></a></label>
+                            <label hidden class="ml-4">Bank code: <a class="bank-code-label"><b>` + bank_code + `</b></a></label>
+                            <label hidden class="ml-4">BIC/SWIFT Code: <a class="bic-swift-code-label"><b>` + bic_swift_code + `</b></a></label>
+                            <span class="mb-2">
+                                <div class="row">
+                                    <div class="col-12 text-right">
+                                        <a data-bs-toggle="offcanvas" data-bs-target="#modal-bank-account-information" type="button"
+                                           class="btn-edit-bank-account mr-1" href="#">
+                                           <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>`
+        }
+        $('#list-bank-account-information').html(list_bank_accounts_html);
+        // delete bank account item
+        $('.btn-del-bank-account').on('click', function () {
+            $(this).closest('.card').remove()
+        })
+        // edit bank account item
+        $('.btn-edit-bank-account').on('click', function () {
+            loadCountries($(this).closest('.card').find('a.country-id-label').text());
+            $('#bank-account-order').val($(this).closest('.card').attr('id'))
+            $('#bank-name-id').val($(this).closest('.card').find('a.bank-name-label').text())
+            $('#bank-code-id').val($(this).closest('.card').find('a.bank-code-label').text())
+            $('#bank-account-name-id').val($(this).closest('.card').find('a.bank-account-name-label').text())
+            $('#bank-account-number-id').val($(this).closest('.card').find('a.bank-account-number-label').text())
+            $('#bic-swift-code-id').val($(this).closest('.card').find('a.bic-swift-code-label').text())
+        })
+
+        $('#btn-close-edit-bank-account').click();
     })
 
     $('#type-select-box').on('change', function () {
@@ -588,6 +795,13 @@ $(document).ready(function () {
             frm.dataForm['money_gave'] = true;
         }
 
+        if (frm.dataForm['sale_code']) {
+            frm.dataForm['sale_code'] = {
+                'id': frm.dataForm['sale_code'],
+                'type': $('#sale-code-select-box option:selected').attr('data-type')
+            }
+        }
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -605,22 +819,22 @@ $(document).ready(function () {
 
 
 
-    function loadQuotationExpense(filter_quotation) {
+
+    function loadSaleOrderExpense(filter_sale_order) {
         $('#tab_plan_datatable').remove();
         $('#tab_plan_datatable_div').html(plan_db);
         let dtb = $('#tab_plan_datatable');
         let frm = new SetupFormSubmit(dtb);
-        frm.dataUrl = dtb.attr('data-url-quotation');
+        frm.dataUrl = dtb.attr('data-url-sale-order');
         dtb.DataTableDefault({
             dom: '',
             ajax: {
-                url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
+                url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.log(data)
-                        return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
+                        return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
                     return [];
                 },
@@ -694,22 +908,21 @@ $(document).ready(function () {
         });
     }
 
-    function loadSaleOrderExpense(filter_sale_order) {
+    function loadQuotationExpense(filter_quotation) {
         $('#tab_plan_datatable').remove();
         $('#tab_plan_datatable_div').html(plan_db);
         let dtb = $('#tab_plan_datatable');
         let frm = new SetupFormSubmit(dtb);
-        frm.dataUrl = dtb.attr('data-url-sale-order');
+        frm.dataUrl = dtb.attr('data-url-quotation');
         dtb.DataTableDefault({
             dom: '',
             ajax: {
-                url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
+                url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.log(data)
-                        return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
+                        return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }
                     return [];
                 },

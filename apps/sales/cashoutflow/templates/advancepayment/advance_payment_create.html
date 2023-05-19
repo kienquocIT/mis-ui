@@ -48,59 +48,57 @@
     {{ data.data.sale_order_list | json_script:"sale_order_list" }}
     {{ data.data.quotation_list | json_script:"quotation_list" }}
     {{ data.data.expense_list | json_script:"expense_list" }}
+    {{ data.data.account_list | json_script:"account_list" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url="{% url "AdvancePaymentListAPI" %}">
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-7 pr-5">
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required">Name</label>
                         <div class="col-9">
-                            <input class="form-control" name="title" placeholder="Tam ung tien di cong tac gap doi tac">
+                            <input class="form-control" name="title">
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label">Sale/Purchase code</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
-                            <div role="menu" class="dropdown-menu">
-                                <span>Select one</span>
-                                <div class="dropdown-divider"></div>
-                                <span class="text-center">
-                                    <input type="radio" name="sale_code_type" value="non-sale" class="sale_code_type" checked>
-                                    <label class="col-form-label">Non-sale</label>
-                                </span><br>
-                                <span class="text-center">
-                                    <input type="radio" name="sale_code_type" value="sale" class="sale_code_type">
-                                    <label class="col-form-label">Sale</label>
-                                </span><br>
-                                <span class="text-center">
-                                    <input type="radio" name="sale_code_type" value="purchase" class="sale_code_type" disabled>
-                                    <label class="col-form-label">Purchase</label>
-                                </span>
+                            <div role="menu" class="dropdown-menu" style="min-width: 125%; width: 125%">
+                                <div class="row ml-3">
+                                    <div class="row">
+                                        <div class="form-check">
+                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="non-sale" class="col-2 form-check-input sale_code_type" checked>
+                                            <label class="form-check-label col-10" for="radio-non-sale">Non-sale</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-check">
+                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-sale">Sale</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-check">
+                                            <input disabled type="radio" id="radio-purchase" name="sale_code_type" value="purchase" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-purchase">Purchase</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-7">
                             <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url-quotation="{% url 'QuotationListAPI' %}"
+                                    data-url-quotation="{% url 'QuotationListAPI' %}" hidden
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
+                            <input placeholder="Can not select with Non-Sale" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 120%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
-                        <label class="col-3 col-form-label">Sale/Purchase code</label>
-                        <div class="col-9">
-                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" readonly>
-                            <div class="dropdown-menu dropdown-bordered" style="width: 100%" id="sale-code-select-box2">
-                                <a class="dropdown-item" href="#"><span>A</span></a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#"><span>B</span></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required">Type</label>
                         <div class="col-9">
                             <select class="form-select" name="type" id="type-select-box">
@@ -110,12 +108,12 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label" id="supplier-label">Supplier name</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="supplier-detail-span" hidden>
-                                    <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
                                         <div class="row">
                                             <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
@@ -147,7 +145,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required" id="supplier-label">Method</label>
                         <div class="col-9">
                             <select class="form-select" name="method">
@@ -159,18 +157,18 @@
                     </div>
                 </div>
                 <div class="col-5">
-                    <div class="row form-group mb-3">
-                        <label class="col-3 col-form-label required" id="supplier-label">Created date</label>
+                    <div class="row form-group mb-4">
+                        <label class="col-3 col-form-label" id="supplier-label">Created date</label>
                         <div class="col-9">
                             <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required">Creator</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="creator-detail-span" hidden>
-                                    <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
                                             <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
@@ -200,12 +198,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required">Beneficiary</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="beneficiary-detail-span" hidden>
-                                    <i class="bi bi-file-earmark-plus-fill" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
                                             <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
@@ -233,13 +231,13 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required" id="supplier-label">Return date</label>
                         <div class="col-9">
                             <input class="form-control" name="return_date" id="return-date-id" readonly>
                         </div>
                     </div>
-                    <div class="row form-group mb-3">
+                    <div class="row form-group mb-4">
                         <label class="col-3 col-form-label" id="supplier-label">Status</label>
                         <div class="col-9">
                             <input class="form-control" value="Approved" readonly>
@@ -363,7 +361,7 @@
             </div>
             <div class="tab-pane fade mb-25" id="tab_plan">
                 <div class="row" id="tab_plan_datatable_div">
-                    <table id="tab_plan_datatable" class="table nowrap w-100" data-method="GET"
+                    <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
                            data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
                            data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
@@ -384,19 +382,17 @@
                     </table>
                 </div>
                 <div class="row">
-                    <div class="col-6">
-                        <h6 id="notify-none-sale-code" class="text-danger text-left" style="font-style: italic">Quotation/Sale Order is empty!</h6>
-                    </div>
-                    <div class="col-6">
+                    <div class="col-12">
+                        <div id="notify-none-sale-code" class="alert alert-warning" role="alert">
+                            <span class="alert-icon-wrap"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                            &nbsp;Sale Order/Quotation is not selected!
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_bank_info">
                 <div class="row">
-                    <div class="form-group col-3">
-                        <label class="form-label">{% trans "Label 3" %}</label>
-                        <select class="form-select"></select>
-                    </div>
+                    <div class="row" id="list-bank-account-information"></div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_to_payment">
@@ -415,6 +411,76 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal Bank Account -->
+            <div class="offcanvas offcanvas-end" id="modal-bank-account-information" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalCenter" aria-hidden="true">
+                <div class="offcanvas-header mt-10 mb-3">
+                    <h5 id="offcanvasRightLabel">{% trans "Edit Bank Account" %}</h5>
+                    <button type="button" id="btn-close-edit-bank-account" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="m-3">
+                    <div class="row">
+                        <div class="form-group">
+                            <input disabled class="form-control" id="bank-account-order">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Country" %}</label>
+                            <select class="form-select" id="country-select-box-id" data-url="{% url "CountryListAPI" %}" data-method="GET">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Bank Name" %}</label>
+                            <input class="form-control" id="bank-name-id" type="text" placeholder="Ngan hang co phan Ngoai Thuong Viet Nam">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Bank Code" %}</label>
+                            <input class="form-control" id="bank-code-id" type="text" oninput="this.value=this.value.toUpperCase()" placeholder="VCB">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Account Name" %}</label>
+                            <input class="form-control" id="bank-account-name-id" type="text" placeholder="Cong ty phan mem MT Solutions">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Account Number" %}</label>
+                            <input class="form-control" id="bank-account-number-id" type="text" placeholder="1234567890">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label">{% trans "BIC/SWIFT Code" %}</label>
+                            <input class="form-control" id="bic-swift-code-id" type="text" oninput="this.value=this.value.toUpperCase()" placeholder="BFCEVNVXXXX">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-check ml-3">
+                            <input class="form-check-input" type="checkbox" value=""
+                                   id="make-default-shipping-address">
+                            <label class="form-check-label" for="make-default-shipping-address">
+                                {% trans "Make default address" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-3 mt-5">
+                    <button type="button" class="btn btn-primary" id="save-changes-modal-bank-account">Update</button>
+                    <h6 class="mt-3 text-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        &nbsp;Also update Bank infor in Account Detail.
+                    </h6>
+                </div>
+            </div>
+            <!-- End Modal Bank Account -->
         </div>
     </form>
 {% endblock %}

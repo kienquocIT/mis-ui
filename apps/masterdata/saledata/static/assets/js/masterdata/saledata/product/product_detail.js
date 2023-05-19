@@ -16,6 +16,11 @@ $(document).ready(function () {
     $('#check-tab-inventory').change(function () {
         disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');
+        if (this.checked) {
+            $('.dimensionControl').show();
+        } else {
+            $('.dimensionControl').hide();
+        }
     });
 
     $('#check-tab-sale').change(function () {
@@ -115,7 +120,10 @@ $(document).ready(function () {
     function getTreePriceList(dataTree, parent_id, child) {
         for (let i = 0; i < dataTree.length; i++) {
             if (dataTree[i].item.id === parent_id) {
-                dataTree[i].child.push({'item': child, 'child': []})
+                dataTree[i].child.push({
+                    'item': child,
+                    'child': []
+                })
             } else {
                 if (dataTree[i].child.length === 0)
                     continue;
@@ -133,14 +141,14 @@ $(document).ready(function () {
                 if (dataTree[i].item.auto_update === true) {
                     ele.find('ul').append(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
                                     value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `" disabled>
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" readonly>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -149,14 +157,14 @@ $(document).ready(function () {
                 } else {
                     ele.find('ul').append(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
                                     value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -167,14 +175,14 @@ $(document).ready(function () {
                 if (dataTree[i].item.is_default === true) {
                     ele.find('ul').prepend(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input data-is-default="1" class="form-check-input" type="checkbox"
                                     value="option1" checked data-check="check-` + count + `" disabled data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label required">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-is-default="1" data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="">
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -183,14 +191,14 @@ $(document).ready(function () {
                 } else {
                     ele.find('ul').append(`<div class="row">
                         <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                            <div class="form-check form-check-inline mt-2 ml-5">
                                 <input class="form-check-input" type="checkbox"
                                     value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
                                 <label class="form-check-label">` + dataTree[i].item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
+                            <span class="input-affix-wrapper affix-wth-text">
                                 <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
                                 <span class="input-suffix">` + currency + `</span>
                             </span>
@@ -244,7 +252,10 @@ $(document).ready(function () {
                                     }).is_auto_update;
                                 }
                                 if (item.price_list_mapped === null) {
-                                    dataTree.push({'item': item, 'child': []})
+                                    dataTree.push({
+                                        'item': item,
+                                        'child': []
+                                    })
                                 } else {
                                     dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
                                 }
@@ -254,7 +265,10 @@ $(document).ready(function () {
                         autoSelectPriceListCopyFromSource()
                         list_price.map(function (item) {
                             if (item.currency_using === currency_primary) {
-                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price.toLocaleString('de-DE', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
                             }
                             if (item.is_auto_update === false) {
                                 document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
@@ -304,6 +318,7 @@ $(document).ready(function () {
                                 $('#link-tab-inventory').addClass('disabled');
                                 $('#tab_inventory').removeClass('active show');
                                 $('#check-tab-inventory').prop('checked', false);
+                                $('.dimensionControl').hide();
                             }
                             if (Object.keys(data.product.sale_information).length === 0) {
                                 $('#link-tab-sale').addClass('disabled');
@@ -317,6 +332,19 @@ $(document).ready(function () {
                                 }
                                 if (data.product.sale_information.hasOwnProperty('tax_code'))
                                     loadTaxCode(data.product.sale_information.tax_code.id);
+
+                                $('[name="length"]').val(data.product.sale_information.length);
+                                $('[name="width"]').val(data.product.sale_information.width);
+                                $('[name="height"]').val(data.product.sale_information.height);
+                                if (data.product.sale_information.measure !== undefined) {
+                                    data.product.sale_information.measure.map(function (item) {
+                                        if (item.unit.title === 'volume') {
+                                            $('[name="volume"]').val(item.value);
+                                        } else {
+                                            $('[name="weight"]').val(item.value);
+                                        }
+                                    })
+                                }
                             }
                             data_uom_gr.uom_group.uom.map(function (item) {
                                 if (item.uom_id === data.product.sale_information.default_uom.id)
@@ -338,11 +366,11 @@ $(document).ready(function () {
 
 
                             $('.inp-can-edit').focusin(function () {
-                                $(this).find('input[class=form-control]').prop('readonly', false);
+                                $(this).find('input.form-control').prop('readonly', false);
                                 $(this).find('select').removeAttr('readonly');
                             });
                             $('.inp-can-edit').focusout(function () {
-                                $(this).find('input[class=form-control]').prop('readonly', true);
+                                $(this).find('input.form-control').prop('readonly', true);
                                 $(this).find('select').attr('readonly', 'readonly');
                             });
                             $('.inp-can-edit').on('change', function () {
@@ -438,7 +466,7 @@ $(document).ready(function () {
         }
 
         let price_list = []
-        $('.ul-price-list .value-price-list').each(function () {
+        $('.ul-price-list .price-list-change').each(function () {
             let is_auto_update = '1';
             if ($(this).attr('data-auto-update') === 'false') {
                 is_auto_update = '0';
@@ -469,12 +497,40 @@ $(document).ready(function () {
                 'default_uom': $('#select-box-default-uom').val(),
                 'tax_code': $('#select-box-tax-code').val()
             }
-            if (price_list.length > 0) {
-                frm.dataForm['price_list'] = price_list;
-                frm.dataForm['sale_information']['currency_using'] = currency_id;
-            } else {
-                frm.dataForm['price_list'] = null;
-                frm.dataForm['sale_information']['currency_using'] = null;
+
+            frm.dataForm['price_list'] = price_list;
+            frm.dataForm['sale_information']['currency_using'] = currency_id;
+
+            frm.dataForm['sale_information']['measure'] = [];
+            frm.dataForm['sale_information']['length'] = null;
+            frm.dataForm['sale_information']['width'] = null;
+            frm.dataForm['sale_information']['weight'] = null;
+            if ($('#check-tab-inventory').is(':checked') === true) {
+                let inpLength = $('[name="length"]');
+                let inpWidth = $('[name="width"]');
+                let inpHeight = $('[name="height"]');
+
+                frm.dataForm['sale_information']['length'] = inpLength.val() !== '' ? parseFloat(inpLength.val()) : null;
+                frm.dataForm['sale_information']['width'] = inpWidth.val() !== '' ? parseFloat(inpWidth.val()) : null;
+                frm.dataForm['sale_information']['height'] = inpHeight.val() !== '' ? parseFloat(inpHeight.val()) : null;
+
+                let measurementList = []
+
+                let inpVolume = $('[name="volume"]');
+                let inpWeight = $('[name="weight"]');
+                if (inpVolume.val() !== '') {
+                    measurementList.push({
+                        'unit': inpVolume.attr('data-id'),
+                        'value': parseFloat(inpVolume.val())
+                    })
+                }
+                if (inpWeight.val() !== '') {
+                    measurementList.push({
+                        'unit': inpWeight.attr('data-id'),
+                        'value': parseFloat(inpWeight.val())
+                    })
+                }
+                frm.dataForm['sale_information']['measure'] = measurementList;
             }
         } else {
             frm.dataForm['sale_information'] = {}
@@ -523,14 +579,56 @@ $(document).ready(function () {
     })
 
     $(document).on('input', '.ul-price-list .value-price-list', function () {
+        $(this).addClass('price-list-change');
         let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.value-price-list[readonly]')
         for (let i = 0; i < element.length; i++) {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
                 if (document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value !== '') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    element[i].classList.add('price-list-change');
                 }
             }
         }
     })
+
+    const inpDimensionEle = $('.inpDimension')
+    const inpVolumeEle = $('input[name="volume"]');
+    inpDimensionEle.on('change', function () {
+        let dimensions = $('.inpDimension').map(function () {
+            return $(this).val();
+        }).get();
+
+        let volume = dimensions.reduce(function (a, b) {
+            return (a * b).toFixed(2);
+        }, 1);
+
+        if(volume === (0).toFixed(2)){
+            inpVolumeEle.val('');
+        }
+        else{
+            inpVolumeEle.val(volume);
+        }
+    });
+
+    const item_unit_list = JSON.parse($('#id-unit-list').text());
+    const item_unit_dict = item_unit_list.reduce((obj, item) => {
+        obj[item.title] = item;
+        return obj;
+    }, {});
+
+    function loadBaseItemUnit() {
+        let eleVolume = $('#divVolume');
+        let eleWeight = $('#divWeight');
+
+        eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
+        eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
+        eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
+        eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
+    }
+
+    loadBaseItemUnit()
 })

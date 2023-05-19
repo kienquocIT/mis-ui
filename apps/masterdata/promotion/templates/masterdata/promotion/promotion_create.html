@@ -240,16 +240,16 @@
                         {% trans 'Free shipping' %}</label>
                 </div>
             </div>
-            <div class="group-gift-box col-md-6" style="display: none;">
+            <div class="group-gift-box col-md-6 hidden">
                 <div class="row">
                     <div class="col-md-12 col-xs-6 d-md-flex justify-content-md-evenly align-items-center mb-3">
-                        <div class="form-check w-md-45">
+                        <div class="form-check w-md-40">
                             <input type="checkbox" class="form-check-input" name="is_free_product"
                                    id="is_free_product" checked>
                             <label class="form-check-label" for="is_free_product">
                                 {% trans 'Free product' %}</label>
                         </div>
-                        <div class="form-group w-md-5 mr-2 mb-0">
+                        <div class="form-group mr-2 mb-0">
                             <input class="form-control" type="number" min="1" name="num_product_received">
                         </div>
                         <div class="input-group w-md-50">
@@ -277,7 +277,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-10 col-xs-12 offset-md-2 offset-xs-0 d-md-flex justify-content-md-end
+                    <div class="col-md-11 col-xs-12 offset-md-1 offset-xs-0 d-md-flex justify-content-md-end
                     align-items-center column-gap mb-3">
                         <div class="form-check d-inline-block">
                             <input type="checkbox" class="form-check-input" id="is_min_purchase" name="is_min_purchase">
@@ -289,10 +289,11 @@
                             <option value="0">{% trans 'Before tax' %}</option>
                             <option value="1">{% trans 'After tax' %}</option>
                         </select>
-                        <input class="form-control" type="text" name="min_purchase_cost">
+                        <input class="form-control mask-money" type="text" name="min_purchase_cost"
+                               data-return-type="number">
 
                     </div>
-                    <div class="col-md-10 col-xs-12 offset-md-2 offset-xs-0 d-md-flex justify-content-md-end
+                    <div class="col-md-11 col-xs-12 offset-md-1 offset-xs-0 d-md-flex justify-content-md-end
                     align-items-center column-gap">
                         <div class="form-check d-inline-block">
                             <input type="checkbox" class="form-check-input" id="is_purchase" name="is_purchase">

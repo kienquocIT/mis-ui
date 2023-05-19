@@ -30,6 +30,12 @@ $(function () {
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
+        // promotion
+        let tablePromotion = $('#datable-quotation-create-promotion');
+        // copy quotation
+        let tableCopyQuotation = $('#datable-copy-quotation');
+        let divCopyOption = $('#copy-quotation-option');
+        let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
 
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
@@ -67,7 +73,6 @@ $(function () {
                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadDataClass.loadInformationSelectBox($(this));
-            dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion')
         });
 
 // Action on click dropdown customer
@@ -93,8 +98,6 @@ $(function () {
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
-            // load promotion for this customer
-            dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion')
         });
 
 // Action on click dropdown contact
@@ -136,7 +139,15 @@ $(function () {
 // Action on click dropdown contact
         boxQuotation.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxSaleOrderQuotation('select-box-quotation');
+                let opp_id = null;
+                let sale_person_id = null;
+                if (boxOpportunity.val()) {
+                    opp_id = boxOpportunity.val()
+                }
+                if (boxSalePerson.val()) {
+                    sale_person_id = boxSalePerson.val()
+                }
+                loadDataClass.loadBoxSaleOrderQuotation('select-box-quotation', null, opp_id, sale_person_id);
             }
         });
 
@@ -148,6 +159,10 @@ $(function () {
             let tableLen = tableProduct[0].tBodies[0].rows.length;
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
+            }
+            let promotionRows = tableProduct[0].tBodies[0].querySelectorAll('.table-row-promotion');
+            if (promotionRows) {
+                order = (order - promotionRows.length)
             }
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
             let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
@@ -218,12 +233,21 @@ $(function () {
             if ($(this).hasClass('table-row-item')) {
                 loadDataClass.loadDataProductSelect($(this));
             }
+            // Clear table COST if item or quantity change
+            if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                tableCost.DataTable().clear().draw();
+                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
+                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
+                document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            }
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
-// Check no negative number for input
+// Check valid number for input
         $('#tab-content-quotation-product').on('change', '.validated-number', function (e) {
             let value = this.value;
+            // Replace non-digit characters with an empty string
+            value = value.replace(/[^0-9.]/g, '');
             // Remove unnecessary zeros from the integer part
             value = value.replace("-", "").replace(/^0+(?=\d)/, '');
             // Update value of input
@@ -305,14 +329,8 @@ $(function () {
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
         $('#quotation-tabs').on('click', '.quotation-cost', function (e) {
-            let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
-            if (!tableEmpty) {
-                // clear table
-                let tableCost = $('#datable-quotation-create-cost');
-                tableCost.DataTable().clear();
-                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-                document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            let tableEmpty = tableCost[0].querySelector('.dataTables_empty');
+            if (tableEmpty) {
                 // copy data
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                     let valueProduct = "";
@@ -439,6 +457,7 @@ $(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
+// SHIPPING-BILLING
 // Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function (e) {
             // Enable other buttons
@@ -465,26 +484,239 @@ $(function () {
             }
         });
 
-// Action on click button copy quotation on sale order page
+// COPY FROM - TO
+// Action on click button copy quotation on sale order page + restart all status of all element of modal
         $('#btn-copy-quotation').on('click', function(e) {
-            let opp_id = null;
-            let sale_person_id = null;
-            if (boxOpportunity.val()) {
-                opp_id = boxOpportunity.val()
+            let type = $(this)[0].getAttribute('data-copy-type');
+            $(divCopyOption[0].querySelector('.check-option')).prop('checked', true);
+            tableCopyQuotationProduct[0].setAttribute('hidden', true);
+            if (type === 'copy-from') {
+                // restart all status of all element of modal
+                $('#btn-select-quotation-copy')[0].removeAttribute('hidden');
+                $('#btn-quotation-copy-confirm')[0].setAttribute('hidden', true);
+                tableCopyQuotation[0].removeAttribute('hidden');
+                divCopyOption[0].setAttribute('hidden', true);
+                // load table quotation list for copy
+                let opp_id = null;
+                let sale_person_id = null;
+                if (boxOpportunity.val()) {
+                    opp_id = boxOpportunity.val()
+                }
+                if (boxSalePerson.val()) {
+                    sale_person_id = boxSalePerson.val()
+                }
+                dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
+            } else if (type === 'copy-to') {
+                // load data product for table datable-copy-quotation-product
+                let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
+                tableCopyQuotationProduct.DataTable().destroy();
+                dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product');
             }
-            if (boxSalePerson.val()) {
-                sale_person_id = boxSalePerson.val()
-            }
-            dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
         });
 
-// Submit form quotation
+// Action on check quotation for copy
+        tableCopyQuotation.on('click', '.table-row-check', function (e) {
+            tableCopyQuotation.find('.table-row-check').prop('checked', false);
+            $(this).prop('checked', true);
+            loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
+        });
+
+// Action on click button select quotation for copy
+        $('#btn-select-quotation-copy').on('click', function(e) {
+            tableCopyQuotation[0].setAttribute('hidden', true);
+            tableCopyQuotation.DataTable().clear().draw();
+            tableCopyQuotation.empty();
+            tableCopyQuotation.DataTable().destroy();
+            $('#copy-quotation-option')[0].removeAttribute('hidden');
+            // load data product for table datable-copy-quotation-product
+            let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
+            tableCopyQuotationProduct.DataTable().destroy();
+            dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product');
+            $('#btn-select-quotation-copy')[0].setAttribute('hidden', true);
+            $('#btn-quotation-copy-confirm')[0].removeAttribute('hidden')
+        });
+
+// Action on check copy option
+        divCopyOption.on('change', '.check-option', function(e) {
+            if ($(this)[0].checked === false) {
+                tableCopyQuotationProduct[0].removeAttribute('hidden');
+            } else {
+                tableCopyQuotationProduct[0].setAttribute('hidden', true);
+            }
+        });
+
+// Action on confirm copy quotation
+        $('#btn-quotation-copy-confirm').on('click', function (e) {
+            let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
+            let dataCopyTo = {'id': dataCopy.id, 'option': 'all'};
+            let type = $(this)[0].getAttribute('data-copy-type');
+            if (divCopyOption[0].querySelector('.check-option').checked === false) {
+                let result = [];
+                let productCopyTo = [];
+                let order = 0;
+                for (let idx = 0; idx < tableCopyQuotationProduct[0].tBodies[0].rows.length; idx++) {
+                    let row = tableCopyQuotationProduct[0].tBodies[0].rows[idx];
+                    let check = row.querySelector('.table-row-check-product');
+                    if (check.checked === true) {
+                        let quantyInput = row.querySelector('.table-row-quantity-input').value;
+                        let prodID = check.getAttribute('data-id');
+                        for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
+                            let data = dataCopy.quotation_products_data[i];
+                            if (data.product.id === prodID) {
+                                data['product_quantity'] = parseInt(quantyInput);
+                                order++
+                                data['order'] = order;
+                                result.push(data);
+                                productCopyTo.push({'id': data.product.id, 'quantity': parseInt(quantyInput)})
+                                break
+                            }
+                        }
+                    }
+                }
+                dataCopy['quotation_products_data'] = result;
+                dataCopyTo['option'] = 'custom';
+                dataCopyTo['products'] = productCopyTo;
+            }
+            if (type === 'copy-from') {
+                loadDataClass.loadDetailQuotation(dataCopy, true);
+                // load product
+                calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
+                // load expense
+                calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
+            } else if (type === 'copy-to') {
+                // create URL and add to href
+                let eleRedirect = document.getElementById('link-to-sale-order-create');
+                let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
+                eleRedirect.setAttribute('href', urlSaleOrder);
+                // active event on click <a>
+                eleRedirect.click();
+            }
+        });
+
+// Load data quotation COPY TO sale order when sale order page loaded
+        function prepareDataCopyTo() {
+            let eleDataCopy = $('#data-init-quotation-copy-to');
+            if (eleDataCopy) {
+                if (eleDataCopy.val()) {
+                    let dataRaw = JSON.parse(eleDataCopy.val());
+                    loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                }
+            }
+        }
+        prepareDataCopyTo();
+
+        function loadDataCopyTo(dataCopy) {
+            let eleDataCopy = $('#data-init-quotation-copy-to');
+            if (eleDataCopy) {
+                if (eleDataCopy.val()) {
+                    let dataRaw = JSON.parse(eleDataCopy.val());
+                    if (dataRaw.option === 'custom') {
+                        let products = dataRaw.products;
+                        let result = [];
+                        let order = 0;
+                        for (let idx = 0; idx < products.length; idx++) {
+                            let checkedID = products[idx].id;
+                            let checkedQuantity = products[idx].quantity;
+                            for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
+                                let data = dataCopy.quotation_products_data[i];
+                                if (data.product.id === checkedID) {
+                                    data['product_quantity'] = parseInt(checkedQuantity);
+                                    order++
+                                    data['order'] = order;
+                                    result.push(data);
+                                    break
+                                }
+                            }
+                        }
+                        dataCopy['quotation_products_data'] = result;
+                    }
+                    loadDataClass.loadDetailQuotation(dataCopy, true);
+                    // load product
+                    calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
+                    // load expense
+                    calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
+                }
+            }
+        }
+
+        function checkElementValues() {
+            let element0 = $('#data-copy-quotation-detail').val();
+            let element1 = $('#data-init-quotation-create-tables-product').val();
+            let element2 = $('#data-init-quotation-create-tables-uom').val();
+            let element3 = $('#data-init-quotation-create-tables-tax').val();
+            let element4 = $('#data-init-quotation-create-tables-expense').val();
+
+
+            if (element0 && element1 && element2 && element3 && element4) {
+                loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
+            } else {
+                setTimeout(checkElementValues, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+        checkElementValues();
+
+// PROMOTION
+// Action on click button Check Available Promotion (show list promotions)
+        $('#btn-check-promotion').on('click', function(e) {
+            if (boxCustomer.val()) {
+                dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
+            }
+        });
+
+// Action click Apply Promotion
+        tablePromotion.on('click', '.apply-promotion', function () {
+            $(this).prop('disabled', true);
+            let dataAdd = {
+                "tax": {
+                    "id": "",
+                    "code": "",
+                    "title": "",
+                    "value": 0
+                },
+                "order": 2,
+                "product": {
+                    "id": "",
+                    "code": "",
+                    "title": "Giảm giá 10% khi mua trên 2 sản phẩm"
+                },
+                "product_code": "",
+                "product_title": "Giảm giá 10% khi mua trên 2 sản phẩm",
+                "unit_of_measure": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "product_quantity": 0,
+                "product_uom_code": "",
+                "product_tax_title": "",
+                "product_tax_value": 0,
+                "product_uom_title": "",
+                "product_tax_amount": 0,
+                "product_unit_price": 0,
+                "product_description": "Giảm giá 10% khi mua trên 2 sản phẩm",
+                "product_discount_value": 0,
+                "product_subtotal_price": 0,
+                "product_discount_amount": 0,
+                "is_promotion": true
+            };
+            let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+
+            // Move the new row after a specific row
+            let parentRow = tableProduct.DataTable().row(0);
+            parentRow.child(newRow).show();
+            // ReOrder STT
+            ReOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+        });
+
+// Submit form quotation + sale order
         $('#btn-create_quotation').on('click', function (e) {
             e.preventDefault()
             let $form = document.getElementById('frm_quotation_create');
             let is_sale_order = false;
+            let appNotify = "Quotation";
             if ($form.classList.contains('sale-order')) {
                 is_sale_order = true;
+                appNotify = "Sale Order"
             }
             let _form = new SetupFormSubmit($('#frm_quotation_create'));
             submitClass.setupDataSubmit(_form, is_sale_order);
@@ -552,6 +784,13 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
+            // validate none & blank
+            let check_none_blank_list = ['', "", null, "undefined"];
+            if (_form.dataForm.hasOwnProperty('opportunity')) {
+                if (check_none_blank_list.includes(_form.dataForm['opportunity'])) {
+                    delete _form.dataForm['opportunity']
+                }
+            }
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
@@ -565,7 +804,7 @@ $(function () {
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: "Quotation create fail"}, 'failure')
+                        $.fn.notifyPopup({description: appNotify + " create fail"}, 'failure')
                     }
                 )
         });

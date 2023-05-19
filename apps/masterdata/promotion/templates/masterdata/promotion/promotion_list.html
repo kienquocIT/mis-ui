@@ -46,6 +46,7 @@
     {% csrf_token %}
     <input type="hidden" id="trans-factory"
            data-valid="{% trans 'Valid' %}"
+           data-invalid="{% trans 'invalid' %}"
            data-expired="{% trans 'Expired' %}"
            data-terms-config="{% trans 'Confirm' %}"
            data-terms-cancel="{% trans 'Cancel' %}"

@@ -376,6 +376,9 @@ class ProductCreate(View):
         menu_active='menu_product_list',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state:
+            return {'unit': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -423,7 +426,11 @@ class ProductDetail(View):
         breadcrumb='PRODUCT_DETAIL_PAGE',
         menu_active='menu_product_detail',
     )
+
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state:
+            return {'unit': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

@@ -169,6 +169,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # master-data/ promotion
     PROMOTION_LIST = StringUrl('promotion/list')
     PROMOTION_DETAIL = StringUrl('promotion/detail')
+    PROMOTION_CHECK_LIST = StringUrl('promotion/check-list')
 
     # shipping
     SHIPPING_LIST = StringUrl('saledata/shippings')
@@ -182,8 +183,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
 
+# shipping unit
+    ITEM_UNIT_LIST = StringUrl('base/item-units')
+
     # transition data config
     DELIVERY_CONFIG = StringUrl('delivery/config')
     DELIVERY_PICKING_LIST = StringUrl('delivery/picking')
     DELIVERY_PICKING_DETAIL = StringUrl('delivery/picking/{pk}')
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
+

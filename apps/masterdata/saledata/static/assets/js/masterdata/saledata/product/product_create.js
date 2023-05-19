@@ -464,12 +464,6 @@ $(document).ready(function () {
     const inpDimensionEle = $('.inpDimension')
     const inpVolumeEle = $('input[name="volume"]');
     inpDimensionEle.on('change', function () {
-        inpDimensionEle.each(function () {
-            if ($(this).val() === '') {
-                $(this).val(1);
-            }
-        });
-
         let dimensions = $('.inpDimension').map(function () {
             return $(this).val();
         }).get();
@@ -478,16 +472,13 @@ $(document).ready(function () {
             return (a * b).toFixed(2);
         }, 1);
 
-        inpVolumeEle.val(volume);
+        if(volume === (0).toFixed(2)){
+            inpVolumeEle.val('');
+        }
+        else{
+            inpVolumeEle.val(volume);
+        }
     });
-
-    $(document).on('click', '.btnClear', function () {
-        $('[name="length"]').val('');
-        $('[name="width"]').val('');
-        $('[name="height"]').val('');
-        $('[name="volume"]').val('');
-    })
-
 
     const item_unit_list = JSON.parse($('#id-unit-list').text());
     const item_unit_dict = item_unit_list.reduce((obj, item) => {

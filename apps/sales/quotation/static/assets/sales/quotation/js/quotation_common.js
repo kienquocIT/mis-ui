@@ -1325,8 +1325,14 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
-                                <input type="hidden" class="table-row-data" value="${row}">`;
+                        let check = CheckAvailablePromotion(row);
+                        if (check === true) {
+                            return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
+                                    <input type="hidden" class="table-row-data" value="${row}">`;
+                        } else {
+                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>
+                                    <input type="hidden" class="table-row-data" value="${row}">`;
+                        }
                     },
                 }
             ],
@@ -2093,16 +2099,32 @@ function ReOrderSTT(tableBody, table) {
 }
 
 function CheckAvailablePromotion(data_promotion) {
-    let tableProd = document.getElementById('#datable-quotation-create-product');
-    if (data_promotion.is_discount === true) {
-        let conditionCheck = data_promotion.discount_method;
-        // discount on specific product
-        if (conditionCheck.is_on_product === true) {
-            let prodID = conditionCheck.product_selected.id;
-            if (conditionCheck.percent_fix_amount === true) {
-                let percentValue = conditionCheck.percent_value;
-                let maxPercentValue = conditionCheck.max_percent_value;
+    let tableProd = $('#datable-quotation-create-product');
+    let tableEmpty = tableProd[0].querySelector('.dataTables_empty');
+    if (!tableEmpty) {
+        // DISCOUNT
+        if (data_promotion.is_discount === true) {
+            let conditionCheck = data_promotion.discount_method;
+            // discount on specific product
+            if (conditionCheck.is_on_product === true) {
+                let prodID = conditionCheck.product_selected.id;
+                if (conditionCheck.percent_fix_amount === true) {
+                    let percentValue = conditionCheck.percent_value;
+                    let maxPercentValue = conditionCheck.max_percent_value;
+                    for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
+                        let row = tableProd[0].tBodies[0].rows[i];
+                        let prod = row.querySelector('.table-row-item');
+                        if (prod.value === prodID) {
+                            if (conditionCheck.hasOwnProperty('is_minimum')) {
+                                let minimumValue = conditionCheck.minimum_value;
+                            } else {
+                                return true
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+    return false
 }

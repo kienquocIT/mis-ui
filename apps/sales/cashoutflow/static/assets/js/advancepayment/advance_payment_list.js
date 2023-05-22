@@ -89,16 +89,16 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             if (row.money_gave) {
-                                return `<span class="badge badge-soft-success">` + row.status + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                                return `<span class="text-success">` + row.status + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
                             }
-                            return `<span class="badge badge-soft-success">` + row.status + `</span>`
+                            return `<span class="text-success">` + row.status + `</span>`
                         }
                     },
                     {
                         data: '',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a type="button" class="btn btn-flush-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>`
+                            return `<a type="button" class="badge badge-soft-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>`
                         }
                     }
                 ],

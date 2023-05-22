@@ -88,6 +88,9 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
+                            if (row.money_gave) {
+                                return `<span class="badge badge-soft-success">` + row.status + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                            }
                             return `<span class="badge badge-soft-success">` + row.status + `</span>`
                         }
                     },

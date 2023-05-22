@@ -17,10 +17,13 @@ $(document).ready(function () {
         disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');
         if (this.checked) {
-            $('.dimensionControl').show();
+        $('.dimensionControl').show();
         } else {
-            $('.dimensionControl').hide();
+        $('.dimensionControl').hide();
         }
+        let chooseUoMInventory = $('#select-box-uom-name');
+        chooseUoMInventory.html('');
+        chooseUoMInventory.html($('#select-box-default-uom').html());
     });
 
     $('#check-tab-sale').change(function () {
@@ -415,7 +418,6 @@ $(document).ready(function () {
             }, (errs) => {
             },)
         }
-
     })
 
     // change select box UoM Name in tab inventory

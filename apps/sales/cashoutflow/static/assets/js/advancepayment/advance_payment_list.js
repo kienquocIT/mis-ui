@@ -57,7 +57,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'value',
+                        data: 'advance_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             return `<p class="text-primary">` + row.advance_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`

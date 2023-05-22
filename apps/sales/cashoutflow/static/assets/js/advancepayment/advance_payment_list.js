@@ -109,6 +109,6 @@ $(document).ready(function () {
     loadAdvanceList();
 
     $(document).on('click', '.btn-change-status', function () {
-        alert('Waiting "Return Advance" and "Payment"')
+        alert('Waiting "Return Advance" and "Payment"');
     })
 })

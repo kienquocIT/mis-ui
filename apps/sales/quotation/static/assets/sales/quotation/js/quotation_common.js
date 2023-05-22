@@ -1325,8 +1325,7 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let check = CheckAvailablePromotion(row);
-                        if (check === true) {
+                        if (row.is_pass === true) {
                             return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
                                     <input type="hidden" class="table-row-data" value="${row}">`;
                         } else {
@@ -1345,6 +1344,8 @@ class dataTableHandle {
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
+        let passList = [];
+        let failList = [];
         if (customer_id) {
             let data_filter = {
                 'customer_type': 1,
@@ -1356,7 +1357,20 @@ class dataTableHandle {
                     if (data) {
                         if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
                             $('#datable-quotation-create-promotion').DataTable().destroy();
-                            self.dataTablePromotion(data.promotion_check_list, 'datable-quotation-create-promotion');
+
+                            data.promotion_check_list.map(function (item) {
+                                let check = checkAvailablePromotion(item);
+                            if (check === true) {
+                                item['is_pass'] = true;
+                                passList.push(item)
+                            } else {
+                                item['is_pass'] = false;
+                                failList.push(item)
+                            }
+
+                            })
+                            passList = passList.concat(failList);
+                            self.dataTablePromotion(passList, 'datable-quotation-create-promotion');
                         }
                     }
                 }
@@ -1674,13 +1688,6 @@ class calculateCaseHandle {
             self.updateTotal(table[0], false, false, true)
         }
 
-    }
-
-    deleteRow(currentRow, tableBody, table) {
-        let self = this;
-        table.DataTable().row(currentRow).remove().draw();
-        // ReOrder STT
-        ReOrderSTT(tableBody, table)
     }
 
     loadProductCopy(dataCopy, table, is_product = false, is_expense = false) {
@@ -2083,7 +2090,17 @@ class submitHandle {
 }
 
 // COMMON FUNCTIONS
-function ReOrderSTT(tableBody, table) {
+function deleteRow(currentRow, tableBody, table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
+    // ReOrder STT
+    reOrderSTT(tableBody, table);
+}
+
+function reOrderSTT(tableBody, table) {
     let order = 0;
     if (tableBody.rows.length === 0) {
         table.DataTable().clear();
@@ -2098,7 +2115,7 @@ function ReOrderSTT(tableBody, table) {
     }
 }
 
-function CheckAvailablePromotion(data_promotion) {
+function checkAvailablePromotion(data_promotion) {
     let tableProd = $('#datable-quotation-create-product');
     let tableEmpty = tableProd[0].querySelector('.dataTables_empty');
     if (!tableEmpty) {
@@ -2127,4 +2144,13 @@ function CheckAvailablePromotion(data_promotion) {
         }
     }
     return false
+}
+
+function deletePromotionRows(table) {
+    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+        let row = table[0].tBodies[0].rows[i];
+        if (row.querySelector('.table-row-promotion')) {
+            deleteRow($(row), row.closest('tbody'), table)
+        }
+    }
 }

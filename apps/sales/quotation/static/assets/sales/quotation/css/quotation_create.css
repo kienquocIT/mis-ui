@@ -48,3 +48,7 @@ a.dropdown-item.table-row-price-option:hover {
     background-color: blue;
     color: white;
 }
+
+.fa-info-circle {
+    color: #298dff;
+}

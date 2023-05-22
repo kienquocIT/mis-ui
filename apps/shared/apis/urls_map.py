@@ -174,6 +174,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # master-data/ promotion
     PROMOTION_LIST = StringUrl('promotion/list')
     PROMOTION_DETAIL = StringUrl('promotion/detail')
+    PROMOTION_CHECK_LIST = StringUrl('promotion/check-list')
 
     # shipping
     SHIPPING_LIST = StringUrl('saledata/shippings')

@@ -16,7 +16,7 @@ $(document).ready(function () {
             divNotFixed.addClass('hidden');
         } else {
             divNotFixed.removeClass('hidden');
-            let text = $('#chooseUnit').find('option:selected').text();
+            let text = $(this).closest('.line-condition').find('.chooseUnit').find('option:selected').text();
             $(this).closest('.formulaCondition').find('.displayUoMGroup').text(text);
         }
     })
@@ -29,28 +29,31 @@ $(document).ready(function () {
         })
     }
 
-    function removeClass(ele_condition) {
-        ele_condition.find('.inpThreshold').remove('mask-money');
-        ele_condition.find('.inpThreshold').removeAttr('data-return-type');
-        ele_condition.find('.inpThreshold').attr('type', 'number');
+    function removeClass(eleThreshold) {
+        eleThreshold.removeClass('mask-money');
+        eleThreshold.removeAttr('data-return-type');
+        eleThreshold.attr('type', 'number');
     }
 
     //onchange select box choose Unit Of Measure Group
-    $(document).on('change', '#chooseUnit', function () {
-        let ele = $('.spanUnit');
-        let inpUnit = $('.inpUnit');
+    $(document).on('change', '.chooseUnit', function () {
+        let eleParent = $(this).closest('.line-condition')
+        let ele = eleParent.find('.spanUnit');
+        let inpUnit = eleParent.find('.inpUnit');
         inpUnit.val($(this).find('option:selected').text());
-        $('.displayUoMGroup').text($(this).find('option:selected').text());
+        eleParent.find('.displayUoMGroup').text($(this).find('option:selected').text());
 
-        let eleThreshold = $('.inpThreshold')
+        let eleThreshold = eleParent.find('.inpThreshold')
         eleThreshold.attr('value', '')
         ele.text(item_unit_dict[$(this).val()].measure)
-        removeClass(eleThreshold)
         switch ($(this).find('option:selected').text()) {
             case 'price':
                 eleThreshold.addClass('mask-money');
                 eleThreshold.attr('data-return-type', 'number');
                 eleThreshold.attr('type', 'text');
+                break;
+            default:
+                removeClass(eleThreshold)
                 break;
         }
         $.fn.initMaskMoney2();
@@ -79,15 +82,27 @@ $(document).ready(function () {
 
     // Add new Formula for condition
     $(document).on('click', '.btnAddFormula', function () {
-        $('.inpUnit').attr('value', $('#chooseUnit').find('option:selected').text());
         let html = $('#ifInCondition').html();
         $(this).closest('.line-condition').append(html);
+        let eleParent = $(this).closest('.line-condition')
+        let text_unit = eleParent.find('.chooseUnit').find('option:selected').text();
+        if (text_unit !== '') {
+            eleParent.find('.inpUnit').attr('value', text_unit);
+            eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
+            let eleThreshold = $(this).closest('.line-condition').find('.inpThreshold');
+            if (text_unit === 'price') {
+                eleThreshold.addClass('mask-money');
+                eleThreshold.attr('data-return-type', 'number');
+                eleThreshold.attr('type', 'text');
+            } else {
+                removeClass(eleThreshold)
+            }
+        }
         $(this).remove();
     })
 
     //Add new condition
     $(document).on('click', '#btnAddCondition', function () {
-        $('.inpUnit').attr('value', $('#chooseUnit').find('option:selected').text());
         let html = $('#newCondition').html();
         let conditionContent = $('.condition-content')
         conditionContent.append(html);
@@ -122,7 +137,7 @@ $(document).ready(function () {
 
     function loadEachFormula(ele, firstFormula) {
 
-        $('#chooseUnit').val(firstFormula.unit.id)
+        ele.closest('.line-condition').find('.chooseUnit').val(firstFormula.unit.id)
         ele.find('.inpUnit').val(firstFormula.unit.title);
         ele.find('.spanUnit').text(item_unit_dict[firstFormula.unit.id].measure);
         switch (firstFormula.unit.title) {
@@ -132,7 +147,6 @@ $(document).ready(function () {
                 eleThreshold.attr('data-return-type', 'number');
                 eleThreshold.attr('type', 'text');
                 break;
-
         }
         ele.find('.chooseOperator').val(firstFormula.comparison_operators);
         ele.find('.inpThreshold').attr('value', firstFormula.threshold);
@@ -197,7 +211,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('shipping')) {
                     $('#inpTitle').val(data.shipping.title);
                     $('#inpMargin').val(data.shipping.margin);
-                    if(data.shipping.is_active === true){
+                    if (data.shipping.is_active === true) {
                         $('#inputActive').prop('checked', true)
                     }
                     loadCurrency(data.shipping.currency);
@@ -211,6 +225,7 @@ $(document).ready(function () {
                             $('.condition-content').removeClass('hidden');
                             loadCities(city_list)
                             loadCondition(data.shipping.formula_condition);
+                            updateOptions();
                             break;
                     }
                     $.fn.initMaskMoney2();
@@ -251,17 +266,18 @@ $(document).ready(function () {
                     } else {
                         let ele_formula = $(this).find('.formulaCondition');
                         let formula = []
+                        let chooseUnit = $(this).find(".chooseUnit");
                         ele_formula.each(function () {
                             let amount_extra = 0;
                             let threshold = $(this).find(".inpThreshold").val();
                             if (!$(this).find('.cbFixedPrice').is(':checked')) {
                                 amount_extra = $(this).find('.inpAmountExtra').valCurrency();
                             }
-                            if ($("#chooseUnit").find('option:selected').text() === 'price') {
+                            if (chooseUnit.find('option:selected').text() === 'price') {
                                 threshold = $(this).find(".inpThreshold").valCurrency();
                             }
                             let data_formula = {
-                                'unit': $("#chooseUnit").val(),
+                                'unit': chooseUnit.val(),
                                 'comparison_operators': $(this).find(".chooseOperator").val(),
                                 'threshold': threshold,
                                 'amount_condition': $(this).find('.inpAmount').valCurrency(),
@@ -319,4 +335,38 @@ $(document).ready(function () {
         }
     })
 
+    $(document).on('change', '.chooseCity', function () {
+        let selectedOptions = $(this).find('option:selected').map(function () {
+            return this.value;
+        }).get();
+
+        $('.chooseCity').not(this).each(function () {
+            $(this).find('option').each(function () {
+                if ($(this).is(':selected') === true) {
+                    selectedOptions.push($(this).val());
+                }
+                if (selectedOptions.includes($(this).val()) && $(this).is(':selected') === false) {
+                    $(this).attr('disabled', 'disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+        });
+    });
+
+    function updateOptions() {
+        let ele = $('.chooseCity');
+        let arr = []
+        ele.each(function (index, element) {
+            arr.push($(element).find('option:selected').val());
+            ele.not($(element)).each(function () {
+                $(this).find('option').each(function () {
+                    if (arr.includes($(this).val())) {
+                        $(this).attr('disabled', 'disabled');
+                        arr.push($(this).val());
+                    }
+                })
+            });
+        })
+    }
 })

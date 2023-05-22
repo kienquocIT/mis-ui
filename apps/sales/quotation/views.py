@@ -77,8 +77,8 @@ class QuotationDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/quotation/quotation_detail.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_quotation_list',
+        breadcrumb='QUOTATION_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -92,7 +92,7 @@ class QuotationDetailAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, *args, pk, **kwargs):
         res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
         if res.state:
             return res.result, status.HTTP_200_OK

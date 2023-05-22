@@ -434,6 +434,7 @@
                                                     class="btn btn-gradient-primary"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
+                                                    id="btn-check-promotion"
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
@@ -472,8 +473,6 @@
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
                                                             >Close
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary">Save changes
                                                             </button>
                                                         </div>
                                                     </div>
@@ -790,7 +789,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-promotion"
-                                data-url="{% url "PromotionListAPI" %}"
+                                data-url="{% url "PromotionCheckListAPI" %}"
                                 data-method="GET"
                         >
                     </div>

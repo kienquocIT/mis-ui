@@ -1170,6 +1170,7 @@ $.fn.extend({
                 exit: 'animated bounceOutUp'
             },
             type: "dismissible alert-primary",
+            z_index: 2147483647, /* Maximum index */
         }
         if (typeAlert === 'success') {
             alert_config['type'] = "dismissible alert-success";

@@ -26,7 +26,7 @@ class SaleOrderList(View):
     @mask_view(
         auth_require=True,
         template='sales/saleorder/sale_order_list.html',
-        menu_active='',
+        menu_active='menu_sale_order_list',
         breadcrumb='SALE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
@@ -37,7 +37,6 @@ class SaleOrderCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/saleorder/sale_order_create.html',
-        menu_active='',
         breadcrumb='SALE_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
@@ -82,8 +81,8 @@ class SaleOrderDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/saleorder/sale_order_detail.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_sale_order_list',
+        breadcrumb='SALE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {

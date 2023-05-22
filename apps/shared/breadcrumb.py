@@ -84,6 +84,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    # Advance
+    ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment list'), 'AdvancePaymentList')
+    ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
+    ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
     # Price
     PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -260,6 +265,12 @@ class BreadcrumbView:
     ]
     PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
     PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]
+
+    ADVANCE_PAYMENT_LIST_PAGE = [
+        BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE
+    ]
+    ADVANCE_PAYMENT_CREATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_CREATE_PAGE]
+    ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_DETAIL_PAGE]
 
     PRICE_LIST_PAGE = [
         BreadcrumbItem.PRICE_LIST_PAGE

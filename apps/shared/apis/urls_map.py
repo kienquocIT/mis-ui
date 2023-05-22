@@ -127,6 +127,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
 
+    # advance payment
+    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/')
+
     # masterdata/price
     TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
     TAX_LIST = StringUrl('saledata/taxes')
@@ -158,6 +162,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
     QUOTATION_DETAIL = StringUrl('quotation')
+    QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -178,6 +183,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
+    SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')

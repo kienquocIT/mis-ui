@@ -60,7 +60,7 @@ $(document).ready(function () {
                         data: 'value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<p class="text-primary">` + row.value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                            return `<p class="text-primary">` + row.advance_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
                         }
                     },
                     {

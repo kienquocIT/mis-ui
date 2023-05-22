@@ -39,7 +39,12 @@ $(document).ready(function () {
                         data: 'type',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-soft-danger">` + row.type + `</span>`
+                            if (row.type === 'To Employee') {
+                                return `<span class="badge badge-soft-danger">` + row.type + `</span>`
+                            }
+                            else if (row.type === 'To Supplier') {
+                                return `<span class="badge badge-soft-pumpkin">` + row.type + `</span>`
+                            }
                         }
                     },
                     {

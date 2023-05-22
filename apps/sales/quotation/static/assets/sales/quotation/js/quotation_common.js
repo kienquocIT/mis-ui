@@ -1325,8 +1325,13 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
-                                <input type="hidden" class="table-row-data" value="${row}">`;
+                        if (row.is_pass === true) {
+                            return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
+                                    <input type="hidden" class="table-row-data" value="${row}">`;
+                        } else {
+                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>
+                                    <input type="hidden" class="table-row-data" value="${row}">`;
+                        }
                     },
                 }
             ],
@@ -1339,6 +1344,8 @@ class dataTableHandle {
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
+        let passList = [];
+        let failList = [];
         if (customer_id) {
             let data_filter = {
                 'customer_type': 1,
@@ -1350,7 +1357,20 @@ class dataTableHandle {
                     if (data) {
                         if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
                             $('#datable-quotation-create-promotion').DataTable().destroy();
-                            self.dataTablePromotion(data.promotion_check_list, 'datable-quotation-create-promotion');
+
+                            data.promotion_check_list.map(function (item) {
+                                let check = checkAvailablePromotion(item);
+                            if (check === true) {
+                                item['is_pass'] = true;
+                                passList.push(item)
+                            } else {
+                                item['is_pass'] = false;
+                                failList.push(item)
+                            }
+
+                            })
+                            passList = passList.concat(failList);
+                            self.dataTablePromotion(passList, 'datable-quotation-create-promotion');
                         }
                     }
                 }
@@ -1668,13 +1688,6 @@ class calculateCaseHandle {
             self.updateTotal(table[0], false, false, true)
         }
 
-    }
-
-    deleteRow(currentRow, tableBody, table) {
-        let self = this;
-        table.DataTable().row(currentRow).remove().draw();
-        // ReOrder STT
-        ReOrderSTT(tableBody, table)
     }
 
     loadProductCopy(dataCopy, table, is_product = false, is_expense = false) {
@@ -2077,7 +2090,17 @@ class submitHandle {
 }
 
 // COMMON FUNCTIONS
-function ReOrderSTT(tableBody, table) {
+function deleteRow(currentRow, tableBody, table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
+    // ReOrder STT
+    reOrderSTT(tableBody, table);
+}
+
+function reOrderSTT(tableBody, table) {
     let order = 0;
     if (tableBody.rows.length === 0) {
         table.DataTable().clear();
@@ -2092,17 +2115,42 @@ function ReOrderSTT(tableBody, table) {
     }
 }
 
-function CheckAvailablePromotion(data_promotion) {
-    let tableProd = document.getElementById('#datable-quotation-create-product');
-    if (data_promotion.is_discount === true) {
-        let conditionCheck = data_promotion.discount_method;
-        // discount on specific product
-        if (conditionCheck.is_on_product === true) {
-            let prodID = conditionCheck.product_selected.id;
-            if (conditionCheck.percent_fix_amount === true) {
-                let percentValue = conditionCheck.percent_value;
-                let maxPercentValue = conditionCheck.max_percent_value;
+function checkAvailablePromotion(data_promotion) {
+    let tableProd = $('#datable-quotation-create-product');
+    let tableEmpty = tableProd[0].querySelector('.dataTables_empty');
+    if (!tableEmpty) {
+        // DISCOUNT
+        if (data_promotion.is_discount === true) {
+            let conditionCheck = data_promotion.discount_method;
+            // discount on specific product
+            if (conditionCheck.is_on_product === true) {
+                let prodID = conditionCheck.product_selected.id;
+                if (conditionCheck.percent_fix_amount === true) {
+                    let percentValue = conditionCheck.percent_value;
+                    let maxPercentValue = conditionCheck.max_percent_value;
+                    for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
+                        let row = tableProd[0].tBodies[0].rows[i];
+                        let prod = row.querySelector('.table-row-item');
+                        if (prod.value === prodID) {
+                            if (conditionCheck.hasOwnProperty('is_minimum')) {
+                                let minimumValue = conditionCheck.minimum_value;
+                            } else {
+                                return true
+                            }
+                        }
+                    }
+                }
             }
+        }
+    }
+    return false
+}
+
+function deletePromotionRows(table) {
+    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+        let row = table[0].tBodies[0].rows[i];
+        if (row.querySelector('.table-row-promotion')) {
+            deleteRow($(row), row.closest('tbody'), table)
         }
     }
 }

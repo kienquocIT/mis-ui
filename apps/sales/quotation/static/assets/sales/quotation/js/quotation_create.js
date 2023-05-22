@@ -209,7 +209,10 @@ $(function () {
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
+            deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct);
+
             calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
@@ -240,6 +243,9 @@ $(function () {
                 document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
                 document.getElementById('quotation-create-cost-total').innerHTML = "0";
             }
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct);
+            // Re Calculate all data
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
@@ -314,7 +320,7 @@ $(function () {
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            calculateClass.deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
+            deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
             calculateClass.updateTotal(tableExpense[0], false, false, true)
         });
 
@@ -700,12 +706,12 @@ $(function () {
                 "is_promotion": true
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-
-            // Move the new row after a specific row
-            let parentRow = tableProduct.DataTable().row(0);
-            parentRow.child(newRow).show();
+            // Get the desired position (e.g., after the 3rd row)
+            let afterRow = tableProduct.DataTable().row(0).node(); // Example: Move after the 3rd row
+            // Remove the new row and re-insert it at the desired position
+            $(newRow).detach().insertAfter(afterRow);
             // ReOrder STT
-            ReOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+            reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
         });
 
 // Submit form quotation + sale order
@@ -804,7 +810,7 @@ $(function () {
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: appNotify + " create fail"}, 'failure')
+                        // $.fn.notifyPopup({description: appNotify + " create fail"}, 'failure')
                     }
                 )
         });

@@ -89,6 +89,14 @@ $(document).ready(function () {
         if (text_unit !== '') {
             eleParent.find('.inpUnit').attr('value', text_unit);
             eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
+            let eleThreshold = $(this).closest('.line-condition').find('.inpThreshold');
+            if (text_unit === 'price') {
+                eleThreshold.addClass('mask-money');
+                eleThreshold.attr('data-return-type', 'number');
+                eleThreshold.attr('type', 'text');
+            } else {
+                removeClass(eleThreshold)
+            }
         }
         $(this).remove();
     })
@@ -139,7 +147,6 @@ $(document).ready(function () {
                 eleThreshold.attr('data-return-type', 'number');
                 eleThreshold.attr('type', 'text');
                 break;
-
         }
         ele.find('.chooseOperator').val(firstFormula.comparison_operators);
         ele.find('.inpThreshold').attr('value', firstFormula.threshold);
@@ -204,7 +211,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('shipping')) {
                     $('#inpTitle').val(data.shipping.title);
                     $('#inpMargin').val(data.shipping.margin);
-                    if(data.shipping.is_active === true){
+                    if (data.shipping.is_active === true) {
                         $('#inputActive').prop('checked', true)
                     }
                     loadCurrency(data.shipping.currency);
@@ -218,6 +225,7 @@ $(document).ready(function () {
                             $('.condition-content').removeClass('hidden');
                             loadCities(city_list)
                             loadCondition(data.shipping.formula_condition);
+                            updateOptions();
                             break;
                     }
                     $.fn.initMaskMoney2();
@@ -327,4 +335,38 @@ $(document).ready(function () {
         }
     })
 
+    $(document).on('change', '.chooseCity', function () {
+        let selectedOptions = $(this).find('option:selected').map(function () {
+            return this.value;
+        }).get();
+
+        $('.chooseCity').not(this).each(function () {
+            $(this).find('option').each(function () {
+                if ($(this).is(':selected') === true) {
+                    selectedOptions.push($(this).val());
+                }
+                if (selectedOptions.includes($(this).val()) && $(this).is(':selected') === false) {
+                    $(this).attr('disabled', 'disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+        });
+    });
+
+    function updateOptions() {
+        let ele = $('.chooseCity');
+        let arr = []
+        ele.each(function (index, element) {
+            arr.push($(element).find('option:selected').val());
+            ele.not($(element)).each(function () {
+                $(this).find('option').each(function () {
+                    if (arr.includes($(this).val())) {
+                        $(this).attr('disabled', 'disabled');
+                        arr.push($(this).val());
+                    }
+                })
+            });
+        })
+    }
 })

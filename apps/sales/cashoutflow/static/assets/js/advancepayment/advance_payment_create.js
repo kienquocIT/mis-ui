@@ -15,7 +15,7 @@ $(document).ready(function () {
             <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
             <td><input class="form-control expense-type" style="color: black; background: none" disabled></td>
             <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
-            <td><input type="number" min="1" class="form-control expense-quantity" value="1"></td>
+            <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
             <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
                     <span class="input-affix-wrapper">
                         <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" style="color: black; background: none" placeholder="Select a price or enter">
@@ -26,7 +26,15 @@ $(document).ready(function () {
             <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black; background: none" disabled></td>
             <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
             <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
-        </tr>`);
+        </tr>
+        <script>
+            function checkInputQuantity(value) {
+                if (parseInt(value) < 0) {
+                    return value*(-1);
+                }
+                return value;
+            }
+        </script>`);
         $.fn.initMaskMoney2();
         let row_count = count_row(table_body, 1);
 

@@ -90,13 +90,11 @@ $(document).ready(function () {
             eleParent.find('.inpUnit').attr('value', text_unit);
             eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
             let eleThreshold = $(this).closest('.line-condition').find('.inpThreshold');
-            if(text_unit === 'price')
-            {
+            if (text_unit === 'price') {
                 eleThreshold.addClass('mask-money');
                 eleThreshold.attr('data-return-type', 'number');
                 eleThreshold.attr('type', 'text');
-            }
-            else{
+            } else {
                 removeClass(eleThreshold)
             }
         }
@@ -344,6 +342,9 @@ $(document).ready(function () {
 
         $('.chooseCity').not(this).each(function () {
             $(this).find('option').each(function () {
+                if ($(this).is(':selected') === true) {
+                    selectedOptions.push($(this).val());
+                }
                 if (selectedOptions.includes($(this).val()) && $(this).is(':selected') === false) {
                     $(this).attr('disabled', 'disabled');
                 } else {

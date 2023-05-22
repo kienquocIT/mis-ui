@@ -226,12 +226,15 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '.chooseCity', function () {
-        var selectedOptions = $(this).find('option:selected').map(function () {
+        let selectedOptions = $(this).find('option:selected').map(function () {
             return this.value;
         }).get();
 
         $('.chooseCity').not(this).each(function () {
             $(this).find('option').each(function () {
+                if($(this).is(':selected') === true){
+                    selectedOptions.push($(this).val());
+                }
                 if(selectedOptions.includes($(this).val()) && $(this).is(':selected') === false){
                     $(this).attr('disabled', 'disabled');
                 }

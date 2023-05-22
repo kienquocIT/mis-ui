@@ -866,15 +866,22 @@ class dataTableHandle {
                     targets: 4,
                     width: "1%",
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (!row.hasOwnProperty('is_promotion')) {
+                           return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <input type="text" class="form-control table-row-quantity validated-number disabled-custom-show" value="${row.product_quantity}" disabled>
+                            </div>`;
+                        }
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (!row.hasOwnProperty('is_promotion')) {
+                            return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
@@ -892,12 +899,34 @@ class dataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <div class="dropdown">
+                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <span class="input-affix-wrapper">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price disabled-custom-show" 
+                                            value="${row.product_unit_price}"
+                                            data-return-type="number"
+                                            disabled
+                                        >
+                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                    </span>
+                                    </div>
+                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                    <a class="dropdown-item" data-value=""></a>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (!row.hasOwnProperty('is_promotion')) {
+                            return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-discount validated-number" value="${row.product_discount_value}">
@@ -911,6 +940,22 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-discount validated-number disabled-custom-show" value="${row.product_discount_value}" disabled>
+                                        <span class="input-suffix">%</span>
+                                    </span>
+                                </div>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-discount-amount"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                            </div>`;
+                        }
                     }
                 },
                 {
@@ -923,7 +968,8 @@ class dataTableHandle {
                             taxID = row.tax.id;
                             taxRate = row.tax.value;
                         }
-                        return `<div class="row">
+                        if (!row.hasOwnProperty('is_promotion')) {
+                            return `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
@@ -941,6 +987,26 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <select class="form-select table-row-tax disabled-custom-show" id="${selectTaxID}" disabled>
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
+                                    hidden
+                                >
+                            </div>`;
+                        }
                     }
                 },
                 {
@@ -1326,11 +1392,9 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-promotion">Apply</button>
-                                    <input type="hidden" class="table-row-data" value="${row}">`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition=${JSON.stringify(row.condition)} data-bs-dismiss="modal">Apply</button>`;
                         } else {
-                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>
-                                    <input type="hidden" class="table-row-data" value="${row}">`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>`;
                         }
                     },
                 }
@@ -1360,14 +1424,14 @@ class dataTableHandle {
 
                             data.promotion_check_list.map(function (item) {
                                 let check = checkAvailablePromotion(item);
-                            if (check === true) {
-                                item['is_pass'] = true;
-                                passList.push(item)
-                            } else {
-                                item['is_pass'] = false;
-                                failList.push(item)
-                            }
-
+                                if (check.is_pass === true) {
+                                    item['is_pass'] = true;
+                                    item['condition'] = check.condition;
+                                    passList.push(item)
+                                } else {
+                                    item['is_pass'] = false;
+                                    failList.push(item)
+                                }
                             })
                             passList = passList.concat(failList);
                             self.dataTablePromotion(passList, 'datable-quotation-create-promotion');
@@ -1564,18 +1628,32 @@ class calculateCaseHandle {
             let tableLen = table.tBodies[0].rows.length;
             for (let i = 0; i < tableLen; i++) {
                 let row = table.tBodies[0].rows[i];
+                let is_promotion = false;
+                if (row.querySelector('.table-row-promotion')) {
+                    is_promotion = true
+                }
                 // calculate Pretax Amount
                 let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
                 if (subtotalRaw) {
                     if (subtotalRaw.value) {
-                        pretaxAmount += parseFloat(subtotalRaw.value)
+                        // check if not promotion then plus else minus
+                        if (is_promotion === false) {
+                            pretaxAmount += parseFloat(subtotalRaw.value)
+                        } else {
+                            pretaxAmount -= parseFloat(subtotalRaw.value)
+                        }
                     }
                 }
                 // calculate Tax Amount
                 let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
                 if (subTaxAmountRaw) {
                     if (subTaxAmountRaw.value) {
-                        taxAmount += parseFloat(subTaxAmountRaw.value)
+                        // check if not promotion then plus else minus
+                        if (is_promotion === false) {
+                            taxAmount += parseFloat(subTaxAmountRaw.value)
+                        } else {
+                            taxAmount -= parseFloat(subTaxAmountRaw.value)
+                        }
                     }
                 }
             }
@@ -2126,16 +2204,27 @@ function checkAvailablePromotion(data_promotion) {
             if (conditionCheck.is_on_product === true) {
                 let prodID = conditionCheck.product_selected.id;
                 if (conditionCheck.percent_fix_amount === true) {
-                    let percentValue = conditionCheck.percent_value;
-                    let maxPercentValue = conditionCheck.max_percent_value;
+                    let percentDiscount = conditionCheck.percent_value;
+                    let maxDiscountAmount = conditionCheck.max_percent_value;
                     for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
                         let row = tableProd[0].tBodies[0].rows[i];
                         let prod = row.querySelector('.table-row-item');
-                        if (prod.value === prodID) {
+                        let quantity = row.querySelector('.table-row-quantity');
+                        if (prod.value === prodID && parseInt(quantity.value) > 0) {
                             if (conditionCheck.hasOwnProperty('is_minimum')) {
                                 let minimumValue = conditionCheck.minimum_value;
                             } else {
-                                return true
+                                return {
+                                    'is_pass': true,
+                                    'condition': {
+                                        'is_discount': true,
+                                        'is_gift': false,
+                                        'is_on_product': true,
+                                        'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                        'percent_discount': percentDiscount,
+                                        'max_amount': maxDiscountAmount
+                                    }
+                                }
                             }
                         }
                     }
@@ -2143,7 +2232,36 @@ function checkAvailablePromotion(data_promotion) {
             }
         }
     }
-    return false
+    return {
+        'is_pass': false,
+    }
+}
+
+function getPromotionResult(condition) {
+    let result = {
+        'product_quantity': 0,
+        'product_price': 0
+    };
+    let tableProd = $('#datable-quotation-create-product');
+    // DISCOUNT
+    if (condition.is_discount === true) {
+        // discount on specific product
+        if (condition.is_on_product === true) {
+            let row = tableProd.DataTable().row(condition.row_apply_index).node();
+            let quantity = parseInt(row.querySelector('.table-row-quantity').value);
+            let price = $(row.querySelector('.table-row-price')).valCurrency();
+            let DiscountAmount = ((parseFloat(price) * parseFloat(condition.percent_discount)) / 100);
+            let taxID = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].value;
+            return {
+                'row_apply_index': condition.row_apply_index,
+                'product_quantity': quantity,
+                'product_price': DiscountAmount,
+                'value_tax': taxID
+
+            }
+        }
+    }
+    return result
 }
 
 function deletePromotionRows(table) {

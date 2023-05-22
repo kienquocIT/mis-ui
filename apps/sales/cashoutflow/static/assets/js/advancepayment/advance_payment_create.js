@@ -8,7 +8,6 @@ $(document).ready(function () {
         obj[item.id] = item.bank_accounts_information;
         return obj;
     }, {});
-    console.log(account_bank_accounts_information_dict)
     $(document).on("click", '#btn-add-row-line-detail', function () {
         let table_body = $('#tab_line_detail tbody');
         table_body.append(`<tr id="" class="row-number">
@@ -394,7 +393,6 @@ $(document).ready(function () {
 
     function loadSupplier() {
         let ele = $('#supplier-select-box');
-        console.log(account_list);
         ele.html('');
         ele.append(`<option></option>`);
         account_list.map(function (item) {
@@ -424,6 +422,138 @@ $(document).ready(function () {
                 }
             }
         )
+    }
+
+    function ClickEditBankBtn() {
+        loadCountries($(this).closest('.card').find('a.country-id-label').text());
+        $('#bank-account-order').val($(this).closest('.card').attr('id'));
+        $('#bank-name-id').val($(this).closest('.card').find('a.bank-name-label').text());
+        $('#bank-code-id').val($(this).closest('.card').find('a.bank-code-label').text());
+        $('#bank-account-name-id').val($(this).closest('.card').find('a.bank-account-name-label').text());
+        $('#bank-account-number-id').val($(this).closest('.card').find('a.bank-account-number-label').text());
+        $('#bic-swift-code-id').val($(this).closest('.card').find('a.bic-swift-code-label').text());
+
+        let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
+        let bank_order = parseInt($(this).closest('.card').attr('id').replace('bank-account-', ''));
+        let is_default = account_bank_accounts_information_dict[supplier_id][bank_order].is_default
+        if (is_default) {
+            $('#make-default-shipping-address').prop('checked', true);
+            $('#make-default-shipping-address').prop('disabled', true);
+        }
+        else {
+            $('#make-default-shipping-address').prop('checked', false);
+            $('#make-default-shipping-address').prop('disabled', false);
+        }
+    }
+
+    function LoadBankAccount() {
+        let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
+        let bank_info = account_bank_accounts_information_dict[supplier_id];
+        let list_bank_accounts_html = ``;
+
+        if (bank_info.length > 0) {
+            for (let i = 0; i < bank_info.length; i++) {
+                let country_id = bank_info[i].country_id;
+                let bank_name = bank_info[i].bank_name;
+                let bank_code = bank_info[i].bank_code;
+                let bank_account_name = bank_info[i].bank_account_name;
+                let bank_account_number = bank_info[i].bank_account_number;
+                let bic_swift_code = bank_info[i].bic_swift_code;
+                let is_default = '';
+                if (bank_info[i].is_default) {
+                    is_default = 'checked';
+                }
+                list_bank_accounts_html += `<div id="bank-account-` + i + `" style="border: solid 2px #ddd;" class="card card-bank-account col-5 ml-3">
+                            <span class="mt-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <input disabled class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                    </div>
+                                </div>
+                            </span>
+                            <label class="ml-4">Bank account name: <a href="#" class="bank-account-name-label"><b>` + bank_account_name + `</b></a></label>
+                            <label class="ml-4">Bank name: <a href="#" class="bank-name-label"><b>` + bank_name + `</b></a></label>
+                            <label class="ml-4">Bank account number: <a href="#" class="bank-account-number-label"><b>` + bank_account_number + `</b></a></label>
+                            <label hidden class="ml-4">Country ID: <a class="country-id-label"><b>` + country_id + `</b></a></label>
+                            <label hidden class="ml-4">Bank code: <a class="bank-code-label"><b>` + bank_code + `</b></a></label>
+                            <label hidden class="ml-4">BIC/SWIFT Code: <a class="bic-swift-code-label"><b>` + bic_swift_code + `</b></a></label>
+                            <span class="mb-2">
+                                <div class="row">
+                                    <div class="col-12 text-right">
+                                        <a data-bs-toggle="offcanvas" data-bs-target="#modal-bank-account-information" type="button"
+                                           class="btn-edit-bank-account mr-1" href="#">
+                                           <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>`
+            }
+            $('#list-bank-account-information').html(list_bank_accounts_html);
+            // delete bank account item
+            $('.btn-del-bank-account').on('click', function () {
+                let bank_order = parseInt($(this).closest('.card').attr('id').replace('bank-account-', ''));
+                let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
+                account_bank_accounts_information_dict[supplier_id].splice(bank_order, 1);
+                $(this).closest('.card').remove();
+            })
+            // edit bank account item
+            $('.btn-edit-bank-account').on('click', ClickEditBankBtn);
+        }
+        else {
+            let supplier_name = $('#supplier-select-box').find('option:selected').text()
+            $('#list-bank-account-information').html(`<div class="row">
+                <div class="col-12">
+                    <div id="notify-none-bank-account" class="alert alert-secondary" role="alert">
+                        <span class="alert-icon-wrap"></span>
+                        "` + supplier_name + `" has no bank accounts information!
+                    </div>
+                </div>
+            </div>`);
+        }
+    }
+
+    function ChangeBankInfor() {
+        let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
+        let bank_order = parseInt($('#bank-account-order').val().replace('bank-account-', ''));
+        let is_default = false;
+        if ($('#make-default-shipping-address').is(':checked')) {
+            is_default = true;
+        }
+        for (let i = 0; i < account_bank_accounts_information_dict[supplier_id].length; i++) {
+            if (is_default) {
+                if (i !== bank_order) {
+                    account_bank_accounts_information_dict[supplier_id][i].is_default = false;
+                }
+                else {
+                    account_bank_accounts_information_dict[supplier_id][i] = {
+                        "bank_code": $('#bank-code-id').val(),
+                        "bank_name": $('#bank-name-id').val(),
+                        "country_id": $('#country-select-box-id option:selected').attr('value'),
+                        "is_default": is_default,
+                        "bic_swift_code": $('#bic-swift-code-id').val(),
+                        "bank_account_name": $('#bank-account-name-id').val(),
+                        "bank_account_number": $('#bank-account-number-id').val()
+                    }
+                }
+            }
+            else {
+                if (i === bank_order) {
+                    account_bank_accounts_information_dict[supplier_id][i] = {
+                        "bank_code": $('#bank-code-id').val(),
+                        "bank_name": $('#bank-name-id').val(),
+                        "country_id": $('#country-select-box-id option:selected').attr('value'),
+                        "is_default": is_default,
+                        "bic_swift_code": $('#bic-swift-code-id').val(),
+                        "bank_account_name": $('#bank-account-name-id').val(),
+                        "bank_account_number": $('#bank-account-number-id').val()
+                    }
+                }
+            }
+        }
     }
 
     loadCreator();
@@ -482,7 +612,8 @@ $(document).ready(function () {
     })
 
     $('#supplier-select-box').on('change', function () {
-        if ($(this).val() !== '') {
+        if ($(this).find('option:selected').attr('value')) {
+            LoadBankAccount();
             $('#supplier-detail-span').prop('hidden', false);
             $('#supplier-name').text($('#supplier-select-box option:selected').attr('data-name'));
             $('#supplier-code').text($('#supplier-select-box option:selected').attr('data-code'));
@@ -494,6 +625,14 @@ $(document).ready(function () {
         else {
             $('#supplier-detail-span').prop('hidden', true);
             $('#btn-detail-supplier-tab').attr('href', '#');
+            $('#list-bank-account-information').html(`<div class="row">
+                <div class="col-12">
+                    <div id="notify-none-bank-account" class="alert alert-secondary" role="alert">
+                        <span class="alert-icon-wrap"></span>
+                        &nbsp;No bank accounts information!
+                    </div>
+                </div>
+            </div>`)
         }
     })
 
@@ -529,172 +668,9 @@ $(document).ready(function () {
         }
     })
 
-    $('#supplier-select-box').on('change', function () {
-        let supplier_id = $(this).find('option:selected').attr('value');
-        let bank_info = account_bank_accounts_information_dict[supplier_id];
-        let list_bank_accounts_html = ``;
-        for (let i = 0; i < bank_info.length; i++) {
-            let country_id = bank_info[i].country_id;
-            let bank_name = bank_info[i].bank_name;
-            let bank_code = bank_info[i].bank_code;
-            let bank_account_name = bank_info[i].bank_account_name;
-            let bank_account_number = bank_info[i].bank_account_number;
-            let bic_swift_code = bank_info[i].bic_swift_code;
-            let is_default = '';
-            if (bank_info[i].is_default) {
-                is_default = 'checked';
-            }
-            list_bank_accounts_html += `<div id="bank-account-` + i + `" style="border: solid 2px #ddd;" class="card card-bank-account col-5 ml-3">
-                            <span class="mt-2">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
-                                    </div>
-                                    <div class="col-6 text-right">
-                                        <input disabled class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
-                                    </div>
-                                </div>
-                            </span>
-                            <label class="ml-4">Bank account name: <a href="#" class="bank-account-name-label"><b>` + bank_account_name + `</b></a></label>
-                            <label class="ml-4">Bank name: <a href="#" class="bank-name-label"><b>` + bank_name + `</b></a></label>
-                            <label class="ml-4">Bank account number: <a href="#" class="bank-account-number-label"><b>` + bank_account_number + `</b></a></label>
-                            <label hidden class="ml-4">Country ID: <a class="country-id-label"><b>` + country_id + `</b></a></label>
-                            <label hidden class="ml-4">Bank code: <a class="bank-code-label"><b>` + bank_code + `</b></a></label>
-                            <label hidden class="ml-4">BIC/SWIFT Code: <a class="bic-swift-code-label"><b>` + bic_swift_code + `</b></a></label>
-                            <span class="mb-2">
-                                <div class="row">
-                                    <div class="col-12 text-right">
-                                        <a data-bs-toggle="offcanvas" data-bs-target="#modal-bank-account-information" type="button"
-                                           class="btn-edit-bank-account mr-1" href="#">
-                                           <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </span>
-                        </div>`
-        }
-        $('#list-bank-account-information').html(list_bank_accounts_html);
-        // delete bank account item
-        $('.btn-del-bank-account').on('click', function () {
-            $(this).closest('.card').remove()
-        })
-        // edit bank account item
-        $('.btn-edit-bank-account').on('click', function () {
-            loadCountries($(this).closest('.card').find('a.country-id-label').text());
-            $('#bank-account-order').val($(this).closest('.card').attr('id'))
-            $('#bank-name-id').val($(this).closest('.card').find('a.bank-name-label').text())
-            $('#bank-code-id').val($(this).closest('.card').find('a.bank-code-label').text())
-            $('#bank-account-name-id').val($(this).closest('.card').find('a.bank-account-name-label').text())
-            $('#bank-account-number-id').val($(this).closest('.card').find('a.bank-account-number-label').text())
-            $('#bic-swift-code-id').val($(this).closest('.card').find('a.bic-swift-code-label').text())
-            if ($(this).closest('.card').find('input[name="bank-account-select-default"]').is(':checked')) {
-                $('#make-default-shipping-address').prop('checked', true);
-                $('#make-default-shipping-address').prop('disabled', true);
-            }
-            else {
-                $('#make-default-shipping-address').prop('checked', false);
-                $('#make-default-shipping-address').prop('disabled', false);
-            }
-        })
-    })
-
     $('#save-changes-modal-bank-account').on('click', function () {
-        let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
-        let bank_order = parseInt($('#bank-account-order').val().replace('bank-account-', ''));
-        let is_default = false;
-        if ($('#make-default-shipping-address').is(':checked')) {
-            is_default = true;
-        }
-        for (let i = 0; i < account_bank_accounts_information_dict[supplier_id].length; i++) {
-            if (is_default) {
-                if (i !== bank_order) {
-                    account_bank_accounts_information_dict[supplier_id][i].is_default = false;
-                }
-                else {
-                    account_bank_accounts_information_dict[supplier_id][i] = {
-                        "bank_code": $('#bank-code-id').val(),
-                        "bank_name": $('#bank-name-id').val(),
-                        "country_id": $('#country-select-box-id option:selected').attr('value'),
-                        "is_default": is_default,
-                        "bic_swift_code": $('#bic-swift-code-id').val(),
-                        "bank_account_name": $('#bank-account-name-id').val(),
-                        "bank_account_number": $('#bank-account-number-id').val()
-                    }
-                }
-            }
-            else {
-                if (i === bank_order) {
-                    account_bank_accounts_information_dict[supplier_id][i] = {
-                        "bank_code": $('#bank-code-id').val(),
-                        "bank_name": $('#bank-name-id').val(),
-                        "country_id": $('#country-select-box-id option:selected').attr('value'),
-                        "is_default": is_default,
-                        "bic_swift_code": $('#bic-swift-code-id').val(),
-                        "bank_account_name": $('#bank-account-name-id').val(),
-                        "bank_account_number": $('#bank-account-number-id').val()
-                    }
-                }
-            }
-        }
-
-        let bank_info = account_bank_accounts_information_dict[supplier_id];
-        let list_bank_accounts_html = ``;
-        for (let i = 0; i < bank_info.length; i++) {
-            let country_id = bank_info[i].country_id;
-            let bank_name = bank_info[i].bank_name;
-            let bank_code = bank_info[i].bank_code;
-            let bank_account_name = bank_info[i].bank_account_name;
-            let bank_account_number = bank_info[i].bank_account_number;
-            let bic_swift_code = bank_info[i].bic_swift_code;
-            let is_default = '';
-            if (bank_info[i].is_default) {
-                is_default = 'checked';
-            }
-            list_bank_accounts_html += `<div id="bank-account-` + i + `" style="border: solid 2px #ddd;" class="card card-bank-account col-5 ml-3">
-                            <span class="mt-2">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
-                                    </div>
-                                    <div class="col-6 text-right">
-                                        <input disabled class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
-                                    </div>
-                                </div>
-                            </span>
-                            <label class="ml-4">Bank account name: <a href="#" class="bank-account-name-label"><b>` + bank_account_name + `</b></a></label>
-                            <label class="ml-4">Bank name: <a href="#" class="bank-name-label"><b>` + bank_name + `</b></a></label>
-                            <label class="ml-4">Bank account number: <a href="#" class="bank-account-number-label"><b>` + bank_account_number + `</b></a></label>
-                            <label hidden class="ml-4">Country ID: <a class="country-id-label"><b>` + country_id + `</b></a></label>
-                            <label hidden class="ml-4">Bank code: <a class="bank-code-label"><b>` + bank_code + `</b></a></label>
-                            <label hidden class="ml-4">BIC/SWIFT Code: <a class="bic-swift-code-label"><b>` + bic_swift_code + `</b></a></label>
-                            <span class="mb-2">
-                                <div class="row">
-                                    <div class="col-12 text-right">
-                                        <a data-bs-toggle="offcanvas" data-bs-target="#modal-bank-account-information" type="button"
-                                           class="btn-edit-bank-account mr-1" href="#">
-                                           <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </span>
-                        </div>`
-        }
-        $('#list-bank-account-information').html(list_bank_accounts_html);
-        // delete bank account item
-        $('.btn-del-bank-account').on('click', function () {
-            $(this).closest('.card').remove()
-        })
-        // edit bank account item
-        $('.btn-edit-bank-account').on('click', function () {
-            loadCountries($(this).closest('.card').find('a.country-id-label').text());
-            $('#bank-account-order').val($(this).closest('.card').attr('id'))
-            $('#bank-name-id').val($(this).closest('.card').find('a.bank-name-label').text())
-            $('#bank-code-id').val($(this).closest('.card').find('a.bank-code-label').text())
-            $('#bank-account-name-id').val($(this).closest('.card').find('a.bank-account-name-label').text())
-            $('#bank-account-number-id').val($(this).closest('.card').find('a.bank-account-number-label').text())
-            $('#bic-swift-code-id').val($(this).closest('.card').find('a.bic-swift-code-label').text())
-        })
-
+        ChangeBankInfor();
+        LoadBankAccount();
         $('#btn-close-edit-bank-account').click();
     })
 
@@ -704,8 +680,10 @@ $(document).ready(function () {
             $('#supplier-label').addClass('required');
         }
         else {
+            $('#supplier-detail-span').prop('hidden', true);
             $('#supplier-select-box').prop('disabled', true);
             $('#supplier-label').removeClass('required');
+            $('#supplier-select-box option:selected').prop('selected', false);
         }
     })
 
@@ -802,6 +780,10 @@ $(document).ready(function () {
             }
         }
 
+        frm.dataForm['account_bank_information_dict'] = account_bank_accounts_information_dict;
+
+        // console.log(frm.dataForm)
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -816,9 +798,6 @@ $(document).ready(function () {
                 }
             )
     })
-
-
-
 
     function loadSaleOrderExpense(filter_sale_order) {
         $('#tab_plan_datatable').remove();
@@ -995,4 +974,16 @@ $(document).ready(function () {
             ],
         });
     }
+
+    $('.dropify').dropify({
+        messages: {
+            'default': 'Drag and drop your file here.',
+        },
+        tpl: {
+            message: '<div class="dropify-message">' +
+                '<span class="file-icon"></span>' +
+                '<h5>{{ default }}</h5>' +
+                '</div>',
+        }
+    });
 })

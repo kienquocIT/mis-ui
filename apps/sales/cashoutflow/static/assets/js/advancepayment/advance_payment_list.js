@@ -95,10 +95,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'status',
+                        data: '',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a type="button" class="btn btn-flush-primary" href="#"><i class="bi bi-grid-1x2"></i></a>`
+                            return `<a type="button" class="btn btn-flush-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>`
                         }
                     }
                 ],
@@ -107,4 +107,8 @@ $(document).ready(function () {
     }
 
     loadAdvanceList();
+
+    $(document).on('click', '.btn-change-status', function () {
+        alert('Waiting "Return Advance" and "Payment"')
+    })
 })

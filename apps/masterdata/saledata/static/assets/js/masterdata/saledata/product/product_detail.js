@@ -462,7 +462,7 @@ $(document).ready(function () {
                 'inventory_level_max': inventory_level_max
             }
         } else {
-            frm.dataForm['inventory_information'] = {}
+            delete frm.dataForm['inventory_information']
         }
 
         let price_list = []
@@ -533,7 +533,7 @@ $(document).ready(function () {
                 frm.dataForm['sale_information']['measure'] = measurementList;
             }
         } else {
-            frm.dataForm['sale_information'] = {}
+            delete frm.dataForm['sale_information']
         }
 
         $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
@@ -546,6 +546,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })

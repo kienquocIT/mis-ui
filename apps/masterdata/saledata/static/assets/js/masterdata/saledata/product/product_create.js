@@ -370,7 +370,7 @@ $(document).ready(function () {
             frm.dataForm['sale_information']['measure'] = [];
             frm.dataForm['sale_information']['length'] = null;
             frm.dataForm['sale_information']['width'] = null;
-            frm.dataForm['sale_information']['weight'] = null;
+            frm.dataForm['sale_information']['height'] = null;
             if ($('#check-tab-inventory').is(':checked') === true) {
                 let inpLength = $('[name="length"]');
                 let inpWidth = $('[name="width"]');

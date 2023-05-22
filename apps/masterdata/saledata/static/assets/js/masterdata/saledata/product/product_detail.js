@@ -462,7 +462,7 @@ $(document).ready(function () {
                 'inventory_level_max': inventory_level_max
             }
         } else {
-            frm.dataForm['inventory_information'] = {}
+            delete frm.dataForm['inventory_information']
         }
 
         let price_list = []
@@ -504,7 +504,7 @@ $(document).ready(function () {
             frm.dataForm['sale_information']['measure'] = [];
             frm.dataForm['sale_information']['length'] = null;
             frm.dataForm['sale_information']['width'] = null;
-            frm.dataForm['sale_information']['weight'] = null;
+            frm.dataForm['sale_information']['height'] = null;
             if ($('#check-tab-inventory').is(':checked') === true) {
                 let inpLength = $('[name="length"]');
                 let inpWidth = $('[name="width"]');
@@ -533,7 +533,7 @@ $(document).ready(function () {
                 frm.dataForm['sale_information']['measure'] = measurementList;
             }
         } else {
-            frm.dataForm['sale_information'] = {}
+            delete frm.dataForm['sale_information']
         }
 
         $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
@@ -546,6 +546,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })

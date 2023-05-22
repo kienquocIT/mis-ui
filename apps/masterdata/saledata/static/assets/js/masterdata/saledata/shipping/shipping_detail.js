@@ -368,5 +368,6 @@ $(document).ready(function () {
                 })
             });
         })
+        $(ele).find('option:selected').removeAttr('disabled');
     }
 })

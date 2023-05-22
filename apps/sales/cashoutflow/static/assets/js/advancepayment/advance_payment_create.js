@@ -718,14 +718,14 @@ $(document).ready(function () {
             frm.dataForm['method'] = 2;
         }
 
-        if (frm.dataForm['type'] === '0') {
-            frm.dataForm['type'] = 0;
+        if (frm.dataForm['advance_payment_type'] === '0') {
+            frm.dataForm['advance_payment_type'] = 0;
         }
-        else if (frm.dataForm['type'] === '1') {
-            frm.dataForm['type'] = 1;
+        else if (frm.dataForm['advance_payment_type'] === '1') {
+            frm.dataForm['advance_payment_type'] = 1;
         }
         else {
-            frm.dataForm['type'] = 2;
+            frm.dataForm['advance_payment_type'] = 2;
         }
 
         if ($('#creator-select-box').val() !== null) {

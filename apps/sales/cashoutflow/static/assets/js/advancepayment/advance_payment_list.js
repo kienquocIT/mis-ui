@@ -36,14 +36,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'type',
+                        data: 'advance_payment_type',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            if (row.type === 'To Employee') {
-                                return `<span class="badge badge-soft-danger">` + row.type + `</span>`
+                            if (row.advance_payment_type === 'To Employee') {
+                                return `<span class="badge badge-soft-danger">` + row.advance_payment_type + `</span>`
                             }
-                            else if (row.type === 'To Supplier') {
-                                return `<span class="badge badge-soft-pumpkin">` + row.type + `</span>`
+                            else if (row.advance_payment_type === 'To Supplier') {
+                                return `<span class="badge badge-soft-pumpkin">` + row.advance_payment_type + `</span>`
                             }
                         }
                     },

@@ -160,10 +160,6 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
-            let promotionRows = tableProduct[0].tBodies[0].querySelectorAll('.table-row-promotion');
-            if (promotionRows) {
-                order = (order - promotionRows.length)
-            }
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
             let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
@@ -672,6 +668,16 @@ $(function () {
 // Action click Apply Promotion
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
+            deletePromotionRows(tableProduct);
+            let order = 1;
+            let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
+            let tableLen = tableProduct[0].tBodies[0].rows.length;
+            if (tableLen !== 0 && !tableEmpty) {
+                order = (tableLen+1);
+            }
+            let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
+            let promotionResult = getPromotionResult(promotionCondition);
+            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -679,7 +685,7 @@ $(function () {
                     "title": "",
                     "value": 0
                 },
-                "order": 2,
+                "order": order,
                 "product": {
                     "id": "",
                     "code": "",
@@ -692,13 +698,13 @@ $(function () {
                     "code": "",
                     "title": ""
                 },
-                "product_quantity": 0,
+                "product_quantity": promotionResult.product_quantity,
                 "product_uom_code": "",
                 "product_tax_title": "",
                 "product_tax_value": 0,
                 "product_uom_title": "",
                 "product_tax_amount": 0,
-                "product_unit_price": 0,
+                "product_unit_price": promotionResult.product_price,
                 "product_description": "Giảm giá 10% khi mua trên 2 sản phẩm",
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
@@ -706,12 +712,15 @@ $(function () {
                 "is_promotion": true
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-            // Get the desired position (e.g., after the 3rd row)
-            let afterRow = tableProduct.DataTable().row(0).node(); // Example: Move after the 3rd row
+            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, promotionResult.value_tax);
+            // Get the desired position
+            let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
             // Remove the new row and re-insert it at the desired position
             $(newRow).detach().insertAfter(afterRow);
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+            // Re Calculate all data
+            calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
         });
 
 // Submit form quotation + sale order

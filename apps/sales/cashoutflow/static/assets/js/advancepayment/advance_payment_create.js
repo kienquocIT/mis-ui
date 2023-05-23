@@ -261,10 +261,10 @@ $(document).ready(function () {
         ele.append(`<optgroup label="Sale Order" class="text-primary">`)
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">` + item.opportunity.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
-                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">SALE.CODE.XXXX</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
         ele.append(sale_not_opp);
@@ -272,10 +272,10 @@ $(document).ready(function () {
         ele.append(`<optgroup label="Quotation" class="text-primary">`);
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">` + item.opportunity.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
-                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">QUO.CODE.XXXX</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
         ele.append(quotation_not_opp);
@@ -308,20 +308,20 @@ $(document).ready(function () {
         ele2.append(`<optgroup label="Sale Order">`);
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
             else {
-                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(SALE.CODE) ` + item.title +`</option>`);
+                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(No OppCode) ` + item.title +`</option>`);
             }
         })
         ele2.append(`</optgroup>`);
         ele2.append(`<optgroup label="Quotation">`);
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
             else {
-                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(QUOTATION.CODE) ` + item.title +`</option>`);
+                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(No OppCode) ` + item.title +`</option>`);
             }
         })
         ele2.append(`</optgroup>`);
@@ -404,7 +404,9 @@ $(document).ready(function () {
         ele.html('');
         ele.append(`<option></option>`);
         account_list.map(function (item) {
-            ele.append(`<option data-name="` + item.name + `" data-industry="` + item.industry.title + `" data-owner="` + item.owner.fullname + `" data-code="` + item.code + `" value="` + item.id + `">` + item.name + `</option>`);
+            if (item.account_type.includes('Supplier')) {
+                ele.append(`<option data-name="` + item.name + `" data-industry="` + item.industry.title + `" data-owner="` + item.owner.fullname + `" data-code="` + item.code + `" value="` + item.id + `">` + item.name + `</option>`);
+            }
         })
     }
 
@@ -983,7 +985,7 @@ $(document).ready(function () {
         });
     }
 
-    $('.dropify').dropify({
+    $('#input-file-now').dropify({
         messages: {
             'default': 'Drag and drop your file here.',
         },

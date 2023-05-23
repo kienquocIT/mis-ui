@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
-class MDConfigMsg:  # pylint: disable=too-few-public-methods
+
+class MDConfigMsg:
     """Master data PAYMENTS_TERMS (PT) config message translations"""
     PT_CREATE = _('Payments terms create successfully')
     PT_UPDATE = _('Payments terms update successfully')
@@ -16,3 +17,9 @@ class MDConfigMsg:  # pylint: disable=too-few-public-methods
     PT_AFTER_ACCEPTANCE = _('Acceptance date')
     PT_AFTER_EOI_MONTH = _('End of invoice month')
     PT_AFTER_ORDER_DATE = _('Order date')
+
+
+class GRMsg:
+    MS_CREATE = _('Good receipt create successfully')
+    MS_UPDATE = _('Good receipt update successfully')
+    MS_DELETE = _('Good receipt delete successfully')

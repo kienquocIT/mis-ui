@@ -28,7 +28,9 @@
 {% endblock %}
 {% block pageContent %}
     <div id="section-advance-list">
-        <table id="datatable_advance_list" class="table nowrap w-100 mb-5" data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}">
+        <table id="datatable_advance_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'AdvancePaymentListAPI' %}"
+               data-url-detail="{% url 'AdvancePaymentDetail' '0' %}">
             <thead>
             <th>
                 <span class="form-check">

@@ -76,35 +76,37 @@ class AdvancePaymentListAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-#
-#
-# class AdvanceDetail(View):
-#     permission_classes = [IsAuthenticated]
-#
-#     @mask_view(
-#         auth_require=True,
-#         template='masterdata/saledata/product/product_detail.html',
-#         breadcrumb='PRODUCT_DETAIL_PAGE',
-#         menu_active='menu_product_detail',
-#     )
-#     def get(self, request, *args, **kwargs):
-#         return {}, status.HTTP_200_OK
-#
-#
-# class AdvanceDetailAPI(APIView):
-#     permission_classes = [IsAuthenticated]
-#
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def get(self, request, pk, *args, **kwargs):
-#         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).get()
-#         if resp.state:
-#             return {'product': resp.result}, status.HTTP_200_OK
-#         elif resp.status == 401:
-#             return {}, status.HTTP_401_UNAUTHORIZED
-#         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class AdvancePaymentDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='advancepayment/advance_payment_detail.html',
+        breadcrumb='ADVANCE_PAYMENT_DETAIL_PAGE',
+        menu_active='menu_advance_payment_detail',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class AdvancePaymentDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL + pk).get()
+        if resp.state:
+            return {
+                       'advance_payment_detail': resp.result,
+                   }, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 #
 #     @mask_view(
 #         auth_require=True,

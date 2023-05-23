@@ -817,24 +817,38 @@ class dataTableHandle {
                                 </div>
                             </div>`;
                         } else if (row.hasOwnProperty('is_promotion')) {
-                        return `<div class="row">
-                                    <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <i class="fas fa-gift"></i>
-                                        </span>
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
-                                    </span>
-                                </div>
-                                </div>`;
-                        } else if (row.hasOwnProperty('is_shipping')) {
+                            let link = "";
+                            let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
+                            if (linkDetail) {
+                                link = linkDetail.format_url_with_uuid(row.promotion.id);
+                            }
                             return `<div class="row">
                                     <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
-                                            <i class="fas fa-shipping-fast"></i>
+                                            <a href="${link}" target="_blank">
+                                                <i class="fas fa-gift"></i>
+                                            </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                    </span>
+                                </div>
+                                </div>`;
+                        } else if (row.hasOwnProperty('is_shipping')) {
+                            let link = "";
+                            let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
+                            if (linkDetail) {
+                                link = linkDetail.format_url_with_uuid(row.shipping.id);
+                            }
+                            return `<div class="row">
+                                    <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <a href="${link}" target="_blank">
+                                                <i class="fas fa-shipping-fast"></i>
+                                            </a>
+                                        </span>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -844,7 +858,7 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_promotion')) {
+                        if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             return `<div class="row">
                                 <input type="text" class="form-control table-row-description" value="${row.product_description}">
                             </div>`;
@@ -859,7 +873,7 @@ class dataTableHandle {
                     targets: 3,
                     width: "1%",
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_promotion')) {
+                        if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
                             return `<div class="row">
                                         <select class="form-select table-row-uom" id="${selectUOMID}" required>
@@ -880,7 +894,7 @@ class dataTableHandle {
                     targets: 4,
                     width: "1%",
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_promotion')) {
+                        if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                            return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
                             </div>`;
@@ -894,7 +908,7 @@ class dataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_promotion')) {
+                        if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
@@ -939,7 +953,7 @@ class dataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_promotion')) {
+                        if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -982,7 +996,7 @@ class dataTableHandle {
                             taxID = row.tax.id;
                             taxRate = row.tax.value;
                         }
-                        if (!row.hasOwnProperty('is_promotion')) {
+                        if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             return `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
@@ -1406,7 +1420,7 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-promotion-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
                             return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>`;
                         }
@@ -1637,7 +1651,7 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-condition="" data-bs-dismiss="modal">Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-condition="" data-shipping-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
                             return `<button type="button" class="btn btn-primary apply-shipping" disabled>Apply</button>`;
                         }
@@ -2040,9 +2054,13 @@ class submitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+                rowData['promotion'] = null;
+                rowData['shipping'] = null;
             } else if (elePromotion) { // PROMOTION
                 rowData['is_promotion'] = true;
                 rowData['product'] = null;
+                rowData['promotion'] = elePromotion.getAttribute('data-id');
+                rowData['shipping'] = null;
                 rowData['product_title'] = elePromotion.value;
                 rowData['product_code'] = elePromotion.value;
                 rowData['unit_of_measure'] = null;

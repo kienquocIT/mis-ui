@@ -704,6 +704,7 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
+            let promotionID = $(this)[0].getAttribute('data-promotion-id');
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -735,7 +736,8 @@ $(function () {
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
-                "is_promotion": true
+                "is_promotion": true,
+                "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')}
             };
             if (promotionResult.is_discount === true) {
                 let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
@@ -803,7 +805,8 @@ $(function () {
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
-                "is_shipping": true
+                "is_shipping": true,
+                "shipping": {"id": $(this)[0].getAttribute('data-shipping-id')}
             };
             tableProduct.DataTable().row.add(dataAdd).draw()
             // ReOrder STT

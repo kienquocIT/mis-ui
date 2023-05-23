@@ -844,12 +844,14 @@
                                 type="hidden"
                                 id="data-init-quotation-create-promotion"
                                 data-url="{% url "PromotionCheckListAPI" %}"
+                                data-link-detail="{% url "PromotionDetail" 1 %}"
                                 data-method="GET"
                         >
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-shipping"
                                 data-url="{% url "ShippingListAPI" %}"
+                                data-link-detail="{% url "ShippingDetail" 1 %}"
                                 data-method="GET"
                         >
                     </div>

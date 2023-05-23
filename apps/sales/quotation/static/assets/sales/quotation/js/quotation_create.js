@@ -154,6 +154,8 @@ $(function () {
 // Action on click button add product
         $('#btn-add-product-quotation-create').on('click', function (e) {
             e.preventDefault();
+            // delete all Promotion rows
+            deletePromotionRows(tableProduct);
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -585,6 +587,11 @@ $(function () {
                 calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
                 // load expense
                 calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
+                // Clear table COST when copy
+                tableCost.DataTable().clear().draw();
+                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
+                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
+                document.getElementById('quotation-create-cost-total').innerHTML = "0";
             } else if (type === 'copy-to') {
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -669,15 +676,15 @@ $(function () {
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct);
+            let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
+            let promotionResult = getPromotionResult(promotionCondition);
+            // let order = promotionResult.row_apply_index + 0.5;
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
-            let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
-            let promotionResult = getPromotionResult(promotionCondition);
-            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -687,12 +694,12 @@ $(function () {
                 },
                 "order": order,
                 "product": {
-                    "id": "",
-                    "code": "",
-                    "title": "Giảm giá 10% khi mua trên 2 sản phẩm"
+                    "id": promotionResult.product_id,
+                    "code": promotionResult.product_code,
+                    "title": promotionResult.product_title
                 },
-                "product_code": "",
-                "product_title": "Giảm giá 10% khi mua trên 2 sản phẩm",
+                "product_code": promotionResult.product_code,
+                "product_title": promotionResult.product_title,
                 "unit_of_measure": {
                     "id": "",
                     "code": "",
@@ -705,22 +712,27 @@ $(function () {
                 "product_uom_title": "",
                 "product_tax_amount": 0,
                 "product_unit_price": promotionResult.product_price,
-                "product_description": "Giảm giá 10% khi mua trên 2 sản phẩm",
+                "product_description": promotionResult.product_description,
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
                 "is_promotion": true
             };
-            let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, promotionResult.value_tax);
-            // Get the desired position
-            let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
-            // Remove the new row and re-insert it at the desired position
-            $(newRow).detach().insertAfter(afterRow);
+            if (promotionResult.is_discount === true) {
+                let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
+                let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, promotionResult.value_tax);
+                // Get the desired position
+                let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
+                // Remove the new row and re-insert it at the desired position
+                $(newRow).detach().insertAfter(afterRow);
+                // Re Calculate all data
+                calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+            } else if (promotionResult.is_gift === true) {
+                tableProduct.DataTable().row.add(dataAdd).draw()
+            }
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
-            // Re Calculate all data
-            calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
         });
 
 // Submit form quotation + sale order

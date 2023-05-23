@@ -820,7 +820,10 @@ class dataTableHandle {
                         return `<div class="row">
                                     <div class="input-group">
                                     <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product.title}" disabled>
+                                        <span class="input-prefix">
+                                            <i class="fas fa-gift"></i>
+                                        </span>
+                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -836,7 +839,7 @@ class dataTableHandle {
                             </div>`;
                         } else {
                             return `<div class="row">
-                                        <input type="text" class="form-control table-row-description disabled-custom-show" value="${row.product_description}" disabled>
+                                        <input type="text" class="form-control table-row-description disabled-custom-show" value="${row.product_description}" data-bs-toggle="tooltip" title="${row.product_description}" disabled>
                                     </div>`;
                         }
                     }
@@ -855,7 +858,7 @@ class dataTableHandle {
                         } else {
                             return `<div class="row">
                                         <select class="form-select table-row-uom disabled-custom-show" required disabled>
-                                            <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                                            <option value="${row.unit_of_measure.id}">${row.product_uom_title}</option>
                                         </select>
                                     </div>`;
                         }
@@ -1392,7 +1395,7 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition=${JSON.stringify(row.condition)} data-bs-dismiss="modal">Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
                             return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>`;
                         }
@@ -1871,7 +1874,8 @@ class submitHandle {
             let rowData = {};
             let row = tableBody.rows[i];
             let eleProduct = row.querySelector('.table-row-item');
-            if (eleProduct) {
+            let elePromotion = row.querySelector('.table-row-promotion');
+            if (eleProduct) { // PRODUCT
                 let optionSelected = eleProduct.options[eleProduct.selectedIndex];
                 if (optionSelected) {
                     if (optionSelected.querySelector('.data-info')) {
@@ -1881,74 +1885,118 @@ class submitHandle {
                         rowData['product_code'] = dataInfo.code;
                     }
                 }
-            }
-            let eleUOM = row.querySelector('.table-row-uom');
-            if (eleUOM) {
-                let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['unit_of_measure'] = dataInfo.id;
-                        rowData['product_uom_title'] = dataInfo.title;
-                        rowData['product_uom_code'] = dataInfo.code;
+                let eleUOM = row.querySelector('.table-row-uom');
+                if (eleUOM) {
+                    let optionSelected = eleUOM.options[eleUOM.selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-info')) {
+                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            rowData['unit_of_measure'] = dataInfo.id;
+                            rowData['product_uom_title'] = dataInfo.title;
+                            rowData['product_uom_code'] = dataInfo.code;
+                        }
                     }
                 }
-
-            }
-            let eleTax = row.querySelector('.table-row-tax');
-            if (eleTax) {
-                let optionSelected = eleTax.options[eleTax.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['tax'] = dataInfo.id;
-                        rowData['product_tax_title'] = dataInfo.title;
-                        rowData['product_tax_value'] = dataInfo.value;
+                let eleTax = row.querySelector('.table-row-tax');
+                if (eleTax) {
+                    let optionSelected = eleTax.options[eleTax.selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-info')) {
+                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            rowData['tax'] = dataInfo.id;
+                            rowData['product_tax_title'] = dataInfo.title;
+                            rowData['product_tax_value'] = dataInfo.value;
+                        } else {
+                            rowData['product_tax_value'] = 0;
+                        }
+                    }
+                }
+                let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                }
+                let eleDescription = row.querySelector('.table-row-description');
+                if (eleDescription) {
+                    rowData['product_description'] = eleDescription.value;
+                }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseInt(eleQuantity.value);
+                }
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    rowData['product_unit_price'] = $(elePrice).valCurrency();
+                }
+                let eleDiscount = row.querySelector('.table-row-discount');
+                if (eleDiscount) {
+                    if (eleDiscount.value || eleDiscount.value === "0") {
+                        rowData['product_discount_value'] = parseFloat(eleDiscount.value);
                     } else {
-                        rowData['product_tax_value'] = 0;
+                        rowData['product_discount_value'] = 0;
                     }
                 }
-
-            }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-            if (eleTaxAmount) {
-                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-            }
-            let eleDescription = row.querySelector('.table-row-description');
-            if (eleDescription) {
-                rowData['product_description'] = eleDescription.value;
-            }
-            let eleQuantity = row.querySelector('.table-row-quantity');
-            if (eleQuantity) {
-                rowData['product_quantity'] = parseInt(eleQuantity.value);
-            }
-            let elePrice = row.querySelector('.table-row-price');
-            if (elePrice) {
-                rowData['product_unit_price'] = $(elePrice).valCurrency();
-            }
-            let eleDiscount = row.querySelector('.table-row-discount');
-            if (eleDiscount) {
-                if (eleDiscount.value || eleDiscount.value === "0") {
-                    rowData['product_discount_value'] = parseFloat(eleDiscount.value);
-                } else {
-                    rowData['product_discount_value'] = 0;
+                let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+                if (eleDiscountAmount) {
+                    rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
+                }
+                let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                if (eleSubtotal) {
+                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                }
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    rowData['order'] = parseInt(eleOrder.innerHTML);
+                }
+            } else if (elePromotion) { // PROMOTION
+                rowData['is_promotion'] = true;
+                rowData['product'] = null;
+                rowData['product_title'] = elePromotion.value;
+                rowData['product_code'] = elePromotion.value;
+                rowData['unit_of_measure'] = null;
+                rowData['product_uom_title'] = "";
+                rowData['product_uom_code'] = "";
+                let eleTax = row.querySelector('.table-row-tax');
+                if (eleTax) {
+                    let optionSelected = eleTax.options[eleTax.selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-info')) {
+                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            rowData['tax'] = dataInfo.id;
+                            rowData['product_tax_title'] = dataInfo.title;
+                            rowData['product_tax_value'] = dataInfo.value;
+                        } else {
+                            rowData['product_tax_value'] = 0;
+                        }
+                    }
+                }
+                let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                }
+                let eleDescription = row.querySelector('.table-row-description');
+                if (eleDescription) {
+                    rowData['product_description'] = eleDescription.value;
+                }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseInt(eleQuantity.value);
+                }
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    rowData['product_unit_price'] = $(elePrice).valCurrency();
+                }
+                rowData['product_discount_value'] = 0;
+                rowData['product_discount_amount'] = 0;
+                rowData['product_subtotal_price'] = 0;
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
             }
-            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-            if (eleDiscountAmount) {
-                rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
-            }
-            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-            if (eleSubtotal) {
-                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-            }
-            let eleOrder = row.querySelector('.table-row-order');
-            if (eleOrder) {
-                rowData['order'] = parseInt(eleOrder.innerHTML);
-            }
-            if (rowData.hasOwnProperty('product') && rowData.hasOwnProperty('unit_of_measure')) {
-                result.push(rowData);
-            }
+            // if (rowData.hasOwnProperty('product') && rowData.hasOwnProperty('unit_of_measure')) {
+            //     result.push(rowData);
+            // }
+            result.push(rowData);
         }
         return result
     }
@@ -2213,16 +2261,24 @@ function checkAvailablePromotion(data_promotion) {
             // discount on specific product
             if (conditionCheck.is_on_product === true) {
                 let prodID = conditionCheck.product_selected.id;
+                let percentDiscount = 0;
+                let maxDiscountAmount = 0;
+                let fixDiscountAmount = 0;
                 if (conditionCheck.percent_fix_amount === true) {
-                    let percentDiscount = conditionCheck.percent_value;
-                    let maxDiscountAmount = conditionCheck.max_percent_value;
-                    for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
-                        let row = tableProd[0].tBodies[0].rows[i];
-                        let prod = row.querySelector('.table-row-item');
-                        let quantity = row.querySelector('.table-row-quantity');
-                        if (prod.value === prodID && parseInt(quantity.value) > 0) {
-                            if (conditionCheck.hasOwnProperty('is_min_quantity')) {
-                                if (parseInt(quantity.value) >= conditionCheck.num_minimum) {
+                    percentDiscount = conditionCheck.percent_value;
+                    maxDiscountAmount = conditionCheck.max_percent_value;
+
+                } else {
+                    fixDiscountAmount = parseFloat(conditionCheck.fix_value);
+                }
+                for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
+                    let row = tableProd[0].tBodies[0].rows[i];
+                    let prod = row.querySelector('.table-row-item');
+                    let quantity = row.querySelector('.table-row-quantity');
+                    if (prod.value === prodID && parseInt(quantity.value) > 0) {
+                        if (conditionCheck.hasOwnProperty('is_min_quantity')) {
+                            if (parseInt(quantity.value) >= conditionCheck.num_minimum) {
+                                if (conditionCheck.percent_fix_amount === true) {
                                     return {
                                         'is_pass': true,
                                         'condition': {
@@ -2236,10 +2292,35 @@ function checkAvailablePromotion(data_promotion) {
                                             'is_fix_amount': false,
                                             'percent_discount': percentDiscount,
                                             'max_amount': maxDiscountAmount,
+                                            'product_id': "",
+                                            'product_title': data_promotion.title,
+                                            'product_code': data_promotion.code,
+                                            'product_description': data_promotion.remark,
+                                        }
+                                    }
+                                } else {
+                                    return {
+                                        'is_pass': true,
+                                        'condition': {
+                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                            'is_discount': true,
+                                            'is_gift': false,
+                                            'is_before_tax': is_before_tax,
+                                            'is_after_tax': is_after_tax,
+                                            'is_on_product': true,
+                                            'is_on_percent': false,
+                                            'is_fix_amount': true,
+                                            'fix_value': fixDiscountAmount,
+                                            'product_id': "",
+                                            'product_title': data_promotion.title,
+                                            'product_code': data_promotion.code,
+                                            'product_description': data_promotion.remark,
                                         }
                                     }
                                 }
-                            } else {
+                            }
+                        } else {
+                            if (conditionCheck.percent_fix_amount === true) {
                                 return {
                                     'is_pass': true,
                                     'condition': {
@@ -2253,33 +2334,10 @@ function checkAvailablePromotion(data_promotion) {
                                         'is_fix_amount': false,
                                         'percent_discount': percentDiscount,
                                         'max_amount': maxDiscountAmount,
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    let fixDiscountAmount = parseFloat(conditionCheck.fix_value);
-                    for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
-                        let row = tableProd[0].tBodies[0].rows[i];
-                        let prod = row.querySelector('.table-row-item');
-                        let quantity = row.querySelector('.table-row-quantity');
-                        if (prod.value === prodID && parseInt(quantity.value) > 0) {
-                            if (conditionCheck.hasOwnProperty('is_min_quantity')) {
-                                if (parseInt(quantity.value) >= conditionCheck.num_minimum) {
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                            'is_discount': true,
-                                            'is_gift': false,
-                                            'is_before_tax': is_before_tax,
-                                            'is_after_tax': is_after_tax,
-                                            'is_on_product': true,
-                                            'is_on_percent': false,
-                                            'is_fix_amount': true,
-                                            'fix_value': fixDiscountAmount,
-                                        }
+                                        'product_id': "",
+                                        'product_title': data_promotion.title,
+                                        'product_code': data_promotion.code,
+                                        'product_description': data_promotion.remark,
                                     }
                                 }
                             } else {
@@ -2295,6 +2353,78 @@ function checkAvailablePromotion(data_promotion) {
                                         'is_on_percent': false,
                                         'is_fix_amount': true,
                                         'fix_value': fixDiscountAmount,
+                                        'product_id': "",
+                                        'product_title': data_promotion.title,
+                                        'product_code': data_promotion.code,
+                                        'product_description': data_promotion.remark,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (data_promotion.is_gift === true) { // GIFT
+            let conditionCheck = data_promotion.gift_method;
+            if (conditionCheck.is_free_product === true) {
+                if (conditionCheck.hasOwnProperty('is_min_purchase')) {
+                    if (conditionCheck.before_after_tax === true) {
+                        let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
+                        let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
+                        if ((parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value)) >= parseFloat(conditionCheck.min_purchase_cost)) {
+                            return {
+                                'is_pass': true,
+                                'condition': {
+                                    'row_apply_index': 0,
+                                    'is_discount': false,
+                                    'is_gift': true,
+                                    'product_id': conditionCheck.product_received.id,
+                                    'product_title': conditionCheck.product_received.title,
+                                    'product_code': conditionCheck.product_received.code,
+                                    'product_description': data_promotion.remark,
+                                    'product_quantity': parseInt(conditionCheck.num_product_received),
+                                }
+                            }
+                        }
+                    } else {
+                        let eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
+                        if (parseFloat(eleTotalRaw.value) >= parseFloat(conditionCheck.min_purchase_cost)) {
+                            return {
+                                'is_pass': true,
+                                'condition': {
+                                    'row_apply_index': 0,
+                                    'is_discount': false,
+                                    'is_gift': true,
+                                    'product_id': conditionCheck.product_received.id,
+                                    'product_title': conditionCheck.product_received.title,
+                                    'product_code': conditionCheck.product_received.code,
+                                    'product_description': data_promotion.remark,
+                                    'product_quantity': parseInt(conditionCheck.num_product_received),
+                                }
+                            }
+                        }
+                    }
+
+                } else if (conditionCheck.hasOwnProperty('is_purchase')) {
+                    let purchase_product_id = conditionCheck.purchase_product.id;
+                    let purchase_num = conditionCheck.purchase_num;
+                    for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
+                        let row = tableProd[0].tBodies[0].rows[i];
+                        let prod = row.querySelector('.table-row-item');
+                        let quantity = row.querySelector('.table-row-quantity');
+                        if (prod.value === purchase_product_id && parseInt(quantity.value) > 0) {
+                            if (parseInt(quantity.value) >= purchase_num) {
+                                return {
+                                    'is_pass': true,
+                                    'condition': {
+                                        'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                        'is_discount': false,
+                                        'is_gift': true,
+                                        'product_id': conditionCheck.product_received.id,
+                                        'product_title': conditionCheck.product_received.title,
+                                        'product_code': conditionCheck.product_received.code,
+                                        'product_description': data_promotion.remark,
+                                        'product_quantity': parseInt(conditionCheck.num_product_received),
                                     }
                                 }
                             }
@@ -2333,10 +2463,26 @@ function getPromotionResult(condition) {
                 'row_apply_index': condition.row_apply_index,
                 'is_discount': true,
                 'is_gift': false,
+                'product_id': condition.product_id,
+                'product_title': condition.product_title,
+                'product_code': condition.product_code,
+                'product_description': condition.product_description,
                 'product_quantity': quantity,
                 'product_price': DiscountAmount,
                 'value_tax': taxID
             }
+        }
+    } else if (condition.is_gift === true) {
+        return {
+            'row_apply_index': condition.row_apply_index,
+            'is_discount': false,
+            'is_gift': true,
+            'product_id': condition.product_id,
+            'product_title': condition.product_title,
+            'product_code': condition.product_code,
+            'product_description': condition.product_description,
+            'product_quantity': condition.product_quantity,
+            'product_price': 0,
         }
     }
     return result

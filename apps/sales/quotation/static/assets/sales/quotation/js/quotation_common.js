@@ -2296,6 +2296,7 @@ function checkAvailablePromotion(data_promotion) {
                                             'product_title': data_promotion.title,
                                             'product_code': data_promotion.code,
                                             'product_description': data_promotion.remark,
+                                            'product_quantity': 1,
                                         }
                                     }
                                 } else {
@@ -2315,6 +2316,7 @@ function checkAvailablePromotion(data_promotion) {
                                             'product_title': data_promotion.title,
                                             'product_code': data_promotion.code,
                                             'product_description': data_promotion.remark,
+                                            'product_quantity': 1,
                                         }
                                     }
                                 }
@@ -2338,6 +2340,7 @@ function checkAvailablePromotion(data_promotion) {
                                         'product_title': data_promotion.title,
                                         'product_code': data_promotion.code,
                                         'product_description': data_promotion.remark,
+                                        'product_quantity': 1,
                                     }
                                 }
                             } else {
@@ -2357,6 +2360,7 @@ function checkAvailablePromotion(data_promotion) {
                                         'product_title': data_promotion.title,
                                         'product_code': data_promotion.code,
                                         'product_description': data_promotion.remark,
+                                        'product_quantity': 1,
                                     }
                                 }
                             }
@@ -2466,9 +2470,10 @@ function getPromotionResult(condition) {
                 'product_id': condition.product_id,
                 'product_title': condition.product_title,
                 'product_code': condition.product_code,
-                'product_description': condition.product_description,
-                'product_quantity': quantity,
-                'product_price': DiscountAmount,
+                // 'product_description': condition.product_description,
+                'product_description': "Voucher",
+                'product_quantity': condition.product_quantity,
+                'product_price': (DiscountAmount * quantity),
                 'value_tax': taxID
             }
         }
@@ -2480,7 +2485,8 @@ function getPromotionResult(condition) {
             'product_id': condition.product_id,
             'product_title': condition.product_title,
             'product_code': condition.product_code,
-            'product_description': condition.product_description,
+            // 'product_description': condition.product_description,
+            'product_description': "Gift",
             'product_quantity': condition.product_quantity,
             'product_price': 0,
         }
@@ -2495,4 +2501,18 @@ function deletePromotionRows(table) {
             deleteRow($(row), row.closest('tbody'), table)
         }
     }
+}
+
+function filterDataProductNotPromotion(data_products) {
+    let finalList = [];
+    let order = 0;
+    for (let i = 0; i < data_products.length; i++) {
+        let dataProd = data_products[i];
+        if (!dataProd.hasOwnProperty('is_promotion')) {
+            order++;
+            dataProd['order'] = order;
+            finalList.push(dataProd)
+        }
+    }
+    return finalList
 }

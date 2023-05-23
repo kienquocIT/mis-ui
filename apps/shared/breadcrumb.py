@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
+
     def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None):
         self.title = title
         self.url = url if url else ''
@@ -112,13 +113,19 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Sale order
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
-    
+
     # WareHouse
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+
+    # Good receipt
+    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'PromotionList')
+    GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
+    GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
 
 
 class BreadcrumbView:
     """menu vertical item view"""
+
     @staticmethod
     def check_view_name():
         """
@@ -303,3 +310,11 @@ class BreadcrumbView:
     WAREHOUSE_LIST_PAGE = [
         BreadcrumbItem.WAREHOUSE_LIST_PAGE
     ]
+
+    # Good receipt
+    GOOD_RECEIPT_LIST_PAGE = [
+        BreadcrumbItem.GOOD_RECEIPT_LIST_PAGE
+    ]
+
+    GOOD_RECEIPT_CREATE_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_CREATE_PAGE]
+    GOOD_RECEIPT_DETAIL_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_DETAIL_PAGE]

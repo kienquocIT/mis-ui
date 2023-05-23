@@ -91063,6 +91063,23 @@ Project:	Jampack
     align-items: center;
     cursor: pointer;
     border-left: solid 1px #cdcdcd;
+    z-index:12;
+}
+.readonly.table-readonly:hover > * + span:not(.select2){
+    border-radius: 0;
+}
+.readonly.table-readonly:after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    top:0;
+    left: 0;
+    z-index: 11
+}
+.readonly.table-readonly table{
+    background-color: #f7f7f7
 }
 .input-group.readonly > * + span,
 .readonly > select ~ span:not(.select2){

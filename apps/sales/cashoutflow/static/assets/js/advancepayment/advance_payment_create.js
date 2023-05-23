@@ -574,14 +574,15 @@ $(document).ready(function () {
 
     $('#return-date-id').daterangepicker({
         singleDatePicker: true,
-        timePicker: true,
+        timePicker: false,
         showDropdowns: true,
-        minYear: 1901,
+        minYear: parseInt(moment().format('YYYY')),
+        minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD'))),
         locale: {
-            format: 'YYYY-MM-DD HH:mm'
+            format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
+        maxYear: parseInt(moment().format('YYYY')) + 100
     });
 
     $('#created_date_id').daterangepicker({

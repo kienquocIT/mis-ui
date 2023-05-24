@@ -350,5 +350,5 @@ function filterDataProductNotPromotion(data_products) {
 
 // Shipping
 function checkAvailableShipping(data_shipping) {
-
+    let shippingAddress = $('#quotation-create-shipping-address').val();
 }

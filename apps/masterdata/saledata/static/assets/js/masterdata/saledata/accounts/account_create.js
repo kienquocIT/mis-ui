@@ -305,24 +305,6 @@ $(document).ready(function () {
         $(this).data('oldValue', $(this).val());
     });
 
-    // Conditions for choosing a parent account
-    $('#select-box-acc-type').on('change', function () {
-        let selected_acc_type = $('#select-box-acc-type option:selected').filter(function () {
-            return $(this).text().toLowerCase() === 'customer'
-        })
-
-        if (selected_acc_type.length > 0) {
-            $('.radio-btn input').removeAttr('disabled')
-            if ($('#inp-organization').is(':checked')) {
-                $('#select-box-parent-account').attr('disabled', false);
-            }
-        } else {
-            $('.radio-btn input').attr('disabled', true);
-            $('#select-box-parent-account').attr('disabled', true);
-        }
-
-    });
-
     $('#inp-individual').on('change', function () {
         $('#select-box-parent-account').prop('selectedIndex', -1);
         $('#select-box-parent-account').attr('disabled', true);
@@ -562,23 +544,16 @@ $(document).ready(function () {
             frm.dataForm['billing_address'] = billing_address_list;
         }
 
-        let is_customer_selected = $('#select-box-acc-type option:selected').filter(function () {
-            return $(this).text().toLowerCase() === 'customer';
-        })
-
-        if (is_customer_selected.length > 0) {
-            if ($('#inp-organization').is(':checked')) {
-                frm.dataForm['customer_type'] = 'organization';
-            } else {
-                frm.dataForm['customer_type'] = 'individual';
-            }
+        if ($('#inp-organization').is(':checked')) {
+            frm.dataForm['account_type_selection'] = 1;
+        } else {
+            frm.dataForm['account_type_selection'] = 0;
         }
 
         frm.dataForm['contact_select_list'] = $('.contact_selected').map(function () {
             return $(this).attr('data-value');
         }).get();
         frm.dataForm['contact_primary'] = $('.contact_primary').attr('data-value');
-
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

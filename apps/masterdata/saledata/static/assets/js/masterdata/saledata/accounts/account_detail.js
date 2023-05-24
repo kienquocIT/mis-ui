@@ -6,6 +6,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 data = data['account_detail'];
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
@@ -13,6 +14,17 @@ $(document).ready(function () {
                 $('#account-phone-number-id').val(data.phone);
                 $('#account-email-id').val(data.email);
                 $('#account-tax-code-id').val(data.tax_code);
+
+                if (data.account_type_selection === 0) {
+                    $('#inp-individual').prop('checked', true);
+                    $('#parent-account-div-id').prop('hidden', true);
+                    $('#account-tax-code-label-id').removeClass('required');
+                }
+                else if (data.account_type_selection === 1) {
+                    $('#inp-organization').prop('checked', true);
+                    $('#parent-account-div-id').prop('hidden', false);
+                    $('#account-tax-code-label-id').addClass('required');
+                }
 
                 let list_shipping_address = ``;
                 for (let i = 0; i < data.shipping_address.length; i++) {
@@ -278,21 +290,6 @@ $(document).ready(function () {
         )
     }
     $('#account-type-id').select2();
-
-    // condition to choosing ParentAccount
-    $('#account-type-id').on('change', function () {
-        let selected_acc_type = $('#account-type-id option:selected').filter(function () {
-            return $(this).text().toLowerCase() === 'customer'
-        })
-
-        if (selected_acc_type.length > 0) {
-            $('#parent-account-div-id').attr('hidden', false);
-            $('#account-type-customer-type-div-id').attr('hidden', false);
-        } else {
-            $('#parent-account-div-id').attr('hidden', true);
-            $('#account-type-customer-type-div-id').attr('hidden', true);
-        }
-    });
 
     // load Industry SelectBox
     function loadIndustry(industry_mapped) {
@@ -791,16 +788,10 @@ $(document).ready(function () {
             frm.dataForm['account_type'] = $('#account-type-id').val();
         }
 
-        let customer_detail_type = $('#account-type-id option:selected').filter(function () {
-            return $(this).text().toLowerCase() === 'customer';
-        })
-
-        if (customer_detail_type.length > 0) {
-            if ($('#inp-organization').is(':checked')) {
-                frm.dataForm['customer_detail_type'] = 'organization';
-            } else {
-                frm.dataForm['customer_detail_type'] = 'individual';
-            }
+        if ($('#inp-organization').is(':checked')) {
+            frm.dataForm['account_type_selection'] = 1;
+        } else {
+            frm.dataForm['account_type_selection'] = 0;
         }
 
         if ($('#account-manager-id').val().length > 0) {

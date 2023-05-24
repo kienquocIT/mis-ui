@@ -256,6 +256,18 @@ tham khảo page promotion_detail.html
 + div ngoài cùng có class readonly
 + thẻ select có attribute **disabled**
 + cùng cấp div.**input-affix-wrapper** sẽ có một tag span rỗng.
+4. TABLE và TABLE có button ADD
+```html
+<div class="readonly table-readonly">
+   <table></table>
+   <span></span>
+</div>
+
+<button data-table-readonly disabled></button>
+```
++ div có class readonly và table-readonly bao ngoài
++ nếu có button add thì button có attribute là **disabled** và **data-table-readonly**
++ cùng cấp thẻ table sẽ có một tag span rỗng.
 ----------------------
 + BUTTON update thêm attribute form cho button với value là id của form. thêm class hidden để mặc định ẩn button
 + ![](README_IMG/form_detail_to_update.png)

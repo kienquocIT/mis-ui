@@ -60,6 +60,8 @@ function initSelectBox(selectBoxElement = null) {
         let default_data = $this.attr('data-onload')
         if (default_data && default_data.length) {
             if (typeof default_data === 'string') {
+                let temp = default_data.replaceAll("'", '"')
+                default_data = temp
                 try {
                     default_data = JSON.parse(default_data)
                 } catch (e) {
@@ -86,7 +88,8 @@ function initSelectBox(selectBoxElement = null) {
                     let query = params
                     query['is_ajax'] = true
                     if ($this.attr('data-params')) {
-                        let data_params = JSON.parse($this.attr('data-params'));
+                        let strParams = $this.attr('data-params').replaceAll("'",'"')
+                        let data_params = JSON.parse(strParams);
                         query = {...query, ...data_params}
                     }
                     return query
@@ -97,11 +100,10 @@ function initSelectBox(selectBoxElement = null) {
                     if (data_original.length) {
                         for (let item of data_original) {
                             let text = 'title';
-                            if ($this.attr('data-format')){
+                            if ($this.attr('data-format'))
                                 text = $this.attr('data-format')
-                            }else{
+                            else
                                 if(item.hasOwnProperty('full_name')) text = 'full_name';
-                            }
                             try{
                                 if (default_data && default_data.hasOwnProperty('id')
                                     && default_data.id === item.id
@@ -142,6 +144,11 @@ function initSelectBox(selectBoxElement = null) {
                 $this.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
                 optOnSelected($this, e.params.data)
             })
+            if ($this.attr('data-onload')){
+                let dataOnload = JSON.parse($this.attr('data-onload').replace(/'/g, '"'));
+                $this.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
+                optOnSelected($this, dataOnload)
+            }
         }
     });
 }

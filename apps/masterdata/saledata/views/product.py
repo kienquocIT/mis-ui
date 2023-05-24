@@ -227,7 +227,8 @@ class UnitOfMeasureListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get(params)
         if resp.state:
             return {'unit_of_measure': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

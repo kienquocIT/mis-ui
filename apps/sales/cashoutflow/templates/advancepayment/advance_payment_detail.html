@@ -21,17 +21,24 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-advance" type="submit" form="form-create-advance" style="background: none; border: none">
-        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-           data-bs-original-title="Save">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i data-feather="save"></i>
-                    </span>
-                </span>
-        </a>
-    </button>
+{#    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Edit" id="edit-advance-payment-on">#}
+{#        <span class="icon">#}
+{#            <span class="feather-icon">#}
+{#                <i class="bi bi-pencil-square"></i>#}
+{#            </span>#}
+{#        </span>#}
+{#    </a>#}
+{#    <button id="save-advance" type="submit" form="form-create-advance" style="background: none; border: none">#}
+{#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
+{#           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
+{#           data-bs-original-title="Save">#}
+{#                <span class="icon">#}
+{#                    <span class="feather-icon">#}
+{#                        <i data-feather="save"></i>#}
+{#                    </span>#}
+{#                </span>#}
+{#        </a>#}
+{#    </button>#}
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -45,6 +52,10 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.sale_order_list | json_script:"sale_order_list" }}
+    {{ data.data.quotation_list | json_script:"quotation_list" }}
+    {{ data.data.expense_list | json_script:"expense_list" }}
+    {{ data.data.account_list | json_script:"account_list" }}
     <form id="form-update-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url="{% url "AdvancePaymentListAPI" %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}">
@@ -60,7 +71,7 @@
                     <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required">Name</label>
                         <div class="col-9">
-                            <input class="form-control input-can-edit" id="advance-payment-title" name="title" readonly>
+                            <input class="form-control" id="advance-payment-title" name="title">
                         </div>
                     </div>
                     <div class="row form-group mb-4">
@@ -150,7 +161,7 @@
                     <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required" id="supplier-label">Method</label>
                         <div class="col-9">
-                            <select class="form-select" name="method">
+                            <select class="form-select" name="method" id="method-select-box">
                                 <option selected></option>
                                 <option value="0">Cash</option>
                                 <option value="1">Bank transfer</option>

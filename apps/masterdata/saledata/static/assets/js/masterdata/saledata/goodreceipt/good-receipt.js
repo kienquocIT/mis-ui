@@ -8,6 +8,12 @@ class lineDetailUtil{
     get getDatalist(){
         return this.datalist;
     }
+    set setcurrentIdx(crIdx){
+        this.currentIdx = crIdx
+    }
+    get getcurrentIdx(){
+        return this.currentIdx
+    }
 
     /**
      * calculator subtotal table and total tab of table
@@ -27,10 +33,10 @@ class lineDetailUtil{
         for (const data of dataList) {
             if (data?.quantity && data?.unit_price)
                 pretax += data.quantity * data.unit_price
-            if (data?.tax?.rate)
-                taxes += (pretax * data.tax.rate)/100
-            total += pretax + taxes
+            if (data.tax.rate > 0)
+                taxes += ((data.quantity * data.unit_price) * data.tax.rate)/100
         }
+        total += pretax + taxes
         $('.pretax').attr('data-init-money', pretax)
         $('.taxes').attr('data-init-money', taxes)
         $('.total').attr('data-init-money', total)
@@ -44,9 +50,10 @@ class lineDetailUtil{
      */
     columnFuncUtil(rowIdx){
         const _this = this
-        const $prodTable = $('#line_detail_table')
+        const $prodTable = $('#line_detail_table');
         // init product
-        $(`.product_row_${rowIdx}`).on('select2:select', function(e) {
+        $(`.product_row_${rowIdx}`).off().on('select2:select', function(e) {
+            e.stopPropagation()
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['product'] = {id: data.id, 'title': data.title}
@@ -58,7 +65,7 @@ class lineDetailUtil{
             if (data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
                 'id': data.sale_information.tax_code.id,
                 'title': data.sale_information.tax_code.title,
-                'rate': data.sale_information.tax_code.rate
+                'rate': data?.sale_information?.tax_code?.rate ?? 0
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
@@ -66,7 +73,7 @@ class lineDetailUtil{
             _this.handleTotal(rowIdx)
         });
         // warehouse
-        $(`.warehouse_row_${rowIdx}`).on('select2:select', function(e){
+        $(`.warehouse_row_${rowIdx}`).off().on('select2:select', function(e){
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['warehouse'] = {
@@ -74,9 +81,11 @@ class lineDetailUtil{
                 'title': data.title
             }
             _this.setDatalist = currentList
+            $prodTable.DataTable().cell(rowIdx, 2).data(currentList[rowIdx]['warehouse']).draw(false);
         });
         // UoM
-        $(`.uom_row_${rowIdx}`).on('select2:select', function(e){
+        $(`.uom_row_${rowIdx}`).off().on('select2:select', function(e){
+            e.stopPropagation()
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['uom'] = {
@@ -84,23 +93,24 @@ class lineDetailUtil{
                 'title': data.title
             }
             _this.setDatalist = currentList
+            $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
         });
         // quantity
-        $(`.quantity_row_${rowIdx}`).on('change', function(){
+        $(`.quantity_row_${rowIdx}`).off().on('change', function(){
             let currentList = _this.getDatalist;
             currentList[rowIdx]['quantity'] = parseInt(this.value)
             _this.setDatalist = currentList
             _this.handleTotal(rowIdx)
         });
         // unit price
-        $(`.unit_price_row_${rowIdx}`).on('blur', function(){
+        $(`.unit_price_row_${rowIdx}`).off().on('blur', function(){
             let currentList = _this.getDatalist;
             currentList[rowIdx]['unit_price'] = $(this).valCurrency()
             _this.setDatalist = currentList
             _this.handleTotal(rowIdx)
         });
         // tax
-        $(`.tax_row_${rowIdx}`).on('select2:select', function(e){
+        $(`.tax_row_${rowIdx}`).off().on('select2:select', function(e){
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['tax'] = {
@@ -109,6 +119,7 @@ class lineDetailUtil{
                 'rate': data.rate
             }
             _this.setDatalist = currentList
+            $prodTable.DataTable().cell(rowIdx, 6).data(currentList[rowIdx]['uom']).draw(false);
             _this.handleTotal(rowIdx)
         });
     }
@@ -273,7 +284,9 @@ class lineDetailUtil{
             drawCallback: function(){
                 // init event on change for all select per row
                 this.api().rows().nodes().each(function (elm, i) {
+                    $(`.product_row_${i}, .warehouse_row_${i}, .uom_row_${i}, .tax_row_${i}`)
                     _this.columnFuncUtil(i)
+
                     initSelectBox($(`.product_row_${i}, .warehouse_row_${i}, .uom_row_${i}, .tax_row_${i}`))
                 })
             },
@@ -283,8 +296,9 @@ class lineDetailUtil{
                 data['order'] = index + 1
                 // init currency
                 $.fn.initMaskMoney2()
-                $('.actions-btn a', row).on('click', function(){
+                $('.actions-btn a', row).off().on('click', function(e){
                     $(row).closest('.table').DataTable().rows(row).remove().draw(false);
+                    _this.setcurrentIdx = _this.getcurrentIdx - 1;
                     _this.handleTotal()
                 })
             }
@@ -319,10 +333,10 @@ class lineDetailUtil{
                 'subtotal_price': null,
             }
             let temp = _this.getDatalist
-            temp[_this.currentIdx] = newData
+            temp[_this.getcurrentIdx] = newData
             _this.setDatalist = temp
             $tableElm.DataTable().row.add(newData).draw()
-            _this.currentIdx = _this.currentIdx + 1
+            _this.setcurrentIdx = _this.getcurrentIdx + 1
         });
     };
 

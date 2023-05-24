@@ -346,12 +346,12 @@ function getDetailPage($form){
                         $('#percent_value').val(data.discount_method.percent_value + '%').removeClass('hidden')
                             .attr('data-value', data.discount_method.percent_value)
                         $('#fix_value').addClass('hidden')
-                        $('#max_percent_value').removeClass('hidden')
+                        $('#max_percent_value, label[for="percent_value"]').removeClass('hidden')
                     }
                     else{
                         // is fixed amount
                         $('#percent_02').prop('checked', true);
-                        $('#percent_value, #max_percent_value').addClass('hidden');
+                        $('#percent_value, #max_percent_value, label[for="percent_value"]').addClass('hidden');
                         $('#fix_value').removeClass('hidden').attr('value', data.discount_method.fix_value);
                         $.fn.initMaskMoney2($('#fix_value'),'input')
                     }

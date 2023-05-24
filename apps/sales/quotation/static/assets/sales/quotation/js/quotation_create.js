@@ -702,9 +702,8 @@ $(function () {
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
             if (tableLen !== 0 && !tableEmpty) {
-                order = (tableLen+1);
+                order = (tableLen + 1);
             }
-            let promotionID = $(this)[0].getAttribute('data-promotion-id');
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -739,17 +738,23 @@ $(function () {
                 "is_promotion": true,
                 "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')}
             };
-            if (promotionResult.is_discount === true) {
-                let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
-                let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, promotionResult.value_tax);
-                // Get the desired position
-                let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
-                // Remove the new row and re-insert it at the desired position
-                $(newRow).detach().insertAfter(afterRow);
-                // Re Calculate all data
-                calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
-            } else if (promotionResult.is_gift === true) {
+            if (promotionResult.is_discount === true) { // DISCOUNT
+                if (promotionResult.row_apply_index !== null) { // on Specific product
+                    let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
+                    let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, promotionResult.value_tax);
+                    // Get the desired position
+                    let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
+                    // Remove the new row and re-insert it at the desired position
+                    $(newRow).detach().insertAfter(afterRow);
+                    // Re Calculate all data
+                    calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+                } else { // on Whole order
+                    let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    // Re Calculate all data
+                    calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+                }
+            } else if (promotionResult.is_gift === true) { // GIFT
                 tableProduct.DataTable().row.add(dataAdd).draw()
             }
             // ReOrder STT

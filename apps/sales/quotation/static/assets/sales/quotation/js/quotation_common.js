@@ -540,13 +540,13 @@ class loadDataHandle {
     }
 
     loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {
-    let modalShippingContent = modalShipping[0].querySelector('.modal-body');
-    if (modalShippingContent) {
-        $(modalShippingContent).empty();
-        if (item) {
-            for (let i = 0; i < item.shipping_address.length; i++) {
-                let address = item.shipping_address[i];
-                $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
+        let modalShippingContent = modalShipping[0].querySelector('.modal-body');
+        if (modalShippingContent) {
+            $(modalShippingContent).empty();
+            if (item) {
+                for (let i = 0; i < item.shipping_address.length; i++) {
+                    let address = item.shipping_address[i];
+                    $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
                                                     <div class="row mb-1">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
                                                     </div>
@@ -559,16 +559,16 @@ class loadDataHandle {
                                                     </div>
                                                 </div>
                                                 <br>`)
+                }
             }
         }
-    }
-    let modalBillingContent = modalBilling[0].querySelector('.modal-body');
-    if (modalBillingContent) {
-        $(modalBillingContent).empty();
-        if (item) {
-            for (let i = 0; i < item.billing_address.length; i++) {
-                let address = item.billing_address[i];
-                $(modalBillingContent).append(`<div class="row ml-1 billing-group">
+        let modalBillingContent = modalBilling[0].querySelector('.modal-body');
+        if (modalBillingContent) {
+            $(modalBillingContent).empty();
+            if (item) {
+                for (let i = 0; i < item.billing_address.length; i++) {
+                    let address = item.billing_address[i];
+                    $(modalBillingContent).append(`<div class="row ml-1 billing-group">
                                                     <div class="row mb-1">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
                                                     </div>
@@ -581,10 +581,10 @@ class loadDataHandle {
                                                     </div>
                                                 </div>
                                                 <br>`)
+                }
             }
         }
     }
-}
 
     loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
         let jqueryId = '#' + quotation_id;
@@ -895,7 +895,7 @@ class dataTableHandle {
                     width: "1%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                           return `<div class="row">
+                            return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
                             </div>`;
                         } else {
@@ -2353,278 +2353,4 @@ function reOrderSTT(tableBody, table) {
             }
         }
     }
-}
-
-// Promotions
-function checkAvailablePromotion(data_promotion) {
-    let tableProd = $('#datable-quotation-create-product');
-    let tableEmpty = tableProd[0].querySelector('.dataTables_empty');
-    if (!tableEmpty) {
-        // DISCOUNT
-        if (data_promotion.is_discount === true) {
-            let is_before_tax = false;
-            let is_after_tax = false;
-            let conditionCheck = data_promotion.discount_method;
-            if (conditionCheck.before_after_tax === true) {
-                is_before_tax = true;
-            } else {
-                is_after_tax = true;
-            }
-            // discount on specific product
-            if (conditionCheck.is_on_product === true) {
-                let prodID = conditionCheck.product_selected.id;
-                let percentDiscount = 0;
-                let maxDiscountAmount = 0;
-                let fixDiscountAmount = 0;
-                if (conditionCheck.percent_fix_amount === true) {
-                    percentDiscount = conditionCheck.percent_value;
-                    maxDiscountAmount = conditionCheck.max_percent_value;
-
-                } else {
-                    fixDiscountAmount = parseFloat(conditionCheck.fix_value);
-                }
-                for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
-                    let row = tableProd[0].tBodies[0].rows[i];
-                    let prod = row.querySelector('.table-row-item');
-                    let quantity = row.querySelector('.table-row-quantity');
-                    if (prod.value === prodID && parseInt(quantity.value) > 0) {
-                        if (conditionCheck.hasOwnProperty('is_min_quantity')) {
-                            if (parseInt(quantity.value) >= conditionCheck.num_minimum) {
-                                if (conditionCheck.percent_fix_amount === true) {
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                            'is_discount': true,
-                                            'is_gift': false,
-                                            'is_before_tax': is_before_tax,
-                                            'is_after_tax': is_after_tax,
-                                            'is_on_product': true,
-                                            'is_on_percent': true,
-                                            'is_fix_amount': false,
-                                            'percent_discount': percentDiscount,
-                                            'max_amount': maxDiscountAmount,
-                                            'product_id': "",
-                                            'product_title': data_promotion.title,
-                                            'product_code': data_promotion.code,
-                                            'product_description': data_promotion.remark,
-                                            'product_quantity': 1,
-                                        }
-                                    }
-                                } else {
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                            'is_discount': true,
-                                            'is_gift': false,
-                                            'is_before_tax': is_before_tax,
-                                            'is_after_tax': is_after_tax,
-                                            'is_on_product': true,
-                                            'is_on_percent': false,
-                                            'is_fix_amount': true,
-                                            'fix_value': fixDiscountAmount,
-                                            'product_id': "",
-                                            'product_title': data_promotion.title,
-                                            'product_code': data_promotion.code,
-                                            'product_description': data_promotion.remark,
-                                            'product_quantity': 1,
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (conditionCheck.percent_fix_amount === true) {
-                                return {
-                                    'is_pass': true,
-                                    'condition': {
-                                        'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                        'is_discount': true,
-                                        'is_gift': false,
-                                        'is_before_tax': is_before_tax,
-                                        'is_after_tax': is_after_tax,
-                                        'is_on_product': true,
-                                        'is_on_percent': true,
-                                        'is_fix_amount': false,
-                                        'percent_discount': percentDiscount,
-                                        'max_amount': maxDiscountAmount,
-                                        'product_id': "",
-                                        'product_title': data_promotion.title,
-                                        'product_code': data_promotion.code,
-                                        'product_description': data_promotion.remark,
-                                        'product_quantity': 1,
-                                    }
-                                }
-                            } else {
-                                return {
-                                    'is_pass': true,
-                                    'condition': {
-                                        'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                        'is_discount': true,
-                                        'is_gift': false,
-                                        'is_before_tax': is_before_tax,
-                                        'is_after_tax': is_after_tax,
-                                        'is_on_product': true,
-                                        'is_on_percent': false,
-                                        'is_fix_amount': true,
-                                        'fix_value': fixDiscountAmount,
-                                        'product_id': "",
-                                        'product_title': data_promotion.title,
-                                        'product_code': data_promotion.code,
-                                        'product_description': data_promotion.remark,
-                                        'product_quantity': 1,
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else if (data_promotion.is_gift === true) { // GIFT
-            let conditionCheck = data_promotion.gift_method;
-            if (conditionCheck.is_free_product === true) {
-                if (conditionCheck.hasOwnProperty('is_min_purchase')) {
-                    if (conditionCheck.before_after_tax === true) {
-                        let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
-                        let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
-                        if ((parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value)) >= parseFloat(conditionCheck.min_purchase_cost)) {
-                            return {
-                                'is_pass': true,
-                                'condition': {
-                                    'row_apply_index': 0,
-                                    'is_discount': false,
-                                    'is_gift': true,
-                                    'product_id': conditionCheck.product_received.id,
-                                    'product_title': conditionCheck.product_received.title,
-                                    'product_code': conditionCheck.product_received.code,
-                                    'product_description': data_promotion.remark,
-                                    'product_quantity': parseInt(conditionCheck.num_product_received),
-                                }
-                            }
-                        }
-                    } else {
-                        let eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
-                        if (parseFloat(eleTotalRaw.value) >= parseFloat(conditionCheck.min_purchase_cost)) {
-                            return {
-                                'is_pass': true,
-                                'condition': {
-                                    'row_apply_index': 0,
-                                    'is_discount': false,
-                                    'is_gift': true,
-                                    'product_id': conditionCheck.product_received.id,
-                                    'product_title': conditionCheck.product_received.title,
-                                    'product_code': conditionCheck.product_received.code,
-                                    'product_description': data_promotion.remark,
-                                    'product_quantity': parseInt(conditionCheck.num_product_received),
-                                }
-                            }
-                        }
-                    }
-
-                } else if (conditionCheck.hasOwnProperty('is_purchase')) {
-                    let purchase_product_id = conditionCheck.purchase_product.id;
-                    let purchase_num = conditionCheck.purchase_num;
-                    for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
-                        let row = tableProd[0].tBodies[0].rows[i];
-                        let prod = row.querySelector('.table-row-item');
-                        let quantity = row.querySelector('.table-row-quantity');
-                        if (prod.value === purchase_product_id && parseInt(quantity.value) > 0) {
-                            if (parseInt(quantity.value) >= purchase_num) {
-                                return {
-                                    'is_pass': true,
-                                    'condition': {
-                                        'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                        'is_discount': false,
-                                        'is_gift': true,
-                                        'product_id': conditionCheck.product_received.id,
-                                        'product_title': conditionCheck.product_received.title,
-                                        'product_code': conditionCheck.product_received.code,
-                                        'product_description': data_promotion.remark,
-                                        'product_quantity': parseInt(conditionCheck.num_product_received),
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return {
-        'is_pass': false,
-    }
-}
-
-function getPromotionResult(condition) {
-    let result = {
-        'product_quantity': 0,
-        'product_price': 0
-    };
-    let tableProd = $('#datable-quotation-create-product');
-    // DISCOUNT
-    if (condition.is_discount === true) {
-        // discount on specific product
-        if (condition.is_on_product === true) {
-            let DiscountAmount = 0;
-            let row = tableProd.DataTable().row(condition.row_apply_index).node();
-            let quantity = parseInt(row.querySelector('.table-row-quantity').value);
-            let price = $(row.querySelector('.table-row-price')).valCurrency();
-            if (condition.is_on_percent === true) {
-                DiscountAmount = ((parseFloat(price) * parseFloat(condition.percent_discount)) / 100);
-            } else if (condition.is_fix_amount === true) {
-                DiscountAmount = condition.fix_value;
-            }
-            let taxID = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].value;
-            return {
-                'row_apply_index': condition.row_apply_index,
-                'is_discount': true,
-                'is_gift': false,
-                'product_id': condition.product_id,
-                'product_title': condition.product_title,
-                'product_code': condition.product_code,
-                // 'product_description': condition.product_description,
-                'product_description': "(Voucher) " + condition.product_description,
-                'product_quantity': condition.product_quantity,
-                'product_price': (DiscountAmount * quantity),
-                'value_tax': taxID
-            }
-        }
-    } else if (condition.is_gift === true) {
-        return {
-            'row_apply_index': condition.row_apply_index,
-            'is_discount': false,
-            'is_gift': true,
-            'product_id': condition.product_id,
-            'product_title': condition.product_title,
-            'product_code': condition.product_code,
-            // 'product_description': condition.product_description,
-            'product_description': "(Gift) " + condition.product_description,
-            'product_quantity': condition.product_quantity,
-            'product_price': 0,
-        }
-    }
-    return result
-}
-
-function deletePromotionRows(table) {
-    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-        let row = table[0].tBodies[0].rows[i];
-        if (row.querySelector('.table-row-promotion')) {
-            deleteRow($(row), row.closest('tbody'), table)
-        }
-    }
-}
-
-function filterDataProductNotPromotion(data_products) {
-    let finalList = [];
-    let order = 0;
-    for (let i = 0; i < data_products.length; i++) {
-        let dataProd = data_products[i];
-        if (!dataProd.hasOwnProperty('is_promotion')) {
-            order++;
-            dataProd['order'] = order;
-            finalList.push(dataProd)
-        }
-    }
-    return finalList
 }

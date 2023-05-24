@@ -45,6 +45,7 @@
             }
         </style>
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/dark-mode.css' %}" rel="stylesheet" type="text/css">
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
@@ -264,6 +265,7 @@
             <!-- ## Init select2 -->
         });
     </script>
+    <script src="{% static 'assets/js/dark-mode.js' %}"></script>
     {% block jsFooter %}
     {% endblock %}
 {% endcompress %}

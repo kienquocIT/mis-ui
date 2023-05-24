@@ -1,0 +1,88 @@
+
+:root{
+    --bg-dark-mode: #212529;
+    --color-dark-mode: #adb5bd;
+    --boder-dark-mode: #495057;
+}
+
+body.theme-dark,
+body.theme-dark .blogapp-wrap .blogapp-content .blogapp-detail-wrap,
+body.theme-dark .blogapp-wrap .blogapp-content .blogapp-detail-wrap header.blog-header,
+body.theme-dark .navbar.navbar-light,
+body.theme-dark .dropdown-menu{
+    background-color: var(--bg-dark-mode);
+    color: var(--color-dark-mode);
+}
+body.theme-dark .hk-wrapper .hk-menu,
+body.theme-dark .blogapp-wrap .blogapp-content .blogapp-detail-wrap header.blog-header,
+body.theme-dark .hk-wrapper .hk-navbar,
+body.theme-dark .table thead th,
+body.theme-dark .dropdown-divider{
+    border-color: var(--boder-dark-mode);
+}
+
+body.theme-dark .btn-flush-dark{
+    color: #fff;
+}
+body.theme-dark .table thead th, body.theme-dark .table tfoot th,
+body.theme-dark .dropdown-menu .dropdown-item{
+    color: var(--color-dark-mode);
+}
+
+body.theme-dark .dropdown-menu{
+    outline-offset: -1px;
+    outline: 1px solid var(--boder-dark-mode);
+    box-shadow:none;
+}
+
+body.theme-dark .breadcrumb .breadcrumb-item > a:hover,
+body.theme-dark .breadcrumb .breadcrumb-item > a:focus{
+    color: #fff;
+}
+
+
+
+/* button dark mode style */
+#dark-mode-btn{
+    padding: 8px 10px;
+}
+#dark_mode_btn + .dark_mode_lb{
+    outline: 0;
+    display: block;
+    width: 4em;
+    height: 2em;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: #f0f0f0;
+    border-radius: 2em;
+    padding: 2px;
+    transition: all 0.4s ease-in;
+}
+#dark_mode_btn + .dark_mode_lb:after{
+    position: relative;
+    display: flex;
+    content: "\F5A2";
+    font-family: bootstrap-icons !important;
+    width: 50%;
+    height: 100%;
+    transition: all 0.2s ease-in;
+    background: #fff;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    color: #018c98;
+}
+#dark_mode_btn:checked + .dark_mode_lb{
+    background: #2b3035;
+}
+#dark_mode_btn:checked + .dark_mode_lb:after{
+    content: "\F496";
+    background: #000;
+    left: 50%;
+    color: #018c98;
+}

@@ -78281,6 +78281,7 @@ span[data-notify="icon"] {
   border: none !important;
   vertical-align: 0 !important;
   margin-left: .4em;
+  margin-top: -15px;
 }
 .dropdown-toggle.dropdown-toggle-split:after, .dropdown-toggle.dropdown-toggle-split:before {
   margin: 0 !important;
@@ -83327,13 +83328,13 @@ Project:	Jampack
   background: #d8d8d8;
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu {
-  background: #262a2e;
+  background: var(--bg-dark-mode);
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu .menu-content-wrap .menu-group .navbar-nav .nav-item .nav-link {
   color: #fff;
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu .menu-content-wrap .menu-group .navbar-nav .nav-item .nav-link[data-bs-toggle="collapse"]::after {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-dark-mode);
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu .menu-content-wrap .menu-group .navbar-nav > .nav-item > ul:after {
   background: #d8d8d8;
@@ -91091,4 +91092,3 @@ Project:	Jampack
 }
 
 /*# sourceMappingURL=style.css.map */
-

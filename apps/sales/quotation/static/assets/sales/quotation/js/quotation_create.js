@@ -32,6 +32,8 @@ $(function () {
         let tableExpense = $('#datable-quotation-create-expense');
         // promotion
         let tablePromotion = $('#datable-quotation-create-promotion');
+        // shipping
+        let tableShipping = $('#datable-quotation-create-shipping');
         // copy quotation
         let tableCopyQuotation = $('#datable-copy-quotation');
         let divCopyOption = $('#copy-quotation-option');
@@ -702,6 +704,7 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
+            let promotionID = $(this)[0].getAttribute('data-promotion-id');
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -733,7 +736,8 @@ $(function () {
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
-                "is_promotion": true
+                "is_promotion": true,
+                "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')}
             };
             if (promotionResult.is_discount === true) {
                 let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
@@ -751,6 +755,64 @@ $(function () {
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
         });
+
+// SHIPPING
+// Action on click button Add Shipping Fee (show list shipping)
+        $('#btn-add-shipping').on('click', function(e) {
+            dataTableClass.loadTableQuotationShipping('data-init-quotation-create-shipping')
+        });
+
+// Action click Apply Shipping
+        tableShipping.on('click', '.apply-shipping', function () {
+            $(this).prop('disabled', true);
+            // deletePromotionRows(tableProduct);
+            // let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
+            // let promotionResult = getPromotionResult(promotionCondition);
+            let order = 1;
+            let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
+            let tableLen = tableProduct[0].tBodies[0].rows.length;
+            if (tableLen !== 0 && !tableEmpty) {
+                order = (tableLen+1);
+            }
+            let dataAdd = {
+                "tax": {
+                    "id": "",
+                    "code": "",
+                    "title": "",
+                    "value": 0
+                },
+                "order": order,
+                "product": {
+                    "id": "",
+                    "code": "",
+                    "title": "Phí giao hàng nhanh"
+                },
+                "product_code": "",
+                "product_title": "Phí giao hàng nhanh",
+                "unit_of_measure": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "product_quantity": 1,
+                "product_uom_code": "",
+                "product_tax_title": "",
+                "product_tax_value": 0,
+                "product_uom_title": "",
+                "product_tax_amount": 0,
+                "product_unit_price": 0,
+                "product_description": "Phí giao hàng nhanh",
+                "product_discount_value": 0,
+                "product_subtotal_price": 0,
+                "product_discount_amount": 0,
+                "is_shipping": true,
+                "shipping": {"id": $(this)[0].getAttribute('data-shipping-id')}
+            };
+            tableProduct.DataTable().row.add(dataAdd).draw()
+            // ReOrder STT
+            reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+        });
+
 
 // Submit form quotation + sale order
         $('#btn-create_quotation').on('click', function (e) {

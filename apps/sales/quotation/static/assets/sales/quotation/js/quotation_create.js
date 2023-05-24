@@ -91,10 +91,14 @@ $(function () {
                 loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling);
                 if (optionSelected.querySelector('.data-default')) {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
+                    // load Shipping & Billing by Customer
                     loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling, data);
+                    // load Contact by Customer
                     if (data.id && data.owner) {
                         loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
                     }
+                    // load Payment Term by Customer
+                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term_mapped.id)
                 } else {
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
                 }
@@ -755,7 +759,15 @@ $(function () {
                     calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
                 }
             } else if (promotionResult.is_gift === true) { // GIFT
-                tableProduct.DataTable().row.add(dataAdd).draw()
+                if (promotionResult.row_apply_index !== null) { // on Specific product
+                    let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    // Get the desired position
+                    let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
+                    // Remove the new row and re-insert it at the desired position
+                    $(newRow).detach().insertAfter(afterRow);
+                } else { // on Whole order
+                    tableProduct.DataTable().row.add(dataAdd).draw()
+                }
             }
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)

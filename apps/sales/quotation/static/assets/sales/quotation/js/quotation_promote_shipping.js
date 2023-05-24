@@ -347,3 +347,8 @@ function filterDataProductNotPromotion(data_products) {
     }
     return finalList
 }
+
+// Shipping
+function checkAvailableShipping(data_shipping) {
+    let shippingAddress = $('#quotation-create-shipping-address').val();
+}

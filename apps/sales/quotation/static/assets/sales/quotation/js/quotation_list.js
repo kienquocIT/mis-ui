@@ -35,6 +35,7 @@ $(function () {
             drawCallback: function () {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
             },
@@ -81,7 +82,7 @@ $(function () {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<p>${row.total_product.toLocaleString('en-US').replace(/,/g, '.')} VND</p>`
+                        return `<span class="mask-money" data-init-money="${parseFloat(row.total_product)}"></span>`
                     }
                 },
                 {
@@ -109,6 +110,8 @@ $(function () {
             if (keycode === 13) //enter to search
                 _dataTable.ajax.reload()
         });
+
+        $.fn.initMaskMoney2();
 
     });
 });

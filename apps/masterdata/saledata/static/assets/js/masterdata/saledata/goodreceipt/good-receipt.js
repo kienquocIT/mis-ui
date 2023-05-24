@@ -52,7 +52,8 @@ class lineDetailUtil{
             currentList[rowIdx]['product'] = {id: data.id, 'title': data.title}
             if (data?.sale_information?.default_uom) currentList[rowIdx]['uom'] = {
                 'id': data.sale_information.default_uom.id,
-                'title': data.sale_information.default_uom.title
+                'title': data.sale_information.default_uom.title,
+                'uom_group': data?.general_information?.uom_group?.id
             }
             if (data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
                 'id': data.sale_information.tax_code.id,
@@ -197,9 +198,15 @@ class lineDetailUtil{
                             });
                             uom = temp.replaceAll('"', "'")
                         }
+                        let params = ''
+                        if (data?.uom?.uom_group){
+                            let gTemp = JSON.stringify({'group': data.uom.uom_group})
+                            params = gTemp.replace(/"/g, "'")
+                        }
                         return `<select class="form-select uom_row_${idx}" 
                                     data-prefix="unit_of_measure" 
-                                    data-url="${urlSelect}" 
+                                    data-url="${urlSelect}"
+                                    data-params="${params}"
                                     data-onload="${uom ? uom : ''}"></select>`;
                     }
                 },

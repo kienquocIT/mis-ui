@@ -91,10 +91,14 @@ $(function () {
                 loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling);
                 if (optionSelected.querySelector('.data-default')) {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
+                    // load Shipping & Billing by Customer
                     loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling, data);
+                    // load Contact by Customer
                     if (data.id && data.owner) {
                         loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
                     }
+                    // load Payment Term by Customer
+                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term_mapped.id)
                 } else {
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
                 }

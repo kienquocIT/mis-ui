@@ -79,9 +79,15 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
+                                // load Shipping & Billing by Customer
                                 self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                // load Contact by Customer
                                 if (item.id && item.owner) {
                                     self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                }
+                                // load Payment Term by Customer
+                                if (item.payment_term_mapped) {
+                                    self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
                                 }
                             }
                         })

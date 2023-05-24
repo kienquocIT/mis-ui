@@ -755,7 +755,15 @@ $(function () {
                     calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
                 }
             } else if (promotionResult.is_gift === true) { // GIFT
-                tableProduct.DataTable().row.add(dataAdd).draw()
+                if (promotionResult.row_apply_index !== null) { // on Specific product
+                    let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    // Get the desired position
+                    let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
+                    // Remove the new row and re-insert it at the desired position
+                    $(newRow).detach().insertAfter(afterRow);
+                } else { // on Whole order
+                    tableProduct.DataTable().row.add(dataAdd).draw()
+                }
             }
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)

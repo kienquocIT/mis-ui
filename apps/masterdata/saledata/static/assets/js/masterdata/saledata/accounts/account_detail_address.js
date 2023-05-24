@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let shipping_address_id_dict = [];
 
     // load Cities SelectBox
     function loadCities() {
@@ -82,8 +83,17 @@ $(document).ready(function () {
             let district = $('#shipping-district').find(`option:selected`).text();
             let ward = $('#shipping-ward').find(`option:selected`).text();
 
+            let country_id = $('#shipping-city').find(`option:selected`).attr('data-country-id');
+            let city_id = $('#shipping-city').find(`option:selected`).attr('value');
+            let district_id = $('#shipping-district').find(`option:selected`).attr('value');
+            let ward_id = $('#shipping-ward').find(`option:selected`).attr('value');
+
             let shipping_address = '';
             if (city !== '' && district !== '' && detail_shipping_address !== '') {
+
+                shipping_address_id_dict.push({'country_id': country_id, 'city_id': city_id, 'district_id': district_id, 'ward_id': ward_id})
+                console.log(shipping_address_id_dict)
+
                 if (ward === '') {
                     shipping_address = detail_shipping_address + ', ' + district + ', ' + city;
                 } else {
@@ -111,44 +121,45 @@ $(document).ready(function () {
                 )
             }
         } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
         }
     })
 
     $('#save-changes-modal-billing-address').on('click', function () {
-    try {
-        let acc_name = $('#select-box-account-name').find(`option:selected`).text();
-        let email_address = $('#inp-email-address').val();
-        let tax_code = $('#inp-tax-code-address').val();
+        try {
+            let acc_name = $('#select-box-account-name').find(`option:selected`).text();
+            let email_address = $('#inp-email-address').val();
+            let tax_code = $('#inp-tax-code-address').val();
 
-        let account_address = $('#select-box-address').find('option:selected').val();
-        if ($('#select-box-address').is(':hidden')) {
-            account_address = $('#edited-billing-address').val()
-        }
-
-        let billing_address = '';
-        if (email_address !== '' && tax_code !== '' && account_address !== '0') {
-            billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
-            $('#modal-billing-address').modal('hide');
-        } else {
-            $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
-        }
-
-        if (billing_address !== '') {
-            let is_default = '';
-            if ($('#make-default-billing-address').prop('checked') === true) {
-                is_default = 'checked';
+            let account_address = $('#select-box-address').find('option:selected').val();
+            if ($('#select-box-address').is(':hidden')) {
+                account_address = $('#edited-billing-address').val()
             }
-            $('#list-billing-address').append(
-                `<div class="form-check ml-5">
-                    <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
-                    <label>` + billing_address + `</label>
-                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
-                </div>`
-            )
 
+            let billing_address = '';
+            if (email_address !== '' && tax_code !== '' && account_address !== '0') {
+                billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
+                $('#modal-billing-address').modal('hide');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (billing_address !== '') {
+                let is_default = '';
+                if ($('#make-default-billing-address').prop('checked') === true) {
+                    is_default = 'checked';
+                }
+                $('#list-billing-address').append(
+                    `<div class="form-check ml-5">
+                        <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
+                        <label>` + billing_address + `</label>
+                        <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                    </div>`
+                )
+
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
         }
-    } catch (error) {
-        $.fn.notifyPopup({description: "No address information!"}, 'failure');
-    }
-})
+    })
 })

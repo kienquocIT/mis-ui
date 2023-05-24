@@ -34,22 +34,34 @@ $(document).ready(function () {
         }, {
             'data': 'job_title',
             render: (data, type, row, meta) => {
-                return `<span>` + row.job_title + `</span>`
+                if (row.job_title) {
+                    return `<span>` + row.job_title + `</span>`
+                }
+                return ``
             }
         }, {
             'data': 'owner',
             render: (data, type, row, meta) => {
-                return `<span>` + row.owner.fullname + `</span>`
+                if (row.owner.fullname) {
+                    return `<span>` + row.owner.fullname + `</span>`
+                }
+                return ``
             }
         }, {
             'data': 'mobile',
             'render': (data, type, row, meta) => {
-                return `<span>` + row.mobile + `</span>`
+                if (row.mobile) {
+                    return `<span>` + row.mobile + `</span>`
+                }
+                return ``
             }
         }, {
             'data': 'email',
             'render': (data, type, row, meta) => {
-                return `<span>` + row.email + `</span>`
+                if (row.email) {
+                    return `<span>` + row.email + `</span>`
+                }
+                return ``
             }
         }, {
             'render': (data, type, row, meta) => {

@@ -486,7 +486,7 @@ $(document).ready(function () {
                     price_list.push(
                         {
                             'price_list_id': $(this).attr('data-id'),
-                            'price_value': null,
+                            'price_value': 0,
                             'is_auto_update': is_auto_update,
                         }
                     )
@@ -571,6 +571,7 @@ $(document).ready(function () {
         autoSelectPriceListCopyFromSource()
         if ($(this).prop('checked')) {
             $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', false)
+            $(`input[data-text="` + $(this).attr('data-check') + `"]`).addClass('price-list-change');
         } else {
             $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', true)
             let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input:not(:checked)')

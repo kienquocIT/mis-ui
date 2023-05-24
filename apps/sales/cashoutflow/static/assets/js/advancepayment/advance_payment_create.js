@@ -283,6 +283,7 @@ $(document).ready(function () {
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
             $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
+            $('#sale-code-select-box option:selected').attr('selected', false);
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
             if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
                 loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));

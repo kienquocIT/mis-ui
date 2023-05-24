@@ -43,6 +43,7 @@ $(document).ready(function () {
             }
             else if (advance_payment.advance_payment_type === 1) {
                 $('#type-select-box').find('option[value="1"]').prop('selected', true);
+                $('#supplier-label').addClass('required');
             }
 
             if (advance_payment.supplier) {

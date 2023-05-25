@@ -53,11 +53,11 @@ class loadDataHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.empty();
-                    if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
+                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
                         ele.append(`<option value=""></option>`);
                         let dataAppend = ``;
                         let dataMapOpp = ``;
-                        data.account_list.map(function (item) {
+                        data.account_sale_list.map(function (item) {
                             let ownerName = "";
                             if (item.owner) {
                                 ownerName = item.owner.fullname;
@@ -88,6 +88,10 @@ class loadDataHandle {
                                 // load Payment Term by Customer
                                 if (Object.keys(item.payment_term_mapped).length !== 0) {
                                     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
+                                }
+                                // Store Account Price List
+                                if (Object.keys(item.price_list_mapped).length !== 0) {
+                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                                 }
                             }
                         })
@@ -476,17 +480,20 @@ class loadDataHandle {
             }
             if (price && priceList) {
                 let valList = [];
+                let account_price_list = document.getElementById('customer-price-list').value;
                 $(priceList).empty();
                 for (let i = 0; i < data.price_list.length; i++) {
-                    valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                    let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                    if (data.price_list[i].id === account_price_list) {
+                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
+                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                     </div>
                                 </a>`;
-                    $(priceList).append(option);
+                        $(priceList).append(option);
+                    }
                 }
                 if (valList) {
                     let minVal = Math.min(...valList);

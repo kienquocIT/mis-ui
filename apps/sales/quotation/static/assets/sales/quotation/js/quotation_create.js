@@ -98,7 +98,11 @@ $(function () {
                         loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
                     }
                     // load Payment Term by Customer
-                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term_mapped.id)
+                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term_mapped.id);
+                    // Store Account Price List
+                    if (Object.keys(data.price_list_mapped).length !== 0) {
+                        document.getElementById('customer-price-list').value = data.price_list_mapped.id;
+                    }
                 } else {
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
                 }
@@ -266,6 +270,9 @@ $(function () {
 
 // Action on change discount rate on Total of product
         $('#quotation-create-product-discount').on('change', function (e) {
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Calculate with discount on Total
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
                 calculateClass.calculate(row);

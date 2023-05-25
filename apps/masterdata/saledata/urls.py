@@ -7,7 +7,7 @@ from apps.masterdata.saledata.views.accounts import (
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
-    AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI
+    AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
 )
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
@@ -71,6 +71,7 @@ urlpatterns = [
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
+    path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
 ] + [
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),

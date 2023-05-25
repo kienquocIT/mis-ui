@@ -126,15 +126,13 @@
                         <div class="row mb-5">
                             <div class="row radio-btn">
                                 <div class="col-5 ml-4">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual"
-                                           disabled checked>
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual" checked>
                                     <label class="form-check-label" for="inp-individual">
                                         {% trans "individual" %}
                                     </label>
                                 </div>
                                 <div class="col-6 ml-2">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-organization"
-                                           disabled>
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-organization">
                                     <label class="form-check-label" for="inp-organization">
                                         {% trans "organization" %}
                                     </label>
@@ -186,6 +184,7 @@
                             <div class="form-group col-5">
                                 <label class="form-label">{% trans "Annual Revenue" %}</label>
                                 <select id="select-box-annual-revenue" name="annual_revenue" class="form-select">
+                                    <option value="0"></option>
                                     {% for item in data.customer_revenue %}
                                         <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endfor %}
@@ -194,6 +193,7 @@
                             <div class="form-group col-7">
                                 <label class="form-label required">{% trans "Total Employees" %}</label>
                                 <select id="select-box-total-emp" name="total_employees" class="form-select select-required">
+                                    <option value="0"></option>
                                     {% for item in data.company_size %}
                                         <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endfor %}
@@ -320,7 +320,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit Shipping Address" %}</h5>
+                    <h5 class="modal-title">{% trans "Add Shipping Address" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -329,29 +329,29 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Address" %}</label>
+                                <label class="label-field form-label required">{% trans "Address" %}</label>
                                 <input class="form-control" type="text" id="detail-modal-shipping-address"
                                        placeholder="Number 20, 22 street, Him Lam residential area">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Province" %}</label>
-                                <select class="form-select" id="shipping-city" aria-label=".form-select-sm">
+                                <label class="label-field form-label required">{% trans "Province/City" %}</label>
+                                <select class="form-select" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET" aria-label=".form-select-sm">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "District" %}</label>
-                                <select class="form-select" id="shipping-district" aria-label=".form-select-sm">
+                                <label class="label-field form-label required">{% trans "District" %}</label>
+                                <select class="form-select" id="shipping-district" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Ward" %}</label>
-                                <select class="form-select" id="shipping-ward" aria-label=".form-select-sm">
+                                <label class="label-field form-label">{% trans "Ward" %}</label>
+                                <select class="form-select" id="shipping-ward" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
                                 </select>
                             </div>
                         </div>
@@ -359,7 +359,7 @@
                             <div class="form-check ml-3">
                                 <input class="form-check-input" type="checkbox" value=""
                                        id="make-default-shipping-address">
-                                <label class="form-check-label" >
+                                <label class="form-check-label" for="make-default-shipping-address">
                                     {% trans "Make default address" %}
                                 </label>
                             </div>
@@ -384,7 +384,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit Billing/Invoice Address" %}</h5>
+                    <h5 class="modal-title">{% trans "Add Billing/Invoice Address" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -392,9 +392,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Account Name" %}
-                                <span class="field-required">*</span>
-                            </label>
+                            <label class="label-field form-label required">{% trans "Account Name" %}</label>
                             <select class="form-select" id="select-box-account-name"
                                     data-method="GET"
                                     data-url="{% url 'AccountDetailAPI' pk=0 %}">
@@ -404,24 +402,19 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Email Address" %}
-                                <span class="field-required">*</span>
-                            </label>
+                            <label class="label-field form-label required">{% trans "Email Address" %}</label>
                             <input type="text" class="form-control" id="inp-email-address">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Tax Code" %}
-                                <span class="field-required">*</span>
-                            </label>
+                            <label class="label-field form-label required">{% trans "Tax Code" %}</label>
                             <input type="text" class="form-control" id="inp-tax-code-address">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Account Address" %}
-                                <span class="field-required">*</span>
+                            <label class="label-field form-label required">{% trans "Account Address" %}
                                 <button class="btn" type="button" hidden
                                         id="button_add_new_billing_address"
                                         style="position: absolute; right: 0; background: none; border: none; color: #007D88">
@@ -430,8 +423,7 @@
                             </label>
                             <textarea style="border-color: mediumseagreen" class="form-control" hidden
                                       id="edited-billing-address"></textarea>
-                            <select class="form-select" id="select-box-address">
-                            </select>
+                            <select class="form-select" id="select-box-address"></select>
                         </div>
                     </div>
                     <div class="row">
@@ -582,5 +574,4 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_create.js' %}"></script>
-    <script src="{% static 'assets/js/masterdata/saledata/accounts/account_address.js' %}"></script>
 {% endblock %}

@@ -8,7 +8,7 @@ $(document).ready(function () {
             let advance_payment = data.advance_payment_detail;
             $('#advance-payment-code').text(advance_payment.code);
             $('#advance-payment-title').val(advance_payment.title);
-            if (advance_payment.sale_code_type == 0) {
+            if (advance_payment.sale_code_type === 0) {
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
                 $('#sale-code-select-box').prop('disabled', false);
@@ -20,11 +20,11 @@ $(document).ready(function () {
                 loadSaleCode(advance_payment.sale_order_mapped, advance_payment.quotation_mapped);
                 $('#beneficiary-select-box').prop('disabled', true);
             }
-            else if (advance_payment.sale_code_type == 1) {
+            else if (advance_payment.sale_code_type === 1) {
                 $('#radio-purchase').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Purchase');
             }
-            else if (advance_payment.sale_code_type == 2) {
+            else if (advance_payment.sale_code_type === 2) {
                 $('#radio-non-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Non-Sale');
                 $('#sale-code-select-box').prop('disabled', true);

@@ -300,7 +300,7 @@ function getPromotionResult(condition) {
                         let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                         let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
                         let total = parseFloat(preTax) - parseFloat(discount);
-                        discount_rate_on_order = (DiscountAmount / total)
+                        discount_rate_on_order = ((DiscountAmount / total) * 100)
                     }
                 }
             } else if (condition.is_fix_amount === true) { // discount by fix amount
@@ -410,7 +410,11 @@ function reCalculateTax(table, promotion_discount_rate) {
                 let priceDiscountOnRow = (price - discountAmount);
                 subtotal = (priceDiscountOnRow * quantity);
 
-                let discountAmountOnTotal = ((priceDiscountOnRow * promotion_discount_rate) / 100);
+                let discountRateOnTotal = 0;
+                if (document.getElementById('quotation-create-product-discount').value) {
+                    discountRateOnTotal = parseFloat(document.getElementById('quotation-create-product-discount').value)
+                }
+                let discountAmountOnTotal = ((priceDiscountOnRow * (promotion_discount_rate + discountRateOnTotal)) / 100);
                 subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
                 // calculate tax
                 if (row.querySelector('.table-row-tax-amount')) {

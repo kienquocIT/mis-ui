@@ -110,6 +110,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account/')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
+    ACCOUNT_SALE_LIST = StringUrl('saledata/accounts-sale')
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')

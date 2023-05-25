@@ -388,7 +388,6 @@ function reCalculateTax(table, promotion_discount_rate) {
             }
             let tax = 0;
             let discount = 0;
-            let subtotal = (price * quantity);
             let subtotalPlus = 0;
             let eleTax = row.querySelector('.table-row-tax');
             if (eleTax) {
@@ -401,6 +400,7 @@ function reCalculateTax(table, promotion_discount_rate) {
             let eleDiscount = row.querySelector('.table-row-discount');
             let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
             if (eleDiscount && eleDiscountAmount) {
+                // apply discount ON ROW
                 if (eleDiscount.value) {
                     discount = parseFloat(eleDiscount.value)
                 } else if (!eleDiscount.value || eleDiscount.value === "0") {
@@ -408,15 +408,18 @@ function reCalculateTax(table, promotion_discount_rate) {
                 }
                 let discountAmount = ((price * discount) / 100);
                 let priceDiscountOnRow = (price - discountAmount);
-                subtotal = (priceDiscountOnRow * quantity);
-
+                // apply discount ON TOTAL
                 let discountRateOnTotal = 0;
                 if (document.getElementById('quotation-create-product-discount').value) {
                     discountRateOnTotal = parseFloat(document.getElementById('quotation-create-product-discount').value)
                 }
-                let discountAmountOnTotal = ((priceDiscountOnRow * (promotion_discount_rate + discountRateOnTotal)) / 100);
-                subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
-                // calculate tax
+                let discountAmountOnTotal = ((priceDiscountOnRow * discountRateOnTotal) / 100);
+                let priceAfterDisCountTotal = (priceDiscountOnRow - discountAmountOnTotal);
+                // apply discount PROMOTION
+                let discountAmountPromotion = ((priceAfterDisCountTotal * promotion_discount_rate) / 100);
+                let finalPrice = (priceAfterDisCountTotal - discountAmountPromotion);
+                subtotalPlus = (finalPrice * quantity);
+                // ReCalculate tax
                 if (row.querySelector('.table-row-tax-amount')) {
                     let taxAmount = ((subtotalPlus * tax) / 100);
                     taxAmountTotal += taxAmount;
@@ -427,12 +430,12 @@ function reCalculateTax(table, promotion_discount_rate) {
     $(eleTaxes).attr('value', String(taxAmountTotal));
     eleTaxesRaw.value = taxAmountTotal;
 
-    // ReCalculate Tax
+    // ReCalculate TOTAL
     let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
     let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
     let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) + taxAmountTotal);
 
-    // ReCalculate Final Total
+    // apply Final Total
     let eleTotal = document.getElementById('quotation-create-product-total');
     let eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
     $(eleTotal).attr('value', String(totalFinal));

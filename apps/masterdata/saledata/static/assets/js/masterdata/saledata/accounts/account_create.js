@@ -684,6 +684,14 @@ $(document).ready(function () {
             frm.dataForm['tax_code'] = null;
         }
 
+        if ($('#select-box-annual-revenue').val() === '0') {
+            frm.dataForm['annual_revenue'] = null;
+        }
+
+        if ($('#select-box-total-emp').val() === '0') {
+            frm.dataForm['total_employees'] = null;
+        }
+
         if ($('#select-box-acc-manager').val().length > 0) {
             frm.dataForm['manager'] = $('#select-box-acc-manager').val();
         }
@@ -691,7 +699,6 @@ $(document).ready(function () {
         if ($('#select-box-acc-type').val().length > 0) {
             frm.dataForm['account_type'] = $('#select-box-acc-type').val();
         }
-
 
         if ($('#inp-organization').is(':checked')) {
             frm.dataForm['account_type_selection'] = 1;
@@ -719,7 +726,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     });

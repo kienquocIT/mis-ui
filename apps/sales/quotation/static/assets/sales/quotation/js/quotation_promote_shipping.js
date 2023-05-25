@@ -297,6 +297,7 @@ function getPromotionResult(condition) {
                 if (DiscountAmount > parseFloat(condition.max_amount)) { // check discount amount with max discount amount
                     DiscountAmount = parseFloat(condition.max_amount)
                     if (condition.is_before_tax === true) {
+                        let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                         discount_rate_on_order = ((parseFloat(preTax) - DiscountAmount) / parseFloat(preTax));
                     }
                 }

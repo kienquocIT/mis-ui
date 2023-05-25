@@ -601,7 +601,7 @@ $(document).ready(function () {
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
-            $('#sale-code-select-box').prop('disabled', false);
+            // $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
             });
@@ -611,7 +611,7 @@ $(document).ready(function () {
             $('#beneficiary-select-box').prop('disabled', true);
         }
         if ($(this).val() === 'non-sale') {
-            $('#sale-code-select-box').prop('disabled', true);
+            // $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
             $('#sale-code-select-box2-show').attr('style', '');
             $('#sale-code-select-box2-show').attr('disabled', true);

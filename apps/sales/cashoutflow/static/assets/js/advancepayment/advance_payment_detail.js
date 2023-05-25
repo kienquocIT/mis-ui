@@ -11,7 +11,7 @@ $(document).ready(function () {
             if (advance_payment.sale_code_type === 0) {
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
-                $('#sale-code-select-box').prop('disabled', false);
+                // $('#sale-code-select-box').prop('disabled', false);
                 $('#sale-code-select-box2-show').css({
                     'background': 'none',
                 });
@@ -27,7 +27,7 @@ $(document).ready(function () {
             else if (advance_payment.sale_code_type === 2) {
                 $('#radio-non-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Non-Sale');
-                $('#sale-code-select-box').prop('disabled', true);
+                // $('#sale-code-select-box').prop('disabled', true);
                 $('#sale-code-select-box').val('');
                 $('#sale-code-select-box2-show').attr('style', '');
                 $('#sale-code-select-box2-show').attr('disabled', true);
@@ -826,7 +826,7 @@ $(document).ready(function () {
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
-            $('#sale-code-select-box').prop('disabled', false);
+            // $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
             });
@@ -836,7 +836,7 @@ $(document).ready(function () {
             $('#beneficiary-select-box').prop('disabled', true);
         }
         if ($(this).val() === 'non-sale') {
-            $('#sale-code-select-box').prop('disabled', true);
+            // $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
             $('#sale-code-select-box2-show').attr('style', '');
             $('#sale-code-select-box2-show').attr('disabled', true);

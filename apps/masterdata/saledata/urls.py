@@ -27,7 +27,7 @@ from apps.masterdata.saledata.views.price import (
     PriceDeleteAPI
 )
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
-    ShippingDetailAPI
+    ShippingDetailAPI, ShippingCheckListAPI
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI,
 )
@@ -155,6 +155,7 @@ urlpatterns = [
     path('shippings/api', ShippingListAPI.as_view(), name='ShippingListAPI'),
     path('shipping/<str:pk>', ShippingDetail.as_view(), name='ShippingDetail'),
     path('shipping/api/<str:pk>', ShippingDetailAPI.as_view(), name='ShippingDetailAPI'),
+    path('shippings-check-api', ShippingCheckListAPI.as_view(), name='ShippingCheckListAPI'),
 ]
 
 # WareHouse

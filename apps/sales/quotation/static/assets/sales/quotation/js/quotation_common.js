@@ -79,9 +79,15 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
+                                // load Shipping & Billing by Customer
                                 self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                // load Contact by Customer
                                 if (item.id && item.owner) {
                                     self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                }
+                                // load Payment Term by Customer
+                                if (Object.keys(item.payment_term_mapped).length !== 0) {
+                                    self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
                                 }
                             }
                         })
@@ -773,9 +779,10 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                $.fn.initMaskMoney2();
+                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -1084,9 +1091,10 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                $.fn.initMaskMoney2();
+                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -1236,9 +1244,10 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                $.fn.initMaskMoney2();
+                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -1631,6 +1640,7 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
             },
@@ -1651,7 +1661,7 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-condition="" data-shipping-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-price="${row.final_shipping_price}" data-shipping-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
                             return `<button type="button" class="btn btn-primary apply-shipping" disabled>Apply</button>`;
                         }
@@ -1675,14 +1685,14 @@ class dataTableHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('shipping_list') && Array.isArray(data.shipping_list)) {
+                    if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
                         $('#datable-quotation-create-shipping').DataTable().destroy();
-                        data.shipping_list.map(function (item) {
+                        data.shipping_check_list.map(function (item) {
                             if (!checkList.includes(item.id)) {
-                                let check = {'is_pass': true}
+                                let check = checkAvailableShipping(item)
                                 if (check.is_pass === true) {
                                     item['is_pass'] = true;
-                                    // item['condition'] = check.condition;
+                                    item['final_shipping_price'] = check.final_shipping_price;
                                     passList.push(item)
                                 } else {
                                     item['is_pass'] = false;

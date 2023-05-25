@@ -333,18 +333,18 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-7">
-                                        <div class="row mt-6">
+                                        <div class="row mt-8">
                                             <div class="col-4">
                                                 <button
                                                     type="button"
                                                     class="btn btn-gradient-primary"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target="#shippingModalCenter"
+                                                    data-bs-target="#shippingFeeModalCenter"
                                                     id="btn-add-shipping"
                                             >{% trans 'Add Shipping Fee' %}</button>
                                             <div
-                                                    class="modal fade" id="shippingModalCenter" tabindex="-1"
-                                                    role="dialog" aria-labelledby="shippingModalCenter"
+                                                    class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
+                                                    role="dialog" aria-labelledby="shippingFeeModalCenter"
                                                     aria-hidden="true"
                                             >
                                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -850,7 +850,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-shipping"
-                                data-url="{% url "ShippingListAPI" %}"
+                                data-url="{% url "ShippingCheckListAPI" %}"
                                 data-link-detail="{% url "ShippingDetail" 1 %}"
                                 data-method="GET"
                         >

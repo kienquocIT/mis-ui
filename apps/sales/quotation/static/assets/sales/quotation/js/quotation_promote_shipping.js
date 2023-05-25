@@ -31,7 +31,7 @@ function checkAvailablePromotion(data_promotion) {
                     let prod = row.querySelector('.table-row-item');
                     let quantity = row.querySelector('.table-row-quantity');
                     if (prod.value === prodID && parseInt(quantity.value) > 0) {
-                        if (conditionCheck.hasOwnProperty('is_min_quantity')) {
+                        if (conditionCheck.hasOwnProperty('is_min_quantity')) { // Check condition quantity of product
                             if (parseInt(quantity.value) >= conditionCheck.num_minimum) {
                                 if (conditionCheck.percent_fix_amount === true) { // discount by percent
                                     return {
@@ -260,15 +260,19 @@ function getPromotionResult(condition) {
     if (condition.is_discount === true) { // DISCOUNT
         let DiscountAmount = 0;
         let taxID = "";
+        let discount_rate_on_order = null;
         if (condition.is_on_product === true) { // discount on specific product
             let row = tableProd.DataTable().row(condition.row_apply_index).node();
             let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
             let taxValue = taxSelected.getAttribute('data-value')
             taxID = taxSelected.value;
-            if (condition.is_on_percent === true) {
+            if (condition.is_on_percent === true) { // discount by percent
                 let subtotal = row.querySelector('.table-row-subtotal-raw').value;
                 DiscountAmount = ((parseFloat(subtotal) * parseFloat(condition.percent_discount)) / 100);
-            } else if (condition.is_fix_amount === true) {
+                if (DiscountAmount > parseFloat(condition.max_amount)) { // check discount amount with max discount amount
+                    DiscountAmount = parseFloat(condition.max_amount)
+                }
+            } else if (condition.is_fix_amount === true) { // discount by fix amount
                 if (condition.is_before_tax === true) {
                     DiscountAmount = condition.fix_value;
                 } else if (condition.is_after_tax === true) {
@@ -279,17 +283,27 @@ function getPromotionResult(condition) {
             }
 
         } else if (condition.is_on_order === true) { // discount on whole order
-            if (condition.is_on_percent === true) {
+            if (condition.is_on_percent === true) { // discount by percent
                 if (condition.is_before_tax === true) {
                     let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                     let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
                     let total = parseFloat(preTax) - parseFloat(discount);
                     DiscountAmount = ((total * parseFloat(condition.percent_discount)) / 100);
+                    discount_rate_on_order = parseFloat(condition.percent_discount);
                 } else if (condition.is_after_tax === true) {
                     let total = document.getElementById('quotation-create-product-total-raw').value;
                     DiscountAmount = ((parseFloat(total) * parseFloat(condition.percent_discount)) / 100);
                 }
-            } else if (condition.is_fix_amount === true) {
+                if (DiscountAmount > parseFloat(condition.max_amount)) { // check discount amount with max discount amount
+                    DiscountAmount = parseFloat(condition.max_amount)
+                    if (condition.is_before_tax === true) {
+                        let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
+                        let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
+                        let total = parseFloat(preTax) - parseFloat(discount);
+                        discount_rate_on_order = (DiscountAmount / total)
+                    }
+                }
+            } else if (condition.is_fix_amount === true) { // discount by fix amount
                 if (condition.is_before_tax === true) {
                     DiscountAmount = condition.fix_value;
                 } else if (condition.is_after_tax === true) {
@@ -298,17 +312,18 @@ function getPromotionResult(condition) {
             }
         }
         return {
-                'row_apply_index': condition.row_apply_index,
-                'is_discount': true,
-                'is_gift': false,
-                'product_id': condition.product_id,
-                'product_title': condition.product_title,
-                'product_code': condition.product_code,
-                'product_description': "(Voucher) " + condition.product_description,
-                'product_quantity': condition.product_quantity,
-                'product_price': DiscountAmount,
-                'value_tax': taxID
-            }
+            'row_apply_index': condition.row_apply_index,
+            'is_discount': true,
+            'is_gift': false,
+            'product_id': condition.product_id,
+            'product_title': condition.product_title,
+            'product_code': condition.product_code,
+            'product_description': "(Voucher) " + condition.product_description,
+            'product_quantity': condition.product_quantity,
+            'product_price': DiscountAmount,
+            'value_tax': taxID,
+            'discount_rate_on_order': discount_rate_on_order,
+        }
     } else if (condition.is_gift === true) { // GIFT
         return {
             'row_apply_index': condition.row_apply_index,
@@ -325,10 +340,12 @@ function getPromotionResult(condition) {
     return result
 }
 
-function deletePromotionRows(table) {
+function deletePromotionRows(table, is_promotion = false, is_shipping = false) {
     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
         let row = table[0].tBodies[0].rows[i];
-        if (row.querySelector('.table-row-promotion')) {
+        if (row.querySelector('.table-row-promotion') && is_promotion === true) {
+            deleteRow($(row), row.closest('tbody'), table)
+        } else if (row.querySelector('.table-row-shipping') && is_shipping === true) {
             deleteRow($(row), row.closest('tbody'), table)
         }
     }
@@ -346,4 +363,99 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
+}
+
+function reCalculateTax(table, promotion_discount_rate) {
+    let eleTaxes = document.getElementById('quotation-create-product-taxes');
+    let eleTaxesRaw = document.getElementById('quotation-create-product-taxes-raw');
+    let taxAmountTotal = 0;
+    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+        let row = table[0].tBodies[0].rows[i];
+        if (row.querySelector('.table-row-price')) {
+            let price = 0;
+            let quantity = 0;
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                price = $(elePrice).valCurrency();
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                if (eleQuantity.value) {
+                    quantity = parseInt(eleQuantity.value)
+                } else if (!eleQuantity.value || eleQuantity.value === "0") {
+                    quantity = 0
+                }
+            }
+            let tax = 0;
+            let discount = 0;
+            let subtotal = (price * quantity);
+            let subtotalPlus = 0;
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                let optionSelected = eleTax.options[eleTax.selectedIndex];
+                if (optionSelected) {
+                    tax = parseInt(optionSelected.getAttribute('data-value'));
+                }
+            }
+            // calculate discount & tax
+            let eleDiscount = row.querySelector('.table-row-discount');
+            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+            if (eleDiscount && eleDiscountAmount) {
+                if (eleDiscount.value) {
+                    discount = parseFloat(eleDiscount.value)
+                } else if (!eleDiscount.value || eleDiscount.value === "0") {
+                    discount = 0
+                }
+                let discountAmount = ((price * discount) / 100);
+                let priceDiscountOnRow = (price - discountAmount);
+                subtotal = (priceDiscountOnRow * quantity);
+
+                let discountAmountOnTotal = ((priceDiscountOnRow * promotion_discount_rate) / 100);
+                subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
+                // calculate tax
+                if (row.querySelector('.table-row-tax-amount')) {
+                    let taxAmount = ((subtotalPlus * tax) / 100);
+                    taxAmountTotal += taxAmount;
+                }
+            }
+        }
+    }
+    $(eleTaxes).attr('value', String(taxAmountTotal));
+    eleTaxesRaw.value = taxAmountTotal;
+    $.fn.initMaskMoney2();
+}
+
+// Shipping
+function checkAvailableShipping(data_shipping) {
+    let operators = {
+        1: "<",
+        2: ">",
+        3: "<=",
+        4: ">=",
+    }
+    if (data_shipping.cost_method === 0) { // Fixed Price Method
+        return {
+            'is_pass': true,
+            'final_shipping_price': parseFloat(data_shipping.fixed_price)
+        }
+    } else if (data_shipping.cost_method === 1) { // Formula Method
+        let shippingAddress = $('#quotation-create-shipping-address').val();
+        let formula_condition = data_shipping.formula_condition;
+        for (let i = 0; i < formula_condition.length; i++) {
+            let formula = formula_condition[i].formula;
+            let location_condition = formula_condition[i].location_condition
+            for (let l = 0; l < location_condition.length; l++) {
+                let location = location_condition[l];
+                if (shippingAddress.includes(location.title)) {
+                    return {
+                        'is_pass': true,
+                    }
+                }
+            }
+        }
+    }
+
+    return {
+        'is_pass': false,
+    }
 }

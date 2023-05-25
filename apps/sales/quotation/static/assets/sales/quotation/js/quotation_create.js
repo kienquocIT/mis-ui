@@ -91,10 +91,14 @@ $(function () {
                 loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling);
                 if (optionSelected.querySelector('.data-default')) {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
+                    // load Shipping & Billing by Customer
                     loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling, data);
+                    // load Contact by Customer
                     if (data.id && data.owner) {
                         loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
                     }
+                    // load Payment Term by Customer
+                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term_mapped.id)
                 } else {
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
                 }
@@ -157,7 +161,7 @@ $(function () {
         $('#btn-add-product-quotation-create').on('click', function (e) {
             e.preventDefault();
             // delete all Promotion rows
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -211,7 +215,7 @@ $(function () {
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
             // Delete all promotion rows
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
 
             calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
@@ -244,7 +248,7 @@ $(function () {
                 document.getElementById('quotation-create-cost-total').innerHTML = "0";
             }
             // Delete all promotion rows
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
             // Re Calculate all data
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
@@ -260,7 +264,7 @@ $(function () {
             this.value = value;
         });
 
-// Action on change total discount of product
+// Action on change discount rate on Total of product
         $('#quotation-create-product-discount').on('change', function (e) {
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
@@ -694,7 +698,7 @@ $(function () {
 // Action click Apply Promotion
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             let promotionResult = getPromotionResult(promotionCondition);
             // let order = promotionResult.row_apply_index + 0.5;
@@ -753,9 +757,23 @@ $(function () {
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     // Re Calculate all data
                     calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+                    // Re Calculate Tax on Total
+                    if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
+                        if (promotionResult.discount_rate_on_order !== null) {
+                            reCalculateTax(tableProduct, promotionResult.discount_rate_on_order)
+                        }
+                    }
                 }
             } else if (promotionResult.is_gift === true) { // GIFT
-                tableProduct.DataTable().row.add(dataAdd).draw()
+                if (promotionResult.row_apply_index !== null) { // on Specific product
+                    let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    // Get the desired position
+                    let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
+                    // Remove the new row and re-insert it at the desired position
+                    $(newRow).detach().insertAfter(afterRow);
+                } else { // on Whole order
+                    tableProduct.DataTable().row.add(dataAdd).draw()
+                }
             }
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
@@ -770,7 +788,7 @@ $(function () {
 // Action click Apply Shipping
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
-            // deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, false, true);
             // let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             // let promotionResult = getPromotionResult(promotionCondition);
             let order = 1;

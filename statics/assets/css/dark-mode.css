@@ -1,5 +1,4 @@
-
-:root{
+:root {
     --bg-dark-mode: #212529;
     --color-dark-mode: #adb5bd;
     --boder-dark-mode: #495057;
@@ -9,44 +8,80 @@ body.theme-dark,
 body.theme-dark .blogapp-wrap .blogapp-content .blogapp-detail-wrap,
 body.theme-dark .blogapp-wrap .blogapp-content .blogapp-detail-wrap header.blog-header,
 body.theme-dark .navbar.navbar-light,
-body.theme-dark .dropdown-menu{
-    background-color: var(--bg-dark-mode);
+body.theme-dark .dropdown-menu,
+body.theme-dark .form-control,
+body.theme-dark .form-select,
+body.theme-dark .select2-container--default .select2-selection--single,
+body.theme-dark .modal-content,
+body.theme-dark .nav-tabs.nav-light > .nav-item > .nav-link.active,
+body.theme-dark .select2-container--default .select2-selection--multiple{
+    background-color: var(--bg-dark-mode)!important;
     color: var(--color-dark-mode);
 }
+
 body.theme-dark .hk-wrapper .hk-menu,
 body.theme-dark .blogapp-wrap .blogapp-content .blogapp-detail-wrap header.blog-header,
 body.theme-dark .hk-wrapper .hk-navbar,
 body.theme-dark .table thead th,
-body.theme-dark .dropdown-divider{
+body.theme-dark .dropdown-divider,
+body.theme-dark .form-select,
+body.theme-dark .form-control,
+body.theme-dark .modal-content,
+body.theme-dark .modal-header,
+body.theme-dark .modal-footer,
+body.theme-dark .select2-container--default .select2-selection--single,
+body.theme-dark tbody, body.theme-dark td, body.theme-dark tfoot, body.theme-dark th, body.theme-dark thead,
+body.theme-dark tr,
+body.theme-dark .nav-tabs,
+body.theme-dark .nav-tabs.nav-light > .nav-item > .nav-link.active{
     border-color: var(--boder-dark-mode);
 }
 
-body.theme-dark .btn-flush-dark{
+body.theme-dark .btn-flush-dark {
     color: #fff;
 }
+
 body.theme-dark .table thead th, body.theme-dark .table tfoot th,
-body.theme-dark .dropdown-menu .dropdown-item{
+body.theme-dark .dropdown-menu .dropdown-item,
+body.theme-dark .breadcrumb .breadcrumb-item > a,
+body.theme-dark label,
+body.theme-dark .form-control-plaintext,
+body.theme-dark .select2-container--default .select2-selection--single .select2-selection__rendered,
+body.theme-dark h1, body.theme-dark h2, body.theme-dark h3, body.theme-dark h4, body.theme-dark h5,
+body.theme-dark h6, body.theme-dark .h1, body.theme-dark .h2, body.theme-dark .h3, body.theme-dark .h4,
+body.theme-dark .h5, body.theme-dark .h6,
+body.theme-dark .nav.nav-light .nav-link{
     color: var(--color-dark-mode);
 }
 
-body.theme-dark .dropdown-menu{
+body.theme-dark .dropdown-menu {
     outline-offset: -1px;
     outline: 1px solid var(--boder-dark-mode);
-    box-shadow:none;
+    box-shadow: none;
 }
 
 body.theme-dark .breadcrumb .breadcrumb-item > a:hover,
-body.theme-dark .breadcrumb .breadcrumb-item > a:focus{
+body.theme-dark .breadcrumb .breadcrumb-item > a:focus {
     color: #fff;
 }
 
+body.theme-dark .form-control-plaintext{
+    background-color: rgb(255 255 255 / 10%);
+}
 
-
+body.theme-dark .field-required,
+body.theme-dark .required::after{
+    color: #ff4a4a!important;
+}
+body.theme-dark .nav-tabs.nav-light > .nav-item > .nav-link.active{
+    border-bottom: 0
+}
 /* button dark mode style */
-#dark-mode-btn{
+#dark-mode-btn {
     padding: 8px 10px;
 }
-#dark_mode_btn + .dark_mode_lb{
+
+#dark_mode_btn + .dark_mode_lb {
     outline: 0;
     display: block;
     width: 4em;
@@ -62,7 +97,8 @@ body.theme-dark .breadcrumb .breadcrumb-item > a:focus{
     padding: 2px;
     transition: all 0.4s ease-in;
 }
-#dark_mode_btn + .dark_mode_lb:after{
+
+#dark_mode_btn + .dark_mode_lb:after {
     position: relative;
     display: flex;
     content: "\F5A2";
@@ -77,10 +113,12 @@ body.theme-dark .breadcrumb .breadcrumb-item > a:focus{
     left: 0;
     color: #018c98;
 }
-#dark_mode_btn:checked + .dark_mode_lb{
+
+#dark_mode_btn:checked + .dark_mode_lb {
     background: #2b3035;
 }
-#dark_mode_btn:checked + .dark_mode_lb:after{
+
+#dark_mode_btn:checked + .dark_mode_lb:after {
     content: "\F496";
     background: #000;
     left: 50%;

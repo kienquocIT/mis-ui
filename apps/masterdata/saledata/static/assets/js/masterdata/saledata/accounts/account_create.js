@@ -1,4 +1,202 @@
 $(document).ready(function () {
+    let shipping_address_id_dict = [];
+    let billing_address_id_dict = [];
+
+    $('#shipping-city').select2();
+    $('#shipping-district').select2();
+    $('#shipping-ward').select2();
+
+    // load Cities SelectBox
+    function loadCities() {
+        $("#shipping-district option:selected").prop("selected", false);
+        $("#shipping-ward option:selected").prop("selected", false);
+        let ele = $('#shipping-city');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                        data.cities.map(function (item) {
+                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+    loadCities();
+
+    // load Districts SelectBox
+    function loadDistricts() {
+        let ele = $('#shipping-district');
+        let url = ele.attr('data-url').replace('pk', $('#shipping-city').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
+                        data.districts.map(function (item) {
+                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Wards SelectBox
+    function loadWards() {
+        let ele = $('#shipping-ward');
+        let url = ele.attr('data-url').replace('pk', $('#shipping-district').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
+                        data.wards.map(function (item) {
+                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    $('#shipping-city').on('change', function () {
+        loadDistricts();
+        $('#shipping-ward').html('<option value="" selected>---</option>');
+    })
+
+    $('#shipping-district').on('change', function () {
+        loadWards();
+    })
+
+    $('#save-changes-modal-shipping-address').on('click', function () {
+        try {
+            let detail_shipping_address = $('#detail-modal-shipping-address').val();
+            let city = $('#shipping-city').find(`option:selected`).text();
+            let district = $('#shipping-district').find(`option:selected`).text();
+            let ward = $('#shipping-ward').find(`option:selected`).text();
+
+            let country_id = $('#shipping-city').find(`option:selected`).attr('data-country-id');
+            let city_id = $('#shipping-city').find(`option:selected`).attr('value');
+            let district_id = $('#shipping-district').find(`option:selected`).attr('value');
+            let ward_id = $('#shipping-ward').find(`option:selected`).attr('value');
+
+            let shipping_address = '';
+            if (city !== '' && district !== '' && detail_shipping_address !== '') {
+
+                if (ward === '') {
+                    shipping_address = detail_shipping_address + ', ' + district + ', ' + city;
+                } else {
+                    shipping_address = detail_shipping_address + ', ' + ward + ', ' + district + ', ' + city;
+                }
+
+                $('#modal-shipping-address').modal('hide');
+                $('#detail-modal-shipping-address').val('');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (shipping_address !== '') {
+                let is_default = '';
+                if ($('#make-default-shipping-address').prop('checked') === true) {
+                    is_default = 'checked';
+                }
+
+                $('#list-shipping-address').append(
+                    `<div class="form-check ml-5 mb-2">
+                        <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
+                        <label>` + shipping_address + `</label>
+                        <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                    </div>`
+                )
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).parent().remove();
+                })
+
+                shipping_address_id_dict.push({
+                    'country_id': country_id,
+                    'detail_address': detail_shipping_address,
+                    'city_id': city_id,
+                    'district_id': district_id,
+                    'ward_id': ward_id,
+                    'full_address': shipping_address,
+                    'is_default': $('#make-default-shipping-address').prop('checked')
+                })
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+        }
+    })
+
+    $('#save-changes-modal-billing-address').on('click', function () {
+        try {
+            let acc_name = $('#select-box-account-name').find(`option:selected`).text();
+            let email_address = $('#inp-email-address').val();
+            let tax_code = $('#inp-tax-code-address').val();
+
+            let acc_name_id = $('#select-box-account-name').find(`option:selected`).attr('value');
+
+            let account_address = $('#select-box-address').find('option:selected').val();
+            if ($('#select-box-address').is(':hidden')) {
+                account_address = $('#edited-billing-address').val()
+            }
+
+            let billing_address = '';
+            if (email_address !== '' && tax_code !== '' && account_address !== '0') {
+                billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
+                $('#modal-billing-address').modal('hide');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (billing_address !== '') {
+                let is_default = '';
+                if ($('#make-default-billing-address').prop('checked') === true) {
+                    is_default = 'checked';
+                }
+
+                $('#list-billing-address').append(
+                    `<div class="form-check ml-5">
+                        <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
+                        <label>` + billing_address + `</label>
+                        <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                    </div>`
+                )
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).parent().remove();
+                })
+
+                billing_address_id_dict.push({
+                    'account_name_id': acc_name_id,
+                    'email': email_address,
+                    'tax_code': tax_code,
+                    'account_address': account_address,
+                    'full_address': billing_address,
+                    'is_default': $('#make-default-billing-address').prop('checked'),
+                })
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+        }
+    })
+
+
     let ele_table_offcanvas = $('#table-offcanvas').html()
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
@@ -251,7 +449,7 @@ $(document).ready(function () {
         }
     })
 
-    // Change  Account Owner
+    // Change Account Owner
     $('#select-box-contact').on('change', function () {
         let oldValue = $(this).data('oldValue');
         let newValue = $(this).val();
@@ -314,6 +512,12 @@ $(document).ready(function () {
     $('#inp-organization').on('change', function () {
         $('#select-box-parent-account').attr('disabled', false);
         $("#tax-code-label").addClass("required");
+    })
+
+    // Button add shipping address
+    $('#edit-shipping-address-btn').on('click', function () {
+        if ($('#list-shipping-address input').length === 0)
+            $('#make-default-shipping-address').prop('checked', true);
     })
 
     // Button add billing address
@@ -410,51 +614,6 @@ $(document).ready(function () {
         }
     })
 
-    // Button add shipping address
-    $('#edit-shipping-address-btn').on('click', function () {
-        if ($('#list-shipping-address input').length === 0)
-            $('#make-default-shipping-address').prop('checked', true);
-    })
-
-    // Button save in modal billing address
-    $('#save-changes-modal-billing-address').on('click', function () {
-        try {
-            let acc_name = $('#select-box-account-name').find(`option:selected`).text();
-            let email_address = $('#inp-email-address').val();
-            let tax_code = $('#inp-tax-code-address').val();
-
-            let account_address = $('#select-box-address').find('option:selected').val();
-            if ($('#select-box-address').is(':hidden')) {
-                account_address = $('#edited-billing-address').val()
-            }
-
-            let billing_address = '';
-            if (email_address !== '' && tax_code !== '' && account_address !== '0') {
-                billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
-                $('#modal-billing-address').modal('hide');
-            } else {
-                alert("Missing billing address information!");
-            }
-
-            if (billing_address !== '') {
-                let num = $('#list-billing-address input').length
-                let is_default = '';
-                if ($('#make-default-billing-address').prop('checked') === true) {
-                    is_default = 'checked';
-                }
-                $('#list-billing-address').append(
-                    `<div class="form-check ml-5">
-                            <input class="form-check-input" type="radio" name="billingaddressRadio" id="billingaddressRadio` + num.toString() + `" ` + is_default + `>
-                            <label class="form-check-label" for="billingaddressRadio` + num.toString() + `">` + billing_address + `</label>
-                        </div>`
-                )
-
-            }
-        } catch (error) {
-            alert("No address information!");
-        }
-    })
-
     // Conditions for show offCanvas add Contact
     $('#add-contact-btn').on('click', function () {
         let allFieldsFilled = true;
@@ -491,26 +650,23 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
 
-        // get shipping address [default, .., .. ,.. ]
         let shipping_address_list = [];
         $('#list-shipping-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
-                let shipping_address = $('#list-shipping-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                shipping_address_list.unshift(shipping_address)
-            } else {
-                let shipping_address = $('#list-shipping-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                shipping_address_list.push(shipping_address)
+                shipping_address_list.unshift($(this).next('label').text().trim());
+            }
+            else {
+                shipping_address_list.push($(this).next('label').text().trim());
             }
         });
 
         let billing_address_list = [];
         $('#list-billing-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
-                let billing_address = $('#list-billing-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                billing_address_list.unshift(billing_address)
-            } else {
-                let billing_address = $('#list-billing-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                billing_address_list.push(billing_address)
+                billing_address_list.unshift($(this).next('label').text().trim());
+            }
+            else {
+                billing_address_list.push($(this).next('label').text().trim());
             }
         });
 
@@ -536,13 +692,6 @@ $(document).ready(function () {
             frm.dataForm['account_type'] = $('#select-box-acc-type').val();
         }
 
-        if (shipping_address_list.length > 0) {
-            frm.dataForm['shipping_address'] = shipping_address_list;
-        }
-
-        if (billing_address_list.length > 0) {
-            frm.dataForm['billing_address'] = billing_address_list;
-        }
 
         if ($('#inp-organization').is(':checked')) {
             frm.dataForm['account_type_selection'] = 1;
@@ -554,6 +703,11 @@ $(document).ready(function () {
             return $(this).attr('data-value');
         }).get();
         frm.dataForm['contact_primary'] = $('.contact_primary').attr('data-value');
+
+        frm.dataForm['shipping_address'] = shipping_address_list;
+        frm.dataForm['billing_address'] = billing_address_list;
+        frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
+        frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

@@ -1,5 +1,6 @@
 $(document).ready(function () {
     let shipping_address_id_dict = [];
+    let billing_address_id_dict = [];
 
     // load Cities SelectBox
     function loadCities() {
@@ -138,6 +139,8 @@ $(document).ready(function () {
             let email_address = $('#inp-email-address').val();
             let tax_code = $('#inp-tax-code-address').val();
 
+            let acc_name_id = $('#select-box-account-name').find(`option:selected`).attr('value');
+
             let account_address = $('#select-box-address').find('option:selected').val();
             if ($('#select-box-address').is(':hidden')) {
                 account_address = $('#edited-billing-address').val()
@@ -156,6 +159,7 @@ $(document).ready(function () {
                 if ($('#make-default-billing-address').prop('checked') === true) {
                     is_default = 'checked';
                 }
+
                 $('#list-billing-address').append(
                     `<div class="form-check ml-5">
                         <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
@@ -164,6 +168,14 @@ $(document).ready(function () {
                     </div>`
                 )
 
+                billing_address_id_dict.push({
+                    'account_name_id': acc_name_id,
+                    'email': email_address,
+                    'tax_code': tax_code,
+                    'account_address': account_address,
+                    'full_address': billing_address,
+                    'is_default': $('#make-default-billing-address').prop('checked'),
+                })
             }
         } catch (error) {
             $.fn.notifyPopup({description: "No address information!"}, 'failure');
@@ -178,7 +190,6 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 data = data['account_detail'];
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
@@ -990,14 +1001,6 @@ $(document).ready(function () {
             }
         });
 
-        if (shipping_address_list.length > 0) {
-            frm.dataForm['shipping_address'] = shipping_address_list;
-        }
-
-        if (billing_address_list.length > 0) {
-            frm.dataForm['billing_address'] = billing_address_list;
-        }
-
         if (frm.dataForm['parent_account'] === '') {
             frm.dataForm['parent_account'] = null;
         }
@@ -1052,7 +1055,10 @@ $(document).ready(function () {
         }
         frm.dataForm['credit_cards_information'] = credit_cards_information;
 
+        frm.dataForm['shipping_address'] = shipping_address_list;
+        frm.dataForm['billing_address'] = billing_address_list;
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
+        frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
         // console.log(frm.dataForm)
 

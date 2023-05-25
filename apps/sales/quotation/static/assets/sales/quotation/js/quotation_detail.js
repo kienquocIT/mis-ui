@@ -27,7 +27,6 @@ $(function () {
                     }
                     // prepare for copy quotation to sale order
                     $('#data-copy-quotation-detail').val(JSON.stringify(data))
-                    $.fn.initMaskMoney2();
                 }
             }
         )

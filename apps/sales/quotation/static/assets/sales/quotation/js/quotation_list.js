@@ -111,7 +111,5 @@ $(function () {
                 _dataTable.ajax.reload()
         });
 
-        $.fn.initMaskMoney2();
-
     });
 });

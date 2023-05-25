@@ -264,7 +264,7 @@ $(function () {
             this.value = value;
         });
 
-// Action on change total discount of product
+// Action on change discount rate on Total of product
         $('#quotation-create-product-discount').on('change', function (e) {
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
@@ -757,6 +757,12 @@ $(function () {
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     // Re Calculate all data
                     calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+                    // Re Calculate Tax on Total
+                    if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
+                        if (promotionResult.discount_rate_on_order !== null) {
+                            reCalculateTax(tableProduct, promotionResult.discount_rate_on_order)
+                        }
+                    }
                 }
             } else if (promotionResult.is_gift === true) { // GIFT
                 if (promotionResult.row_apply_index !== null) { // on Specific product

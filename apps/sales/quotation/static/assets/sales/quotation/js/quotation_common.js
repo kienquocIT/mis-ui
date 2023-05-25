@@ -779,9 +779,10 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                $.fn.initMaskMoney2();
+                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -1090,9 +1091,10 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                $.fn.initMaskMoney2();
+                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
@@ -1242,9 +1244,10 @@ class dataTableHandle {
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
+                $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                $.fn.initMaskMoney2();
+                // $.fn.initMaskMoney2();
             },
             columns: [
                 {

@@ -601,7 +601,7 @@ $(document).ready(function () {
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
-            // $('#sale-code-select-box').prop('disabled', false);
+            $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
             });
@@ -611,7 +611,7 @@ $(document).ready(function () {
             $('#beneficiary-select-box').prop('disabled', true);
         }
         if ($(this).val() === 'non-sale') {
-            // $('#sale-code-select-box').prop('disabled', true);
+            $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
             $('#sale-code-select-box2-show').attr('style', '');
             $('#sale-code-select-box2-show').attr('disabled', true);
@@ -801,8 +801,25 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let waittime = 1000;
+                        if (frm.dataForm['money_gave']) {
+                            setTimeout(
+                                Swal.fire({
+                                    html:
+                                    '<div class="d-flex align-items-center"><i class="bi bi-cash-coin me-2 fs-1 text-success"></i><h4 class="mb-0">Money has been sent.</h4></div>',
+                                    customClass: {
+                                        content: 'p-0',
+                                        actions: 'justify-content-start',
+                                    },
+                                    width: 400,
+                                    showConfirmButton:false,
+                                    buttonsStyling: false
+                                }), 3000
+                            );
+                            waittime = 3000;
+                        }
                         $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, waittime);
                     }
                 },
                 (errs) => {

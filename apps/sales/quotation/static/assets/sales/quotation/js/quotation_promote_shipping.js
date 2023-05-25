@@ -426,6 +426,18 @@ function reCalculateTax(table, promotion_discount_rate) {
     }
     $(eleTaxes).attr('value', String(taxAmountTotal));
     eleTaxesRaw.value = taxAmountTotal;
+
+    // ReCalculate Tax
+    let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
+    let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
+    let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) + taxAmountTotal);
+
+    // ReCalculate Final Total
+    let eleTotal = document.getElementById('quotation-create-product-total');
+    let eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
+    $(eleTotal).attr('value', String(totalFinal));
+    eleTotalRaw.value = totalFinal;
+
     $.fn.initMaskMoney2();
 }
 

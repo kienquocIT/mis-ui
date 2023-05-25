@@ -11,6 +11,7 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row mb-3">
+        {% csrf_token %}
         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
             <div class="form-group">
                 <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
@@ -32,9 +33,6 @@
             <div class="form-group">
                 <label for="inputWareHouse" class="form-label">{% trans 'WareHouse' %}</label>
                 <select class="form-control select2" name="warehouse_id" id="inputWareHouse">
-                    <option value="1">1 nè</option>
-                    <option value="2">2 nè</option>
-                    <option value="3">3 nè</option>
                 </select>
                 <div class="form-text">Kho hàng đó nè</div>
             </div>
@@ -42,11 +40,7 @@
         <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
             <div class="form-group">
                 <label for="inputWareHouse" class="form-label">{% trans 'Status' %}</label>
-                <input
-                        type="text" class="form-control" name="inputState" id="inputState" readonly disabled
-                        value="Đang đợi á"
-                />
-                <div class="form-text">Kho hàng đó nè</div>
+                <p name="inputState" id="inputState" readonly disabled></p>
             </div>
         </div>
         <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
@@ -74,7 +68,6 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_detail">
-                {% csrf_token %}
                 <table
                         id="dtbPickingProductList"
                         class="table nowrap w-100 mb-5"
@@ -109,15 +102,20 @@
             </div>
         </div>
     </div>
-    <div class="hidden">
-        <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
-    </div>
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script>
-        $('input[type=text].date-picker').dateRangePickerDefault();
+        function loadDatePicker() {
+            $('input[type=text].date-picker').dateRangePickerDefault();
+        }
 
         $(document).ready(function () {
             $.fn.callAjax(
@@ -127,10 +125,56 @@
                 true,
             ).then(
                 (resp) => {
-                    console.log('resp: ', resp);
                     let data = $.fn.switcherResp(resp);
-
                     if (data && data.hasOwnProperty('picking_detail') && data.picking_detail.hasOwnProperty('sub') && data.picking_detail.sub.hasOwnProperty('products')) {
+                        // load sale order
+                        console.log('picking_detail: ', data['picking_detail']);
+                        ``
+                        $('#inputSaleOrder').attr('value', data['picking_detail']?.['sale_order_data']?.['id']).val(
+                            data['picking_detail']?.['sale_order_data']?.['title']
+                        );
+
+                        // state
+                        let state = data['picking_detail']?.['state'];
+                        if (state !== undefined && Number.isInteger(state)) {
+                            let letStateChoices = JSON.parse($('#dataStateChoices').text());
+                            let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
+                            switch (state) {
+                                case 0:
+                                    templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
+                                    break
+                                case 1:
+                                    templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
+                                    break
+                            }
+                            $('#inputState').append(templateEle.format_by_idx(letStateChoices?.[state]));
+                        }
+
+                        // picking delivery date
+                        let estimate_delivery_date = data['picking_detail']?.['estimated_delivery_date'];
+                        if (estimate_delivery_date) {
+                            $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
+                            loadDatePicker();
+                        }
+
+                        // warehouse
+                        let warehouse_data = data['picking_detail']?.['ware_house_data'];
+                        if (warehouse_data.hasOwnProperty('code')) {
+                            $('#inputWareHouse').append(
+                                `<option value="{0}">{1}</option>`.format_by_idx(
+                                    warehouse_data['id'],
+                                    warehouse_data['code'] + " - " + warehouse_data['title'],
+                                )
+                            )
+                        }
+
+                        // descriptions
+                        let remarks = data['picking_detail']?.['remarks']
+                        if (remarks) {
+                            $('#inputRemarks').val(remarks);
+                        }
+
+                        // load product list
                         loadProductList(
                             data.picking_detail.sub['products']
                         );
@@ -139,7 +183,6 @@
             )
 
             function loadProductList(data) {
-                console.log('data: ', data);
                 $('#dtbPickingProductList').DataTableDefault({
                     rowIdx: true,
                     visibleSearchField: false,
@@ -163,7 +206,7 @@
                         },
                         {
                             render: (data, type, row, meta) => {
-                                return row?.['picked_quantity'];
+                                return row?.['pickup_quantity'];
                             }
                         },
                         {
@@ -187,3 +230,4 @@
         });
     </script>
 {% endblock %}
+

@@ -42,22 +42,22 @@ $(document).ready(function () {
                     return ''
                 },
             }, {
-                data: 'code',
                 render: (data, type, row) => {
-                    return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
-                        frm.getUrlDetail(row.id), data
+                    return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-primary">{2}</span></a>`.format_by_idx(
+                        frm.getUrlDetail(row.id), $.fn.getValueOrEmpty(row, 'title'), $.fn.getValueOrEmpty(row, 'code'),
                     )
                 },
             }, {
                 data: 'sale_order_data',
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
-                        return `<a href="{0}"><span class="badge badge-soft-success">{1}</span></a>`.format_by_idx(
+                        return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-success">{2}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']
                             ),
-                            data['code'],
+                            $.fn.getValueOrEmpty(data, 'title'),
+                            $.fn.getValueOrEmpty(data, 'code'),
                         );
                     }
                     return '';

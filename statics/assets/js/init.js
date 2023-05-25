@@ -1126,7 +1126,10 @@ $.fn.extend({
         // show or hide search field
         if (opts.hasOwnProperty('visibleSearchField')) {
             if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
-            if (utilsDom.visibleSearchField === false) domDTL = domDTL.replace('f>', '>');
+            if (utilsDom.visibleSearchField === false) {
+
+                domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
+            }
             delete opts['visibleSearchField']
         }
         // show or hide search field
@@ -1219,6 +1222,14 @@ $.fn.extend({
         return array.reduce(function (acc, currentValue) {
             return acc + currentValue;
         }, 0);
+    },
+    getValueOrEmpty: function (objData, key){
+        if (typeof objData === 'object' && typeof key === 'string'){
+            if (objData.hasOwnProperty(key) && objData[key]){
+                return objData[key];
+            }
+        }
+        return '';
     },
 
     // default components

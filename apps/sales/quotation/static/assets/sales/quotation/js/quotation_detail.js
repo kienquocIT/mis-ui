@@ -27,6 +27,10 @@ $(function () {
                     }
                     // prepare for copy quotation to sale order
                     $('#data-copy-quotation-detail').val(JSON.stringify(data))
+
+                    // delivery button
+                    if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');
+                    else $('#btnDeliverySaleOrder').addClass('hidden');
                 }
             }
         )

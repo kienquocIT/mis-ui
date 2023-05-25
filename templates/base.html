@@ -162,6 +162,10 @@
     <!-- Render Company Config -->
     {{ config|json_script:"idConfigValue" }}
     <!-- // Render Company Config -->
+
+    <div class="hidden">
+        {% block dataHiddenGroup %}{% endblock %}
+    </div>
 </div>
 <!-- /Wrapper -->
 

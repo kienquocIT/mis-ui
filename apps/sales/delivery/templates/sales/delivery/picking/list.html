@@ -37,9 +37,14 @@
         <tbody></tbody>
     </table>
     <div class="hidden">
-        {{ data.state_choices|json_script:"dataStateChoices" }}
+
     </div>
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'sales/delivery/picking/list.js' %}"></script>
 {% endblock %}

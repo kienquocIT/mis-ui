@@ -325,8 +325,15 @@
                                     <div class="col-2">
                                         <button type="button" class="btn btn-soft-primary">Print</button>
                                     </div>
-                                    <div class="col-7">
+                                    <div class="col-4">
                                         <button type="button" class="btn btn-soft-primary">Send Email</button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button
+                                                type="button"
+                                                id="btnDeliverySaleOrder"
+                                                class="btn btn-soft-warning hidden"
+                                        >Delivery</button>
                                     </div>
                                     <div class="col-3">
                                         <button type="button" class="btn btn-soft-primary disabled-but-edit" disabled>Copy Quotation</button>
@@ -841,6 +848,9 @@
     </form>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <span class="hidden" id="dataUrlSaleOrderCallDelivery" data-url="{% url 'SaleOrderDetailDeliveryAPI' pk=url_pattern.pk %}"></span>
+{% endblock %}
 
 {% block jsFooter %}
     <!-- Select2 -->
@@ -852,4 +862,34 @@
 
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
+
+    <script>
+        $(document).ready(function (){
+            $('#btnDeliverySaleOrder').click(function (event){
+                $.fn.showLoading();
+                let callDeliveryUrl = $('#dataUrlSaleOrderCallDelivery').attr('data-url');
+                if (callDeliveryUrl){
+                    $.fn.callAjax(
+                        callDeliveryUrl,
+                        'POST',
+                        {},
+                        true,
+                    ).then(
+                        (resp)=>{
+                            let data = $.fn.switcherResp(resp);
+                            if (data?.['status'] === 200){
+                                setTimeout(()=>{
+                                    window.location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs)=>{
+                            $.fn.hideLoading();
+                        }
+                    )
+                }
+                event.preventDefault();
+            });
+        });
+    </script>
 {% endblock %}

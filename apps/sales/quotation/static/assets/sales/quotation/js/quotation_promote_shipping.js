@@ -298,7 +298,9 @@ function getPromotionResult(condition) {
                     DiscountAmount = parseFloat(condition.max_amount)
                     if (condition.is_before_tax === true) {
                         let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
-                        discount_rate_on_order = ((parseFloat(preTax) - DiscountAmount) / parseFloat(preTax));
+                        let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
+                        let total = parseFloat(preTax) - parseFloat(discount);
+                        discount_rate_on_order = (DiscountAmount / total)
                     }
                 }
             } else if (condition.is_fix_amount === true) { // discount by fix amount

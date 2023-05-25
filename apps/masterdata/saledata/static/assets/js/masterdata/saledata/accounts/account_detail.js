@@ -360,21 +360,15 @@ $(document).ready(function () {
 
                 loadAccountType(data.account_type.map(obj => obj.id));
 
-                if ($.inArray("Customer", data.account_type.map(obj => obj.title)) !== -1) {
-                    if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
-                        $('#inp-organization').attr('checked', true);
-                        $("#account-tax-code-label-id").addClass("required");
-                        $('#parent-account-div-id').prop('hidden', false);
-                    }
-                    if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
-                        $('#inp-individual').prop('checked', true);
-                        $("#account-tax-code-label-id").removeClass("required");
-                        $('#parent-account-div-id').prop('hidden', true);
-                    }
-                    $('#account-type-customer-type-div-id').prop('hidden', false);
+                if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
+                    $('#inp-organization').attr('checked', true);
+                    $("#account-tax-code-label-id").addClass("required");
+                    $('#parent-account-div-id').prop('hidden', false);
                 }
-                else {
-                    $('#account-type-customer-type-div-id').prop('hidden', true);
+                if ($.inArray("individual", data.account_type.map(obj => obj.detail)) !== -1) {
+                    $('#inp-individual').prop('checked', true);
+                    $("#account-tax-code-label-id").removeClass("required");
+                    $('#parent-account-div-id').prop('hidden', true);
                 }
 
                 $('#edit-account-on').on('click', function () {

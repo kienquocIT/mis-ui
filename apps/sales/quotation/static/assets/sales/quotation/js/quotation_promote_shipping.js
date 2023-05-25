@@ -296,6 +296,9 @@ function getPromotionResult(condition) {
                 }
                 if (DiscountAmount > parseFloat(condition.max_amount)) { // check discount amount with max discount amount
                     DiscountAmount = parseFloat(condition.max_amount)
+                    if (condition.is_before_tax === true) {
+                        discount_rate_on_order = ((parseFloat(preTax) - DiscountAmount) / parseFloat(preTax));
+                    }
                 }
             } else if (condition.is_fix_amount === true) { // discount by fix amount
                 if (condition.is_before_tax === true) {
@@ -420,4 +423,20 @@ function reCalculateTax(table, promotion_discount_rate) {
 // Shipping
 function checkAvailableShipping(data_shipping) {
     let shippingAddress = $('#quotation-create-shipping-address').val();
+    let formula_condition = data_shipping.formula_condition;
+    for (let i = 0; i < formula_condition.length; i++) {
+        let formula = formula_condition[i].formula;
+        let location_condition = formula_condition[i].location_condition
+        for (let l = 0; l < location_condition.length; l++) {
+            let location = location_condition[l];
+            if (shippingAddress.includes(location.title)) {
+                return {
+                    'is_pass': true,
+                }
+            }
+        }
+    }
+    return {
+        'is_pass': false,
+    }
 }

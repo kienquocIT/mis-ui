@@ -1684,11 +1684,11 @@ class dataTableHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('shipping_list') && Array.isArray(data.shipping_list)) {
+                    if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
                         $('#datable-quotation-create-shipping').DataTable().destroy();
-                        data.shipping_list.map(function (item) {
+                        data.shipping_check_list.map(function (item) {
                             if (!checkList.includes(item.id)) {
-                                let check = {'is_pass': true}
+                                let check = checkAvailableShipping(item)
                                 if (check.is_pass === true) {
                                     item['is_pass'] = true;
                                     // item['condition'] = check.condition;

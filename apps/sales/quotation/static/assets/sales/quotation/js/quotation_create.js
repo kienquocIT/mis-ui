@@ -161,7 +161,7 @@ $(function () {
         $('#btn-add-product-quotation-create').on('click', function (e) {
             e.preventDefault();
             // delete all Promotion rows
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -215,7 +215,7 @@ $(function () {
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
             // Delete all promotion rows
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
 
             calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
@@ -248,7 +248,7 @@ $(function () {
                 document.getElementById('quotation-create-cost-total').innerHTML = "0";
             }
             // Delete all promotion rows
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
             // Re Calculate all data
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
@@ -698,7 +698,7 @@ $(function () {
 // Action click Apply Promotion
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
-            deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, true, false);
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             let promotionResult = getPromotionResult(promotionCondition);
             // let order = promotionResult.row_apply_index + 0.5;
@@ -788,7 +788,7 @@ $(function () {
 // Action click Apply Shipping
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
-            // deletePromotionRows(tableProduct);
+            deletePromotionRows(tableProduct, false, true);
             // let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             // let promotionResult = getPromotionResult(promotionCondition);
             let order = 1;

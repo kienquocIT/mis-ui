@@ -338,10 +338,12 @@ function getPromotionResult(condition) {
     return result
 }
 
-function deletePromotionRows(table) {
+function deletePromotionRows(table, is_promotion = false, is_shipping = false) {
     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
         let row = table[0].tBodies[0].rows[i];
-        if (row.querySelector('.table-row-promotion')) {
+        if (row.querySelector('.table-row-promotion') && is_promotion === true) {
+            deleteRow($(row), row.closest('tbody'), table)
+        } else if (row.querySelector('.table-row-shipping') && is_shipping === true) {
             deleteRow($(row), row.closest('tbody'), table)
         }
     }
@@ -423,20 +425,34 @@ function reCalculateTax(table, promotion_discount_rate) {
 
 // Shipping
 function checkAvailableShipping(data_shipping) {
-    let shippingAddress = $('#quotation-create-shipping-address').val();
-    let formula_condition = data_shipping.formula_condition;
-    for (let i = 0; i < formula_condition.length; i++) {
-        let formula = formula_condition[i].formula;
-        let location_condition = formula_condition[i].location_condition
-        for (let l = 0; l < location_condition.length; l++) {
-            let location = location_condition[l];
-            if (shippingAddress.includes(location.title)) {
-                return {
-                    'is_pass': true,
+    let operators = {
+        1: "<",
+        2: ">",
+        3: "<=",
+        4: ">=",
+    }
+    if (data_shipping.cost_method === 0) { // Fixed Price Method
+        return {
+            'is_pass': true,
+            'final_shipping_price': parseFloat(data_shipping.fixed_price)
+        }
+    } else if (data_shipping.cost_method === 1) { // Formula Method
+        let shippingAddress = $('#quotation-create-shipping-address').val();
+        let formula_condition = data_shipping.formula_condition;
+        for (let i = 0; i < formula_condition.length; i++) {
+            let formula = formula_condition[i].formula;
+            let location_condition = formula_condition[i].location_condition
+            for (let l = 0; l < location_condition.length; l++) {
+                let location = location_condition[l];
+                if (shippingAddress.includes(location.title)) {
+                    return {
+                        'is_pass': true,
+                    }
                 }
             }
         }
     }
+
     return {
         'is_pass': false,
     }

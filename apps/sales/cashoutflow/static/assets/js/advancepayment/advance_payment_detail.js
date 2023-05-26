@@ -145,6 +145,7 @@ $(document).ready(function () {
                         $('#' + parent_tr.attr('id') + ' .expense-quantity').val(1);
                         $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').attr('value', '');
                         $('#' + parent_tr.attr('id') + ' .expense-subtotal-price-after-tax').attr('value', '');
+                        calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
 
                         if ($(this).find('option:selected').val() !== '') {
                             loadExpenseUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'), $(this).find('option:selected').attr('data-uom-id'));
@@ -254,6 +255,7 @@ $(document).ready(function () {
             $('#' + parent_tr.attr('id') + ' .expense-quantity').val(1);
             $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').attr('value', '');
             $('#' + parent_tr.attr('id') + ' .expense-subtotal-price-after-tax').attr('value', '');
+            calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
 
             if ($(this).find('option:selected').val() !== '') {
                 loadExpenseUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'), $(this).find('option:selected').attr('data-uom-id'));

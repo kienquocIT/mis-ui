@@ -118,7 +118,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
-    DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking'), 'OrderPickingList')
+    DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking list'), 'OrderPickingList')
+    DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
 
 
 class BreadcrumbView:
@@ -312,6 +313,7 @@ class BreadcrumbView:
     ORDER_PICKING_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_PICKING_LIST_PAGE,
     ]
+    ORDER_PICKING_DETAIL_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_DETAIL_PAGE]
 
     # Transition Data Config
     DELIVERY_CONFIG = [

@@ -81,7 +81,7 @@ class OrderPickingDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/delivery/picking/detail.html',
-        breadcrumb='ORDER_PICKING_LIST_PAGE',
+        breadcrumb='ORDER_PICKING_DETAIL_PAGE',
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):

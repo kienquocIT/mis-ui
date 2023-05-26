@@ -3,61 +3,103 @@
 {% load static %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    {#        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">#}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0 !important;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="picking_form"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
+            data-bs-placement="top" title="Back" data-bs-original-title="Back"
+            onclick="window.history.go(-1); return false;">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="fas fa-step-backward"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
-    <div class="row mb-3">
-        {% csrf_token %}
-        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
-            <div class="form-group">
-                <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
-                <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly disabled/>
-                <div class="form-text">Sale Order đó nè</div>
+    <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="PUT" method="post"
+          novalidate data-url-redirect="{% url 'OrderPickingList' %}">
+        <div class="row mb-3">
+            {% csrf_token %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+                <div class="form-group">
+                    <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
+                    <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly disabled/>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputEstimateDeliveryDate"
+                           class="form-label">{% trans 'Estimate Delivery Date' %}</label>
+                    <input
+                            type="text" name="estimate_delivery_date" id="inputEstimateDeliveryDate"
+                            class="form-control date-picker"
+                    />
+                </div>
+            </div>
+            <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputWareHouse" class="form-label">{% trans 'WareHouse' %}</label>
+                    <div class="input-group">
+                        <div class="input-affix-wrapper">
+                            <div class="dropdown input-prefix">
+                                <i class="fas fa-info-circle"
+                                   data-bs-toggle="dropdown"
+                                   data-dropdown-animation
+                                   aria-haspopup="true"
+                                   aria-expanded="false"
+                                   disabled></i>
+                                <div class="dropdown-menu w-210p mt-2"></div>
+                            </div>
+                            <select class="form-control dropdown-select_two" name="warehouse_id" id="inputWareHouse"
+                                    data-prefix="warehouse_list"
+                                    data-url="{% url 'WareHouseListAPI' %}"
+                                    data-link-detail="{% url 'WareHouseList' %}?show_detail=1"
+                                    data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                            >
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputWareHouse" class="form-label">{% trans 'Status' %}</label>
+                    <p name="inputState" id="inputState" readonly disabled></p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
+                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation" required></textarea>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
+                    <textarea class="form-control" name="remarks" id="inputRemarks"></textarea>
+                </div>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-            <div class="form-group">
-                <label for="inputEstimateDeliveryDate" class="form-label">{% trans 'Estimate Delivery Date' %}</label>
-                <input
-                        type="text" name="estimate_delivery_date" id="inputEstimateDeliveryDate"
-                        class="form-control date-picker"
-                />
-                <div class="form-text">Ngày dự tính giao hàng đó nè</div>
-            </div>
-        </div>
-        <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
-            <div class="form-group">
-                <label for="inputWareHouse" class="form-label">{% trans 'WareHouse' %}</label>
-                <select class="form-control select2" name="warehouse_id" id="inputWareHouse">
-                </select>
-                <div class="form-text">Kho hàng đó nè</div>
-            </div>
-        </div>
-        <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
-            <div class="form-group">
-                <label for="inputWareHouse" class="form-label">{% trans 'Status' %}</label>
-                <p name="inputState" id="inputState" readonly disabled></p>
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-            <div class="form-group">
-                <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
-                <textarea type="text" class="form-control" name="inputToLocation" id="inputToLocation"></textarea>
-                <div class="form-text">Gửi tới đâu đó nè</div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-            <div class="form-group">
-                <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
-                <textarea class="form-control" name="inputRemarks" id="inputRemarks"></textarea>
-                <div class="form-text">Ghi chú của picking đó nè</div>
-            </div>
-        </div>
-    </div>
+    </form>
     <div class="row mb-3">
         <ul class="nav nav-light nav-tabs">
             <li class="nav-item">
@@ -68,32 +110,32 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_detail">
-                <table
-                        id="dtbPickingProductList"
-                        class="table nowrap w-100 mb-5"
-                        data-method="GET"
-                        data-url="{% url "OrderPickingListAPI" %}"
-                        data-url-detail="{% url 'OrderPickingDetail' pk=1 %}"
-                >
+                <table id="dtbPickingProductList"
+                       class="table nowrap w-100 mb-5"
+                       data-method="GET"
+                       data-url="{% url "OrderPickingListAPI" %}"
+                       data-url-detail="{% url 'OrderPickingDetail' pk=1 %}">
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>
-                            {% trans 'Product' %}
-                            <i
-                                    class="fas fa-info-circle icon-info"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="bottom"
-                                    title="{% trans 'Press row here to open detail page.' %}"
-                            ></i>
+                        <th>{% trans 'Product' %}
+                            <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Press row here to open detail page.' %}"></i>
                         </th>
                         <th>{% trans 'UoM' %}</th>
                         <th>{% trans 'Total' %}</th>
                         <th>{% trans 'Picked Before' %}</th>
                         <th>{% trans 'Remain' %}</th>
                         <th>
-                            {% trans 'Done' %}
-                            <input type="checkbox" id="idxDoneAll"/>
+                            <div class="d-flex align-items-center justify-content-start">
+                                <span class="mr-4">
+                                    {% trans 'Done' %}
+                                </span>
+                                <span class="mr-2">{% trans 'All' %}</span>
+                                <input type="checkbox" id="idxDoneAll"/>
+                            </div>
                         </th>
                     </tr>
                     </thead>
@@ -107,127 +149,15 @@
 {% block dataHiddenGroup %}
     <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
     {{ data.state_choices|json_script:"dataStateChoices" }}
+    <input type="hidden" id="trans-factory"
+           data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}">
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script>
-        function loadDatePicker() {
-            $('input[type=text].date-picker').dateRangePickerDefault();
-        }
-
-        $(document).ready(function () {
-            $.fn.callAjax(
-                $('#idxUrlPickingDetail').text(),
-                'GET',
-                {},
-                true,
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('picking_detail') && data.picking_detail.hasOwnProperty('sub') && data.picking_detail.sub.hasOwnProperty('products')) {
-                        // load sale order
-                        console.log('picking_detail: ', data['picking_detail']);
-                        ``
-                        $('#inputSaleOrder').attr('value', data['picking_detail']?.['sale_order_data']?.['id']).val(
-                            data['picking_detail']?.['sale_order_data']?.['title']
-                        );
-
-                        // state
-                        let state = data['picking_detail']?.['state'];
-                        if (state !== undefined && Number.isInteger(state)) {
-                            let letStateChoices = JSON.parse($('#dataStateChoices').text());
-                            let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
-                            switch (state) {
-                                case 0:
-                                    templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
-                                    break
-                                case 1:
-                                    templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
-                                    break
-                            }
-                            $('#inputState').append(templateEle.format_by_idx(letStateChoices?.[state]));
-                        }
-
-                        // picking delivery date
-                        let estimate_delivery_date = data['picking_detail']?.['estimated_delivery_date'];
-                        if (estimate_delivery_date) {
-                            $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
-                            loadDatePicker();
-                        }
-
-                        // warehouse
-                        let warehouse_data = data['picking_detail']?.['ware_house_data'];
-                        if (warehouse_data.hasOwnProperty('code')) {
-                            $('#inputWareHouse').append(
-                                `<option value="{0}">{1}</option>`.format_by_idx(
-                                    warehouse_data['id'],
-                                    warehouse_data['code'] + " - " + warehouse_data['title'],
-                                )
-                            )
-                        }
-
-                        // descriptions
-                        let remarks = data['picking_detail']?.['remarks']
-                        if (remarks) {
-                            $('#inputRemarks').val(remarks);
-                        }
-
-                        // load product list
-                        loadProductList(
-                            data.picking_detail.sub['products']
-                        );
-                    }
-                }
-            )
-
-            function loadProductList(data) {
-                $('#dtbPickingProductList').DataTableDefault({
-                    rowIdx: true,
-                    visibleSearchField: false,
-                    visiblePaging: false,
-                    data: data,
-                    columns: [
-                        {
-                            render: (data, type, row, meta) => {
-                                return ``;
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return row?.['product_data']?.['title'];
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return row?.['uom_data']?.['title'];
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return row?.['pickup_quantity'];
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return row?.['picked_quantity_before'];
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return row?.['remaining_quantity'];
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return 0;
-                            }
-                        },
-                    ]
-                });
-            }
-        });
-    </script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
 {% endblock %}
 

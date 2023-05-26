@@ -25,7 +25,7 @@ COMPANY_SIZE = [
 
 # Delivery
 PICKING_STATE = (
-    (0, _('Wait')),
+    (0, _('Ready')),
     (1, _('Done')),
 )
 # // Delivery

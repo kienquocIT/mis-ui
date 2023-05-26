@@ -119,22 +119,22 @@ class AdvancePaymentDetailAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-#
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def put(self, request, pk, *arg, **kwargs):
-#         data = request.data
-#         response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).put(data)
-#         if response.state:
-#             return response.result, status.HTTP_200_OK
-#         if response.errors:
-#             if isinstance(response.errors, dict):
-#                 err_msg = ""
-#                 for key, value in response.errors.items():
-#                     err_msg += str(key) + ': ' + str(value)
-#                     break
-#                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-#             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-#         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        data = request.data
+        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL + pk).put(data)
+        if response.state:
+            return response.result, status.HTTP_200_OK
+        if response.errors:
+            if isinstance(response.errors, dict):
+                err_msg = ""
+                for key, value in response.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

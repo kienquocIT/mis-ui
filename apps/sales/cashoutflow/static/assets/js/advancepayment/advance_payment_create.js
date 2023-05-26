@@ -573,7 +573,7 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#return-date-id').daterangepicker({
+    $('#return_date_id').daterangepicker({
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,

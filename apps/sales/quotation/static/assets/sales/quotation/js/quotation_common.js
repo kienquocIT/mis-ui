@@ -497,7 +497,7 @@ class loadDataHandle {
                 }
                 // get Min Price to display
                 if (is_change_item === true) {
-                    if (valList) {
+                    if (valList.length > 0) {
                         let minVal = Math.min(...valList);
                         $(price).attr('value', String(minVal));
                     }

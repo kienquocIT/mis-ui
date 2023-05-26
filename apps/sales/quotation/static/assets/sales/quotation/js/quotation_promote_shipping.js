@@ -261,6 +261,7 @@ function getPromotionResult(condition) {
         let DiscountAmount = 0;
         let taxID = "";
         let discount_rate_on_order = null;
+        let is_promotion_on_row = false;
         if (condition.is_on_product === true) { // discount on specific product
             let row = tableProd.DataTable().row(condition.row_apply_index).node();
             let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
@@ -276,12 +277,11 @@ function getPromotionResult(condition) {
                 if (condition.is_before_tax === true) {
                     DiscountAmount = condition.fix_value;
                 } else if (condition.is_after_tax === true) {
-                    // DiscountAmount = (condition.fix_value / (1 + (taxValue/100)))
                     DiscountAmount = condition.fix_value;
                     taxID = "";
                 }
             }
-
+            is_promotion_on_row = true;
         } else if (condition.is_on_order === true) { // discount on whole order
             if (condition.is_on_percent === true) { // discount by percent
                 if (condition.is_before_tax === true) {
@@ -289,23 +289,27 @@ function getPromotionResult(condition) {
                     let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
                     let total = parseFloat(preTax) - parseFloat(discount);
                     DiscountAmount = ((total * parseFloat(condition.percent_discount)) / 100);
+                    // check discount amount with max discount amount & re calculate discount_rate_on_order
                     discount_rate_on_order = parseFloat(condition.percent_discount);
-                } else if (condition.is_after_tax === true) {
-                    let total = document.getElementById('quotation-create-product-total-raw').value;
-                    DiscountAmount = ((parseFloat(total) * parseFloat(condition.percent_discount)) / 100);
-                }
-                if (DiscountAmount > parseFloat(condition.max_amount)) { // check discount amount with max discount amount
-                    DiscountAmount = parseFloat(condition.max_amount)
-                    if (condition.is_before_tax === true) {
+                    if (DiscountAmount > parseFloat(condition.max_amount)) {
+                        DiscountAmount = parseFloat(condition.max_amount)
                         let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                         let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
                         let total = parseFloat(preTax) - parseFloat(discount);
                         discount_rate_on_order = ((DiscountAmount / total) * 100)
                     }
+                } else if (condition.is_after_tax === true) {
+                    let total = document.getElementById('quotation-create-product-total-raw').value;
+                    DiscountAmount = ((parseFloat(total) * parseFloat(condition.percent_discount)) / 100);
                 }
             } else if (condition.is_fix_amount === true) { // discount by fix amount
                 if (condition.is_before_tax === true) {
                     DiscountAmount = condition.fix_value;
+                    // get promotion rate
+                    let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
+                    let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
+                    let total = parseFloat(preTax) - parseFloat(discount);
+                    discount_rate_on_order = ((DiscountAmount / total) * 100)
                 } else if (condition.is_after_tax === true) {
                     DiscountAmount = condition.fix_value;
                 }
@@ -323,6 +327,7 @@ function getPromotionResult(condition) {
             'product_price': DiscountAmount,
             'value_tax': taxID,
             'discount_rate_on_order': discount_rate_on_order,
+            'is_promotion_on_row': is_promotion_on_row,
         }
     } else if (condition.is_gift === true) { // GIFT
         return {
@@ -365,13 +370,14 @@ function filterDataProductNotPromotion(data_products) {
     return finalList
 }
 
-function reCalculateTax(table, promotion_discount_rate) {
+function reCalculateIfPromotion(table, promotion_discount_rate, promotion_amount) {
     let eleTaxes = document.getElementById('quotation-create-product-taxes');
     let eleTaxesRaw = document.getElementById('quotation-create-product-taxes-raw');
     let taxAmountTotal = 0;
     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
         let row = table[0].tBodies[0].rows[i];
         if (row.querySelector('.table-row-price')) {
+            // setup data
             let price = 0;
             let quantity = 0;
             let elePrice = row.querySelector('.table-row-price');
@@ -433,7 +439,7 @@ function reCalculateTax(table, promotion_discount_rate) {
     // ReCalculate TOTAL
     let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
     let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
-    let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) + taxAmountTotal);
+    let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount) + taxAmountTotal);
 
     // apply Final Total
     let eleTotal = document.getElementById('quotation-create-product-total');

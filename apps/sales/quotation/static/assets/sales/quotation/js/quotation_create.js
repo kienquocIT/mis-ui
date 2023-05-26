@@ -220,8 +220,16 @@ $(function () {
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
-
+            // ReCalculate Total
             calculateClass.updateTotal(tableProduct[0], true, false, false)
+        });
+
+// Action on click button dropdown price list's option
+        tableProduct.on('click', '.table-row-btn-dropdown-price-list', function (e) {
+            let elePrice = $(this)[0].closest('tr').querySelector('.table-row-item');
+            if (elePrice) {
+                loadDataClass.loadDataProductSelect($(elePrice), false);
+            }
         });
 
 // Action on click price list's option
@@ -333,6 +341,28 @@ $(function () {
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
             calculateClass.updateTotal(tableExpense[0], false, false, true)
+        });
+
+// Action on click button dropdown price list's option
+        tableExpense.on('click', '.table-row-btn-dropdown-price-list', function (e) {
+            let elePrice = $(this)[0].closest('tr').querySelector('.table-row-item');
+            if (elePrice) {
+                loadDataClass.loadDataProductSelect($(elePrice), false);
+            }
+        });
+
+// Action on click price list's option
+        tableExpense.on('click', '.table-row-price-option', function (e) {
+            let priceValRaw = $(this)[0].getAttribute('data-value');
+            if (priceValRaw) {
+                let row = $(this)[0].closest('tr');
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    $(elePrice).attr('value', String(priceValRaw));
+                    $.fn.initMaskMoney2();
+                    calculateClass.commonCalculate(tableExpense, row, false, false, true);
+                }
+            }
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
@@ -706,9 +736,17 @@ $(function () {
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
+            // ReCalculate Total
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            // get promotion condition to apply
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             let promotionResult = getPromotionResult(promotionCondition);
-            // let order = promotionResult.row_apply_index + 0.5;
+            let is_promotion_on_row = false;
+            if (promotionResult.hasOwnProperty('is_promotion_on_row')) {
+                if (promotionResult.is_promotion_on_row === true) {
+                    is_promotion_on_row = true;
+                }
+            }
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -747,6 +785,7 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
                 "is_promotion": true,
+                "is_promotion_on_row": is_promotion_on_row,
                 "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')}
             };
             if (promotionResult.is_discount === true) { // DISCOUNT
@@ -767,7 +806,7 @@ $(function () {
                     // Re Calculate Tax on Total
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
-                            reCalculateTax(tableProduct, promotionResult.discount_rate_on_order)
+                            reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
                         }
                     }
                 }

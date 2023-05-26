@@ -844,7 +844,7 @@ class dataTableHandle {
                                                 <i class="fas fa-gift"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1767,10 +1767,12 @@ class calculateCaseHandle {
                 if (subtotalRaw) {
                     if (subtotalRaw.value) {
                         // check if not promotion then plus else minus
-                        if (is_promotion === false) {
+                        if (is_promotion === false) { // not promotion
                             pretaxAmount += parseFloat(subtotalRaw.value)
-                        } else {
-                            pretaxAmount -= parseFloat(subtotalRaw.value)
+                        } else { // promotion
+                            if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
+                                pretaxAmount -= parseFloat(subtotalRaw.value)
+                            }
                         }
                     }
                 }
@@ -1779,10 +1781,12 @@ class calculateCaseHandle {
                 if (subTaxAmountRaw) {
                     if (subTaxAmountRaw.value) {
                         // check if not promotion then plus else minus
-                        if (is_promotion === false) {
+                        if (is_promotion === false) { // not promotion
                             taxAmount += parseFloat(subTaxAmountRaw.value)
-                        } else {
-                            taxAmount -= parseFloat(subTaxAmountRaw.value)
+                        } else { // promotion
+                            if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
+                                taxAmount -= parseFloat(subTaxAmountRaw.value)
+                            }
                         }
                     }
                 }

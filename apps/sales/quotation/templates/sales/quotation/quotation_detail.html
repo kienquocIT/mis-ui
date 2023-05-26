@@ -112,7 +112,7 @@
                                             <select
                                                     class="form-select disabled-but-edit"
                                                     id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountListAPI" %}"
+                                                    data-url="{% url "AccountForSaleListAPI" %}"
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
@@ -853,6 +853,24 @@
                                 id="data-quotation"
                                 value="[]"
                         >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-promotion"
+                                data-url="{% url "PromotionCheckListAPI" %}"
+                                data-link-detail="{% url "PromotionDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-shipping"
+                                data-url="{% url "ShippingListAPI" %}"
+                                data-link-detail="{% url "ShippingDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="customer-price-list"
+                        >
                     </div>
                 </div>
             </div>
@@ -879,6 +897,7 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>

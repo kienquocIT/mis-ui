@@ -15,7 +15,7 @@ $(document).ready(function () {
             <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
             <td><input class="form-control expense-type" style="color: black; background: none" disabled></td>
             <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
-            <td><input type="number" min="1" class="form-control expense-quantity" value="1"></td>
+            <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
             <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
                     <span class="input-affix-wrapper">
                         <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" style="color: black; background: none" placeholder="Select a price or enter">
@@ -26,7 +26,15 @@ $(document).ready(function () {
             <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black; background: none" disabled></td>
             <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
             <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
-        </tr>`);
+        </tr>
+        <script>
+            function checkInputQuantity(value) {
+                if (parseInt(value) < 0) {
+                    return value*(-1);
+                }
+                return value;
+            }
+        </script>`);
         $.fn.initMaskMoney2();
         let row_count = count_row(table_body, 1);
 
@@ -253,10 +261,10 @@ $(document).ready(function () {
         ele.append(`<optgroup label="Sale Order" class="text-primary">`)
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">` + item.opportunity.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
-                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">SALE.CODE.XXXX</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
         ele.append(sale_not_opp);
@@ -264,10 +272,10 @@ $(document).ready(function () {
         ele.append(`<optgroup label="Quotation" class="text-primary">`);
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">` + item.opportunity.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.opportunity.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
-                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="code-span col-4 text-left">QUO.CODE.XXXX</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
         ele.append(quotation_not_opp);
@@ -275,6 +283,7 @@ $(document).ready(function () {
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
             $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
+            $('#sale-code-select-box option:selected').attr('selected', false);
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
             if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
                 loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));
@@ -300,20 +309,20 @@ $(document).ready(function () {
         ele2.append(`<optgroup label="Sale Order">`);
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
             else {
-                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(SALE.CODE) ` + item.title +`</option>`);
+                ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(No OppCode) ` + item.title +`</option>`);
             }
         })
         ele2.append(`</optgroup>`);
         ele2.append(`<optgroup label="Quotation">`);
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.opportunity.code + `) ` + item.opportunity.title +`</option>`);
+                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
             else {
-                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(QUOTATION.CODE) ` + item.title +`</option>`);
+                ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(No OppCode) ` + item.title +`</option>`);
             }
         })
         ele2.append(`</optgroup>`);
@@ -396,7 +405,9 @@ $(document).ready(function () {
         ele.html('');
         ele.append(`<option></option>`);
         account_list.map(function (item) {
-            ele.append(`<option data-name="` + item.name + `" data-industry="` + item.industry.title + `" data-owner="` + item.owner.fullname + `" data-code="` + item.code + `" value="` + item.id + `">` + item.name + `</option>`);
+            if (item.account_type.includes('Supplier')) {
+                ele.append(`<option data-name="` + item.name + `" data-industry="` + item.industry.title + `" data-owner="` + item.owner.fullname + `" data-code="` + item.code + `" value="` + item.id + `">` + item.name + `</option>`);
+            }
         })
     }
 
@@ -564,14 +575,15 @@ $(document).ready(function () {
 
     $('#return-date-id').daterangepicker({
         singleDatePicker: true,
-        timePicker: true,
+        timePicker: false,
         showDropdowns: true,
-        minYear: 1901,
+        minYear: parseInt(moment().format('YYYY')),
+        minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD'))),
         locale: {
-            format: 'YYYY-MM-DD HH:mm'
+            format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
+        maxYear: parseInt(moment().format('YYYY')) + 100
     });
 
     $('#created_date_id').daterangepicker({
@@ -975,7 +987,7 @@ $(document).ready(function () {
         });
     }
 
-    $('.dropify').dropify({
+    $('#input-file-now').dropify({
         messages: {
             'default': 'Drag and drop your file here.',
         },

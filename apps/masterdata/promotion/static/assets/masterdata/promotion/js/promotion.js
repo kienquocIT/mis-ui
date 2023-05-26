@@ -346,12 +346,12 @@ function getDetailPage($form){
                         $('#percent_value').val(data.discount_method.percent_value + '%').removeClass('hidden')
                             .attr('data-value', data.discount_method.percent_value)
                         $('#fix_value').addClass('hidden')
-                        $('#max_percent_value').removeClass('hidden')
+                        $('#max_percent_value, label[for="percent_value"]').removeClass('hidden')
                     }
                     else{
                         // is fixed amount
                         $('#percent_02').prop('checked', true);
-                        $('#percent_value, #max_percent_value').addClass('hidden');
+                        $('#percent_value, #max_percent_value, label[for="percent_value"]').addClass('hidden');
                         $('#fix_value').removeClass('hidden').attr('value', data.discount_method.fix_value);
                         $.fn.initMaskMoney2($('#fix_value'),'input')
                     }
@@ -403,7 +403,10 @@ function getDetailPage($form){
                     }
                     if(data?.gift_method?.is_min_purchase){
                         $('#is_min_purchase').attr('checked', true)
-                        $(`#gift_before_after_tax option[value="${data.gift_method.is_min_purchase}"]`).attr('selected', true)
+                        let valTemp = 0;
+                        if (data.gift_method.before_after_tax === false)
+                            valTemp = 1
+                        $(`#gift_before_after_tax option[value="${valTemp}"]`).attr('selected', true)
                         $('#min_purchase_cost').attr('value', data.gift_method.min_purchase_cost)
                         $.fn.initMaskMoney2($('#min_purchase_cost'),'input')
                     }
@@ -702,7 +705,10 @@ $(function () {
 
             if (_form.dataForm['is_min_purchase']) {
                 _form.dataForm['gift_method']['is_min_purchase'] = _form.dataForm['is_min_purchase']
-                _form.dataForm['gift_method']['before_after_tax'] = _form.dataForm['gift_before_after_tax']
+
+                _form.dataForm['gift_method']['before_after_tax'] = true
+                if(_form.dataForm['gift_before_after_tax'] === '1')
+                    _form.dataForm['gift_method']['before_after_tax'] = false
                 if (!_form.dataForm['min_purchase_cost']) {
                     $('[name="min_purchase_cost"]').addClass('is-invalid cl-red')
                     return false

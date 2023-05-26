@@ -32,7 +32,7 @@ $(document).ready(function () {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="#"><span><b>` + row.title + `</b></span></a>`
+                            return `<a href="` + $('#datatable_advance_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                         }
                     },
                     {

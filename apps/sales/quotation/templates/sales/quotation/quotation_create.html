@@ -108,7 +108,7 @@
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountListAPI" %}"
+                                                    data-url="{% url "AccountForSaleListAPI" %}"
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
@@ -325,14 +325,68 @@
                                     <div class="row">
                                         <div class="col-2">
                                             <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create">
-                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>{% trans 'Add product' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-7"></div>
+                                    <div class="col-7">
+                                        <div class="row mt-8">
+                                            <div class="col-4">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-gradient-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#shippingFeeModalCenter"
+                                                    id="btn-add-shipping"
+                                            >{% trans 'Add Shipping Fee' %}</button>
+                                            <div
+                                                    class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
+                                                    role="dialog" aria-labelledby="shippingFeeModalCenter"
+                                                    aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">{% trans 'Shipping' %}</h5>
+                                                            <button
+                                                                    type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"
+                                                            >
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table
+                                                                    id="datable-quotation-create-shipping"
+                                                                    class="table nowrap w-100 mb-5"
+                                                            >
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>STT</th>
+                                                                    <th>{% trans 'Title' %}</th>
+                                                                    <th>{% trans 'Actions' %}</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button
+                                                                    type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal"
+                                                            >{% trans 'Close' %}</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            <div class="col-8"></div>
+                                        </div>
+                                    </div>
                                     <div class="col-5" id="quotation-tab-product-totals">
                                         <div class="row mb-2">
                                             <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
@@ -790,7 +844,19 @@
                                 type="hidden"
                                 id="data-init-quotation-create-promotion"
                                 data-url="{% url "PromotionCheckListAPI" %}"
+                                data-link-detail="{% url "PromotionDetail" 1 %}"
                                 data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-shipping"
+                                data-url="{% url "ShippingCheckListAPI" %}"
+                                data-link-detail="{% url "ShippingDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="customer-price-list"
                         >
                     </div>
                 </div>
@@ -818,6 +884,7 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 {% endblock %}

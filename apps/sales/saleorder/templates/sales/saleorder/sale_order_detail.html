@@ -114,7 +114,7 @@
                                             <select
                                                     class="form-select disabled-but-edit"
                                                     id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountListAPI" %}"
+                                                    data-url="{% url "AccountForSaleListAPI" %}"
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
@@ -823,6 +823,10 @@
                                 type="hidden"
                                 id="data-quotation"
                                 value="[]"
+                        >
+                        <input
+                                type="hidden"
+                                id="customer-price-list"
                         >
                     </div>
                 </div>

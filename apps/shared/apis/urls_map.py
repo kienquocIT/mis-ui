@@ -110,6 +110,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account/')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
+    ACCOUNT_SALE_LIST = StringUrl('saledata/accounts-sale')
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
@@ -179,6 +180,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # shipping
     SHIPPING_LIST = StringUrl('saledata/shippings')
     SHIPPING_DETAIL = StringUrl('saledata/shipping/{shipping_id}')
+    SHIPPING_CHECK_LIST = StringUrl('saledata/shippings-check')
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
@@ -189,8 +191,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
 
-# shipping unit
+    # shipping unit
     ITEM_UNIT_LIST = StringUrl('base/item-units')
+
+    # good receipt
+    GOOD_RECEIPT_API = StringUrl('saledata/good-receipt')
 
     # return advance
     RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')

@@ -89,9 +89,7 @@ class loadDataHandle {
                                     // load Payment Term by Customer
                                     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
                                     // Store Account Price List
-                                    if (Object.keys(item.price_list_mapped).length !== 0) {
-                                        document.getElementById('customer-price-list').value = item.price_list_mapped.id;
-                                    }
+                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                                 }
                             }
                         })
@@ -465,7 +463,7 @@ class loadDataHandle {
         }
     }
 
-    loadDataProductSelect(ele) {
+    loadDataProductSelect(ele, is_change_item = true) {
         let self = this;
         let optionSelected = ele[0].options[ele[0].selectedIndex];
         let productData = optionSelected.querySelector('.data-default');
@@ -475,9 +473,11 @@ class loadDataHandle {
             let price = ele[0].closest('tr').querySelector('.table-row-price');
             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+            // load UOM
             if (uom && data.unit_of_measure) {
                 uom.value = data.unit_of_measure.id;
             }
+            // load PRICE
             if (price && priceList) {
                 let valList = [];
                 let account_price_list = document.getElementById('customer-price-list').value;
@@ -495,11 +495,15 @@ class loadDataHandle {
                         $(priceList).append(option);
                     }
                 }
-                if (valList) {
-                    let minVal = Math.min(...valList);
-                    $(price).attr('value', String(minVal));
+                // get Min Price to display
+                if (is_change_item === true) {
+                    if (valList) {
+                        let minVal = Math.min(...valList);
+                        $(price).attr('value', String(minVal));
+                    }
                 }
             }
+            // load TAX
             if (tax && data.tax) {
                 tax.value = data.tax.id;
             }
@@ -933,7 +937,7 @@ class dataTableHandle {
                                             value="${row.product_unit_price}"
                                             data-return-type="number"
                                         >
-                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
                                     </span>
                                     </div>
                                     <div role="menu" class="dropdown-menu table-row-price-list w-460p">
@@ -1330,7 +1334,7 @@ class dataTableHandle {
                                             value="${row.expense_price}"
                                             data-return-type="number"
                                         >
-                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
                                     </span>
                                     </div>
                                     <div role="menu" class="dropdown-menu table-row-price-list w-460p">

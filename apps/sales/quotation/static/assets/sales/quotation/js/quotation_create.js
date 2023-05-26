@@ -224,6 +224,14 @@ $(function () {
             calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
+// Action on click button dropdown price list's option
+        tableProduct.on('click', '.table-row-btn-dropdown-price-list', function (e) {
+            let elePrice = $(this)[0].closest('tr').querySelector('.table-row-item');
+            if (elePrice) {
+                loadDataClass.loadDataProductSelect($(elePrice), false);
+            }
+        });
+
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function (e) {
             let priceValRaw = $(this)[0].getAttribute('data-value');
@@ -333,6 +341,28 @@ $(function () {
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
             calculateClass.updateTotal(tableExpense[0], false, false, true)
+        });
+
+// Action on click button dropdown price list's option
+        tableExpense.on('click', '.table-row-btn-dropdown-price-list', function (e) {
+            let elePrice = $(this)[0].closest('tr').querySelector('.table-row-item');
+            if (elePrice) {
+                loadDataClass.loadDataProductSelect($(elePrice), false);
+            }
+        });
+
+// Action on click price list's option
+        tableExpense.on('click', '.table-row-price-option', function (e) {
+            let priceValRaw = $(this)[0].getAttribute('data-value');
+            if (priceValRaw) {
+                let row = $(this)[0].closest('tr');
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    $(elePrice).attr('value', String(priceValRaw));
+                    $.fn.initMaskMoney2();
+                    calculateClass.commonCalculate(tableExpense, row, false, false, true);
+                }
+            }
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total

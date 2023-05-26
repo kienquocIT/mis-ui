@@ -755,6 +755,9 @@ class loadDataHandle {
         if (data.quotation && data.sale_person) {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }
+        if (data.date_created) {
+            $('#quotation-create-date-created').val(moment(data.date_created).format('DD-MM-YYYY'))
+        }
         if (is_copy === true) {
             $('#select-box-quotation').append(`<option value="${data.id}" selected>${data.title}</option>`)
             // self.loadBoxSaleOrderQuotation('select-box-quotation', data.id)

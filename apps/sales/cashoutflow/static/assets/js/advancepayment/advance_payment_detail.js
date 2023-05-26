@@ -333,7 +333,8 @@ $(document).ready(function () {
     function loadUnitPriceList(row_id, expense_item_id) {
         let ele = $('#' + row_id + ' .dropdown-menu');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + expense_item_id), ele.attr('data-method')).then((resp) => {
+        if (expense_item_id !== '') {
+            $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + expense_item_id), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
@@ -427,7 +428,8 @@ $(document).ready(function () {
                 }
             }
         }, (errs) => {
-        },)
+            },)
+        }
     }
 
     function count_row(table_body, option, expense_id, tax_id) {

@@ -357,7 +357,7 @@ $(document).ready(function () {
     selectAllCheckBox('#datatable-industry-list');
 
     // show modal edit
-    $(document).on('click', '#datatable-account-type-list .edit-button, #datatable-industry-list .edit-button', function () {
+    $(document).on('click', '#datatable-account-type-list .edit-button, #datatable-industry-list .edit-button, #datatable-account-group-list .edit-button', function () {
         let frm_update = $('#form-update-masterdata')
         let check_type = 0;
         let data_url;
@@ -385,6 +385,10 @@ $(document).ready(function () {
                             $('#name-update').val(data.account_type.title);
                             $('#code-update').val(data.account_type.code);
                             $('#description-update').val(data.account_type.description);
+                        } else if (resp.data.hasOwnProperty('account_group')) {
+                            $('#name-update').val(data.account_group.title);
+                            $('#code-update').val(data.account_group.code);
+                            $('#description-update').val(data.account_group.description);
                         } else if (resp.data.hasOwnProperty('industry')) {
                             $('#name-update').val(data.industry.title);
                             $('#code-update').val(data.industry.code);
@@ -424,7 +428,7 @@ $(document).ready(function () {
                         }
                     },
                     (errs)=>{
-
+                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                     }
                 ).then(
                 (resp) => {// reload after save edit

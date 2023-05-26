@@ -41,7 +41,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null) {
+    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, is_load_detail = false) {
         let self = this;
         let jqueryId = '#' + customer_id;
         let ele = $(jqueryId);
@@ -79,19 +79,19 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-                                // load Shipping & Billing by Customer
-                                self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
-                                // load Contact by Customer
-                                if (item.id && item.owner) {
-                                    self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
-                                }
-                                // load Payment Term by Customer
-                                if (Object.keys(item.payment_term_mapped).length !== 0) {
+                                if (is_load_detail === false) {
+                                    // load Shipping & Billing by Customer
+                                    self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                    // load Contact by Customer
+                                    if (item.id && item.owner) {
+                                        self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                    }
+                                    // load Payment Term by Customer
                                     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
-                                }
-                                // Store Account Price List
-                                if (Object.keys(item.price_list_mapped).length !== 0) {
-                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                    // Store Account Price List
+                                    if (Object.keys(item.price_list_mapped).length !== 0) {
+                                        document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                    }
                                 }
                             }
                         })
@@ -737,7 +737,7 @@ class loadDataHandle {
             self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);
         }
         if (data.customer) {
-            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'))
+            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), true)
         }
         if (data.contact) {
             self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
@@ -1997,6 +1997,10 @@ class submitHandle {
     setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-product');
+        let tableEmpty = table.querySelector('.dataTables_empty');
+        if (tableEmpty) {
+            return []
+        }
         let tableBody = table.tBodies[0];
         for (let i = 0; i < tableBody.rows.length; i++) {
             let rowData = {};
@@ -2136,6 +2140,10 @@ class submitHandle {
     setupDataCost() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-cost');
+        let tableEmpty = table.querySelector('.dataTables_empty');
+        if (tableEmpty) {
+            return []
+        }
         let tableBody = table.tBodies[0];
         for (let i = 0; i < tableBody.rows.length; i++) {
             let rowData = {};

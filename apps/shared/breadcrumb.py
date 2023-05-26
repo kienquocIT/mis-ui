@@ -123,6 +123,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # WareHouse
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
 
+    # Return Advance
+    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
+    RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
+    RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -318,3 +323,10 @@ class BreadcrumbView:
     WAREHOUSE_LIST_PAGE = [
         BreadcrumbItem.WAREHOUSE_LIST_PAGE
     ]
+
+    # Return Advance
+    RETURN_ADVANCE_LIST_PAGE = [
+        BreadcrumbItem.RETURN_ADVANCE_LIST_PAGE
+    ]
+    RETURN_ADVANCE_CREATE_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_CREATE_PAGE]
+    RETURN_ADVANCE_DETAIL_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_DETAIL_PAGE]

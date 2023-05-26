@@ -47,7 +47,7 @@ $(function () {
                     element += `<span class="badge badge-soft-primary w-30 mt-1 ml-1">` + row.holder[i].full_name + `</span>`;
                 }
                 if (row.holder.length > 3)
-                    return `<div class="row text-center">` + element + `</div>`
+                    return `<div class="row text-center initial-wrap">` + element + `</div>`
                 else
                     return `<div class="row text-center"><center>` + element + `</center></div>`
             }

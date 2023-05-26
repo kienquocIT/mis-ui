@@ -191,3 +191,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
 # shipping unit
     ITEM_UNIT_LIST = StringUrl('base/item-units')
+
+    # return advance
+    RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
+    RETURN_ADVANCE_DETAIL = StringUrl('cashoutflow/return-advance/{pk}')

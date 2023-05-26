@@ -28,17 +28,17 @@
 {#            </span>#}
 {#        </span>#}
 {#    </a>#}
-{#    <button id="save-advance" type="submit" form="form-create-advance" style="background: none; border: none">#}
-{#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
-{#           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
-{#           data-bs-original-title="Save">#}
-{#                <span class="icon">#}
-{#                    <span class="feather-icon">#}
-{#                        <i data-feather="save"></i>#}
-{#                    </span>#}
-{#                </span>#}
-{#        </a>#}
-{#    </button>#}
+    <button id="save-advance" type="submit" form="form-update-advance" style="background: none; border: none">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+           data-bs-original-title="Save">
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i data-feather="save"></i>
+                    </span>
+                </span>
+        </a>
+    </button>
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -56,8 +56,8 @@
     {{ data.data.quotation_list | json_script:"quotation_list" }}
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
-    <form id="form-update-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
-          data-url="{% url "AdvancePaymentListAPI" %}"
+    <form id="form-update-advance" data-method="PUT" data-url-redirect="{% url "AdvancePaymentList" %}"
+          data-url="{% url "AdvancePaymentDetailAPI" '0' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}">
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
@@ -247,7 +247,7 @@
                     <div class="row form-group mb-4">
                         <label class="col-3 col-form-label required" id="supplier-label">Return date</label>
                         <div class="col-9">
-                            <input class="form-control" name="return_date" id="return-date-id" readonly>
+                            <input class="form-control" name="return_date" id="return_date_id" readonly>
                         </div>
                     </div>
                     <div class="row form-group mb-4">

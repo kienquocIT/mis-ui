@@ -8,7 +8,7 @@ $(document).ready(function () {
             let advance_payment = data.advance_payment_detail;
             $('#advance-payment-code').text(advance_payment.code);
             $('#advance-payment-title').val(advance_payment.title);
-            if (advance_payment.sale_code_type == 0) {
+            if (advance_payment.sale_code_type === 0) {
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
                 $('#sale-code-select-box').prop('disabled', false);
@@ -20,11 +20,11 @@ $(document).ready(function () {
                 loadSaleCode(advance_payment.sale_order_mapped, advance_payment.quotation_mapped);
                 $('#beneficiary-select-box').prop('disabled', true);
             }
-            else if (advance_payment.sale_code_type == 1) {
+            else if (advance_payment.sale_code_type === 1) {
                 $('#radio-purchase').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Purchase');
             }
-            else if (advance_payment.sale_code_type == 2) {
+            else if (advance_payment.sale_code_type === 2) {
                 $('#radio-non-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Non-Sale');
                 $('#sale-code-select-box').prop('disabled', true);
@@ -79,12 +79,10 @@ $(document).ready(function () {
             }
 
             $('#created_date_id').val(advance_payment.date_created.split(' ')[0]);
+            $('#return_date_id').val(advance_payment.return_date.split(' ')[0])
 
             if (advance_payment.beneficiary) {
                 loadBeneficiary(advance_payment.beneficiary);
-            }
-            if (advance_payment.return_date) {
-                $('#return-date-id').val(advance_payment.return_date.split(' ')[0]);
             }
 
             if (advance_payment.expense_items.length > 0) {
@@ -186,6 +184,19 @@ $(document).ready(function () {
                 $('#notify-none-sale-code').prop('hidden', false);
                 $('#tab_plan_datatable').prop('hidden', true);
             }
+
+            $('#return_date_id').daterangepicker({
+                singleDatePicker: true,
+                timePicker: false,
+                showDropdowns: true,
+                minYear: parseInt(moment().format('YYYY')),
+                minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD'))),
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+                "cancelClass": "btn-secondary",
+                maxYear: parseInt(moment().format('YYYY')) + 100
+            });
         }
     })
 
@@ -798,31 +809,6 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#return-date-id').daterangepicker({
-        singleDatePicker: true,
-        timePicker: false,
-        showDropdowns: true,
-        minYear: parseInt(moment().format('YYYY')),
-        minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD'))),
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY')) + 100
-    });
-
-    $('#created_date_id').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        minYear: 1901,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
-    });
-
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
@@ -928,7 +914,7 @@ $(document).ready(function () {
         calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
     })
 
-    $('#form-create-advance').submit(function (event) {
+    $('#form-update-advance').submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
@@ -1019,8 +1005,9 @@ $(document).ready(function () {
 
         frm.dataForm['account_bank_information_dict'] = account_bank_accounts_information_dict;
 
-        // console.log(frm.dataForm)
+        console.log(frm.dataForm)
 
+        frm.dataUrl = frm.dataUrl.replace('/0', '/' + window.location.pathname.split('/').pop())
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

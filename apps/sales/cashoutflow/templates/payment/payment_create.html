@@ -68,7 +68,7 @@
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
-                            <div role="menu" class="dropdown-menu" style="min-width: 125%; width: 125%">
+                            <div role="menu" class="dropdown-menu" style="min-width: 150%; width: 150%">
                                 <div class="row ml-3">
                                     <div class="row">
                                         <div class="form-check">
@@ -78,14 +78,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-sale">Sale</label>
+                                            <input type="radio" id="radio-sale-1" name="sale_code_type" value="sale-1" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-sale">Sale-1</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input disabled type="radio" id="radio-purchase" name="sale_code_type" value="purchase" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-purchase">Purchase</label>
+                                            <input type="radio" id="radio-sale-n" name="sale_code_type" value="sale-n" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-sale">Sale-n</label>
                                         </div>
                                     </div>
                                 </div>
@@ -97,17 +97,7 @@
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
                             <input placeholder="Can not select with Non-Sale" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 100%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
-                        </div>
-                    </div>
-                    <div class="row form-group mb-4">
-                        <label class="col-3 col-form-label required">Type</label>
-                        <div class="col-9">
-                            <select class="form-select" name="payment_type" id="type-select-box">
-                                <option selected></option>
-                                <option value="0">To employee</option>
-                                <option value="1">To supplier</option>
-                            </select>
+                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 125%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group mb-4">
@@ -194,6 +184,7 @@
                                     </span>
                                 </span>
                                 <select class="form-select" name="creator_name" id="creator-select-box" data-method="GET"
+                                        style="color: black"
                                         data-url="{% url 'EmployeeListAPI' %}" disabled></select>
                                 <input id="data-init-payment-create-request-employee-id"
                                         value="{{ data.data.employee_current_id }}" hidden>
@@ -231,12 +222,6 @@
                                 <select class="form-select" name="beneficiary" id="beneficiary-select-box" data-method="GET"
                                         data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
-                        </div>
-                    </div>
-                    <div class="row form-group mb-4">
-                        <label class="col-3 col-form-label required" id="supplier-label">Return date</label>
-                        <div class="col-9">
-                            <input class="form-control" name="return_date" id="return_date_id" readonly>
                         </div>
                     </div>
                     <div class="row form-group mb-4">

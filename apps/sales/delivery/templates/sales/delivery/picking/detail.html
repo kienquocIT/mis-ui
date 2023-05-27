@@ -50,7 +50,7 @@
                     <label for="inputEstimateDeliveryDate"
                            class="form-label">{% trans 'Estimate Delivery Date' %}</label>
                     <input
-                            type="text" name="estimate_delivery_date" id="inputEstimateDeliveryDate"
+                            type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
                             class="form-control date-picker"
                     />
                 </div>
@@ -89,7 +89,7 @@
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
                     <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
-                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation" required></textarea>
+                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation"></textarea>
                 </div>
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
@@ -150,7 +150,10 @@
     <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
     {{ data.state_choices|json_script:"dataStateChoices" }}
     <input type="hidden" id="trans-factory"
-           data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}">
+           data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
+           data-error-warehouse="{% trans 'Warehouse is required!' %}"
+           data-error-done="{% trans 'Done column of line detail is empty!' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}

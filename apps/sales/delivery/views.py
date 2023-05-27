@@ -7,7 +7,7 @@ from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE
 __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI',
     'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail', 'OrderPickingDetailAPI',
-    'OrderPickingDetailProductsAPI',
+    # 'OrderPickingDetailProductsAPI',
 ]
 
 
@@ -98,6 +98,19 @@ class OrderPickingDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).get()
         if resp.state:
             return {'picking_detail': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

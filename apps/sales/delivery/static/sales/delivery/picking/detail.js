@@ -259,15 +259,16 @@ $(document).ready(function () {
         e.preventDefault();
         let _form = new SetupFormSubmit($form);
         let csr = $("[name=csrfmiddlewaretoken]").val();
+        const $transElm = $('#trans-factory')
 
         if (!_form.dataForm?.warehouse_id){
-            $.fn.notifyPopup({description: 'Warehouse '}, 'failure')
+            $.fn.notifyPopup({description: $transElm.attr('data-error-warehouse')}, 'failure')
             return false
         }
         const pickingData = pickupInit.getPicking
         delete pickingData['estimated_delivery_date']
         if (_form.dataForm?.estimated_delivery_date){
-            pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimate_delivery_date'],
+            pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
         pickingData['ware_house_id'] = _form.dataForm['warehouse_id']
@@ -276,22 +277,26 @@ $(document).ready(function () {
 
         let prodSub = pickupInit.getProdList
         pickingData.sub.products = prodSub
-
+        pickingData.sub.prod_list = prodSub
+        if (!prodSub || !prodSub.length){
+            $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
+            return false
+        }
         console.log('pickingData', pickingData)
         //call ajax to update picking
-        // $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
-        //     .then(
-        //         (resp) => {
-        //             const data = $.fn.switcherResp(resp);
-        //             const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
-        //             if (data) {
-        //                 $.fn.notifyPopup({description: description}, 'success')
-        //                 $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
-        //             }
-        //         },
-        //     )
-        //     .catch((err) => {
-        //         console.log(err)
-        //     })
+        $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
+            .then(
+                (resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
+                    if (data) {
+                        $.fn.notifyPopup({description: description}, 'success')
+                        $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                    }
+                },
+            )
+            .catch((err) => {
+                console.log(err)
+            })
     })
 });

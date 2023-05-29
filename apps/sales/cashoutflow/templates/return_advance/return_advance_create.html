@@ -54,7 +54,7 @@
                             name="advance_payment">'
                         <option></option>
                         {% for item in data.advance_payment %}
-                            {% if item.money_gave and item.status == 'Approved' and item.remain_value != item.return_value %}
+                            {% if item.status == 'Approved' and item.remain_value != item.return_value %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
                             {% endif %}
                         {% endfor %}
@@ -268,9 +268,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="tbRowHidden">
-            <th></th>
         </div>
     </form>
 {% endblock %}

@@ -120,7 +120,7 @@ $(function () {
                                 <td class="number text-center wrap-text">${cnt}</td>
                                 <td class="wrap-text col-expense" data-id="${item.expense.id}"><span>${item.expense.title}</span></td>
                                 <td class="wrap-text"><span>${item.expense_type}</span></td>
-                                <td class="wrap-text"><span class="mask-money" data-init-money="${item.after_tax_price}"></span></td>
+                                <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
                             </tr>`;
                 table.find('tbody').append(html);
@@ -167,6 +167,7 @@ $(function () {
                 })
             })
             frm.dataForm['cost'] = cost_list;
+            frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(

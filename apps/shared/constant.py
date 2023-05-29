@@ -23,9 +23,14 @@ COMPANY_SIZE = [
     {"value": 5, "name": _('> 500 people')},
 ]
 
-# Delivery
+# Picking
 PICKING_STATE = (
     (0, _('Ready')),
     (1, _('Done')),
 )
-# // Delivery
+# Delivery
+DELIVERY_STATE = (
+    (0, 'Wait'),
+    (1, 'Partial'),
+    (2, 'Full'),
+)

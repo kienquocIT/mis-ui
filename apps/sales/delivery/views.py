@@ -7,8 +7,10 @@ from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE
 __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI',
     'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail', 'OrderPickingDetailAPI',
-    # 'OrderPickingDetailProductsAPI',
+    'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail', 'OrderDeliveryDetailAPI'
 ]
+
+from apps.shared.constant import DELIVERY_STATE
 
 
 class DeliveryConfigDetail(View):
@@ -114,3 +116,82 @@ class OrderPickingDetailAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class OrderDeliveryList(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/delivery/list.html',
+        breadcrumb='ORDER_DELIVERY_LIST_PAGE',
+        menu_active='menu_order_delivery_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'state_choices': {key: value for key, value in DELIVERY_STATE}}, status.HTTP_200_OK
+
+
+class OrderDeliveryListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST).get()
+        if resp.state:
+            return {'delivery_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).put(request.data)
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class OrderDeliveryDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/delivery/detail.html',
+        breadcrumb='ORDER_DELIVERY_DETAIL_PAGE',
+        menu_active='menu_order_delivery_list',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {'pk': pk, 'state_choices': {key: value for key, value in DELIVERY_STATE}}, status.HTTP_200_OK
+
+
+class OrderDeliveryDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.push_id(pk=pk)).get()
+        if resp.state:
+            return {'picking_detail': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+

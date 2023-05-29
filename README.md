@@ -127,6 +127,12 @@ plugin using for combobox with auto init and search real time
 ```
 *[vendors/select2/dist/js/init-select2.js](/statics/vendors/select2/dist/js/init-select2.js)*
 
+3. select combobox with icon INFO
+![](README_IMG/select2_info_popup.png)
+```text
+ follow how to setup in init-select2.js line 18
+```
+
 ---
 
 ### dataTables how to use
@@ -157,6 +163,13 @@ good luck..
 // get value of input currency
 $('#input-test-mask').valCurrency();
 // parse input and display auto run in base.html
+
+// get currency config
+CCurrency.getConfig
+
+// convert number to currency string for show table or etc...
+// isNumber: number string get from API
+CCurrency.convertCurrency(isNumber)
 ```
 1. Cho thẻ input
    1. [*] Bắt buộc là thẻ input

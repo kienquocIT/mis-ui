@@ -56,10 +56,9 @@ $(function () {
                     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-setting" data-bs-toggle="modal" data-bs-target="#modal-setting" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>`;
-                    if(row.id === company_current_id){
+                    if (row.id === company_current_id) {
                         return `<div>` + bt2 + bt3 + bt1 + `</div>`;
-                    }
-                    else{
+                    } else {
                         return `<div>` + bt2 + bt3 + `</div>`;
                     }
                 }
@@ -125,58 +124,66 @@ $(function () {
         loadDataTable();
 
 
-        function loadCurrency() {
-            let ele = $('#setting-currency')
-            ele.empty();
-            $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
-                    data.currency_list.map(function (item) {
-                        if (item.is_primary === true) {
-                            ele.append(`<option value="` + item.id + `" selected>` + item.abbreviation + `</option>`)
-                        } else {
-                            ele.append(`<option value="` + item.id + `">` + item.abbreviation + `</option>`)
-                        }
-                    })
+        // Load Data Config
+        $('html').on('click', '.btn-setting', function (e) {
+            e.preventDefault();
+
+            let modalControl = $('#modal-setting');
+            Promise.all([
+                $.ajax(
+                    modalControl.attr('data-url-detail'),
+                    'GET'
+                ),
+                $.ajax(
+                    modalControl.attr('data-url-currency-list'),
+                    'GET'
+                )
+            ]).then(([result1, result2]) => {
+                let data1 = $.fn.switcherResp(result1);
+                let data2 = $.fn.switcherResp(result2);
+                let myCurrency = $('#idxCurrencyDefault');
+                if (data2['currency_list']) {
+                    myCurrency.empty();
+                    for (let i = 0; i < data2['currency_list'].length; i++) {
+                        let option = $('<option>').val(
+                            data2['currency_list'][i]['currency'].code
+                        ).text(
+                            data2['currency_list'][i]['currency'].code +
+                            ' - ' +
+                            data2['currency_list'][i]['currency'].title
+                        );
+                        myCurrency.append(option);
+                    }
+                    myCurrency.trigger('change');
+                }
+                if (data1['config']) {
+                    $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
+                    myCurrency.val(data1['config']['currency']['code']).trigger('change.select2');
+                    $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
+                    $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
+                    $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
+                    $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
+                    $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
                 }
             })
-        }
-
-        let url_detail;
-        $(document).on('click', '.btn-setting', function () {
-            loadCurrency();
-            url_detail = $('#form-setting').attr('data-url')
         })
 
-        let frm_setting_company = $('#form-setting')
-        frm_setting_company.submit(function () {
-            event.preventDefault();
+        $('#tblCompanySetting').on('submit', function (e) {
+            $.fn.showLoading();
+            e.preventDefault();
+
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
-            let data_url = url_detail.replace(0, $('#setting-currency').val())
-            let data_form = {};
-            $.fn.callAjax(data_url, 'GET').then((resp) => {
+            let dataBody = frm.dataForm
+            dataBody['currency_rule'] = $.fn.groupDataFromPrefix(dataBody, 'currency_rule__');
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp)=>{
                 let data = $.fn.switcherResp(resp);
-                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency')) {
-                    data_form = data.currency;
+                if (data['status'] === 200){
+                    window.location.reload();
                 }
-            }).then((resp) => {
-                data_form["is_primary"] = 1;
-                data_form["rate"] = 1;
-
-                $.fn.callAjax(data_url, frm.dataMethod, data_form, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyPopup({description: "Successfully"}, 'success');
-                                $('#modal-setting').hide();
-                            }
-                        },
-                        (errs) => {
-                        }
-                    )
-            })
+            }, (errs)=>{
+                $.fn.hideLoading();
+            });
         })
     })
 });

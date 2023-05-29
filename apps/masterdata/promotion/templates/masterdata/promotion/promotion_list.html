@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <!-- Select2 -->
+{#    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>#}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-flush-success btn-animated mr-1" type="button" href="{% url 'PromotionCreate' %}">
+        <span class="icon">
+            <span class="font-3 mr-1">
+                {% trans 'New' %}
+            </span>
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+        </span>
+    </a>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh" onclick="location.reload();">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-md-12">
+            <table id="datatable-currency" class="table nowrap w-100 mb-5"
+                       data-url="{% url "CurrencyListAPI" %}"
+                       data-method="GET">
+                    <thead>
+                    <th class="w-5">
+                        <span class="form-check">
+                            <input
+                                    type="checkbox"
+                                    class="form-check-input check-select-all"
+                                    id="customCheck1"
+                            >
+                            <label class="form-check-label" for="customCheck1"></label>
+                        </span>
+                    </th>
+                    <th class="w-30">{% trans "Name" %}</th>
+                    <th class="w-20">{% trans "Abbreviation" %}</th>
+                    <th class="w-25">{% trans "Selling rate" %}&nbsp;&nbsp;&nbsp;
+                        <a href="#" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}"
+                           style="background: None; width: 60%" id="sync-from-VCB-button" class="badge badge-soft-primary">
+                            Sync with VCB &nbsp;<i class="bi bi-arrow-repeat"></i>
+                        </a>
+{#                        &nbsp;<span id="sync-status"></span>&nbsp;#}
+                    </th>
+                    <th class="w-5"></th>
+                    </thead>
+                </table>
+        </div>
+    </div>
+    <input type="hidden" id="trans-factory">
+    <input type="hidden" id="url-factory">
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_price.js' %}"></script>
+{% endblock %}
+

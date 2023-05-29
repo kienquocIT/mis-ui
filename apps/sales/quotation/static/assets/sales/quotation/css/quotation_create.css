@@ -1,0 +1,45 @@
+.quotation-horizon {
+    background-color: #3c3f43;
+}
+
+.fa-file-alt {
+    font-size: larger;
+}
+
+.fa-chart-bar {
+    font-size: larger;
+}
+
+.dropdown-menu .dropdown-header.header-wth-bg {
+    background: #007D88;
+}
+
+.disabled-custom-show:disabled {
+    color: #0c0c0c;
+}
+
+.fa-angle-double-up {
+    color: #007D88;
+    text-align: center;
+    font-size: x-large;
+}
+
+.fa-angle-double-down {
+    color: #007D88;
+    text-align: center;
+    font-size: x-large;
+}
+
+ul.quotation-tabs {
+  display: flex;
+  justify-content: center;
+}
+
+ul.quotation-tabs li.quotation-tab-item {
+  margin-right: 10px;
+}
+
+a.dropdown-item.table-row-price-option:hover {
+    background-color: blue;
+    color: white;
+}

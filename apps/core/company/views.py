@@ -207,8 +207,16 @@ class EmployeeOfTenantListAPI(APIView):
 class CompanyConfigDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        opt_selected = request.user.language
-        # opt_selected = 'en'
-        return {
-            'currency': LocaleInfo.get_currency(opt_selected),
-        }, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
+        if resp.state:
+            return {'config': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {}, status.HTTP_403_FORBIDDEN
+
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).put(data=request.data)
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        return resp.errors, resp.status

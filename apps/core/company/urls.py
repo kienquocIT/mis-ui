@@ -4,7 +4,8 @@ from apps.core.company.views import CompanyUserNotMapEmployeeListAPI
 from apps.core.company.views import (
     CompanyList, CompanyListAPI, CompanyListOverviewList, CompanyListOverviewListAPI,
     EmployeeUserByCompanyListOverviewDetailAPI, EmployeeOfTenantListAPI,
-    CompanyDetail, CompanyUpdateAPI, CompanyDeleteAPI, CompanyConfigDetailAPI,
+    CompanyDetail, CompanyUpdateAPI, CompanyDeleteAPI,
+    CompanyConfigDetailAPI,
 )
 
 urlpatterns = [

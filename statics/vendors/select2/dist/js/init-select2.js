@@ -7,13 +7,46 @@
  * + url="{% url 'ApplicationPropertyListAPI' %}"
  * + params="{name: value}"
  * + onload={id="", title="name"}
+ * @param selectBoxElement: element of select
  *@note
  * select2 on change
  *     selectbox.on("select2:select", function (e) {
  *          let item = e.params.data
  *     });
  *     @variable e.params.data: full data of select store
- * @param selectBoxElement: element of select
+ *---------------------------------------------------------------------
+ * setup select2 with info icon
+ * step 1: append HTML with format follow there code bellow
+ * ==> <div class="input-group">
+ *         <div class="input-affix-wrapper">
+ *             <div class="dropdown input-prefix">
+ *                 <i class="fas fa-info-circle"
+ *                    data-bs-toggle="dropdown"
+ *                    data-dropdown-animation
+ *                    aria-haspopup="true"
+ *                    aria-expanded="false"
+ *                    disabled></i>
+ *                 <div class="dropdown-menu w-210p mt-2"></div>
+ *             </div>
+ *             <select name="customer_per" id="form-create-customer_per"
+ *                     class="form-select dropdown-select_two"
+ *                     data-url="{% url "EmployeeListAPI" %}"
+ *                     data-prefix="employee_list"
+ *                     data-link-detail="{% url 'EmployeeDetail' 1 %}"
+ *                     data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+ *             ></select>
+ *       </div>
+ * step 2: make sure 2 attribute is added to select tag HTML
+ *  ==> link-detail="{% url 'EmployeeDetail' 1 %}"
+ *  ==> template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+ *
+ *  ALL DONE !!!
+ *  --------------------------------------------------------------------------------------------------
+ * other callback
+ * select2:unselect: được gọi khi một mục bị hủy chọn.
+ * select2:open: được gọi khi mở danh sách chọn.
+ * select2:close: được gọi khi đóng danh sách chọn.
+ * select2:clear: được gọi khi xóa tất cả các mục đã chọn.
  */
 function initSelectBox(selectBoxElement = null) {
     let $select_box = selectBoxElement
@@ -95,14 +128,54 @@ function initSelectBox(selectBoxElement = null) {
             tags:false
 
         }
-        if ($this.attr('data-multiple') !== 'false'){
+        if ($this.attr('data-multiple') === 'true'){
             options['multiple'] = true
             options['tags'] = true
             $this.prop('multiple', true)
         }
+
+        // run select2
         $this.select2(options)
+        if($this.attr('data-template-format')){
+            $this.on("select2:select", function (e) {
+                $this.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
+                optOnSelected($this, e.params.data)
+            })
+        }
     });
 }
+
+// on change when select2 has info icon
+function optOnSelected($elm, data){
+    let keyArg = [
+        {name: 'Title', value: 'title'},
+        {name: 'Code', value: 'code'},
+    ];
+    const templateFormat = $elm.attr('data-template-format');
+    if (templateFormat) {
+        keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
+    }
+    let linkDetail = $elm.data('link-detail');
+    let $elmTrans = $('#base-trans-factory');
+    let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
+    for (let key of keyArg) {
+        if (data.hasOwnProperty(key.value))
+            htmlContent += `<div class="row mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+    }
+    if (linkDetail) {
+        link = linkDetail.format_url_with_uuid(data['id']);
+        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                <span>${$elmTrans.attr('data-view-detail')}</span>
+                <span class="icon ml-1">
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                </span>
+            </a></div>`;
+    };
+    $elm.parents('.input-affix-wrapper').find('.dropdown-menu').html(htmlContent);
+}
+
+
 $(document).ready(function () {
-    initSelectBox()
+    initSelectBox();
 });

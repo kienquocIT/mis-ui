@@ -50,13 +50,12 @@ $(function(){
             },
             {
                 targets: 3,
-                className: 'action-center',
                 render: (row, type, data) => {
                     return `<div class="actions-btn text-center">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
                                    title="Delete"
                                    href="#"
-                                   data-id="${data.id}"
+                                   data-id="${data?.id ? data.id : ''}"
                                    data-action="delete">
                                     <span class="btn-icon-wrap">
                                         <i class="bi bi-trash"></i>

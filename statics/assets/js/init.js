@@ -1381,6 +1381,7 @@ $.fn.extend({
             $('.readonly > * + span').on('click', function () {
                 // for input/select
                 $('[readonly]', $(this).parent('.readonly')).attr('readonly', false);
+                $('input[disabled]', $(this).parent('.readonly')).attr('disabled', false);
                 // for radio/checkbox
                 $('[type="checkbox"][disabled], [type="radio"][disabled]', $(this).parent('.readonly'))
                     .attr('disabled', false);
@@ -1388,8 +1389,13 @@ $.fn.extend({
                 $('[disabled]', $(this).closest('.input-group.readonly')).attr('disabled', false);
                 // for select2 with icon info
                 $('select[disabled]', $(this).parent('.readonly')).attr('disabled', false);
-                $(this).parent('.readonly').removeClass('readonly');
+                // for table
+                $(`[data-table-readonly="${$(this).parent('.readonly').find('table').attr('id')}"]`).attr('disabled', false)
+                $('.table-readonly', $(this).parent('.readonly')).removeClass('.readonly.table-readonly');
+
+                // final delete class readonly
                 $(`button[form="${$DetailForm.attr('id')}"]`).removeClass('hidden')
+                $(this).parent('.readonly').removeClass('readonly');
             });
         }
     },
@@ -1790,7 +1796,8 @@ var DataTableAction = {
         div.appendTo('body');
         div.modal('show');
         div.find('.btn').off().on('click', function (e) {
-            if ($(this).attr('data-type') === 'cancel') div.remove(); else {
+            if ($(this).attr('data-type') === 'cancel') div.remove();
+            else {
                 $.fn.callAjax(url, 'DELETE', data, crf)
                     .then((res) => {
                         if (res.hasOwnProperty('status')) {
@@ -1809,4 +1816,17 @@ var DataTableAction = {
             }
         })
     },
+    'status': function(stt){
+        let html = '';
+        const $baseTrans = $('#base-trans-factory')
+        const listSys = {
+            '0': $baseTrans.attr('data-draft'),
+            '1': $baseTrans.attr('data-created'),
+            '2': $baseTrans.attr('data-added'),
+            '3': $baseTrans.attr('data-finish'),
+            '4': $baseTrans.attr('data-cancel'),
+        }
+        html = `<span>${listSys[stt]}</span>`
+        return html
+    }
 }

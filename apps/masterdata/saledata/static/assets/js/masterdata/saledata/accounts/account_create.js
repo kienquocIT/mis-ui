@@ -1,4 +1,202 @@
 $(document).ready(function () {
+    let shipping_address_id_dict = [];
+    let billing_address_id_dict = [];
+
+    $('#shipping-city').select2();
+    $('#shipping-district').select2();
+    $('#shipping-ward').select2();
+
+    // load Cities SelectBox
+    function loadCities() {
+        $("#shipping-district option:selected").prop("selected", false);
+        $("#shipping-ward option:selected").prop("selected", false);
+        let ele = $('#shipping-city');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                        data.cities.map(function (item) {
+                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+    loadCities();
+
+    // load Districts SelectBox
+    function loadDistricts() {
+        let ele = $('#shipping-district');
+        let url = ele.attr('data-url').replace('pk', $('#shipping-city').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
+                        data.districts.map(function (item) {
+                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Wards SelectBox
+    function loadWards() {
+        let ele = $('#shipping-ward');
+        let url = ele.attr('data-url').replace('pk', $('#shipping-district').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
+                        data.wards.map(function (item) {
+                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    $('#shipping-city').on('change', function () {
+        loadDistricts();
+        $('#shipping-ward').html('<option value="" selected>---</option>');
+    })
+
+    $('#shipping-district').on('change', function () {
+        loadWards();
+    })
+
+    $('#save-changes-modal-shipping-address').on('click', function () {
+        try {
+            let detail_shipping_address = $('#detail-modal-shipping-address').val();
+            let city = $('#shipping-city').find(`option:selected`).text();
+            let district = $('#shipping-district').find(`option:selected`).text();
+            let ward = $('#shipping-ward').find(`option:selected`).text();
+
+            let country_id = $('#shipping-city').find(`option:selected`).attr('data-country-id');
+            let city_id = $('#shipping-city').find(`option:selected`).attr('value');
+            let district_id = $('#shipping-district').find(`option:selected`).attr('value');
+            let ward_id = $('#shipping-ward').find(`option:selected`).attr('value');
+
+            let shipping_address = '';
+            if (city !== '' && district !== '' && detail_shipping_address !== '') {
+
+                if (ward === '') {
+                    shipping_address = detail_shipping_address + ', ' + district + ', ' + city;
+                } else {
+                    shipping_address = detail_shipping_address + ', ' + ward + ', ' + district + ', ' + city;
+                }
+
+                $('#modal-shipping-address').modal('hide');
+                $('#detail-modal-shipping-address').val('');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (shipping_address !== '') {
+                let is_default = '';
+                if ($('#make-default-shipping-address').prop('checked') === true) {
+                    is_default = 'checked';
+                }
+
+                $('#list-shipping-address').append(
+                    `<div class="form-check ml-5 mb-2">
+                        <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
+                        <label>` + shipping_address + `</label>
+                        <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                    </div>`
+                )
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).parent().remove();
+                })
+
+                shipping_address_id_dict.push({
+                    'country_id': country_id,
+                    'detail_address': detail_shipping_address,
+                    'city_id': city_id,
+                    'district_id': district_id,
+                    'ward_id': ward_id,
+                    'full_address': shipping_address,
+                    'is_default': $('#make-default-shipping-address').prop('checked')
+                })
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+        }
+    })
+
+    $('#save-changes-modal-billing-address').on('click', function () {
+        try {
+            let acc_name = $('#select-box-account-name').find(`option:selected`).text();
+            let email_address = $('#inp-email-address').val();
+            let tax_code = $('#inp-tax-code-address').val();
+
+            let acc_name_id = $('#select-box-account-name').find(`option:selected`).attr('value');
+
+            let account_address = $('#select-box-address').find('option:selected').val();
+            if ($('#select-box-address').is(':hidden')) {
+                account_address = $('#edited-billing-address').val()
+            }
+
+            let billing_address = '';
+            if (email_address !== '' && tax_code !== '' && account_address !== '0') {
+                billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
+                $('#modal-billing-address').modal('hide');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (billing_address !== '') {
+                let is_default = '';
+                if ($('#make-default-billing-address').prop('checked') === true) {
+                    is_default = 'checked';
+                }
+
+                $('#list-billing-address').append(
+                    `<div class="form-check ml-5">
+                        <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
+                        <label>` + billing_address + `</label>
+                        <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                    </div>`
+                )
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).parent().remove();
+                })
+
+                billing_address_id_dict.push({
+                    'account_name_id': acc_name_id,
+                    'email': email_address,
+                    'tax_code': tax_code,
+                    'account_address': account_address,
+                    'full_address': billing_address,
+                    'is_default': $('#make-default-billing-address').prop('checked'),
+                })
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+        }
+    })
+
+
     let ele_table_offcanvas = $('#table-offcanvas').html()
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
@@ -34,27 +232,39 @@ $(document).ready(function () {
         }, {
             'data': 'job_title',
             render: (data, type, row, meta) => {
-                return `<span>` + row.job_title + `</span>`
+                if (row.job_title) {
+                    return `<span>` + row.job_title + `</span>`
+                }
+                return ``
             }
         }, {
             'data': 'owner',
             render: (data, type, row, meta) => {
-                return `<span>` + row.owner.fullname + `</span>`
+                if (row.owner.fullname) {
+                    return `<span>` + row.owner.fullname + `</span>`
+                }
+                return ``
             }
         }, {
             'data': 'mobile',
             'render': (data, type, row, meta) => {
-                return `<span>` + row.mobile + `</span>`
+                if (row.mobile) {
+                    return `<span>` + row.mobile + `</span>`
+                }
+                return ``
             }
         }, {
             'data': 'email',
             'render': (data, type, row, meta) => {
-                return `<span>` + row.email + `</span>`
+                if (row.email) {
+                    return `<span>` + row.email + `</span>`
+                }
+                return ``
             }
         }, {
             'render': (data, type, row, meta) => {
                 let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="contact-added form-check-input check-select" id="${currentId}" value=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                return `<span class="form-check mb-0"><input type="checkbox" class="contact-added form-check-input check-select" id="${currentId}" value=` + row.id + `></span>`;
             }
         }]
     }
@@ -182,56 +392,17 @@ $(document).ready(function () {
 
 
     function loadTableContact() {
-        if (!$.fn.DataTable.isDataTable('#datatable-add-contact')) {
-            let dtb = $('#datatable-add-contact');
-            let frm = new SetupFormSubmit(dtb);
-            dtb.DataTableDefault({
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            return resp.data['contact_list_not_map_account'] ? resp.data['contact_list_not_map_account'] : [];
-                        }
-                        return [];
-                    },
-                },
-                columns: [
-                    {
-                        'data': 'fullname',
-                        render: (data, type, row, meta) => {
-                            return `<a href="#"><span><b>${data}</b></span></a>`
-                        }
-                    }, {
-                        'data': 'job_title',
-                        render: (data, type, row, meta) => {
-                            return `<span>${data}</span>`
-                        }
-                    }, {
-                        'data': 'owner',
-                        render: (data, type, row, meta) => {
-                            return `<span>${row.owner.fullname}</span>`
-                        }
-                    }, {
-                        'data': 'mobile',
-                        'render': (data, type, row, meta) => {
-                            return `<span>${data}</span>`
-                        }
-                    }, {
-                        'data': 'email',
-                        'render': (data, type, row, meta) => {
-                            return `<span>${data}</span>`
-                        }
-                    }, {
-                        'render': (data, type, row, meta) => {
-                            let currentId = "chk_sel_" + String(meta.row + 1)
-                            return `<span class="form-check mb-0"><input type="checkbox" class="contact-added form-check-input check-select" id="${currentId}" value=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-                        }
-                    }
-                ],
-            });
-        }
+        let dtb = $('#datatable-add-contact');
+        let frm = new SetupFormSubmit(dtb);
+        $.fn.callAjax(frm.dataUrl, "GET").then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    config['data'] = data.contact_list_not_map_account
+                    initDataTableOffCanvas(config);
+                }
+            }
+        )
     }
 
     $('#select-box-acc-type').select2();
@@ -278,7 +449,7 @@ $(document).ready(function () {
         }
     })
 
-    // Change  Account Owner
+    // Change Account Owner
     $('#select-box-contact').on('change', function () {
         let oldValue = $(this).data('oldValue');
         let newValue = $(this).val();
@@ -332,24 +503,6 @@ $(document).ready(function () {
         $(this).data('oldValue', $(this).val());
     });
 
-    // Conditions for choosing a parent account
-    $('#select-box-acc-type').on('change', function () {
-        let selected_acc_type = $('#select-box-acc-type option:selected').filter(function () {
-            return $(this).text().toLowerCase() === 'customer'
-        })
-
-        if (selected_acc_type.length > 0) {
-            $('.radio-btn input').removeAttr('disabled')
-            if ($('#inp-organization').is(':checked')) {
-                $('#select-box-parent-account').attr('disabled', false);
-            }
-        } else {
-            $('.radio-btn input').attr('disabled', true);
-            $('#select-box-parent-account').attr('disabled', true);
-        }
-
-    });
-
     $('#inp-individual').on('change', function () {
         $('#select-box-parent-account').prop('selectedIndex', -1);
         $('#select-box-parent-account').attr('disabled', true);
@@ -359,6 +512,12 @@ $(document).ready(function () {
     $('#inp-organization').on('change', function () {
         $('#select-box-parent-account').attr('disabled', false);
         $("#tax-code-label").addClass("required");
+    })
+
+    // Button add shipping address
+    $('#edit-shipping-address-btn').on('click', function () {
+        if ($('#list-shipping-address input').length === 0)
+            $('#make-default-shipping-address').prop('checked', true);
     })
 
     // Button add billing address
@@ -455,51 +614,6 @@ $(document).ready(function () {
         }
     })
 
-    // Button add shipping address
-    $('#edit-shipping-address-btn').on('click', function () {
-        if ($('#list-shipping-address input').length === 0)
-            $('#make-default-shipping-address').prop('checked', true);
-    })
-
-    // Button save in modal billing address
-    $('#save-changes-modal-billing-address').on('click', function () {
-        try {
-            let acc_name = $('#select-box-account-name').find(`option:selected`).text();
-            let email_address = $('#inp-email-address').val();
-            let tax_code = $('#inp-tax-code-address').val();
-
-            let account_address = $('#select-box-address').find('option:selected').val();
-            if ($('#select-box-address').is(':hidden')) {
-                account_address = $('#edited-billing-address').val()
-            }
-
-            let billing_address = '';
-            if (email_address !== '' && tax_code !== '' && account_address !== '0') {
-                billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
-                $('#modal-billing-address').modal('hide');
-            } else {
-                alert("Missing billing address information!");
-            }
-
-            if (billing_address !== '') {
-                let num = $('#list-billing-address input').length
-                let is_default = '';
-                if ($('#make-default-billing-address').prop('checked') === true) {
-                    is_default = 'checked';
-                }
-                $('#list-billing-address').append(
-                    `<div class="form-check ml-5">
-                            <input class="form-check-input" type="radio" name="billingaddressRadio" id="billingaddressRadio` + num.toString() + `" ` + is_default + `>
-                            <label class="form-check-label" for="billingaddressRadio` + num.toString() + `">` + billing_address + `</label>
-                        </div>`
-                )
-
-            }
-        } catch (error) {
-            alert("No address information!");
-        }
-    })
-
     // Conditions for show offCanvas add Contact
     $('#add-contact-btn').on('click', function () {
         let allFieldsFilled = true;
@@ -536,26 +650,23 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
 
-        // get shipping address [default, .., .. ,.. ]
         let shipping_address_list = [];
         $('#list-shipping-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
-                let shipping_address = $('#list-shipping-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                shipping_address_list.unshift(shipping_address)
-            } else {
-                let shipping_address = $('#list-shipping-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                shipping_address_list.push(shipping_address)
+                shipping_address_list.unshift($(this).next('label').text().trim());
+            }
+            else {
+                shipping_address_list.push($(this).next('label').text().trim());
             }
         });
 
         let billing_address_list = [];
         $('#list-billing-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
-                let billing_address = $('#list-billing-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                billing_address_list.unshift(billing_address)
-            } else {
-                let billing_address = $('#list-billing-address').find(`label[for=` + $(this).attr('id') + `]`).text()
-                billing_address_list.push(billing_address)
+                billing_address_list.unshift($(this).next('label').text().trim());
+            }
+            else {
+                billing_address_list.push($(this).next('label').text().trim());
             }
         });
 
@@ -581,24 +692,11 @@ $(document).ready(function () {
             frm.dataForm['account_type'] = $('#select-box-acc-type').val();
         }
 
-        if (shipping_address_list.length > 0) {
-            frm.dataForm['shipping_address'] = shipping_address_list;
-        }
 
-        if (billing_address_list.length > 0) {
-            frm.dataForm['billing_address'] = billing_address_list;
-        }
-
-        let is_customer_selected = $('#select-box-acc-type option:selected').filter(function () {
-            return $(this).text().toLowerCase() === 'customer';
-        })
-
-        if (is_customer_selected.length > 0) {
-            if ($('#inp-organization').is(':checked')) {
-                frm.dataForm['customer_type'] = 'organization';
-            } else {
-                frm.dataForm['customer_type'] = 'individual';
-            }
+        if ($('#inp-organization').is(':checked')) {
+            frm.dataForm['account_type_selection'] = 1;
+        } else {
+            frm.dataForm['account_type_selection'] = 0;
         }
 
         frm.dataForm['contact_select_list'] = $('.contact_selected').map(function () {
@@ -606,6 +704,10 @@ $(document).ready(function () {
         }).get();
         frm.dataForm['contact_primary'] = $('.contact_primary').attr('data-value');
 
+        frm.dataForm['shipping_address'] = shipping_address_list;
+        frm.dataForm['billing_address'] = billing_address_list;
+        frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
+        frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
@@ -665,7 +767,7 @@ $(document).ready(function () {
     function initDataTableOffCanvas(config) {
         let dtb = $('#datatable-add-contact');
         if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
+            let targetDt = dtb.DataTable(config);
             let indexList = targetDt.rows().indexes();
             $('#datatable_contact_list tr').each(function () {
                 let rowValue = $(this).attr('data-value');
@@ -682,8 +784,6 @@ $(document).ready(function () {
                     }
                 }
             })
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-            dtb.parent().addClass('table-responsive');
         }
     }
 

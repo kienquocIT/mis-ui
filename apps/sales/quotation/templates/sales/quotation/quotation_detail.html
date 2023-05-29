@@ -351,9 +351,9 @@
                                                         <button
                                                                 type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal"
-                                                        >Close</button>
+                                                        >{% trans 'Close' %}</button>
                                                         <a target="_blank" class="link-primary underline_hover" id="link-to-sale-order-create" data-url="{% url "SaleOrderCreate" %}" hidden></a>
-                                                        <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-to">Copy</button>
+                                                        <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-to" data-bs-dismiss="modal">{% trans 'Copy' %}</button>
                                                         <input type="hidden" id="data-copy-quotation-detail">
                                                     </div>
                                                 </div>
@@ -853,6 +853,20 @@
                                 id="data-quotation"
                                 value="[]"
                         >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-promotion"
+                                data-url="{% url "PromotionCheckListAPI" %}"
+                                data-link-detail="{% url "PromotionDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-shipping"
+                                data-url="{% url "ShippingListAPI" %}"
+                                data-link-detail="{% url "ShippingDetail" 1 %}"
+                                data-method="GET"
+                        >
                     </div>
                 </div>
             </div>
@@ -879,6 +893,7 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>

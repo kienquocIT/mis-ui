@@ -17,10 +17,13 @@ $(document).ready(function () {
         disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');
         if (this.checked) {
-            $('.dimensionControl').show();
+        $('.dimensionControl').show();
         } else {
-            $('.dimensionControl').hide();
+        $('.dimensionControl').hide();
         }
+        let chooseUoMInventory = $('#select-box-uom-name');
+        chooseUoMInventory.html('');
+        chooseUoMInventory.html($('#select-box-default-uom').html());
     });
 
     $('#check-tab-sale').change(function () {
@@ -415,7 +418,6 @@ $(document).ready(function () {
             }, (errs) => {
             },)
         }
-
     })
 
     // change select box UoM Name in tab inventory
@@ -462,7 +464,7 @@ $(document).ready(function () {
                 'inventory_level_max': inventory_level_max
             }
         } else {
-            frm.dataForm['inventory_information'] = {}
+            delete frm.dataForm['inventory_information']
         }
 
         let price_list = []
@@ -484,7 +486,7 @@ $(document).ready(function () {
                     price_list.push(
                         {
                             'price_list_id': $(this).attr('data-id'),
-                            'price_value': null,
+                            'price_value': 0,
                             'is_auto_update': is_auto_update,
                         }
                     )
@@ -504,7 +506,7 @@ $(document).ready(function () {
             frm.dataForm['sale_information']['measure'] = [];
             frm.dataForm['sale_information']['length'] = null;
             frm.dataForm['sale_information']['width'] = null;
-            frm.dataForm['sale_information']['weight'] = null;
+            frm.dataForm['sale_information']['height'] = null;
             if ($('#check-tab-inventory').is(':checked') === true) {
                 let inpLength = $('[name="length"]');
                 let inpWidth = $('[name="width"]');
@@ -533,7 +535,7 @@ $(document).ready(function () {
                 frm.dataForm['sale_information']['measure'] = measurementList;
             }
         } else {
-            frm.dataForm['sale_information'] = {}
+            delete frm.dataForm['sale_information']
         }
 
         $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
@@ -546,6 +548,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })
@@ -568,6 +571,7 @@ $(document).ready(function () {
         autoSelectPriceListCopyFromSource()
         if ($(this).prop('checked')) {
             $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', false)
+            $(`input[data-text="` + $(this).attr('data-check') + `"]`).addClass('price-list-change');
         } else {
             $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', true)
             let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input:not(:checked)')

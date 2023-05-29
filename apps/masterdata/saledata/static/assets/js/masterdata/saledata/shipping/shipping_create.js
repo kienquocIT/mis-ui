@@ -85,6 +85,16 @@ $(document).ready(function () {
         if (text_unit !== '') {
             eleParent.find('.inpUnit').attr('value', text_unit);
             eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
+            let eleThreshold = $(this).closest('.line-condition').find('.inpThreshold');
+            if(text_unit === 'price')
+            {
+                eleThreshold.addClass('mask-money');
+                eleThreshold.attr('data-return-type', 'number');
+                eleThreshold.attr('type', 'text');
+            }
+            else{
+                removeClass(eleThreshold)
+            }
         }
         $(this).remove();
     })
@@ -214,4 +224,24 @@ $(document).ready(function () {
                 )
         }
     })
+
+    $(document).on('change', '.chooseCity', function () {
+        let selectedOptions = $(this).find('option:selected').map(function () {
+            return this.value;
+        }).get();
+
+        $('.chooseCity').not(this).each(function () {
+            $(this).find('option').each(function () {
+                if($(this).is(':selected') === true){
+                    selectedOptions.push($(this).val());
+                }
+                if(selectedOptions.includes($(this).val()) && $(this).is(':selected') === false){
+                    $(this).attr('disabled', 'disabled');
+                }
+                else{
+                    $(this).removeAttr('disabled');
+                }
+            });
+        });
+    });
 })

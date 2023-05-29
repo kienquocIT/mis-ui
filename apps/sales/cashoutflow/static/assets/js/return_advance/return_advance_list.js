@@ -57,7 +57,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'return_value',
+                        data: 'return_total',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             return `<span class="mask-money" data-init-money="{0}"></span>`.format_by_idx(

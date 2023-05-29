@@ -63,16 +63,7 @@ $(document).ready(function () {
         /*DataTable Init*/
         let dtb = $(id_table);
         if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
-            // targetDt.column(2).order('asc').draw();
-            /*Checkbox Add*/
-            $(document).on('click', '.del-button', function () {
-                targetDt.rows('.selected').remove().draw(false);
-                return false;
-            });
-            // let html = $('.waiter-miner-item').html();
-            // $("div.blog-toolbar-left").html(html.replace('hidden', ''));
-            dtb.parent().addClass('table-responsive');
+            let targetDt = dtb.DataTable(config);
         }
     }
 
@@ -303,7 +294,7 @@ $(document).ready(function () {
                         let abbreviation = currency_dict[item].abbreviation
                         dropdown.append(`<div class="form-check form-check mt-2">
                             <input data-id="` + item + `" class="form-check-input display-currency" type="checkbox" id="check-` + abbreviation + `" value="option1" checked>
-                            <label class="form-check-label" for=check-` + abbreviation + `">` + abbreviation + `</label>
+                            <label class="form-check-label">` + abbreviation + `</label>
                         </div>`)
                     })
                     let product_mapped = getProductWithCurrency(data.price.products_mapped, data.price.currency)

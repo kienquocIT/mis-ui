@@ -318,6 +318,7 @@ $(document).ready(function () {
 
         frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
         frm.dataForm['is_change_condition'] = isChangeCondition;
+        console.log(frm.dataForm)
         if (is_submit) {
             $.fn.callAjax(frm.getUrlDetail(pk), frm.dataMethod, frm.dataForm, csr)
                 .then(

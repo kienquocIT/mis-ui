@@ -5,208 +5,196 @@ $(document).ready(function () {
     let ele_industry = $('#section-industry').html()
     // load Data
     "use strict";
-    let config_account_type = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'code', render: (data, type, row, meta) => {
-                return `<a href="#"><span><b>` + row.code + `</b></span></a>`
-            }
-        }, {
-            'data': 'title', render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
-            }
-        }, {
-            'data': 'description', 'render': (data, type, row, meta) => {
-                return `<span><b>` + row.description + `</b></span>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                if (row.is_default === false) {
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return bt2;
-                }
-                else {
-                    return ``
-                }
-            }
-        },]
-    }
-    let config_account_group = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'code', render: (data, type, row, meta) => {
-                return `<a href="#"><span><b>` + row.code + `</b></span></a>`
-            }
-        }, {
-            'data': 'title', render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
-            }
-        }, {
-            'data': 'description', 'render': (data, type, row, meta) => {
-                return `<span><b>` + row.description + `</b></span>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt2;
-            }
-        },]
-    }
-    let config_industry = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'code', render: (data, type, row, meta) => {
-                return `<a href="#"><span><b>` + row.code + `</b></span></a>`
-            }
-        }, {
-            'data': 'title', render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
-            }
-        }, {
-            'data': 'description', 'render': (data, type, row, meta) => {
-                return `<span><b>` + row.description + `</b></span>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt2;
-            }
-        },]
-    }
 
-    function initDataTable(config, id_table) {
-        /*DataTable Init*/
-        let dtb = $(id_table);
-        if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
-            /*Checkbox Add*/
-            $(document).on('click', '.del-button', function () {
-                targetDt.rows('.selected').remove().draw(false);
-                return false;
-            });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-            dtb.parent().addClass('table-responsive');
+    function loadAccountType() {
+        if (!$.fn.DataTable.isDataTable('#datatable-account-type-list')) {
+            let tbl = $('#datatable-account-type-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('account_type_list')) {
+                                return resp.data['account_type_list'] ? resp.data['account_type_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: [
+                        {
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        },
+                        {
+                            data: 'code',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
+                                    data,
+                                )
+                            }
+                        },
+                        {
+                            data: 'title',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        },
+                        {
+                            data: 'description',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        }, {
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                    row.id
+                                )
+                            }
+                        }
+                    ],
+                },
+            );
         }
     }
 
-    let tb_account_type = $('#datatable-account-type-list');
-    $.fn.callAjax(tb_account_type.attr('data-url'), tb_account_type.attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_type_list')) {
-                config_account_type['data'] = resp.data.account_type_list;
-            }
-            initDataTable(config_account_type, '#datatable-account-type-list');
+    function loadAccountGroup() {
+        if (!$.fn.DataTable.isDataTable('#datatable-account-group-list')) {
+            let tbl = $('#datatable-account-group-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('account_group_list')) {
+                                return resp.data['account_group_list'] ? resp.data['account_group_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: [
+                        {
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        },
+                        {
+                            data: 'code',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
+                                    data,
+                                )
+                            }
+                        },
+                        {
+                            data: 'title',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        },
+                        {
+                            data: 'description',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        }, {
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                    row.id
+                                )
+                            }
+                        }
+                    ],
+                },
+            );
         }
-    }, (errs) => {
-        initDataTable(config_account_type, '#datatable-account-type-list');
-    },)
+    }
 
-    let tb_account_group = $('#datatable-account-group-list');
-    $.fn.callAjax(tb_account_group.attr('data-url'), tb_account_group.attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_group_list')) {
-                config_account_group['data'] = resp.data.account_group_list;
-            }
-            initDataTable(config_account_group, '#datatable-account-group-list');
+    function loadIndustry() {
+        if (!$.fn.DataTable.isDataTable('#datatable-industry-list')) {
+            let tbl = $('#datatable-industry-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('industry_list')) {
+                                return resp.data['industry_list'] ? resp.data['industry_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: [
+                        {
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        },
+                        {
+                            data: 'code',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
+                                    data,
+                                )
+                            }
+                        },
+                        {
+                            data: 'title',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        },
+                        {
+                            data: 'description',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        }, {
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                    row.id
+                                )
+                            }
+                        }
+                    ],
+                },
+            );
         }
-    }, (errs) => {
-        initDataTable(config_account_group, '#datatable-account-group-list');
-    },)
+    }
 
-    let tb_industry = $('#datatable-industry-list');
-    $.fn.callAjax(tb_industry.attr('data-url'), tb_industry.attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('industry_list')) {
-                config_industry['data'] = resp.data.industry_list;
-            }
-            initDataTable(config_industry, '#datatable-industry-list');
-        }
-    }, (errs) => {
-        initDataTable(config_industry, '#datatable-industry-list');
-    },)
+    loadAccountType();
 
-    $('#btn-show-modal-create').on('click', function (){
+    $('#btn-show-modal-create').on('click', function () {
         $('.modal-body input').val('');
     })
 
@@ -217,12 +205,15 @@ $(document).ready(function () {
         let id_tag = `#` + section
         if (section === 'section-account-type') {
             $('#modal-lookup-data h5').text('Account Type');
+            loadAccountType();
         }
         if (section === 'section-account-group') {
             $('#modal-lookup-data h5').text('Account Group');
+            loadAccountGroup();
         }
         if (section === 'section-industry') {
             $('#modal-lookup-data h5').text('Industry');
+            loadIndustry();
         }
         $('#form-create-lookup').attr('data-lookup', section)
         $(id_tag).show();
@@ -271,50 +262,17 @@ $(document).ready(function () {
                 if (lookup === 'section-account-type') {
                     $('#section-account-type').empty();
                     $('#section-account-type').append(ele_account_type);
-                    let tb_account_type = $('#datatable-account-type-list');
-                    $.fn.callAjax(tb_account_type.attr('data-url'), tb_account_type.attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_type_list')) {
-                                config_account_type['data'] = resp.data.account_type_list;
-                                initDataTable(config_account_type, '#datatable-account-type-list');
-                            }
-                        }
-                    }, (errs) => {
-                        initDataTable(config_account_type, '#datatable-account-type-list');
-                    },)
+                    loadAccountType();
                 }
                 if (lookup === 'section-account-group') {
                     $('#section-account-group').empty();
                     $('#section-account-group').append(ele_account_group);
-                    let tb_account_group = $('#datatable-account-group-list');
-                    $.fn.callAjax(tb_account_group.attr('data-url'), tb_account_group.attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_group_list')) {
-                                config_account_group['data'] = resp.data.account_group_list;
-                                initDataTable(config_account_group, '#datatable-account-group-list');
-                            }
-                        }
-                    }, (errs) => {
-                        initDataTable(config_account_group, '#datatable-account-group-list');
-                    },)
+                    loadAccountGroup();
                 }
                 if (lookup === 'section-industry') {
                     $('#section-industry').empty();
                     $('#section-industry').append(ele_industry);
-                    let tb_industry = $('#datatable-industry-list');
-                    $.fn.callAjax(tb_industry.attr('data-url'), tb_industry.attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('industry_list')) {
-                                config_industry['data'] = resp.data.industry_list;
-                            }
-                            initDataTable(config_industry, '#datatable-industry-list');
-                        }
-                    }, (errs) => {
-                        initDataTable(config_industry, '#datatable-industry-list');
-                    },)
+                    loadIndustry();
                 }
             }
         )
@@ -357,7 +315,7 @@ $(document).ready(function () {
     selectAllCheckBox('#datatable-industry-list');
 
     // show modal edit
-    $(document).on('click', '#datatable-account-type-list .edit-button, #datatable-industry-list .edit-button', function () {
+    $(document).on('click', '#datatable-account-type-list .edit-button, #datatable-industry-list .edit-button, #datatable-account-group-list .edit-button', function () {
         let frm_update = $('#form-update-masterdata')
         let check_type = 0;
         let data_url;
@@ -385,6 +343,10 @@ $(document).ready(function () {
                             $('#name-update').val(data.account_type.title);
                             $('#code-update').val(data.account_type.code);
                             $('#description-update').val(data.account_type.description);
+                        } else if (resp.data.hasOwnProperty('account_group')) {
+                            $('#name-update').val(data.account_group.title);
+                            $('#code-update').val(data.account_group.code);
+                            $('#description-update').val(data.account_group.description);
                         } else if (resp.data.hasOwnProperty('industry')) {
                             $('#name-update').val(data.industry.title);
                             $('#code-update').val(data.industry.code);
@@ -393,6 +355,7 @@ $(document).ready(function () {
                     }
                 }
             }, (errs) => {
+                $.fn.notifyPopup({description: errs.data.errors}, 'failure');
             },)
         // save edit
         $('#modal-update-data .edit-button').off().on('click', function () {
@@ -423,7 +386,7 @@ $(document).ready(function () {
                             $('#modal-update-data').hide();
                         }
                     },
-                    (errs)=>{
+                    (errs) => {
 
                     }
                 ).then(
@@ -431,55 +394,20 @@ $(document).ready(function () {
                     if (check_type === 1) {
                         $('#section-account-type').empty();
                         $('#section-account-type').append(ele_account_type);
-                        let tb_account_type = $('#datatable-account-type-list');
-                        $.fn.callAjax(tb_account_type.attr('data-url'), tb_account_type.attr('data-method')).then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_type_list')) {
-                                    config_account_type['data'] = resp.data.account_type_list;
-                                    initDataTable(config_account_type, '#datatable-account-type-list');
-                                }
-                            }
-                        }, (errs) => {
-                            initDataTable(config_account_type, '#datatable-account-type-list');
-                        },)
+                        loadAccountType();
                     }
                     if (check_type === 2) {
                         $('#section-account-group').empty();
                         $('#section-account-group').append(ele_account_group);
-                        let tb_account_group = $('#datatable-account-group-list');
-                        $.fn.callAjax(tb_account_group.attr('data-url'), tb_account_group.attr('data-method')).then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_group_list')) {
-                                    config_account_group['data'] = resp.data.account_group_list;
-                                    initDataTable(config_account_group, '#datatable-account-group-list');
-                                }
-                            }
-                        }, (errs) => {
-                            initDataTable(config_account_group, '#datatable-account-group-list');
-                        },)
+                        loadAccountGroup();
                     }
                     if (check_type === 3) {
                         $('#section-industry').empty();
                         $('#section-industry').append(ele_industry);
-                        let tb_industry = $('#datatable-industry-list');
-                        $.fn.callAjax(tb_industry.attr('data-url'), tb_industry.attr('data-method')).then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('industry_list')) {
-                                    config_industry['data'] = resp.data.industry_list;
-                                }
-                                initDataTable(config_industry, '#datatable-industry-list');
-                            }
-                        }, (errs) => {
-                            initDataTable(config_industry, '#datatable-industry-list');
-                        },)
+                        loadIndustry();
                     }
                 }
             )
         });
     });
 });
-
-

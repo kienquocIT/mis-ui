@@ -78,14 +78,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-sale-1" name="sale_code_type" value="sale-1" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-sale">Sale-1</label>
+                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-sale">Sale</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-sale-n" name="sale_code_type" value="sale-n" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-sale">Sale-n</label>
+                                            <input type="radio" id="radio-special" name="sale_code_type" value="MULTI" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-special">MULTI</label>
                                         </div>
                                     </div>
                                 </div>
@@ -96,12 +96,12 @@
                                     data-url-quotation="{% url 'QuotationListAPI' %}" hidden
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
-                            <input placeholder="Can not select with Non-Sale" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 125%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
+                            <input placeholder="Select beneficiary first" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group mb-4">
-                        <label class="col-3 col-form-label" id="supplier-label">Supplier name</label>
+                        <label class="col-3 col-form-label required" id="supplier-label">Supplier name</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="supplier-detail-span" hidden>
@@ -133,7 +133,7 @@
                                     </span>
                                 </span>
                                 <select class="form-select" name="supplier" data-method="GET" id="supplier-select-box"
-                                        data-url="{% url 'AccountListAPI' %}" disabled></select>
+                                        data-url="{% url 'AccountListAPI' %}"></select>
                             </span>
                         </div>
                     </div>

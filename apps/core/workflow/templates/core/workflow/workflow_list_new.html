@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Workflow list' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/wf-list-new.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href="{% url 'WorkflowCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Workflow' %}"
+       id="create_workflow_button"
+       data-bs-original-title="Add Workflow">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <input type="hidden" id="workflow-link"
+           data-link-update="{% url 'WorkflowDetail' 1 %}"
+           data-link-list="{% url 'WorkflowList' %}"
+    >
+    <table
+            id="table_workflow_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'WorkflowListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th>{% trans 'Application name' %}</th>
+            <th>{% trans 'Workflow mode' %}</th>
+            <th>
+                {% trans 'Errors' %}
+            </th>
+            <th>
+                {% trans 'Current WF applied' %}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="wf-template hidden">
+        <div class="child-table">
+            <a href="#" class="btn btn-flush-success btn-animated add_new_wf mb-2">
+                <span class="icon">
+                    <span class="feather-icon mr-2"><i data-feather="plus-square"></i></span>
+                    <span class="txt-btn">{% trans 'Add new workflow' %}</span>
+                </span>
+            </a>
+            <table class="child-table">
+                <thead>
+                <tr>
+                    <th>{% trans 'WF name' %}</th>
+                    <th>{% trans 'Applied day' %}</th>
+                    <th>{% trans 'Active status' %}</th>
+                    <th>{% trans 'Not completed' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="grand-child-table">
+            <table class="grand-child-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Creator' %}</th>
+                    <th>{% trans 'Posting date' %}</th>
+                    <th>{% trans 'Current node' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="dropdown-lv-1 p">
+            <div class="dropdown custom-dropdown-tb">
+                <i class="fa fa-caret-down font-6 dropdown-toggle" data-bs-toggle="dropdown"></i>
+                <div class="dropdown-menu wf-mode">
+                    <a class="dropdown-item" href="#" data-value="0">{% trans 'Not apply' %}</a>
+                    <a class="dropdown-item" href="#" data-value="1">{% trans 'Apply' %}</a>
+                    <a class="dropdown-item" href="#" data-value="2">{% trans 'Pending' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="url-factory"
+    data-new="{% url 'WorkflowCreate' %}"
+    data-child="{% url 'WorkflowListAPI' %}"
+    data-grand-child="{% url 'WorkflowListAPI' %}">
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/moment.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/list-new.js' %}"></script>
+{% endblock %}

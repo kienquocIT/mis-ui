@@ -3,7 +3,6 @@ $(document).ready(function () {
         let url_detail = $('#datatable_product_list').attr('data-url-detail')
         "use strict";
         $(function () {
-
             let config = {
                 dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 ordering: false,
@@ -42,7 +41,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'product_type', 'render': (data, type, row, meta) => {
-                        if (row.general_information.product_type) {
+                        if (row.general_information.product_type.title) {
                             return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">` + row.general_information.product_type.title + `</span>`
                         } else {
                             return `<span></span>`
@@ -50,7 +49,7 @@ $(document).ready(function () {
                     }
                 }, {
                     'data': 'product_category', 'render': (data, type, row, meta) => {
-                        if (row.general_information.product_category) {
+                        if (row.general_information.product_category.title) {
                             return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">` + row.general_information.product_category.title + `</span>`
                         } else {
                             return `<span></span>`
@@ -81,43 +80,13 @@ $(document).ready(function () {
             }
 
             const table = $('#datatable_product_list');
-            let call1 = $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
+            $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    return data
+                    config['data'] = data.product_list;
+                    initDataTable(config, '#datatable_product_list');
                 }
             })
-            let call2 = $.fn.callAjax(table.attr('data-url-product-type'), table.attr('data-method')).then((resp) => {
-                let product_type = $.fn.switcherResp(resp);
-                if (product_type) {
-                    return product_type
-                }
-            })
-            let call3 = $.fn.callAjax(table.attr('data-url-product-category'), table.attr('data-method')).then((resp) => {
-                let product_category = $.fn.switcherResp(resp);
-                if (product_category) {
-                    return product_category
-                }
-            })
-
-            $.when(call1, call2, call3).done(function(response1, response2, response3) {
-                for (let i = 0; i < response1.product_list.length; i++) {
-                    let product_type_item = $.grep(response2.product_type_list, function(obj) {
-                        return obj.id === response1.product_list[i]['general_information']['product_type'];
-                    });
-                    response1.product_list[i]['general_information']['product_type'] = product_type_item[0];
-                }
-                for (let i = 0; i < response1.product_list.length; i++) {
-                    let product_category_item = $.grep(response3.product_category_list, function(obj) {
-                        return obj.id === response1.product_list[i]['general_information']['product_category'];
-                    });
-                    response1.product_list[i]['general_information']['product_category'] = product_category_item[0];
-                }
-
-                config['data'] = response1.product_list
-                initDataTable(config, '#datatable_product_list');
-            }).fail(function(error) {
-            });
         });
     }
     loadDefaultData();

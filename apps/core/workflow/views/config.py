@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.workflow.initial_data import Node_data
-from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset
+from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset, TypeCheck
 
 WORKFLOW_ACTION = {
     0: WorkflowMsg.ACTION_CREATE,
@@ -193,3 +193,54 @@ class NodeSystemListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         return {'node_system': Node_data}, status.HTTP_200_OK
+
+
+class FlowDiagramListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_DIAGRAM).get()
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_DETAIL).get()
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeHistoryStageAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_HISTORY_STAGE.fill_key(pk=pk)).get()
+        if resp.state:
+            return {'histories': resp.result}, status.HTTP_200_OK
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeTaskAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        action = request.data.get('action', None)
+        if action is not None and pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_TASK.fill_key(pk=pk)).put(data={'action': action})
+            if resp.state:
+                return {'state': resp.result}, status.HTTP_200_OK
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_404_NOT_FOUND

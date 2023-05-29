@@ -7,6 +7,32 @@
 
 {% block pageContent %}
     {% include 'plugins/condition/condition_component.html' %}
+    <div class="row mb-5">
+        <h6>Value of currency round to the nearest value.</h6>
+        <span>Example 1: <b>123.99 round to 124</b> if config have <b>decimal is zero</b>.</span>
+        <span>Example 2: <b>123.99 round to 123.99</b> if config have <b>decimal is two</b>.</span>
+    </div>
+    <div class="row mb-5">
+        <h6>Recommendation: </h6>
+        <span class="badge badge-warning" style="text-align: left">
+            Don't change decimal config and input currency decimal the same with config for display value is correct.
+        </span>
+    </div>
+    <div class="row mb-5">
+        <h6>Test Mask Money with input[type=text].mask-money: </h6>
+        <label class="form-label" for="input-test-mask"></label>
+        <input
+                type="text" id="input-test-mask"
+                class="form-control mask-money"
+                value="123.99"
+                data-return-type="number"
+        />
+    </div>
+    <div class="row mb-5">
+        <h6>Test Mask Money with p.mask-money-value</h6>
+        <label for=""></label>
+        <p class="mask-money-value" data-mask-value="77.89"></p>
+    </div>
 
     <div class="row mb-3">
         <h1>Diagram</h1>
@@ -18,6 +44,7 @@
         <p id="doc-app"></p>
         <p id="doc-state-current"></p>
         <p id="doc-flow"></p>
+        <p id="doc-task" data-url="{% url 'FlowRuntimeTaskAPI' pk=1 %}"></p>
         <table
                 id="tbl-load-data-nek"
                 class="table nowrap w-100 mb-5"
@@ -39,6 +66,7 @@
             </tbody>
         </table>
     </div>
+    {% csrf_token %}
 {% endblock %}
 
 {% block jsFooter %}
@@ -53,19 +81,27 @@
         $('html').on('click', '.btn-showHideLog', function () {
             let nextEle = $(this).parents().children('.log-block');
             if (nextEle.hasClass('hidden')) {
-                if ($(nextEle).children().length === 0){
+                if ($(nextEle).children().length === 0) {
                     let dtb = $('#tbl-load-data-nek');
                     let frm = new SetupFormSubmit(dtb);
                     let rowData = dtb.DataTable().row($(this).closest('tr')).data();
                     $.fn.callAjax(
                         frm.getUrlDetailWithDataUrl('history-stage', rowData.id),
                         'GET',
-                    ).then((resp)=>{
+                    ).then((resp) => {
                         let data = $.fn.switcherResp(resp);
-                        data['histories']['histories'].map((item)=>{
-                              nextEle.append(
-                                    `<li>` + item['assignee']['full_name'] + " : " + item['msg'] + `</li>`
-                              )
+                        data['histories']['histories'].map((item) => {
+                            nextEle.append(
+                                `<li class="mb-1">{0} {1} : {2}</li>`.format_by_idx(
+                                    `<span class="badge badge-soft-warning mr-1">{0}</span>`.format_by_idx(
+                                        $.fn.parseDateTime(item['date_created'])
+                                    ),
+                                    `<span class="badge badge-soft-danger">{0}</span>`.format_by_idx(
+                                        item['assignee']['full_name']
+                                    ),
+                                    item['msg'],
+                                ),
+                            )
                         })
                     })
                 }
@@ -76,7 +112,38 @@
                 $(this).empty().append(`<i class="fas fa-angle-double-down"></i>`);
                 nextEle.addClass('hidden');
             }
-        })
+        });
+        $('html').on('click', '#callTaskApproval', function (){
+            let idData = $(this).attr('data-id');
+           let urlData = $('#doc-task').attr('data-url');
+           let urlReal = SetupFormSubmit.getUrlDetailWithID(urlData, idData);
+
+           $.fn.callAjax(
+               urlReal,
+               'PUT',
+               {'action': 0},
+               document.getElementsByName('csrfmiddlewaretoken')[0].value
+           ).then(
+               (resp)=>{
+                   console.log(resp);
+                   setTimeout(
+                       ()=>{
+                           window.location.reload();
+                       },
+                       1000
+                   );
+               },
+               (errs)=>{
+                   console.log(errs);
+                   setTimeout(
+                       ()=>{
+                           window.location.reload();
+                       },
+                       1000
+                   );
+               },
+           )
+        });
 
         $(document).ready(function () {
             $.fn.getRuntimeState = function (stateNum) {
@@ -122,9 +189,9 @@
                             width: "10%",
                             render: (data, type, row, meta) => {
                                 let htmlCell = `<span class="badge badge-soft-warning mr-1">{0}</span>`.format_by_idx(
-                                    Date.parse(row['date_created'])
+                                    $.fn.parseDateTime(row['date_created'])
                                 )
-                                if (row.code && row.title) htmlCell += row.title + ' <span class="badge badge-primary">' + row.code + '</span>';
+                                if (row.code && row.title) htmlCell += row.title + ' <span class="badge badge-primary">SYSTEM</span>';
                                 else if (row.code) htmlCell += row.code;
                                 else if (row.title) htmlCell += row.title;
                                 else htmlCell += 'Nothing';
@@ -150,10 +217,11 @@
                             render: (data, type, row, meta) => {
                                 let htmlCell = '';
                                 if (row.assignee_and_zone && row.assignee_and_zone.length > 0) {
+                                    let valueTmp = `<span class="badge badge-soft-warning mr-1">{0}</span>`;
                                     row.assignee_and_zone.map((item) => {
-                                        htmlCell += `<span class="badge badge-soft-danger">{0}</span><i class="fas fa-caret-right ml-3 mr-3"></i><span class="badge badge-soft-warning">{1}</span>`.format_by_idx(
+                                        htmlCell += `<div class="mb-1"><span class="badge badge-soft-danger">{0}</span><i class="fas fa-caret-right ml-3 mr-3"></i>{1}</div>`.format_by_idx(
                                             item['full_name'],
-                                            item['zone_and_properties'].length > 0 ? "ABC, DEF" : `<i class="fas fa-times"></i>`,
+                                            item['zone_and_properties'].length > 0 ? item['zone_and_properties'].map(obj => valueTmp.format_by_idx(obj.title)).join("") : valueTmp.format_by_idx(`<i class="fas fa-times"></i>`),
                                         );
                                     })
                                 }
@@ -163,7 +231,7 @@
                         {
                             width: "35%",
                             render: (data, type, row, meta) => {
-                                if (row.log_count > 0){
+                                if (row.log_count > 0) {
                                     let htmlCell = `<span class="badge badge-soft-blue btn-showHideLog" style="cursor: pointer"><i class="fas fa-angle-double-down"></i></span>`;
                                     return `<div class="wrap-text">` + htmlCell + `<ul class="log-block hidden"></ul>` + `</div>`;
                                 }
@@ -183,11 +251,23 @@
                     $('#doc-data').html(
                         `<p>` + data['doc_title'] + ' : ' + data['doc_id'] + `</p>` +
                         `<p>STATUS: ` + $.fn.getRuntimeStatus(data['runtime_status']) + `</p>` +
-                        `<p>STATE: ` + $.fn.getRuntimeState(data['state']) + `</p>`
+                        `<p>STATE: ` + $.fn.getRuntimeState(data['state']) + `</p>` +
+                        `<p>ACTION: ` + data['assignee_task_id']['actions'] + `</p>` +
+                        `<p>TASK: ` + data['assignee_task_id']['task_id'] + `</p>`
                     );
                     if (data['flow'] !== undefined && Object.keys(data['flow']).length !== 0) {
                         $('#doc-flow').html(`<p>Flow: ` + data['flow']['id'] + ' - ' + data['flow']['title'] + `</p>`);
                     }
+
+                    if (data['assignee_task_id'] && data['assignee_task_id'].hasOwnProperty('task_id')) {
+                        $('#doc-task').html(
+                            `<button id='callTaskApproval' data-id='{0}'>{1}</button>`.format_by_idx(
+                                data['assignee_task_id']['task_id'],
+                                data['assignee_task_id']['actions'],
+                            )
+                        );
+                    }
+
                     switch (data['task_bg_state']) {
                         case "SUCCESS":
                             loadStageLog();
@@ -200,25 +280,30 @@
             }
 
             $.fn.showLoading();
-            callGetRuntime().then((rs) => {
-                if (rs === true) {
+            callGetRuntime().then(
+                (rs) => {
+                    if (rs === true) {
+                        $.fn.hideLoading();
+                    } else {
+                        let intervalCall = setInterval(
+                            async function () {
+                                return await callGetRuntime().then((rs) => {
+                                    if (rs === true) {
+                                        $.fn.hideLoading();
+                                        clearInterval(intervalCall);
+                                    }
+                                    return true;
+                                });
+                            },
+                            5000
+                        )
+                    }
+                    return true;
+                },
+                (errs)=>{
                     $.fn.hideLoading();
-                } else {
-                    let intervalCall = setInterval(
-                        async function () {
-                            return await callGetRuntime().then((rs) => {
-                                if (rs === true) {
-                                    $.fn.hideLoading();
-                                    clearInterval(intervalCall);
-                                }
-                                return true;
-                            });
-                        },
-                        5000
-                    )
                 }
-                return true;
-            });
+            );
         })
     </script>
 {% endblock %}

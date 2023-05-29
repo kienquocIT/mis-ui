@@ -96,14 +96,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     RUNTIME_DETAIL = StringUrl('workflow/runtime')
     RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
     RUNTIME_HISTORY_STAGE = StringUrl('workflow/history/stage/{pk}')
-
-    # crm/contact
-    CONTACT_LIST = StringUrl('saledata/contacts')
-    CONTACT_DETAIL = StringUrl('saledata/contact')
-    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contacts-not-map-account')
-
-    # masterdata/lookup/contact
-    SALUTATION_LIST = StringUrl('saledata/salutations')
+    RUNTIME_TASK = StringUrl('workflow/task/{pk}')
     INTERESTS_LIST = StringUrl('saledata/interests')
     SALUTATION_DETAIL = StringUrl('saledata/salutation/')
     INTEREST_DETAIL = StringUrl('saledata/interest/')
@@ -149,6 +142,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRICE_DETAIL = StringUrl('saledata/price/')
     PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/')
     PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/')
+    PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/')
+    DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/')
 
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')

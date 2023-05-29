@@ -1,8 +1,12 @@
+let term_type_list = [];
+let PercentCount = 0;
+let $transElm = $('#trans-factory');
 $(document).ready(function () {
 
     let ele_tax_category = $('#section-tax-category').html();
     let ele_tax = $('#section-tax').html();
     let ele_currency = $('#section-currency').html();
+
     $('.select2-multiple').select2();
 
     //Switch view table
@@ -30,6 +34,7 @@ $(document).ready(function () {
         $('.modal-body .select2').val(null).trigger("change");
         $('#form-create-payment-term')[0].reset();
         $('#table_terms').DataTable().clear().draw();
+        $('[data-bs-target="#modal-add-table"]').prop('disabled', false)
         if (!$(this).attr('data-bs-target')) {
             $(".lookup-data").hide();
             $('#section-create-payment-terms').show();
@@ -185,7 +190,7 @@ $(document).ready(function () {
             }
         }, {
             'data': 'rate', 'render': (data, type, row, meta) => {
-                if (row.rate) {
+                if (row.rate >= 0) {
                     return `<center>
                             <span class="badge badge-soft-pink badge-pill" style="min-width: max-content; width: 100%">` + row.rate + `%</span>
                             </center>`
@@ -716,6 +721,7 @@ $(document).ready(function () {
     });
 
 // PAYMENTS TERMS handle
+
     function PaymentTermsList(){
         // init dataTable
         let $tables = $('#datatable-payment-terms');
@@ -793,6 +799,7 @@ $(document).ready(function () {
         // handle event unit type on change
         let $modalElm = $('#modal-add-table');
         $modalElm.find('[name="unit_type"]').off().on('change', function (e) {
+            $(this).removeClass('is-invalid')
             e.stopPropagation();
             if (parseInt(this.value) === 2)
                 $modalElm.find('[name="value"]').prop('readonly', true).val(
@@ -807,6 +814,7 @@ $(document).ready(function () {
      * @param data data of row had object format
      * @param iEvent event object of element on click
      */
+
     function tableActionRow(elm, data, iEvent) {
         let isAction = $(iEvent.currentTarget).attr('data-action');
         let table_elm = $(elm).parents('table.table');
@@ -834,7 +842,7 @@ $(document).ready(function () {
             ordering: false,
             paginate: false,
             info: false,
-            drawCallback: function (row, data) { // two parameter is row, data is available
+            drawCallback: function (settings) { // two parameter is row, data is available
                 // render icon after table callback
                 feather.replace();
                 // generator index of row
@@ -846,6 +854,27 @@ $(document).ready(function () {
                     $(rows).eq(i).find('td').eq(column).text(i + 1);
                     $(rows).eq(i).attr('data-order', i + 1)
                 });
+                let data = api.rows( {page:'current'} ).data().toArray();
+
+                if (data && data.length){
+                    term_type_list = []
+                    PercentCount = 0;
+                    for (let val of data){
+                        let isValue = val['unit_type'].hasOwnProperty('value') ? val['unit_type'].value : val['unit_type']
+                        if (parseInt(isValue) === 0)
+                            PercentCount += parseInt(val['value'])
+                        term_type_list.push(parseInt(isValue));
+                    }
+                    term_type_list = [...new Set(term_type_list)]
+                }
+                // check if update term list do not have balance option
+                let $addBtn = $('[data-bs-target="#modal-add-table"]')
+                $addBtn.prop('disabled', term_type_list.indexOf(2)!==-1)
+                if (PercentCount === 100) $addBtn.prop('disabled', true)
+                else if (PercentCount > 100)
+                    $.fn.notifyPopup({
+                        description: $('#trans-factory').attr('data-valid-percent')
+                        }, 'failure');
             },
             rowCallback: function (row, data) {
                 // handle onclick btn
@@ -941,12 +970,19 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        $('#modal-add-table form #is_edited').val('true')
                         $('[name="title"]').val(data.title)
                         $('[name="apply_for"]').val(data.apply_for).trigger('change')
                         $('[name="remark"]').val(data.remark)
                         $('[name="payment_terms_id"]').val(data.id)
                         $('#table_terms').DataTable().clear().draw();
                         $('#table_terms').DataTable().rows.add(data.term).draw();
+                        let temp = []
+                        for (let item of data.term){
+                            temp.push(item.unit_type)
+                        }
+                        term_type_list = [...new Set(temp)]
+                         $('[data-bs-target="#modal-add-table"]').prop('disabled', term_type_list.indexOf(2)!==-1)
                     }
                 }
             )
@@ -961,6 +997,7 @@ $(document).ready(function () {
     // button on add term
     $('#modal-add-table button[type=submit]').off().on('click', function () {
         let getIdx = $(this).closest('.modal').attr('data-table-idx');
+        let $modalForm = $('form', $(this).closest('.modal-body'))
         let convertData = {}
         convertData['value'] = $('#modal-add-table [name="value"]').val()
         convertData['unit_type'] = {
@@ -976,10 +1013,52 @@ $(document).ready(function () {
             text: $('#modal-add-table [name="after"] option:selected').text(),
             value: $('#modal-add-table [name="after"]').val()
         }
-        if (!convertData.value || !convertData.day_type || !convertData.unit_type || !convertData.after) {
-            let txtKey = !convertData.value ? 'value' : !convertData.day_type ? 'day_type' : !convertData.unit_type ?
-                'unit_type' : 'after'
-            let errorTxt = $('#trans-factory').data('terms-' + txtKey)
+        // valid if user had wrong setup unit type
+        let validate_unit_type = true;
+        let temp_txt_invalid = {
+            0: $transElm.attr('data-terms-mess-1'),
+            1: $transElm.attr('data-terms-mess-2'),
+            2: $transElm.attr('data-terms-mess-3'),
+        }
+        if (convertData['unit_type'].value === '0'){
+            if (term_type_list.indexOf(1) !== -1){
+                // có 1
+                validate_unit_type = false
+                $modalForm.find('.invalid-feedback').html(temp_txt_invalid[0])
+            }
+        }
+        else if (convertData['unit_type'].value === '1'){
+            if (term_type_list.indexOf(0) !== -1){
+                // có 0
+                validate_unit_type = false
+                $modalForm.find('.invalid-feedback').html(temp_txt_invalid[1])
+            }
+        }
+        else{
+            if (term_type_list.indexOf(2) !== -1 && $('#is_edited').val() !== 'true'){
+                // có 2
+                validate_unit_type = false
+                $modalForm.find('.invalid-feedback').html(temp_txt_invalid[2])
+            }
+        }
+
+        if (!validate_unit_type){
+            $('#modal-add-table [name="unit_type"]').addClass('is-invalid')
+           $modalForm.addClass('was-validate')
+            return false
+        }
+        else{
+            $modalForm.removeClass('was-validate');
+            $('#modal-add-table [name="unit_type"]').removeClass('is-invalid');
+        }
+        // end validate
+
+        if (!convertData.value || !convertData.day_type.value
+            || !convertData.unit_type.value || !convertData.after.value || !convertData.no_of_days) {
+            let txtKey = !convertData.value ? 'value' : !convertData.day_type.value ?
+                'day_type' : !convertData.unit_type.value ? 'unit_type' : !convertData.no_of_days ?
+                    'no_of_days' : 'after';
+            let errorTxt = $transElm.data('terms-' + txtKey)
             $.fn.notifyPopup({description: errorTxt}, 'failure')
             return false
         }

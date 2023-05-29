@@ -18,6 +18,11 @@
     color: #0c0c0c;
 }
 
+.disabled-but-edit:disabled {
+    color: #0c0c0c;
+    background-color: white;
+}
+
 .fa-angle-double-up {
     color: #007D88;
     text-align: center;
@@ -42,4 +47,16 @@ ul.quotation-tabs li.quotation-tab-item {
 a.dropdown-item.table-row-price-option:hover {
     background-color: blue;
     color: white;
+}
+
+.fa-info-circle {
+    color: #298dff;
+}
+
+.fa-gift {
+    color: #e92990;
+}
+
+.fa-shipping-fast {
+    color: #c39749;
 }

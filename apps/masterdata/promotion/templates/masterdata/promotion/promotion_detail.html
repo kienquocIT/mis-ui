@@ -1,0 +1,552 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Workflow create' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Daterangepicker CSS -->
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/masterdata/promotion/css/promotion.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-flush-success btn-animated mr-1 font-5 hidden" type="submit" form="promo_form"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
+            data-bs-placement="top" title="Back" data-bs-original-title="Back"
+            onclick="window.history.go(-1); return false;">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="fas fa-step-backward"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <!-- Form Create -->
+
+    <form id="promo_form" data-url="{% url 'PromotionDetailAPI' data.doc_id %}" data-method="PUT" method="post"
+          novalidate data-url-redirect="{% url 'PromotionList' %}" readonly>
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'Name' %}</label>
+                    <div class="readonly">
+                        <input class="form-control" type="text" name="title" id="title" required
+                               readonly>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
+                <div class="form-group">
+                    <label class="form-label required" for="valid_time">{% trans 'Valid time' %}</label>
+                    <div class="readonly">
+                        <input class="form-control" type="text" name="valid_time" id="valid_time"
+                               placeholder="{% trans 'Select valid date' %}" autocomplete="off"
+                               required readonly>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label" for="remark">{% trans 'Description' %}</label>
+                    <div class="readonly">
+                        <input class="form-control" type="text" name="remark" id="remark" readonly/>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
+                <div class="form-group">
+                    <label class="form-label" for="currency">{% trans 'Currency' %}</label>
+                    <div class="readonly">
+                        <select class="form-control"
+                                name="currency"
+                                id="currency"
+                                data-multiple="false"
+                                data-prefix="currency_list"
+                                data-url="{% url 'CurrencyListAPI' %}"
+                                disabled
+                        ></select>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label class="form-label w-100" for="customer_remark">
+                        <span>{% trans 'Customer' %}</span>
+                        <button type="button" class="float-right btn btn-flush-success btn-animated"
+                                data-bs-target="#customer_modal" data-bs-toggle="modal">
+                            <i class="bi bi-pencil-square mr-1"></i>
+                            {% trans 'Edit' %}
+                        </button>
+                    </label>
+                    <input type="hidden" name="customer_type" id="customer_type" value="0">
+                    <div class="readonly">
+                        <textarea class="form-control" type="text" name="customer_remark"
+                                  id="customer_remark" readonly></textarea>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="form-label">{% trans 'Select method' %}</label>
+            </div>
+            <div class="row row-cols-md-6 mb-2 row-method">
+                <div class="col">
+                    <div class="form-check form-check-lg readonly">
+                        <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount"
+                               disabled>
+                        <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check form-check-lg">
+                        <input type="checkbox" class="form-check-input" name="is_coupons" id="is_coupons" disabled>
+                        <label class="form-check-label" for="is_coupons">{% trans 'Coupons' %}</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check form-check-lg readonly">
+                        <input type="checkbox" class="form-check-input" name="is_gift" id="is_gift" disabled>
+                        <label class="form-check-label" for="is_gift">{% trans 'Gift' %}</label>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-cols-md-6 mb-2 row-tax">
+                <div class="col">
+                    <div class="form-check readonly">
+                            <input type="radio" id="tax_position_01" name="before_after_tax" class="form-check-input"
+                                   required disabled>
+                        <span></span>
+                        <label class="form-check-label" for="tax_position_01">{% trans 'Before Tax' %}</label>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check readonly">
+                        <input type="radio" id="tax_position_02" name="before_after_tax" class="form-check-input"
+                               required disabled>
+                        <span></span>
+                        <label class="form-check-label" for="tax_position_02">{% trans 'After Tax' %}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12 d-md-flex justify-content-start align-items-center mb-3 row-percent">
+                <div class="form-check mr-4 readonly">
+                        <input type="radio" id="percent_01" name="percent_fix_amount" class="form-check-input" required
+                               disabled>
+                    <span></span>
+                    <label class="form-check-label" for="percent_01">{% trans '%' %}</label>
+                </div>
+                <div class="form-check mr-4 readonly">
+                    <div class="readonly">
+                        <input type="radio" id="percent_02" name="percent_fix_amount" class="form-check-input" required
+                               disabled>
+                    </div>
+                    <span></span>
+                    <label class="form-check-label" for="percent_02">{% trans 'Fixed Amount' %}</label>
+                </div>
+                <div class="form-group mb-0 readonly">
+                    <input class="form-control" type="text" name="percent_value"
+                           id="percent_value" placeholder="10%" readonly data-type_percent="">
+                    <input class="form-control mask-money hidden" type="text" name="fix_value"
+                           id="fix_value" data-return-type="number" readonly>
+                    <span></span>
+                </div>
+                <div class="form-group ml-auto mb-0 d-flex align-items-center readonly">
+                    <label for="percent_value" class="mr-4">{% trans 'Max amount' %}</label>
+                    <input class="form-control mask-money" type="text" name="max_percent_value"
+                           data-return-type="number" id="max_percent_value" readonly>
+                    <span></span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6 col-xs-12 mb-2">
+                <div class="form-group d-md-flex align-items-center">
+                    <div class="readonly">
+                        <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
+                               id="use_count" required readonly>
+                        <span></span>
+                    </div>
+                    <label class="mr-4" for="use_count">{% trans 'use  for each customer per' %}</label>
+                    <div class="readonly">
+                        <select name="times_condition" id="times_condition" class="form-select" required disabled>
+                            <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
+                            <option value="1">{% trans 'Valid time' %}</option>
+                            <option value="2">{% trans 'Week' %}</option>
+                            <option value="3">{% trans 'Month' %}</option>
+                        </select>
+                        <span></span>
+                    </div>
+                    <div class="sub-text-max_usages d-flex align-items-center">
+                        <p class="mr-4">{% trans 'Max Usages' %}</p>
+                        <div class="readonly">
+                            <input class="form-control" type="number" min="0" max="999999" name="max_usages"
+                                   id="max_usages" readonly>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="group-select-box col-md-6">
+                <div class="form-check form-check-lg form-check-inline readonly">
+                    <input type="checkbox" class="form-check-input" id="is_on_order" name="is_on_order" disabled>
+                    <label class="form-check-label" for="is_on_order">
+                        {% trans 'Discount on order' %}&nbsp;&nbsp;&nbsp;&nbsp;{% trans 'When' %}</label>
+                    <span></span>
+                </div>
+                <div class="form-check form-check-lg form-check-inline readonly">
+                    <input type="checkbox" class="form-check-input" id="is_minimum" name="is_minimum" disabled>
+                    <label class="form-check-label" for="is_minimum">
+                        {% trans 'Minimum purchase value' %}</label>
+                    <span></span>
+                </div>
+                <div class="form-group d-inline-block readonly">
+                    <input class="form-control mask-money" type="text" name="minimum_value"
+                           id="minimum_value" data-return-type="number" readonly>
+                    <span></span>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row mb-3">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="form-check form-check-lg readonly">
+                            <input type="checkbox" class="form-check-input" id="is_on_product" name="is_on_product"
+                                   disabled>
+                            <span></span>
+                            <label class="form-check-label" for="is_on_product">
+                                {% trans 'Discount on special product' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <div class="input-group readonly">
+                            <div class="input-affix-wrapper">
+                                <div class="dropdown input-prefix">
+                                    <i class="fas fa-info-circle"
+                                       data-bs-toggle="dropdown"
+                                       data-dropdown-animation
+                                       aria-haspopup="true"
+                                       aria-expanded="false"
+                                       disabled
+                                    ></i>
+                                    <div class="dropdown-menu w-210p mt-2">
+                                    </div>
+                                </div>
+                                <select class="form-control dropdown-select_two" disabled
+                                        name="product_selected"
+                                        id="product_selected"
+                                        data-multiple="false"
+                                        data-prefix="product_list"
+                                        data-url="{% url 'ProductListAPI' %}"
+                                        data-link-detail="{% url 'ProductDetail' 1 %}"
+                                        data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                                ></select>
+                            </div>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-md-flex justify-content-end align-items-center">
+                    <div class="form-label mr-4 mb-0">{% trans 'When' %}</div>
+                    <div class="form-check form-check-lg mr-4 readonly">
+                        <input type="checkbox" class="form-check-input" id="is_min_quantity" name="is_min_quantity"
+                               disabled>
+                        <label class="form-check-label" for="is_min_quantity">
+                            {% trans 'Minimum quantity' %}</label>
+                        <span></span>
+                    </div>
+                    <div class="form-group mb-0 readonly">
+                        <input class="form-control" type="text" name="num_minimum"
+                               id="num_minimum" readonly>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-check form-check-lg readonly">
+                            <input type="checkbox" class="form-check-input" id="is_free_shipping" name="free_shipping"
+                                   disabled>
+                            <span></span>
+                            <label class="form-check-label" for="is_free_shipping">
+                                {% trans 'Free shipping' %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="group-gift-box col-md-6 hidden">
+                <div class="row">
+                    <div class="col-md-12 col-xs-6 d-md-flex justify-content-md-evenly align-items-center mb-3">
+                        <div class="form-check w-md-40 readonly">
+                            <input type="checkbox" class="form-check-input" name="is_free_product"
+                                   id="is_free_product" disabled>
+                            <label class="form-check-label" for="is_free_product">
+                                {% trans 'Free product' %}</label>
+                            <span></span>
+                        </div>
+                        <div class="form-group mr-2 mb-0 readonly">
+                            <input class="form-control" type="number" min="1" name="num_product_received"
+                                   id="num_product_received" readonly>
+                            <span></span>
+                        </div>
+                        <div class="input-group w-md-50 readonly">
+                            <div class="input-affix-wrapper">
+                                <div class="dropdown input-prefix">
+                                    <i class="fas fa-info-circle"
+                                       data-bs-toggle="dropdown"
+                                       data-dropdown-animation
+                                       aria-haspopup="true"
+                                       aria-expanded="false"
+                                       disabled
+                                    ></i>
+                                    <div class="dropdown-menu w-210p mt-2">
+                                    </div>
+                                </div>
+                                <select class="form-control dropdown-select_two" disabled
+                                        name="product_received"
+                                        id="product_received"
+                                        data-multiple="false"
+                                        data-prefix="product_list"
+                                        data-url="{% url 'ProductListAPI' %}"
+                                        data-link-detail="{% url 'ProductDetail' 1 %}"
+                                        data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                                ></select>
+                            </div>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="col-md-11 col-xs-12 offset-md-1 offset-xs-0 d-md-flex justify-content-md-end
+                    align-items-center column-gap mb-3">
+                        <div class="form-check d-inline-block readonly">
+                            <input type="checkbox" class="form-check-input" id="is_min_purchase"
+                                   name="is_min_purchase" disabled>
+                            <label class="form-check-label" for="is_min_purchase">
+                                {% trans 'When minimum purchase total value' %}</label>
+                            <span></span>
+                        </div>
+                        <div class="readonly">
+                            <select class="form-select" id="gift_before_after_tax"
+                                    name="gift_before_after_tax" disabled>
+                                <option value="0">{% trans 'Before tax' %}</option>
+                                <option value="1">{% trans 'After tax' %}</option>
+                            </select>
+                            <span></span>
+                        </div>
+                        <div class="readonly">
+                            <input class="form-control mask-money" type="text" name="min_purchase_cost"
+                                   id="min_purchase_cost" data-return-type="number" readonly>
+                            <span></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-11 col-xs-12 offset-md-1 offset-xs-0 d-md-flex justify-content-md-end
+                    align-items-center column-gap">
+                        <div class="form-check d-inline-block readonly">
+                            <input type="checkbox" class="form-check-input" id="is_purchase" name="is_purchase"
+                                   disabled>
+                            <label class="form-check-label" for="is_purchase">
+                                {% trans 'When purchase' %}</label>
+                            <span></span>
+                        </div>
+                        <div class="readonly">
+                            <input class="form-control" type="text" name="purchase_num" id="purchase_num" readonly>
+                            <span></span>
+                        </div>
+                        <div class="w-md-50 input-group readonly">
+                            <div class="input-affix-wrapper">
+                                <div class="dropdown input-prefix">
+                                    <i class="fas fa-info-circle"
+                                       data-bs-toggle="dropdown"
+                                       data-dropdown-animation
+                                       aria-haspopup="true"
+                                       aria-expanded="false"
+                                       disabled
+                                    ></i>
+                                    <div class="dropdown-menu w-210p mt-2">
+                                    </div>
+                                </div>
+                                <select class="form-control dropdown-select_two" id="purchase_product"
+                                        disabled
+                                        name="purchase_product"
+                                        data-multiple="false"
+                                        data-prefix="product_list"
+                                        data-url="{% url 'ProductListAPI' %}"
+                                ></select>
+                            </div>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!--Form create end-->
+    <!-- modal customer --->
+    <div class="modal fade" id="customer_modal" tabindex="-1" role="document" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">{% trans 'Edit customer list' %}</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 col-xs-12">{% trans 'Type' %}</div>
+                        <div class="col-md-8 col-xs-12">
+                            <select class="form-select" name="select_customer_type">
+                                <option value="0">{% trans 'All' %}</option>
+                                <option value="1">{% trans 'Select from list' %}</option>
+                                <option value="2">{% trans 'Edit conditions' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row customer_list hidden">
+                        <div class="col">
+                            <table id="table_customer_list" data-url="{% url 'AccountListAPI' %}" class="table w-100">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input check_all">
+                                        </div>
+                                    </th>
+                                    <th>{% trans 'Customer name' %}</th>
+                                    <th>{% trans 'Code' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="customer_condition hidden">
+                        <div class="cc-content">
+                            <div class="row" data-idx="0">
+                                <div class="col-xs-4 col-md-4 mb-2">
+                                    <select class="form-select cus-property">
+                                        <option value="" selected disabled hidden>{% trans 'Select property' %}</option>
+                                        <option value="0">{% trans 'Group' %}</option>
+                                        <option value="1">{% trans 'Industry' %}</option>
+                                        <option value="2">{% trans 'Size' %}</option>
+                                        <option value="3">{% trans 'Revenue' %}</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-4 col-md-4">
+                                    <select class="form-select cus-operator">
+                                        <option value="" selected disabled hidden>{% trans 'operator' %}</option>
+                                        {% for item in data.cus_operator %}
+                                            <option value="{{ item.value }}">{{ item.text }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xs-4 col-md-4">
+                                    <select class="form-select customer-not-init cus-result">
+                                        <option value="" selected disabled hidden>{% trans 'Select result' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn border-primary text-primary dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"
+                            >{% trans 'Add' %}</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="new-cus-cond">
+                                <a class="dropdown-item click_and" href="#" data-operator="and">{% trans 'And' %}</a>
+                                <a class="dropdown-item click_or" href="#" data-operator="or">{% trans 'Or' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-start align-items-center">
+                    <button type="button" class="btn float-left font-2 border-primary text-primary" id="btn-customer">
+                        <i data-feather="save"></i>
+                    </button>
+                    <button type="button" class="btn font-3 ml-auto border-danger text-danger" data-bs-dismiss="modal">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="template hidden">
+        <div class="t-conditions">
+            <div class="row" data-idx="0">
+                <div class="col-2 col-xs-12 mb-2">
+                    <select class="form-select row-operator">
+                        <option value="and">{% trans 'And' %}</option>
+                        <option value="or">{% trans 'Or' %}</option>
+                    </select>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-xs-4 col-md-4 mb-2">
+                    <select class="form-select cus-property">
+                        <option value="" selected disabled hidden>{% trans 'Select property' %}</option>
+                        <option value="0">{% trans 'Group' %}</option>
+                        <option value="1">{% trans 'Industry' %}</option>
+                        <option value="2">{% trans 'Size' %}</option>
+                        <option value="3">{% trans 'Revenue' %}</option>
+                    </select>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <select class="form-select cus-operator">
+                        <option value="" selected disabled hidden>{% trans 'operator' %}</option>
+                        {% for item in data.cus_operator %}
+                            <option value="{{ item.value }}">{{ item.text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <select class="form-select customer-not-init cus-result">
+                        <option value="" selected disabled hidden>{% trans 'Select result' %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="trans-factory"
+           data-select-result="{% trans 'Select result' %}"
+           data-customer-list="{% trans 'Customer list is missing' %}"
+           data-customer-cond="{% trans 'Customer condition is missing' %}"
+           data-valid-time="{% trans 'Valid time is required' %}"
+           data-percent-invalid="{% trans 'Percent value is required' %}"
+           data-percent-max="{% trans 'Max amount is required' %}"
+           data-fixed-invalid="{% trans 'Fixed amount is required' %}"
+           data-invalid-discount="{% trans 'Discount option is missing' %}"
+           data-invalid-minimum-value="{% trans 'Minimum purchase value is missing' %}"
+           data-invalid-product-selected="{% trans 'Special product is missing' %}"
+           data-invalid-minimum-quantity="{% trans 'Minimum quantity is missing' %}"
+    >
+    <input type="hidden" id="url-factory"
+           data-customer_group="{% url 'AccountGroupListAPI' %}"
+           data-customer_industry="{% url 'IndustryListAPI' %}"
+           data-currency_list="{% url 'CurrencyListAPI' %}"
+    >
+    {{ data.revenue|json_script:'customer_revenue' }}
+    {{ data.company_size|json_script:'customer_com_size' }}
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/masterdata/promotion/js/promotion.js' %}"></script>
+{% endblock %}

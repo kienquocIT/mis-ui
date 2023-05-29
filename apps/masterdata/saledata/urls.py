@@ -1,16 +1,19 @@
 from django.urls import path
 from apps.masterdata.saledata.views.accounts import (
-    ContactMasterDataList, SalutationCreateAPI,InterestCreateAPI,
+    ContactMasterDataList, SalutationCreateAPI, InterestCreateAPI,
     SalutationListAPI, InterestListAPI, AccountMasterDataList,
     IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,
     ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
     ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
-    AccountDetail
+    AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
 )
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
-from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, ExpenseDetailAPI
+from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
+    ExpenseDetailAPI
+from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
+    GoodReceiptDetailAPI, GoodReceiptDetail
 from apps.masterdata.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI,
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
@@ -22,6 +25,11 @@ from apps.masterdata.saledata.views.price import (
     CurrencyDetailAPI, SyncSellingRateWithVCB, PriceList, PriceListAPI, PriceListDetail, PriceDetailAPI,
     UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
     PriceDeleteAPI
+)
+from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
+    ShippingDetailAPI, ShippingCheckListAPI
+from apps.masterdata.saledata.views.warehouse import (
+    WareHouseList, WareHouseListAPI, WareHouseDetailAPI,
 )
 
 urlpatterns = [
@@ -40,6 +48,9 @@ urlpatterns = [
     path('masterdata/account-type/list/api', AccountTypeListAPI.as_view(), name='AccountTypeListAPI'),
     path('masterdata/account-type/create/api', AccountTypeCreateAPI.as_view(), name='AccountTypeCreateAPI'),
     path('masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(), name='AccountTypeDetailAPI'),
+    path('masterdata/account-group/list/api', AccountGroupListAPI.as_view(), name='AccountGroupListAPI'),
+    path('masterdata/account-group/create/api', AccountGroupCreateAPI.as_view(), name='AccountGroupCreateAPI'),
+    path('masterdata/account-group/api/<str:pk>', AccountGroupDetailAPI.as_view(), name='AccountGroupDetailAPI'),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),
     path('contacts/api', ContactListAPI.as_view(), name='ContactListAPI'),
@@ -60,6 +71,7 @@ urlpatterns = [
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
 
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
+    path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
 ] + [
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
@@ -138,4 +150,28 @@ urlpatterns = [
     path('expenses/create', ExpenseCreate.as_view(), name='ExpenseCreate'),
     path('expense/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
     path('expense/api/<str:pk>', ExpenseDetailAPI.as_view(), name='ExpenseDetailAPI'),
+] + [
+    path('shippings', ShippingList.as_view(), name='ShippingList'),
+    path('shippings/create', ShippingCreate.as_view(), name='ShippingCreate'),
+    path('shippings/api', ShippingListAPI.as_view(), name='ShippingListAPI'),
+    path('shipping/<str:pk>', ShippingDetail.as_view(), name='ShippingDetail'),
+    path('shipping/api/<str:pk>', ShippingDetailAPI.as_view(), name='ShippingDetailAPI'),
+    path('shippings-check-api', ShippingCheckListAPI.as_view(), name='ShippingCheckListAPI'),
 ]
+
+# WareHouse
+urlpatterns += [
+    path('warehouses', WareHouseList.as_view(), name='WareHouseList'),
+    path('warehouses/api', WareHouseListAPI.as_view(), name='WareHouseListAPI'),
+    path('warehouse/api/<str:pk>', WareHouseDetailAPI.as_view(), name='WareHouseDetailAPI'),
+]
+# // WareHouse
+# Good receipt
+urlpatterns += [
+    path('good-receipt', GoodReceiptList.as_view(), name='GoodReceiptList'),
+    path('good-receipt/api', GoodReceiptListAPI.as_view(), name='GoodReceiptListAPI'),
+    path('good-receipt/create', GoodReceiptCreate.as_view(), name='GoodReceiptCreate'),
+    path('good-receipt/detail/<str:pk>', GoodReceiptDetail.as_view(), name='GoodReceiptDetail'),
+    path('good-receipt/detail/api/<str:pk>', GoodReceiptDetailAPI.as_view(), name='GoodReceiptDetailAPI'),
+]
+# // WareHouse

@@ -106,12 +106,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
     ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    ACCOUNT_GROUP_LIST = StringUrl('saledata/accountgroups')
+    ACCOUNT_GROUP_DETAIL = StringUrl('saledata/accountgroup/')
     INDUSTRY_DETAIL = StringUrl('saledata/industry/')
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
     ACCOUNT_DETAIL = StringUrl('saledata/account/')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
+    ACCOUNT_SALE_LIST = StringUrl('saledata/accounts-sale')
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
@@ -128,6 +131,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
+
+    # advance payment
+    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/')
 
     # masterdata/price
     TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
@@ -159,9 +166,37 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_DETAIL = StringUrl('quotation')
+    QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')
     DISTRICTS = StringUrl('base/location/districts?city_id=')
     WARDS = StringUrl('base/location/wards?district_id=')
+    BASE_CURRENCY = StringUrl('base/currencies')
+
+    # master-data/ promotion
+    PROMOTION_LIST = StringUrl('promotion/list')
+    PROMOTION_DETAIL = StringUrl('promotion/detail')
+    PROMOTION_CHECK_LIST = StringUrl('promotion/check-list')
+
+    # shipping
+    SHIPPING_LIST = StringUrl('saledata/shippings')
+    SHIPPING_DETAIL = StringUrl('saledata/shipping/{shipping_id}')
+    SHIPPING_CHECK_LIST = StringUrl('saledata/shippings-check')
+
+    # sale order
+    SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_DETAIL = StringUrl('saleorder')
+    SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
+
+    # warehouse
+    WAREHOUSE_LIST = StringUrl('saledata/warehouses')
+    WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
+
+    # shipping unit
+    ITEM_UNIT_LIST = StringUrl('base/item-units')
+
+    # good receipt
+    GOOD_RECEIPT_API = StringUrl('saledata/good-receipt')

@@ -9,13 +9,13 @@
  * + onload={id="", title="name"}
  * @param selectBoxElement: element of select
  *@note
- * select2 on change
+ * +++++++++ select2 on change
  *     selectbox.on("select2:select", function (e) {
  *          let item = e.params.data
  *     });
  *     @variable e.params.data: full data of select store
  *---------------------------------------------------------------------
- * setup select2 with info icon
+ * +++++++++ setup select2 with info icon
  * step 1: append HTML with format follow there code bellow
  * ==> <div class="input-group">
  *         <div class="input-affix-wrapper">
@@ -60,6 +60,8 @@ function initSelectBox(selectBoxElement = null) {
         let default_data = $this.attr('data-onload')
         if (default_data && default_data.length) {
             if (typeof default_data === 'string') {
+                let temp = default_data.replaceAll("'", '"')
+                default_data = temp
                 try {
                     default_data = JSON.parse(default_data)
                 } catch (e) {
@@ -86,7 +88,8 @@ function initSelectBox(selectBoxElement = null) {
                     let query = params
                     query['is_ajax'] = true
                     if ($this.attr('data-params')) {
-                        let data_params = JSON.parse($this.attr('data-params'));
+                        let strParams = $this.attr('data-params').replaceAll("'",'"')
+                        let data_params = JSON.parse(strParams);
                         query = {...query, ...data_params}
                     }
                     return query
@@ -97,11 +100,10 @@ function initSelectBox(selectBoxElement = null) {
                     if (data_original.length) {
                         for (let item of data_original) {
                             let text = 'title';
-                            if ($this.attr('data-format')){
+                            if ($this.attr('data-format'))
                                 text = $this.attr('data-format')
-                            }else{
+                            else
                                 if(item.hasOwnProperty('full_name')) text = 'full_name';
-                            }
                             try{
                                 if (default_data && default_data.hasOwnProperty('id')
                                     && default_data.id === item.id
@@ -133,6 +135,7 @@ function initSelectBox(selectBoxElement = null) {
             options['tags'] = true
             $this.prop('multiple', true)
         }
+        // if ($this.attr('readonly')) options['disabled'] = true
 
         // run select2
         $this.select2(options)
@@ -141,6 +144,11 @@ function initSelectBox(selectBoxElement = null) {
                 $this.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
                 optOnSelected($this, e.params.data)
             })
+            if ($this.attr('data-onload')){
+                let dataOnload = JSON.parse($this.attr('data-onload').replace(/'/g, '"'));
+                $this.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
+                optOnSelected($this, dataOnload)
+            }
         }
     });
 }

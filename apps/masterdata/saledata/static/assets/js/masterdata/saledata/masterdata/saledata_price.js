@@ -236,23 +236,9 @@ $(document).ready(function () {
             }
         }, {
             'data': 'title', render: (data, type, row, meta) => {
-                if (row.is_primary === false) {
-                    if (row.is_default === true) {
-                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                        data-bs-target="#modal-detail-currency" data-id="` + row.id + `" data-default="1">
-                                <span><b>` + row.title + `</b></span>
-                            </a>`
-                    } else {
-                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                        data-bs-target="#modal-detail-currency" data-id="` + row.id + `">
-                                <span><b>` + row.title + `</b></span>
-                            </a>`
-                    }
-                } else {
-                    return `<a>
+                return `<a>
                         <span><b>` + row.title + `</b></span>
                     </a>`
-                }
             }
         }, {
             'data': 'abbreviation', render: (data, type, row, meta) => {
@@ -276,17 +262,11 @@ $(document).ready(function () {
             }
         }, {
             'className': 'action-center', 'render': (data, type, row, meta) => {
-                // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                if (row.is_default) {
-                    if (row.is_default === false) {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt3;
-                    } else {
-                        let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt3;
-                    }
+                if (row.is_default === false) {
+                    let bt3 = `<a data-id="` + row.id + `" class="btn btn-icon btn-flush-dark btn-rounded del-button del-btn-currency" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return bt3;
                 } else {
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     return bt3;
                 }
             }
@@ -379,6 +359,30 @@ $(document).ready(function () {
         },)
     }
 
+    // load Base Currency (Master data)
+    function loadBaseCurrency() {
+        let ele = $('#currency_name');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value=""></option>`)
+                    if (data.hasOwnProperty('base_currencies') && Array.isArray(data.base_currencies)) {
+                        data.base_currencies.map(function (item) {
+                            ele.append(`<option data-currency-title="` + item.title + `" data-currency-code="` + item.code + `" value="` + item.id + `"><b>`+ item.code +`</b> - ` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+    $('#currency_name').on('change', function () {
+        $('#abbreviation-id').val($('#currency_name option:selected').attr('data-currency-code'))
+    })
+    loadBaseCurrency();
     loadCurrency();
     loadTax();
     loadTaxCategory();
@@ -588,6 +592,9 @@ $(document).ready(function () {
             frm.dataForm['rate'] = null;
         }
 
+        frm.dataForm['abbreviation'] = $('#currency_name option:selected').attr('data-currency-code')
+        frm.dataForm['title'] = $('#currency_name option:selected').attr('data-currency-title')
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -661,35 +668,52 @@ $(document).ready(function () {
                 })
     })
 
-//form update currency
-    let form_update_currency = $('#form-update-currency')
-    form_update_currency.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-
-        if (frm.dataForm['rate'] === '') {
-            frm.dataForm['rate'] = null;
-        }
-
-        $.fn.callAjax(url_detail, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $('#modal-detail-currency').hide();
-                    }
-                },
-                (errs) => {
-                }
-            ).then(
-            (resp) => {// reload dataTable after create
-                $('#section-currency').html('');
-                $('#section-currency').append(ele_currency);
-                loadCurrency();
-            })
-    })
+// delete currency
+    $(document).on("click", '.del-btn-currency', function () {
+        Swal.fire({
+            html:
+                '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
+                '<h6 class="text-danger">Delete currency ?</h6>',
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container: 'swal2-has-bg'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.value) {
+                let data_url = $('#form-create-currency').attr('data-url-delete').replace(0, $(this).attr('data-id'))
+                let csr = $("input[name=csrfmiddlewaretoken]").val();
+                $.fn.callAjax(data_url, 'PUT', {}, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1000);
+                            }
+                        },
+                        (errs) => {
+                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                            Swal.fire({
+                                html:
+                                    '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
+                                customClass: {
+                                    content: 'text-center',
+                                    confirmButton: 'btn btn-primary',
+                                },
+                                buttonsStyling: false,
+                            })
+                        })
+            }
+        })
+    });
 
     // sync selling rate from VietComBank
     $(document).on("click", '#sync-from-VCB-button', function () {
@@ -712,7 +736,7 @@ $(document).ready(function () {
                             $('#section-currency').html('');
                             $('#section-currency').append(ele_currency);
                             loadCurrency();
-                        }, 1500);
+                        }, 0);
                     }
                 },
                 (errs) => {
@@ -842,7 +866,7 @@ $(document).ready(function () {
             }
             else if (parseInt(unit) === 1){
                 $add_teams.find('[name="value_amount"]').val(data.value)
-                $add_teams.find('[name="value_amount"]').initInputCurrency(CCurrency.getConfig)
+                $.fn.initMaskMoney2();
                 $add_teams.find('[name="value"]').addClass('hidden')
             }
             $add_teams.find('[name="unit_type"]').val(unit).trigger('change')
@@ -862,6 +886,9 @@ $(document).ready(function () {
             paginate: false,
             info: false,
             drawCallback: function (settings) { // two parameter is row, data is available
+                // reload Init Mask Money
+                $.fn.initMaskMoney2();
+
                 // render icon after table callback
                 feather.replace();
                 // generator index of row
@@ -913,8 +940,7 @@ $(document).ready(function () {
                     render: (row, type, data) => {
                         let textValue = data.value
                         let UnitType = parseInt(data.unit_type.value ? data.unit_type.value : data.unit_type)
-                        if(UnitType === 1) textValue = CCurrency.convertCurrency(textValue)
-                        return `<p>${textValue}</p>`
+                        return `<p><span class="mask-money">${textValue}</span></p>`
                     }
                 },
                 {

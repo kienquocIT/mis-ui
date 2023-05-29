@@ -51,7 +51,7 @@
                     <span class="nav-link-text">{% trans 'Price List' %}</span>
                 </a>
             </li>
-            <li class="nav-item" id="nav2" >
+            <li class="nav-item" id="nav2">
                 <a id="setting-nav" class="nav-link disabled" data-bs-toggle="tab" href="#tab-setting">
                     <span class="nav-link-text">{% trans 'Setting' %}</span>
                 </a>
@@ -192,14 +192,16 @@
                                 <select type="text" class="form-select" name="product" id="select-box-product"
                                         data-method="GET" data-url="{% url "ProductListAPI" %}"
                                         data-url-expense="{% url "ExpenseListAPI" %}"
-                                        data-url-detail="{% url "ProductDetailAPI" pk=0 %}"></select>
+                                        data-url-detail="{% url "ProductDetailAPI" pk=0 %}"
+                                        data-url-detail-expense="{% url "ExpenseDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "UoM Group" %}
                                     <span class="field-required">*</span></label>
-                                <input type="text" class="form-control" id="inp-uom-group" readonly style="color: black; background: None">
+                                <input type="text" class="form-control" id="inp-uom-group" readonly
+                                       style="color: black; background: None">
                             </div>
                         </div>
                         <div class="row">
@@ -208,7 +210,7 @@
                                     <span class="field-required">*</span>
                                 </label>
                                 <select type="text" class="form-select" name="uom" id="select-uom"
-                                data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
+                                        data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                             </div>
                         </div>
                     </div>

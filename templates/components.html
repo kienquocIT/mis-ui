@@ -3,35 +3,31 @@
 {% block cssHeader %}
     <!--CONDITIONS--- css file for component conditions -->
     <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/plugins/form-layout.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block pageContent %}
     {% include 'plugins/condition/condition_component.html' %}
     <div class="row mb-5">
-        <h6>Value of currency round to the nearest value.</h6>
-        <span>Example 1: <b>123.99 round to 124</b> if config have <b>decimal is zero</b>.</span>
-        <span>Example 2: <b>123.99 round to 123.99</b> if config have <b>decimal is two</b>.</span>
-    </div>
-    <div class="row mb-5">
-        <h6>Recommendation: </h6>
-        <span class="badge badge-warning" style="text-align: left">
-            Don't change decimal config and input currency decimal the same with config for display value is correct.
-        </span>
-    </div>
-    <div class="row mb-5">
-        <h6>Test Mask Money with input[type=text].mask-money: </h6>
-        <label class="form-label" for="input-test-mask"></label>
+        <h6>Enter currency number with "." is decimal fraction</h6>
+        <span class="mask-money" data-init-money=4156.789></span>
+        <label for="enterCurrency" class="form-label">Enter number then "Focus Out"</label>
         <input
-                type="text" id="input-test-mask"
-                class="form-control mask-money"
-                value="123.99"
-                data-return-type="number"
+                type="text" class="mb-2 form-control mask-money" value=123456.789 id="enterCurrency"
         />
+        <button class="btn btn-soft-primary mb-2" id="btnReloadMaskMoney">Reload Mask Money</button>
+        <button class="btn btn-soft-primary mb-2" id="btnChangeMaskMoney">Change Mask Money</button>
     </div>
+
+    <hr>
+    <h3>Drag and Drop sample</h3>
     <div class="row mb-5">
-        <h6>Test Mask Money with p.mask-money-value</h6>
-        <label for=""></label>
-        <p class="mask-money-value" data-mask-value="77.89"></p>
+        <div class="col-6">
+            {% include 'extends/form-layouts/design-dnd.html' %}
+        </div>
+        <div class="col-6">
+            {% include 'extends/form-layouts/design-preview.html' %}
+        </div>
     </div>
 
     <div class="row mb-3">
@@ -71,11 +67,25 @@
 
 {% block jsFooter %}
     <!-- Customize JS -->
+    <script>
+        $('#btnReloadMaskMoney').click(function (event) {
+            event.preventDefault();
+            $.fn.initMaskMoney2();
+        });
+        $('#btnChangeMaskMoney').click(function (event) {
+            event.preventDefault();
+            $('#enterCurrency').attr('value', 1234.56);
+            $.fn.initMaskMoney2();
+        });
+    </script>
 
     <!--CONDITIONS--- required js file for component conditions -->
     <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <!--END CONDITIONS -->
+
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/form-layout.js' %}"></script>
 
     <script>
         $('html').on('click', '.btn-showHideLog', function () {

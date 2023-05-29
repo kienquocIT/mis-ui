@@ -81,6 +81,20 @@ class ApplicationPermissionAPI(APIView):
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
 
+class CountryListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.COUNTRIES, user=request.user).get()
+        if resp.state:
+            return {'countries': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
 class CityListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -123,3 +137,31 @@ class WardListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         else:
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class BaseCurrencyListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.BASE_CURRENCY, user=request.user).get()
+        if resp.state:
+            return {'base_currencies': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class BaseItemUnitListAPI(APIView):
+    @mask_view( # noqa
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state:
+            return {'base_item_units': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

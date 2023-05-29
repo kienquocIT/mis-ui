@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
+
     def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None):
         self.title = title
         self.url = url if url else ''
@@ -84,6 +85,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    # Advance
+    ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment list'), 'AdvancePaymentList')
+    ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
+    ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
     # Price
     PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -103,10 +109,30 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Quotation
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
+    QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
+
+    # Shipping
+    SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping list'), 'ShippingList')
+    SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
+    SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Sale order
+    SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
+    SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
+    SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
+
+    # WareHouse
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+
+    # Good receipt
+    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'PromotionList')
+    GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
+    GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
 
 
 class BreadcrumbView:
     """menu vertical item view"""
+
     @staticmethod
     def check_view_name():
         """
@@ -247,6 +273,12 @@ class BreadcrumbView:
     PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
     PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]
 
+    ADVANCE_PAYMENT_LIST_PAGE = [
+        BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE
+    ]
+    ADVANCE_PAYMENT_CREATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_CREATE_PAGE]
+    ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_DETAIL_PAGE]
+
     PRICE_LIST_PAGE = [
         BreadcrumbItem.PRICE_LIST_PAGE
     ]
@@ -273,3 +305,31 @@ class BreadcrumbView:
         BreadcrumbItem.QUOTATION_LIST_PAGE
     ]
     QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_CREATE_PAGE]
+    QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_DETAIL_PAGE]
+
+    # Shipping
+    SHIPPING_LIST_PAGE = [
+        BreadcrumbItem.SHIPPING_LIST_PAGE
+    ]
+    SHIPPING_CREATE_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_CREATE_PAGE]
+    SHIPPING_DETAIL_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_DETAIL_PAGE]
+
+    # Sale order
+    SALE_ORDER_LIST_PAGE = [
+        BreadcrumbItem.SALE_ORDER_LIST_PAGE
+    ]
+    SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_CREATE_PAGE]
+    SALE_ORDER_DETAIL_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_DETAIL_PAGE]
+
+    # Warehouse
+    WAREHOUSE_LIST_PAGE = [
+        BreadcrumbItem.WAREHOUSE_LIST_PAGE
+    ]
+
+    # Good receipt
+    GOOD_RECEIPT_LIST_PAGE = [
+        BreadcrumbItem.GOOD_RECEIPT_LIST_PAGE
+    ]
+
+    GOOD_RECEIPT_CREATE_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_CREATE_PAGE]
+    GOOD_RECEIPT_DETAIL_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_DETAIL_PAGE]

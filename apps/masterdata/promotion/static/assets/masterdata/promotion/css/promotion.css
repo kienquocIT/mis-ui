@@ -9,18 +9,19 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
-
-input[name="percent_value"],
-input[name="gift_purchase_num"]{
-    width: 40px;
+[name="num_product_received"],
+input[name="purchase_num"],
+input[name="use_count"]{
+    width: 50px;
     text-align: center;
 }
 
-label[for="form-create-customer_per"] {
+label[for="percent_value"],
+label[for="use_count"] {
     width: auto;
 }
 
-select[name="customer_per"],
+select[name="times_condition"],
 input[name="max_usages"] {
     width: 100px;
 }
@@ -30,26 +31,18 @@ input[name="max_usages"] {
     margin-left: auto;
 }
 
-input[name="fixed_amount_value"],
-select[name="gift_minimum_tax"],
-input[name="gift_minimum_cost"]{
+input[name="fix_value"],
+input[name="percent_value"],
+select[name="gift_before_after_tax"]{
     width: 140px;
 }
-
-input[name="max_amount"],
-input[name="discount_special_quantity_value"]{
-    width: 180px;
-}
-
-input[name="discount_order_opt_value"] {
-    width: 180px;
-    max-width: 280px;
+input[name="min_purchase_cost"]{
+    width: 190px;
 }
 
 #customer_modal .modal-body {
     min-height: 350px;
 }
-
 #customer_modal .modal-body{
     max-height: 450px;
     overflow-y: scroll;
@@ -57,3 +50,4 @@ input[name="discount_order_opt_value"] {
 .column-gap{
     column-gap: 10px;
 }
+label[for="percent_value"]{white-space: nowrap}

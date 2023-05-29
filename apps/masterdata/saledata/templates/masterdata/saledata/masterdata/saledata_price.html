@@ -8,6 +8,7 @@
             rel="stylesheet"
             type="text/css"
     />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
@@ -234,6 +235,7 @@
 
     <!-- Modal Create Currency -->
     <form id="form-create-currency" data-method="POST"
+          data-url-delete = {% url 'CurrencyDetailAPI' '0' %}
           data-url="{% url "CurrencyListAPI" %}">
         {% csrf_token %}
         <div class="modal fade" id="modal-section-currency" tabindex="-1" role="dialog"
@@ -250,34 +252,32 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}<span
-                                        class="field-required">*</span></label>
-                                <input class="form-control" type="text" name="title"
-                                       placeholder="VIETNAM DONG">
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <select class="form-control" id="currency_name" name="currency"
+                                        data-url="{% url "BaseCurrencyListAPI" %}" data-method="GET">
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Abbreviation" %}<span
-                                        class="field-required">*</span></label>
-                                <input class="form-control" type="text" name="abbreviation"
-                                       oninput="this.value=this.value.toUpperCase()"
-                                       placeholder="VND">
+                                <label class="form-label required">{% trans "Abbreviation" %}</label>
+                                <input class="form-control" type="text" id="abbreviation-id" name="abbreviation" readonly
+                                       style="border: none"
+                                       oninput="this.value=this.value.toUpperCase()">
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Rate" %}<span
-                                        class="field-required">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text" style="border: None">
-                                        <span>{% trans 'To' %}</span>&nbsp;
-                                        <span class="badge badge-soft-red badge-pill badge-outline abbreviation-primary"></span>&nbsp;
-                                        <span>{% trans 'selling exchange rate' %}</span>
-                                    </span>
-                                    <input class="form-control" type="number" min="0" step="0.01" name="rate"
-                                           style="border-radius: 0.375rem;"
-                                           placeholder="Input rate number">
-                                </div>
-                            </div>
+{#                            <div class="form-group">#}
+{#                                <label class="form-label">{% trans "Rate" %}<span#}
+{#                                        class="field-required">*</span></label>#}
+{#                                <div class="input-group">#}
+{#                                    <span class="input-group-text" style="border: None">#}
+{#                                        <span>{% trans 'To' %}</span>&nbsp;#}
+{#                                        <span class="badge badge-soft-red badge-pill badge-outline abbreviation-primary"></span>&nbsp;#}
+{#                                        <span>{% trans 'selling exchange rate' %}</span>#}
+{#                                    </span>#}
+{#                                    <input class="form-control" type="number" min="0" step="0.01" name="rate"#}
+{#                                           style="border-radius: 0.375rem;"#}
+{#                                           placeholder="Input rate number">#}
+{#                                </div>#}
+{#                            </div>#}
                         </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save</button>
@@ -645,5 +645,6 @@
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_price.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 {% endblock %}
 

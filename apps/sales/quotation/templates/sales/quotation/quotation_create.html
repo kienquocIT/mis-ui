@@ -47,38 +47,10 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
-{#                        <div class="row">#}
-{#                            <div class="col-6">#}
-{#                                <div class="form-group">#}
-{#                                    <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>#}
-{#                                    <input#}
-{#                                            type="text" class="form-control"#}
-{#                                            placeholder="input title"#}
-{#                                            name="title"#}
-{#                                            id="quotation-create-title"#}
-{#                                            required#}
-{#                                    >#}
-{#                                    <span class="form-text text-muted">{% trans 'title of quotation' %}</span>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="col-6">#}
-{#                                <div class="form-group">#}
-{#                                    <label class="form-label">{% trans 'Code' %}</label>#}
-{#                                    <input#}
-{#                                            type="text" class="form-control"#}
-{#                                            placeholder="auto generate"#}
-{#                                            name="code"#}
-{#                                            id="quotation-create-code"#}
-{#                                            disabled#}
-{#                                    >#}
-{#                                    <span class="form-text text-muted">{% trans 'code of quotation' %}</span>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Title' %}<span class="field-required">(*)</span></label>
+                                    <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
                                     <input
                                             type="text" class="form-control"
                                             placeholder="input title"
@@ -117,7 +89,7 @@
                                     <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Customer' %}<span class="field-required">(*)</span></label>
+                                    <label class="form-label">{% trans 'Select Customer' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -136,7 +108,7 @@
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountListAPI" %}"
+                                                    data-url="{% url "AccountForSaleListAPI" %}"
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
@@ -208,7 +180,7 @@
                                     <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Sale Person' %}</label>
+                                    <label class="form-label">{% trans 'Select Sale Person' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -231,13 +203,14 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="sale_person"
+                                                required
                                             ></select>
                                         </span>
                                     </div>
                                     <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Payment Terms' %}</label>
+                                    <label class="form-label">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -260,10 +233,11 @@
                                                     data-link-detail=""
                                                     data-method="GET"
                                                     name="payment_term"
+                                                    required
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Payment terms quotation term' %}</span>
+                                    <span class="form-text text-muted">{% trans 'Payment term of quotation' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -284,7 +258,7 @@
                     <div class="row">
                         <div class="row">
                             <div class="col-7">
-                                <ul class="nav nav-light nav-pills" id="quotation-tabs">
+                                <ul class="nav nav-light nav-tabs" id="quotation-tabs">
                                     <li class="nav-item">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_3">
                                             <span class="nav-link-text">{% trans 'Line Detail' %}</span>
@@ -310,22 +284,21 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-2">
-                                        <button type="button" class="btn btn-soft-primary">Print</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Print' %}</button>
                                     </div>
                                     <div class="col-3">
-                                        <button type="button" class="btn btn-soft-primary">Send Email</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
                                     </div>
                                     <div class="col-4">
-                                        <button type="button" class="btn btn-soft-primary">Customer Confirm</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Customer Confirm' %}</button>
                                     </div>
                                     <div class="col-3">
-                                        <button type="button" class="btn btn-soft-primary">Create Order</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="tab-content">
+                        <div class="tab-content" id="tab-content-quotation-product">
                             <div class="tab-pane fade show active" id="tab_block_3">
                                 <div class="row">
                                     <table
@@ -335,11 +308,11 @@
                                         <thead>
                                         <tr>
                                             <th>STT</th>
-                                            <th>{% trans 'Product' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Product' %}<span class="required"></span></th>
                                             <th>{% trans 'Description' %}</th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Quantity' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Unit Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
+                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                            <th>{% trans 'Unit Price' %}<span class="required"></span></th>
                                             <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
@@ -352,15 +325,70 @@
                                     <div class="row">
                                         <div class="col-2">
                                             <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create">
-                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>{% trans 'Add product' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-7"></div>
-                                    <div class="col-5">
+                                    <div class="col-7">
+                                        <div class="row mt-8">
+                                            <div class="col-4">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-gradient-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#shippingFeeModalCenter"
+                                                    id="btn-add-shipping"
+                                                    disabled
+                                            >{% trans 'Add Shipping Fee' %}</button>
+                                            <div
+                                                    class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
+                                                    role="dialog" aria-labelledby="shippingFeeModalCenter"
+                                                    aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">{% trans 'Shipping' %}</h5>
+                                                            <button
+                                                                    type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"
+                                                            >
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table
+                                                                    id="datable-quotation-create-shipping"
+                                                                    class="table nowrap w-100 mb-5"
+                                                            >
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>STT</th>
+                                                                    <th>{% trans 'Title' %}</th>
+                                                                    <th>{% trans 'Actions' %}</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button
+                                                                    type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal"
+                                                            >{% trans 'Close' %}</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            <div class="col-8"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-5" id="quotation-tab-product-totals">
                                         <div class="row mb-2">
                                             <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-3"></div>
@@ -373,6 +401,13 @@
                                                     name="total_product_pretax_amount"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-product-pretax-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -381,7 +416,7 @@
                                                 <div class="row">
                                                     <div class="input-group">
                                                         <span class="input-affix-wrapper">
-                                                            <input type="text" class="form-control" id="quotation-create-product-discount">
+                                                            <input type="text" class="form-control validated-number" id="quotation-create-product-discount">
                                                             <span class="input-suffix">%</span>
                                                         </span>
                                                     </div>
@@ -396,6 +431,13 @@
                                                     name="total_product_discount"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-product-discount-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -409,6 +451,13 @@
                                                     data-return-type="number"
                                                     name="total_product_tax"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-product-taxes-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -425,6 +474,13 @@
                                                     name="total_product"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-product-total-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -433,6 +489,7 @@
                                                     class="btn btn-gradient-primary"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
+                                                    id="btn-check-promotion"
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
@@ -471,8 +528,6 @@
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
                                                             >Close
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary">Save changes
                                                             </button>
                                                         </div>
                                                     </div>
@@ -564,7 +619,7 @@
                                             <th>{% trans 'Product' %}</th>
                                             <th>{% trans 'Unit Of Measure' %}</th>
                                             <th>{% trans 'Quantity' %}</th>
-                                            <th>{% trans 'Cost Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Cost Price' %}<span class="required"></span></th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th>{% trans 'Actions' %}</th>
@@ -577,7 +632,7 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-7"></div>
-                                    <div class="col-5">
+                                    <div class="col-5" id="quotation-tab-cost-totals">
                                         <div class="row mb-2">
                                             <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-3"></div>
@@ -589,6 +644,13 @@
                                                     data-return-type="number"
                                                     name="total_cost_pretax_amount"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-cost-pretax-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -603,6 +665,13 @@
                                                     data-return-type="number"
                                                     name="total_cost_tax"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-cost-taxes-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -619,6 +688,13 @@
                                                     name="total_cost"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-cost-total-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -633,10 +709,10 @@
                                         <thead>
                                         <tr>
                                             <th>STT</th>
-                                            <th>{% trans 'Expense' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Quantity' %}<span class="field-required">(*)</span></th>
-                                            <th>{% trans 'Expense Price' %}<span class="field-required">(*)</span></th>
+                                            <th>{% trans 'Expense' %}<span class="required"></span></th>
+                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
+                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                            <th>{% trans 'Expense Price' %}<span class="required"></span></th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th>{% trans 'Actions' %}</th>
@@ -656,7 +732,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-7"></div>
-                                    <div class="col-5">
+                                    <div class="col-5" id="quotation-tab-expense-totals">
                                         <div class="row mb-2">
                                             <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-3"></div>
@@ -668,6 +744,13 @@
                                                     data-return-type="number"
                                                     name="total_expense_pretax_amount"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-expense-pretax-amount-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -683,6 +766,13 @@
                                                     name="total_expense_tax"
                                                     disabled
                                                 >
+                                                <input
+                                                    id="quotation-create-expense-taxes-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
+                                                >
                                             </div>
                                         </div>
                                         <hr class="quotation-horizon">
@@ -697,6 +787,13 @@
                                                     data-return-type="number"
                                                     name="total_expense"
                                                     disabled
+                                                >
+                                                <input
+                                                    id="quotation-create-expense-total-raw"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="0"
+                                                    hidden
                                                 >
                                             </div>
                                         </div>
@@ -714,6 +811,9 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-expense"
+                                data-url="{% url "ExpenseListAPI" %}"
+                                data-link-detail="{% url "ExpenseDetail" 1 %}"
+                                data-method="GET"
                         >
                         <input
                                 type="hidden"
@@ -731,6 +831,33 @@
                                 type="hidden"
                                 id="data-init-quotation-create-request-employee-id"
                                 value="{{ data.data.employee_current_id }}"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-company-currency-config"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-quotation"
+                                value="[]"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-promotion"
+                                data-url="{% url "PromotionCheckListAPI" %}"
+                                data-link-detail="{% url "PromotionDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-shipping"
+                                data-url="{% url "ShippingCheckListAPI" %}"
+                                data-link-detail="{% url "ShippingDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="customer-price-list"
                         >
                     </div>
                 </div>
@@ -758,6 +885,7 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 {% endblock %}

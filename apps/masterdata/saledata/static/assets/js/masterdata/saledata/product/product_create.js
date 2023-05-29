@@ -16,6 +16,11 @@ $(document).ready(function () {
     $('#check-tab-inventory').change(function () {
         disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');
+        if (this.checked) {
+            $('.dimensionControl').show();
+        } else {
+            $('.dimensionControl').hide();
+        }
     });
 
     $('#check-tab-sale').change(function () {
@@ -101,7 +106,10 @@ $(document).ready(function () {
     function getTreePriceList(dataTree, parent_id, child) {
         for (let i = 0; i < dataTree.length; i++) {
             if (dataTree[i].item.id === parent_id) {
-                dataTree[i].child.push({'item': child, 'child': []})
+                dataTree[i].child.push({
+                    'item': child,
+                    'child': []
+                })
             } else {
                 if (dataTree[i].child.length === 0)
                     continue;
@@ -222,7 +230,10 @@ $(document).ready(function () {
                             data.price_list.map(function (item) {
                                 if (item.price_list_type.value === 0) {
                                     if (item.price_list_mapped === null) {
-                                        dataTree.push({'item': item, 'child': []})
+                                        dataTree.push({
+                                            'item': item,
+                                            'child': []
+                                        })
                                     } else {
                                         dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
                                     }
@@ -336,7 +347,7 @@ $(document).ready(function () {
                     price_list.push(
                         {
                             'price_list_id': $(this).attr('data-id'),
-                            'price_value': null,
+                            'price_value': 0,
                             'is_auto_update': is_auto_update,
                         }
                     )
@@ -356,6 +367,37 @@ $(document).ready(function () {
                 frm.dataForm['price_list'] = null;
                 frm.dataForm['sale_information']['currency_using'] = null;
             }
+            frm.dataForm['sale_information']['measure'] = [];
+            frm.dataForm['sale_information']['length'] = null;
+            frm.dataForm['sale_information']['width'] = null;
+            frm.dataForm['sale_information']['height'] = null;
+            if ($('#check-tab-inventory').is(':checked') === true) {
+                let inpLength = $('[name="length"]');
+                let inpWidth = $('[name="width"]');
+                let inpHeight = $('[name="height"]');
+
+                frm.dataForm['sale_information']['length'] = inpLength.val() !== '' ? parseFloat(inpLength.val()) : null;
+                frm.dataForm['sale_information']['width'] = inpWidth.val() !== '' ? parseFloat(inpWidth.val()) : null;
+                frm.dataForm['sale_information']['height'] = inpHeight.val() !== '' ? parseFloat(inpHeight.val()) : null;
+
+                let measurementList = []
+
+                let inpVolume = $('[name="volume"]');
+                let inpWeight = $('[name="weight"]');
+                if (inpVolume.val() !== '') {
+                    measurementList.push({
+                        'unit': inpVolume.attr('data-id'),
+                        'value': parseFloat(inpVolume.val())
+                    })
+                }
+                if (inpWeight.val() !== '') {
+                    measurementList.push({
+                        'unit': inpWeight.attr('data-id'),
+                        'value': parseFloat(inpWeight.val())
+                    })
+                }
+                frm.dataForm['sale_information']['measure'] = measurementList;
+            }
         } else {
             delete frm.dataForm['sale_information']
         }
@@ -370,7 +412,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })
@@ -410,9 +452,49 @@ $(document).ready(function () {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
                 if (document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value !== '') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
                 }
             }
         }
     })
+
+    const inpDimensionEle = $('.inpDimension')
+    const inpVolumeEle = $('input[name="volume"]');
+    inpDimensionEle.on('change', function () {
+        let dimensions = $('.inpDimension').map(function () {
+            return $(this).val();
+        }).get();
+
+        let volume = dimensions.reduce(function (a, b) {
+            return (a * b).toFixed(2);
+        }, 1);
+
+        if(volume === (0).toFixed(2)){
+            inpVolumeEle.val('');
+        }
+        else{
+            inpVolumeEle.val(volume);
+        }
+    });
+
+    const item_unit_list = JSON.parse($('#id-unit-list').text());
+    const item_unit_dict = item_unit_list.reduce((obj, item) => {
+        obj[item.title] = item;
+        return obj;
+    }, {});
+
+    function loadBaseItemUnit() {
+        let eleVolume = $('#divVolume');
+        let eleWeight = $('#divWeight');
+
+        eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
+        eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
+        eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
+        eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
+    }
+
+    loadBaseItemUnit()
 })

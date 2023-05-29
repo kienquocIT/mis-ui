@@ -114,7 +114,8 @@ var jampack = function () {
     $(document).on('click', '.selectable-dropdown .dropdown-menu .dropdown-item', function (e) {
         var selText = $(this).text(), selbg = $(this).attr('data-color');
         $(this).parents('.selectable-dropdown').find('.dropdown-toggle').css({
-            "border-color": selbg, "background": selbg
+            "border-color": selbg,
+            "background": selbg
         }).html(selText);
     });
     $(document).on('click', '.selectable-split-dropdown .dropdown-menu .dropdown-item', function (e) {
@@ -144,7 +145,9 @@ var jampack = function () {
             $(this).prop('Counter', 0).animate({
                 Counter: $(this).find('span').text()
             }, {
-                duration: delay, easing: 'swing', step: function (now) {
+                duration: delay,
+                easing: 'swing',
+                step: function (now) {
                     $(this).find('span').text(Math.ceil(now) + '%');
                 }
             });
@@ -203,7 +206,8 @@ var jampack = function () {
     var counterAnim = $('.counter-anim');
     if (counterAnim.length > 0) {
         counterAnim.counterUp({
-            delay: 10, time: 1000
+            delay: 10,
+            time: 1000
         });
     }
 
@@ -291,7 +295,10 @@ var jampack = function () {
         } else if ($(this).attr('data-drawer') == "push-wth-nav") {
             if ($(targetDrawer).hasClass('drawer-left')) $wrapper.addClass('hk-drawer-push hk-drawer-wth-nav-push hk-drawer-pushleft'); else $wrapper.addClass('hk-drawer-push hk-drawer-wth-nav-push hk-drawer-pushright');
         } else if ($(this).attr('data-drawer') == "overlay") {
-            $(targetDrawer).css({"border": "none", "box-shadow": "0 8px 32px rgba(0, 0, 0, 0.1)"});
+            $(targetDrawer).css({
+                "border": "none",
+                "box-shadow": "0 8px 32px rgba(0, 0, 0, 0.1)"
+            });
             if ($(this).attr('data-backdrop') == "active") $wrapper.append('<div class="hk-drawer-backdrop"></div>');
         }
         $(targetDrawer).addClass('drawer-toggle');
@@ -527,7 +534,10 @@ var chatApp = function () {
     /*Demo ChatApp*/
     if ($('.chatapp-wrap #chat_body').length > 0) {
         var demoScroll = document.querySelector('#chat_body .simplebar-content-wrapper');
-        demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+        demoScroll.scrollTo({
+            top: 100000,
+            behavior: "smooth"
+        });
         $(document).on('click', '.chat-contacts-list > .list-group-item > div.media', function (e) {
             $('.chat-contacts-list > .list-group-item > div.media').removeClass('active-user');
             $(this).addClass('read-chat active-user').find('.badge-pill').remove();
@@ -550,10 +560,16 @@ var chatApp = function () {
                 $('.chat-body .start-conversation').remove();
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + $(this).val() + '</p><span class="chat-time">7:57 PM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat  ul.list-unstyled");
                 $(this).val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('<li class="media received"><div class="avatar avatar-xs"><img src="' + $('.chat-header .avatar img').attr('src') + '" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat .chat-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else if (e.which == 13) {
                 alert('Please type somthing!');
@@ -566,10 +582,16 @@ var chatApp = function () {
                 $('.chat-body .start-conversation').remove();
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + targetInput.val() + '</p><span class="chat-time">7:57 PM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat  ul.list-unstyled");
                 targetInput.val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('<li class="media received"><div class="avatar avatar-xs"><img src="' + $('.chat-header .avatar img').attr('src') + '" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span></div><div class="msg-action"><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-right"><polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path></svg></span></span></a><a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item ml-0" href="#">Forward</a><a class="dropdown-item ml-0" href="#">Copy</a></div></div></div></div></div></li>').appendTo(".chatapp-single-chat .chat-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else {
                 alert('Please type somthing!');
@@ -603,23 +625,35 @@ var chatApp = function () {
     /*ChatPopup*/
     if ($('.hk-chat-popup .chat-popup-body').length > 0) {
         var demoScroll = document.querySelector('.chat-popup-body .simplebar-content-wrapper');
-        demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+        demoScroll.scrollTo({
+            top: 100000,
+            behavior: "smooth"
+        });
         $(document).on("click", ".btn-popup-open", function (e) {
             $(this).addClass('d-none');
             $('.chat-popover').fadeOut('fast');
             $('.hk-chat-popup').addClass('d-flex');
-            demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+            demoScroll.scrollTo({
+                top: 100000,
+                behavior: "smooth"
+            });
             return false;
         });
         $(document).on("keypress", "#input_msg_chat_popup", function (e) {
             if ((e.which == 13) && (!$(this).val().length == 0)) {
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + $(this).val() + '</p> <span class="chat-time">7:57 PM</span><div class="msg-action"><a href="#" class="btn btn-sm btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Reply</a><a class="dropdown-item" href="#">Forward</a><a class="dropdown-item" href="#">Copy</a></div></div></div></div></div></div></li>').appendTo(".hk-chat-popup  ul.list-unstyled");
                 $(this).val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('.typing-wrap').remove();
                     $('<li class="media received"><div class="avatar avatar-xs"> <img src="" alt="user" class="avatar-img rounded-circle"></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p><span class="chat-time">10:55 AM</span><div class="msg-action"><a href="#" class="btn btn-sm btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></span></span></a><div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Reply</a><a class="dropdown-item" href="#">Forward</a><a class="dropdown-item" href="#">Copy</a></div></div></div></div></div></div></li>').appendTo(".hk-chat-popup .chat-popup-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else if (e.which == 13) {
                 alert('Please type somthing!');
@@ -654,12 +688,18 @@ var chatApp = function () {
     /*ChatBot*/
     if ($('.hk-chatbot-popup .chatbot-popup-body').length > 0) {
         var demoScroll = document.querySelector('.chatbot-popup-body .simplebar-content-wrapper');
-        demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+        demoScroll.scrollTo({
+            top: 100000,
+            behavior: "smooth"
+        });
         $(document).on("click", ".btn-popup-open", function (e) {
             $(this).addClass('btn-popup-close').removeClass('btn-popup-open');
             $('.chat-popover').fadeOut('fast');
             $('.hk-chatbot-popup').addClass('d-md-block d-flex');
-            demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+            demoScroll.scrollTo({
+                top: 100000,
+                behavior: "smooth"
+            });
             return false;
         });
         $(document).on("click", ".btn-popup-close", function (e) {
@@ -676,11 +716,17 @@ var chatApp = function () {
             if ((e.which == 13) && (!$(this).val().length == 0)) {
                 $('<li class="media sent"><div class="media-body"><div class="msg-box"><div><p>' + $(this).val() + '</p> </div></div></div></li>').appendTo(".hk-chatbot-popup  ul.list-unstyled");
                 $(this).val('');
-                demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                demoScroll.scrollTo({
+                    top: 100000,
+                    behavior: "smooth"
+                });
                 setTimeout(function () {
                     $('.typing-wrap').remove();
                     $('<li class="media received"><div class="avatar avatar-xs avatar-soft-primary avatar-icon avatar-rounded"><span class="initial-wrap"><i class="ri-customer-service-2-line"></i></span></div><div class="media-body"><div class="msg-box"><div><p>What are you saying?</p></div></div></div></li>').appendTo(".hk-chatbot-popup .chatbot-popup-body ul.list-unstyled");
-                    demoScroll.scrollTo({top: 100000, behavior: "smooth"});
+                    demoScroll.scrollTo({
+                        top: 100000,
+                        behavior: "smooth"
+                    });
                 }, 1000);
             } else if (e.which == 13) {
                 alert('Please type somthing!');
@@ -942,7 +988,11 @@ $('.advance-list li .dropdown').on('hide.bs.dropdown', function () {
 /***** Scroll function Start *****/
 if ($('[data-scroll]').length > 0) {
     smoothScroll.init({
-        speed: 100, easing: 'easeInOutCubic', offset: 80, updateURL: false, callbackBefore: function (toggle, anchor) {
+        speed: 100,
+        easing: 'easeInOutCubic',
+        offset: 80,
+        updateURL: false,
+        callbackBefore: function (toggle, anchor) {
         },
     });
 }
@@ -1012,6 +1062,9 @@ $(document).ready(function () {
             location.href = url;
         }
     });
+
+    // init dblclick form field to edit
+    $.fn.formDetailToUpdateAction();
 });
 
 
@@ -1040,25 +1093,30 @@ $.fn.extend({
         }).join("");
     },
     DataTableDefault: function (opts, rowIdx = true) {
+        let reloadCurrency = opts?.['reloadCurrency'];
+        if (reloadCurrency !== undefined) {
+            delete opts['reloadCurrency'];
+        }
         let defaultConfig = {
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
             ordering: false,
             paginate: true,
             pageLength: 10,
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
-                "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
-                "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
             language: {
                 url: $('#msg-datatable-language-config').text().trim(),
             },
             drawCallback: function () {
                 feather.replace();
+                if (reloadCurrency === true) {
+                    // reload all currency
+                    $.fn.initMaskMoney2();
+                }
             },
-            data: [],
-            ...opts
+            data: [], ...opts
         }
-        if (opts.ajax) delete defaultConfig['data'];
+        if (opts?.['ajax']) delete defaultConfig['data'];
         if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
         let tbl = $(this).DataTable(defaultConfig);
         tbl.on('init.dt', function () {
@@ -1131,8 +1189,11 @@ $.fn.extend({
         }
         let alert_config = {
             animate: {
-                enter: 'animated bounceInDown', exit: 'animated bounceOutUp'
-            }, type: "dismissible alert-primary",
+                enter: 'animated bounceInDown',
+                exit: 'animated bounceOutUp'
+            },
+            type: "dismissible alert-primary",
+            z_index: 2147483647, /* Maximum index */
         }
         if (typeAlert === 'success') {
             alert_config['type'] = "dismissible alert-success";
@@ -1165,7 +1226,10 @@ $.fn.extend({
         if (errs && typeof errs === 'object') {
             let errors_converted = jQuery.fn.cleanDataNotify(errs);
             Object.keys(errors_converted).map((key) => {
-                jQuery.fn.notifyB({'title': key, 'description': errors_converted[key]}, 'failure');
+                jQuery.fn.notifyB({
+                    'title': key,
+                    'description': errors_converted[key]
+                }, 'failure');
             });
         }
     },
@@ -1189,14 +1253,20 @@ $.fn.extend({
     },
     getCompanyCurrencyConfig: async function () {
         let data = await $.fn.getCompanyConfig();
-        return data['config']['currency_rule'];
+        return data['config']?.['currency_rule'];
     },
 
     // FORM handler
     serializerObject: function (formSelected) {
-        return formSelected.serializeArray().reduce((o, kv) => ({...o, [kv.name]: kv.value}), {});
+        return formSelected.serializeArray().reduce((o, kv) => ({
+            ...o,
+            [kv.name]: kv.value
+        }), {});
     },
-    formSubmit: function (formElement, notify = {'success': true, 'failure': true}, enableRedirect = true,) {
+    formSubmit: function (formElement, notify = {
+        'success': true,
+        'failure': true
+    }, enableRedirect = true,) {
         return new Promise(function (resolve, reject) {
             let frm = new SetupFormSubmit($(formElement));
             if (frm.dataUrl && frm.dataMethod) {
@@ -1215,58 +1285,64 @@ $.fn.extend({
             } else throw 'Setup call raise exception with URL or method is incorrect.!';
         });
     },
-    regexCurrency: (precision, decimal) => {
-        if (precision > 0 && decimal) return new RegExp(`[^\\d${decimal}]`, 'g');
-        return new RegExp(`\\D`, 'g');
-    },
-    initInputCurrency: function (configData) {
-        return this.attr(
-            'data-precision', configData.precision
-        ).attr(
-            'data-decimal', configData.decimal
-        ).maskMoney({
-            prefix: configData.prefix,
-            suffix: configData.suffix,
-            affixesStay: configData.affixesStay,
-            thousands: configData.thousands,
-            decimal: configData.decimal,
-            precision: configData.precision,
-            allowZero: configData.allowZero,
-            allowNegative: configData.allowNegative,
-        }).maskMoney('mask', parseFloat(this.val()));
-    },
-    valCurrency: function () {
-        let precision = this.attr('data-precision');
-        let decimal = this.attr('data-decimal');
-        let realValue = $.fn.val.apply(this, arguments);
-        let reg = $.fn.regexCurrency(precision, decimal);
-        let replaceValue = realValue.replace(reg, "");
-        let result = replaceValue.replace(decimal, ".");
-        if (realValue[0] === '-') result = '-' + result;
+    formDetailToUpdateAction: function () {
+        let $DetailForm = $('form[readonly]');
+        if ($DetailForm) {
+            $('.readonly > * + span').on('click', function () {
+                // for input/select
+                $('[readonly]', $(this).parent('.readonly')).attr('readonly', false);
+                $('input[disabled]', $(this).parent('.readonly')).attr('disabled', false);
+                // for radio/checkbox
+                $('[type="checkbox"][disabled], [type="radio"][disabled]', $(this).parent('.readonly'))
+                    .attr('disabled', false);
+                // for select2 with icon info
+                $('[disabled]', $(this).closest('.input-group.readonly')).attr('disabled', false);
+                // for select2 with icon info
+                $('select[disabled]', $(this).parent('.readonly')).attr('disabled', false);
+                // for table
+                $(`[data-table-readonly="${$(this).parent('.readonly').find('table').attr('id')}"]`).attr('disabled', false)
+                $('.table-readonly', $(this).parent('.readonly')).removeClass('.readonly.table-readonly');
 
-        let returnType = this.attr('data-return-type') ? this.attr('data-return-type') : 'text';
-        switch (returnType) {
-            case 'text':
-                return result;
-            case 'number':
-                return Number(result);
+                // final delete class readonly
+                $(`button[form="${$DetailForm.attr('id')}"]`).removeClass('hidden')
+                $(this).parent('.readonly').removeClass('readonly');
+            });
         }
-        throw Error("The money must be return type text or number, don't support: " + returnType);
     },
-    parseCurrencyDisplay: function (configData) {
-        let eleInput = $('<input>', {
-            "type": 'text',
-            "class": "mask-money",
-            "value": this.attr('data-mask-value'),
-        });
-        eleInput.initInputCurrency(configData);
-        this.attr(
-            'data-precision', eleInput.attr('precision')
-        ).attr(
-            'data-decimal', eleInput.attr('decimal')
-        ).attr(
-            'data-money-pared', eleInput.val()
-        ).text(eleInput.val());
+
+    // CURRENCY handler
+    valCurrency: function (returnType = null) { // returnType choice in ['string', 'number']
+        if (!returnType) returnType = $(this).attr('data-return-type');
+        let result = $(this).attr('value'); // don't change attr('value') to .val() !!!!
+        if (!result) result = '0';
+        switch (returnType) {
+            case 'string':
+                result = result.toString();
+                break
+            case 'number':
+                result = parseFloat(result);
+                break
+            default:
+                break
+        }
+        return result;
+    },
+    initMaskMoney2: function ($eleSelected = null, selectType = null) {
+        // $eleSelected && selectType are required when apply Mask-Money for concrete element.
+        // ELSE: apply all element have 'input.mask-money' & 'span.mask-money'
+        let inputElement = $(document).find('input.mask-money');
+        let spanElement = $(document).find('span.mask-money');
+        if (inputElement.length > 0 || spanElement.length > 0) {
+            $.fn.getCompanyCurrencyConfig().then((configData) => {
+                let clsMaskMoney2 = new MaskMoney2(configData);
+                if ($eleSelected && selectType) {
+                    clsMaskMoney2.applyMaskMoney($($eleSelected), selectType)
+                } else {
+                    inputElement.map((idx, item) => clsMaskMoney2.applyMaskMoney($(item), 'input'));
+                    spanElement.map((idx, item) => clsMaskMoney2.applyMaskMoney($(item), 'display'));
+                }
+            });
+        }
     },
 
     // HTTP response, redirect, Ajax
@@ -1281,6 +1357,11 @@ $.fn.extend({
                     return resp.data
                 case 201:
                     return resp.data
+                case 204:
+                    $.fn.notifyB({
+                        'description': $('#msgSuccess').text()
+                    }, 'success')
+                    return {'status': status}
                 case 400:
                     let mess = resp.data;
                     if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
@@ -1347,18 +1428,17 @@ $.fn.extend({
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 headers: {"X-CSRFToken": headers},
-                success: function (rest) {
+                success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
-                    if (data) {
-                        resolve(rest);
-                    }
+                    if (data) resolve(rest);
+                    else resolve({'status': jqXHR.status});
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     let resp_data = jqXHR.responseJSON;
                     if (resp_data && typeof resp_data === 'object') {
                         $.fn.switcherResp(resp_data);
                         reject(resp_data);
-                    }
+                    } else if (jqXHR.status === 204) reject({'status': 204});
                 },
             };
             if (method.toLowerCase() === 'get') ctx.data = data
@@ -1370,29 +1450,27 @@ $.fn.extend({
     showLoading: function (timeout) {
         $('#loadingContainer').removeClass('hidden');
         if (timeout) {
-            setTimeout(
-                $.fn.hideLoading,
-                (timeout > 100 ? timeout : 1000)
-            );
+            setTimeout($.fn.hideLoading, (timeout > 100 ? timeout : 1000));
         }
     },
     hideLoading: function () {
         $('#loadingContainer').addClass('hidden');
     },
-    getRowData: function (){
+    getRowData: function () {
         // element call from in row of DataTable
         let row = $(this).closest('tr');
         return $($(this).closest('table')).DataTable().row(row).data();
     },
-    groupDataFromPrefix: function (data, prefix){
+    groupDataFromPrefix: function (data, prefix) {
         let rs = {};
-        Object.keys(data).map((key)=>{
-            if (key.startsWith(prefix)){
+        Object.keys(data).map((key) => {
+            if (key.startsWith(prefix)) {
                 rs[key.split(prefix)[1]] = data[key]
             }
         })
         return rs;
     }
+
 })
 
 // support for Form Submit
@@ -1479,6 +1557,96 @@ class SetupFormSubmit {
     }
 }
 
+
+// CURRENCY CLASS UTILS
+class MaskMoney2 {
+    static _beforeParseFloatAndLimit(strData) {
+        let data = strData.replace(/^0+0+$/, "");
+        if (data.indexOf('.') > -1 && data.length > 18) {
+            return data.slice(0, 18);
+        } else if (data.indexOf('.') === -1 && data.length > 17) {
+            return data.slice(0, 17);
+        }
+        return data;
+    }
+
+    static focusInputMoney($ele) {
+        return $($ele).val($($ele).attr('value'));
+    }
+
+    static blurInputMoney($eleSelected) {
+        $.fn.getCompanyCurrencyConfig().then((configData) => {
+            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected).attr('value')));
+        });
+    }
+
+    static realtimeInputMoney($ele) {
+        $($ele).attr(
+            'value',
+            parseFloat(
+                MaskMoney2._beforeParseFloatAndLimit($($ele).val())
+            )
+        );
+    }
+
+    constructor(configData) {
+        this.configData = configData;
+    }
+
+    applyConfig(strAttrValue) {
+        let strDataParsed = parseFloat(strAttrValue);
+        if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
+            strAttrValue = strDataParsed.toString();
+
+            // apply mask-money config
+            let prefix = this.configData?.['prefix'];
+            let suffix = this.configData?.['suffix'];
+            let decimal = this.configData?.['decimal'];
+            let thousand = this.configData?.['thousands'];
+            let precision = parseInt(this.configData?.['precision']);
+            let parsedFloatData = parseFloat(MaskMoney2._beforeParseFloatAndLimit(strAttrValue));
+            if (Number.isInteger(precision)) parsedFloatData = parseFloat(parsedFloatData.toFixed(precision));
+            if (Number.isFinite(parsedFloatData)) {
+                let result = '';
+                let arrData = parsedFloatData.toString().split(".");
+                if (arrData[0].length > 0) {
+                    let rs = [];
+                    arrData[0].split("").reverse().map((item, idx, {length}) => {
+                        rs.push(item);
+                        if (idx !== length - 1 && idx !== 0 && (idx + 1) % 3 === 0) rs.push(thousand ? thousand : "");
+                    });
+                    if (arrData.length === 2 && arrData[1].length > 0) {
+                        result = rs.reverse().join("") + (decimal ? decimal : ".") + arrData[1];
+                    } else result = rs.reverse().join("");
+                }
+                return (prefix ? prefix : "") + result + (suffix ? suffix : "");
+            }
+        }
+    }
+
+    applyMaskMoney($ele, inputOrDisplay) {
+        // inputOrDisplay choice in ['input', 'display']
+        switch (inputOrDisplay) {
+            case 'input':
+                $($ele).val(
+                    this.applyConfig(
+                        $($ele).attr('value')
+                    )
+                );
+                break
+            case 'display':
+                $($ele).text(
+                    this.applyConfig(
+                        $($ele).attr('data-init-money')
+                    )
+                );
+                break
+            default:
+                throw Error('strData must be required!')
+        }
+    }
+}
+
 // Extend and improvement base package
 String.format = function () {
     // String.format("{0} : {1}", "Fullname", "Nguyen Van A") => "Fullname : Nguyen Van A"
@@ -1543,13 +1711,7 @@ var DataTableAction = {
     'delete': function (url, data, crf, row) {
         let div = jQuery('<div>');
         let $transElm = $('#trans-factory')
-        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' +
-            `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` +
-            `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` +
-            '<div class="modal-footer justify-content-between">' +
-            `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` +
-            `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` +
-            '</button></div></div></div>';
+        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' + `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` + `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` + '<div class="modal-footer justify-content-between">' + `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` + `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` + '</button></div></div></div>';
         div.addClass('modal fade')
         div.html($content)
         div.appendTo('body');
@@ -1558,45 +1720,33 @@ var DataTableAction = {
             if ($(this).attr('data-type') === 'cancel') div.remove();
             else {
                 $.fn.callAjax(url, 'DELETE', data, crf)
-                    .then(
-                        (res) => {
-                            if (res.hasOwnProperty('status')) {
-                                div.modal('hide');
-                                if ($(row).length)
-                                    $(row).closest('.table').DataTable().rows(row).remove().draw();
-                                $.fn.notifyPopup({description: 'Delete item successfully'}, 'success')
-                            }
+                    .then((res) => {
+                        if (res.hasOwnProperty('status')) {
+                            div.modal('hide');
+                            div.remove();
+                            if ($(row).length)
+                                $(row).closest('.table').DataTable().rows(row).remove().draw();
+                            $.fn.notifyPopup(
+                                {
+                                    description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                                },
+                                'success')
                         }
-                    )
+                    })
             }
         })
     },
-}
-
-/**
- * class support for currency function in base.html
- * @func: convertCurrency => return string with format currency
- * @param isNumber string number get from API
- */
-class ExtendCurrency{
-    ConfigOption = [];
-
-    set setConfig(data){
-        this.ConfigOption = data
-    }
-
-    get getConfig(){
-        return this.ConfigOption
-    }
-
-    convertCurrency(isNumber){
-        let strNumber = '';
-        let html = jQuery('<input>')
-        html.attr('type', 'hidden')
-        html.appendTo('body')
-        strNumber = $(html).maskMoney(this.getConfig).maskMoney('mask', parseFloat(isNumber)).val();
-        html.remove()
-        return strNumber;
+    'status': function(stt){
+        let html = '';
+        const $baseTrans = $('#base-trans-factory')
+        const listSys = {
+            '0': $baseTrans.attr('data-draft'),
+            '1': $baseTrans.attr('data-created'),
+            '2': $baseTrans.attr('data-added'),
+            '3': $baseTrans.attr('data-finish'),
+            '4': $baseTrans.attr('data-cancel'),
+        }
+        html = `<span>${listSys[stt]}</span>`
+        return html
     }
 }
-let CCurrency = new ExtendCurrency();

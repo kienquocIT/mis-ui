@@ -531,7 +531,7 @@ class ServerAPI:
             )
         raise ValueError('Body data for POST request must be dictionary')
 
-    def delete(self, data) -> RespData:
+    def delete(self, data: dict = dict) -> RespData:
         """
         Support call request API with DELETE method.
         Args:
@@ -539,10 +539,8 @@ class ServerAPI:
 
         Returns: APIUtil --> call_delete()
         """
-        if isinstance(data, dict):
-            return APIUtil(user_obj=self.user).call_delete(
-                safe_url=self.url,
-                headers=self.headers,
-                data=data
-            )
-        raise ValueError('Body data for POST request must be dictionary')
+        return APIUtil(user_obj=self.user).call_delete(
+            safe_url=self.url,
+            headers=self.headers,
+            data=data if data and isinstance(data, dict) else {}
+        )

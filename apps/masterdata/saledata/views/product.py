@@ -227,7 +227,8 @@ class UnitOfMeasureListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get(params)
         if resp.state:
             return {'unit_of_measure': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
@@ -376,6 +377,9 @@ class ProductCreate(View):
         menu_active='menu_product_list',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state:
+            return {'unit': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -423,7 +427,11 @@ class ProductDetail(View):
         breadcrumb='PRODUCT_DETAIL_PAGE',
         menu_active='menu_product_detail',
     )
+
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        if resp.state:
+            return {'unit': resp.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

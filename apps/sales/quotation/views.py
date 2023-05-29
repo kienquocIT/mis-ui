@@ -50,7 +50,8 @@ class QuotationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get(data)
         if resp.state:
             return {'quotation_list': resp.result}, status.HTTP_200_OK
 
@@ -76,10 +77,40 @@ class QuotationDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/quotation/quotation_detail.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_quotation_list',
+        breadcrumb='QUOTATION_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
                    'data': {'doc_id': pk},
                }, status.HTTP_200_OK
+
+
+class QuotationDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        if res.state:
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class QuotationExpenseListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_EXPENSE_LIST).get(data)
+        if resp.state:
+            return {'quotation_expense_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

@@ -70,14 +70,7 @@ class UserListAPI(APIView):
         response = ServerAPI(user=request.user, url=ApiURL.user_list).post(data)
         if response.state:
             return response.result, status.HTTP_200_OK
-        else:
-            if response.errors:
-                if isinstance(response.errors, dict):
-                    err_msg = ""
-                    for key, value in response.errors.items():
-                        err_msg += str(key) + ": " + str(value)
-                        break
-                    return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+        return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class UserDetailAPI(APIView):

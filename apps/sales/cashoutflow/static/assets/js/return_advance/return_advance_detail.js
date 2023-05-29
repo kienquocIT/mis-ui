@@ -92,10 +92,7 @@ $(function () {
                                 <td class="wrap-text"><span>${item.expense_type}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text">
-                                    <div class="readonly">
-                                        <input class="mask-money form-control return-price" type="text" value="${item.return_price}" data-return-type="number" readonly>
-                                        <span></span>
-                                    </div>
+                                    <input class="mask-money form-control return-price" type="text" value="${item.return_price}" data-return-type="number" readonly> 
                                 </td>
                             </tr>`;
                 table.find('tbody').append(html);

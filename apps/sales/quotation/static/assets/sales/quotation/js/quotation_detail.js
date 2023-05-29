@@ -3,7 +3,7 @@
 $(function () {
 
     $(document).ready(function () {
-        let $form = $('#frm_quotation_detail');
+        let $form = $('#frm_quotation_create');
         let dataTableClass = new dataTableHandle();
         let loadDataClass = new loadDataHandle();
 
@@ -31,5 +31,40 @@ $(function () {
             }
         )
         $.fn.initMaskMoney2();
+
+        // enable edit
+        $('#btn-edit_quotation').on('click', function () {
+            $(this)[0].setAttribute('hidden', true)
+            $('#btn-create_quotation')[0].removeAttribute('hidden');
+            $form.find('.disabled-but-edit').removeAttr('disabled');
+            // load data dropdown for Tabs
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            let tableCost = document.getElementById('datable-quotation-create-cost');
+            let tableExpense = document.getElementById('datable-quotation-create-expense');
+            for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                let row = tableProduct.tBodies[0].rows[i];
+                if (row.querySelector('.table-row-item')) {
+                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                }
+            }
+            for (let i = 0; i < tableCost.tBodies[0].rows.length; i++) {
+                let row = tableCost.tBodies[0].rows[i];
+                if (row.querySelector('.table-row-item')) {
+                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                }
+            }
+            for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
+                let row = tableExpense.tBodies[0].rows[i];
+                if (row.querySelector('.table-row-item')) {
+                    loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                }
+            }
+        });
     });
 });

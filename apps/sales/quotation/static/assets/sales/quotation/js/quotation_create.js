@@ -75,6 +75,8 @@ $(function () {
                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadDataClass.loadInformationSelectBox($(this));
+            // ReCheck Config
+            checkConfig(true);
         });
 
 // Action on click dropdown customer

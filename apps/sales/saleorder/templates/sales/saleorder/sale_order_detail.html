@@ -6,8 +6,20 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
+            type="button" id="btn-edit_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
+            data-bs-original-title="Edit">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="far fa-edit"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Edit' %}
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-primary flush-soft-hover"
             type="button" id="btn-create_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
+            data-bs-original-title="Save" hidden>
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
@@ -39,7 +51,7 @@
             data-url="{% url 'SaleOrderDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'SaleOrderList' %}"
             data-method="PUT"
-            id="frm_quotation_detail"
+            id="frm_quotation_create"
             class="sale-order-detail"
             method="post"
     >

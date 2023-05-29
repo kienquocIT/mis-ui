@@ -6,8 +6,20 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
+            type="button" id="btn-edit_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
+            data-bs-original-title="Edit">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="far fa-edit"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Edit' %}
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-primary flush-soft-hover"
             type="button" id="btn-create_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
+            data-bs-original-title="Save" hidden>
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
@@ -39,7 +51,7 @@
             data-url="{% url 'QuotationDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'QuotationList' %}"
             data-method="PUT"
-            id="frm_quotation_detail"
+            id="frm_quotation_create"
             method="post"
     >
         {% csrf_token %}
@@ -500,7 +512,7 @@
                                                     class="btn btn-gradient-primary"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
-                                                    disabled
+                                                    id="btn-check-promotion"
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
@@ -539,8 +551,6 @@
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
                                                             >Close
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary">Save changes
                                                             </button>
                                                         </div>
                                                     </div>
@@ -871,6 +881,10 @@
                         <input
                                 type="hidden"
                                 id="customer-price-list"
+                        >
+                        <input
+                                type="hidden"
+                                id="quotation-config-data"
                         >
                     </div>
                 </div>

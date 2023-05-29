@@ -8,8 +8,18 @@ from django.utils.translation import gettext_lazy as _
 from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg
 
 
-def create_update_quotation(request, url, msg):
+def create_quotation(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    elif resp.status == 401:
+        return {}, status.HTTP_401_UNAUTHORIZED
+    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+def update_quotation(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
     if resp.state:
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
@@ -64,7 +74,7 @@ class QuotationListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_update_quotation(
+        return create_quotation(
             request=request,
             url=ApiURL.QUOTATION_LIST,
             msg=SaleMsg.QUOTATION_CREATE
@@ -99,6 +109,18 @@ class QuotationDetailAPI(APIView):
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_quotation(
+            request=request,
+            url=ApiURL.QUOTATION_DETAIL,
+            pk=pk,
+            msg=SaleMsg.QUOTATION_UPDATE
+        )
 
 
 class QuotationExpenseListAPI(APIView):

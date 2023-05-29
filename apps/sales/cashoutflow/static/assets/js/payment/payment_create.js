@@ -687,4 +687,98 @@ $(document).ready(function () {
         LoadBankAccount();
         $('#btn-close-edit-bank-account').click();
     })
+
+    $(document).on("click", '#btn-add-row-line-detail', function () {
+        if (sale_code_selected_list.length > 0) {
+            let table_body = $('#tab_line_detail tbody');
+            table_body.append(`<tr id="" class="row-number">
+                <td class="number text-center"></td>
+                <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
+                <td><input class="form-control expense-type" style="color: black; background: none" disabled></td>
+                <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
+                <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
+                <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
+                        <span class="input-affix-wrapper">
+                            <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" style="color: black; background: none" placeholder="Select a price or enter">
+                        </span>
+                    </div>
+                    <div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
+                <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
+                <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black; background: none" disabled></td>
+                <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
+                <td class="action">
+                    <a class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></a>
+                    <a class="row-toggle btn text-primary btn-link btn-animated" title="Toggle row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></a>
+                </td>
+            </tr>`);
+
+            for (let i = 0; i < sale_code_selected_list.length; i++) {
+                table_body.append(`<tr class="" style="background-color: #f4f4f4" hidden>
+                        <td colspan="1"></td>
+                        <td colspan="1">
+                            <input class="form-control">
+                        </td>
+                        <td colspan="2">
+                            <input class="form-control">
+                        </td>
+                        <td colspan="1">
+                            <center><i class="bi bi-plus-circle"></i></center>
+                        </td>
+                        <td colspan="2">
+                            <input class="form-control">
+                        </td>
+                        <td colspan="3"></td>
+                    </tr>`)
+            }
+
+            table_body.append(`<script>
+                        function checkInputQuantity(value) {
+                            if (parseInt(value) < 0) {
+                                return value*(-1);
+                            }
+                            return value;
+                        }
+                    </script>`);
+            $.fn.initMaskMoney2();
+            let row_count = count_row(table_body, 1);
+
+            $('#row-' + row_count.toString()).find('.btn-del-line-detail').on('click', function () {
+                for (let i = 0; i < sale_code_selected_list.length; i++) {
+                    $(this).closest('tr').next('tr').remove();
+                }
+                $(this).closest('tr').remove();
+                count_row(table_body, 2);
+            })
+
+            $('#row-' + row_count.toString()).find(".row-toggle").click(function() {
+                let row_number = $(this).closest('tr').attr('id').split('-')[1];
+                let detail_expense_id = '.row-detail-expense-' + row_number;
+                console.log(detail_expense_id)
+                if ($(detail_expense_id).is(":hidden")) {
+                    $(detail_expense_id).prop('hidden', false);
+                }
+                else {
+                    $(detail_expense_id).prop('hidden', true);
+                }
+            });
+        }
+    });
+
+    function count_row(table_body, option) {
+        let count = 0;
+        table_body.find('tr td.number').each(function() {
+            count = count + 1;
+            $(this).text(count);
+            $(this).closest('tr').attr('id', 'row-' + count.toString());
+            let detail_expense_element = $(this).closest('tr').nextAll().slice(0, sale_code_selected_list.length)
+            detail_expense_element.each(function (index, element) {
+                $(this).attr('class', 'row-detail-expense-' + count.toString());
+            });
+        });
+        // if (option === 1) {
+        //     loadExpenseList('row-' + count.toString());
+        //     loadExpenseTaxList('row-' + count.toString());
+        // }
+        return count;
+    }
 })

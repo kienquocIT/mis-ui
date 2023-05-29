@@ -273,10 +273,6 @@
             <th></th>
         </div>
     </form>
-    {% for item in  data.advance_payment%}
-        {{ item.return_value }}
-        {{ item.remain_value }}
-    {% endfor %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "assets/js/return_advance/return_advance_create.js" %}"></script>

@@ -48,9 +48,11 @@ $(document).ready(function () {
             parent_tr.find('.expense-type').val($(this).find('option:selected').attr('data-type'));
             parent_tr.find('.expense-tax-select-box').val($(this).find('option:selected').attr('data-tax-id'));
 
-            $('#' + parent_tr.attr('id') + ' .expense-unit-price-select-box').val('');
+            $('#' + parent_tr.attr('id') + ' .expense-unit-price-select-box').attr('value', '');
             $('#' + parent_tr.attr('id') + ' .expense-quantity').val(1);
-            $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').val('');
+            $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').attr('value', '');
+            $('#' + parent_tr.attr('id') + ' .expense-subtotal-price-after-tax').attr('value', '');
+            calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
 
             if ($(this).find('option:selected').val() !== '') {
                 loadExpenseUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'), $(this).find('option:selected').attr('data-uom-id'));
@@ -573,7 +575,7 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#return-date-id').daterangepicker({
+    $('#return_date_id').daterangepicker({
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
@@ -801,8 +803,25 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let waittime = 1000;
+                        if (frm.dataForm['money_gave']) {
+                            setTimeout(
+                                Swal.fire({
+                                    html:
+                                    '<div class="d-flex align-items-center"><i class="bi bi-cash-coin me-2 fs-1 text-success"></i><h4 class="mb-0">Money has been sent.</h4></div>',
+                                    customClass: {
+                                        content: 'p-0',
+                                        actions: 'justify-content-start',
+                                    },
+                                    width: 400,
+                                    showConfirmButton:false,
+                                    buttonsStyling: false
+                                }), 3000
+                            );
+                            waittime = 3000;
+                        }
                         $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, waittime);
                     }
                 },
                 (errs) => {

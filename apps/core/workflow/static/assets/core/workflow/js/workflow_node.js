@@ -17,8 +17,8 @@ function loadZoneInitialNode(e) {
                                     </div>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
-                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-                                    <label class="form-check-label" for="customCheck6"></label>
+                                    <input type="checkbox" class="form-check-input check-zone-node" data-node-initial="true" checked>
+                                    <label class="form-check-label"></label>
                                 </div>
                             </li>`
     for (let z = 0; z < tableZone.tBodies[0].rows.length; z++) {
@@ -35,8 +35,8 @@ function loadZoneInitialNode(e) {
                                             </div>
                                         </div>
                                         <div class="form-check form-check-theme ms-3">
-                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" data-node-initial="true" checked>
-                                            <label class="form-check-label" for="customCheck6"></label>
+                                            <input type="checkbox" class="form-check-input check-zone-node" data-node-initial="true" checked>
+                                            <label class="form-check-label"></label>
                                         </div>
                                     </li>`
         }
@@ -65,9 +65,9 @@ $(function () {
             if (is_system_node === true) {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" checked disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node" checked disabled>`;
                     } else {
-                        inputEle = `<input type="checkbox" class="check-action-node" id="customCheck6" disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node" disabled>`;
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                             <div class="media d-flex align-items-center">
@@ -79,16 +79,16 @@ $(function () {
                             </div>
                             <div class="form-check form-check-theme ms-3">
                                 ${inputEle}
-                                <label class="form-check-label" for="customCheck6"></label>
+                                <label class="form-check-label"></label>
                             </div>
                         </li>`
                 }
             } else {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" disabled>`
                     } else {
-                        inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6">`;
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node">`;
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                             <div class="media d-flex align-items-center">
@@ -100,7 +100,7 @@ $(function () {
                             </div>
                             <div class="form-check form-check-theme ms-3">
                                 ${inputEle}
-                                <label class="form-check-label" for="customCheck6"></label>
+                                <label class="form-check-label"></label>
                             </div>
                         </li>`
                 }
@@ -658,8 +658,8 @@ $(function () {
                                     </div>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
-                                    <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
-                                    <label class="form-check-label" for="customCheck6"></label>
+                                    <input type="checkbox" class="form-check-input check-zone-node">
+                                    <label class="form-check-label"></label>
                                 </div>
                             </li>`
 
@@ -677,8 +677,8 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="form-check form-check-theme ms-3">
-                                            <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6">
-                                            <label class="form-check-label" for="customCheck6"></label>
+                                            <input type="checkbox" class="form-check-input check-zone-node">
+                                            <label class="form-check-label"></label>
                                         </div>
                                     </li>`
                 }

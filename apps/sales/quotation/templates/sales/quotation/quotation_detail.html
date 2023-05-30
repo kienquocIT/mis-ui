@@ -6,8 +6,20 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-flush-primary flush-soft-hover"
+            type="button" id="btn-edit_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
+            data-bs-original-title="Edit">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="far fa-edit"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Edit' %}
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-primary flush-soft-hover"
             type="button" id="btn-create_quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
+            data-bs-original-title="Save" hidden>
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
@@ -39,7 +51,7 @@
             data-url="{% url 'QuotationDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'QuotationList' %}"
             data-method="PUT"
-            id="frm_quotation_detail"
+            id="frm_quotation_create"
             method="post"
     >
         {% csrf_token %}
@@ -147,7 +159,6 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
-                                                readonly
                                                 disabled
                                             ></select>
                                         </span>
@@ -276,7 +287,7 @@
                                             <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item quotation-cost-detail">
+                                    <li class="nav-item quotation-cost">
                                         <a class="nav-link" data-bs-toggle="tab" href="#tab_block_6">
                                             <span class="nav-link-text">{% trans 'Cost' %}</span>
                                         </a>
@@ -390,8 +401,8 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create" disabled>
-                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
+                                            <button type="button" class="btn btn-link btn-animated disabled-but-edit" id="btn-add-product-quotation-create" disabled>
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
@@ -497,9 +508,10 @@
                                         <div class="row mb-2">
                                             <button
                                                     type="button"
-                                                    class="btn btn-gradient-primary"
+                                                    class="btn btn-gradient-primary disabled-but-edit"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
+                                                    id="btn-check-promotion"
                                                     disabled
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
@@ -539,8 +551,6 @@
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
                                                             >Close
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary">Save changes
                                                             </button>
                                                         </div>
                                                     </div>
@@ -736,8 +746,8 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create" disabled>
-                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add expense</span></span>
+                                            <button type="button" class="btn btn-link btn-animated disabled-but-edit" id="btn-add-expense-quotation-create" disabled>
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>{% trans 'Add Expense' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
@@ -871,6 +881,10 @@
                         <input
                                 type="hidden"
                                 id="customer-price-list"
+                        >
+                        <input
+                                type="hidden"
+                                id="quotation-config-data"
                         >
                     </div>
                 </div>

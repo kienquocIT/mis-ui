@@ -808,7 +808,11 @@ $(function () {
                     // Re Calculate Tax on Total
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
-                            reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
+                            if (promotionResult.is_before_tax === true) {
+                                reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
+                            } else {
+                                reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
+                            }
                         }
                     }
                 }

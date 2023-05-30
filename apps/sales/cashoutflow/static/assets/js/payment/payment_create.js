@@ -847,32 +847,81 @@ $(document).ready(function () {
     })
 
     let AP_db = $('#advance_payment_list_datatable');
-    let AP_db_tbody_html = AP_db.find('tbody');
-    $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            console.log(data)
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
-                for (let i=0; i<data.advance_payment_list.length; i++) {
-                    AP_db_tbody_html.append(`<tr>
-                        <td><input data-id="` + data.advance_payment_list[i].id + `" class="mb-2 form-check-input ap-selected" type="checkbox"></td>
-                        <td>` + data.advance_payment_list[i].code + `</td>
-                        <td>` + data.advance_payment_list[i].title + `</td>
-                        <td><span class="mask-money" data-init-money="` + data.advance_payment_list[i].to_payment + `"></span></td>
-                        <td><span class="mask-money" data-init-money="` + data.advance_payment_list[i].return_value + `"></span></td>
-                        <td><span class="mask-money" data-init-money="` + data.advance_payment_list[i].remain_value + `"></span></td>
-                    </tr>`);
+    AP_db.DataTableDefault({
+        dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12'tr>>",
+        scrollY: "75%",
+	    scrollX: true,
+        paginate: false,
+        ajax: {
+            url: AP_db.attr('data-url'),
+            type: AP_db.attr('data-method'),
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    return resp.data['advance_payment_list'] ? resp.data['advance_payment_list'] : [];
                 }
-                $.fn.initMaskMoney2();
+                return [];
+            },
+        },
+        columns: [
+            {
+                render: (data, type, row, meta) => {
+                    return ''
+                }
+            },
+            {
+                render: (data, type, row, meta) => {
+                    return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                }
+            },
+            {
+                data: 'code',
+                className: 'wrap-text',
+                render: (data, type, row, meta) => {
+                    return row.code;
+                }
+            },
+            {
+                data: 'title',
+                className: 'wrap-text',
+                render: (data, type, row, meta) => {
+                    return row.title;
+                }
+            },
+            {
+                data: 'to_payment',
+                className: 'wrap-text',
+                render: (data, type, row, meta) => {
+                    return `<span class="mask-money" data-init-money="` + row.to_payment + `"></span>`
+                }
+            },
+            {
+                data: 'return_value',
+                className: 'wrap-text',
+                render: (data, type, row, meta) => {
+                    return `<span class="mask-money" data-init-money="` + row.return_value + `"></span>`
+                }
+            },
+            {
+                data: 'remain_value',
+                className: 'wrap-text',
+                render: (data, type, row, meta) => {
+                    return `<span class="mask-money" data-init-money="` + row.remain_value + `"></span>`
+                }
             }
-        }
+        ],
     });
+    $('.content').addClass('h-80');
+    $('#wizard-p-0').addClass('w-100');
+    $('#advance_payment_list_datatable_wrapper').addClass('h-80');
 
     $('.actions').find('a[href="#next"]').on('click', function () {
         let selected_ap_list = [];
+        let selected_ap_code_list = [];
         $('.ap-selected').each(function (index, element) {
             if ($(this).is(':checked') === true) {
                 selected_ap_list.push($(this).attr('data-id'));
+                selected_ap_code_list.push($(this).closest('td').next('td').text());
             }
         })
         if (selected_ap_list.length === 0) {
@@ -889,32 +938,59 @@ $(document).ready(function () {
         }
         else {
             let tab2 = $('.expense-tables');
+            tab2.html(``);
             for (let i=0; i<selected_ap_list.length; i++) {
                 $.fn.callAjax(AP_db.attr('data-url-ap-detail').replace('/0', '/' + selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.log(data.advance_payment_detail)
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                             let ap_item_detail = data.advance_payment_detail;
-                            tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center"></th>
-                                        <th>Expense/Cost Items</th>
-                                        <th>Type</th>
-                                        <th>Quantity</th>
-                                        <th>Unit Price</th>
-                                        <th>Tax</th>
-                                        <th>Remain Value</th>
-                                        <th>Converted Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>`);
-                            let expense_table = $('#expense-item-table-' + ap_item_detail.id)
-                            for (let i=0; i<ap_item_detail.expense_items.length; i++) {
-                                console.log(ap_item_detail.expense_items[i])
+                            if (ap_item_detail.expense_items.length > 0) {
+                                tab2.append(`<div class="mt-7 mb-2 row">
+                                    <div class="col-2 mt-2"><span class="badge badge-soft-primary badge-outline">` + selected_ap_code_list[i] + `</span></div>
+                                    <div class="col-3 mt-2 form-check">
+                                        <input type="checkbox" id="return_remain_` + ap_item_detail.id + `" class="form-check-input" name="return_remain">
+                                        <label>Return remain value after</label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input class="mask-money form-control" id="return_remain_value_` + ap_item_detail.id + `">
+                                    </div>
+                                </div>`)
+                                tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th class="w-5"></th>
+                                            <th class="w-20">Expense/Cost Items</th>
+                                            <th class="w-15">Type</th>
+                                            <th class="w-5">Quantity</th>
+                                            <th class="w-15">Unit Price</th>
+                                            <th class="w-10">Tax</th>
+                                            <th class="w-15">Remain Value</th>
+                                            <th class="w-15">Converted Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>`);
+                                let expense_table = $('#expense-item-table-' + ap_item_detail.id)
+                                for (let i = 0; i < ap_item_detail.expense_items.length; i++) {
+                                    let expense_item = ap_item_detail.expense_items[i];
+                                    let tax_code = '';
+                                    if (expense_item.tax) {
+                                        tax_code = expense_item.tax.code
+                                    }
+                                    expense_table.append(`<tr>
+                                        <td><input data-id="` + expense_item.expense.id + `" class="ap-selected" type="checkbox"></td>
+                                        <td>` + expense_item.expense.title + `</td>
+                                        <td>` + expense_item.expense.type.title + `</td>
+                                        <td class="text-center">` + expense_item.expense_quantity + `</td>
+                                        <td><span class="mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
+                                        <td><span class="badge badge-soft-orange">` + tax_code + `</span></td>
+                                        <td><span class="mask-money" data-init-money="` + expense_item.remain_value + `"></span></td>
+                                        <td><input class="mask-money form-control converted-value-inp"></td>
+                                    </tr>`)
+                                }
+                                $.fn.initMaskMoney2();
                             }
                         }
                     }
@@ -922,4 +998,5 @@ $(document).ready(function () {
             }
         }
     })
+    $('#wizard-p-1').addClass('w-100');
 })

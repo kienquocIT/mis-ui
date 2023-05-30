@@ -277,11 +277,10 @@ $(function () {
                 }
             }, {
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
                     if (data_detail && data_detail.includes(row.id)) {
-                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}" checked><label class="form-check-label" for="${currentId}"></label></span>`;
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" checked><label class="form-check-label"></label></span>`;
                     } else {
-                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                        return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-out-form"><label class="form-check-label"></label></span>`;
                     }
                 }
             }]
@@ -363,8 +362,7 @@ $(function () {
             let approvedRowOrder = String(Number(initialCheckBox) + 2);
             let completedRowOrder = String(Number(initialCheckBox) + 3);
 
-            let currentId = "chk_sel_" + newCheckBox;
-            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select"><label class="form-check-label"></label></span>`;
             let nodeName = $('#modal-node-name-create').val();
             let nodeDescription = $('#modal-node-description-create').val();
             let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover workflow-node-edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
@@ -973,8 +971,7 @@ $(function () {
                 }
             }
 
-            let currentId = "chk_sel_" + String(tableLen + 1)
-            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-in-workflow" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-in-workflow"><label class="form-check-label"></label></span>`;
             let delAction = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
 
             if (empTitle) {

@@ -788,6 +788,7 @@ $(document).ready(function () {
             </script>`);
             $.fn.initMaskMoney2();
             let row_count = count_row(table_body, sale_code_length+1, 1);
+            console.log(row_count.toString())
 
             $('#row-' + row_count.toString()).find('.btn-del-line-detail').on('click', function () {
                 for (let i = 0; i <= sale_code_length; i++) {
@@ -809,7 +810,14 @@ $(document).ready(function () {
             });
 
             $('.row-detail-expense-' + row_count.toString()).find(".btn-add-payment-value").on('click', function() {
-                console.log(1);
+                alert(1)
+                let AP_db = $('#advance_payment_list_datatable');
+                $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        console.log(data)
+                    }
+                })
             });
         }
     });
@@ -837,4 +845,25 @@ $(document).ready(function () {
 
     $('.first').addClass('w-50');
     $('.last').addClass('w-40');
+
+    // let AP_db = $('#advance_payment_list_datatable');
+    //             $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
+    //                 let data = $.fn.switcherResp(resp);
+    //                 if (data) {
+    //                     console.log(data)
+    //                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+    //                         let AP_db_tbody_html = AP_db.find('tbody');
+    //                         for (let i=0; i<data.advance_payment_list.length; i++) {
+    //                             AP_db_tbody_html.append(`<tr>
+    //                                 <td><input type="checkbox"></td>
+    //                                 <td>`+data.advance_payment_list[i].code+`</td>
+    //                                 <td>`+data.advance_payment_list[i].title+`</td>
+    //                                 <td>`+data.advance_payment_list[i].to_payment+`</td>
+    //                                 <td>`+data.advance_payment_list[i].return_value+`</td>
+    //                                 <td>`+data.advance_payment_list[i].remain_value+`</td>
+    //                             </tr>`)
+    //                         }
+    //                     }
+    //                 }
+    //             })
 })

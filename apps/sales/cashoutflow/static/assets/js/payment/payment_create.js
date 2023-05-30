@@ -285,7 +285,7 @@ $(document).ready(function () {
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 if (item.opportunity.id) {
-                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 }
                 else {
                     sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
@@ -298,7 +298,7 @@ $(document).ready(function () {
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 if (item.opportunity.id) {
-                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 }
                 else {
                     quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
@@ -339,9 +339,9 @@ $(document).ready(function () {
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 if (item.opportunity.id) {
-                    ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
                 } else {
-                    ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
             }
         })
@@ -350,9 +350,9 @@ $(document).ready(function () {
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 if (item.opportunity.id) {
-                    ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
                 } else {
-                    ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
             }
         })
@@ -370,7 +370,7 @@ $(document).ready(function () {
         ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Sale order</b></div></div>`)
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `">
+                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                 <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
                                 <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" id="` + item.id + `"></span>
@@ -389,7 +389,7 @@ $(document).ready(function () {
         ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Quotation</b></div></div>`)
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `">
+                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                 <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
                                 <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" id="` + item.id + `"></span>
@@ -689,7 +689,32 @@ $(document).ready(function () {
     })
 
     $(document).on("click", '#btn-add-row-line-detail', function () {
-        if (sale_code_selected_list.length > 0) {
+        let sale_code_length = 0;
+        let opp_code_list = [];
+        let sale_code_id_list = [];
+        if ($('#radio-non-sale').is(':checked') || $('#radio-sale').is(':checked')) {
+            if ($('#sale-code-select-box').val() !== null) {
+                sale_code_length = 1;
+                opp_code_list.push($('#sale-code-select-box option:selected').attr('data-sale-code'));
+                sale_code_id_list.push($('#sale-code-select-box option:selected').attr('value'));
+            }
+        }
+        if ($('#radio-special').is(':checked')) {
+            sale_code_length = sale_code_selected_list.length
+            $('#sale-code-select-box2 .multi-sale-code').each(function() {
+                if ($(this).is(':checked')) {
+                    let opp_code = $(this).closest('div').attr('title').split(': ')[0];
+                    if (opp_code !== 'No Opportunity Code') {
+                        opp_code_list.push(opp_code);
+                    }
+                    else {
+                        opp_code_list.push($(this).closest('div').find('.code-span').text().replace(' ', ''));
+                    }
+                }
+            });
+            sale_code_id_list = sale_code_selected_list;
+        }
+        if (sale_code_length > 0) {
             let table_body = $('#tab_line_detail tbody');
             table_body.append(`<tr id="" class="row-number">
                 <td class="number text-center"></td>
@@ -712,48 +737,69 @@ $(document).ready(function () {
                 </td>
             </tr>`);
 
-            for (let i = 0; i < sale_code_selected_list.length; i++) {
-                table_body.append(`<tr class="" style="background-color: #f4f4f4" hidden>
-                        <td colspan="1"></td>
-                        <td colspan="1">
-                            <input class="form-control">
-                        </td>
-                        <td colspan="2">
-                            <input class="form-control">
-                        </td>
-                        <td colspan="1">
-                            <center><i class="bi bi-plus-circle"></i></center>
-                        </td>
-                        <td colspan="2">
-                            <input class="form-control">
-                        </td>
-                        <td colspan="3"></td>
-                    </tr>`)
+            table_body.append(`<tr class="">
+                <td colspan="1"></td>
+                <td colspan="1">
+                    <label>Sale code</label>
+                </td>
+                <td colspan="2">
+                    <label>Value</label>
+                </td>
+                <td colspan="1"></td>
+                <td colspan="2">
+                    <label>Value converted from advance payment</label>
+                </td>
+                <td colspan="3"></td>
+            </tr>`)
+
+            for (let i=0; i<sale_code_length; i++) {
+                table_body.append(`<tr class="">
+                    <td colspan="1"></td>
+                    <td colspan="1">
+                        <label class="sale_code_expense_detail" data-sale-code-id="` + sale_code_id_list[i] + `"><b>` + opp_code_list[i] + `</b></label>
+                    </td>
+                    <td colspan="2">
+                        <input data-return-type="number" class="form-control mask-money">
+                    </td>
+                    <td colspan="1">
+                        <center><i class="bi bi-plus"></i></center>
+                    </td>
+                    <td colspan="2">
+                        <div class="input-group">
+                            <input data-return-type="number" class="form-control mask-money">
+                            <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
+                            data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
+                            class="btn btn-soft-secondary btn-add-payment-value" type="button">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td colspan="3"></td>
+                </tr>`);
             }
 
             table_body.append(`<script>
-                        function checkInputQuantity(value) {
-                            if (parseInt(value) < 0) {
-                                return value*(-1);
-                            }
-                            return value;
-                        }
-                    </script>`);
+                function checkInputQuantity(value) {
+                    if (parseInt(value) < 0) {
+                        return value*(-1);
+                    }
+                    return value;
+                }
+            </script>`);
             $.fn.initMaskMoney2();
-            let row_count = count_row(table_body, 1);
+            let row_count = count_row(table_body, sale_code_length+1, 1);
 
             $('#row-' + row_count.toString()).find('.btn-del-line-detail').on('click', function () {
-                for (let i = 0; i < sale_code_selected_list.length; i++) {
+                for (let i = 0; i <= sale_code_length; i++) {
                     $(this).closest('tr').next('tr').remove();
                 }
                 $(this).closest('tr').remove();
-                count_row(table_body, 2);
+                count_row(table_body, sale_code_length+1, 2);
             })
 
-            $('#row-' + row_count.toString()).find(".row-toggle").click(function() {
+            $('#row-' + row_count.toString()).find(".row-toggle").on('click', function() {
                 let row_number = $(this).closest('tr').attr('id').split('-')[1];
                 let detail_expense_id = '.row-detail-expense-' + row_number;
-                console.log(detail_expense_id)
                 if ($(detail_expense_id).is(":hidden")) {
                     $(detail_expense_id).prop('hidden', false);
                 }
@@ -761,16 +807,20 @@ $(document).ready(function () {
                     $(detail_expense_id).prop('hidden', true);
                 }
             });
+
+            $('.row-detail-expense-' + row_count.toString()).find(".btn-add-payment-value").on('click', function() {
+                console.log(1);
+            });
         }
     });
 
-    function count_row(table_body, option) {
+    function count_row(table_body, sale_code_length, option) {
         let count = 0;
         table_body.find('tr td.number').each(function() {
             count = count + 1;
             $(this).text(count);
             $(this).closest('tr').attr('id', 'row-' + count.toString());
-            let detail_expense_element = $(this).closest('tr').nextAll().slice(0, sale_code_selected_list.length)
+            let detail_expense_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
             detail_expense_element.each(function (index, element) {
                 $(this).attr('class', 'row-detail-expense-' + count.toString());
             });
@@ -781,4 +831,10 @@ $(document).ready(function () {
         // }
         return count;
     }
+
+    // Initialize wizard
+    $("#wizard").steps();
+
+    $('.first').addClass('w-50');
+    $('.last').addClass('w-40');
 })

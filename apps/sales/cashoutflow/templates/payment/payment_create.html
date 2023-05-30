@@ -6,6 +6,8 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/jquery-steps/demo/css/jquery.steps.css' %}" />
+
     <style>
         .dropdown-menu { !important;
             width: max-content;
@@ -290,6 +292,23 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <div class="offcanvas offcanvas-end w-30" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
+                        <div class="offcanvas-header mt-10">
+                            <h5 id="offcanvasRightLabel">Select Detail Advance Payment</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <form id="contact" action="#">
+                                <div id="wizard">
+                                    <h1>Select Advance Payment</h1>
+                                    <div>First Content</div>
+
+                                    <h1>Second Items</h1>
+                                    <div>Second Content</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-2">
@@ -442,4 +461,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <!-- JavaScript -->
+    <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
 {% endblock %}

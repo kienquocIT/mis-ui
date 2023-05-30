@@ -693,7 +693,7 @@ $(document).ready(function () {
         let opp_code_list = [];
         let sale_code_id_list = [];
         if ($('#radio-non-sale').is(':checked') || $('#radio-sale').is(':checked')) {
-            if ($('#sale-code-select-box').val() !== null) {
+            if ($('#sale-code-select-box').val() !== '' && $('#sale-code-select-box').val() !== null) {
                 sale_code_length = 1;
                 opp_code_list.push($('#sale-code-select-box option:selected').attr('data-sale-code'));
                 sale_code_id_list.push($('#sale-code-select-box option:selected').attr('value'));
@@ -714,6 +714,7 @@ $(document).ready(function () {
             });
             sale_code_id_list = sale_code_selected_list;
         }
+
         if (sale_code_length > 0) {
             let table_body = $('#tab_line_detail tbody');
             table_body.append(`<tr id="" class="row-number">
@@ -787,15 +788,15 @@ $(document).ready(function () {
                 }
             </script>`);
             $.fn.initMaskMoney2();
+
             let row_count = count_row(table_body, sale_code_length+1, 1);
-            console.log(row_count.toString())
 
             $('#row-' + row_count.toString()).find('.btn-del-line-detail').on('click', function () {
                 for (let i = 0; i <= sale_code_length; i++) {
                     $(this).closest('tr').next('tr').remove();
                 }
                 $(this).closest('tr').remove();
-                count_row(table_body, sale_code_length+1, 2);
+                count_row(table_body, sale_code_length, 2);
             })
 
             $('#row-' + row_count.toString()).find(".row-toggle").on('click', function() {
@@ -810,7 +811,6 @@ $(document).ready(function () {
             });
 
             $('.row-detail-expense-' + row_count.toString()).find(".btn-add-payment-value").on('click', function() {
-                alert(1)
                 let AP_db = $('#advance_payment_list_datatable');
                 $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
                     let data = $.fn.switcherResp(resp);

@@ -292,7 +292,7 @@
                         <tbody>
                         </tbody>
                     </table>
-                    <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
+                    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
                         <div class="offcanvas-header mt-10">
                             <h5 id="offcanvasRightLabel">Select Detail Advance Payment</h5>
                             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -302,25 +302,28 @@
                                 <div id="wizard">
                                     <h1>Select Advance Payment</h1>
                                     <div class="row">
-{#                                        <table id="advance_payment_list_datatable" class="table nowrap w-100"#}
-{#                                               data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}">#}
-{#                                            <thead>#}
-{#                                                <tr>#}
-{#                                                    <th class="text-center">#</th>#}
-{#                                                    <th>{% trans 'Code' %}</th>#}
-{#                                                    <th>{% trans 'Name' %}</th>#}
-{#                                                    <th>{% trans 'To Payment' %}</th>#}
-{#                                                    <th>{% trans 'Return Value' %}</th>#}
-{#                                                    <th>{% trans 'Remain Value' %}</th>#}
-{#                                                </tr>#}
-{#                                            </thead>#}
-{#                                            <tbody>#}
-{#                                            </tbody>#}
-{#                                        </table>#}
+                                        <table id="advance_payment_list_datatable" class="table nowrap w-100 ml-5"
+                                               data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
+                                               data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
+                                        >
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"></th>
+                                                    <th>{% trans 'Code' %}</th>
+                                                    <th>{% trans 'Name' %}</th>
+                                                    <th>{% trans 'To Payment' %}</th>
+                                                    <th>{% trans 'Return Value' %}</th>
+                                                    <th>{% trans 'Remain Value' %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
                                     </div>
-
                                     <h1>Second Items</h1>
-                                    <div>Second Content</div>
+                                    <div class="row">
+                                        <div class="expense-tables"></div>
+                                    </div>
                                 </div>
                             </form>
                         </div>

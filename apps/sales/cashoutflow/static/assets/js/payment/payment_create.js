@@ -716,7 +716,7 @@ $(document).ready(function () {
         }
 
         if (sale_code_length > 0) {
-            let table_body = $('#tab_line_detail tbody');
+            let table_body = $('#tab_line_detail_datatable tbody');
             table_body.append(`<tr id="" class="row-number">
                 <td class="number text-center"></td>
                 <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
@@ -811,13 +811,7 @@ $(document).ready(function () {
             });
 
             $('.row-detail-expense-' + row_count.toString()).find(".btn-add-payment-value").on('click', function() {
-                let AP_db = $('#advance_payment_list_datatable');
-                $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        console.log(data)
-                    }
-                })
+
             });
         }
     });
@@ -841,29 +835,91 @@ $(document).ready(function () {
     }
 
     // Initialize wizard
-    $("#wizard").steps();
+    $("#wizard").steps({
+        transitionEffect: 'slide',
+    });
 
     $('.first').addClass('w-50');
-    $('.last').addClass('w-40');
+    $('.last').addClass('w-50');
 
-    // let AP_db = $('#advance_payment_list_datatable');
-    //             $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
-    //                 let data = $.fn.switcherResp(resp);
-    //                 if (data) {
-    //                     console.log(data)
-    //                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
-    //                         let AP_db_tbody_html = AP_db.find('tbody');
-    //                         for (let i=0; i<data.advance_payment_list.length; i++) {
-    //                             AP_db_tbody_html.append(`<tr>
-    //                                 <td><input type="checkbox"></td>
-    //                                 <td>`+data.advance_payment_list[i].code+`</td>
-    //                                 <td>`+data.advance_payment_list[i].title+`</td>
-    //                                 <td>`+data.advance_payment_list[i].to_payment+`</td>
-    //                                 <td>`+data.advance_payment_list[i].return_value+`</td>
-    //                                 <td>`+data.advance_payment_list[i].remain_value+`</td>
-    //                             </tr>`)
-    //                         }
-    //                     }
-    //                 }
-    //             })
+    $('.content').css({
+        'background': 'none'
+    })
+
+    let AP_db = $('#advance_payment_list_datatable');
+    let AP_db_tbody_html = AP_db.find('tbody');
+    $.fn.callAjax(AP_db.attr('data-url'), AP_db.attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            console.log(data)
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+                for (let i=0; i<data.advance_payment_list.length; i++) {
+                    AP_db_tbody_html.append(`<tr>
+                        <td><input data-id="` + data.advance_payment_list[i].id + `" class="mb-2 form-check-input ap-selected" type="checkbox"></td>
+                        <td>` + data.advance_payment_list[i].code + `</td>
+                        <td>` + data.advance_payment_list[i].title + `</td>
+                        <td><span class="mask-money" data-init-money="` + data.advance_payment_list[i].to_payment + `"></span></td>
+                        <td><span class="mask-money" data-init-money="` + data.advance_payment_list[i].return_value + `"></span></td>
+                        <td><span class="mask-money" data-init-money="` + data.advance_payment_list[i].remain_value + `"></span></td>
+                    </tr>`);
+                }
+                $.fn.initMaskMoney2();
+            }
+        }
+    });
+
+    $('.actions').find('a[href="#next"]').on('click', function () {
+        let selected_ap_list = [];
+        $('.ap-selected').each(function (index, element) {
+            if ($(this).is(':checked') === true) {
+                selected_ap_list.push($(this).attr('data-id'));
+            }
+        })
+        if (selected_ap_list.length === 0) {
+            setTimeout(function(){
+            $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+            },100);
+            $.notify("Warning: Select at least 1 Advance Payment Item for next step.", {
+                animate: {
+                    enter: 'animated bounceInDown',
+                    exit: 'animated bounceOutUp'
+                },
+                type: "dismissible alert-warning",
+            });
+        }
+        else {
+            let tab2 = $('.expense-tables');
+            for (let i=0; i<selected_ap_list.length; i++) {
+                $.fn.callAjax(AP_db.attr('data-url-ap-detail').replace('/0', '/' + selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        console.log(data.advance_payment_detail)
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
+                            let ap_item_detail = data.advance_payment_detail;
+                            tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center"></th>
+                                        <th>Expense/Cost Items</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Tax</th>
+                                        <th>Remain Value</th>
+                                        <th>Converted Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>`);
+                            let expense_table = $('#expense-item-table-' + ap_item_detail.id)
+                            for (let i=0; i<ap_item_detail.expense_items.length; i++) {
+                                console.log(ap_item_detail.expense_items[i])
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    })
 })

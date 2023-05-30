@@ -840,7 +840,6 @@ $(function () {
 // Action click Apply Shipping
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
-            deletePromotionRows(tableProduct, false, true);
             // let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             // let promotionResult = getPromotionResult(promotionCondition);
             let order = 1;

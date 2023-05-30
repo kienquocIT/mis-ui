@@ -16,7 +16,7 @@ $(function () {
                     $('#datable-quotation-create-product').DataTable().destroy();
                     $('#datable-quotation-create-cost').DataTable().destroy();
                     $('#datable-quotation-create-expense').DataTable().destroy();
-                    if (!$form.hasClass('sale-order-detail')) {
+                    if (!$form.hasClass('sale-order')) {
                         dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
                         dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
                         dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');

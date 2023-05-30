@@ -386,7 +386,7 @@ class loadDataHandle {
         if (ele && eleBox) {
             let data = JSON.parse(ele.value);
             eleBox.empty();
-            eleBox.append(`<option value=""></option>`);
+            eleBox.append(`<option value="" data-value="0">0 %</option>`);
             for (let i = 0; i < data.length; i++) {
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
@@ -491,7 +491,9 @@ class loadDataHandle {
             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
             // load UOM
             if (uom && data.unit_of_measure) {
-                uom.value = data.unit_of_measure.id;
+                self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id, data.unit_of_measure.id);
+            } else {
+                self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id);
             }
             // load PRICE
             if (price && priceList) {
@@ -521,7 +523,9 @@ class loadDataHandle {
             }
             // load TAX
             if (tax && data.tax) {
-                tax.value = data.tax.id;
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', tax.id, data.tax.id);
+            } else {
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', tax.id);
             }
             self.loadInformationSelectBox(ele);
         }

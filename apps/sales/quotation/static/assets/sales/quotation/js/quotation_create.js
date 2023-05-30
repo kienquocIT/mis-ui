@@ -963,11 +963,22 @@ $(function () {
             }
             // validate none & blank
             let check_none_blank_list = ['', "", null, "undefined"];
-            if (_form.dataForm.hasOwnProperty('opportunity')) {
-                if (check_none_blank_list.includes(_form.dataForm['opportunity'])) {
-                    delete _form.dataForm['opportunity']
+            let check_field_list = [
+                'opportunity',
+                'customer',
+                'contact',
+                'sale_person',
+                'payment_term',
+                'quotation'
+            ]
+            for (let field = 0; field < check_field_list.length; field++) {
+                if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
+                    if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
+                        delete _form.dataForm[check_field_list[field]]
+                    }
                 }
             }
+
             let csr = $("[name=csrfmiddlewaretoken]").val()
 
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)

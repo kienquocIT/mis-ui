@@ -159,7 +159,6 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
-                                                readonly
                                                 disabled
                                             ></select>
                                         </span>
@@ -288,7 +287,7 @@
                                             <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item quotation-cost-detail">
+                                    <li class="nav-item quotation-cost">
                                         <a class="nav-link" data-bs-toggle="tab" href="#tab_block_6">
                                             <span class="nav-link-text">{% trans 'Cost' %}</span>
                                         </a>
@@ -402,8 +401,8 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create" disabled>
-                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add product</span></span>
+                                            <button type="button" class="btn btn-link btn-animated disabled-but-edit" id="btn-add-product-quotation-create" disabled>
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
@@ -509,10 +508,11 @@
                                         <div class="row mb-2">
                                             <button
                                                     type="button"
-                                                    class="btn btn-gradient-primary"
+                                                    class="btn btn-gradient-primary disabled-but-edit"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
                                                     id="btn-check-promotion"
+                                                    disabled
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
@@ -746,8 +746,8 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create" disabled>
-                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>Add expense</span></span>
+                                            <button type="button" class="btn btn-link btn-animated disabled-but-edit" id="btn-add-expense-quotation-create" disabled>
+                                                <span><span class="icon"><span class="feather-icon"><i data-feather="plus"></i></span></span><span>{% trans 'Add Expense' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>

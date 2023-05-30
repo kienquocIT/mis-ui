@@ -434,6 +434,7 @@ $(document).ready(function () {
         }, (errs) => {
             },)
         }
+
     }
 
     function count_row(table_body, option, expense_id, tax_id) {

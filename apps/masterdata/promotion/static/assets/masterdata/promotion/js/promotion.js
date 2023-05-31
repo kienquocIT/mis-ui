@@ -78,8 +78,9 @@ class customerHandle {
                     data.checked = this.checked
                 });
 
-            }
-        }, false);
+            },
+            rowIdx: false,
+        });
     }
 
     onSave(){

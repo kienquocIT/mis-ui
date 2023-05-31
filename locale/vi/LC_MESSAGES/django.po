@@ -1730,3 +1730,23 @@ msgstr "Bạn có chắc muốn xóa \"{0}\" không?"
 #
 msgid "Add new"
 msgstr "Thêm mới"
+
+#
+msgid "Picking needs to be handled prior to shipment"
+msgstr "Cần xử lý picking trước khi giao hàng"
+
+#
+msgid "Partial delivery is possible"
+msgstr "Có thể giao hàng từng phần"
+
+#
+msgid "General"
+msgstr "Chung"
+
+#
+msgid "Transition Data Config"
+msgstr "Cấu hình giao dịch"
+
+#
+msgid "Wait"
+msgstr "Đợi"

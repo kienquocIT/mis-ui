@@ -73,6 +73,7 @@ $(function(){
                 let url = $('#url-factory').attr('data-detail-api').format_url_with_uuid(data.id)
                 DataTableAction.delete(url, data, crf, row)
             })
-        }
-    }, false);
+        },
+        rowIdx: false,
+    });
 });

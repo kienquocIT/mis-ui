@@ -69,18 +69,18 @@
                         <label class="col-3 col-form-label">Sale/Purchase code</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
-                                    data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
+                                    data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Sale</button>
                             <div role="menu" class="dropdown-menu" style="min-width: 150%; width: 150%">
                                 <div class="row ml-3">
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="non-sale" class="col-2 form-check-input sale_code_type" checked>
+                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="non-sale" class="col-2 form-check-input sale_code_type" disabled>
                                             <label class="form-check-label col-10" for="radio-non-sale">Non-sale</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type">
+                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type" checked>
                                             <label class="form-check-label col-10" for="radio-sale">Sale</label>
                                         </div>
                                     </div>
@@ -98,7 +98,7 @@
                                     data-url-quotation="{% url 'QuotationListAPI' %}" hidden
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
-                            <input placeholder="Select beneficiary first" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <input placeholder="Select one" style="background-color: white" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
@@ -278,14 +278,15 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
-                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th style="width: 17%">{% trans 'Expense/Cost items' %}</th>
+                            <th style="width: 11%">{% trans 'Type' %}</th>
                             <th style="width: 7%">{% trans 'UoM' %}</th>
                             <th style="width: 6%">{% trans 'Quantity' %}</th>
-                            <th style="width: 14%">{% trans 'Unit price' %}</th>
-                            <th style="width: 10%">{% trans 'Tax' %}</th>
-                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th style="width: 13%">{% trans 'Unit price' %}</th>
+                            <th style="width: 8%">{% trans 'Tax' %}</th>
+                            <th style="width: 13%">{% trans 'Subtotal price' %}</th>
+                            <th style="width: 13%">{% trans 'After tax subtotal' %}</th>
+                            <th style="width: 9%">{% trans 'Document number' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
                         </thead>
@@ -299,7 +300,7 @@
                         </div>
                         <div class="offcanvas-body">
                             <div id="wizard">
-                                <h1>Select Advance Payment</h1>
+                                <h1>Select Advance Payment items</h1>
                                 <div>
                                     <table id="advance_payment_list_datatable" class="table nowrap w-100"
                                            data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
@@ -320,7 +321,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <h1>Second Items</h1>
+                                <h1>Second Expense items</h1>
                                 <div data-simplebar class="nicescroll-bar">
                                     <div data-simplebar class="expense-tables nicescroll-bar"></div>
                                 </div>

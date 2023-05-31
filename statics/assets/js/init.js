@@ -1828,5 +1828,30 @@ var DataTableAction = {
         }
         html = `<span>${listSys[stt]}</span>`
         return html
+    },
+    'item_view': function(data, link, format=null){
+        let keyArg = [
+            {name: 'Title', value: 'title'},
+            {name: 'Code', value: 'code'},
+        ];
+        if (format) keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
+        let $elmTrans = $('#base-trans-factory');
+
+        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
+        for (let key of keyArg) {
+            if (data.hasOwnProperty(key.value))
+                htmlContent += `<div class="row mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+        }
+        if (link) {
+            link = link.format_url_with_uuid(data['id']);
+            htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                <span>${$elmTrans.attr('data-view-detail')}</span>
+                <span class="icon ml-1">
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                </span>
+            </a></div>`;
+        }
+        return htmlContent
     }
 }

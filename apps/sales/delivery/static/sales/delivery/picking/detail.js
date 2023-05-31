@@ -95,7 +95,7 @@ function getWarehouse(){
     }
 }
 
-$(document).ready(function () {
+$(function () {
     // declare variable
     const pickupInit = new pickupUtil();
 
@@ -114,16 +114,20 @@ $(document).ready(function () {
     ).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && data.hasOwnProperty('picking_detail') && data.picking_detail.hasOwnProperty('sub') && data.picking_detail.sub.hasOwnProperty('products')) {
+            if (data && data.hasOwnProperty('picking_detail')
+                && data.picking_detail.hasOwnProperty('sub')
+                && data.picking_detail.sub.hasOwnProperty('products')
+            ) {
                 // load sale order
                 console.log('picking_detail: ', data['picking_detail']);
                 pickupInit.setPicking = data['picking_detail']
-                $('#inputSaleOrder').attr('value', data['picking_detail']?.['sale_order_data']?.['id']).val(
-                    data['picking_detail']?.['sale_order_data']?.['title']
+                data = data.picking_detail
+                $('#inputSaleOrder').attr('value', data?.['sale_order_data']?.['id']).val(
+                    data?.['sale_order_data']?.['title']
                 );
 
                 // state
-                let state = data['picking_detail']?.['state'];
+                let state = data?.['state'];
                 if (state !== undefined && Number.isInteger(state)) {
                     let letStateChoices = JSON.parse($('#dataStateChoices').text());
                     let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
@@ -139,14 +143,14 @@ $(document).ready(function () {
                 }
 
                 // picking delivery date
-                let estimate_delivery_date = data['picking_detail']?.['estimated_delivery_date'];
+                let estimate_delivery_date = data?.['estimated_delivery_date'];
                 if (estimate_delivery_date) {
                     $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
                     loadDatePicker();
                 }
 
                 // warehouse
-                let warehouse_data = data['picking_detail']?.['ware_house_data'];
+                let warehouse_data = data?.['ware_house_data'];
                 if (warehouse_data.hasOwnProperty('code')) {
                     $('#inputWareHouse').append(
                         `<option value="{0}">{1}</option>`.format_by_idx(
@@ -157,15 +161,17 @@ $(document).ready(function () {
                 }
 
                 // descriptions
-                let remarks = data['picking_detail']?.['remarks']
+                let remarks = data?.['remarks']
                 if (remarks) {
                     $('#inputRemarks').val(remarks);
                 }
+                const toLocation = data?.to_location
+                if(toLocation) $('#inputToLocation').val(toLocation)
 
                 // load product list
-                pickupInit.setSubInfo = data.picking_detail.sub
+                pickupInit.setSubInfo = data?.sub
                 loadProductList(
-                    data.picking_detail.sub['products']
+                    data?.sub['products']
                 );
             }
         }
@@ -271,18 +277,25 @@ $(document).ready(function () {
             pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
-        pickingData['ware_house_id'] = _form.dataForm['warehouse_id']
+        pickingData['ware_house'] = _form.dataForm['warehouse_id']
         pickingData['remarks'] = _form.dataForm['remarks']
         pickingData['to_location'] = _form.dataForm['to_location']
 
-        let prodSub = pickupInit.getProdList
-        pickingData.sub.products = prodSub
-        pickingData.sub.prod_list = prodSub
+        let prodSub = []
+        for (prod of pickupInit.getProdList){
+            if (prod.picked_quantity > 0)
+                prodSub.push({
+                    'product_id': prod.product_data.id,
+                    'done': prod.picked_quantity
+                })
+        }
+        pickingData.products = prodSub
         if (!prodSub || !prodSub.length){
             $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
             return false
         }
-        console.log('pickingData', pickingData)
+        pickingData.sub = pickingData.sub.id
+        // console.log('pickingData', pickingData)
         //call ajax to update picking
         $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
             .then(
@@ -299,4 +312,4 @@ $(document).ready(function () {
                 console.log(err)
             })
     })
-});
+}, (jQuery));

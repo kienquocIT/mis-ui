@@ -175,7 +175,7 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.push_id(pk=pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).get()
         if resp.state:
             return {'picking_detail': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
@@ -188,7 +188,7 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).put(request.data)
         if resp.state:
             return resp.result, status.HTTP_200_OK
         elif resp.status == 401:

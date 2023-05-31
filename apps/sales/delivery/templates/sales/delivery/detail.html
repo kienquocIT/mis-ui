@@ -70,6 +70,20 @@
             </div>
             <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
+                    <label for="inputToLocation" class="form-label">{% trans 'from' %}</label>
+                    <input type="text" name="to_location" id="inputToLocation" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="inputActualDate"
+                           class="form-label">{% trans 'Actual Date' %}</label>
+                    <input type="text" name="actual_delivery_date" id="inputActualDate" class="form-control date-picker"/>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 mb-3">
+                <div class="form-group">
                     <label for="inputCustomer" class="form-label">{% trans 'To customer' %}</label>
                     <div class="input-group">
                         <div class="input-affix-wrapper">
@@ -96,38 +110,13 @@
             </div>
             <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
-                    <label for="inputContact" class="form-label">{% trans 'Contact name' %}</label>
-                    <div class="input-group">
-                        <div class="input-affix-wrapper">
-                            <div class="dropdown input-prefix">
-                                <i class="fas fa-info-circle"
-                                   data-bs-toggle="dropdown"
-                                   data-dropdown-animation
-                                   aria-haspopup="true"
-                                   aria-expanded="false"
-                                   disabled></i>
-                                <div class="dropdown-menu w-210p mt-2"></div>
-                            </div>
-                            <select class="form-control dropdown-select_two" name="contact_id" id="inputContact"
-                                    data-prefix="contact_list"
-                                    data-url="{% url 'ContactListAPI' %}"
-                                    data-link-detail="{% url 'ContactDetailAPI' 1 %}"
-                                    data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
-                            >
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
-                <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
                     <p name="inputState" id="inputState" readonly disabled></p>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 offset-ms-6 offset-xs-0">
+            <div class="col-xs-12 col-sm-6 offset-sm-6 offset-xs-0">
                 <div class="form-group">
-                    <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
+                    <label for="textareaRemarks" class="form-label">{% trans 'Notes' %}</label>
                     <textarea class="form-control" name="remarks" id="textareaRemarks"></textarea>
                 </div>
             </div>
@@ -209,13 +198,14 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
     {{ data.state_choices|json_script:"dataStateChoices" }}
     <input type="hidden" id="trans-factory"
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
            data-error-done="{% trans 'Done column of line detail is empty!' %}"
     >
+    <input type="hidden" id="url-factory"
+    data-prod-detail="{% url 'ProductDetail' 1 %}">
 {% endblock %}
 
 {% block jsFooter %}

@@ -35,25 +35,39 @@
         <div class="row">
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Title" %}</label>
-                <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle">
+                <div class="readonly">
+                    <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle"
+                           readonly>
+                    <span></span>
+                </div>
             </div>
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Margin" %}</label>
-                <span class="input-affix-wrapper affix-wth-text ">
-                <input class="form-control" type="number" name="margin" id="inpMargin">
-                <span class="input-suffix">%</span>
-            </span>
+                <div class="input-group readonly">
+                    <div class="input-affix-wrapper affix-wth-text ">
+                        <input class="form-control" type="number" name="margin" id="inpMargin" readonly>
+                    </div>
+                    <span></span>
+                </div>
             </div>
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Currency" %}</label>
-                <select id="chooseCurrency" class="select2 form-control" data-method="GET"
-                        data-url="{% url "CurrencyListAPI" %}" name="currency"></select>
+                <div class="readonly">
+                    <select id="chooseCurrency" class="select2 form-control" data-method="GET"
+                            data-url="{% url "CurrencyListAPI" %}" name="currency" disabled></select>
+                    <span></span>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <div class="form-check form-switch mb-1">
-                <input type="checkbox" class="form-check-input" id="inputActive" name="is_active">
-                <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
+        <div class="row">
+            <div class="col-2">
+                <div class="form-group">
+                    <div class="form-check form-switch mb-1 readonly">
+                        <input type="checkbox" class="form-check-input" id="inputActive" name="is_active" disabled>
+                        <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
+                        <span></span>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row mt-3">
@@ -61,15 +75,17 @@
         </div>
         <div class="row mt-3">
             <div class="col-6">
-                <div class="form-check form-check-inline mt-2">
+                <div class="form-check form-check-inline mt-2 readonly">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="0" name="cost_method"
-                           checked id="check-method-0">
+                           checked id="check-method-0" disabled>
                     <label class="form-check-label" for="check-method-0">{% trans "Fixed price" %}</label>
+                    <span></span>
                 </div>
-                <div class="form-check form-check-inline mt-2">
+                <div class="form-check form-check-inline mt-2 readonly">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="1" name="cost_method"
-                           id="check-method-1">
+                           id="check-method-1" disabled>
                     <label class="form-check-label" for="check-method-1">{% trans "Formula" %}</label>
+                    <span></span>
                 </div>
                 <div class="form-check form-check-inline mt-2">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="2" name="cost_method"
@@ -83,9 +99,13 @@
         <div class="row mt-3">
             <div class=" col-4 form-group">
                 <label class="form-label">{% trans "Amount" %}</label>
-                <input class="form-control mask-money" type="text" data-return-type="number" placeholder="Input Amount"
-                       id="inputAmount"
-                       name="fixed_price">
+                <div class="readonly">
+                    <input class="form-control mask-money" type="text" data-return-type="number"
+                           placeholder="Input Amount"
+                           id="inputAmount" name="fixed_price">
+                    <span></span>
+                </div>
+
             </div>
         </div>
     </form>

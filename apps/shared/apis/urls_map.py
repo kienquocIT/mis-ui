@@ -203,3 +203,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # good receipt
     GOOD_RECEIPT_API = StringUrl('saledata/good-receipt')
+
+    # return advance
+    RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
+    RETURN_ADVANCE_DETAIL = StringUrl('cashoutflow/return-advance/{pk}')

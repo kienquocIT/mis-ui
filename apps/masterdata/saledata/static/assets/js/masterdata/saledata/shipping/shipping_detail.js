@@ -241,6 +241,7 @@ $(document).ready(function () {
     loadDetail(frmDetail, pk);
 
     frmDetail.submit(function (event) {
+        $('.readonly [disabled]:not([hidden]):not(i)', $(this)).attr('disabled', false);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
@@ -318,6 +319,7 @@ $(document).ready(function () {
 
         frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
         frm.dataForm['is_change_condition'] = isChangeCondition;
+        console.log(frm.dataForm)
         if (is_submit) {
             $.fn.callAjax(frm.getUrlDetail(pk), frm.dataMethod, frm.dataForm, csr)
                 .then(

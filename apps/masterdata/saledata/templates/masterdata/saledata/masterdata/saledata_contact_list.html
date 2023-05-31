@@ -6,7 +6,8 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn-show-modal" id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-lookup-data"
+    <button class="btn-show-modal" id="btn-show-modal-create" type="button" data-bs-toggle="modal"
+            data-bs-target="#modal-lookup-data"
             style="background: none; border: none">
         <span class="icon">
             <span class="feather-icon">
@@ -46,20 +47,10 @@
 
             <!-- Section Salutation -->
             <div class="lookup-data" id="section-salutation" style="display: block">
-                <table id="datatable_salutation_list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "SalutationListAPI" %}"
-                       data-method="GET">
+                <table id="datatable_salutation_list" class="table nowrap w-100 mb-5" data-method="GET"
+                       data-url="{% url "SalutationListAPI" %}">
                     <thead>
-                    <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Code" %}</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
@@ -73,16 +64,7 @@
                        data-url="{% url "InterestListAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Code" %}</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
@@ -141,8 +123,8 @@
     <!-- Modal Update Master Data>-->
     <form id="form-update-masterdata" data-method="POST" data-lookup="salutation"
           data-url-salutation="{% url "SalutationDetailAPI" pk=0 %} "
-          data-url-interests="{% url "InterestDetailAPI" pk=0    %} "
-          >
+          data-url-interests="{% url "InterestDetailAPI" pk=0 %} "
+    >
         <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -162,14 +144,20 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title" id="name-update"
-                                       placeholder="Input name" required>
+                                <div class="readonly">
+                                    <input class="form-control" type="text" name="title" id="name-update"
+                                           placeholder="Input name" required readonly>
+                                    <span></span>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <input class="form-control" type="text" name="description"
-                                       id="description-update"
-                                       placeholder="Input text">
+                                <div class="readonly">
+                                    <input class="form-control" type="text" name="description"
+                                           id="description-update" placeholder="Input text" readonly>
+                                    <span></span>
+                                </div>
+
                             </div>
                         </div>
 

@@ -3,9 +3,9 @@
 {% load static %}
 {% block cssHeader %}
     <style>
-    select, input, textarea {
-        margin-bottom: 10px;
-    }
+        select, input, textarea {
+            margin-bottom: 10px;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -72,19 +72,10 @@
             <div class="lookup-data" id="section-product-type" style="display: block">
                 <table id="datatable-product-type-list" class="table nowrap w-100 mb-5"
                        data-url="{% url "ProductTypeListAPI" %}"
-                       data-url-detail="{% url "ProductTypeDetailAPI" pk=0%}"
+                       data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                        <span class="form-check">
-                            <input
-                                    type="checkbox"
-                                    class="form-check-input check-select-all"
-                                    id="customCheck1"
-                            >
-                            <label class="form-check-label" for="customCheck1"></label>
-                        </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
                     <th class="w-5">{% trans "Action" %}</th>
@@ -99,16 +90,7 @@
                        data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
                     <th class="w-5">{% trans "Action" %}</th>
@@ -123,16 +105,7 @@
                        data-url-detail="{% url "ExpenseTypeDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
                     <th class="w-5">{% trans "Action" %}</th>
@@ -147,16 +120,7 @@
                        data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-10">
-                        <span class="form-check">
-                            <input
-                                    type="checkbox"
-                                    class="form-check-input check-select-all"
-                                    id="customCheck1"
-                            >
-                            <label class="form-check-label" for="customCheck1"></label>
-                        </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-20">{% trans "Code" %}</th>
                     <th class="w-20">{% trans "Name" %}</th>
                     <th class="w-20">{% trans "Group" %}</th>
@@ -173,16 +137,7 @@
                        data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-5">{% trans "Action" %}</th>
                     </thead>
@@ -251,14 +206,16 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Select Group" %}
-                                    <span class="field-required">*</span>
+                                        <span class="field-required">*</span>
                                     </label>
-                                    <select id="select-box-unit-measure-group" class="form-select" data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"></select>
+                                    <select id="select-box-unit-measure-group" class="form-select" data-method="GET"
+                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"></select>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit" disabled>
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit"
+                                           name="is_referenced_unit" disabled>
                                     <label class="form-check-label" for="check-referenced-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
@@ -280,7 +237,7 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans "Ratio" %}
-                                            <span class="field-required">*</span>
+                                                <span class="field-required">*</span>
                                             </label>
                                             <input class="form-control" type="text" name="ratio" readonly
                                                    placeholder="Input ratio" id="ratio-unit">
@@ -288,7 +245,8 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group mt-5">
-                                            <label class="form-label mt-1" id="label-referenced-unit" hidden>* Reference Unit</label>
+                                            <label class="form-label mt-1" id="label-referenced-unit" hidden>* Reference
+                                                Unit</label>
                                         </div>
                                     </div>
                                 </div>
@@ -298,7 +256,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Name" %}
-                                    <span class="field-required">*</span>
+                                        <span class="field-required">*</span>
                                     </label>
                                     <input class="form-control" type="text" name="title" readonly
                                            placeholder="Input name" id="name-unit">
@@ -307,7 +265,7 @@
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Rounding" %}
-                                    <span class="field-required">*</span>
+                                        <span class="field-required">*</span>
                                     </label>
                                     <input class="form-control" type="number" name="rounding" id="inp-rounding"
                                            placeholder="Input rounding" min="0" step="0.001" value="5" readonly>
@@ -317,7 +275,8 @@
                         <div class="row" id="notify-area" hidden>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label style="color: red; font-style: italic; font-size: small" id="notify-area-label"></label>
+                                    <label style="color: red; font-style: italic; font-size: small"
+                                           id="notify-area-label"></label>
                                 </div>
                             </div>
                         </div>
@@ -371,7 +330,8 @@
     <form id="form-edit-unit-measure" data-method="PUT"
           data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}">
         {% csrf_token %}
-        <div class="modal fade" id="modal-detail-unit-measure" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+        <div class="modal fade" id="modal-detail-unit-measure" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
@@ -384,31 +344,35 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-6" id="select-group-div">
-                                <div class="form-group inp-can-edit" id="select-box-edit-uom-group-div">
-                                    <label class="form-label">{% trans "Select Group" %}
-                                    <span class="field-required">*</span>
+                                <div class="form-group inp-can-edit">
+                                    <label class="form-label required">{% trans "Select Group" %}
                                     </label>
                                     <input id="group-id" disabled hidden>
-                                    <select class="form-select"
-                                            data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
-                                            id="select-box-edit-uom-group"
-                                            name="group" disabled>
-                                    </select>
+                                    <div class="readonly">
+                                        <select class="form-select"
+                                                data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
+                                                id="select-box-edit-uom-group"
+                                                name="group" disabled>
+                                        </select>
+                                        <span></span>
+                                    </div>
                                 </div>
-                                <div class="form-group" id="inp-edit-uom-group-div" hidden>
-                                    <label class="form-label">{% trans "Select Group" %}
-                                    <span class="field-required">*</span>
-                                    </label>
-                                    <input class="form-control inp-can-not-edit" type="text" name="group" readonly
-                                           id="inp-edit-uom-group" style="border: None">
-                                </div>
+{#                                <div class="form-group" id="inp-edit-uom-group-div" hidden>#}
+{#                                    <label class="form-label">{% trans "Select Group" %}#}
+{#                                        <span class="field-required">*</span>#}
+{#                                    </label>#}
+{#                                    <input class="form-control inp-can-not-edit" type="text" name="group" readonly#}
+{#                                           id="inp-edit-uom-group" style="border: None">#}
+{#                                </div>#}
                             </div>
                             <div class="col-6">
-                                <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit" name="is_referenced_unit">
+                                <div class="form-check mt-5 readonly">
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit"
+                                           name="is_referenced_unit" disabled>
                                     <label class="form-check-label" for="check-edit-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
+                                    <span></span>
                                 </div>
                             </div>
                         </div>
@@ -416,10 +380,10 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Code" %}
-                                    <span class="field-required">*</span>
+                                        <span class="field-required">*</span>
                                     </label>
                                     <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
-                                    style="border: None">
+                                           style="border: None">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -427,16 +391,20 @@
                                     <div class="col-6">
                                         <div class="form-group inp-can-edit">
                                             <label class="form-label">{% trans "Ratio" %}
-                                            <span class="field-required">*</span>
+                                                <span class="field-required">*</span>
                                             </label>
                                             <input id="group-referenced-unit-name" disabled hidden>
-                                            <input class="form-control" type="text" name="ratio" readonly
+                                            <div class="readonly">
+                                                <input class="form-control" type="text" name="ratio" readonly
                                                    placeholder="Input ratio" id="inp-ratio-unit">
+                                                <span></span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group mt-5">
-                                            <label class="form-label mt-1" id="label-edit-referenced-unit">* Reference Unit</label>
+                                            <label class="form-label mt-1" id="label-edit-referenced-unit">* Reference
+                                                Unit</label>
                                         </div>
                                     </div>
                                 </div>
@@ -446,26 +414,33 @@
                             <div class="col-6">
                                 <div class="form-group inp-can-edit">
                                     <label class="form-label">{% trans "Name" %}
-                                    <span class="field-required">*</span>
+                                        <span class="field-required">*</span>
                                     </label>
-                                    <input class="form-control" type="text" name="title" readonly
+                                    <div class="readonly">
+                                        <input class="form-control" type="text" name="title" readonly
                                            placeholder="Input name" id="inp-edit-name-unit">
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group inp-can-edit">
-                                    <label class="form-label">{% trans "Rounding" %}
-                                    <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Rounding" %}
                                     </label>
-                                    <input class="form-control" type="number" name="rounding" readonly
+                                    <div class="readonly">
+                                        <input class="form-control" type="number" name="rounding" readonly
                                            placeholder="Input rounding" id="inp-rounding-edit" min="0" step="0.001">
+                                        <span></span>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
                         <div class="row" id="notify-area-edit" hidden>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label style="color: red; font-style: italic; font-size: small" id="notify-area-edit-label"></label>
+                                    <label style="color: red; font-style: italic; font-size: small"
+                                           id="notify-area-edit-label"></label>
                                 </div>
                             </div>
                         </div>
@@ -501,12 +476,19 @@
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-div">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control inp-can-edit" type="text" name="title"
+                                <div class="readonly">
+                                    <input class="form-control inp-can-edit" type="text" name="title"
                                        placeholder="Input name" id="inp-edit-name" readonly>
+                                    <span></span>
+                                </div>
                             </div>
                             <div class="form-group inp-can-edit" id="inp-edit-description-div">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <textarea class="form-control inp-can-edit" type="text" name="description" id="inp-edit-description" readonly></textarea>
+                                <div class="readonly">
+                                    <textarea class="form-control inp-can-edit" type="text" name="description"
+                                          id="inp-edit-description" readonly></textarea>
+                                    <span></span>
+                                </div>
                             </div>
                         </div>
 
@@ -540,8 +522,12 @@
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-uom-group-div">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control inp-can-edit" type="text" name="title" id="inp-edit-name-uom-group"
+                                <div class="readonly">
+                                    <input class="form-control inp-can-edit" type="text" name="title"
+                                       id="inp-edit-name-uom-group"
                                        placeholder="Input name" readonly>
+                                    <span></span>
+                                </div>
                             </div>
                         </div>
 

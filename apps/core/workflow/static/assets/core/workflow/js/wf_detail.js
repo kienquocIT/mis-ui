@@ -106,9 +106,9 @@ $(function () {
             if (is_system_node === true) {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" id="customCheck6" checked disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" checked disabled>`;
                     } else {
-                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" id="customCheck6" disabled>`;
+                        inputEle = `<input type="checkbox" class="check-action-node is-not-enabled" disabled>`;
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
                             <div class="media d-flex align-items-center">
@@ -120,19 +120,19 @@ $(function () {
                             </div>
                             <div class="form-check form-check-theme ms-3">
                                 ${inputEle}
-                                <label class="form-check-label" for="customCheck6"></label>
+                                <label class="form-check-label"></label>
                             </div>
                         </li>`
                 }
             } else {
                 for (let key in nodeAction) {
                     if (String(key) === "0") {
-                        inputEle = `<input type="checkbox" class="form-check-input check-action-node is-not-enabled" id="customCheck6" disabled>`
+                        inputEle = `<input type="checkbox" class="form-check-input check-action-node is-not-enabled" disabled>`
                     } else {
                         if (action_list.includes(Number(key))) {
-                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" checked disabled>`;
+                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" checked disabled>`;
                         } else {
-                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" id="customCheck6" disabled>`;
+                            inputEle = `<input type="checkbox" class="form-check-input check-action-node" disabled>`;
                         }
                     }
                     actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
@@ -145,7 +145,7 @@ $(function () {
                             </div>
                             <div class="form-check form-check-theme ms-3">
                                 ${inputEle}
-                                <label class="form-check-label" for="customCheck6"></label>
+                                <label class="form-check-label"></label>
                             </div>
                         </li>`
                 }
@@ -171,8 +171,8 @@ $(function () {
                                 </div>
                             </div>
                             <div class="form-check form-check-theme ms-3">
-                                <input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" disabled>
-                                <label class="form-check-label" for="customCheck6"></label>
+                                <input type="checkbox" class="form-check-input check-zone-node" disabled>
+                                <label class="form-check-label"></label>
                             </div>
                         </li>`
         let trSTT = 0;
@@ -180,9 +180,9 @@ $(function () {
         for (let z = 0; z < zone_list.length; z++) {
             let order = zone_list[z].order;
             let title = zone_list[z].title
-            let input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" disabled>`;
+            let input = `<input type="checkbox" class="form-check-input check-zone-node" disabled>`;
             if (zoneCollabOrder.includes(order)) {
-                input = `<input type="checkbox" class="form-check-input check-zone-node" id="customCheck6" checked disabled>`;
+                input = `<input type="checkbox" class="form-check-input check-zone-node" checked disabled>`;
                 trSTT++;
                 if (trSTT !== 0 && trSTT % 5 === 0) {
                     spanGroup += `<span class="badge badge-soft-primary mt-1 ml-1">${title}<input type="text" value="${order}" hidden></span>`
@@ -207,7 +207,7 @@ $(function () {
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     ${input}
-                                    <label class="form-check-label" for="customCheck6"></label>
+                                    <label class="form-check-label"></label>
                                 </div>
                             </li>`
         }
@@ -282,11 +282,9 @@ $(function () {
                     dataZoneShow += `<div class="col-12" style="margin-left: -18px"><span class="badge badge-soft-primary mt-1 ml-1">${zone[z].title}<input type="text" class="zone-in-workflow-id" value="${zone[z].order}" hidden></span></div>`
                 }
             }
-            tableLen++
-            let currentId = "chk_sel_" + String(tableLen + 1)
-            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-in-workflow" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+            let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select-employee-in-workflow"><label class="form-check-label"></label></span>`;
             let delAction = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover audit-in-workflow-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
-
+            tableLen++
             if (empTitle) {
                 table.append(`<tr><td>${checkBox}</td><td>${empTitle}<input class="data-in-workflow-employee" type="text" value="${employeeVal}" hidden></td><td></td><td>${empRole}</td><td class="data-in-workflow-zone">${dataZoneShow}</td><td>${delAction}</td></tr>`)
             }

@@ -90,6 +90,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
     ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    # Payment
+    PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Payment list'), 'PaymentList')
+    PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Payment create'), 'PaymentCreate')
+    PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
     # Price
     PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -128,6 +133,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'PromotionList')
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
+
+# Return Advance
+    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
+    RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
+    RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
 
 class BreadcrumbView:
@@ -279,6 +289,12 @@ class BreadcrumbView:
     ADVANCE_PAYMENT_CREATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_CREATE_PAGE]
     ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_DETAIL_PAGE]
 
+    PAYMENT_LIST_PAGE = [
+        BreadcrumbItem.PAYMENT_LIST_PAGE
+    ]
+    PAYMENT_CREATE_PAGE = PAYMENT_LIST_PAGE + [BreadcrumbItem.PAYMENT_CREATE_PAGE]
+    PAYMENT_DETAIL_PAGE = PAYMENT_LIST_PAGE + [BreadcrumbItem.PAYMENT_DETAIL_PAGE]
+
     PRICE_LIST_PAGE = [
         BreadcrumbItem.PRICE_LIST_PAGE
     ]
@@ -333,3 +349,11 @@ class BreadcrumbView:
 
     GOOD_RECEIPT_CREATE_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_CREATE_PAGE]
     GOOD_RECEIPT_DETAIL_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_DETAIL_PAGE]
+
+# Return Advance
+    RETURN_ADVANCE_LIST_PAGE = [
+        BreadcrumbItem.RETURN_ADVANCE_LIST_PAGE
+    ]
+    RETURN_ADVANCE_CREATE_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_CREATE_PAGE]
+    RETURN_ADVANCE_DETAIL_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_DETAIL_PAGE]
+

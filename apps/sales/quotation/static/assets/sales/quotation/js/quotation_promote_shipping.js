@@ -625,8 +625,8 @@ function checkAvailableShipping(data_shipping) {
 }
 
 function reCalculateIfShipping(shipping_price) {
-    let elePretaxAmount = document.getElementById('quotation-create-product-total');
-    let eleDiscountAmount = document.getElementById('quotation-create-product-total');
+    let elePretaxAmount = document.getElementById('quotation-create-product-pretax-amount');
+    let eleDiscountAmount = document.getElementById('quotation-create-product-discount-amount');
     let eleTotalAmount = document.getElementById('quotation-create-product-total');
     let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
     let eleDiscountAmountRaw = document.getElementById('quotation-create-product-discount-amount-raw');

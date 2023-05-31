@@ -18,6 +18,7 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
+                        console.log(data)
                         let sale_code_ele = $('[name="sale_code"]');
                         if (data.advance_payment_detail.sale_order_mapped !== null) {
                             sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
@@ -111,6 +112,7 @@ $(function () {
         })
 
         function loadExpenseTable(data) {
+            console.log(data)
             let table = $('#dtbExpense');
             table.find('tbody').html('');
             $('#total-value').attr('data-init-money', '');
@@ -119,7 +121,7 @@ $(function () {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt}</td>
                                 <td class="wrap-text col-expense" data-id="${item.expense.id}"><span>${item.expense.title}</span></td>
-                                <td class="wrap-text"><span>${item.expense_type}</span></td>
+                                <td class="wrap-text"><span>${item.expense.type.title}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
                             </tr>`;

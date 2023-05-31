@@ -2,7 +2,10 @@ $(function(){
 
     let $table = $('#promotion-list'),
         url = $table.attr('data-url');
-    $table.DataTableDefault({
+    $table.DataTable({
+        searching: false,
+        ordering: false,
+        paginate: true,
         ajax: {
             url: url,
             type: "GET",

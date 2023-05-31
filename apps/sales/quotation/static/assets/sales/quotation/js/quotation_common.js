@@ -796,6 +796,18 @@ class loadDataHandle {
             self.loadTotal(data, false, false, true);
         }
     }
+
+    loadDataProductAll() {
+        let self = this;
+        let table = document.getElementById('datable-quotation-create-product');
+        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+            let row = table.tBodies[0].rows[i];
+            let eleItem = row.querySelector('.table-row-item');
+            if (eleItem) {
+                self.loadDataProductSelect($(eleItem), false)
+            }
+        }
+    }
 }
 
 class dataTableHandle {
@@ -1850,7 +1862,7 @@ class calculateCaseHandle {
         let eleQuantity = row.querySelector('.table-row-quantity');
         if (eleQuantity) {
             if (eleQuantity.value) {
-                quantity = parseInt(eleQuantity.value)
+                quantity = parseFloat(eleQuantity.value)
             } else if (!eleQuantity.value || eleQuantity.value === "0") {
                 quantity = 0
             }
@@ -2080,7 +2092,7 @@ class submitHandle {
                 }
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {
-                    rowData['product_quantity'] = parseInt(eleQuantity.value);
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
@@ -2142,7 +2154,7 @@ class submitHandle {
                 }
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {
-                    rowData['product_quantity'] = parseInt(eleQuantity.value);
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
@@ -2224,7 +2236,7 @@ class submitHandle {
             }
             let eleQuantity = row.querySelector('.table-row-quantity');
             if (eleQuantity) {
-                rowData['product_quantity'] = parseInt(eleQuantity.value);
+                rowData['product_quantity'] = parseFloat(eleQuantity.value);
             }
             let elePrice = row.querySelector('.table-row-price');
             if (elePrice) {
@@ -2302,7 +2314,7 @@ class submitHandle {
             }
             let eleQuantity = row.querySelector('.table-row-quantity');
             if (eleQuantity) {
-                rowData['expense_quantity'] = parseInt(eleQuantity.value);
+                rowData['expense_quantity'] = parseFloat(eleQuantity.value);
             }
             let elePrice = row.querySelector('.table-row-price');
             if (elePrice) {

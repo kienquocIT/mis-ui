@@ -1,6 +1,7 @@
 """needed module import"""
 from functools import wraps
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
@@ -219,6 +220,7 @@ def mask_view(**parent_kwargs):
                             case status.HTTP_500_INTERNAL_SERVER_ERROR:
                                 return HttpResponse(status=500)
                             case _:
+                                ctx['is_debug'] = 1 if settings.DEBUG_JS else 0
                                 ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
                                 ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()

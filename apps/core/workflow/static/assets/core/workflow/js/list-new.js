@@ -1,284 +1,6 @@
-class MainTableEvent{
-    getHTMLChildTable(){
-        // let $HTML = ''
-        return $('.wf-template .child-table').html()
-    }
-    addNewBtnClick(pk){
-        if (pk && pk.valid_uuid4()){
-            $('.add_new_wf').on('click', function(){
-                // encode pk and open new tab with param
-                let url = $('#url-factory').attr('data-new') + '?app=' + pk
-                window.open(url)
-            });
-        }
-    };
-}; // end Main table
-
-class ChildTableEvent{
-    getChildTableData(pk){
-        let url = $('#url-factory').attr('data-child')
-        $.fn.callAjax(url, 'GET', {application: pk})
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    this.loadTable(data);
-                }
-            )
-    }
-    loadTable(data){
-        let dumpData = [{
-            title: 'WF contact lên giám đốc khối',
-            apply_day: '2023-03-29 11:26:14',
-            is_active: true,
-            all_request: 3,
-            error_request: 1,
-            id: "9840d538-da65-4d3f-90b0-7b54c65dc0d8"
-        }]
-        let _childTable = $('#table_workflow_list tr table.child-table').DataTable({
-            data: dumpData,
-            searching: false,
-            ordering: false,
-            paginate: false,
-            info: false,
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
-            },
-            rowCallback: function (row, data) {
-                // handle onclick btn
-                $('.actions-btn a', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    actionsClick(row, data, e)
-                })
-            },
-            columns: [
-                {
-                    targets: 0,
-                    width: "35%",
-                    class: "text-center",
-                    render: (row, type, data) => {
-                        return `<div class="d-flex align-items-center"><i class="fa font-4 fa-chevron-circle-down`
-                        + ` mr-1 p-2 main-tb-ico"></i><span>${data.title}</span></div>`
-
-                    }
-                },
-                {
-                    targets: 1,
-                    width: "15%",
-                    class: "text-center",
-                    render: (row, type, data) => {
-                        return `<p>${moment(data.apply_day, 'YYYY-MM-DD').format('DD/MM/YYYY')}</p>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: "15%",
-                    class: "text-center",
-                    render: (data, type, row) => {
-                        let isCheck = row.is_active ? 'checked' : ''
-                        return `<div class="form-check form-check-sm">`
-                            + `<input type="checkbox" class="form-check-input" ${isCheck}></div>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: "15%",
-                    class: "text-center",
-                    render: (data, type, row) => {
-                        let all_request = row.all_request,
-                            error_request = row.error_request,
-                            error_html = '';
-                        if (error_request > 0) error_html = `<span class="btn btn-soft-danger">${error_request}</span>`
-                        return `<div><span class="mr-2">${all_request}</span>${error_html}</div>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    width: "20%",
-                    class: "text-center",
-                    render: (data, type, row) => {
-                        let _id = row.order
-                        if (row.hasOwnProperty('id') && row.id)
-                            _id = row.id
-                        let disabled = '';
-                        return `<div class="actions-btn">
-                                    <a class="btn btn-flush-dark flush-soft-hover ${disabled}"
-                                       title="Edit"
-                                       href="#"
-                                       data-id="${_id}"
-                                       data-action="edit">
-                                        <span class="feather-icon"><i data-feather="edit"></i></span>
-                                    </a>
-                                    <a class="btn btn-flush-dark flush-soft-hover ${disabled}"
-                                       title="Delete"
-                                       href="#"
-                                       data-id="${_id}"
-                                       data-action="delete">
-                                        <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                    </a>
-                                    <a class="btn btn-flush-dark flush-soft-hover ${disabled}"
-                                       title="Delete"
-                                       href="#"
-                                       data-id="${_id}"
-                                       data-action="tranfer">
-                                        <span class="feather-icon"><i data-feather="send"></i></span>
-                                    </a>
-                                </div>`;
-                    },
-                }
-            ],
-        })
-        $('#table_workflow_list tr table.child-table tbody').on('click', 'td .main-tb-ico', function (e) {
-            e.stopPropagation();
-            let tr = $(this).closest('tr');
-            let row = _childTable.row(tr);
-
-            if (row.child.isShown()) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                // Open this row
-                row.child($('.wf-template .grand-child-table').html()).show();
-                row.child().find('table').attr('id', 'grand-child_' + row.data().id)
-                // add event on click add new workflow
-                GrandChildEvt.init(row.data().id)
-                tr.addClass('shown');
-            }
-        });
-    };
-
-    init(pk){
-        this.getChildTableData(pk);
-    }
-}
-
-class GrandChildEvent{
-    getDataList(pk){
-        let url = $('#url-factory').attr('data-grand-child')
-        $.fn.callAjax(url, 'GET', {application: pk})
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    this.loadGrandChildTable(data);
-                }
-            )
-    }
-    loadGrandChildTable(data){
-        let dumpData = [
-            {
-                creator: "Nguyen Truong An",
-                posting_data: "2023-03-29 11:26:14",
-                current_node: "Manager duyệt",
-                status: true,
-                id: "9840d538-da65-4d3f-90b0-7b54c65dc0d8",
-            },
-            {
-                creator: "Nguyen An Nhien",
-                posting_data: "2023-06-23 11:26:14",
-                current_node: "Giám đốc duyệt",
-                status: false,
-                id: "ec08c0bd-20a7-4fa3-8d3e-77318173e543",
-            }
-        ]
-        let _grandChildTable = $('#table_workflow_list tr table.grand-child-table').DataTable({
-            data: dumpData,
-            searching: false,
-            ordering: false,
-            paginate: false,
-            info: false,
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
-            },
-            rowCallback: function (row, data, idx) {
-                // handle onclick btn
-                $('.actions-btn a', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    // actionsClick(row, data, e)
-                })
-                $('td:eq(0)', row).html(idx + 1)
-            },
-            columns: [
-                {
-                    targets: 0,
-                    width: "5%",
-                    class: "text-center",
-                    defaultContent: '',
-                },
-                {
-                    targets: 1,
-                    width: "35%",
-                    class: "text-center",
-                    render: (row, type, data) => {
-                        return `<p>${data.creator}</p>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: "15%",
-                    class: "text-center",
-                    render: (row, type, data) => {
-                        return `<p>${moment(data.posting_data, 'YYYY-MM-DD').format('DD/MM/YYYY')}</p>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: "15%",
-                    class: "text-center",
-                    render: (row, type, data) => {
-                        return `<p>${data.current_node}</p>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    width: "15%",
-                    class: "text-center",
-                    render: (row, type, data) => {
-                        let val_txt = data.status ? 'Ok' : 'Error'
-                        let val_cls = data.status ? 'success' : 'danger'
-                        return `<span class="btn btn-soft-${val_cls}">${val_txt}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    width: "15%",
-                    class: "text-center",
-                    render: (data, type, row) => {
-                        let _id = row.order
-                        if (row.hasOwnProperty('id') && row.id)
-                            _id = row.id
-                        let disabled = '';
-                        return `<div class="actions-btn">
-                                    <a class="btn btn-flush-dark flush-soft-hover ${disabled}"
-                                       title="Delete"
-                                       href="#"
-                                       data-id="${_id}"
-                                       data-action="tranfer">
-                                        <span class="feather-icon"><i data-feather="send"></i></span>
-                                    </a>
-                                </div>`;
-                    },
-                }
-            ],
-        })
-    }
-    init(pk){
-        this.getDataList(pk)
-    }
-}
-let MainEvt = new MainTableEvent();
-let ChildEvt = new ChildTableEvent();
-let GrandChildEvt = new GrandChildEvent()
-$(function () {
+$(document).ready(function () {
     // declare main variable
     let $table = $('#table_workflow_list');
-    let LIST_URL = $table.attr('data-url');
-    let sty_mode = {
-        0: 'danger',
-        1: 'success',
-        2: 'warning',
-    }
     let txt_mode = {
         0: $('.wf-mode a:nth-child(1)').text(),
         1: $('.wf-mode a:nth-child(2)').text(),
@@ -288,13 +10,26 @@ $(function () {
         0: 'danger',
         1: 'success',
     };
+    let txt_state_wf_doc = {
+        0: ["Created", "badge-soft-secondary"],
+        1: ["In Progress", "badge-soft-warning"],
+        2: ["Finish", "badge-soft-success"],
+        3: ["Finish with flow non-apply", "badge-soft-info"],
+    }
+    let txt_status_wf_doc = {
+        0: "Waiting",
+        1: "Success",
+        2: "Fail",
+        3: "Pending",
+    }
 
-    // run main table list
-    let _mainTable = $table.DataTableDefault({
+    // INIT DATATABLE APP LIST
+    let LIST_APP_URL = $table.attr('data-app-list');
+    $table.DataTableDefault({
         ajax: {
-            url: LIST_URL,
+            url: LIST_APP_URL,
             type: "GET",
-            dataSrc: 'data.workflow_list',
+            dataSrc: 'data.app_list',
             data: function (params) {
                 params['is_ajax'] = true;
                 return params
@@ -305,73 +40,454 @@ $(function () {
         },
         columns: [
             {
+                data: 'title',
                 targets: 0,
-                width: "40%",
-                render: (row, type, data) => {
-                    return `<div class="d-flex align-items-center"><i class="fa font-4 fa-chevron-circle-down`
-                        + ` mr-1 p-2 main-tb-ico"></i><span>${data.title}</span></div>`
-
+                width: "20%",
+                render: (data, type, row) => {
+                    return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> ${data}`;
                 }
-            },
-            {
+            }, {
+                data: 'mode',
                 targets: 1,
                 width: "25%",
-                render: () => {
-                    let mode = 1;
-                    return `<div class="d-flex justify-content-between align-items-center"><button type="button" `
-                        + `class="btn btn-soft-${sty_mode[mode]}">${txt_mode[mode]}</button>`
-                        + `${$('.dropdown-lv-1').html()}</div>`
-
+                render: (data, type, row) => {
+                    let htmlDropdown = '';
+                    Object.keys(txt_mode).map((key) => {
+                        htmlDropdown += `<option value="${key}" ${key?.toString() === data?.toString() ? "selected" : ""}>${txt_mode[key]}</option>`;
+                    })
+                    return `<select class="form-select mode-workflow">${htmlDropdown}</select>`;
                 }
-            },
-            {
+            }, {
+                data: 'error_total',
                 targets: 2,
                 width: "10%",
                 class: 'text-center',
-                render: (row, type, data) => {
-                    data.error = 1;
-                    let temp = data.error === 0 ? error_map[1] : error_map[0];
-                    return `<button type="button" class="btn btn-soft-${temp}">${data.error}</button>`;
+                render: (data, type, row) => {
+                    return `<span class="badge badge-soft-${data === 0 ? error_map[1] : error_map[0]}">${data}</span>`;
                 }
-            },
-            {
+            }, {
+                data: 'workflow_currently',
                 targets: 3,
                 width: "25%",
-                render: (row, type, data) => {
-                    data.wf_current = 'WF PAKD';
-                    let select = jQuery('<select>');
-                    select.addClass('dropdown-select_two')
-                    select.attr('data-param', JSON.stringify({application: '50348927-2c4f-4023-b638-445469c66953'}))
-                    // {application: data.application}
-                    return `<div class="d-flex justify-content-between align-items-center"><span>${data.wf_current}</span>`
-                        + `<div class="dropdown custom-dropdown-tb-2"><i class="fa fa-caret-down font-6 dropdown-toggle"`
-                        + ` data-bs-toggle="dropdown"></i>`
-                        + `<div class="dropdown-menu wf-mode">${select}</div></div></div>`
+                render: (data, type, row) => {
+                    if (data) {
+                        return $.fn.initElementInitSelect({
+                            'onload': {
+                                'id': data.id,
+                                'title': data.title
+                            },
+                            'dummy-data': {
+                                id: data.id,
+                                'title': data.title,
+                            },
+                            'url': $('#url-factory').attr('data-child'),
+                            'params': {
+                                'application': row?.['application_id'],
+                                'is_active': true,
+                            },
+                            'result-key': 'workflow_list',
+                            'class-name': 'select-workflow-current'
+                        }, 'html');
+                    }
+                    return '';
                 }
             },
         ]
     }, false);
-    // create event on click icon toggle of row
-    $('#table_workflow_list tbody').on('click', 'td .main-tb-ico', function () {
-        let tr = $(this).closest('tr');
-        let row = _mainTable.row(tr);
 
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
+    // EVENT CHANGE IN LINE APP LIST
+    $(document).on('change', '.mode-workflow', function (event) {
+        event.preventDefault();
+        let valId = $(this).val();
+        let state = confirm($('#idxSpanMsgGroup').attr('data-make-sure') + ' "' + $(this).find('option[value="' + valId + '"]').text() + '"');
+        if (!state) {
+            let previousValue = $(this).data("previousValue");
+            $(this).prop("selectedIndex", -1);
+            if (previousValue) $(this).val(previousValue);
         } else {
-            // Open this row
-            row.child(MainEvt.getHTMLChildTable()).show();
-            row.child().find('table').attr('id', 'child_'+row.data().id)
-            // add event on click add new workflow
-            MainEvt.addNewBtnClick(row.data().id)
-            ChildEvt.init(row.data().id)
-            tr.addClass('shown');
+            let rowData = $(this).getRowData();
+            if (rowData.id) {
+                $.fn.showLoading();
+                let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
+                let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
+                $.fn.callAjax(urlData, 'PUT', {'mode': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.status === 200) {
+                        $.fn.notifyB({
+                            'description': $('#base-trans-factory').attr('data-success')
+                        }, 'success');
+                    }
+                    setTimeout(() => {
+                        $.fn.hideLoading();
+                    }, 1000,)
+                }, (errs) => {
+                    $.fn.hideLoading();
+                })
+
+            }
         }
     });
-    // end setup table
+    $(document).on('change', '.select-workflow-current', function (event) {
+        event.preventDefault();
+        let valId = $(this).val();
+        let state = confirm($('#idxSpanMsgGroup').attr('data-make-sure') + ' "' + $(this).find('option[value="' + valId + '"]').text() + '"');
+        if (!state) {
+            let previousValue = $(this).data("previousValue");
+            $(this).prop("selectedIndex", -1);
+            if (previousValue) $(this).val(previousValue);
+        } else {
+            let rowData = $(this).getRowData();
+            if (rowData.id) {
+                $.fn.showLoading();
+                let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
+                let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
+                $.fn.callAjax(urlData, 'PUT', {'workflow_currently': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.status === 200) {
+                        $.fn.notifyB({
+                            'description': $('#base-trans-factory').attr('data-success')
+                        }, 'success');
+                    }
+                    setTimeout(() => {
+                        $.fn.hideLoading();
+                    }, 1000,)
+                }, (errs) => {
+                    $.fn.hideLoading();
+                })
 
-    // hide icon default dropdown
-    $('.custom-dropdown-tb i:after').hide();
+            }
+        }
+    });
+
+    // EVENT CLICK TO COLLAPSE IN LINE APP LIST
+    //      ACTION: INSERT TABLE WORKFLOW LIST TO NEXT ROW (OF APP LIST)
+    $(document).on('click', '.btn-collapse-app-wf', function (event) {
+        event.preventDefault();
+
+        let idTbl = $.fn.generateRandomString(12);
+        let trEle = $(this).closest('tr');
+        let iconEle = $(this).find('.icon-collapse-app-wf');
+
+        iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
+
+        if (iconEle.hasClass('fa-caret-right')) {
+            trEle.removeClass('bg-grey-light-5');
+            iconEle.removeClass('text-dark').addClass('text-secondary');
+            trEle.next().find('.child-workflow-group').slideToggle({
+                complete: function () {
+                    trEle.next().addClass('hidden');
+                }
+            });
+        }
+
+        if (iconEle.hasClass('fa-caret-down')) {
+            trEle.addClass('bg-grey-light-5');
+            iconEle.removeClass('text-secondary').addClass('text-dark');
+
+            if (!trEle.next().hasClass('child-workflow-list')) {
+                let dtlSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+                $(this).closest('tr').after(
+                    `<tr class="child-workflow-list"><td colspan="4"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
+                );
+
+                let rowData = $(this).getRowData();
+                let placeGetData = $('#url-factory');
+                let urlData = placeGetData.attr('data-url-workflow-list');
+                let urlWorkflowDetail = placeGetData.attr('data-url-workflow-detail');
+                $('#' + idTbl).DataTableDefault({
+                    "url-detail": urlWorkflowDetail,
+                    ajax: {
+                        url: urlData + '?' + $.param({'application': rowData?.['application_id']}),
+                        type: 'GET',
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) return resp.data['workflow_list'] ? resp.data['workflow_list'] : [];
+                            return [];
+                        },
+                    },
+                    columns: [
+                        {
+                            title: '#',
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        }, {
+                            title: 'title',
+                            data: 'title',
+                            render: (data, type, row, meta) => {
+                                return `<button class="btn-collapse-doc-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-doc-wf fas fa-caret-right text-secondary"></i></span></button> ${data}`;
+                            }
+                        }, {
+                            title: 'Date applied',
+                            data: 'date_applied',
+                            render: (data, type, row, meta) => {
+                                return data ? data : '_';
+                            }
+                        }, {
+                            title: 'Active',
+                            data: 'is_active',
+                            render: (data, type, row, meta) => {
+                                if (data === true) return `<span class="badge-status"><span class="badge badge-info badge-indicator"></span><span class="badge-label">Working</span></span>`;
+                                return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span><span class="badge-label">Deactivate</span></span>`;
+                            }
+                        }, {
+                            title: 'Wait complete', // data: 'is_active',
+                            render: (data, type, row, meta) => {
+                                return `<span class="badge badge-soft-warning">0</span>`;
+                            }
+                        }, {
+                            title: 'Action',
+                            render: (data, type, row, meta) => {
+                                let btnEdit = `<a href="${SetupFormSubmit.getUrlDetailWithID(urlWorkflowDetail, row.id)}"><button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-edit"></i></span></button></a>`
+                                let btnDelete = `<button class="btn-delete-wf btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                                let btnSend = `<button class="btn-change-wf-doc btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-paper-plane"></i></span></button>`
+                                return btnEdit + btnDelete + btnSend;
+                            }
+                        },
+                    ],
+                });
+            }
+            trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
+        }
+    });
+
+    // EVENT IN LINE WORKFLOW LIST
+    $(document).on('click', '.btn-delete-wf', function (event) {
+        event.preventDefault();
+        let rowData = $(this).getRowData();
+        alert('Delete WF: ' + rowData?.['title']);
+    });
+    $(document).on('click', '.btn-change-wf-doc', function (event) {
+        event.preventDefault();
+        let rowData = $(this).getRowData();
+        alert('Change WF of doc: ' + rowData?.['title']);
+    });
+
+    // EVENT CLICK TO COLLAPSE IN LINE WORKFLOW LIST
+    //      ACTION: INSERT RUNTIME OBJ LIST TO NEXT ROW (OF WORKFLOW LIST)
+    $(document).on('click', '.btn-collapse-doc-wf', function (event) {
+        event.preventDefault();
+        let idTbl = $.fn.generateRandomString(12);
+        let trEle = $(this).closest('tr');
+        let iconEle = $(this).find('.icon-collapse-doc-wf');
+        iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
+
+        if (iconEle.hasClass('fa-caret-right')) {
+            trEle.removeClass('bg-grey-light-5');
+            iconEle.removeClass('text-dark').addClass('text-secondary');
+            trEle.next().find('.child-workflow-group').slideToggle({
+                complete: function () {
+                    trEle.next().addClass('hidden');
+                }
+            });
+        }
+
+        if (iconEle.hasClass('fa-caret-down')) {
+            trEle.addClass('bg-grey-light-5');
+            iconEle.removeClass('text-secondary').addClass('text-dark');
+
+            if (!trEle.next().hasClass('child-workflow-list')) {
+                let dtlSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+                $(this).closest('tr').after(
+                    `<tr class="child-workflow-list"><td colspan="6"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
+                )
+
+                let rowData = $(this).getRowData();
+                let urlRuntimeList = $('#url-factory').attr('data-url-workflow-runtime-list');
+                $('#' + idTbl).DataTableDefault({
+                    ajax: {
+                        url: SetupFormSubmit.getUrlDetailWithID(urlRuntimeList, rowData.id),
+                        type: 'GET',
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                console.log(data)
+                                return resp.data['runtime_list'] ? resp.data['runtime_list'] : [];
+                            }
+                            return [];
+                        },
+                    },
+                    columns: [
+                        {
+                            title: "#",
+                            render: () => {
+                                return '';
+                            }
+                        },
+                        {
+                            data: 'doc_title',
+                            title: "Title",
+                            render: (data, type, row) => {
+                                return data ? data : '';
+                            }
+                        },
+                        {
+                            data: 'doc_employee_created',
+                            title: "Creator",
+                            render: (data, type, row) => {
+                                if (data && $.fn.hasOwnProperties(data, ['id', 'full_name', 'is_active'])) {
+                                    if (data['is_active'] === true) return data['full_name'] + ` <span class="badge badge-success badge-indicator"></span>`;
+                                    return data['full_name'] + `<span class="badge badge-secondary badge-indicator"></span>`;
+                                }
+                                return '_';
+                            }
+                        },
+                        {
+                            data: "date_created",
+                            title: "Posting date",
+                            render: (data, type, row) => {
+                                if (data) {
+                                    return data;
+                                }
+                                return 'Ngày tạo nè';
+                            }
+                        },
+                        {
+                            data: 'stage_currents',
+                            title: "Node currently",
+                            render: (data, type, row) => {
+                                if (typeof data === 'object' && $.fn.hasOwnProperties(data, ['id', 'title', 'code'])) {
+                                    if (data['code']) {
+                                        return `<span class="badge badge-warning badge-outline">${data['code']}</span>`;
+                                    } else {
+                                        return `<span class="badge badge-success badge-outline">${data['title']}</span>`;
+                                    }
+                                }
+                                return '_';
+                            }
+                        },
+                        {
+                            data: "state",
+                            title: "Status",
+                            render: (data, type, row, meta) => {
+                                if (data && Number.isFinite(data)) {
+                                    if (txt_state_wf_doc.hasOwnProperty(data)) {
+                                        return `<span class="badge ${txt_state_wf_doc[data][1]}">${txt_state_wf_doc[data][0]}</span>`;
+                                    }
+                                }
+                                return `<span class="badge badge-soft-success">OK</span>`;
+                            }
+                        },
+                        {
+                            title: "Action",
+                            render: (data, type, row) => {
+                                if (!(row.state === 2 || row.state === 3 || row.status === 1)) {
+                                    return `<button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-paper-plane"></i></span></button>`;
+                                }
+                                return '_';
+                            }
+                        },
+                    ]
+                });
+            }
+            trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
+        }
+
+        // if (iconEle.hasClass('fa-caret-right')) {
+        //     trEle.addClass('bg-grey-light-5');
+        //     iconEle.removeClass('text-secondary').addClass('text-dark');
+        //     iconEle.removeClass('fa-caret-right').addClass('fa-caret-down');
+        //     if (trEle.next().hasClass('child-workflow-list')) {
+        //         trEle.next().removeClass('hidden');
+        //     } else {
+        //         let dtlSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+        //         $(this).closest('tr').after(`<tr class="child-workflow-list"><td colspan="6"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5">${dtlSub}</div></td></tr>`)
+        //
+        //         let rowData = $(this).getRowData();
+        //         let urlRuntimeList = $('#url-factory').attr('data-url-workflow-runtime-list');
+        //         $('#' + idTbl).DataTableDefault({
+        //             ajax: {
+        //                 url: SetupFormSubmit.getUrlDetailWithID(urlRuntimeList, rowData.id),
+        //                 type: 'GET',
+        //                 dataSrc: function (resp) {
+        //                     let data = $.fn.switcherResp(resp);
+        //                     if (data) {
+        //                         console.log(data)
+        //                         return resp.data['runtime_list'] ? resp.data['runtime_list'] : [];
+        //                     }
+        //                     return [];
+        //                 },
+        //             },
+        //             columns: [
+        //                 {
+        //                     title: "#",
+        //                     render: () => {
+        //                         return '';
+        //                     }
+        //                 },
+        //                 {
+        //                     data: 'doc_title',
+        //                     title: "Title",
+        //                     render: (data, type, row) => {
+        //                         return data ? data : '';
+        //                     }
+        //                 },
+        //                 {
+        //                     data: 'doc_employee_created',
+        //                     title: "Creator",
+        //                     render: (data, type, row) => {
+        //                         if (data && $.fn.hasOwnProperties(data, ['id', 'full_name', 'is_active'])) {
+        //                             if (data['is_active'] === true) return data['full_name'] + ` <span class="badge badge-success badge-indicator"></span>`;
+        //                             return data['full_name'] + `<span class="badge badge-secondary badge-indicator"></span>`;
+        //                         }
+        //                         return '_';
+        //                     }
+        //                 },
+        //                 {
+        //                     data: "date_created",
+        //                     title: "Posting date",
+        //                     render: (data, type, row) => {
+        //                         if (data) {
+        //                             return data;
+        //                         }
+        //                         return 'Ngày tạo nè';
+        //                     }
+        //                 },
+        //                 {
+        //                     data: 'stage_currents',
+        //                     title: "Node currently",
+        //                     render: (data, type, row) => {
+        //                         if (typeof data === 'object' && $.fn.hasOwnProperties(data, ['id', 'title', 'code'])) {
+        //                             if (data['code']) {
+        //                                 return `<span class="badge badge-warning badge-outline">${data['code']}</span>`;
+        //                             } else {
+        //                                 return `<span class="badge badge-success badge-outline">${data['title']}</span>`;
+        //                             }
+        //                         }
+        //                         return '_';
+        //                     }
+        //                 },
+        //                 {
+        //                     data: "state",
+        //                     title: "Status",
+        //                     render: (data, type, row, meta) => {
+        //                         if (data && Number.isFinite(data)) {
+        //                             if (txt_state_wf_doc.hasOwnProperty(data)) {
+        //                                 return `<span class="badge ${txt_state_wf_doc[data][1]}">${txt_state_wf_doc[data][0]}</span>`;
+        //                             }
+        //                         }
+        //                         return `<span class="badge badge-soft-success">OK</span>`;
+        //                     }
+        //                 },
+        //                 {
+        //                     title: "Action",
+        //                     render: (data, type, row) => {
+        //                         if (!(row.state === 2 || row.state === 3 || row.status === 1)) {
+        //                             return `<button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-paper-plane"></i></span></button>`;
+        //                         }
+        //                         return '_';
+        //                     }
+        //                 },
+        //             ]
+        //         });
+        //     }
+        // } else {
+        //     trEle.removeClass('bg-grey-light-5');
+        //     iconEle.removeClass('text-dark').addClass('text-secondary');
+        //     iconEle.removeClass('fa-caret-down').addClass('fa-caret-right');
+        //     if (trEle.next().hasClass('child-workflow-list')) {
+        //         trEle.next().addClass('hidden');
+        //     }
+        // }
+    });
 });

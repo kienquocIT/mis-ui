@@ -1068,6 +1068,57 @@ $(document).ready(function () {
 });
 
 
+function buildSelect2() {
+    $('.select2-init-v1').each(function () {
+        if (!$(this).attr('data-init-loaded')) {
+            // flag is on
+            $(this).attr('data-init-loaded', true);
+
+            // display dummy data
+            let dummyData = JSON.parse($(this).attr('data-dummy'));
+            if (dummyData && typeof dummyData === 'object' && dummyData.hasOwnProperty('title') && dummyData.hasOwnProperty('id')) {
+                $(this).empty().append(
+                    `<option value="${dummyData.id}" selected>${dummyData.title}</option>`
+                )
+            }
+
+        }
+    })
+}
+
+$(document).ready(function () {
+    $(document).on('focus', 'select', function () {
+        $(this).data('previousValue', $(this).val());
+    })
+    $(document).on('click', '.select2-init-v1', function () {
+        if (!$(this).attr('data-ajax-loaded')) {
+            $(this).attr('data-ajax-loaded', true);
+
+            let urlData = $(this).attr('data-url') + '?' + $(this).attr('data-params');
+            let keyResult = $(this).attr('data-result-key');
+            $(this).append(
+                `<option class="x-item-loading" value="x-item-loading" disabled>` +
+                $('#base-trans-factory').attr('data-loading') + '...' +
+                `</option>`
+            );
+            $.fn.callAjax(
+                urlData, 'GET'
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
+                        let selectedVal = $(this).find(":selected").val();
+                        $(this).find('option.x-item-loading').remove();
+                        $.map(data?.[keyResult], (item) => {
+                            if (selectedVal && item.id !== selectedVal) $(this).append(`<option value="${item.id}">${item.title}</option>`);
+                        })
+                    }
+                },
+            )
+        }
+    });
+});
+
 // function extend to jQuery
 $.fn.extend({
     // utils
@@ -1113,10 +1164,24 @@ $.fn.extend({
                     // reload all currency
                     $.fn.initMaskMoney2();
                 }
+                // buildSelect2();
+                setTimeout(
+                    () => {
+                        buildSelect2();
+                    },
+                    0
+                )
             },
             data: [], ...opts
         }
-        if (opts?.['ajax']) delete defaultConfig['data'];
+        if (opts?.['ajax']) {
+            delete defaultConfig['data'];
+            if (!opts['ajax']?.['error']) {
+                opts['ajax']['error'] = function (xhr, error, thrown) {
+                    if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
+                }
+            }
+        }
         if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
         let tbl = $(this).DataTable(defaultConfig);
         tbl.on('init.dt', function () {
@@ -1134,12 +1199,46 @@ $.fn.extend({
         });
         return tbl;
     },
+    initElementInitSelect: function (opts, html_or_$ = 'html') {
+        let configData = {
+            'dummy-data': {},
+            'key-display': 'title',
+            'key-primary': 'id',
+            'url': null,
+            'method': 'GET',
+            'params': {},
+            'result-key': null,
+            'class-name': '',
+            ...opts
+        }
+        let selData = $('<select>');
+        selData.addClass('form-select select2-init-v1');
+        selData.addClass(configData['class-name']);
+        selData.attr('data-init-loaded', null);
+        selData.attr('data-ajax-loaded', null);
+
+        selData.attr('data-dummy', JSON.stringify(configData['dummy-data']));
+        selData.attr('data-key-display', configData['key-display']);
+        selData.attr('data-key-primary', configData['key-primary']);
+        selData.attr('data-url', configData['url']);
+        selData.attr('data-method', configData['method']);
+        selData.attr('data-params', $.param(configData['params']));
+        selData.attr('data-result-key', configData['result-key']);
+        switch (html_or_$) {
+            case "$":
+                return selData;
+            case "html":
+                return selData.prop('outerHTML');
+            default:
+                throw Error('Init Select must be return type choice in: [html, object $]')
+        }
+    },
     sumArray: (array) => {
         return array.reduce(function (acc, currentValue) {
             return acc + currentValue;
         }, 0);
     },
-    parseDateTime: (dateStrUTC, microSecondLength = 0)=>{
+    parseDateTime: (dateStrUTC, microSecondLength = 0) => {
         let dateNew = new Date(Date.parse(dateStrUTC));
         return "{day}/{month}/{year} {hour}:{minute}:{second}".format_by_key(
             {
@@ -1152,7 +1251,7 @@ $.fn.extend({
             }
         ) + (microSecondLength > 0 ? ("." + dateNew.getMilliseconds().toString().padStart(3, '0')) : "")
     },
-    parseDate: (dateStrUTC)=>{
+    parseDate: (dateStrUTC) => {
         let dateNew = new Date(Date.parse(dateStrUTC));
         return "{day}/{month}/{year}".format_by_key(
             {
@@ -1161,6 +1260,20 @@ $.fn.extend({
                 year: dateNew.getFullYear().toString(),
             }
         )
+    },
+    hasOwnProperties: function (objData, keys) {
+        if (typeof objData === 'object' && Array.isArray(keys)) {
+            $.map(
+                keys,
+                (key) => {
+                    if (!objData.hasOwnProperty(key)) {
+                        return false;
+                    }
+                }
+            )
+            return true;
+        }
+        return false;
     },
 
     // notify
@@ -1454,7 +1567,12 @@ $.fn.extend({
         }
     },
     hideLoading: function () {
-        $('#loadingContainer').addClass('hidden');
+        setTimeout(
+            () => {
+                $('#loadingContainer').addClass('hidden');
+            },
+            250,
+        )
     },
     getRowData: function () {
         // element call from in row of DataTable
@@ -1528,7 +1646,7 @@ class SetupFormSubmit {
         return null;
     }
 
-    getUrlDetailWithDataUrl(attrName, pk){
+    getUrlDetailWithDataUrl(attrName, pk) {
         let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
         return data_url + pk.toString()
     }
@@ -1541,7 +1659,7 @@ class SetupFormSubmit {
         return null;
     }
 
-    convertUrlDetail(url){
+    convertUrlDetail(url) {
         return url.split("/").slice(0, -1).join("/") + "/";
     }
 
@@ -1734,13 +1852,14 @@ var DataTableAction = {
                                 {
                                     description: res?.data?.message ? res.data.message : 'Delete item successfully'
                                 },
-                                'success')
+                                'success'
+                            )
                         }
                     })
             }
         })
     },
-    'status': function(stt){
+    'status': function (stt) {
         let html = '';
         const $baseTrans = $('#base-trans-factory')
         const listSys = {

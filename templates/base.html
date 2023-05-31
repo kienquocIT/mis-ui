@@ -150,6 +150,7 @@
 
         <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
         <span id="msgSuccess">{% trans 'Successfully' %}</span>
+        <span id="flagIsDebug" data-is-debug={{ is_debug }}></span>
     </div>
     <!-- /Message translate usually -->
     <!-- /Message translate base -->
@@ -161,6 +162,8 @@
             data-added="{% trans 'Added' %}"
             data-finish="{% trans 'Finish' %}"
             data-cancel="{% trans 'Cancel' %}"
+            data-loading="{% trans 'Loading' %}"
+            data-success="{% trans 'Successfully' %}"
     >
     <!-- /Message translate base -->
 
@@ -246,8 +249,10 @@
         $(document).ready(function () {
             <!-- Loading table ajax -->
             $(document).find('table').each((idx, tbl) => {
-                $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
-                $(tbl).on('draw.dt', () => $.fn.hideLoading());
+                if(!$(tbl).attr('data-hidden-loading')){
+                    $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
+                    $(tbl).on('draw.dt', () => $.fn.hideLoading());
+                }
             });
             <!-- ## Loading table ajax -->
 

@@ -88,12 +88,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # HR
 
     # WORKFLOW
+    WORKFLOW_OF_APPS = StringUrl('workflow/apps')
+    WORKFLOW_OF_APP_DETAIL = StringUrl('workflow/app/{pk}')
     WORKFLOW = StringUrl('workflow')
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
 
     # WORKFLOW RUNTIME
+    RUNTIME_LIST = StringUrl('workflow/runtime/list')
     RUNTIME_DETAIL = StringUrl('workflow/runtime')
     RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
     RUNTIME_HISTORY_STAGE = StringUrl('workflow/history/stage/{pk}')

@@ -64,6 +64,40 @@ WORKFLOW_TYPE = {
 }
 
 
+class WorkflowOfAppListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get()
+        if resp.state:
+            return {'app_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class WorkflowOfAppDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APP_DETAIL.fill_key(pk=pk)).put(
+                data=request.data
+            )
+            if resp.state:
+                return {'app_list': resp.result}, status.HTTP_200_OK
+            elif resp.status == 401:
+                return {}, status.HTTP_401_UNAUTHORIZED
+            return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return {'errors': _('Not found')}, status.HTTP_400_BAD_REQUEST
+
+
 class WorkflowList(View):
     permission_classes = [IsAuthenticated]
 
@@ -83,13 +117,13 @@ class WorkflowListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get()
+        print(request.query_params)
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get(data=request.query_params.dict())
         if resp.state:
             return {'workflow_list': resp.result}, status.HTTP_200_OK
-
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class WorkflowCreate(View):
@@ -205,6 +239,20 @@ class FlowDiagramListAPI(APIView):
         if resp.state:
             return resp.result, status.HTTP_200_OK
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, flow_id, **kwargs):
+        if TypeCheck.check_uuid(flow_id):
+            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_LIST).get(data={'flow_id': flow_id})
+            if resp.state:
+                return {'runtime_list': resp.result}, status.HTTP_200_OK
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': 'xxx'}, status.HTTP_400_BAD_REQUEST
 
 
 class FlowRuntimeDetailAPI(APIView):

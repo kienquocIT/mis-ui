@@ -2046,6 +2046,7 @@ class submitHandle {
             let row = tableBody.rows[i];
             let eleProduct = row.querySelector('.table-row-item');
             let elePromotion = row.querySelector('.table-row-promotion');
+            let eleShipping = row.querySelector('.table-row-shipping');
             if (eleProduct) { // PRODUCT
                 let optionSelected = eleProduct.options[eleProduct.selectedIndex];
                 if (optionSelected) {
@@ -2127,6 +2128,56 @@ class submitHandle {
                 rowData['shipping'] = null;
                 rowData['product_title'] = elePromotion.value;
                 rowData['product_code'] = elePromotion.value;
+                rowData['unit_of_measure'] = null;
+                rowData['product_uom_title'] = "";
+                rowData['product_uom_code'] = "";
+                let eleTax = row.querySelector('.table-row-tax');
+                if (eleTax) {
+                    let optionSelected = eleTax.options[eleTax.selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-info')) {
+                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            rowData['tax'] = dataInfo.id;
+                            rowData['product_tax_title'] = dataInfo.title;
+                            rowData['product_tax_value'] = dataInfo.value;
+                        } else {
+                            rowData['product_tax_value'] = 0;
+                        }
+                    }
+                }
+                let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                }
+                let eleDescription = row.querySelector('.table-row-description');
+                if (eleDescription) {
+                    rowData['product_description'] = eleDescription.value;
+                }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                }
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    rowData['product_unit_price'] = $(elePrice).valCurrency();
+                }
+                rowData['product_discount_value'] = 0;
+                rowData['product_discount_amount'] = 0;
+                let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                if (eleSubtotal) {
+                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                }
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    rowData['order'] = parseInt(eleOrder.innerHTML);
+                }
+            } else if (eleShipping) { // SHIPPING
+                rowData['is_shipping'] = true;
+                rowData['product'] = null;
+                rowData['shipping'] = eleShipping.getAttribute('data-id');
+                rowData['promotion'] = null;
+                rowData['product_title'] = eleShipping.value;
+                rowData['product_code'] = eleShipping.value;
                 rowData['unit_of_measure'] = null;
                 rowData['product_uom_title'] = "";
                 rowData['product_uom_code'] = "";

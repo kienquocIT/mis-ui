@@ -218,10 +218,12 @@ $(function () {
                 },
                 {
                     render: (row, type, data, meta) => {
+                        let isDisabled = ''
+                        if (data.picked_quantity === data.remaining_quantity) isDisabled = 'disabled'
                         return `<div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <input class="form-control" type="number" id="prod_row-${meta.row}" 
-                                        value="${data.picked_quantity}"/>
+                                        value="${data.picked_quantity}" ${isDisabled}/>
                                     </div>
                                 </div>`;
                     }

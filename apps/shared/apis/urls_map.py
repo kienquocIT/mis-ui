@@ -101,6 +101,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
     RUNTIME_HISTORY_STAGE = StringUrl('workflow/history/stage/{pk}')
     RUNTIME_TASK = StringUrl('workflow/task/{pk}')
+
+    # crm/contact
+    CONTACT_LIST = StringUrl('saledata/contacts')
+    CONTACT_DETAIL = StringUrl('saledata/contact')
+    CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contacts-not-map-account')
+
+    # masterdata/lookup/contact
+    SALUTATION_LIST = StringUrl('saledata/salutations')
     INTERESTS_LIST = StringUrl('saledata/interests')
     SALUTATION_DETAIL = StringUrl('saledata/salutation/')
     INTEREST_DETAIL = StringUrl('saledata/interest/')

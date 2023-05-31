@@ -41,7 +41,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null) {
+    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, is_load_detail = false) {
         let self = this;
         let jqueryId = '#' + customer_id;
         let ele = $(jqueryId);
@@ -53,11 +53,11 @@ class loadDataHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.empty();
-                    if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
+                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
                         ele.append(`<option value=""></option>`);
                         let dataAppend = ``;
                         let dataMapOpp = ``;
-                        data.account_list.map(function (item) {
+                        data.account_sale_list.map(function (item) {
                             let ownerName = "";
                             if (item.owner) {
                                 ownerName = item.owner.fullname;
@@ -79,15 +79,17 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-                                // load Shipping & Billing by Customer
-                                self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
-                                // load Contact by Customer
-                                if (item.id && item.owner) {
-                                    self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
-                                }
-                                // load Payment Term by Customer
-                                if (Object.keys(item.payment_term_mapped).length !== 0) {
+                                if (is_load_detail === false) {
+                                    // load Shipping & Billing by Customer
+                                    self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                    // load Contact by Customer
+                                    if (item.id && item.owner) {
+                                        self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                    }
+                                    // load Payment Term by Customer
                                     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
+                                    // Store Account Price List
+                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                                 }
                             }
                         })
@@ -269,6 +271,8 @@ class loadDataHandle {
             let linkDetail = ele.getAttribute('data-link-detail');
             eleBox.attr('data-link-detail', linkDetail);
             let data = JSON.parse(ele.value);
+            eleBox.empty();
+            eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
                 let uom_title = "";
                 let default_uom = {};
@@ -335,6 +339,8 @@ class loadDataHandle {
         let eleBox = $(jqueryId);
         if (ele && eleBox) {
             let data = JSON.parse(ele.value);
+            eleBox.empty();
+            eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
@@ -379,6 +385,8 @@ class loadDataHandle {
         let eleBox = $(jqueryId);
         if (ele && eleBox) {
             let data = JSON.parse(ele.value);
+            eleBox.empty();
+            eleBox.append(`<option value="" data-value="0">0 %</option>`);
             for (let i = 0; i < data.length; i++) {
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
@@ -417,7 +425,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationExpense(expense_id, box_id) {
+    loadBoxQuotationExpense(expense_id, box_id, valueToSelect = null) {
         let ele = document.getElementById(expense_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -425,6 +433,8 @@ class loadDataHandle {
             let linkDetail = ele.getAttribute('data-link-detail');
             eleBox.attr('data-link-detail', linkDetail);
             let data = JSON.parse(ele.value);
+            eleBox.empty();
+            eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
                 let uom_title = "";
                 let default_uom = {};
@@ -452,16 +462,24 @@ class loadDataHandle {
                     'price_list': price_list,
                     'tax': tax_code,
                 }).replace(/"/g, "&quot;");
-                eleBox.append(`<option value="${data[i].id}">
+                let option = `<option value="${data[i].id}">
                             <span class="expense-title">${data[i].title}</span>
                             <input type="hidden" class="data-default" value="${expense_data}">
                             <input type="hidden" class="data-info" value="${dataStr}">
-                        </option>`)
+                        </option>`
+                if (valueToSelect && valueToSelect === data[i].id) {
+                    option = `<option value="${data[i].id}" selected>
+                            <span class="expense-title">${data[i].title}</span>
+                            <input type="hidden" class="data-default" value="${expense_data}">
+                            <input type="hidden" class="data-info" value="${dataStr}">
+                        </option>`
+                }
+                eleBox.append(option)
             }
         }
     }
 
-    loadDataProductSelect(ele) {
+    loadDataProductSelect(ele, is_change_item = true) {
         let self = this;
         let optionSelected = ele[0].options[ele[0].selectedIndex];
         let productData = optionSelected.querySelector('.data-default');
@@ -471,30 +489,43 @@ class loadDataHandle {
             let price = ele[0].closest('tr').querySelector('.table-row-price');
             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+            // load UOM
             if (uom && data.unit_of_measure) {
-                uom.value = data.unit_of_measure.id;
+                self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id, data.unit_of_measure.id);
+            } else {
+                self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id);
             }
+            // load PRICE
             if (price && priceList) {
                 let valList = [];
+                let account_price_list = document.getElementById('customer-price-list').value;
                 $(priceList).empty();
                 for (let i = 0; i < data.price_list.length; i++) {
-                    valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                    let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                    if (data.price_list[i].id === account_price_list) {
+                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
+                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                     <div class="row">
                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                         <div class="col-2"></div>
                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                     </div>
                                 </a>`;
-                    $(priceList).append(option);
+                        $(priceList).append(option);
+                    }
                 }
-                if (valList) {
-                    let minVal = Math.min(...valList);
-                    $(price).attr('value', String(minVal));
+                // get Min Price to display
+                if (is_change_item === true) {
+                    if (valList.length > 0) {
+                        let minVal = Math.min(...valList);
+                        $(price).attr('value', String(minVal));
+                    }
                 }
             }
+            // load TAX
             if (tax && data.tax) {
-                tax.value = data.tax.id;
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', tax.id, data.tax.id);
+            } else {
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', tax.id);
             }
             self.loadInformationSelectBox(ele);
         }
@@ -730,7 +761,7 @@ class loadDataHandle {
             self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);
         }
         if (data.customer) {
-            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'))
+            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), true)
         }
         if (data.contact) {
             self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
@@ -743,6 +774,9 @@ class loadDataHandle {
         }
         if (data.quotation && data.sale_person) {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
+        }
+        if (data.date_created) {
+            $('#quotation-create-date-created').val(moment(data.date_created).format('DD-MM-YYYY'))
         }
         if (is_copy === true) {
             $('#select-box-quotation').append(`<option value="${data.id}" selected>${data.title}</option>`)
@@ -837,7 +871,7 @@ class dataTableHandle {
                                                 <i class="fas fa-gift"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -918,7 +952,7 @@ class dataTableHandle {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             return `<div class="row">
                                 <div class="dropdown">
-                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
                                         <input 
                                             type="text" 
@@ -926,7 +960,7 @@ class dataTableHandle {
                                             value="${row.product_unit_price}"
                                             data-return-type="number"
                                         >
-                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
                                     </span>
                                     </div>
                                     <div role="menu" class="dropdown-menu table-row-price-list w-460p">
@@ -1315,7 +1349,7 @@ class dataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <div class="dropdown">
-                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
                                         <input 
                                             type="text" 
@@ -1323,7 +1357,7 @@ class dataTableHandle {
                                             value="${row.expense_price}"
                                             data-return-type="number"
                                         >
-                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
+                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
                                     </span>
                                     </div>
                                     <div role="menu" class="dropdown-menu table-row-price-list w-460p">
@@ -1760,10 +1794,12 @@ class calculateCaseHandle {
                 if (subtotalRaw) {
                     if (subtotalRaw.value) {
                         // check if not promotion then plus else minus
-                        if (is_promotion === false) {
+                        if (is_promotion === false) { // not promotion
                             pretaxAmount += parseFloat(subtotalRaw.value)
-                        } else {
-                            pretaxAmount -= parseFloat(subtotalRaw.value)
+                        } else { // promotion
+                            if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
+                                pretaxAmount -= parseFloat(subtotalRaw.value)
+                            }
                         }
                     }
                 }
@@ -1772,10 +1808,12 @@ class calculateCaseHandle {
                 if (subTaxAmountRaw) {
                     if (subTaxAmountRaw.value) {
                         // check if not promotion then plus else minus
-                        if (is_promotion === false) {
+                        if (is_promotion === false) { // not promotion
                             taxAmount += parseFloat(subTaxAmountRaw.value)
-                        } else {
-                            taxAmount -= parseFloat(subTaxAmountRaw.value)
+                        } else { // promotion
+                            if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
+                                taxAmount -= parseFloat(subTaxAmountRaw.value)
+                            }
                         }
                     }
                 }
@@ -1986,6 +2024,10 @@ class submitHandle {
     setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-product');
+        let tableEmpty = table.querySelector('.dataTables_empty');
+        if (tableEmpty) {
+            return []
+        }
         let tableBody = table.tBodies[0];
         for (let i = 0; i < tableBody.rows.length; i++) {
             let rowData = {};
@@ -2108,7 +2150,10 @@ class submitHandle {
                 }
                 rowData['product_discount_value'] = 0;
                 rowData['product_discount_amount'] = 0;
-                rowData['product_subtotal_price'] = 0;
+                let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                if (eleSubtotal) {
+                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                }
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
@@ -2125,6 +2170,10 @@ class submitHandle {
     setupDataCost() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-cost');
+        let tableEmpty = table.querySelector('.dataTables_empty');
+        if (tableEmpty) {
+            return []
+        }
         let tableBody = table.tBodies[0];
         for (let i = 0; i < tableBody.rows.length; i++) {
             let rowData = {};

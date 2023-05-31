@@ -7,15 +7,80 @@ $(document).ready(function () {
     let ele_unit_of_measure_group = $('#section-unit-measure-group').html()
     let url_update;
 
+    const column_product_expense = [
+        {
+            render: (data, type, row, meta) => {
+                return '';
+            }
+        },
+        {
+            data: 'title',
+            className: 'wrap-text',
+            render: (data, type, row, meta) => {
+                if (row.is_default) {
+                    if (row.is_default === false) {
+                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                                data-bs-target="#modal-detail-product-and-expense" data-id="{0}">
+                                    <span><b>{1}</b></span>
+                                </a>`.format_by_idx(
+                            row.id, data
+                        )
+                    } else {
+                        return `<a>
+                                    <span><b>{0}</b></span>
+                                </a>`.format_by_idx(data)
+                    }
+                } else {
+                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                            data-bs-target="#modal-detail-product-and-expense" data-id="{0}">
+                                <span><b>{1}</b></span>
+                            </a>`.format_by_idx(
+                        row.id, data
+                    )
+                }
+            }
+        },
+        {
+            data: 'description',
+            className: 'wrap-text',
+            render: (data, type, row, meta) => {
+                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                    data
+                )
+            }
+        }, {
+            render: (data, type, row, meta) => {
+                if (row.is_default === false) {
+                    return `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
+                        row.id
+                    );
+                } else {
+                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                }
+            }
+        }
+    ]
+
     //Switch view table
     $("#tab-select-table a.product-and-expense").on("click", function () {
         $('.btn-show-modal').attr('data-bs-target', '#modal-product-and-expense')
-        let section = $(this).attr('data-collapse')
+        let section = $(this).attr('data-collapse');
+        switch (section) {
+            case 'section-product-type':
+                loadProductType()
+                break;
+            case 'section-product-category':
+                loadProDuctCategory()
+                break;
+            case 'section-expense-type':
+                loadExpenseType()
+                break;
+        }
         $(".lookup-data").hide()
         let id_tag = `#` + section
         $('#modal-product-and-expense h5').text($(this).text());
         $(id_tag).show();
-        $('#form-create-product-and-expense').attr('data-lookup', $(this).attr('data-collapse'))
+        $('#form-create-product-and-expense').attr('data-lookup', $(this).attr('data-collapse'));
     })
 
     $("#tab-select-table a.unit-measure").on("click", function () {
@@ -25,6 +90,7 @@ $(document).ready(function () {
         let id_tag = `#` + section
         $('#modal-unit-measure h5').text($(this).text());
         $(id_tag).show();
+        loadUnitOfMeasure();
     })
 
     $("#tab-select-table a.unit-measure-group").on("click", function () {
@@ -34,303 +100,227 @@ $(document).ready(function () {
         let id_tag = `#` + section
         $('#modal-unit-measure-group h5').text($(this).text());
         $(id_tag).show();
-
+        loadUnitOfMeasureGroup();
     })
 
-    let config_product_expense = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'title', render: (data, type, row, meta) => {
-                if (row.is_default) {
-                    if (row.is_default === false) {
-                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                            data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
-                                    <span><b>` + row.title + `</b></span>
-                                </a>`
-                    }
-                    else {
-                        return `<a>
-                            <span><b>` + row.title + `</b></span>
-                        </a>`
-                    }
-                }
-                else {
-                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                        data-bs-target="#modal-detail-product-and-expense" data-id="` + row.id + `">
-                                <span><b>` + row.title + `</b></span>
-                            </a>`
-                }
-            }
-        }, {
-            'data': 'description', render: (data, type, row, meta) => {
-                return `<span><b>` + row.description + `</b></span>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                if (row.is_default) {
-                    if (row.is_default === false) {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt3;
-                    }
-                    else {
-                        let bt3 = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return bt3;
-                    }
-                }
-                else {
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return bt3;
-                }
-            }
-        },]
-    }
-
-    let config_unit_measure_group = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'title', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-            data-bs-target="#modal-detail-unit-measure-group" data-id="` + row.id + `">
-                    <span><b>` + row.title + `</b></span>
-                </a>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt3;
-            }
-        },]
-    }
-
-    let groupColumn = 3;
-    let config_unit_measure = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        // scrollY: $(window).height() * 0.6,
-        // scrollCollapse: true,
-        // paging: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        },
-            {visible: false, targets: groupColumn}
-        ],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        order: [[groupColumn, 'asc']],
-        drawCallback: function (settings) {
-            let api = this.api();
-            let rows = api.rows({page: 'current'}).nodes();
-            let last = null;
-
-            api
-                .column(groupColumn, {page: 'current'})
-                .data()
-                .each(function (group, i) {
-                    if (last !== group.title) {
-                        $(rows)
-                            .eq(i)
-                            .before(
-                                '<tr class="group">' +
-                                '<td><span class="badge badge-outline badge-soft-success w-100">' + group.title + '</span></td>' +
-                                '</tr>'
-                            );
-                        last = group.title;
-                    }
-                });
-
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'code', render: (data, type, row, meta) => {
-                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-            data-bs-target="#modal-detail-unit-measure" data-id="` + row.id + `">
-                    <span><b>` + row.code + `</b></span>
-                </a>`
-            }
-        }, {
-            'data': 'title', render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
-            }
-        }, {
-            'data': 'group', render: (data, type, row, meta) => {
-                return `<span>` + row.group.title + `</span>`
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-
-                if (row.group.hasOwnProperty('is_referenced_unit')) {
-                    if (row.group.is_referenced_unit === true) {
-                        return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
-                    } else {
-                        return ``;
-                    }
-                }
-                return '';
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="` + row.id + `" data-bs-placement="top" title="" data-bs-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modal-update-data"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt3;
-            }
-        },],
-    }
-
-    function initDataTable(config, id_table) {
-        /*DataTable Init*/
-        let dtb = $(id_table);
-        if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
-            /*Checkbox Add*/
-            // $(document).on('click', '.del-button', function () {
-            //     targetDt.rows('.selected').remove().draw(false);
-            //     return false;
-            // });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-            dtb.parent().addClass('table-responsive');
+    function loadProductType() {
+        if (!$.fn.DataTable.isDataTable('#datatable-product-type-list')) {
+            let tbl = $('#datatable-product-type-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('product_type_list')) {
+                                return resp.data['product_type_list'] ? resp.data['product_type_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: column_product_expense,
+                },
+            );
         }
     }
 
-    function loadProductType() {
-        let tb_product_type = $('#datatable-product-type-list');
-        $.fn.callAjax(tb_product_type.attr('data-url'), tb_product_type.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
-                    config_product_expense['data'] = resp.data.product_type_list;
-                }
-                initDataTable(config_product_expense, '#datatable-product-type-list');
-            }
-        }, (errs) => {
-            initDataTable(config_product_expense, '#datatable-product-type-list');
-        },)
-    }
-
     function loadProDuctCategory() {
-        let tb_product_category = $('#datatable-product-category-list');
-        $.fn.callAjax(tb_product_category.attr('data-url'), tb_product_category.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
-                    config_product_expense['data'] = resp.data.product_category_list;
-                }
-                initDataTable(config_product_expense, '#datatable-product-category-list');
-            }
-        }, (errs) => {
-            initDataTable(config_product_expense, '#datatable-product-category-list');
-        },)
+        if (!$.fn.DataTable.isDataTable('#datatable-product-category-list')) {
+            let tbl = $('#datatable-product-category-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('product_category_list')) {
+                                return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: column_product_expense,
+                },
+            );
+        }
     }
 
     function loadExpenseType() {
-        let tb_expense_type = $('#datatable-expense-type-list');
-        $.fn.callAjax(tb_expense_type.attr('data-url'), tb_expense_type.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_type_list')) {
-                    config_product_expense['data'] = resp.data.expense_type_list;
-                }
-                initDataTable(config_product_expense, '#datatable-expense-type-list');
-            }
-        }, (errs) => {
-            initDataTable(config_product_expense, '#datatable-expense-type-list');
-        },)
+        if (!$.fn.DataTable.isDataTable('#datatable-expense-type-list')) {
+            let tbl = $('#datatable-expense-type-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('expense_type_list')) {
+                                return resp.data['expense_type_list'] ? resp.data['expense_type_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: column_product_expense,
+                },
+            );
+        }
     }
 
     function loadUnitOfMeasureGroup() {
-        let tb_unit_measure_group = $('#datatable-unit-measure-group-list');
-        $.fn.callAjax(tb_unit_measure_group.attr('data-url'), tb_unit_measure_group.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                    config_unit_measure_group['data'] = resp.data.unit_of_measure_group;
-                }
-                initDataTable(config_unit_measure_group, '#datatable-unit-measure-group-list');
-            }
-        }, (errs) => {
-            initDataTable(config_unit_measure_group, '#datatable-unit-measure-group-list');
-        },)
+        if (!$.fn.DataTable.isDataTable('#datatable-unit-measure-group-list')) {
+            let tbl = $('#datatable-unit-measure-group-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('unit_of_measure_group')) {
+                                return resp.data['unit_of_measure_group'] ? resp.data['unit_of_measure_group'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columns: [
+                        {
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        },
+                        {
+                            data: 'title',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#modal-detail-unit-measure-group" data-id="{0}">
+                                            <span><b>{1}</b></span>
+                                        </a>`.format_by_idx(row.id, data)
+                            }
+                        }, {
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
+                                    row.id
+                                );
+
+                            }
+                        }
+                    ],
+                },
+            );
+        }
     }
 
     function loadUnitOfMeasure() {
-        let tb_unit_measure = $('#datatable-unit-measure-list');
-        $.fn.callAjax(tb_unit_measure.attr('data-url'), tb_unit_measure.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    config_unit_measure['data'] = resp.data.unit_of_measure;
-                }
-                initDataTable(config_unit_measure, '#datatable-unit-measure-list');
-            }
-        }, (errs) => {
-            initDataTable(config_unit_measure, '#datatable-unit-measure-list');
-        },)
+        if (!$.fn.DataTable.isDataTable('#datatable-unit-measure-list')) {
+            let tbl = $('#datatable-unit-measure-list');
+            let frm = new SetupFormSubmit(tbl);
+            tbl.DataTableDefault(
+                {
+                    columnDefs: [{
+                        "searchable": false,
+                        "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
+                    },
+                        {
+                            visible: false,
+                            targets: 3
+                        }
+                    ],
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('unit_of_measure')) {
+                                return resp.data['unit_of_measure'] ? resp.data['unit_of_measure'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    drawCallback: function (settings) {
+                        let api = this.api();
+                        let rows = api.rows({page: 'current'}).nodes();
+                        let last = null;
+
+                        api
+                            .column(3, {page: 'current'})
+                            .data()
+                            .each(function (group, i) {
+                                if (last !== group.title) {
+                                    $(rows)
+                                        .eq(i)
+                                        .before(
+                                            '<tr class="group">' +
+                                            '<td><span class="badge badge-outline badge-soft-success w-100">' + group.title + '</span></td>' +
+                                            '</tr>'
+                                        );
+                                    last = group.title;
+                                }
+                            });
+                    },
+                    columns: [
+                        {
+                            render: (data, type, row, meta) => {
+                                return '';
+                            }
+                        },
+                        {
+                            data: 'code',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#modal-detail-unit-measure" data-id="{0}">
+                                            <span><b>{1}</b></span>
+                                        </a>`.format_by_idx(row.id, data)
+                            }
+                        }, {
+                            data: 'title',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        }, {
+                            data: 'group',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
+                                    data
+                                )
+                            }
+                        }, {
+                            data: 'is_referenced_unit',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                if (row.group.hasOwnProperty('is_referenced_unit')) {
+                                    if (row.group.is_referenced_unit === true) {
+                                        return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
+                                    } else {
+                                        return ``;
+                                    }
+                                }
+                                return '';
+                            }
+                        }, {
+                            render: (data, type, row, meta) => {
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
+                                    row.id
+                                );
+
+                            }
+                        }
+                    ],
+                },
+            );
+        }
     }
 
     function loadSelectBoxUnitMeasureGroup(ele, id) {
@@ -352,12 +342,7 @@ $(document).ready(function () {
         }, (errs) => {
         },)
     }
-
-    loadExpenseType();
-    loadProDuctCategory();
     loadProductType();
-    loadUnitOfMeasureGroup();
-    loadUnitOfMeasure();
 
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
@@ -518,8 +503,7 @@ $(document).ready(function () {
 
         if ($('#check-referenced-unit').is(':checked')) {
             frm_data['is_referenced_unit'] = true;
-        }
-        else {
+        } else {
             frm_data['is_referenced_unit'] = false;
         }
 
@@ -560,9 +544,6 @@ $(document).ready(function () {
                             $('#inp-ratio-unit').val(data.unit_of_measure.ratio);
                             $('#label-edit-referenced-unit').text(`* ` + data.unit_of_measure.group.referenced_unit_title);
                             loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group.id);
-
-                            $('#inp-edit-name-unit').addClass('inp-can-edit');
-                            $('#inp-rounding-edit').addClass('inp-can-edit');
                             $('#group-referenced-unit-name').val(data.unit_of_measure.ratio);
                             $('#group-id').val(data.unit_of_measure.group.id);
                             $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
@@ -570,52 +551,25 @@ $(document).ready(function () {
                             if (data.unit_of_measure.group.is_referenced_unit === true) {
                                 $('#check-edit-unit').prop('checked', true);
                                 $('#select-box-edit-uom-group-div').prop('hidden', true);
-                                $('#select-group-div').removeClass('inp-can-edit');
 
                                 $('#ratio-edit-area').prop('hidden', true);
-                                $('#inp-ratio-unit').removeClass('inp-can-edit');
+
 
                                 $('#inp-edit-uom-group-div').prop('hidden', false);
                                 $('#check-edit-unit').prop('disabled', true);
                             } else {
                                 $('#check-edit-unit').prop('checked', false);
                                 $('#select-box-edit-uom-group-div').prop('hidden', false);
-                                $('#select-group-div').addClass('inp-can-edit');
+
 
                                 $('#ratio-edit-area').prop('hidden', false);
-                                $('#inp-ratio-unit').addClass('inp-can-edit');
+
 
                                 $('#inp-edit-uom-group-div').prop('hidden', true);
                                 $('#check-edit-unit').prop('disabled', false);
                             }
                         }
                     }
-
-                    // mouse enter to edit
-                    $('.inp-can-edit').on('click', function () {
-                        $(this).find('select').prop("disabled", false);
-                    });
-                    $('.inp-can-edit').mouseleave(function () {
-                        $(this).find('select').prop("disabled", true);
-                    });
-                    $('.inp-can-edit').focusin(function() {
-                        $(this).find('input[class=form-control]').prop('readonly', false);
-                        $(this).find('textarea').prop('readonly', false);
-                    });
-                    $('.inp-can-edit').focusout(function() {
-                        $(this).find('input[class=form-control]').attr('readonly', true);
-                        $(this).find('textarea').prop('readonly', true);
-                    });
-                    $('.inp-can-edit').on('change', function () {
-                        $(this).find('input[class=form-control]').css({
-                            'border-color': '#00D67F',
-                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                        })
-                        $(this).find('select').css({
-                            'border-color': '#00D67F',
-                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                        })
-                    })
                 },
                 (errs) => {
                 }
@@ -855,30 +809,6 @@ $(document).ready(function () {
         )
     })
 
-    $('.inp-can-edit').on('click', function () {
-        $(this).find('select').prop("disabled", false);
-    });
-    $('.inp-can-edit').mouseleave(function () {
-        $(this).find('select').prop("disabled", true);
-    });
-    $('.inp-can-edit').focusin(function() {
-        $(this).find('input').prop('readonly', false);
-        $(this).find('textarea').prop('readonly', false);
-    });
-    $('.inp-can-edit').focusout(function() {
-        $(this).find('input').attr('readonly', true);
-        $(this).find('textarea').prop('readonly', true);
-    });
-    $('.inp-can-edit').on('change', function () {
-        $(this).find('input').css({
-            'border-color': '#00D67F',
-            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-        })
-        $(this).find('select').css({
-            'border-color': '#00D67F',
-            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-        })
-    })
 
     $('.btn-show-modal').on('click', function () {
         $('#modal-product-and-expense .form-control').val('');

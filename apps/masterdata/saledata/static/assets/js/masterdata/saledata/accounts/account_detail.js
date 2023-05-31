@@ -1007,6 +1007,14 @@ $(document).ready(function () {
             frm.dataForm['account-owner'] = null;
         }
 
+        if ($('#account-revenue-id').val() === '0') {
+            frm.dataForm['annual_revenue'] = null;
+        }
+
+        if ($('#total-employees-id').val() === '0') {
+            frm.dataForm['total_employees'] = null;
+        }
+
         let bank_account_information = [];
         let list_bank = $('#list-bank-account-information').children();
         for (let i = 0; i < list_bank.length; i++) {

@@ -111,7 +111,7 @@
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountListAPI" %}"
+                                                    data-url="{% url "AccountForSaleListAPI" %}"
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
@@ -538,7 +538,6 @@
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
                                                     id="btn-check-promotion"
-                                                    disabled
                                             >{% trans 'Check available promotion' %}</button>
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
@@ -894,6 +893,14 @@
                                 type="hidden"
                                 id="data-init-quotation-create-promotion"
                                 data-url="{% url "PromotionCheckListAPI" %}"
+                                data-link-detail="{% url "PromotionDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-shipping"
+                                data-url="{% url "ShippingCheckListAPI" %}"
+                                data-link-detail="{% url "ShippingDetail" 1 %}"
                                 data-method="GET"
                         >
                         <input
@@ -907,6 +914,10 @@
                                 type="hidden"
                                 id="data-init-quotation-copy-to"
                                 value="{{ data.data.data_copy_to }}"
+                        >
+                        <input
+                                type="hidden"
+                                id="customer-price-list"
                         >
                     </div>
                 </div>

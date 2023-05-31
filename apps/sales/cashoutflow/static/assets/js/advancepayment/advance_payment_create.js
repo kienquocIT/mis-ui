@@ -48,9 +48,11 @@ $(document).ready(function () {
             parent_tr.find('.expense-type').val($(this).find('option:selected').attr('data-type'));
             parent_tr.find('.expense-tax-select-box').val($(this).find('option:selected').attr('data-tax-id'));
 
-            $('#' + parent_tr.attr('id') + ' .expense-unit-price-select-box').val('');
+            $('#' + parent_tr.attr('id') + ' .expense-unit-price-select-box').attr('value', '');
             $('#' + parent_tr.attr('id') + ' .expense-quantity').val(1);
-            $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').val('');
+            $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').attr('value', '');
+            $('#' + parent_tr.attr('id') + ' .expense-subtotal-price-after-tax').attr('value', '');
+            calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
 
             if ($(this).find('option:selected').val() !== '') {
                 loadExpenseUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'), $(this).find('option:selected').attr('data-uom-id'));
@@ -261,10 +263,10 @@ $(document).ready(function () {
         ele.append(`<optgroup label="Sale Order" class="text-primary">`)
         sale_order_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
-                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
         ele.append(sale_not_opp);
@@ -272,10 +274,10 @@ $(document).ready(function () {
         ele.append(`<optgroup label="Quotation" class="text-primary">`);
         quotation_list.map(function (item) {
             if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
-                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
             }
         })
         ele.append(quotation_not_opp);
@@ -573,12 +575,12 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#return-date-id').daterangepicker({
+    $('#return_date_id').daterangepicker({
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
         minYear: parseInt(moment().format('YYYY')),
-        minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD'))),
+        minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
         locale: {
             format: 'YYYY-MM-DD'
         },
@@ -801,8 +803,25 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let waittime = 1000;
+                        if (frm.dataForm['money_gave']) {
+                            setTimeout(
+                                Swal.fire({
+                                    html:
+                                    '<div class="d-flex align-items-center"><i class="bi bi-cash-coin me-2 fs-1 text-success"></i><h4 class="mb-0">Money has been sent.</h4></div>',
+                                    customClass: {
+                                        content: 'p-0',
+                                        actions: 'justify-content-start',
+                                    },
+                                    width: 400,
+                                    showConfirmButton:false,
+                                    buttonsStyling: false
+                                }), 3000
+                            );
+                            waittime = 3000;
+                        }
                         $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, waittime);
                     }
                 },
                 (errs) => {

@@ -5,26 +5,26 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
 
-class AdvancePaymentList(View):
+class PaymentList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='advancepayment/advance_payment_list.html',
-        breadcrumb='ADVANCE_PAYMENT_LIST_PAGE',
-        menu_active='menu_advance_payment_list',
+        template='payment/payment_list.html',
+        breadcrumb='PAYMENT_LIST_PAGE',
+        menu_active='menu_payment_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class AdvancePaymentCreate(View):
+class PaymentCreate(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='advancepayment/advance_payment_create.html',
-        breadcrumb='ADVANCE_PAYMENT_CREATE_PAGE',
+        template='payment/payment_create.html',
+        breadcrumb='PAYMENT_CREATE_PAGE',
         menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
@@ -43,7 +43,7 @@ class AdvancePaymentCreate(View):
         }, status.HTTP_200_OK
 
 
-class AdvancePaymentListAPI(APIView):
+class PaymentListAPI(APIView):
     permission_classes = [IsAuthenticated] # noqa
 
     @mask_view(
@@ -78,7 +78,7 @@ class AdvancePaymentListAPI(APIView):
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-class AdvancePaymentDetail(View):
+class PaymentDetail(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
@@ -103,7 +103,7 @@ class AdvancePaymentDetail(View):
         }, status.HTTP_200_OK
 
 
-class AdvancePaymentDetailAPI(APIView):
+class PaymentDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(

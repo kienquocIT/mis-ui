@@ -54,16 +54,7 @@
                        data-url="{% url "AccountTypeListAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                        <span class="form-check">
-                            <input
-                                    type="checkbox"
-                                    class="form-check-input check-select-all"
-                                    id="customCheck1"
-                            >
-                            <label class="form-check-label" for="customCheck1"></label>
-                        </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Code" %}</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
@@ -76,16 +67,7 @@
                        data-url="{% url "AccountGroupListAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                        <span class="form-check">
-                            <input
-                                    type="checkbox"
-                                    class="form-check-input check-select-all"
-                                    id="customCheck1"
-                            >
-                            <label class="form-check-label" for="customCheck1"></label>
-                        </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Code" %}</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
@@ -98,16 +80,7 @@
                        data-url="{% url "IndustryListAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-                    </th>
+                    <th class="w-5">#</th>
                     <th class="w-30">{% trans "Code" %}</th>
                     <th class="w-30">{% trans "Name" %}</th>
                     <th class="w-30">{% trans "Description" %}</th>
@@ -190,13 +163,20 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title" id="name-update"
-                                       placeholder="Input name" required>
+                                <div class="readonly">
+                                    <input class="form-control" type="text" name="title" id="name-update"
+                                       placeholder="Input name" required readonly>
+                                    <span></span>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <input class="form-control" type="text" name="description" id="description-update"
-                                       placeholder="Input text">
+                                <div class="readonly">
+                                    <input class="form-control" type="text" name="description" id="description-update"
+                                       placeholder="Input text" readonly>
+                                    <span></span>
+                                </div>
+
                             </div>
                         </div>
 

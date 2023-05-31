@@ -786,20 +786,20 @@ $(document).ready(function () {
                         <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money ">
                     </td>
                     <td colspan="1">
-                        <center><i class="fas fa-plus"></i></center>
+                        <center><i class="fas fa-plus text-primary"></i></center>
                     </td>
                     <td colspan="2">
                         <div class="input-group">
-                            <input data-return-type="number" placeholder="Click to button to select payment value" class="value-converted-from-ap-inp form-control mask-money" disabled style="background-color: white; color: black">
+                            <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" disabled style="background-color: white; color: black">
                             <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
                             data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
-                            class="btn btn-soft-secondary btn-add-payment-value" type="button">
-                                <i class="bi bi-pencil-square"></i>
+                            class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
+                                <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
                             </button>
                         </div>
                     </td>
                     <td colspan="1">
-                        <center><i class="fas fa-equals"></i></center>
+                        <center><i class="fas fa-equals text-primary"></i></center>
                     </td>
                     <td colspan="2">
                         <span class="mask-money total-value-salecode-item text-primary" data-init-money="0"></span>

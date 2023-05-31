@@ -192,7 +192,7 @@ $(document).ready(function () {
                 timePicker: false,
                 showDropdowns: true,
                 minYear: parseInt(moment().format('YYYY')),
-                minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD'))),
+                minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
                 locale: {
                     format: 'YYYY-MM-DD'
                 },

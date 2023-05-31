@@ -761,29 +761,32 @@ $(document).ready(function () {
             table_body.append(`<tr class="" hidden>
                 <td colspan="1"></td>
                 <td colspan="1">
-                    <label>Sale code</label>
+                    <label class="text-primary"><b>Sale code</b></label>
                 </td>
                 <td colspan="2">
-                    <label>Value</label>
+                    <label class="text-primary"><b>Value</b></label>
                 </td>
                 <td colspan="1"></td>
                 <td colspan="2">
-                    <label>Value converted from advance payment</label>
+                    <label class="text-primary"><b>Value converted from advance payment</b></label>
                 </td>
-                <td colspan="3"></td>
+                <td colspan="1"></td>
+                <td colspan="2">
+                    <label class="text-primary"><b>Sum</b></label>
+                </td>
             </tr>`)
 
-            for (let i=0; i<sale_code_length; i++) {
+            for (let i = 0; i < sale_code_length; i++) {
                 table_body.append(`<tr class="" hidden>
                     <td colspan="1"></td>
                     <td colspan="1">
-                        <label class="sale_code_expense_detail text-primary" data-sale-code-id="` + sale_code_id_list[i] + `"><b>` + opp_code_list[i] + `</b></label>
+                        <span class="sale_code_expense_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_list[i] + `"><b>` + opp_code_list[i] + `</b></span>
                     </td>
                     <td colspan="2">
-                        <input data-return-type="number" placeholder="Enter payment value" class="form-control mask-money">
+                        <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money ">
                     </td>
                     <td colspan="1">
-                        <center><i class="bi bi-plus"></i></center>
+                        <center><i class="fas fa-plus"></i></center>
                     </td>
                     <td colspan="2">
                         <div class="input-group">
@@ -795,9 +798,32 @@ $(document).ready(function () {
                             </button>
                         </div>
                     </td>
-                    <td colspan="3"></td>
+                    <td colspan="1">
+                        <center><i class="fas fa-equals"></i></center>
+                    </td>
+                    <td colspan="2">
+                        <span class="mask-money total-value-salecode-item text-primary" data-init-money="0"></span>
+                    </td>
                 </tr>`);
             }
+
+            $('.value-inp').on('change', function () {
+                let value_converted_from_ap = parseFloat($(this).closest('tr').find('.value-converted-from-ap-inp').attr('value'));
+                let this_value = parseFloat($(this).attr('value'));
+                if (isNaN(value_converted_from_ap)) { value_converted_from_ap = 0; }
+                if (isNaN(this_value)) { this_value = 0; }
+                $(this).closest('tr').find('.total-value-salecode-item').attr('data-init-money', this_value + value_converted_from_ap);
+                $.fn.initMaskMoney2();
+            })
+
+            $('.value-converted-from-ap-inp').on('change', function () {
+                let value_input_ap = parseFloat($(this).closest('tr').find('.value-inp').attr('value'));
+                let this_value = parseFloat($(this).attr('value'));
+                if (isNaN(value_input_ap)) { value_input_ap = 0; }
+                if (isNaN(this_value)) { this_value = 0; }
+                $(this).closest('tr').find('.total-value-salecode-item').attr('data-init-money', this_value + value_input_ap);
+                $.fn.initMaskMoney2();
+            })
 
             table_body.append(`<script>
                 function checkInputQuantity(value) {
@@ -807,7 +833,6 @@ $(document).ready(function () {
                     return value;
                 }
             </script>`);
-            $.fn.initMaskMoney2();
 
             let row_count = count_row(table_body, sale_code_length+1, 1);
 
@@ -868,6 +893,8 @@ $(document).ready(function () {
                     $('#' + parent_tr.attr('id') + ' .dropdown-menu').html('');
                 }
             })
+
+            $.fn.initMaskMoney2();
         }
     });
 
@@ -982,7 +1009,9 @@ $(document).ready(function () {
                                 <div class="col-7 text-left col-form-label"><span style="color: #007D88">Enter price in <b>` + primary_currency + `</b>:</span></div>
                                 <div class="col-5 text-right"><input type="text" id="unit-price-input-` + expense_item_id + `" class="form-control mask-money" data-return-type="number"></div>
                                 </div></a>`)
+
                     $.fn.initMaskMoney2();
+
                     $('#' + row_id + ' #unit-price-input-' + expense_item_id).on('change', function () {
                         let tr = $(this).closest('tr');
                         let input_show = tr.find('.expense-unit-price-select-box');
@@ -1005,6 +1034,7 @@ $(document).ready(function () {
                         }
                         // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
                     })
+
                     $('#' + row_id + ' .expense-quantity').on('change', function () {
                         let tr = $(this).closest('tr');
                         let input_show = tr.find('.expense-unit-price-select-box');
@@ -1024,6 +1054,7 @@ $(document).ready(function () {
                         }
                         // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
                     })
+
                     $('#' + row_id + ' .expense-tax-select-box').on('change', function () {
                         let tr = $(this).closest('tr');
                         let tax = $(this).find('option:selected');
@@ -1162,7 +1193,7 @@ $(document).ready(function () {
                                         <label>Return remain value after</label>
                                     </div>
                                     <div class="col-3">
-                                        <input class="mask-money form-control return_remain_value" id="return_remain_value_` + ap_item_detail.id + `" data-value-raw="">
+                                        <input class="mask-money form-control return_remain_value" id="return_remain_value_` + ap_item_detail.id + `">
                                     </div>
                                 </div>`)
                                 tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
@@ -1211,10 +1242,12 @@ $(document).ready(function () {
                                     <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)
 
+                                $('#return_remain_value_' + ap_item_detail.id).attr('value', parseFloat(total_remain_value));
+
                                 $('.converted-value-inp').on('change', function () {
                                     let expense_remain_value = $(this).closest('tr').find('.expense-remain-value').attr('data-init-money');
                                     let converted_value = $(this).attr('value');
-                                    if (converted_value > expense_remain_value) {
+                                    if (parseFloat(converted_value) > parseFloat(expense_remain_value)) {
                                         $(this).attr('value', parseFloat(expense_remain_value));
                                     }
 
@@ -1271,7 +1304,12 @@ $(document).ready(function () {
     $('.actions').find('a[href="#finish"]').on('click', function () {
         let result_total_value = calculatetotal_expense_item();
         current_value_converted_from_ap.closest('div').find('.value-converted-from-ap-inp').attr('value', result_total_value);
+
+        let value_input_ap = parseFloat(current_value_converted_from_ap.closest('tr').find('.value-inp').attr('value'));
+        if (isNaN(value_input_ap)) { value_input_ap = 0; }
+        current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('data-init-money', result_total_value + value_input_ap);
         $.fn.initMaskMoney2();
+
         $('#offcanvasSelectDetailAP').offcanvas('hide');
     })
 
@@ -1284,15 +1322,15 @@ $(document).ready(function () {
     }
 
     $('.actions').find('ul').prepend(`<li aria-disabled="false">
-        <label class="col-form-label text-primary text-decoration-underline"><b>TOTAL</b></label>
-    </li>
-    <li aria-disabled="false">
-        <div class="row form-group">
-            <div class="col-12 text-left">
-                <span style="font-size: x-large" class="mask-money total-expense-selected text-primary" data-init-money=""></span>
+            <label class="col-form-label text-primary text-decoration-underline"><b>TOTAL</b></label>
+        </li>
+        <li aria-disabled="false">
+            <div class="row form-group">
+                <div class="col-12 text-left">
+                    <span style="font-size: x-large" class="mask-money total-expense-selected text-primary" data-init-money=""></span>
+                </div>
             </div>
-        </div>
-    </li>`)
+        </li>`)
 
     $('#wizard-p-1').addClass('w-100');
 })

@@ -17,7 +17,16 @@ $(document).ready(function () {
                 });
                 $('#sale-code-select-box2-show').attr('disabled', false);
                 $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
-                loadSaleCode(advance_payment.sale_order_mapped, advance_payment.quotation_mapped);
+
+                let sale_order_mapped_id = '';
+                if (advance_payment.sale_order_mapped) {
+                    sale_order_mapped_id = advance_payment.sale_order_mapped.id;
+                }
+                let quotation_mapped_id = '';
+                if (advance_payment.quotation_mapped) {
+                    quotation_mapped_id = advance_payment.quotation_mapped.id;
+                }
+                loadSaleCode(sale_order_mapped_id, quotation_mapped_id);
                 $('#beneficiary-select-box').prop('disabled', true);
             }
             else if (advance_payment.sale_code_type === 1) {
@@ -124,7 +133,7 @@ $(document).ready(function () {
                     if (advance_payment.expense_items[i].tax) {
                         tax_id = advance_payment.expense_items[i].tax.id
                     }
-                    count_row(table_body, 1, advance_payment.expense_items[i].expense.id, tax_id);
+                    count_row(table_body, 1, advance_payment.expense_items[i].expense.id, tax_id, advance_payment.expense_items[i].expense_uom.id);
                     $('#row-' + (i+1).toString() + ' .expense-quantity').val(advance_payment.expense_items[i].expense_quantity);
                     $('#row-' + (i+1).toString() + ' .expense-subtotal-price').attr('value', advance_payment.expense_items[i].subtotal_price);
                     $('#row-' + (i+1).toString() + ' .expense-subtotal-price-after-tax').attr('value', advance_payment.expense_items[i].after_tax_price);
@@ -268,7 +277,7 @@ $(document).ready(function () {
         })
     });
 
-    function loadExpenseList(row_id, expense_id) {
+    function loadExpenseList(row_id, expense_id, uom_id) {
         let ele = $('#' + row_id + ' .expense-select-box');
         ele.select2();
         ele.html('');
@@ -281,7 +290,7 @@ $(document).ready(function () {
             if (item.id === expense_id) {
                 ele.append(`<option selected data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
                 $('#' + row_id + ' .expense-type').val(item.general_information.expense_type.title);
-                loadExpenseUomList(row_id, item.general_information.uom_group.id, item.general_information.uom.id);
+                loadExpenseUomList(row_id, item.general_information.uom_group.id, uom_id);
             }
             else {
                 ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
@@ -437,7 +446,7 @@ $(document).ready(function () {
 
     }
 
-    function count_row(table_body, option, expense_id, tax_id) {
+    function count_row(table_body, option, expense_id, tax_id, uom_id) {
         let count = 0;
         table_body.find('tr td.number').each(function() {
             count = count + 1;
@@ -445,7 +454,7 @@ $(document).ready(function () {
             $(this).closest('tr').attr('id', 'row-' + count.toString())
         });
         if (option === 1) {
-            loadExpenseList('row-' + count.toString(), expense_id);
+            loadExpenseList('row-' + count.toString(), expense_id, uom_id);
             loadExpenseTaxList('row-' + count.toString(), tax_id);
             loadUnitPriceList('row-' + count.toString(), expense_id);
         }
@@ -979,16 +988,18 @@ $(document).ready(function () {
             for (let i = 1; i <= row_count; i++) {
                 let row_id = '#row-' + i.toString();
                 let expense_selected = table_body.find(row_id + ' .expense-select-box option:selected');
+                let uom_selected = table_body.find(row_id + ' .expense-uom-select-box option:selected');
                 let subtotal_price_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price').attr('value'));
                 let price_after_tax_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
                 let tax_value = parseFloat(table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('data-rate')) / 100 * subtotal_price_value;
+                let unit_price_value = parseFloat(table_body.find(row_id + ' .expense-unit-price-select-box').attr('value'));
                 if (!isNaN(subtotal_price_value) && !isNaN(price_after_tax_value) && !isNaN(tax_value)) {
                     expense_valid_list.push({
                         'expense_id': expense_selected.attr('value'),
-                        'unit_of_measure_id': expense_selected.attr('data-uom-id'),
+                        'unit_of_measure_id': uom_selected.attr('value'),
                         'quantity': table_body.find(row_id + ' .expense-quantity').val(),
                         'tax_id': table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('value'),
-                        'unit_price': parseFloat(table_body.find(row_id + ' .expense-unit-price-select-box').attr('value')),
+                        'unit_price': unit_price_value,
                         'tax_price': tax_value,
                         'subtotal_price': subtotal_price_value,
                         'after_tax_price': price_after_tax_value,
@@ -1011,8 +1022,6 @@ $(document).ready(function () {
         }
 
         frm.dataForm['account_bank_information_dict'] = account_bank_accounts_information_dict;
-
-        console.log(frm.dataForm)
 
         frm.dataUrl = frm.dataUrl.replace('/0', '/' + window.location.pathname.split('/').pop())
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

@@ -816,15 +816,6 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
             })
 
-            $('.value-converted-from-ap-inp').on('change', function () {
-                let value_input_ap = parseFloat($(this).closest('tr').find('.value-inp').attr('value'));
-                let this_value = parseFloat($(this).attr('value'));
-                if (isNaN(value_input_ap)) { value_input_ap = 0; }
-                if (isNaN(this_value)) { this_value = 0; }
-                $(this).closest('tr').find('.total-value-salecode-item').attr('data-init-money', this_value + value_input_ap);
-                $.fn.initMaskMoney2();
-            })
-
             table_body.append(`<script>
                 function checkInputQuantity(value) {
                     if (parseInt(value) < 0) {
@@ -1221,10 +1212,10 @@ $(document).ready(function () {
                                         tax_code = expense_item.tax.code
                                     }
                                     let disabled = 'disabled';
-                                    if (expense_item.remain_value > 0) {
+                                    if (expense_item.remain_total > 0) {
                                         disabled = '';
                                     }
-                                    total_remain_value += expense_item.remain_value;
+                                    total_remain_value += expense_item.remain_total;
                                     expense_table.append(`<tr>
                                         <td><input data-id="` + expense_item.expense.id + `" class="ap-selected" type="checkbox" ` + disabled + `></td>
                                         <td>` + expense_item.expense.title + `</td>
@@ -1232,7 +1223,7 @@ $(document).ready(function () {
                                         <td class="text-center">` + expense_item.expense_quantity + `</td>
                                         <td><span class="mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
                                         <td><span class="badge badge-soft-danger">` + tax_code + `</span></td>
-                                        <td><span class="mask-money expense-remain-value" data-init-money="` + expense_item.remain_value + `"></span></td>
+                                        <td><span class="mask-money expense-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
                                         <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                     </tr>`)
                                 }
@@ -1327,7 +1318,7 @@ $(document).ready(function () {
         <li aria-disabled="false">
             <div class="row form-group">
                 <div class="col-12 text-left">
-                    <span style="font-size: x-large" class="mask-money total-expense-selected text-primary" data-init-money=""></span>
+                    <span style="font-size: x-large" class="mask-money total-expense-selected text-primary" data-init-money="0"></span>
                 </div>
             </div>
         </li>`)

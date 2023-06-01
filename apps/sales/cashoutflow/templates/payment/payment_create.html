@@ -53,7 +53,7 @@
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     <form id="form-create-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
-{#          data-url="{% url "AdvancePaymentListAPI" %}"#}
+          data-url="{% url "PaymentListAPI" %}"
     >
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
@@ -301,7 +301,7 @@
                         <div class="offcanvas-body">
                             <div id="wizard">
                                 <h1>Select Advance Payment items</h1>
-                                <div>
+                                <div id="advance_payment_list_datatable_div">
                                     <table id="advance_payment_list_datatable" class="table nowrap w-100"
                                            data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
                                            data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"

@@ -763,16 +763,18 @@ $(document).ready(function () {
             for (let i = 1; i <= row_count; i++) {
                 let row_id = '#row-' + i.toString();
                 let expense_selected = table_body.find(row_id + ' .expense-select-box option:selected');
+                let uom_selected = table_body.find(row_id + ' .expense-uom-select-box option:selected');
                 let subtotal_price_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price').attr('value'));
                 let price_after_tax_value = parseFloat(table_body.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
                 let tax_value = parseFloat(table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('data-rate')) / 100 * subtotal_price_value;
+                let unit_price_value = parseFloat(table_body.find(row_id + ' .expense-unit-price-select-box').attr('value'));
                 if (!isNaN(subtotal_price_value) && !isNaN(price_after_tax_value) && !isNaN(tax_value)) {
                     expense_valid_list.push({
                         'expense_id': expense_selected.attr('value'),
-                        'unit_of_measure_id': expense_selected.attr('data-uom-id'),
+                        'unit_of_measure_id': uom_selected.attr('value'),
                         'quantity': table_body.find(row_id + ' .expense-quantity').val(),
                         'tax_id': table_body.find(row_id + ' .expense-tax-select-box option:selected').attr('value'),
-                        'unit_price': parseFloat(table_body.find(row_id + ' .expense-unit-price-select-box').attr('value')),
+                        'unit_price': unit_price_value,
                         'tax_price': tax_value,
                         'subtotal_price': subtotal_price_value,
                         'after_tax_price': price_after_tax_value,

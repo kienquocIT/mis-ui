@@ -215,3 +215,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # return advance
     RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
     RETURN_ADVANCE_DETAIL = StringUrl('cashoutflow/return-advance/{pk}')
+
+    # transition data config
+    DELIVERY_CONFIG = StringUrl('delivery/config')
+    DELIVERY_PICKING_LIST = StringUrl('delivery/picking')
+    DELIVERY_PICKING_DETAIL = StringUrl('delivery/picking/{pk}')
+    DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
+    DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
+    DELIVERY_LIST = StringUrl('delivery')
+

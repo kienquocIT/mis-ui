@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Delivery List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="dtbDeliveryList"
+            class="table nowrap w-100 mb-5"
+            data-method="get"
+            data-url="{% url "OrderDeliveryListAPI" %}"
+            data-url-detail="{% url 'OrderDeliveryDetail' pk=1 %}"
+            data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=1 %}"
+    >
+        <thead>
+        <tr>
+            <th>{% trans 'Number' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}"
+                ></i></th>
+            <th>
+                {% trans 'Sale order' %}
+                <i
+                        class="fas fa-info-circle icon-info"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open sale order page.' %}"
+                ></i>
+            </th>
+            <th>{% trans 'Created Date' %}</th>
+            <th>{% trans 'Expected Date' %}</th>
+            <th>{% trans 'Actual Date' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="hidden">
+
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+    <input type="hidden" id="url-factory"
+    data-page-detail="{% url 'OrderDeliveryDetail' 1 %}">
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'sales/delivery/delivery/list.js' %}"></script>
+{% endblock %}

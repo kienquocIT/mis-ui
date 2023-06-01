@@ -38,7 +38,10 @@ class customerHandle {
         let $table = $('#table_customer_list')
         let url = $table.attr('data-url');
         let _this = this
-        $table.DataTableDefault({
+        $table.DataTable({
+            searching: false,
+            ordering: false,
+            paginate: true,
             ajax: {
                 url: url,
                 type: "GET",
@@ -78,8 +81,9 @@ class customerHandle {
                     data.checked = this.checked
                 });
 
-            }
-        }, false);
+            },
+            rowIdx: false,
+        });
     }
 
     onSave(){

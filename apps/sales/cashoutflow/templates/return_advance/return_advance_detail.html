@@ -59,7 +59,7 @@
                             name="advance_payment" disabled>
                         <option></option>
                         {% for item in data.advance_payment %}
-                            {% if item.money_gave and item.status == 'Approved' %}
+                            {% if item.status == 'Approved' %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
                             {% endif %}
                         {% endfor %}

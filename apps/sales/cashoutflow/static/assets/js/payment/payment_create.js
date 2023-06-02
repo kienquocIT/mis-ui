@@ -1396,7 +1396,7 @@ $(document).ready(function () {
                         sum_value = $(this).find('.total-value-salecode-item').attr('data-init-money');
                     }
                     expense_ap_detail_list.push({
-                        'sale_code_item_id': $(this).find('.sale_code_expense_detail').attr('data-sale-code-id'),
+                        'sale_code_mapped': $(this).find('.sale_code_expense_detail').attr('data-sale-code-id'),
                         'real_value': real_value,
                         'converted_value': converted_value,
                         'sum_value':  sum_value,

@@ -870,6 +870,10 @@ $(document).ready(function () {
                 if (sale_code_selected_list.length <= 0) {
                     sale_code_id_list = $('#sale-code-select-box option:selected').val();
                 }
+                $('.total-expense-selected').attr('data-init-money', 0);
+                $.fn.initMaskMoney2();
+                $('.expense-tables').html(``);
+                $('#wizard-t-0').click();
                 loadAPList(sale_code_id_list);
             });
 
@@ -1205,14 +1209,7 @@ $(document).ready(function () {
                             let ap_item_detail = data.advance_payment_detail;
                             if (ap_item_detail.expense_items.length > 0) {
                                 tab2.append(`<div class="mt-7 mb-2 row">
-                                    <div class="col-2 mt-2"><span class="badge badge-soft-primary badge-outline">` + selected_ap_code_list[i] + `</span></div>
-                                    <div class="col-3 mt-2 form-check">
-                                        <input type="checkbox" id="return_remain_` + ap_item_detail.id + `" class="form-check-input" name="return_remain">
-                                        <label>Return remain value after</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input class="mask-money form-control return_remain_value" id="return_remain_value_` + ap_item_detail.id + `">
-                                    </div>
+                                    <div class="col-2 mt-2"><span class="ap-code-span badge badge-soft-primary badge-outline">` + selected_ap_code_list[i] + `</span></div>
                                 </div>`)
                                 tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
                                     <thead>
@@ -1260,8 +1257,6 @@ $(document).ready(function () {
                                     <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)
 
-                                $('#return_remain_value_' + ap_item_detail.id).attr('value', parseFloat(total_remain_value));
-
                                 $('.converted-value-inp').on('change', function () {
                                     let expense_remain_value = $(this).closest('tr').find('.expense-remain-value').attr('data-init-money');
                                     let converted_value = $(this).attr('value');
@@ -1278,12 +1273,6 @@ $(document).ready(function () {
                                     $(this).closest('tbody').find('.total-converted-value').attr('data-init-money', new_total_converted_value);
 
                                     $('.total-expense-selected').attr('data-init-money', calculate_sum_ap_expense_items());
-
-                                    let table_ap_id = $(this).closest('table').attr('id').replace('expense-item-table-', '');
-                                    let return_remain_value_id = 'return_remain_value_' + table_ap_id;
-                                    let total_remain_value = $(this).closest('tbody').find('.total-remain-value').attr('data-init-money');
-
-                                    $('#' + return_remain_value_id).attr('value', parseFloat(total_remain_value) - parseFloat(new_total_converted_value));
 
                                     $.fn.initMaskMoney2();
                                 });
@@ -1329,7 +1318,6 @@ $(document).ready(function () {
         current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(get_ap_expense_items()));
 
         $.fn.initMaskMoney2();
-
         $('#offcanvasSelectDetailAP').offcanvas('hide');
     })
 
@@ -1391,15 +1379,27 @@ $(document).ready(function () {
                 }
                 let sale_code_item = table_body.find(row_id).nextAll().slice(1, sale_code_len + 1);
                 sale_code_item.each(function() {
-                    let converted_value_detail = null;
+                    let converted_value_detail = [{'id': null, 'value': 0}];
                     if ($(this).find('.detail-ap-items').html()) {
                         converted_value_detail = JSON.parse($(this).find('.detail-ap-items').html());
                     }
+                    let real_value = 0;
+                    if ($(this).find('.value-inp').attr('value')) {
+                        real_value = $(this).find('.value-inp').attr('value');
+                    }
+                    let converted_value = $(this).find('.value-converted-from-ap-inp').attr('value');
+                    if (converted_value_detail[0]['id'] === null) {
+                        converted_value = 0;
+                    }
+                    let sum_value = 0;
+                    if ($(this).find('.total-value-salecode-item').attr('data-init-money')) {
+                        sum_value = $(this).find('.total-value-salecode-item').attr('data-init-money');
+                    }
                     expense_ap_detail_list.push({
                         'sale_code_item_id': $(this).find('.sale_code_expense_detail').attr('data-sale-code-id'),
-                        'real_value': $(this).find('.value-inp').attr('value'),
-                        'converted_value': $(this).find('.value-converted-from-ap-inp').attr('value'),
-                        'sum_value':  $(this).find('.total-value-salecode-item').attr('data-init-money'),
+                        'real_value': real_value,
+                        'converted_value': converted_value,
+                        'sum_value':  sum_value,
                         'converted_value_detail': converted_value_detail
                     })
                 });

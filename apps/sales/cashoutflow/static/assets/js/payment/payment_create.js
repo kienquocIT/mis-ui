@@ -865,6 +865,8 @@ $(document).ready(function () {
             });
 
             $('.row-detail-expense-' + row_count.toString()).find(".btn-add-payment-value").on('click', function() {
+                $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
+                $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
                 current_value_converted_from_ap = $(this);
                 sale_code_id_list = sale_code_selected_list;
                 if (sale_code_selected_list.length <= 0) {
@@ -1085,8 +1087,8 @@ $(document).ready(function () {
 
     $('#wizard-t-0').attr('hidden', true);
     $('#wizard-t-1').attr('hidden', true);
-    $('#wizard-t-0').closest('li').append(`<span class="text-success" style="font-size: larger; font-weight: bolder">1. Select Advance Payment Items</span>`);
-    $('#wizard-t-1').closest('li').append(`<span class="text-success" style="font-size: larger; font-weight: bolder">2. Select Expense Items</span>`);
+    $('#wizard-t-0').closest('li').append(`<span id="tab-1-offCanvas" class="text-primary" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment Items</span>`);
+    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary" style="font-size: larger; font-weight: bolder">2. Select Expense Items</span>`);
 
     $('.content').css({
         'background': 'none'
@@ -1180,6 +1182,8 @@ $(document).ready(function () {
     $('#advance_payment_list_datatable_wrapper').addClass('h-80');
 
     $('.actions').find('a[href="#next"]').on('click', function () {
+        $("#tab-2-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
+        $("#tab-1-offCanvas").attr('style', "font-size: large; font-weight: bolder");
         let selected_ap_list = [];
         let selected_ap_code_list = [];
         $('.ap-selected').each(function (index, element) {
@@ -1308,6 +1312,11 @@ $(document).ready(function () {
                 });
             }
         }
+    })
+
+    $('.actions').find('a[href="#previous"]').on('click', function () {
+        $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
+        $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
     })
 
     $('.actions').find('a[href="#finish"]').on('click', function () {

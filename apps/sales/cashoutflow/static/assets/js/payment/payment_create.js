@@ -1083,8 +1083,10 @@ $(document).ready(function () {
         transitionEffect: 'slide',
     });
 
-    $('.first').addClass('w-50');
-    $('.last').addClass('w-50');
+    $('#wizard-t-0').attr('hidden', true);
+    $('#wizard-t-1').attr('hidden', true);
+    $('#wizard-t-0').closest('li').append(`<span class="text-success" style="font-size: larger; font-weight: bolder">1. Select Advance Payment Items</span>`);
+    $('#wizard-t-1').closest('li').append(`<span class="text-success" style="font-size: larger; font-weight: bolder">2. Select Expense Items</span>`);
 
     $('.content').css({
         'background': 'none'

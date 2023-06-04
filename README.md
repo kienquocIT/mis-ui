@@ -274,7 +274,7 @@ tham khảo page promotion_detail.html
 ```html 
 form="promo_form" 
 ```
-#### 3. js setup
+5. js setup
 ờ function submit form thêm đoạn code sau, do form sẽ không tự động lấy các field có attribute là disabled nên. 
 chúng ta sẽ remove tạm thời các attr này, đồng thời sau khi update. 
 sẽ redirect về page list tránh trường hợp phải bật lại disabled 
@@ -282,3 +282,10 @@ sau khi submit, hoặc có thể reload lại page
 ```js
     $('.readonly [disabled]:not([hidden]):not(i)', $form).attr('disabled', false)
 ```
+
+6. Table Data
+```text
+- Không hiển thị spinner loading khi load data cho table:
+    set attribute "load-data-hide-spinner" = "false" để ẩn spinner loading khi gọi ajax lấy dữ liệu cho table đó.
+```
+7. 

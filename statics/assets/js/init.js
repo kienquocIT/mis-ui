@@ -418,10 +418,12 @@ var horizontalMenu = function () {
             $(this).removeAttr("style"), liTotalWidth += $(this).outerWidth(!0), liCount++
         }), !(window.innerWidth < 1199)) {
             var visibleLi = parseInt(horMenuRect.width / (liTotalWidth / liCount)) - 2;
-            if ((visibleLi -= extraLiHide) < liCount) for (var horWrapper = function (horMenu) {
-                horMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='svg-icon'><svg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-dots' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'> <path stroke='none' d='M0 0h24v24H0z' fill='none'></path> <circle cx='5' cy='12' r='1'></circle> <circle cx='12' cy='12' r='1'></circle> <circle cx='19' cy='12' r='1'></circle></svg></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
-                return horMenu.children("ul").children("li.more-nav-item")
-            }(horMenu), i = visibleLi; i < liCount; i++) {
+            if ((visibleLi -= extraLiHide) < liCount) for (
+                var horWrapper = function (horMenu) {
+                    horMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='svg-icon'><svg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-dots' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'> <path stroke='none' d='M0 0h24v24H0z' fill='none'></path> <circle cx='5' cy='12' r='1'></circle> <circle cx='12' cy='12' r='1'></circle> <circle cx='19' cy='12' r='1'></circle></svg></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
+                    return horMenu.children("ul").children("li.more-nav-item")
+                }(horMenu), i = visibleLi; i < liCount; i++
+            ) {
                 var currentLi = horMenu.children("ul").children("li").eq(i), clone = currentLi.clone();
                 horWrapper.children("ul").append(clone), currentLi.hide();
                 if ($('.feather-icon').length > 0) feather.replace();
@@ -455,10 +457,12 @@ var navheadMenu = function () {
             $(this).removeAttr("style"), liTotalWidth += $(this).outerWidth(!0), liCount++
         }), !(window.innerWidth < 1199)) {
             var visibleLi = parseInt(navbarMenuRect.width / (liTotalWidth / liCount)) - 2;
-            if ((visibleLi -= extraLiHide) < liCount) for (var navWrapper = function (navbarMenu) {
-                navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
-                return navbarMenu.children("ul").children("li.more-nav-item")
-            }(navbarMenu), i = visibleLi; i < liCount; i++) {
+            if ((visibleLi -= extraLiHide) < liCount) for (
+                var navWrapper = function (navbarMenu) {
+                    navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");
+                    return navbarMenu.children("ul").children("li.more-nav-item")
+                }(navbarMenu), i = visibleLi; i < liCount; i++
+            ) {
                 var currentLi = navbarMenu.children("ul").children("li").eq(i), clone = currentLi.clone();
                 navWrapper.children("ul").append(clone), currentLi.hide();
                 if ($('.feather-icon').length > 0) feather.replace();
@@ -1050,22 +1054,8 @@ $(window).on("resize", function () {
     if ($stickytableheadWrap.width() > $stickytableheadWrap.parent().width()) $stickytableheadWrap.parent().addClass('table-responsive'); else $stickytableheadWrap.parent().removeClass('table-responsive');
 });
 $(window).trigger("resize");
+
 /***** Resize function end *****/
-
-
-// clean notify child
-$(document).ready(function () {
-    new NotifyPopup().cleanChildNotifyBlock();
-    $('.btn-redirect').click(function () {
-        const url = $(this).attr('data-url');
-        if (url) {
-            location.href = url;
-        }
-    });
-
-    // init dblclick form field to edit
-    $.fn.formDetailToUpdateAction();
-});
 
 
 function buildSelect2() {
@@ -1077,9 +1067,7 @@ function buildSelect2() {
             // display dummy data
             let dummyData = JSON.parse($(this).attr('data-dummy'));
             if (dummyData && typeof dummyData === 'object' && dummyData.hasOwnProperty('title') && dummyData.hasOwnProperty('id')) {
-                $(this).empty().append(
-                    `<option value="${dummyData.id}" selected>${dummyData.title}</option>`
-                )
+                $(this).empty().append(`<option value="${dummyData.id}" selected>${dummyData.title}</option>`)
             }
 
         }
@@ -1087,6 +1075,7 @@ function buildSelect2() {
 }
 
 $(document).ready(function () {
+    // Listen event select and select2-init-v1 for set previous selected data
     $(document).on('focus', 'select', function () {
         $(this).data('previousValue', $(this).val());
     })
@@ -1096,27 +1085,145 @@ $(document).ready(function () {
 
             let urlData = $(this).attr('data-url') + '?' + $(this).attr('data-params');
             let keyResult = $(this).attr('data-result-key');
-            $(this).append(
-                `<option class="x-item-loading" value="x-item-loading" disabled>` +
-                $('#base-trans-factory').attr('data-loading') + '...' +
-                `</option>`
-            );
-            $.fn.callAjax(
-                urlData, 'GET'
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
-                        let selectedVal = $(this).find(":selected").val();
-                        $(this).find('option.x-item-loading').remove();
-                        $.map(data?.[keyResult], (item) => {
-                            if (selectedVal && item.id !== selectedVal) $(this).append(`<option value="${item.id}">${item.title}</option>`);
-                        })
+            $(this).append(`<option class="x-item-loading" value="x-item-loading" disabled>` + $('#base-trans-factory').attr('data-loading') + '...' + `</option>`);
+            $.fn.callAjax(urlData, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
+                    let selectedVal = $(this).find(":selected").val();
+                    let dataList = data?.[keyResult];
+                    $.map(dataList, (item) => {
+                        if (!selectedVal || (selectedVal && item.id !== selectedVal)) $(this).append(`<option value="${item.id}">${item.title}</option>`);
+                    });
+                    if (!selectedVal) {
+                        $(this).find('option.x-item-loading').text("").attr('disable', 'disable').attr('selected', 'selected');
+                    } else {
+                        $(this).find('option.x-item-loading').attr('disable', 'disable').remove();
                     }
-                },
-            )
+                }
+            },)
         }
     });
+    // -- Listen event select and select2-init-v1 for set previous selected data
+
+    // clean notify child
+    new NotifyPopup().cleanChildNotifyBlock();
+    $('.btn-redirect').click(function () {
+        const url = $(this).attr('data-url');
+        if (url) {
+            location.href = url;
+        }
+    });
+    $.fn.formDetailToUpdateAction();
+    // -- clean notify child
+
+    // Active drawer
+    $('.ntt-drawer-toggle-link').each(function () {
+        if ($(this).attr('data-drawer-active') === "true") {
+            $(this).trigger('click');
+        }
+    });
+    // -- Active drawer
+
+    // Action support Workflow in Doc Detail
+    function renderLogOfDoc(stagesData) {
+        let ulStages = [];
+        if (stagesData.length > 0) {
+            stagesData.map((item) => {
+                let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
+                let stationName = item['code'] ? `<i class="fas fa-cog"></i><span class="ml-1">${item['title']}</span>` : item['title'];
+
+                let assigneeHTML = [];
+                item['assignee_and_zone'].map((item2) => {
+                    if (item2['is_done'] === false) {
+                        assigneeHTML.push(`<span class="badge badge-warning badge-outline wrap-text mr-1">${item2['full_name']}</span>`)
+                    }
+                })
+                let assignGroupHTML = assigneeHTML.length > 0 ? `<div class="card-footer card-text">${assigneeHTML.join("")}</div>` : ``;
+
+                let logHTML = [];
+                item['logs'].map((itemLog) => {
+                    let childLogHTML = `<div class="mt-3"><span class="badge badge-secondary badge-outline mr-1">${$.fn.parseDateTime(itemLog?.['date_created'])}</span>`;
+                    if (itemLog['is_system'] === true) {
+                        childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
+                        if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
+                            childLogHTML += `<span class="badge badge-soft-light mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                        }
+                    } else {
+                        if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
+                            childLogHTML += `<span class="badge badge-soft-success mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                        }
+                    }
+                    childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span></div>`;
+                    logHTML.push(childLogHTML);
+                })
+                let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
+
+                ulStages.push(baseHTML.format_by_key({
+                    stationName: stationName,
+                    assigneeData: assignGroupHTML,
+                    logData: logGroupHTML,
+                }))
+            })
+        } else {
+            // ulStages.push(
+            //     `Phiếu không có nhật ký của Quy trình làm việc.`
+            // )
+        }
+        return ulStages.join("");
+    }
+
+    $('.btn-action-wf').click(function (event) {
+        event.preventDefault();
+
+        let actionSelected = $(this).attr('data-value');
+        let taskID = $('#idxGroupAction').attr('data-wf-task-id');
+        let urlBase = $('#idUrlTaskDetail').attr('data-url');
+        if (actionSelected !== undefined && taskID && urlBase) {
+            let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
+            $.fn.showLoading();
+            $.fn.callAjax(urlData, 'PUT', {'action': actionSelected}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data?.['status'] === 200) {
+                    $.fn.notifyB({
+                        'description': $('#base-trans-factory').attr('data-success')
+                    }, 'success');
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1000)
+                }
+                setTimeout(() => {
+                    $.fn.hideLoading();
+                }, 1000)
+            }, (errs) => {
+                setTimeout(() => {
+                    $.fn.hideLoading();
+                }, 500)
+            })
+        }
+    });
+
+    $('#btnLogShow').click(function (event) {
+        event.preventDefault();
+        let groupLogEle = $('#drawer_log_data');
+        let baseUrl = groupLogEle.attr('data-url');
+        if (baseUrl && !groupLogEle.attr('data-log-loaded')) {
+            let runtimeID = $.fn.getWFRuntimeID();
+            if (runtimeID) {
+                $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(baseUrl, runtimeID), 'GET',).then((resp) => {
+                    groupLogEle.attr('data-log-loaded', true);
+                    let data = $.fn.switcherResp(resp);
+                    if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
+                        let diagram_data = data['diagram_data'];
+                        let stages = diagram_data['stages'];
+
+                        $('#idxDataRuntimeLoading').addClass('hidden');
+                        $('#idxDataRuntime').html(renderLogOfDoc(stages)).removeClass('hidden');
+                    }
+                })
+            }
+        }
+    });
+    // -- Action support Workflow in Doc Detail
 });
 
 // function extend to jQuery
@@ -1149,12 +1256,13 @@ $.fn.extend({
             delete opts['reloadCurrency'];
         }
         let defaultConfig = {
+            autoFill: false,
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
             ordering: false,
             paginate: true,
             pageLength: 10,
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 cell-box-search mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
             language: {
                 url: $('#msg-datatable-language-config').text().trim(),
             },
@@ -1165,12 +1273,12 @@ $.fn.extend({
                     $.fn.initMaskMoney2();
                 }
                 // buildSelect2();
-                setTimeout(
-                    () => {
-                        buildSelect2();
-                    },
-                    0
-                )
+                setTimeout(() => {
+                    buildSelect2();
+                }, 0)
+            },
+            initComplete: function () {
+                $(this.api().table().container()).find('input').attr('autocomplete', 'off');
             },
             data: [], ...opts
         }
@@ -1209,8 +1317,7 @@ $.fn.extend({
             'method': 'GET',
             'params': {},
             'result-key': null,
-            'class-name': '',
-            ...opts
+            'class-name': '', ...opts
         }
         let selData = $('<select>');
         selData.addClass('form-select select2-init-v1');
@@ -1241,37 +1348,30 @@ $.fn.extend({
     },
     parseDateTime: (dateStrUTC, microSecondLength = 0) => {
         let dateNew = new Date(Date.parse(dateStrUTC));
-        return "{day}/{month}/{year} {hour}:{minute}:{second}".format_by_key(
-            {
-                day: dateNew.getDate().toString().padStart(2, '0'),
-                month: (dateNew.getMonth() + 1).toString().padStart(2, '0'),
-                year: dateNew.getFullYear().toString(),
-                hour: dateNew.getHours().toString().padStart(2, '0'),
-                minute: dateNew.getMinutes().toString().padStart(2, '0'),
-                second: dateNew.getSeconds().toString().padStart(2, '0'),
-            }
-        ) + (microSecondLength > 0 ? ("." + dateNew.getMilliseconds().toString().padStart(3, '0')) : "")
+        return "{day}/{month}/{year} {hour}:{minute}:{second}".format_by_key({
+            day: dateNew.getDate().toString().padStart(2, '0'),
+            month: (dateNew.getMonth() + 1).toString().padStart(2, '0'),
+            year: dateNew.getFullYear().toString(),
+            hour: dateNew.getHours().toString().padStart(2, '0'),
+            minute: dateNew.getMinutes().toString().padStart(2, '0'),
+            second: dateNew.getSeconds().toString().padStart(2, '0'),
+        }) + (microSecondLength > 0 ? ("." + dateNew.getMilliseconds().toString().padStart(3, '0')) : "")
     },
     parseDate: (dateStrUTC) => {
         let dateNew = new Date(Date.parse(dateStrUTC));
-        return "{day}/{month}/{year}".format_by_key(
-            {
-                day: dateNew.getDate().toString().padStart(2, '0'),
-                month: (dateNew.getMonth() + 1).toString().padStart(2, '0'),
-                year: dateNew.getFullYear().toString(),
-            }
-        )
+        return "{day}/{month}/{year}".format_by_key({
+            day: dateNew.getDate().toString().padStart(2, '0'),
+            month: (dateNew.getMonth() + 1).toString().padStart(2, '0'),
+            year: dateNew.getFullYear().toString(),
+        })
     },
     hasOwnProperties: function (objData, keys) {
         if (typeof objData === 'object' && Array.isArray(keys)) {
-            $.map(
-                keys,
-                (key) => {
-                    if (!objData.hasOwnProperty(key)) {
-                        return false;
-                    }
+            for (let i = 0; i < keys.length; i++) {
+                if (!objData.hasOwnProperty(keys[i])) {
+                    return false;
                 }
-            )
+            }
             return true;
         }
         return false;
@@ -1340,10 +1440,13 @@ $.fn.extend({
         if (errs && typeof errs === 'object') {
             let errors_converted = jQuery.fn.cleanDataNotify(errs);
             Object.keys(errors_converted).map((key) => {
-                jQuery.fn.notifyB({
+                let notify_data = $('#flagNotifyKey').attr('data-value') === '1' ? {
                     'title': key,
                     'description': errors_converted[key]
-                }, 'failure');
+                } : {
+                    'description': errors_converted[key]
+                };
+                jQuery.fn.notifyB(notify_data, 'failure');
             });
         }
     },
@@ -1533,7 +1636,6 @@ $.fn.extend({
         }, timeout);
     },
     callAjax: function (url, method, data, headers = {}) {
-
         return new Promise(function (resolve, reject) {
             let ctx = {
                 url: url,
@@ -1544,8 +1646,7 @@ $.fn.extend({
                 headers: {"X-CSRFToken": headers},
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
-                    if (data) resolve(rest);
-                    else resolve({'status': jqXHR.status});
+                    if (data) resolve(rest); else resolve({'status': jqXHR.status});
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     let resp_data = jqXHR.responseJSON;
@@ -1568,12 +1669,9 @@ $.fn.extend({
         }
     },
     hideLoading: function () {
-        setTimeout(
-            () => {
-                $('#loadingContainer').addClass('hidden');
-            },
-            250,
-        )
+        setTimeout(() => {
+            $('#loadingContainer').addClass('hidden');
+        }, 250,)
     },
     getRowData: function () {
         // element call from in row of DataTable
@@ -1588,8 +1686,55 @@ $.fn.extend({
             }
         })
         return rs;
-    }
+    },
 
+    // workflow
+    setWFRuntimeID: function (runtime_id) {
+        if (runtime_id) {
+            let btn = $('#btnLogShow');
+            btn.removeClass('hidden');
+            $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(btn.attr('data-url-runtime-detail'), runtime_id), 'GET',).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                console.log('data: ', data);
+                if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
+                    if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
+
+                    let actionMySelf = data['runtime_detail']['action_myself'];
+                    if (actionMySelf) {
+                        let grouAction = $('#idxGroupAction');
+                        let taskID = actionMySelf['id'];
+                        if (taskID) {
+                            grouAction.attr('data-wf-task-id', taskID);
+
+                            let actions = actionMySelf['actions'];
+                            if (actions && Array.isArray(actions) && actions.length > 0) {
+                                // $('#btnMainAction').removeClass('hidden').find('.icon').html(`<i class="fas fa-check text-success"></i>`);
+                                $('#btnMainAction').removeClass('hidden').find('.icon').html(`<i class="far fa-thumbs-up text-success"></i>`);
+
+                                let priorityAdded = false;
+                                actions.map((item) => {
+                                    let liFound = grouAction.find('li[data-value=' + item + ']')
+                                    let iconFound = liFound.find('.icon-action-wf');
+                                    if (priorityAdded === false) {
+                                        if (item === 0 || item === 1) {
+                                            priorityAdded = true;
+                                            $('#btnMainAction').attr('data-value', item).removeClass('hidden').find('.icon').html(iconFound.clone());
+                                        }
+                                    }
+                                    liFound.removeClass('hidden');
+                                })
+                                grouAction.closest('.dropdown').removeClass('hidden');
+                            }
+                        }
+                    }
+                }
+            })
+        }
+        $('#idWFRuntime').attr('data-runtime-id', runtime_id);
+    },
+    getWFRuntimeID: function () {
+        return $('#idWFRuntime').attr('data-runtime-id');
+    },
 })
 
 // support for Form Submit
@@ -1700,12 +1845,7 @@ class MaskMoney2 {
     }
 
     static realtimeInputMoney($ele) {
-        $($ele).attr(
-            'value',
-            parseFloat(
-                MaskMoney2._beforeParseFloatAndLimit($($ele).val())
-            )
-        );
+        $($ele).attr('value', parseFloat(MaskMoney2._beforeParseFloatAndLimit($($ele).val())));
     }
 
     constructor(configData) {
@@ -1747,18 +1887,10 @@ class MaskMoney2 {
         // inputOrDisplay choice in ['input', 'display']
         switch (inputOrDisplay) {
             case 'input':
-                $($ele).val(
-                    this.applyConfig(
-                        $($ele).attr('value')
-                    )
-                );
+                $($ele).val(this.applyConfig($($ele).attr('value')));
                 break
             case 'display':
-                $($ele).text(
-                    this.applyConfig(
-                        $($ele).attr('data-init-money')
-                    )
-                );
+                $($ele).text(this.applyConfig($($ele).attr('data-init-money')));
                 break
             default:
                 throw Error('strData must be required!')
@@ -1840,21 +1972,16 @@ var DataTableAction = {
         div.appendTo('body');
         div.modal('show');
         div.find('.btn').off().on('click', function (e) {
-            if ($(this).attr('data-type') === 'cancel') div.remove();
-            else {
+            if ($(this).attr('data-type') === 'cancel') div.remove(); else {
                 $.fn.callAjax(url, 'DELETE', data, crf)
                     .then((res) => {
                         if (res.hasOwnProperty('status')) {
                             div.modal('hide');
                             div.remove();
-                            if ($(row).length)
-                                $(row).closest('.table').DataTable().rows(row).remove().draw();
-                            $.fn.notifyPopup(
-                                {
-                                    description: res?.data?.message ? res.data.message : 'Delete item successfully'
-                                },
-                                'success'
-                            )
+                            if ($(row).length) $(row).closest('.table').DataTable().rows(row).remove().draw();
+                            $.fn.notifyPopup({
+                                description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                            }, 'success')
                         }
                     })
             }

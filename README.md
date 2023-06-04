@@ -288,4 +288,11 @@ sau khi submit, hoặc có thể reload lại page
 - Không hiển thị spinner loading khi load data cho table:
     set attribute "load-data-hide-spinner" = "false" để ẩn spinner loading khi gọi ajax lấy dữ liệu cho table đó.
 ```
-7. 
+7. Notify lỗi không hiển thị key của lỗi (key là trường dữ liệu) khi gọi API trả về
+```text
+# ở local có thể tắt tất cả notify key bằng local_settings: DEBUG_NOTIFY_KEY = False
+
+@mask_view(is_notify_key=False)
+def view(...)
+```
+8. 

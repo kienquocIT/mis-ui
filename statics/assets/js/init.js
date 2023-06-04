@@ -1320,7 +1320,7 @@ $.fn.extend({
         // reload currency in table
         let reloadCurrency = opts?.['reloadCurrency'];
         if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
-        reloadCurrency = $.fn.isBoolean(reloadCurrency)? reloadCurrency: false;
+        reloadCurrency = $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
 
         // row callback |  rowIdx = true
         let rowIdx = opts?.['rowIdx'];
@@ -1330,6 +1330,7 @@ $.fn.extend({
         if (opts?.['ajax']) {
             if (!opts['ajax']?.['error']) {
                 opts['ajax']['error'] = function (xhr, error, thrown) {
+                    $.fn.switcherResp(xhr?.['responseJSON']);
                     if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
                 }
             }
@@ -1361,7 +1362,7 @@ $.fn.extend({
             initComplete: function () {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
             },
-            rowCallback: function (row, data, index){
+            rowCallback: function (row, data, index) {
                 if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
             },
             data: [],
@@ -1431,9 +1432,9 @@ $.fn.extend({
             return acc + currentValue;
         }, 0);
     },
-    getValueOrEmpty: function (objData, key){
-        if (typeof objData === 'object' && typeof key === 'string'){
-            if (objData.hasOwnProperty(key) && objData[key]){
+    getValueOrEmpty: function (objData, key) {
+        if (typeof objData === 'object' && typeof key === 'string') {
+            if (objData.hasOwnProperty(key) && objData[key]) {
                 return objData[key];
             }
         }
@@ -1471,7 +1472,7 @@ $.fn.extend({
     },
 
     // default components
-    dateRangePickerDefault: function (opts){
+    dateRangePickerDefault: function (opts) {
         $(this).daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -1482,7 +1483,7 @@ $.fn.extend({
             locale: {
                 format: 'MM/DD/YYYY hh:mm A'
             },
-            ...(opts && typeof opts === 'object'  ? opts : {})
+            ...(opts && typeof opts === 'object' ? opts : {})
         });
     },
 
@@ -1551,17 +1552,33 @@ $.fn.extend({
         }
     },
     notifyErrors: (errs) => {
-        if (errs && typeof errs === 'object') {
-            let errors_converted = jQuery.fn.cleanDataNotify(errs);
-            Object.keys(errors_converted).map((key) => {
-                let notify_data = $('#flagNotifyKey').attr('data-value') === '1' ? {
-                    'title': key,
-                    'description': errors_converted[key]
-                } : {
-                    'description': errors_converted[key]
-                };
-                jQuery.fn.notifyB(notify_data, 'failure');
-            });
+        if (errs) {
+            if (typeof errs === 'object') {
+                let errors_converted = jQuery.fn.cleanDataNotify(errs);
+                Object.keys(errors_converted).map((key) => {
+                    let notify_data = $('#flagNotifyKey').attr('data-value') === '1' ? {
+                        'title': key,
+                        'description': errors_converted[key]
+                    } : {
+                        'description': errors_converted[key]
+                    };
+                    jQuery.fn.notifyB(notify_data, 'failure');
+                });
+            } else if (typeof errs === 'string') {
+                jQuery.fn.notifyB(
+                    {
+                        'description': errs
+                    }, 'failure'
+                );
+            } else if (Array.isArray(errs)) {
+                errs.map(
+                    (item) => {
+                        jQuery.fn.notifyB({
+                            'description': item
+                        }, 'failure');
+                    }
+                )
+            }
         }
     },
 
@@ -1699,9 +1716,8 @@ $.fn.extend({
                     $.fn.notifyErrors(mess);
                     return {};
                 case 401:
-                    console.log(resp.data);
                     $.fn.notifyB({'description': resp.data}, 'failure');
-                    return jQuery.fn.redirectLogin(500);
+                    return jQuery.fn.redirectLogin(1000);
                 // return {}
                 case 403:
                     jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
@@ -2114,10 +2130,16 @@ var DataTableAction = {
         html = `<span>${listSys[stt]}</span>`
         return html
     },
-    'item_view': function(data, link, format=null){
+    'item_view': function (data, link, format = null) {
         let keyArg = [
-            {name: 'Title', value: 'title'},
-            {name: 'Code', value: 'code'},
+            {
+                name: 'Title',
+                value: 'title'
+            },
+            {
+                name: 'Code',
+                value: 'code'
+            },
         ];
         if (format) keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
         let $elmTrans = $('#base-trans-factory');

@@ -138,7 +138,7 @@ def mask_view(**parent_kwargs):
             auth_require = parent_kwargs.get('auth_require', False)
             if auth_require:
                 login_require = True
-            is_notify_key = parent_kwargs.get('is_notify_key', True)
+            is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)

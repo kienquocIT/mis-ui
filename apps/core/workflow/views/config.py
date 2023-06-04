@@ -2,10 +2,10 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
 
 from apps.core.workflow.initial_data import Node_data
 from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset, TypeCheck
+from apps.shared.msg import BaseMsg
 
 WORKFLOW_ACTION = {
     0: WorkflowMsg.ACTION_CREATE,
@@ -76,7 +76,7 @@ class WorkflowOfAppListAPI(APIView):
             return {'app_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class WorkflowOfAppDetailAPI(APIView):
@@ -94,8 +94,8 @@ class WorkflowOfAppDetailAPI(APIView):
                 return {'app_list': resp.result}, status.HTTP_200_OK
             elif resp.status == 401:
                 return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
-        return {'errors': _('Not found')}, status.HTTP_400_BAD_REQUEST
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
 class WorkflowList(View):
@@ -240,7 +240,7 @@ class FlowRuntimeListAPI(APIView):
             if resp.state:
                 return {'runtime_list': resp.result}, status.HTTP_200_OK
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {'errors': 'xxx'}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
 class FlowRuntimeDetailAPI(APIView):
@@ -254,7 +254,7 @@ class FlowRuntimeDetailAPI(APIView):
             if resp.state:
                 return {'runtime_detail': resp.result}, status.HTTP_200_OK
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {'errors': 'xxx'}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
 class FlowRuntimeDiagramDetailAPI(APIView):
@@ -268,7 +268,7 @@ class FlowRuntimeDiagramDetailAPI(APIView):
             if resp.state:
                 return {'diagram_data': resp.result}, status.HTTP_200_OK
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {'errors': 'xxx'}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
 class FlowRuntimeTaskDetailAPI(APIView):
@@ -284,4 +284,4 @@ class FlowRuntimeTaskDetailAPI(APIView):
             if resp.state:
                 return {'result': resp.result}, status.HTTP_200_OK
             return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-        return {'errors': 'xxx'}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST

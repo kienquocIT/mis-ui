@@ -4,6 +4,7 @@ from .msg.workflow import WorkflowMsg
 __all__ = [
     'COMPANY_SIZE',
     'CUSTOMER_REVENUE',
+    'PICKING_STATE',
     'WORKFLOW_ACTION',
 ]
 
@@ -23,6 +24,18 @@ COMPANY_SIZE = [
     {"value": 4, "name": _('200-500 people')},
     {"value": 5, "name": _('> 500 people')},
 ]
+
+# Picking
+PICKING_STATE = (
+    (0, _('Ready')),
+    (1, _('Done')),
+)
+# Delivery
+DELIVERY_STATE = (
+    (0, 'Wait'),
+    (1, 'Partial'),
+    (2, 'Full'),
+)
 
 # Workflow
 WORKFLOW_ACTION = {

@@ -232,6 +232,10 @@
     {{ config|json_script:"idConfigValue" }}
     <!-- // Render Company Config -->
 
+    <div class="hidden">
+        {% block dataHiddenGroup %}{% endblock %}
+    </div>
+
     <!-- Drawer Log and Activity -->
     <div
             data-simplebar
@@ -328,14 +332,14 @@
     <script>
         new Typed('#elementTypingText', {
             strings: [
-                `Truyện cười ngắn 2: Kiểm tra trí thông minh. Thầy giáo kiểm tra chỉ số thông minh của học sinh.
-                Thầy hỏi: “Ai là con của cha mẹ em, mà lại không phải là anh chị em ruột của em?”
-                Tí trả lời: “Đó là em, Tí ạ”. Thầy giáo rất hài lòng. Đến lượt Tèo,
-                thầy cũng hỏi: “Ai là con của cha mẹ em mà không phải là anh chị em ruột của em?”.
-                Tèo gãi đầu gãi tai: “Để em về nhà suy nghĩ đã ạ”. Về nhà nghĩ mãi không ra,
-                Tèo bèn đi hỏi Tẹo: “Ai là con của cha mẹ cậu mà lại không phải là anh chị em ruột của cậu?”.
-                Tẹo đáp ngay: “Đó là Tẹo còn ai”. Hôm sau Tèo hớn hở đến lớp khoe với thầy chắc như đinh đóng cột:
-                “Em biết đó là ai rồi, đó là bạn Tẹo ạ”. Thầy lẩm bẩm: “Sao lại thế, phải là Tí chứ nhỉ?”.`,
+                `Truy?n cu?i ng?n 2: Ki?m tra tr� th�ng minh. Th?y gi�o ki?m tra ch? s? th�ng minh c?a h?c sinh.
+                Th?y h?i: �Ai l� con c?a cha m? em, m� l?i kh�ng ph?i l� anh ch? em ru?t c?a em?�
+                T� tr? l?i: ��� l� em, T� ?�. Th?y gi�o r?t h�i l�ng. �?n lu?t T�o,
+                th?y cung h?i: �Ai l� con c?a cha m? em m� kh�ng ph?i l� anh ch? em ru?t c?a em?�.
+                T�o g�i d?u g�i tai: ��? em v? nh� suy nghi d� ?�. V? nh� nghi m�i kh�ng ra,
+                T�o b�n di h?i T?o: �Ai l� con c?a cha m? c?u m� l?i kh�ng ph?i l� anh ch? em ru?t c?a c?u?�.
+                T?o d�p ngay: ��� l� T?o c�n ai�. H�m sau T�o h?n h? d?n l?p khoe v?i th?y ch?c nhu dinh d�ng c?t:
+                �Em bi?t d� l� ai r?i, d� l� b?n T?o ?�. Th?y l?m b?m: �Sao l?i th?, ph?i l� T� ch? nh??�.`,
             ],
             typeSpeed: 50,
         });

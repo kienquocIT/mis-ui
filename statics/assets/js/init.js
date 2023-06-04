@@ -1250,19 +1250,94 @@ $.fn.extend({
             return item ? item.charAt(0) : ""
         }).join("");
     },
-    DataTableDefault: function (opts, rowIdx = true) {
-        let reloadCurrency = opts?.['reloadCurrency'];
-        if (reloadCurrency !== undefined) {
-            delete opts['reloadCurrency'];
+    isBoolean(value) {
+        return typeof value === 'boolean';
+    },
+    _parseDomDtl: function (opts) {
+        let domDTL = "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        let utilsDom = {
+            // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
+            // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
+            // "t": Đại diện cho bảng (table) chứa dữ liệu.
+            // "i": Đại diện cho thông tin về số hàng hiển thị và tổng số hàng.
+            // "p": Đại diện cho thanh phân trang (pagination).
+            // "r": Đại diện cho sắp xếp (ordering) của các cột.
+            // "s": Đại diện cho hộp chọn số hàng hiển thị.
+            visiblePaging: true, // "l"
+            visibleSearchField: true,   // "f"
+            visibleDisplayRowTotal: true,   // "i"
+            visiblePagination: true,   // "p"
+            visibleOrder: true,   // "r"
+            visibleRowQuantity: true,   // "s"
         }
-        let defaultConfig = {
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePaging')) {
+            if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
+            if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
+            delete opts['visiblePaging']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleSearchField')) {
+            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
+            if (utilsDom.visibleSearchField === false) {
+
+                domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
+            }
+            delete opts['visibleSearchField']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
+            if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
+            if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
+            delete opts['visibleDisplayRowTotal']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePagination')) {
+            if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
+            if (utilsDom.visiblePagination === false) domDTL = domDTL.replace('p>', '>');
+            delete opts['visiblePagination']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleOrder')) {
+            if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
+            if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
+            delete opts['visibleOrder']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleRowQuantity')) {
+            if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
+            if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
+            delete opts['visibleRowQuantity']
+        }
+
+        return [opts, domDTL];
+    },
+    parseDtlOpts: function (opts) {
+        // init table
+        let [parsedOpts, domDTL] = $.fn._parseDomDtl(opts);
+
+        // reload currency in table
+        let reloadCurrency = opts?.['reloadCurrency'];
+        if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
+        reloadCurrency = $.fn.isBoolean(reloadCurrency)? reloadCurrency: false;
+
+        // row callback |  rowIdx = true
+        let rowIdx = opts?.['rowIdx'];
+        if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
+
+        // ajax
+        if (opts?.['ajax']) delete opts['data'];
+
+        // return data
+        return {
             autoFill: false,
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
             ordering: false,
             paginate: true,
             pageLength: 10,
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 cell-box-search mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            dom: domDTL,
             language: {
                 url: $('#msg-datatable-language-config').text().trim(),
             },
@@ -1280,7 +1355,11 @@ $.fn.extend({
             initComplete: function () {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
             },
-            data: [], ...opts
+            rowCallback: function (row, data, index){
+                if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
+            },
+            data: [],
+            ...parsedOpts,
         }
         if (opts?.['ajax']) {
             delete defaultConfig['data'];
@@ -1346,6 +1425,14 @@ $.fn.extend({
             return acc + currentValue;
         }, 0);
     },
+    getValueOrEmpty: function (objData, key){
+        if (typeof objData === 'object' && typeof key === 'string'){
+            if (objData.hasOwnProperty(key) && objData[key]){
+                return objData[key];
+            }
+        }
+        return '';
+    },
     parseDateTime: (dateStrUTC, microSecondLength = 0) => {
         let dateNew = new Date(Date.parse(dateStrUTC));
         return "{day}/{month}/{year} {hour}:{minute}:{second}".format_by_key({
@@ -1375,6 +1462,22 @@ $.fn.extend({
             return true;
         }
         return false;
+    },
+
+    // default components
+    dateRangePickerDefault: function (opts){
+        $(this).daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            startDate: moment().startOf('hour'),
+            showDropdowns: true,
+            minYear: 1901,
+            "cancelClass": "btn-secondary",
+            locale: {
+                format: 'MM/DD/YYYY hh:mm A'
+            },
+            ...(opts && typeof opts === 'object'  ? opts : {})
+        });
     },
 
     // notify
@@ -1409,14 +1512,19 @@ $.fn.extend({
             type: "dismissible alert-primary",
             z_index: 2147483647, /* Maximum index */
         }
-        if (typeAlert === 'success') {
-            alert_config['type'] = "dismissible alert-success";
-        } else if (typeAlert === 'failure') {
-            alert_config['type'] = "dismissible alert-danger";
-        } else if (typeAlert === 'warning') {
-            alert_config['type'] = "dismissible alert-warning";
-        } else if (typeAlert === 'info') {
-            alert_config['type'] = "dismissible alert-info";
+        switch (typeAlert) {
+            case 'success':
+                alert_config['type'] = "dismissible alert-success";
+                break
+            case 'failure':
+                alert_config['type'] = "dismissible alert-danger";
+                break
+            case 'warning':
+                alert_config['type'] = "dismissible alert-warning";
+                break
+            case 'info':
+                alert_config['type'] = "dismissible alert-info";
+                break
         }
         $.notify(msg, alert_config);
     },
@@ -1635,7 +1743,7 @@ $.fn.extend({
             }
         }, timeout);
     },
-    callAjax: function (url, method, data, headers = {}) {
+    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}) {
         return new Promise(function (resolve, reject) {
             let ctx = {
                 url: url,
@@ -1643,7 +1751,7 @@ $.fn.extend({
                 dataType: 'json',
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                headers: {"X-CSRFToken": headers},
+                headers: {"X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers},
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
                     if (data) resolve(rest); else resolve({'status': jqXHR.status});
@@ -1999,5 +2107,30 @@ var DataTableAction = {
         }
         html = `<span>${listSys[stt]}</span>`
         return html
+    },
+    'item_view': function(data, link, format=null){
+        let keyArg = [
+            {name: 'Title', value: 'title'},
+            {name: 'Code', value: 'code'},
+        ];
+        if (format) keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
+        let $elmTrans = $('#base-trans-factory');
+
+        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
+        for (let key of keyArg) {
+            if (data.hasOwnProperty(key.value))
+                htmlContent += `<div class="row mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+        }
+        if (link) {
+            link = link.format_url_with_uuid(data['id']);
+            htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                <span>${$elmTrans.attr('data-view-detail')}</span>
+                <span class="icon ml-1">
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                </span>
+            </a></div>`;
+        }
+        return htmlContent
     }
 }

@@ -1313,7 +1313,7 @@ $.fn.extend({
 
         return [opts, domDTL];
     },
-    parseDtlOpts: function (opts) {
+    _parseDtlOpts: function (opts) {
         // init table
         let [parsedOpts, domDTL] = $.fn._parseDomDtl(opts);
 
@@ -1327,10 +1327,16 @@ $.fn.extend({
         if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
 
         // ajax
-        if (opts?.['ajax']) delete opts['data'];
+        if (opts?.['ajax']) {
+            if (!opts['ajax']?.['error']) {
+                opts['ajax']['error'] = function (xhr, error, thrown) {
+                    if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
+                }
+            }
+        }
 
         // return data
-        return {
+        let configFinal = {
             autoFill: false,
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
@@ -1360,17 +1366,17 @@ $.fn.extend({
             },
             data: [],
             ...parsedOpts,
-        }
-        if (opts?.['ajax']) {
-            delete defaultConfig['data'];
-            if (!opts['ajax']?.['error']) {
-                opts['ajax']['error'] = function (xhr, error, thrown) {
-                    if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
-                }
-            }
-        }
-        if (rowIdx === true) defaultConfig['rowCallback'] = (row, data, index) => $('td:eq(0)', row).html(index + 1)
-        let tbl = $(this).DataTable(defaultConfig);
+        };
+
+        // ajax delete data
+        if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
+
+        // returned
+        return configFinal;
+    },
+    DataTableDefault: function (opts) {
+        // init DataTable
+        let tbl = $(this).DataTable($.fn._parseDtlOpts(opts));
         tbl.on('init.dt', function () {
             let minerGroup = $(this).closest('.waiter-miner-group');
             if (minerGroup.length > 0) {

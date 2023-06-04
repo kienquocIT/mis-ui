@@ -1825,7 +1825,6 @@ $.fn.extend({
             btn.removeClass('hidden');
             $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(btn.attr('data-url-runtime-detail'), runtime_id), 'GET',).then((resp) => {
                 let data = $.fn.switcherResp(resp);
-                console.log('data: ', data);
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
                     if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
 

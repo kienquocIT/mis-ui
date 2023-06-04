@@ -143,7 +143,6 @@ class User(AuthUser):
             user.space_current_data = api_result.get('space_current', {})
             user.employee_current_data = api_result.get('employee_current', {})
             user.companies_data = api_result.get('companies', [])
-            print('user.companies_data: ', user.companies_data)
             user.access_token = api_result['token']['access_token']
             user.refresh_token = api_result['token']['refresh_token']
             user.last_login = timezone.now()

@@ -1183,7 +1183,14 @@ $(document).ready(function () {
                     render: (data, type, row, meta) => {
                         return `<span class="mask-money" data-init-money="` + row.remain_value + `"></span>`
                     }
-                }
+                },
+                {
+                    data: 'available_value',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="mask-money" data-init-money="` + row.available_value + `"></span>`
+                    }
+                },
             ],
         });
     }
@@ -1232,12 +1239,13 @@ $(document).ready(function () {
                                     <thead>
                                         <tr>
                                             <th class="w-5"></th>
-                                            <th class="w-20">Expense/Cost Items</th>
-                                            <th class="w-15">Type</th>
+                                            <th class="w-10">Expense/Cost Items</th>
+                                            <th class="w-10">Type</th>
                                             <th class="w-5">Quantity</th>
                                             <th class="w-15">Unit Price</th>
                                             <th class="w-10">Tax</th>
-                                            <th class="w-15">Remain Value</th>
+                                            <th class="w-15">Remain</th>
+                                            <th class="w-15">Available</th>
                                             <th class="w-15">Converted Value</th>
                                         </tr>
                                     </thead>
@@ -1253,10 +1261,10 @@ $(document).ready(function () {
                                         tax_code = expense_item.tax.code
                                     }
                                     let disabled = 'disabled';
-                                    if (expense_item.remain_total > 0) {
+                                    if (expense_item.available_total > 0) {
                                         disabled = '';
                                     }
-                                    total_remain_value += expense_item.remain_total;
+                                    total_remain_value += expense_item.available_total;
                                     expense_table.append(`<tr>
                                         <td><input data-id="` + expense_item.id + `" class="expense-selected" type="checkbox" ` + disabled + `></td>
                                         <td>` + expense_item.expense.title + `</td>
@@ -1265,20 +1273,21 @@ $(document).ready(function () {
                                         <td><span class="mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
                                         <td><span class="badge badge-soft-danger">` + tax_code + `</span></td>
                                         <td><span class="mask-money expense-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
+                                        <td><span class="mask-money expense-available-value" data-init-money="` + expense_item.available_total + `"></span></td>
                                         <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                     </tr>`)
                                 }
                                 expense_table.append(`<tr style="background-color: #ebf5f5">
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
-                                    <td><span class="mask-money total-remain-value text-primary" data-init-money="` + total_remain_value + `"></span></td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td><span class="mask-money total-available-value text-primary" data-init-money="` + total_remain_value + `"></span></td>
                                     <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)
 
                                 $('.converted-value-inp').on('change', function () {
-                                    let expense_remain_value = $(this).closest('tr').find('.expense-remain-value').attr('data-init-money');
+                                    let expense_available_value = $(this).closest('tr').find('.expense-available-value').attr('data-init-money');
                                     let converted_value = $(this).attr('value');
-                                    if (parseFloat(converted_value) > parseFloat(expense_remain_value)) {
-                                        $(this).attr('value', parseFloat(expense_remain_value));
+                                    if (parseFloat(converted_value) > parseFloat(expense_available_value)) {
+                                        $(this).attr('value', parseFloat(expense_available_value));
                                     }
 
                                     let new_total_converted_value = 0;

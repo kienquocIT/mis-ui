@@ -341,8 +341,6 @@ $(document).ready(function () {
                             return parseInt(a) + parseInt(b);
                         }, 0);
 
-                    let total_ap_value = parseFloat($('#total-value').attr('data-init-money'));
-
                     // Update footer
                     $(api.column(2).footer()).html(`<p class="text-primary">
                                                          <br>` + total_AP_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>

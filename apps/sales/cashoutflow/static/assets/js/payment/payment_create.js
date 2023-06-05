@@ -1141,11 +1141,6 @@ $(document).ready(function () {
             columns: [
                 {
                     render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
-                {
-                    render: (data, type, row, meta) => {
                         return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
                     }
                 },
@@ -1153,42 +1148,42 @@ $(document).ready(function () {
                     data: 'code',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return row.code;
+                        return `<span class="badge badge-outline badge-soft-danger">` + row.code + `</span>`;
                     }
                 },
                 {
                     data: 'title',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return row.title;
+                        return `<span>` + row.title + `</span>`;
                     }
                 },
                 {
                     data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="mask-money" data-init-money="` + row.to_payment + `"></span>`
+                        return `<span class="text-primary mask-money" data-init-money="` + row.to_payment + `"></span>`
                     }
                 },
                 {
                     data: 'return_value',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="mask-money" data-init-money="` + row.return_value + `"></span>`
+                        return `<span class="text-primary mask-money" data-init-money="` + row.return_value + `"></span>`
                     }
                 },
                 {
                     data: 'remain_value',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="mask-money" data-init-money="` + row.remain_value + `"></span>`
+                        return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
                     }
                 },
                 {
                     data: 'available_value',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="mask-money" data-init-money="` + row.available_value + `"></span>`
+                        return `<span class="text-primary mask-money" data-init-money="` + row.available_value + `"></span>`
                     }
                 },
             ],
@@ -1225,15 +1220,15 @@ $(document).ready(function () {
         else {
             let tab2 = $('.expense-tables');
             tab2.html(``);
-            for (let i=0; i<selected_ap_list.length; i++) {
+            for (let i = 0; i < selected_ap_list.length; i++) {
                 $.fn.callAjax(AP_db.attr('data-url-ap-detail').replace('/0', '/' + selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                             let ap_item_detail = data.advance_payment_detail;
                             if (ap_item_detail.expense_items.length > 0) {
-                                tab2.append(`<div class="mt-7 mb-2 row">
-                                    <div class="col-2 mt-2"><span class="ap-code-span badge badge-soft-primary badge-outline">` + selected_ap_code_list[i] + `</span></div>
+                                tab2.append(`<div class="mt-7 mb-3 row">
+                                    <div class="col-2 mt-2"><span class="ap-code-span badge badge-primary">` + selected_ap_code_list[i] + `</span></div>
                                 </div>`)
                                 tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
                                     <thead>
@@ -1270,15 +1265,16 @@ $(document).ready(function () {
                                         <td>` + expense_item.expense.title + `</td>
                                         <td>` + expense_item.expense.type.title + `</td>
                                         <td class="text-center">` + expense_item.expense_quantity + `</td>
-                                        <td><span class="mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
+                                        <td><span class="text-primary mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
                                         <td><span class="badge badge-soft-danger">` + tax_code + `</span></td>
-                                        <td><span class="mask-money expense-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
-                                        <td><span class="mask-money expense-available-value" data-init-money="` + expense_item.available_total + `"></span></td>
+                                        <td><span class="text-primary mask-money expense-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
+                                        <td><span class="text-primary mask-money expense-available-value" data-init-money="` + expense_item.available_total + `"></span></td>
                                         <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                     </tr>`)
                                 }
                                 expense_table.append(`<tr style="background-color: #ebf5f5">
-                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td><span style="text-align: left"><b>Total:</b></span></td>
                                     <td><span class="mask-money total-available-value text-primary" data-init-money="` + total_remain_value + `"></span></td>
                                     <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)

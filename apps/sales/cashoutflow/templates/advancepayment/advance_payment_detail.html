@@ -418,12 +418,26 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_to_payment">
-{#                <div class="row">#}
-{#                    <div class="form-group col-3">#}
-{#                        <label class="form-label">{% trans "" %}</label>#}
-{#                        <select class="form-select"></select>#}
-{#                    </div>#}
-{#                </div>#}
+                <div class="row">
+                    <table id="datatable_payment_list" class="table nowrap w-50 mb-5" data-method="GET"
+                           data-url="{% url 'PaymentListAPI' %}"
+                           data-url-detail="{% url 'PaymentDetail' '0' %}"
+                    >
+                        <thead>
+                        <th class="w-25">{% trans "Code" %}</th>
+                        <th class="w-40">{% trans "Name" %}</th>
+                        <th class="w-55">{% trans "Payment Value Converted" %}</th>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr style="background-color: #ebf5f5">
+                                <th></th>
+                                <th class="text-primary" style="text-align: left"><b>Total payment value:<br><br>Remain Value:</b></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="row">

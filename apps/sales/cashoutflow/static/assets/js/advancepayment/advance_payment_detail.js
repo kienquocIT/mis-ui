@@ -209,6 +209,8 @@ $(document).ready(function () {
                 "cancelClass": "btn-secondary",
                 maxYear: parseInt(moment().format('YYYY')) + 100
             });
+
+            loadAdvanceList(advance_payment.converted_payment_list);
         }
 
         $('.form-control').prop('disabled', true);
@@ -294,6 +296,57 @@ $(document).ready(function () {
             }
         })
     });
+
+    function loadAdvanceList(converted_payment_list) {
+        if (!$.fn.DataTable.isDataTable('#datatable_payment_list')) {
+            let dtb = $('#datatable_payment_list');
+            dtb.DataTableDefault({
+                dom: '',
+                data: converted_payment_list,
+                columns: [
+                    {
+                        data: 'payment_code',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<span class="badge badge-soft-indigo badge-outline">` + row.payment_code + `</span>`
+                        }
+                    },
+                    {
+                        data: 'payment_title',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<a href="#"><span>` + row.payment_title + `</span></a>`
+                        }
+                    },
+                    {
+                        data: 'payment_value_converted',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<p>` + row.payment_value_converted.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                        }
+                    }
+                ],
+                footerCallback: function (row, data, start, end, display) {
+                    let api = this.api();
+
+                    // Total over this page
+                    let total_payment_value = api
+                        .column(2, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseInt(a) + parseInt(b);
+                        }, 0);
+
+                    let total_ap_value = parseFloat($('#total-value').attr('data-init-money'));
+                    let remain_ap_value = total_ap_value - total_payment_value;
+
+                    // Update footer
+                    $(api.column(2).footer()).html(`<br><p class="text-primary"><b>` + total_payment_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</b><br><br>` + remain_ap_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p><br>`);
+                },
+            });
+
+        }
+    }
 
     function loadExpenseList(row_id, expense_id, uom_id) {
         let ele = $('#' + row_id + ' .expense-select-box');

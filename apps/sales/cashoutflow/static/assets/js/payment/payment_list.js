@@ -32,7 +32,7 @@ $(document).ready(function () {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="` + $('#datatable_payment_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                            return `<a href="#"><span><b>` + row.title + `</b></span></a>`
                         }
                     },
                     {
@@ -40,6 +40,13 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             return `<span>` + row.date_created.split(' ')[0] + `</span>`
+                        }
+                    },
+                    {
+                        data: 'payment_value',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<p class="text-primary">` + row.payment_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
                         }
                     },
                     {
@@ -51,6 +58,7 @@ $(document).ready(function () {
                     }
                 ],
             });
+
         }
     }
 

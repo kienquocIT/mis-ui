@@ -12,9 +12,9 @@ $(document).ready(function () {
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
                 $('#sale-code-select-box').prop('disabled', false);
-                $('#sale-code-select-box2-show').css({
-                    'background': 'none',
-                });
+                // $('#sale-code-select-box2-show').css({
+                //     'background': 'none',
+                // });
                 $('#sale-code-select-box2-show').attr('disabled', false);
                 $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
 
@@ -106,18 +106,18 @@ $(document).ready(function () {
                     table_body.append(`<tr id="" class="row-number">
                     <td class="number text-center"></td>
                     <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
-                    <td><input class="form-control expense-type" style="color: black; background: none" disabled></td>
+                    <td><input class="form-control expense-type" disabled></td>
                     <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
                     <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
                     <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
                             <span class="input-affix-wrapper">
-                                <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" style="color: black; background: none" placeholder="Select a price or enter">
+                                <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" placeholder="Select a price or enter">
                             </span>
                         </div>
                         <div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
                     <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
-                    <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black; background: none" disabled></td>
-                    <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
+                    <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
+                    <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" disabled></td>
                     <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                 </tr>
                 <script>
@@ -170,6 +170,7 @@ $(document).ready(function () {
                 $('#pretax-value').attr('data-init-money', pretax_value);
                 $('#taxes-value').attr('data-init-money', total_value - pretax_value);
                 $('#total-value').attr('data-init-money', total_value);
+
                 $.fn.initMaskMoney2();
             }
 
@@ -209,6 +210,21 @@ $(document).ready(function () {
                 maxYear: parseInt(moment().format('YYYY')) + 100
             });
         }
+
+        $('.form-control').prop('disabled', true);
+        $('.form-select').prop('disabled', true);
+        $('.dropdown-toggle').prop('disabled', true);
+        $('.form-check-input').prop('disabled', true);
+        $('#btn-add-row-line-detail').addClass('disabled')
+        $('.form-control').css({
+            'color': 'black'
+        });
+        $('.form-select').css({
+            'color': 'black'
+        });
+        $('.dropdown-toggle').css({
+            'color': 'black'
+        });
     })
 
     let plan_db = $('#tab_plan_datatable_div').html();
@@ -829,9 +845,9 @@ $(document).ready(function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
             $('#sale-code-select-box').prop('disabled', false);
-            $('#sale-code-select-box2-show').css({
-                'background': 'none',
-            });
+            // $('#sale-code-select-box2-show').css({
+            //     'background': 'none',
+            // });
             $('#sale-code-select-box2-show').attr('disabled', false);
             $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
             loadSaleCode();

@@ -112,7 +112,6 @@ $(function () {
         })
 
         function loadExpenseTable(data) {
-            console.log(data)
             let table = $('#dtbExpense');
             table.find('tbody').html('');
             $('#total-value').attr('data-init-money', '');
@@ -120,7 +119,7 @@ $(function () {
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt}</td>
-                                <td class="wrap-text col-expense" data-id="${item.expense.id}"><span>${item.expense.title}</span></td>
+                                <td class="wrap-text col-expense" data-id="${item.id}"><span>${item.expense.title}</span></td>
                                 <td class="wrap-text"><span>${item.expense.type.title}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
@@ -163,9 +162,9 @@ $(function () {
             let cost_list = []
             tbExpense.find('tbody tr').each(function (){
                 cost_list.push({
-                    'expense': $(this).find('.col-expense').attr('data-id'),
-                    'remain_total': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
-                    'return_price': $(this).find('input.mask-money').valCurrency(),
+                    'advance_payment_cost': $(this).find('.col-expense').attr('data-id'),
+                    'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
+                    'return_value': $(this).find('input.mask-money').valCurrency(),
                 })
             })
             frm.dataForm['cost'] = cost_list;

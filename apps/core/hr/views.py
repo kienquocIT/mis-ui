@@ -24,16 +24,6 @@ def create_hr_application(request, url, msg):
     return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
-def update_hr_application(request, url, pk, msg):
-    resp = ServerAPI(user=request.user, url=url + '/' + pk).put(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_200_OK
-    elif resp.status == 401:
-        return {}, status.HTTP_401_UNAUTHORIZED
-    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-
 class EmployeeList(View):
     @mask_view(
         auth_require=True,
@@ -126,12 +116,22 @@ class EmployeeDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        return update_hr_application(
+        return self.update_hr_application(
             request=request,
             url=ApiURL.EMPLOYEE_DETAIL,
             pk=pk,
             msg=HRMsg.EMPLOYEE_UPDATE
         )
+
+    @classmethod
+    def update_hr_application(cls, request, url, pk, msg):
+        resp = ServerAPI(user=request.user, url=url + '/' + pk).put(request.data)
+        if resp.state:
+            resp.result['message'] = msg
+            return resp.result, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class EmployeeCompanyListAPI(APIView):
@@ -142,7 +142,9 @@ class EmployeeCompanyListAPI(APIView):
         is_api=True
     )
     def get(self, request, company_id, *args, **kwargs):
-        resp = ServerAPI(url=(ApiURL.EMPLOYEE_COMPANY + '/' + company_id), user=request.user).get()
+        # resp = ServerAPI(url=(ApiURL.EMPLOYEE_COMPANY + '/' + company_id), user=request.user).get()
+        resp = ServerAPI(url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user).get()
+        resp = ServerAPI(url=(ApiURL.XXX.fill_key(id='xxxx', option='2222')), user=request.user).get()
         if resp.state:
             return {'employee_company_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

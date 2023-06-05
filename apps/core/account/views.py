@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from rest_framework.response import Response
-from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg
+from apps.shared import ServerAPI, ApiURL, mask_view, ServerMsg, TypeCheck
 
 TEMPLATE = {
     'list': 'core/account/user_list.html',
@@ -52,6 +52,20 @@ class UserEdit(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class UserResetPassword(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            response = ServerAPI(user=request.user, url=ApiURL.USER_RESET_PASSWORD.fill_key(pk=pk)).put(request.data)
+            if response.state:
+                return response.result, status.HTTP_200_OK
+            return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_404_NOT_FOUND
 
 
 class UserListAPI(APIView):

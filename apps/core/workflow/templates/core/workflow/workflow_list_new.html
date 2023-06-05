@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Workflow list' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/wf-list-new.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .child-workflow-group {
+            border-left: 1px groove #bfcbd0;
+        }
+
+        .btn-collapse-app-wf:hover, .btn-collapse-doc-wf:hover {
+            background-color: slategrey !important;
+        }
+
+        .btn-collapse-app-wf:hover .icon-collapse-app-wf, .btn-collapse-doc-wf:hover .icon-collapse-doc-wf {
+            color: #FFFFFF !important;
+        }
+
+        .bg-grey-light-5 {
+            background-color: #f7f7f7;
+        }
+        .bg-gray-light-4 {
+            background-color: #eaeaea;
+        }
+        .miner-group {
+            display: none!important;
+        }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <a
+            class="btn btn-outline-primary btn-animated btn-xs"
+            href="{% url 'WorkflowCreate' %}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="{% trans 'Create Workflow' %}"
+            id="create_workflow_button"
+            data-bs-original-title="Add Workflow"
+    >
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="hidden container-fluid">
+        <div>
+            <div class="row bg-gray-light-4 p-3">
+                <div class="col">
+                    {% trans 'Application name' %}
+                </div>
+                <div class="col">
+                    {% trans 'Workflow mode' %}
+                </div>
+                <div class="col text-center">
+                    {% trans 'Errors' %}
+                </div>
+                <div class="col">
+                    {% trans 'Current WF applied' %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-1">
+            <div class="row bg-grey-light-5 p-3">
+                <div class="col text-left">
+                    <button
+                            class="btn btn-primary" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample"
+                            aria-expanded="false" aria-controls="collapseExample"
+                    >
+                        <i
+
+                                class="fas fa-caret-right mr-1"
+                        ></i>
+                        Chức năng thử nghiệm 1
+                    </button>
+                </div>
+                <div class="col">
+                    <select class="form-select">
+                        <option value="11">abc</option>
+                        <option value="11">def</option>
+                    </select>
+                </div>
+                <div class="col text-center">
+                    <span class="badge badge-success badge-outline">0</span>
+                </div>
+                <div class="col">
+                    <select class="form-select">
+                        <option value="11">1111</option>
+                        <option value="22">2222</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="collapse pb-5" id="collapseExample">
+                    <table class="table nowrap w-100 mb-5">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Applied Date</th>
+                            <th>Active Status</th>
+                            <th>Wait Complete</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Quy trình 1</td>
+                            <td>1/1/2023</td>
+                            <td>True</td>
+                            <td>10</td>
+                            <td>
+                                <button class="btn btn-outline-primary">View</button>
+                                <button class="btn btn-outline-warning">Edit</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-1">
+            <div class="row bg-grey-light-5 p-3">
+                <div class="col">
+                    <button
+                            class="btn btn-primary" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample1"
+                            aria-expanded="false" aria-controls="collapseExample"
+                    >
+                        <i
+
+                                class="fas fa-caret-right mr-1"
+                        ></i>
+                        Chức năng thử nghiệm 2
+                    </button>
+                </div>
+                <div class="col">
+                    <select class="form-select">
+                        <option value="11">abc</option>
+                        <option value="11">def</option>
+                    </select>
+                </div>
+                <div class="col text-center">
+                    <span class="badge badge-danger badge-outline">1156</span>
+                </div>
+                <div class="col">
+                    <select class="form-select">
+                        <option value="11">1111</option>
+                        <option value="22">2222</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="collapse" id="collapseExample1">
+                    <table class="table nowrap w-100 mb-5">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Applied Date</th>
+                            <th>Active Status</th>
+                            <th>Wait Complete</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Quy trình 1</td>
+                            <td>1/1/2023</td>
+                            <td>True</td>
+                            <td>10</td>
+                            <td>
+                                <button>View</button>
+                                <button>Edit</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input
+            type="hidden" id="workflow-link"
+            data-link-update="{% url 'WorkflowDetail' 1 %}"
+            data-link-list="{% url 'WorkflowList' %}"
+    >
+    <table
+            id="table_workflow_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'WorkflowListAPI' %}"
+            data-method="get"
+            data-app-list="{% url 'WorkflowOfAppListAPI' %}"
+    >
+        {% csrf_token %}
+        <thead>
+        <tr>
+            <th>{% trans 'Application name' %}</th>
+            <th>{% trans 'Workflow mode' %}</th>
+            <th>
+                {% trans 'Errors' %}
+            </th>
+            <th>
+                {% trans 'Current WF applied' %}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="wf-template hidden">
+        <div class="child-table">
+            <a href="#" class="btn btn-flush-success btn-animated add_new_wf mb-2">
+                <span class="icon">
+                    <span class="feather-icon mr-2"><i data-feather="plus-square"></i></span>
+                    <span class="txt-btn">{% trans 'Add new workflow' %}</span>
+                </span>
+            </a>
+            <table class="child-table">
+                <thead>
+                <tr>
+                    <th>{% trans 'WF name' %}</th>
+                    <th>{% trans 'Applied day' %}</th>
+                    <th>{% trans 'Active status' %}</th>
+                    <th>{% trans 'Not completed' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="grand-child-table">
+            <table class="grand-child-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Creator' %}</th>
+                    <th>{% trans 'Posting date' %}</th>
+                    <th>{% trans 'Current node' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="dropdown-lv-1 p">
+            <div class="dropdown custom-dropdown-tb">
+                <i class="fa fa-caret-down font-6 dropdown-toggle" data-bs-toggle="dropdown"></i>
+                <div class="dropdown-menu wf-mode">
+                    <a class="dropdown-item" href="#" data-value="0">{% trans 'Not apply' %}</a>
+                    <a class="dropdown-item" href="#" data-value="1">{% trans 'Apply' %}</a>
+                    <a class="dropdown-item" href="#" data-value="2">{% trans 'Pending' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input
+            type="hidden" id="url-factory"
+            data-new="{% url 'WorkflowCreate' %}"
+            data-child="{% url 'WorkflowListAPI' %}"
+            data-grand-child="{% url 'WorkflowListAPI' %}"
+            data-url-app-workflow-detail="{% url 'WorkflowOfAppDetailAPI' pk=1 %}"
+            data-url-workflow-list="{% url 'WorkflowListAPI' %}"
+            data-url-workflow-detail="{% url 'WorkflowDetail' pk=1 %}"
+            data-url-workflow-runtime-list="{% url 'FlowRuntimeListAPI' flow_id=1 %}"
+    >
+    <span class="hidden" id="idxSpanMsgGroup" data-make-sure="{% trans 'Make sure change to' %}"></span>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/moment.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/list-new.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            buildSelect2();
+        });
+    </script>
+{% endblock %}

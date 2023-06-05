@@ -133,6 +133,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'PromotionList')
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
+    # Transition Data Config
+    DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
+    DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking list'), 'OrderPickingList')
+    DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
+    DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
+    DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery detail'))
 
 # Return Advance
     RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
@@ -339,7 +345,7 @@ class BreadcrumbView:
 
     # Warehouse
     WAREHOUSE_LIST_PAGE = [
-        BreadcrumbItem.WAREHOUSE_LIST_PAGE
+        BreadcrumbItem.WAREHOUSE_LIST_PAGE,
     ]
 
     # Good receipt
@@ -356,4 +362,20 @@ class BreadcrumbView:
     ]
     RETURN_ADVANCE_CREATE_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_CREATE_PAGE]
     RETURN_ADVANCE_DETAIL_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_DETAIL_PAGE]
+
+
+    # Delivery
+    ORDER_PICKING_LIST_PAGE = [
+        BreadcrumbItem.DELIVERY_PICKING_LIST_PAGE,
+    ]
+    ORDER_PICKING_DETAIL_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_DETAIL_PAGE]
+    ORDER_DELIVERY_LIST_PAGE = [
+        BreadcrumbItem.DELIVERY_LIST_PAGE,
+    ]
+    ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_DETAIL_PAGE]
+
+    # Transition Data Config
+    DELIVERY_CONFIG = [
+        BreadcrumbItem.DELIVERY_CONFIG_PAGE
+    ]
 

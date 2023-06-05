@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Delivery Config' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-original-title="{% trans 'Save' %}"
+            data-form-id="formDeliveryConfig"
+    >
+        <span class="btn-icon-wrap">
+            <i class="far fa-save"></i>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <ul class="nav nav-light nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                <span class="nav-link-text">{% trans 'General' %}</span>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab_general">
+            <form
+                    id="formDeliveryConfig"
+                    data-url="{% url 'DeliveryConfigDetailAPI' %}"
+                    data-method="PUT"
+            >
+                {% csrf_token %}
+                <div class="row pt-3 pl-3">
+                    <div class="form-check form-switch mb-1">
+                        <input
+                                type="checkbox" class="form-check-input" id="switchIsPicking"
+                                {% if data.config_data.is_picking %} checked {% endif %}>
+                        <label class="form-check-label" for="switchIsPicking">
+                            {% trans 'Picking needs to be handled prior to shipment' %}
+                        </label>
+                    </div>
+                </div>
+                <div class="row pt-3 pl-3">
+                    <div class="form-check form-switch mb-1">
+                        <input
+                                type="checkbox" class="form-check-input" id="switchPartialShip"
+                                {% if data.config_data.is_partial_ship %} checked {% endif %}>
+                        <label class="form-check-label" for="switchPartialShip">
+                            {% trans "Partial delivery is possible" %}
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function () {
+            let eleInputPicking = $('#switchIsPicking');
+            let eleInputPartial = $('#switchPartialShip');
+            let $frm = $('#formDeliveryConfig');
+            let frmSetup = new SetupFormSubmit($frm);
+
+            $.fn.showLoading();
+            $.fn.callAjax(
+                frmSetup.dataUrl,
+                'GET',
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        if (data?.['config']?.['is_picking']) eleInputPicking.prop('checked', true);
+                        if (data?.['config']?.['is_partial_ship']) eleInputPartial.prop('checked', true);
+                    }
+
+                },
+                (errs) => {
+
+                }
+            ).then((data) => {
+                $.fn.hideLoading();
+            });
+
+            $frm.submit(function (event) {
+                event.preventDefault();
+                $.fn.showLoading();
+                let bodyData = {
+                    'is_picking': eleInputPicking.prop('checked'),
+                    'is_partial_ship': eleInputPartial.prop('checked'),
+                }
+                $.fn.callAjax(
+                    frmSetup.dataUrl,
+                    frmSetup.dataMethod,
+                    bodyData,
+                    true,
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data?.['status'] === 200) {
+                            $.fn.notifyB({
+                                'description': $('#msgSuccess').text(),
+                            }, 'success');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000)
+                        }
+                    },
+                    (errs) => {
+                        $.fn.hideLoading();
+                    }
+                );
+            });
+        });
+    </script>
+{% endblock %}

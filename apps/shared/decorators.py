@@ -1,6 +1,7 @@
 """needed module import"""
 from functools import wraps
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
@@ -13,6 +14,11 @@ from rest_framework.response import Response
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .caches import CacheController, CacheKeyCollect
+from .constant import WORKFLOW_ACTION
+
+__all__ = [
+    'mask_view',
+]
 
 
 class ArgumentDecorator:
@@ -102,6 +108,17 @@ class ArgumentDecorator:
             }
         return {}
 
+    @classmethod
+    def parse_url_pattern(cls, url_pattern_keys: list[str], cls_kwargs: dict[str, str]) -> dict[str, str]:
+        result = {}
+        if isinstance(url_pattern_keys, list) and isinstance(cls_kwargs, dict):
+            for key in url_pattern_keys:
+                result[key] = cls_kwargs[key] if key in cls_kwargs else None
+
+            if 'pk' in cls_kwargs:
+                result['pk'] = cls_kwargs['pk']
+        return result
+
 
 def mask_view(**parent_kwargs):
     """mask func before api method call form client to UI"""
@@ -121,6 +138,7 @@ def mask_view(**parent_kwargs):
             auth_require = parent_kwargs.get('auth_require', False)
             if auth_require:
                 login_require = True
+            is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)
@@ -132,6 +150,7 @@ def mask_view(**parent_kwargs):
                 breadcrumb_name=breadcrumb_name,
                 real_path=request.path,
             )
+            url_pattern_keys = parent_kwargs.get('url_pattern_keys', [])
 
             # is_ajax in request._meta
             # check is_ajax vs view config
@@ -219,9 +238,13 @@ def mask_view(**parent_kwargs):
                             case status.HTTP_500_INTERNAL_SERVER_ERROR:
                                 return HttpResponse(status=500)
                             case _:
+                                ctx['is_debug'] = 1 if settings.DEBUG_JS else 0
+                                ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
+                                ctx['base_workflow'] = WORKFLOW_ACTION if kwargs.get('pk', None) else {}
                                 ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()
+                                ctx['url_pattern'] = cls_check.parse_url_pattern(url_pattern_keys, kwargs)
                                 ctx['nav'] = {
                                     'menu_id_current': parent_kwargs.get('menu_active', None),
                                     'space_code_current': 1,

@@ -38,6 +38,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
+    USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
+
+    # state of task background
+    TASK_BG = StringUrl('task-bg/{pk}')
+
+    XXX = StringUrl('company/overview/{id}/{option}')
 
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
@@ -50,6 +56,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
+    EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
 
     # organization/group
@@ -82,10 +89,19 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # HR
 
     # WORKFLOW
+    WORKFLOW_OF_APPS = StringUrl('workflow/apps')
+    WORKFLOW_OF_APP_DETAIL = StringUrl('workflow/app/{pk}')
     WORKFLOW = StringUrl('workflow')
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
+
+    # WORKFLOW RUNTIME
+    RUNTIME_LIST = StringUrl('workflow/runtimes')
+    RUNTIME_DETAIL = StringUrl('workflow/runtime/{pk}')
+    RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
+    RUNTIME_DIAGRAM_DETAIL = StringUrl('workflow/diagram/{pk}')
+    RUNTIME_TASK_DETAIL = StringUrl('workflow/task/{pk}')
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')
@@ -204,3 +220,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # return advance
     RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
     RETURN_ADVANCE_DETAIL = StringUrl('cashoutflow/return-advance/{pk}')
+
+    # transition data config
+    DELIVERY_CONFIG = StringUrl('delivery/config')
+    DELIVERY_PICKING_LIST = StringUrl('delivery/picking')
+    DELIVERY_PICKING_DETAIL = StringUrl('delivery/picking/{pk}')
+    DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
+    DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
+    DELIVERY_LIST = StringUrl('delivery')
+

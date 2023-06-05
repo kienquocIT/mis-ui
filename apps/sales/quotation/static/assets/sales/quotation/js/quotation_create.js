@@ -77,6 +77,8 @@ $(function () {
             loadDataClass.loadInformationSelectBox($(this));
             // ReCheck Config
             checkConfig(true);
+            //
+            loadDataClass.loadDataProductAll()
         });
 
 // Action on click dropdown customer
@@ -110,6 +112,8 @@ $(function () {
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
+            //
+            loadDataClass.loadDataProductAll();
         });
 
 // Action on click dropdown contact
@@ -226,14 +230,6 @@ $(function () {
             calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
-// Action on click button dropdown price list's option
-        tableProduct.on('click', '.table-row-btn-dropdown-price-list', function (e) {
-            let elePrice = $(this)[0].closest('tr').querySelector('.table-row-item');
-            if (elePrice) {
-                loadDataClass.loadDataProductSelect($(elePrice), false);
-            }
-        });
-
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function (e) {
             let priceValRaw = $(this)[0].getAttribute('data-value');
@@ -345,14 +341,6 @@ $(function () {
             calculateClass.updateTotal(tableExpense[0], false, false, true)
         });
 
-// Action on click button dropdown price list's option
-        tableExpense.on('click', '.table-row-btn-dropdown-price-list', function (e) {
-            let elePrice = $(this)[0].closest('tr').querySelector('.table-row-item');
-            if (elePrice) {
-                loadDataClass.loadDataProductSelect($(elePrice), false);
-            }
-        });
-
 // Action on click price list's option
         tableExpense.on('click', '.table-row-price-option', function (e) {
             let priceValRaw = $(this)[0].getAttribute('data-value');
@@ -436,7 +424,7 @@ $(function () {
                         }
                         let quantity = row.querySelector('.table-row-quantity');
                         if (quantity) {
-                            valueQuantity = parseInt(quantity.value);
+                            valueQuantity = parseFloat(quantity.value);
                         }
                         valueTax = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].value;
                         valueTaxSelected = parseInt(row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].getAttribute('data-value'));
@@ -623,11 +611,11 @@ $(function () {
                         for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
                             let data = dataCopy.quotation_products_data[i];
                             if (data.product.id === prodID) {
-                                data['product_quantity'] = parseInt(quantyInput);
+                                data['product_quantity'] = parseFloat(quantyInput);
                                 order++
                                 data['order'] = order;
                                 result.push(data);
-                                productCopyTo.push({'id': data.product.id, 'quantity': parseInt(quantyInput)})
+                                productCopyTo.push({'id': data.product.id, 'quantity': parseFloat(quantyInput)})
                                 break
                             }
                         }
@@ -688,7 +676,7 @@ $(function () {
                             for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
                                 let data = dataCopy.quotation_products_data[i];
                                 if (data.product.id === checkedID) {
-                                    data['product_quantity'] = parseInt(checkedQuantity);
+                                    data['product_quantity'] = parseFloat(checkedQuantity);
                                     order++
                                     data['order'] = order;
                                     result.push(data);
@@ -841,8 +829,7 @@ $(function () {
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, false, true);
-            // let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
-            // let promotionResult = getPromotionResult(promotionCondition);
+            let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -875,15 +862,17 @@ $(function () {
                 "product_tax_value": 0,
                 "product_uom_title": "",
                 "product_tax_amount": 0,
-                "product_unit_price": 0,
+                "product_unit_price": shippingPrice,
                 "product_description": "Phí giao hàng nhanh",
                 "product_discount_value": 0,
-                "product_subtotal_price": 0,
+                "product_subtotal_price": shippingPrice,
                 "product_discount_amount": 0,
                 "is_shipping": true,
                 "shipping": {"id": $(this)[0].getAttribute('data-shipping-id')}
             };
-            tableProduct.DataTable().row.add(dataAdd).draw()
+            let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+            // Re Calculate after add shipping (pretax, discount, total)
+            reCalculateIfShipping(shippingPrice);
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
         });

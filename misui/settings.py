@@ -23,6 +23,8 @@ SECRET_KEY = 'django-insecure-p8r4sbt&9q*ig^3_$ao95)n3)vq5hu40k8d4jqep8zzpt49sx1
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_JS = True
+DEBUG_NOTIFY_KEY = True
 
 ALLOWED_HOSTS = []
 
@@ -55,6 +57,7 @@ INSTALLED_APPS = \
         'apps.sales.quotation',
         'apps.sales.saleorder',
         'apps.sales.cashoutflow',
+        'apps.sales.delivery',
     ]
 
 MIDDLEWARE = [

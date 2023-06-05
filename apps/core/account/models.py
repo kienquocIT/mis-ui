@@ -108,23 +108,6 @@ class User(AuthUser):
         if state_check:
             try:
                 user = User.objects.get(username_auth=api_result['username_auth'], user_id=api_result['id'])
-                user.user_id = api_result['id']
-                user.username = api_result['username']
-                user.first_name = api_result['first_name']
-                user.last_name = api_result['last_name']
-                user.email = api_result.get('email', '')
-                user.phone = api_result.get('phone', '')
-                user.dob = api_result.get('dob', None)
-                user.gender = api_result.get('gender', None)
-                user.language = api_result.get('language', settings.LANGUAGE_CODE)
-                user.avatar = api_result.get('avatar', None)
-                user.is_admin_tenant = api_result.get('is_admin_tenant', False)
-                user.tenant_current_data = api_result.get('tenant_current', {})
-                user.company_current_data = api_result.get('company_current', {})
-                user.space_current_data = api_result.get('space_current', {})
-                user.employee_current_data = api_result.get('employee_current', {})
-                user.companies_data = api_result.get('companies', [])
-                user.save()
             except User.DoesNotExist:
                 user = User.objects.create(
                     user_id=api_result['id'],
@@ -144,6 +127,22 @@ class User(AuthUser):
                 msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
                 print(msg_err)
                 return None
+            user.user_id = api_result['id']
+            user.username = api_result['username']
+            user.first_name = api_result['first_name']
+            user.last_name = api_result['last_name']
+            user.email = api_result.get('email', '')
+            user.phone = api_result.get('phone', '')
+            user.dob = api_result.get('dob', None)
+            user.gender = api_result.get('gender', None)
+            user.language = api_result.get('language', settings.LANGUAGE_CODE)
+            user.avatar = api_result.get('avatar', None)
+            user.is_admin_tenant = api_result.get('is_admin_tenant', False)
+            user.tenant_current_data = api_result.get('tenant_current', {})
+            user.company_current_data = api_result.get('company_current', {})
+            user.space_current_data = api_result.get('space_current', {})
+            user.employee_current_data = api_result.get('employee_current', {})
+            user.companies_data = api_result.get('companies', [])
             user.access_token = api_result['token']['access_token']
             user.refresh_token = api_result['token']['refresh_token']
             user.last_login = timezone.now()

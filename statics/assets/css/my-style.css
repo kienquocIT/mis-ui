@@ -24,6 +24,9 @@
 
 
 /* ... Off Canvas responsive Screen */
+.hidden-simple {
+    display: none;
+}
 .hidden {
     display: none !important;
 }
@@ -72,6 +75,7 @@
     content: "(*)";
     color: red;
     font-size: 0.8rem;
+    padding-left: 5px;
 }
 
 .wrap-text {
@@ -168,9 +172,16 @@ div.inline {
 .dataTables_filter {
     text-align: left !important;
 }
+
 .dataTables_filter label, .dataTables_filter input {
-      width: 100%!important;
+    width: 100% !important;
 }
+
 .dataTables_length {
     text-align: left !important;
+}
+
+/* button css customize */
+.bg-dark-hover:hover {
+    background-color: #f2f5f6;
 }

@@ -30,6 +30,33 @@
         </div>
     </div>
 
+    <div class="row mb-3">
+        <h1>Diagram</h1>
+        <div
+        ></div>
+        <p id="doc-data"></p>
+        <p id="doc-app"></p>
+        <p id="doc-state-current"></p>
+        <p id="doc-flow"></p>
+        <table
+                id="tbl-load-data-nek"
+                class="table nowrap w-100 mb-5"
+                data-method="GET"
+        >
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Overview' %}</th>
+                <th>{% trans 'Connection' %}</th>
+                <th>{% trans 'Assignee & Zone' %}</th>
+                <th>{% trans 'Log' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    {% csrf_token %}
 {% endblock %}
 
 {% block jsFooter %}

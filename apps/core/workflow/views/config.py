@@ -2,10 +2,10 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
 
 from apps.core.workflow.initial_data import Node_data
-from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset
+from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset, TypeCheck
+from apps.shared.msg import BaseMsg
 
 WORKFLOW_ACTION = {
     0: WorkflowMsg.ACTION_CREATE,
@@ -64,12 +64,46 @@ WORKFLOW_TYPE = {
 }
 
 
+class WorkflowOfAppListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get()
+        if resp.state:
+            return {'app_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class WorkflowOfAppDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APP_DETAIL.fill_key(pk=pk)).put(
+                data=request.data
+            )
+            if resp.state:
+                return {'app_list': resp.result}, status.HTTP_200_OK
+            elif resp.status == 401:
+                return {}, status.HTTP_401_UNAUTHORIZED
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
+
+
 class WorkflowList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='core/workflow/workflow_list.html',
+        template='core/workflow/workflow_list_new.html',
         menu_active='menu_workflow_list',
         breadcrumb='WORKFLOW_LIST_PAGE',
     )
@@ -83,13 +117,13 @@ class WorkflowListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get()
+        print(request.query_params)
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get(data=request.query_params.dict())
         if resp.state:
             return {'workflow_list': resp.result}, status.HTTP_200_OK
-
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class WorkflowCreate(View):
@@ -193,3 +227,61 @@ class NodeSystemListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         return {'node_system': Node_data}, status.HTTP_200_OK
+
+
+class FlowRuntimeListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, flow_id, **kwargs):
+        if TypeCheck.check_uuid(flow_id):
+            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_LIST).get(data={'flow_id': flow_id})
+            if resp.state:
+                return {'runtime_list': resp.result}, status.HTTP_200_OK
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_DETAIL.fill_key(pk=pk)).get()
+            if resp.state:
+                return {'runtime_detail': resp.result}, status.HTTP_200_OK
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeDiagramDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_DIAGRAM_DETAIL.fill_key(pk=pk)).get()
+            if resp.state:
+                return {'diagram_data': resp.result}, status.HTTP_200_OK
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeTaskDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_TASK_DETAIL.fill_key(pk=pk)).put(
+                data=request.data
+            )
+            if resp.state:
+                return {'result': resp.result}, status.HTTP_200_OK
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST

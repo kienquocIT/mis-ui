@@ -46,14 +46,8 @@ class CompanyDetail(View):
         auth_require=True,
         template='core/company/company_detail.html',
         breadcrumb='COMPANY_LIST_PAGE',
-        menu_active='menu_company_list',
+        menu_active='menu_company_list'
     )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
-class CompanyDetail(View):
-    @mask_view(auth_require=True, template='core/company/company_detail.html', breadcrumb='COMPANY_LIST_PAGE')
     def get(self, request, pk, *args, **kwargs):
         response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
         if response.state:

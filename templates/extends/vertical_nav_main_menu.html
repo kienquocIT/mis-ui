@@ -392,7 +392,62 @@
                                             </span>
                                         </span>
                                         <span class="nav-link-text">
-                                            {% trans 'WareHouse List' %}
+                                            {% trans 'WareHouse' %}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="menu_order_picking_list">
+                                    <a class="nav-link" href="{% url "OrderPickingList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Picking' %}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="menu_order_delivery_list">
+                                    <a class="nav-link" href="{% url "OrderDeliveryList" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="fas fa-truck-pickup"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Delivery' %}
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                            data-bs-target="#menu_transition_data_config"
+                    >
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </span>
+                        </span>
+                        <span class="nav-link-text">{% trans 'Transition Data Config' %}</span>
+                    </a>
+                    <ul id="menu_transition_data_config" class="nav flex-column collapse  nav-children">
+                        <li class="nav-item">
+                            <ul class="nav flex-column">
+                                <li class="nav-item" id="menu_delivery_config">
+                                    <a class="nav-link" href="{% url "DeliveryConfigDetail" %}">
+                                        <span class="nav-icon-wrap">
+                                            <span class="svg-icon menu-child-icon">
+                                                <i class="fas fa-truck"></i>
+                                            </span>
+                                        </span>
+                                        <span class="nav-link-text">
+                                            {% trans 'Delivery' %}
                                         </span>
                                     </a>
                                 </li>

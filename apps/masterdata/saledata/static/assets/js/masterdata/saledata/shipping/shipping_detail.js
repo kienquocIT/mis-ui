@@ -241,6 +241,7 @@ $(document).ready(function () {
     loadDetail(frmDetail, pk);
 
     frmDetail.submit(function (event) {
+        $('.readonly [disabled]:not([hidden]):not(i)', $(this)).attr('disabled', false);
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));

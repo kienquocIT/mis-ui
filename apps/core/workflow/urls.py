@@ -1,7 +1,15 @@
 from django.urls import path
 
-from apps.core.workflow.views.config import WorkflowList, WorkflowListAPI, WorkflowCreate, WorkflowCreateAPI, \
-    WorkflowDetail, NodeSystemListAPI, WorkflowDetailAPI
+from apps.core.workflow.views.config import (
+    WorkflowList, WorkflowListAPI, WorkflowCreate, WorkflowCreateAPI,
+    WorkflowDetail, NodeSystemListAPI, WorkflowDetailAPI, FlowRuntimeDetailAPI,
+)
+
+from apps.core.workflow.views.config import (
+    FlowRuntimeListAPI, FlowRuntimeDiagramDetailAPI,
+    WorkflowOfAppListAPI, WorkflowOfAppDetailAPI,
+    FlowRuntimeTaskDetailAPI,
+)
 
 urlpatterns = [
     path('lists', WorkflowList.as_view(), name='WorkflowList'),
@@ -11,4 +19,14 @@ urlpatterns = [
     path('detail/<str:pk>', WorkflowDetail.as_view(), name='WorkflowDetail'),
     path('detail-api/<str:pk>', WorkflowDetailAPI.as_view(), name='WorkflowDetailAPI'),
     path('node/system', NodeSystemListAPI.as_view(), name='NodeSystemListAPI'),
+
+    # apps
+    path('apps/api', WorkflowOfAppListAPI.as_view(), name='WorkflowOfAppListAPI'),
+    path('app/api/<str:pk>', WorkflowOfAppDetailAPI.as_view(), name='WorkflowOfAppDetailAPI'),
+
+    # runtime
+    path('runtimes/<str:flow_id>', FlowRuntimeListAPI.as_view(), name='FlowRuntimeListAPI'),
+    path('runtime/<str:pk>', FlowRuntimeDetailAPI.as_view(), name='FlowRuntimeDetailAPI'),
+    path('runtime/diagram/<str:pk>', FlowRuntimeDiagramDetailAPI.as_view(), name='FlowRuntimeDiagramDetailAPI'),
+    path('runtime/task/<str:pk>', FlowRuntimeTaskDetailAPI.as_view(), name='FlowRuntimeTaskDetailAPI'),
 ]

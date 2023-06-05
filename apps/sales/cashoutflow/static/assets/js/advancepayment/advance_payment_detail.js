@@ -215,7 +215,9 @@ $(document).ready(function () {
         $('.form-select').prop('disabled', true);
         $('.dropdown-toggle').prop('disabled', true);
         $('.form-check-input').prop('disabled', true);
-        $('#btn-add-row-line-detail').addClass('disabled')
+        $('#btn-add-row-line-detail').addClass('disabled');
+        $('.btn-del-line-detail').addClass('disabled');
+
         $('.form-control').css({
             'color': 'black'
         });

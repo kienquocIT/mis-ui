@@ -344,11 +344,11 @@ $(document).ready(function () {
                     let total_ap_value = parseFloat($('#total-value').attr('data-init-money'));
 
                     // Update footer
-                    $(api.column(2).footer()).html(`<p class="text-primary"><b>
+                    $(api.column(2).footer()).html(`<p class="text-primary">
                                                          <br>` + total_AP_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
                                                          <br>` + total_payment_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
                                                          <br>` + total_return_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
-                                                         <br><br>` + remain_ap_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br><br></b></p>`);
+                                                         <br><br><b>` + remain_ap_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br><br></b></p>`);
                 },
             });
 

@@ -190,7 +190,9 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                $.fn.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 data = data['account_detail'];
+
                 $('#account-title-id').val(data.name);
                 $('#account-code-id').val(data.code);
                 $('#account-website-id').val(data.website);

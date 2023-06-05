@@ -295,4 +295,25 @@ sau khi submit, hoặc có thể reload lại page
 @mask_view(is_notify_key=False)
 def view(...)
 ```
-8. 
+## 8. Cách áp dụng WF cho chức năng:
+```js
+// create.js
+
+$('#form-create-x').submit(function (event) {
+    let frm = new SetupFormSubmit($(this));
+    frm.dataForm['system_status'] = 1; // 1: save, 0: draft
+    $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr);
+})
+```
+```js
+// detail.js
+$.fn.callAjax(url_loaded, 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
+            }
+        }
+);
+```
+9. 

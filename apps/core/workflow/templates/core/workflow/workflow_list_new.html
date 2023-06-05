@@ -30,7 +30,7 @@
 
 {% block pageAction %}
     <a
-            class="btn btn-outline-primary btn-animated btn-xs"
+            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
             href="{% url 'WorkflowCreate' %}"
             data-bs-toggle="tooltip"
             data-bs-placement="top"
@@ -39,12 +39,7 @@
             data-bs-original-title="Add Workflow"
     >
             <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
-                </span>
+                <i class="fas fa-plus"></i>
             </span>
     </a>
 {% endblock %}

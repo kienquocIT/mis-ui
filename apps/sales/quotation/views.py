@@ -136,3 +136,31 @@ class QuotationExpenseListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class QuotationConfigDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).get()
+        if res.state:
+            return {'quotation_config': res.result}, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).put(request.data)
+        if res.state:
+            return {'result': res.result}, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST

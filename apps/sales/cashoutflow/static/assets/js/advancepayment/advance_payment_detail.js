@@ -209,7 +209,12 @@ $(document).ready(function () {
                 maxYear: parseInt(moment().format('YYYY')) + 100
             });
 
-            loadAdvanceList(advance_payment.converted_payment_list, advance_payment.return_value, advance_payment.advance_value);
+            loadAdvanceList(
+                advance_payment.converted_payment_list,
+                advance_payment.return_value,
+                advance_payment.advance_value,
+                advance_payment.remain_value
+            );
         }
 
         $('.form-control').prop('disabled', true);
@@ -296,7 +301,7 @@ $(document).ready(function () {
         })
     });
 
-    function loadAdvanceList(converted_payment_list, total_return_value, total_AP_value) {
+    function loadAdvanceList(converted_payment_list, total_return_value, total_AP_value, remain_ap_value) {
         if (!$.fn.DataTable.isDataTable('#datatable_payment_list')) {
             let dtb = $('#datatable_payment_list');
             dtb.DataTableDefault({
@@ -337,14 +342,13 @@ $(document).ready(function () {
                         }, 0);
 
                     let total_ap_value = parseFloat($('#total-value').attr('data-init-money'));
-                    let remain_ap_value = total_ap_value - total_payment_value - total_return_value;
 
                     // Update footer
                     $(api.column(2).footer()).html(`<p class="text-primary"><b>
                                                          <br>` + total_AP_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
                                                          <br>` + total_payment_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
                                                          <br>` + total_return_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
-                                                         <br>` + remain_ap_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br></b></p>`);
+                                                         <br><br>` + remain_ap_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br><br></b></p>`);
                 },
             });
 

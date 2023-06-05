@@ -716,6 +716,8 @@ $(document).ready(function () {
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
+        frm.dataForm['system_status'] = 1; // save, not draft
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

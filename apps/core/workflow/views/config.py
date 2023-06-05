@@ -117,7 +117,6 @@ class WorkflowListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        print(request.query_params)
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get(data=request.query_params.dict())
         if resp.state:
             return {'workflow_list': resp.result}, status.HTTP_200_OK

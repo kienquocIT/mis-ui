@@ -9,6 +9,8 @@ $(document).ready(function () {
         return obj;
     }, {});
     let sale_code_selected_list = [];
+    let sale_order_selected_list = [];
+    let quotation_selected_list = [];
     let load_default = 0;
     let current_value_converted_from_ap = '';
 
@@ -379,14 +381,14 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                 <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" id="` + item.id + `"></span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
                             </div>`)
             }
             else {
                 sale_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                     <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                     <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" id="` + item.id + `"></span>
+                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
                                 </div>`
             }
         })
@@ -398,14 +400,14 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                 <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" id="` + item.id + `"></span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
                             </div>`)
             }
             else {
                 quotation_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                         <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                        <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" id="` + item.id + `"></span>
+                                        <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
                                     </div>`
             }
         })
@@ -415,6 +417,12 @@ $(document).ready(function () {
             $(this).each(function() {
                 if ($(this).is(':checked')) {
                     sale_code_selected_list.push($(this).attr('id'));
+                    if ($(this).attr('data-type') === '0') {
+                        sale_order_selected_list.push($(this).attr('id'))
+                    }
+                    if ($(this).attr('data-type') === '1') {
+                        quotation_selected_list.push($(this).attr('id'))
+                    }
                 }
             });
         })
@@ -660,6 +668,9 @@ $(document).ready(function () {
     })
 
     $('.sale_code_type').on('change', function (event) {
+        sale_code_selected_list = [];
+        sale_order_selected_list = [];
+        quotation_selected_list = [];
         $('#tab_line_detail_datatable tbody').html('');
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
@@ -1432,8 +1443,31 @@ $(document).ready(function () {
             frm.dataForm['expense_valid_list'] = expense_valid_list;
         }
 
-        if (frm.dataForm['sale_code_type'] === 'MULTI') {
-            frm.dataForm['sale_code'] = sale_code_selected_list;
+        if ($('input[name="sale_code_type"]:checked').val() === 'non-sale') {
+            frm.dataForm['sale_code_type'] = 2;
+        }
+        else if ($('input[name="sale_code_type"]:checked').val() === 'sale') {
+            frm.dataForm['sale_code_type'] = 0;
+        }
+        else if ($('input[name="sale_code_type"]:checked').val() === 'purchase') {
+            frm.dataForm['sale_code_type'] = 1;
+        }
+        else {
+            frm.dataForm['sale_code_type'] = 3;
+        }
+
+        if (frm.dataForm['sale_code_type'] === 3) { // multi
+            delete frm.dataForm['sale_code']
+            frm.dataForm['sale_order_selected_list'] = sale_order_selected_list;
+            frm.dataForm['quotation_selected_list'] = quotation_selected_list;
+        }
+        else if (frm.dataForm['sale_code_type'] === 0) {  // sale
+            if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
+                frm.dataForm['sale_code_detail'] = 0;
+            }
+            if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
+                frm.dataForm['sale_code_detail'] = 1;
+            }
         }
 
         if ($('#creator-select-box').val() !== null) {
@@ -1458,19 +1492,6 @@ $(document).ready(function () {
         }
         else {
             frm.dataForm['method'] = 2;
-        }
-
-        if ($('input[name="sale_code_type"]:checked').val() === 'non-sale') {
-            frm.dataForm['sale_code_type'] = 2;
-        }
-        else if ($('input[name="sale_code_type"]:checked').val() === 'sale') {
-            frm.dataForm['sale_code_type'] = 0;
-        }
-        else if ($('input[name="sale_code_type"]:checked').val() === 'purchase') {
-            frm.dataForm['sale_code_type'] = 1;
-        }
-        else {
-            frm.dataForm['sale_code_type'] = 3;
         }
 
         // console.log(frm.dataForm)

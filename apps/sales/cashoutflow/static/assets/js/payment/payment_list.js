@@ -10,6 +10,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
+                            console.log(data)
                             return resp.data['payment_list'] ? resp.data['payment_list'] : [];
                         }
                         return [];
@@ -58,7 +59,6 @@ $(document).ready(function () {
                     }
                 ],
             });
-
         }
     }
 

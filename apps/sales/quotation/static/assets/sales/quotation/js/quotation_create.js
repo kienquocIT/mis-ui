@@ -8,6 +8,7 @@ $(function () {
         let dataTableClass = new dataTableHandle();
         let calculateClass = new calculateCaseHandle();
         let submitClass = new submitHandle();
+        let configClass = new checkConfigHandle();
 
         let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
@@ -23,6 +24,8 @@ $(function () {
         loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
+        // load config
+        loadDataClass.loadInitQuotationConfig('quotation-config-data');
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
@@ -76,7 +79,7 @@ $(function () {
             }
             loadDataClass.loadInformationSelectBox($(this));
             // ReCheck Config
-            checkConfig(true);
+            configClass.checkConfig(true);
             //
             loadDataClass.loadDataProductAll()
         });
@@ -213,7 +216,8 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0
             }
-            tableProduct.DataTable().row.add(dataAdd).draw();
+            let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+            configClass.checkConfig(false, newRow);
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -327,7 +331,8 @@ $(function () {
                 "expense_tax_amount": 0,
                 "expense_subtotal_price": 0
             }
-            tableExpense.DataTable().row.add(dataAdd).draw();
+            let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+            configClass.checkConfig(false, newRow);
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)

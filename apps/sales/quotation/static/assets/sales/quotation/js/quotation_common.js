@@ -1,3 +1,5 @@
+let configClass = new checkConfigHandle();
+
 class loadDataHandle {
     loadBoxQuotationOpportunity(opp_id, valueToSelect = null) {
         let jqueryId = '#' + opp_id;
@@ -807,6 +809,25 @@ class loadDataHandle {
                 self.loadDataProductSelect($(eleItem), false)
             }
         }
+    }
+
+    loadInitQuotationConfig(config_id) {
+        let jqueryId = '#' + config_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('quotation_config')) {
+                        ele.val(JSON.stringify(data.quotation_config));
+                        // check config first time
+                        configClass.checkConfig(true);
+                    }
+                }
+            }
+        )
     }
 }
 

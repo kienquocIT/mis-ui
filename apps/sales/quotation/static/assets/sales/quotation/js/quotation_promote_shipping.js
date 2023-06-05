@@ -556,36 +556,30 @@ function checkAvailableShipping(data_shipping) {
                         let operator = formula.comparison_operators;
                         let extra_amount = parseFloat(formula.extra_amount);
                         let shipping_price = parseFloat(formula.amount_condition);
-                        final_shipping_price = (shipping_price + (extra_amount * amount_condition));
                         let result_to_check = 0;
-                        if (unit.title === "price") { // if condition is price
-                            for (let idx = 0; idx < table.tBodies[0].rows.length; idx++) {
-                                let row = table.tBodies[0].rows[idx];
-                                if (row.querySelector('.table-row-item')) {
-                                    let quantity = row.querySelector('.table-row-quantity');
-                                    let elePrice = row.querySelector('.table-row-price');
+                        for (let idx = 0; idx < table.tBodies[0].rows.length; idx++) {
+                            let row = table.tBodies[0].rows[idx];
+                            if (row.querySelector('.table-row-item')) {
+                                let quantity = row.querySelector('.table-row-quantity');
+                                let elePrice = row.querySelector('.table-row-price');
+                                if (unit.title === "price") { // if condition is price
                                     if (quantity && elePrice) {
                                         result_to_check += (parseFloat(quantity.value) * $(elePrice).valCurrency());
                                     }
-                                }
-                            }
-                        } else if (unit.title === "quantity") { // if condition is quantity
-                            for (let idx = 0; idx < table.tBodies[0].rows.length; idx++) {
-                                let row = table.tBodies[0].rows[idx];
-                                if (row.querySelector('.table-row-item')) {
-                                    let quantity = row.querySelector('.table-row-quantity');
+                                } else if (unit.title === "quantity") { // if condition is quantity
                                     if (quantity) {
                                         result_to_check += parseFloat(quantity.value);
                                     }
+                                } else if (unit.title === "volume") { // if condition is volume
+
+                                } else if (unit.title === "weight") { // if condition is weight
+
                                 }
                             }
-                        } else if (unit.title === "volume") { // if condition is volume
-
-                        } else if (unit.title === "weight") { // if condition is weight
-
                         }
                         if (operator === 1) {
                             if (result_to_check < amount_condition) {
+                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
                                 return {
                                     'is_pass': true,
                                     'final_shipping_price': final_shipping_price
@@ -593,6 +587,7 @@ function checkAvailableShipping(data_shipping) {
                             }
                         } else if (operator === 2) {
                             if (result_to_check > amount_condition) {
+                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
                                 return {
                                     'is_pass': true,
                                     'final_shipping_price': final_shipping_price
@@ -600,6 +595,7 @@ function checkAvailableShipping(data_shipping) {
                             }
                         } else if (operator === 3) {
                             if (result_to_check <= amount_condition) {
+                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
                                 return {
                                     'is_pass': true,
                                     'final_shipping_price': final_shipping_price
@@ -607,6 +603,7 @@ function checkAvailableShipping(data_shipping) {
                             }
                         } else if (operator === 4) {
                             if (result_to_check >= amount_condition) {
+                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
                                 return {
                                     'is_pass': true,
                                     'final_shipping_price': final_shipping_price
@@ -689,68 +686,26 @@ function loadPriceProduct(ele) {
         $.fn.initMaskMoney2();
     }
 
-function checkConfig(is_change_opp = false) {
-    let opportunity = $('#select-box-quotation-create-opportunity').val();
-    // let config = JSON.parse($('#quotation-config-data').val());
-    let config = {
-        'short_sale_config': {
-            'is_choose_price_list': false,
-            'is_input_price': false,
-            'is_discount_on_product': false,
-            'is_discount_on_total': false
-        },
-        'long_sale_config': {
-            'is_not_input_price': false,
-            'is_not_discount_on_product': false,
-            'is_not_discount_on_total': false,
-        }
-    }
-    let tableProduct = document.getElementById('datable-quotation-create-product');
-    let tableExpense = document.getElementById('datable-quotation-create-expense');
-    let empty_list = ["", null]
-    if (!opportunity || empty_list.includes(opportunity)) { // short sale
-        if (is_change_opp === true) {
-            // ReCheck Table Product
-            if (!tableProduct.querySelector('.dataTables_empty')) {
-                for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                    let row = tableProduct.tBodies[0].rows[i];
-                    let elePriceList = row.querySelector('.dropdown-action');
-                    let elePrice = row.querySelector('.table-row-price');
-                    let eleDiscount = row.querySelector('.table-row-discount');
+class checkConfigHandle {
+    checkConfig(is_change_opp = false, new_row = null) {
+        let self = this;
+        let configRaw = $('#quotation-config-data').val();
+        if (configRaw) {
+            let opportunity = $('#select-box-quotation-create-opportunity').val();
+            let config = JSON.parse(configRaw);
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            let tableExpense = document.getElementById('datable-quotation-create-expense');
+            let empty_list = ["", null]
+            if (!opportunity || empty_list.includes(opportunity)) { // short sale
+                if (is_change_opp === true) {
+                    // ReCheck Table Product
+                    if (!tableProduct.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                            let row = tableProduct.tBodies[0].rows[i];
+                            self.reCheckTable(config, row, true, false);
+                        }
+                    }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
-                    if (config.short_sale_config.is_choose_price_list === false) {
-                        if (elePriceList.hasAttribute('data-bs-toggle')) {
-                            elePriceList.removeAttribute('data-bs-toggle')
-                        }
-                    } else {
-                        if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                            elePriceList.setAttribute('data-bs-toggle', 'dropdown')
-                        }
-                    }
-                    if (config.short_sale_config.is_input_price === false) {
-                        if (!elePrice.hasAttribute('disabled')) {
-                            elePrice.setAttribute('disabled', 'true');
-                            elePrice.classList.add('disabled-custom-show');
-                            $(elePrice).attr('value', String(0));
-                        }
-                    } else {
-                        if (elePrice.hasAttribute('disabled')) {
-                            elePrice.removeAttribute('disabled');
-                            elePrice.classList.remove('disabled-custom-show');
-                        }
-                    }
-                    if (config.short_sale_config.is_discount_on_product === false) {
-                        if (!eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.setAttribute('disabled', 'true');
-                            eleDiscount.classList.add('disabled-custom-show');
-                            eleDiscount.value = "0";
-                        }
-                    } else {
-                        if (eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.removeAttribute('disabled');
-                            eleDiscount.classList.remove('disabled-custom-show');
-                        }
-                    }
                     if (config.short_sale_config.is_discount_on_total === false) {
                         if (!eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
@@ -763,79 +718,34 @@ function checkConfig(is_change_opp = false) {
                             eleDiscountTotal.classList.remove('disabled-custom-show');
                         }
                     }
-                }
-            }
-            // ReCheck Table Expense
-            if (!tableExpense.querySelector('.dataTables_empty')) {
-                for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                    let row = tableExpense.tBodies[0].rows[i];
-                    let elePriceList = row.querySelector('.dropdown-action');
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (config.short_sale_config.is_choose_price_list === false) {
-                        if (elePriceList.hasAttribute('data-bs-toggle')) {
-                            elePriceList.removeAttribute('data-bs-toggle')
-                        }
-                    } else {
-                        if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                            elePriceList.setAttribute('data-bs-toggle', 'dropdown')
+                    // ReCheck Table Expense
+                    if (!tableExpense.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
+                            let row = tableExpense.tBodies[0].rows[i];
+                            self.reCheckTable(config, row, true, false);
                         }
                     }
-                    if (config.short_sale_config.is_input_price === false) {
-                        if (!elePrice.hasAttribute('disabled')) {
-                            elePrice.setAttribute('disabled', 'true');
-                            elePrice.classList.add('disabled-custom-show');
-                            $(elePrice).attr('value', String(0));
-                        }
-                    } else {
-                        if (elePrice.hasAttribute('disabled')) {
-                            elePrice.removeAttribute('disabled');
-                            elePrice.classList.remove('disabled-custom-show');
-                        }
+                } else {
+                    if (new_row) {
+                        self.reCheckTable(config, new_row, true, false);
                     }
                 }
-            }
-        }
-        $.fn.initMaskMoney2();
-        return {
-            'is_short_sale': true,
-            'is_long_sale': false,
-            'short_sale_config': config.short_sale_config,
-        }
-    } else { // long sale
-        if (is_change_opp === true) {
-            // ReCheck Table Product
-            if (!tableProduct.querySelector('.dataTables_empty')) {
-                for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                    let row = tableProduct.tBodies[0].rows[i];
-                    let elePriceList = row.querySelector('.dropdown-action');
-                    let elePrice = row.querySelector('.table-row-price');
-                    let eleDiscount = row.querySelector('.table-row-discount');
+                $.fn.initMaskMoney2();
+                return {
+                    'is_short_sale': true,
+                    'is_long_sale': false,
+                    'short_sale_config': config.short_sale_config,
+                }
+            } else { // long sale
+                if (is_change_opp === true) {
+                    // ReCheck Table Product
+                    if (!tableProduct.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                            let row = tableProduct.tBodies[0].rows[i];
+                            self.reCheckTable(config, row, false, true);
+                        }
+                    }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
-                    if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.setAttribute('data-bs-toggle', 'dropdown')
-                    }
-                    if (config.long_sale_config.is_not_input_price === false) {
-                        if (elePrice.hasAttribute('disabled')) {
-                            elePrice.removeAttribute('disabled');
-                            elePrice.classList.remove('disabled-custom-show');
-                        }
-                    } else {
-                        if (!elePrice.hasAttribute('disabled')) {
-                            elePrice.setAttribute('disabled', 'true');
-                            elePrice.classList.add('disabled-custom-show');
-                        }
-                    }
-                    if (config.long_sale_config.is_not_discount_on_product === false) {
-                        if (eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.removeAttribute('disabled');
-                            eleDiscount.classList.remove('disabled-custom-show');
-                        }
-                    } else {
-                        if (!eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.setAttribute('disabled', 'true');
-                            eleDiscount.classList.add('disabled-custom-show');
-                        }
-                    }
                     if (config.long_sale_config.is_not_discount_on_total === false) {
                         if (eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.removeAttribute('disabled');
@@ -847,36 +757,106 @@ function checkConfig(is_change_opp = false) {
                             eleDiscountTotal.classList.add('disabled-custom-show');
                         }
                     }
+                    // ReCheck Table Expense
+                    if (!tableExpense.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
+                            let row = tableExpense.tBodies[0].rows[i];
+                            self.reCheckTable(config, row, false, true);
+                        }
+                    }
+                } else {
+                    if (new_row) {
+                        self.reCheckTable(config, new_row, false, true);
+                    }
+                }
+                $.fn.initMaskMoney2();
+                return {
+                    'is_short_sale': false,
+                    'is_long_sale': true,
+                    'short_sale_config': config.long_sale_config,
                 }
             }
-            // ReCheck Table Expense
-            if (!tableExpense.querySelector('.dataTables_empty')) {
-                for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                    let row = tableExpense.tBodies[0].rows[i];
-                    let elePriceList = row.querySelector('.dropdown-action');
-                    let elePrice = row.querySelector('.table-row-price');
+        }
+        return {
+            'is_short_sale': false,
+            'is_long_sale': false,
+        }
+    }
+
+    reCheckTable(config, row, is_short_sale = false, is_long_sale = false) {
+        if (row) {
+            if (is_short_sale === true) {
+                let elePriceList = row.querySelector('.dropdown-action');
+                let elePrice = row.querySelector('.table-row-price');
+                let eleDiscount = row.querySelector('.table-row-discount');
+                if (config.short_sale_config.is_choose_price_list === false) {
+                    if (elePriceList.hasAttribute('data-bs-toggle')) {
+                        elePriceList.removeAttribute('data-bs-toggle')
+                    }
+                } else {
                     if (!elePriceList.hasAttribute('data-bs-toggle')) {
                         elePriceList.setAttribute('data-bs-toggle', 'dropdown')
                     }
-                    if (config.long_sale_config.is_not_input_price === false) {
-                        if (elePrice.hasAttribute('disabled')) {
-                            elePrice.removeAttribute('disabled');
-                            elePrice.classList.remove('disabled-custom-show');
+                }
+                if (config.short_sale_config.is_input_price === false) {
+                    if (!elePrice.hasAttribute('disabled')) {
+                        elePrice.setAttribute('disabled', 'true');
+                        elePrice.classList.add('disabled-custom-show');
+                        $(elePrice).attr('value', String(0));
+                    }
+                } else {
+                    if (elePrice.hasAttribute('disabled')) {
+                        elePrice.removeAttribute('disabled');
+                        elePrice.classList.remove('disabled-custom-show');
+                    }
+                }
+                if (eleDiscount) {
+                    if (config.short_sale_config.is_discount_on_product === false) {
+                        if (!eleDiscount.hasAttribute('disabled')) {
+                            eleDiscount.setAttribute('disabled', 'true');
+                            eleDiscount.classList.add('disabled-custom-show');
+                            eleDiscount.value = "0";
                         }
                     } else {
-                        if (!elePrice.hasAttribute('disabled')) {
-                            elePrice.setAttribute('disabled', 'true');
-                            elePrice.classList.add('disabled-custom-show');
+                        if (eleDiscount.hasAttribute('disabled')) {
+                            eleDiscount.removeAttribute('disabled');
+                            eleDiscount.classList.remove('disabled-custom-show');
+                        }
+                    }
+                }
+            } else if (is_long_sale === true) {
+                let elePriceList = row.querySelector('.dropdown-action');
+                let elePrice = row.querySelector('.table-row-price');
+                let eleDiscount = row.querySelector('.table-row-discount');
+                if (!elePriceList.hasAttribute('data-bs-toggle')) {
+                    elePriceList.setAttribute('data-bs-toggle', 'dropdown')
+                }
+                if (config.long_sale_config.is_not_input_price === false) {
+                    if (elePrice.hasAttribute('disabled')) {
+                        elePrice.removeAttribute('disabled');
+                        elePrice.classList.remove('disabled-custom-show');
+                    }
+                } else {
+                    if (!elePrice.hasAttribute('disabled')) {
+                        elePrice.setAttribute('disabled', 'true');
+                        elePrice.classList.add('disabled-custom-show');
+                    }
+                }
+                if (eleDiscount) {
+                    if (config.long_sale_config.is_not_discount_on_product === false) {
+                        if (eleDiscount.hasAttribute('disabled')) {
+                            eleDiscount.removeAttribute('disabled');
+                            eleDiscount.classList.remove('disabled-custom-show');
+                        }
+                    } else {
+                        if (!eleDiscount.hasAttribute('disabled')) {
+                            eleDiscount.setAttribute('disabled', 'true');
+                            eleDiscount.classList.add('disabled-custom-show');
                         }
                     }
                 }
             }
         }
-        $.fn.initMaskMoney2();
-        return {
-            'is_short_sale': false,
-            'is_long_sale': true,
-            'short_sale_config': config.long_sale_config,
-        }
     }
 }
+

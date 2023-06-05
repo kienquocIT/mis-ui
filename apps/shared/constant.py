@@ -1,9 +1,11 @@
 from django.utils.translation import gettext_lazy as _
+from .msg.workflow import WorkflowMsg
 
 __all__ = [
     'COMPANY_SIZE',
     'CUSTOMER_REVENUE',
     'PICKING_STATE',
+    'WORKFLOW_ACTION',
 ]
 
 CUSTOMER_REVENUE = [
@@ -34,3 +36,13 @@ DELIVERY_STATE = (
     (1, 'Partial'),
     (2, 'Full'),
 )
+
+# Workflow
+WORKFLOW_ACTION = {
+    0: [WorkflowMsg.ACTION_CREATE, 'fas fa-plus'],
+    1: [WorkflowMsg.ACTION_APPROVED, 'far fa-thumbs-up text-success'],
+    2: [WorkflowMsg.ACTION_REJECT, 'fas fa-times'],
+    3: [WorkflowMsg.ACTION_RETURN, 'fas fa-fast-backward'],
+    4: [WorkflowMsg.ACTION_RECEIVE, 'fas fa-spell-check'],
+    5: [WorkflowMsg.ACTION_TODO, 'far fa-list-alt'],
+}

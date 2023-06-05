@@ -29,14 +29,15 @@ $(document).ready(function () {
         ajax: {
             url: LIST_APP_URL,
             type: "GET",
-            dataSrc: 'data.app_list',
             data: function (params) {
                 params['is_ajax'] = true;
                 return params
             },
-            error: function (jqXHR) {
-                $table.find('.dataTables_empty').text(jqXHR.responseJSON.data.errors)
-            }
+            dataSrc: function (resp){
+              let data = $.fn.switcherResp(resp);
+              if (data && data.hasOwnProperty('app_list')) return data['app_list'];
+              return [];
+            },
         },
         columns: [
             {
@@ -100,8 +101,8 @@ $(document).ready(function () {
         event.preventDefault();
         let valId = $(this).val();
         let state = confirm($('#idxSpanMsgGroup').attr('data-make-sure') + ' "' + $(this).find('option[value="' + valId + '"]').text() + '"');
+        let previousValue = $(this).data("previousValue");
         if (!state) {
-            let previousValue = $(this).data("previousValue");
             $(this).prop("selectedIndex", -1);
             if (previousValue) $(this).val(previousValue);
         } else {
@@ -121,6 +122,7 @@ $(document).ready(function () {
                         $.fn.hideLoading();
                     }, 1000,)
                 }, (errs) => {
+                    if (previousValue) $(this).val(previousValue);
                     $.fn.hideLoading();
                 })
 

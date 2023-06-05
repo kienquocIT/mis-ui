@@ -45,6 +45,7 @@
             }
         </style>
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
@@ -87,10 +88,67 @@
                                 {% include 'extends/breadcrumb.html' %}
                             </div>
                             <div class="blog-options-wrap">
-
                                 {% block pageAction %}{% endblock %}
+                                <button
+                                        type="button"
+                                        class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        data-value=""
+                                        id="btnMainAction"
+                                >
+                                    <span
+                                            class="icon"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            data-bs-original-title="{% trans 'Approval' %}"
+                                    ></span>
+                                </button>
+
+                                <div class="dropdown hidden">
+                                    <button
+                                            aria-expanded="false" data-bs-toggle="dropdown"
+                                            class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                            type="button"
+                                    >
+                                        <span
+                                                class="icon"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-original-title="{% trans 'More actions' %}"
+                                        >
+                                            ...
+                                        </span>
+                                    </button>
+                                    <div role="menu" class="dropdown-menu" id="idxGroupAction">
+                                        {% for key, value in base_workflow.items %}
+                                            <li class="hidden btn-action-wf" data-value="{{ key }}">
+                                                <div class="dropdown-item"><i
+                                                        class="icon-action-wf mr-1 {{ value.1 }}"
+                                                ></i> {{ value.0 }}</div>
+                                            </li>
+                                        {% endfor %}
+                                    </div>
+                                    {% if base_workflow.length > 0 %}
+                                        {% csrf_token %}
+                                    {% endif %}
+                                </div>
 
                                 <div class="v-separator  d-lg-inline-block d-none"></div>
+
+                                <a
+                                        id="btnLogShow"
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ntt-drawer-toggle-link"
+                                        data-drawer-target="#drawer_log_data"
+                                        data-drawer-active="false"
+                                        href="#"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-original-title="{% trans 'Log' %}"
+                                        data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
+                                >
+                                    <span class="icon">
+                                        <i class="fas fa-history"></i>
+                                    </span>
+                                </a>
                                 <a
                                         class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover hk-navbar-togglable flex-shrink-0  d-lg-inline-block d-none"
                                         href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -151,6 +209,9 @@
         <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
         <span id="msgSuccess">{% trans 'Successfully' %}</span>
         <span id="flagIsDebug" data-is-debug={{ is_debug }}></span>
+        <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
+        <span id="idWFRuntime" data-runtime-id=""></span>
+        <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
     </div>
     <!-- /Message translate usually -->
     <!-- /Message translate base -->
@@ -174,6 +235,60 @@
     <div class="hidden">
         {% block dataHiddenGroup %}{% endblock %}
     </div>
+
+    <!-- Drawer Log and Activity -->
+    <div
+            data-simplebar
+            class="ntt-drawer ntt-drawer-right nicescroll-bar"
+            data-drawer-width="500"
+            data-drawer-push="true"
+            id="drawer_log_data"
+            data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"
+    >
+        <div class="ntt-drawer-header">
+            <div><span class="ntt-drawer-header-text"></span></div>
+            <button class="btn btn-icon btn-xs btn-rounded bg-dark-hover ntt-drawer-close">
+                <span class="icon">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </span>
+            </button>
+        </div>
+        <div class="ntt-drawer-body">
+            <div class="ntt-drawer-content-wrap">
+                <ul class="nav nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_diagram">
+                            <span class="nav-link-text">{% trans 'Diagram' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_activities">
+                            <span class="nav-link-text">{% trans 'Activities' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_block_diagram">
+                        <div class="spinner-grow" id="idxDataRuntimeLoading" role="status">
+                            <span class="sr-only">{% trans 'Loading' %}...</span>
+                        </div>
+                        <div class="hidden" id="idxDataRuntimeNotFound">
+                            <b>
+                                {% trans "The document approved because the feature config don't apply workflow" %}
+                            </b>
+                        </div>
+                        <div id="idxDataRuntime" class="hidden" style="width: calc(100% - 3px)">
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_block_activities">
+                        <span id="elementTypingText"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // Drawer Log and Activity -->
 </div>
 <!-- /Wrapper -->
 
@@ -210,9 +325,21 @@
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
-    <script>
-        <!-- util -->
+    <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
 
+    <!-- Typing text JS -->
+    <script src="{% static 'assets/js/plugins/typed.umd.js' %}"></script>
+    <script>
+        new Typed('#elementTypingText', {
+            strings: [
+                `Page is developing...`,
+            ],
+            typeSpeed: 50,
+        });
+    </script>
+    <!-- // Typing text JS -->
+
+    <script>
         function active_menu(item) {
             if (item.length > 0) {
                 item.first().addClass('active')
@@ -253,7 +380,7 @@
         $(document).ready(function () {
             <!-- Loading table ajax -->
             $(document).find('table').each((idx, tbl) => {
-                if(!$(tbl).attr('data-hidden-loading')){
+                if (!$(tbl).attr('load-data-hide-spinner')) {
                     $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
                     $(tbl).on('draw.dt', () => $.fn.hideLoading());
                 }

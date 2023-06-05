@@ -6,31 +6,33 @@ $(document).ready(function () {
         $.fn.callAjax(url_loaded, 'GET').then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
+                let contactDetail = data?.['contact_detail']
                 if (data) {
-                    $("#owner_id").val(data.contact_detail.owner.fullname);
-                    $('#full_name_id').val(data.contact_detail.fullname.fullname);
-                    $('#bio_id').val(data.contact_detail.biography);
-                    $('#salutation_id').val(data.contact_detail.salutation.title);
-                    $('#account_name_id').val(data.contact_detail.account_name.name);
-                    $('#job_title_id').val(data.contact_detail.job_title);
-                    $('#report_to_id').val(data.contact_detail.report_to.fullname)
-                    $('#phone_id').val(data.contact_detail.phone);
-                    $('#mobile_id').val(data.contact_detail.mobile);
-                    $('#email_id').val(data.contact_detail.email);
-                    $('#jobtitle_id').val(data.contact_detail.job_title);
-                    $('#work_address_id').val(data.contact_detail.address_information.work_address);
-                    $('#home_address_id').val(data.contact_detail.address_information.home_address);
-                    if (Object.keys(data.contact_detail.additional_information).length > 0) {
-                        $('#tag_id').val(data.contact_detail.additional_information.tags);
-                        $('#facebook_id').val(data.contact_detail.additional_information.facebook);
-                        $('#gmail_id').val(data.contact_detail.additional_information.gmail);
-                        $('#linkedln_id').val(data.contact_detail.additional_information.linkedln);
-                        $('#twitter_id').val(data.contact_detail.additional_information.twitter);
-                        let list_interest = data.contact_detail.additional_information.interests.map(obj => obj.title)
+                    $("#owner_id").val(contactDetail.owner.fullname);
+                    $('#full_name_id').val(contactDetail.fullname.fullname);
+                    $('#bio_id').val(contactDetail.biography);
+                    $('#salutation_id').val(contactDetail.salutation.title);
+                    $('#account_name_id').val(contactDetail.account_name.name);
+                    $('#job_title_id').val(contactDetail.job_title);
+                    $('#report_to_id').val(contactDetail.report_to.fullname)
+                    $('#phone_id').val(contactDetail.phone);
+                    $('#mobile_id').val(contactDetail.mobile);
+                    $('#email_id').val(contactDetail.email);
+                    $('#jobtitle_id').val(contactDetail.job_title);
+                    $('#work_address_id').val(contactDetail.address_information.work_address);
+                    $('#home_address_id').val(contactDetail.address_information.home_address);
+                    if (Object.keys(contactDetail.additional_information).length > 0) {
+                        $('#tag_id').val(contactDetail.additional_information.tags);
+                        $('#facebook_id').val(contactDetail.additional_information.facebook);
+                        $('#gmail_id').val(contactDetail.additional_information.gmail);
+                        $('#linkedln_id').val(contactDetail.additional_information.linkedln);
+                        $('#twitter_id').val(contactDetail.additional_information.twitter);
+                        let list_interest = contactDetail.additional_information.interests.map(obj => obj.title)
                         list_interest.forEach(function (item) {
                             $('#input_tags').append(`<option>` + item + `</option>`);
                         })
                     }
+                    $.fn.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
                 }
             }
         )

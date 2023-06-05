@@ -38,6 +38,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
+    USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
 
     # state of task background
     TASK_BG = StringUrl('task-bg/{pk}')
@@ -96,11 +97,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
 
     # WORKFLOW RUNTIME
-    RUNTIME_LIST = StringUrl('workflow/runtime/list')
-    RUNTIME_DETAIL = StringUrl('workflow/runtime')
+    RUNTIME_LIST = StringUrl('workflow/runtimes')
+    RUNTIME_DETAIL = StringUrl('workflow/runtime/{pk}')
     RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
-    RUNTIME_HISTORY_STAGE = StringUrl('workflow/history/stage/{pk}')
-    RUNTIME_TASK = StringUrl('workflow/task/{pk}')
+    RUNTIME_DIAGRAM_DETAIL = StringUrl('workflow/diagram/{pk}')
+    RUNTIME_TASK_DETAIL = StringUrl('workflow/task/{pk}')
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')

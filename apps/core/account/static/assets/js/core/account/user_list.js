@@ -1,38 +1,30 @@
 /*Blog Init*/
 "use strict";
 $(function () {
-
-    let config = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
+    let tb = $('#datatable_user_list');
+    tb.DataTableDefault({
+        ajax: {
+            url: tb.attr('data-url'),
+            type: tb.attr('data-method'),
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    return resp.data['user_list'] ? resp.data['user_list'] : [];
+                }
+                return [];
+            },
         },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'render': (data, type, row, meta) => {
-                let currentId = "chk_sel_" + String(meta.row + 1)
-                return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-            }
-        }, {
-            'data': 'full_name', 'render': (data, type, row, meta) => {
-                if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
-                    return `<div class="media align-items-center">
+        columns: [
+            {
+                'render': (data, type, row, meta) => {
+                    let currentId = "chk_sel_" + String(meta.row + 1)
+                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                }
+            }, {
+                'data': 'full_name',
+                'render': (data, type, row, meta) => {
+                    if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
+                        return `<div class="media align-items-center">
                                 <div class="media-head me-2">
                                     <div class="avatar avatar-xs avatar-success avatar-rounded">
                                         <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
@@ -45,80 +37,121 @@ $(function () {
                                         
                                 </div>
                             </div>`;
+                    }
+                    return '';
                 }
-                return '';
-            }
-        }, {
-            'data': 'username', render: (data, type, row, meta) => {
-                return `<span class="badge badge-soft-primary">` + row.username + `</span>`;
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="user/edit/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="user/detail/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                return bt2 + bt3;
-            }
-        },]
-    }
-
-    function initDataTable(config) {
-        /*DataTable Init*/
-        let dtb = $('#datatable_user_list');
-        if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
-            /*Checkbox Add*/
-            $(document).on('click', '.del-button', function () {
-                targetDt.rows('.selected').remove().draw(false);
-                return false;
-            });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-            dtb.parent().addClass('table-responsive');
-        }
-    }
-
-    function loadDataTable() {
-        let tb = $('#datatable_user_list');
-        $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('user_list')) {
-                    config['data'] = resp.data.user_list;
+            }, {
+                'data': 'username',
+                render: (data, type, row, meta) => {
+                    return `<span class="badge badge-soft-primary">` + row.username + `</span>`;
                 }
-                initDataTable(config);
+            }, {
+                'className': 'action-center',
+                'render': (data, type, row, meta) => {
+                    let btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover btn-modal-change-passwd" data-bs-toggle="modal" data-bs-target="#modalChangePassword"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Change password" ><i class="fas fa-key"></i></span></button>`;
+                    let btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button" href="user/edit/${row.id}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" ><i class="fas fa-edit"></i></span></a>`;
+                    let btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover del-button" href="user/edit/${row.id}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" ><i class="fas fa-user-times"></i></span></button>`;
+                    return btn1 + btn2 + btn3;
+                }
+            },
+        ]
+    });
+
+    $(document).on('click', '.btn-modal-change-passwd', function (event){
+        let rowData = $(this).getRowData();
+        $('#modalChangePasswordUserText').text(rowData?.['full_name']);
+        $('#btnSaveNewPassword').attr('data-id', rowData?.['id']);
+    });
+
+    $(document).on('click', '.check-select', function () {
+        if ($(this).is(":checked")) {
+            $(this).closest('tr').addClass('selected');
+        } else {
+            $(this).closest('tr').removeClass('selected');
+            $('.check-select-all').prop('checked', false);
+        }
+    });
+
+    $(document).on('click', '.check-select-all', function () {
+        $('.check-select').attr('checked', true);
+        let table = $('#datatable_user_list').DataTable();
+        let indexList = table.rows().indexes();
+        if ($(this).is(":checked")) {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.add('selected');
+                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
             }
-        }, (errs) => {
-            initDataTable(config);
-        },)
-    }
-    loadDataTable();
-});
-
-$(document).on('click', '.check-select', function () {
-    if ($(this).is(":checked")) {
-        $(this).closest('tr').addClass('selected');
-    } else {
-        $(this).closest('tr').removeClass('selected');
-        $('.check-select-all').prop('checked', false);
-    }
-});
-
-$(document).on('click', '.check-select-all', function () {
-    $('.check-select').attr('checked', true);
-    let table = $('#datatable_user_list').DataTable();
-    let indexList = table.rows().indexes();
-    if ($(this).is(":checked")) {
-        for (let idx = 0; idx < indexList.length; idx++) {
-            let rowNode = table.rows(indexList[idx]).nodes()[0];
-            rowNode.classList.add('selected');
-            rowNode.firstElementChild.children[0].firstElementChild.checked = true;
+            $('.check-select').prop('checked', true);
+        } else {
+            for (let idx = 0; idx < indexList.length; idx++) {
+                let rowNode = table.rows(indexList[idx]).nodes()[0];
+                rowNode.classList.remove("selected");
+                rowNode.firstElementChild.children[0].firstElementChild.checked = false;
+            }
+            $('.check-select').prop('checked', false);
         }
-        $('.check-select').prop('checked', true);
-    } else {
-        for (let idx = 0; idx < indexList.length; idx++) {
-            let rowNode = table.rows(indexList[idx]).nodes()[0];
-            rowNode.classList.remove("selected");
-            rowNode.firstElementChild.children[0].firstElementChild.checked = false;
+    });
+
+    $(document).on('click', '.btnShowHidePassword', function (event){
+       $(this).toggleClass('fa-eye-slash').toggleClass('fa-eye');
+       let inputTag = $(this).closest('.form-text').prev('input');
+       if (inputTag.attr('type') === 'password'){
+           inputTag.attr('type', 'text');
+       } else {
+           inputTag.attr('type', 'password');
+       }
+    });
+
+    $('#retype-new-password').on('input', function (event){
+        if ($('#new-password').val() === $(this).val()){
+            $(this).removeClass('text-danger').addClass('text-success');
+            $('#btnSaveNewPassword').removeAttr('disabled');
+        } else {
+            $('#btnSaveNewPassword').attr('disabled', 'disabled');
+            $(this).removeClass('text-success').addClass('text-danger');
         }
-        $('.check-select').prop('checked', false);
-    }
+    });
+
+    $('#btnSaveNewPassword').click(function (event){
+        let newPassword = $('#new-password').val();
+        let re_password = $('#retype-new-password').val();
+        if (newPassword === re_password){
+            let urlData = $(this).attr('data-url');
+            let dataID = $(this).attr('data-id');
+            $.fn.showLoading();
+            $.fn.callAjax(
+                SetupFormSubmit.getUrlDetailWithID(urlData, dataID),
+                'PUT',
+                {'password': newPassword, 're_password': re_password},
+                $("input[name=csrfmiddlewaretoken]").val()
+            ).then(
+                (resp)=>{
+                    let data = $.fn.switcherResp(resp);
+                    if (data.status === 200){
+                        $.fn.notifyB({
+                            'description': $('#base-trans-factory').attr('data-success')
+                        }, 'success');
+                        setTimeout(
+                            ()=>{
+                                window.location.reload();
+                            },
+                            1000
+                        )
+                    }
+                    setTimeout(
+                        ()=>{$.fn.hideLoading()},
+                        1500
+                    )
+                },
+                (errs)=>{
+                    $.fn.hideLoading();
+                }
+            )
+        } else {
+            $.fn.notifyB({
+                'description': 'New password does not match'
+            })
+        }
+    });
 });

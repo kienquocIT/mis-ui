@@ -14,6 +14,11 @@ from rest_framework.response import Response
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .caches import CacheController, CacheKeyCollect
+from .constant import WORKFLOW_ACTION
+
+__all__ = [
+    'mask_view',
+]
 
 
 class ArgumentDecorator:
@@ -133,6 +138,7 @@ def mask_view(**parent_kwargs):
             auth_require = parent_kwargs.get('auth_require', False)
             if auth_require:
                 login_require = True
+            is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)
@@ -233,7 +239,9 @@ def mask_view(**parent_kwargs):
                                 return HttpResponse(status=500)
                             case _:
                                 ctx['is_debug'] = 1 if settings.DEBUG_JS else 0
+                                ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
+                                ctx['base_workflow'] = WORKFLOW_ACTION if kwargs.get('pk', None) else {}
                                 ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()
                                 ctx['url_pattern'] = cls_check.parse_url_pattern(url_pattern_keys, kwargs)

@@ -18,18 +18,25 @@ from apps.core.account.models import User
 class AuthLogin(APIView):
     permission_classes = [AllowAny]
 
-    @classmethod
-    def get(cls, request, template='auths/login.html'):
+    @mask_view(
+        auth_require=False,
+        template='auths/login.html',
+        is_notify_key=False,
+    )
+    def get(self, request):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp_data = ServerAPI(user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp_data.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
-        return render(request, template, {})
+        return {}, status.HTTP_200_OK
 
-    @classmethod
-    def post(cls, request, *args, **kwargs):
+    @mask_view(
+        auth_require=False,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
         frm = AuthLoginForm(data=request.data)
         frm.is_valid()
         resp_data = ServerAPI(user=None, url=ApiURL.login).post(frm.cleaned_data)
@@ -41,15 +48,11 @@ class AuthLogin(APIView):
                         request.session.set_expiry(0)
                     # call login to system with register session credential to request
                     login(request, user)
-                    return Response({'detail': AuthMsg.login_success, 'data': resp_data.result}, status=200)
-                return Response({'detail': AuthMsg.login_exc, 'data': resp_data.result}, status=400)
+                    return {'detail': AuthMsg.login_success}, status.HTTP_200_OK
+                return {'detail': AuthMsg.login_exc, 'data': resp_data.result}, status.HTTP_400_BAD_REQUEST
             case False:
-                return Response(
-                    {
-                        'detail': [f'{_(key)}: {value}' for key, value in resp_data.errors.items()]
-                    }, status=400
-                )
-        return Response({'detail': ServerMsg.SERVER_ERR}, status=500)
+                return resp_data.errors, status.HTTP_400_BAD_REQUEST
+        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_400_BAD_REQUEST
 
 
 class AuthLogout(APIView):

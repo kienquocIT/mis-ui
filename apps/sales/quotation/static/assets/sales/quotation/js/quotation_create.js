@@ -849,7 +849,12 @@ $(function () {
 // Action click Apply Shipping
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
+            // ReCalculate Total
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
             let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');

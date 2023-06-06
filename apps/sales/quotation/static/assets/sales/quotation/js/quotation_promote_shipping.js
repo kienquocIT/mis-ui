@@ -668,7 +668,7 @@ function reCalculateIfShipping(shipping_price) {
     let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
     let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
 
-    // Apply new pretax, discount, total
+    // Apply new pretax, total
     $(elePretaxAmount).attr('value', String(pretaxNew));
     elePretaxAmountRaw.value = pretaxNew;
     $(eleTotalAmount).attr('value', String(totalNew));

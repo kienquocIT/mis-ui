@@ -213,7 +213,7 @@ $(document).ready(function () {
                 advance_payment.converted_payment_list,
                 advance_payment.return_value,
                 advance_payment.advance_value,
-                advance_payment.remain_value
+                advance_payment.available_value
             );
         }
 
@@ -301,7 +301,7 @@ $(document).ready(function () {
         })
     });
 
-    function loadAdvanceList(converted_payment_list, total_return_value, total_AP_value, remain_ap_value) {
+    function loadAdvanceList(converted_payment_list, total_return_value, total_AP_value, available_value) {
         if (!$.fn.DataTable.isDataTable('#datatable_payment_list')) {
             let dtb = $('#datatable_payment_list');
             dtb.DataTableDefault({
@@ -346,7 +346,7 @@ $(document).ready(function () {
                                                          <br>` + total_AP_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
                                                          <br>` + total_payment_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
                                                          <br>` + total_return_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br>
-                                                         <br><br><b>` + remain_ap_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br><br></b></p>`);
+                                                         <br><br><b>` + available_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ<br><br></b></p>`);
                 },
             });
 

@@ -51,6 +51,8 @@
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
+          data-url-list="{% url 'AdvancePaymentListAPI' %}"
+          data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
           data-url="{% url "AdvancePaymentListAPI" %}">
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">

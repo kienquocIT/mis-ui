@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    let advance_payment_expense_items = [];
+    let payment_cost_items_filtered = [];
+
     let pk = window.location.pathname.split('/').pop();
     let url_detail = $('#form-update-advance').attr('data-url-detail').replace('0', pk)
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
@@ -649,6 +652,28 @@ $(document).ready(function () {
             }
         })
         ele2.append(`</optgroup>`);
+
+        let sale_code_id = $('#sale-code-select-box option:selected').attr('value');
+        $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_order=' + sale_code_id, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                    payment_cost_items_filtered = data.payment_cost_items_list;
+                }
+            }
+        })
+
+        $.fn.callAjax($('#form-update-advance').attr('data-url-list'), 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                advance_payment_expense_items = [];
+                for (let i = 0; i < data.advance_payment_list.length; i++) {
+                    if (data.advance_payment_list[i].sale_order_mapped === $('#sale-code-select-box option:selected').attr('value')) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(data.advance_payment_list[i].expense_items)
+                    }
+                }
+            }
+        })
     }
 
     function loadCreator() {
@@ -1129,6 +1154,37 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let data_detail = data.sale_order_expense_list;
+                        for (let i = 0; i < data_detail.length; i++) {
+                            let expense_id = data_detail[i].expense_id;
+                            let results = advance_payment_expense_items.filter(function(item) {
+                                return item.expense.id === expense_id;
+                            });
+                            let sum_AP_approved = results.reduce(function(s, item) {
+                                return s + item.after_tax_price;
+                            }, 0);
+                            let returned = results.reduce(function(s, item) {
+                                return s + item.returned_total;
+                            }, 0);
+                            let to_payment = results.reduce(function(s, item) {
+                                return s + item.to_payment_total;
+                            }, 0);
+                            let available = results.reduce(function(s, item) {
+                                return s + item.available_total;
+                            }, 0);
+                            data_detail[i].sum_AP_approved = sum_AP_approved;
+                            data_detail[i].returned = returned;
+                            data_detail[i].to_payment = to_payment;
+                            data_detail[i].available = available;
+
+                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                                return item.expense_id === expense_id;
+                            });
+                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                                return s + item.real_value;
+                            }, 0);
+                            data_detail[i].others_payment = others_payment;
+                        }
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
                     return [];
@@ -1165,38 +1221,48 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        if (row.sum_AP_approved > 0) {
+                            return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
+                        else {
+                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'returned',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'others_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        if (row.available > 0) {
+                            return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
+                        else {
+                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
                     }
                 }
             ],
@@ -1217,6 +1283,38 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let data_detail = data.quotation_expense_list
+                        for (let i = 0; i < data_detail.length; i++) {
+                            let expense_id = data_detail[i].expense_id;
+                            let results = advance_payment_expense_items.filter(function(item) {
+                                return item.expense.id === expense_id;
+                            });
+                            let sum_AP_approved = results.reduce(function(s, item) {
+                                return s + item.after_tax_price;
+                            }, 0);
+                            let returned = results.reduce(function(s, item) {
+                                return s + item.returned_total;
+                            }, 0);
+                            let to_payment = results.reduce(function(s, item) {
+                                return s + item.to_payment_total;
+                            }, 0);
+                            let available = results.reduce(function(s, item) {
+                                return s + item.available_total;
+                            }, 0);
+                            data_detail[i].sum_AP_approved = sum_AP_approved;
+                            data_detail[i].returned = returned;
+                            data_detail[i].to_payment = to_payment;
+                            data_detail[i].available = available;
+
+                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                                return item.expense_id === expense_id;
+                            });
+                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                                return s + item.real_value;
+                            }, 0);
+                            data_detail[i].others_payment = others_payment;
+
+                        }
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }
                     return [];
@@ -1253,38 +1351,48 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        if (row.sum_AP_approved > 0) {
+                            return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
+                        else {
+                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'returned',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'others_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        if (row.available > 0) {
+                            return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
+                        else {
+                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        }
                     }
                 }
             ],

@@ -259,6 +259,14 @@ function getPromotionResult(condition) {
         'product_price': 0
     };
     let tableProd = $('#datable-quotation-create-product');
+    let shippingFee = 0;
+    let eleShipping = tableProd[0].querySelector('.table-row-shipping');
+    if (eleShipping) {
+        let shippingPrice = eleShipping.closest('tr').querySelector('.table-row-subtotal-raw');
+        if (shippingPrice) {
+            shippingFee = parseFloat(shippingPrice.value)
+        }
+    }
     if (condition.is_discount === true) { // DISCOUNT
         let DiscountAmount = 0;
         let taxID = "";
@@ -292,6 +300,10 @@ function getPromotionResult(condition) {
                     let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                     let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
                     let total = parseFloat(preTax) - parseFloat(discount);
+                    // check if shippingFee then minus
+                    if (shippingFee > 0) {
+                        total = (parseFloat(preTax) - parseFloat(discount)) - shippingFee;
+                    }
                     DiscountAmount = ((total * parseFloat(condition.percent_discount)) / 100);
                     // check discount amount with max discount amount & re calculate discount_rate_on_order
                     discount_rate_on_order = parseFloat(condition.percent_discount);
@@ -301,6 +313,10 @@ function getPromotionResult(condition) {
                     }
                 } else if (condition.is_after_tax === true) {
                     let total = document.getElementById('quotation-create-product-total-raw').value;
+                    // check if shippingFee then minus
+                    if (shippingFee > 0) {
+                        total = parseFloat(document.getElementById('quotation-create-product-total-raw').value) - shippingFee;
+                    }
                     DiscountAmount = ((parseFloat(total) * parseFloat(condition.percent_discount)) / 100);
                     // check discount amount with max discount amount & re calculate discount_rate_on_order
                     discount_rate_on_order = parseFloat(condition.percent_discount);
@@ -317,10 +333,18 @@ function getPromotionResult(condition) {
                     let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                     let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
                     let total = parseFloat(preTax) - parseFloat(discount);
+                    // check if shippingFee then minus
+                    if (shippingFee > 0) {
+                        total = (parseFloat(preTax) - parseFloat(discount)) - shippingFee;
+                    }
                     discount_rate_on_order = ((DiscountAmount / total) * 100)
                 } else if (condition.is_after_tax === true) {
                     DiscountAmount = condition.fix_value;
                     let total = document.getElementById('quotation-create-product-total-raw').value;
+                    // check if shippingFee then minus
+                    if (shippingFee > 0) {
+                        total = parseFloat(document.getElementById('quotation-create-product-total-raw').value) - shippingFee;
+                    }
                     discount_rate_on_order = ((DiscountAmount / total) * 100);
                     is_before_tax = false
                 }
@@ -535,9 +559,8 @@ function reCalculateIfPromotion(table, promotion_discount_rate, promotion_amount
 }
 
 // Shipping
-function checkAvailableShipping(data_shipping) {
+function checkAvailableShipping(data_shipping, shippingAddress) {
     let final_shipping_price = 0;
-    let shippingAddress = $('#quotation-create-shipping-address').val();
     let formula_condition = data_shipping.formula_condition;
     for (let i = 0; i < formula_condition.length; i++) {
         let location_condition = formula_condition[i].location_condition
@@ -645,7 +668,7 @@ function reCalculateIfShipping(shipping_price) {
     let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
     let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
 
-    // Apply new pretax, discount, total
+    // Apply new pretax, total
     $(elePretaxAmount).attr('value', String(pretaxNew));
     elePretaxAmountRaw.value = pretaxNew;
     $(eleTotalAmount).attr('value', String(totalNew));

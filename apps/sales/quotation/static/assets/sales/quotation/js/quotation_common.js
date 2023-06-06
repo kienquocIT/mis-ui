@@ -1754,22 +1754,27 @@ class dataTableHandle {
                 if (data) {
                     if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
                         $('#datable-quotation-create-shipping').DataTable().destroy();
-                        data.shipping_check_list.map(function (item) {
-                            if (!checkList.includes(item.id)) {
-                                let check = checkAvailableShipping(item)
-                                if (check.is_pass === true) {
-                                    item['is_pass'] = true;
-                                    item['final_shipping_price'] = check.final_shipping_price;
-                                    passList.push(item)
-                                } else {
-                                    item['is_pass'] = false;
-                                    failList.push(item)
+                        let shippingAddress = $('#quotation-create-shipping-address').val();
+                        if (shippingAddress) {
+                            data.shipping_check_list.map(function (item) {
+                                if (!checkList.includes(item.id)) {
+                                    let check = checkAvailableShipping(item, shippingAddress)
+                                    if (check.is_pass === true) {
+                                        item['is_pass'] = true;
+                                        item['final_shipping_price'] = check.final_shipping_price;
+                                        passList.push(item)
+                                    } else {
+                                        item['is_pass'] = false;
+                                        failList.push(item)
+                                    }
+                                    checkList.push(item.id)
                                 }
-                                checkList.push(item.id)
-                            }
-                        })
-                        passList = passList.concat(failList);
-                        self.dataTableShipping(passList, 'datable-quotation-create-shipping');
+                            })
+                            passList = passList.concat(failList);
+                            self.dataTableShipping(passList, 'datable-quotation-create-shipping');
+                        } else {
+                            $.fn.notifyPopup({description: 'Must select shipping address.'}, 'failure');
+                        }
                     }
                 }
             }

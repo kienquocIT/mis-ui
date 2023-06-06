@@ -1754,22 +1754,27 @@ class dataTableHandle {
                 if (data) {
                     if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
                         $('#datable-quotation-create-shipping').DataTable().destroy();
-                        data.shipping_check_list.map(function (item) {
-                            if (!checkList.includes(item.id)) {
-                                let check = checkAvailableShipping(item)
-                                if (check.is_pass === true) {
-                                    item['is_pass'] = true;
-                                    item['final_shipping_price'] = check.final_shipping_price;
-                                    passList.push(item)
-                                } else {
-                                    item['is_pass'] = false;
-                                    failList.push(item)
+                        let shippingAddress = $('#quotation-create-shipping-address').val();
+                        if (shippingAddress) {
+                            data.shipping_check_list.map(function (item) {
+                                if (!checkList.includes(item.id)) {
+                                    let check = checkAvailableShipping(item, shippingAddress)
+                                    if (check.is_pass === true) {
+                                        item['is_pass'] = true;
+                                        item['final_shipping_price'] = check.final_shipping_price;
+                                        passList.push(item)
+                                    } else {
+                                        item['is_pass'] = false;
+                                        failList.push(item)
+                                    }
+                                    checkList.push(item.id)
                                 }
-                                checkList.push(item.id)
-                            }
-                        })
-                        passList = passList.concat(failList);
-                        self.dataTableShipping(passList, 'datable-quotation-create-shipping');
+                            })
+                            passList = passList.concat(failList);
+                            self.dataTableShipping(passList, 'datable-quotation-create-shipping');
+                        } else {
+                            $.fn.notifyPopup({description: 'Must select shipping address.'}, 'failure');
+                        }
                     }
                 }
             }
@@ -1815,6 +1820,7 @@ class calculateCaseHandle {
             eleTotalRaw = document.getElementById('quotation-create-expense-total-raw');
         }
         if (elePretaxAmount && eleTaxes && eleTotal) {
+            let shippingFee = 0;
             let tableLen = table.tBodies[0].rows.length;
             for (let i = 0; i < tableLen; i++) {
                 let row = table.tBodies[0].rows[i];
@@ -1833,6 +1839,10 @@ class calculateCaseHandle {
                             if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
                                 pretaxAmount -= parseFloat(subtotalRaw.value)
                             }
+                        }
+                        // get shipping fee to minus on discount total
+                        if (row.querySelector('.table-row-shipping')) {
+                            shippingFee = parseFloat(subtotalRaw.value);
                         }
                     }
                 }
@@ -1856,6 +1866,10 @@ class calculateCaseHandle {
             if (discountTotalRate && eleDiscount) {
                 discount_on_total = parseFloat(discountTotalRate);
                 discountAmount = ((pretaxAmount * discount_on_total) / 100)
+                // check if shipping fee then minus before calculate discount
+                if (shippingFee > 0) {
+                    discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100)
+                }
             }
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 

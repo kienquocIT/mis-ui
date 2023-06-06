@@ -175,6 +175,10 @@ $(function () {
             e.preventDefault();
             // delete all Promotion rows
             deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // ReCalculate Total
+            calculateClass.updateTotal(tableProduct[0], true, false, false);
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -230,6 +234,8 @@ $(function () {
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
             calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
@@ -263,6 +269,8 @@ $(function () {
             }
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
             // Re Calculate all data
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
@@ -282,6 +290,8 @@ $(function () {
         $('#quotation-create-product-discount').on('change', function (e) {
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
             // Calculate with discount on Total
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
@@ -513,6 +523,12 @@ $(function () {
             if (eleContent && eleShow) {
                 eleShow[0].value = eleContent.value;
             }
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // ReCalculate Total
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click choose billing
@@ -833,7 +849,12 @@ $(function () {
 // Action click Apply Shipping
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
+            // ReCalculate Total
+            calculateClass.updateTotal(tableProduct[0], true, false, false)
             let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');

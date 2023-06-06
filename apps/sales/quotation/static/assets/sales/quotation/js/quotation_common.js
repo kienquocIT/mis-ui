@@ -1815,6 +1815,7 @@ class calculateCaseHandle {
             eleTotalRaw = document.getElementById('quotation-create-expense-total-raw');
         }
         if (elePretaxAmount && eleTaxes && eleTotal) {
+            let shippingFee = 0;
             let tableLen = table.tBodies[0].rows.length;
             for (let i = 0; i < tableLen; i++) {
                 let row = table.tBodies[0].rows[i];
@@ -1833,6 +1834,10 @@ class calculateCaseHandle {
                             if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
                                 pretaxAmount -= parseFloat(subtotalRaw.value)
                             }
+                        }
+                        // get shipping fee to minus on discount total
+                        if (row.querySelector('.table-row-shipping')) {
+                            shippingFee = parseFloat(subtotalRaw.value);
                         }
                     }
                 }
@@ -1856,6 +1861,10 @@ class calculateCaseHandle {
             if (discountTotalRate && eleDiscount) {
                 discount_on_total = parseFloat(discountTotalRate);
                 discountAmount = ((pretaxAmount * discount_on_total) / 100)
+                // check if shipping fee then minus before calculate discount
+                if (shippingFee > 0) {
+                    discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100)
+                }
             }
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 

@@ -175,6 +175,51 @@ function checkAvailablePromotion(data_promotion) {
                             }
                         }
                     }
+                } else {
+                    if (conditionCheck.percent_fix_amount === true) { // discount by percent
+                        return {
+                            'is_pass': true,
+                            'condition': {
+                                'row_apply_index': null,
+                                'is_discount': true,
+                                'is_gift': false,
+                                'is_before_tax': is_before_tax,
+                                'is_after_tax': is_after_tax,
+                                'is_on_product': false,
+                                'is_on_order': true,
+                                'is_on_percent': true,
+                                'is_fix_amount': false,
+                                'percent_discount': percentDiscount,
+                                'max_amount': maxDiscountAmount,
+                                'product_id': "",
+                                'product_title': data_promotion.title,
+                                'product_code': data_promotion.code,
+                                'product_description': data_promotion.remark,
+                                'product_quantity': 1,
+                            }
+                        }
+                    } else { // discount by fix amount
+                        return {
+                            'is_pass': true,
+                            'condition': {
+                                'row_apply_index': null,
+                                'is_discount': true,
+                                'is_gift': false,
+                                'is_before_tax': is_before_tax,
+                                'is_after_tax': is_after_tax,
+                                'is_on_product': false,
+                                'is_on_order': true,
+                                'is_on_percent': false,
+                                'is_fix_amount': true,
+                                'fix_value': fixDiscountAmount,
+                                'product_id': "",
+                                'product_title': data_promotion.title,
+                                'product_code': data_promotion.code,
+                                'product_description': data_promotion.remark,
+                                'product_quantity': 1,
+                            }
+                        }
+                    }
                 }
             }
         } else if (data_promotion.is_gift === true) { // GIFT

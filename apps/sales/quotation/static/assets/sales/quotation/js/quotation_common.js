@@ -819,11 +819,9 @@ class loadDataHandle {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('quotation_config')) {
-                            ele.val(JSON.stringify(data.quotation_config));
-                            // check config first time
-                            configClass.checkConfig(true);
-                        }
+                        ele.val(JSON.stringify(data));
+                        // check config first time
+                        configClass.checkConfig(true);
                     }
                 }
             )

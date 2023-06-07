@@ -225,6 +225,11 @@ $(function () {
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+            // Clear table COST if add new row Product
+            tableCost.DataTable().clear().draw();
+            document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
+            document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
+            document.getElementById('quotation-create-cost-total').innerHTML = "0";
         });
 
 // Action on delete row product
@@ -1003,6 +1008,11 @@ $(function () {
             reCalculateIfShipping(shippingPrice);
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+            // Clear table COST if add new row Product
+            tableCost.DataTable().clear().draw();
+            document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
+            document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
+            document.getElementById('quotation-create-cost-total').innerHTML = "0";
         });
 
 

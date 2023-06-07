@@ -17,22 +17,17 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        render: (data, type, row, meta) => {
-                            return ''
-                        }
-                    },
-                    {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-soft-indigo badge-outline">` + row.code + `</span>`
+                            return `<span style="width: 50%;" class="badge badge-primary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="#"><span><b>` + row.title + `</b></span></a>`
+                            return `<a href="` + $('#datatable_payment_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                         }
                     },
                     {

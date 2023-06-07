@@ -1,6 +1,7 @@
 $(document).ready(function () {
     let advance_payment_expense_items = [];
     let payment_cost_items_filtered = [];
+    const ap_list = JSON.parse($('#advance_payment_list').text());
 
     let pk = window.location.pathname.split('/').pop();
     let url_detail = $('#form-update-advance').attr('data-url-detail').replace('0', pk)
@@ -223,7 +224,9 @@ $(document).ready(function () {
         $('.form-control').prop('disabled', true);
         $('.form-select').prop('disabled', true);
         $('.dropdown-toggle').prop('disabled', true);
-        $('.form-check-input').prop('disabled', true);
+        if ($('#money-gave').is(':checked')) {
+            $('#money-gave').prop('disabled', true);
+        }
         $('#btn-add-row-line-detail').addClass('disabled');
         $('.btn-del-line-detail').addClass('disabled');
 
@@ -663,17 +666,11 @@ $(document).ready(function () {
             }
         })
 
-        $.fn.callAjax($('#form-update-advance').attr('data-url-list'), 'GET').then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                advance_payment_expense_items = [];
-                for (let i = 0; i < data.advance_payment_list.length; i++) {
-                    if (data.advance_payment_list[i].sale_order_mapped === $('#sale-code-select-box option:selected').attr('value')) {
-                        advance_payment_expense_items = advance_payment_expense_items.concat(data.advance_payment_list[i].expense_items)
-                    }
-                }
+        for (let i = 0; i < ap_list.length; i++) {
+            if (ap_list[i].sale_order_mapped === sale_code_id) {
+                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
             }
-        })
+        }
     }
 
     function loadCreator() {

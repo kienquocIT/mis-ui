@@ -1515,4 +1515,16 @@ $(document).ready(function () {
             }
         )
     })
+
+    $('#input-file-now').dropify({
+        messages: {
+            'default': 'Drag and drop your file here.',
+        },
+        tpl: {
+            message: '<div class="dropify-message">' +
+                '<span class="file-icon"></span>' +
+                '<h5>{{ default }}</h5>' +
+                '</div>',
+        }
+    });
 })

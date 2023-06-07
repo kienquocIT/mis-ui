@@ -1,8 +1,6 @@
 from django.urls import path
-
-    QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI
 from apps.sales.quotation.views import (
-    QuotationCreate, QuotationList, QuotationListAPI, QuotationDetail,
+    QuotationCreate, QuotationList, QuotationListAPI, QuotationDetail, QuotationConfigDetail,
     QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI, PaymentCostItemsListAPI
 )
 

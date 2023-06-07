@@ -406,7 +406,8 @@ $(function () {
                     let valueSubtotal = 0;
                     let row = tableProduct[0].tBodies[0].rows[i];
                     let product = row.querySelector('.table-row-item');
-                    if (product) {
+                    let shipping = row.querySelector('.table-row-shipping');
+                    if (product) { // PRODUCT
                         valueProduct = product.value;
                         let optionSelected = product.options[product.selectedIndex];
                         if (optionSelected) {
@@ -449,10 +450,6 @@ $(function () {
                                 valueTaxAmount = ((valueSubtotal * valueTaxSelected) / 100);
                             }
                         }
-                        // let order = row.querySelector('.table-row-order');
-                        // if (order) {
-                        //     valueOrder = order.innerHTML;
-                        // }
                         valueOrder++
                         let selectProductID = 'quotation-create-cost-box-product-' + String(valueOrder);
                         let selectUOMID = 'quotation-create-cost-box-uom-' + String(valueOrder);
@@ -490,6 +487,44 @@ $(function () {
                         loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
                         loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
                         loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);
+                    } else if (shipping) { // SHIPPING
+                        let shippingID = shipping.getAttribute('data-id');
+                        let shippingTitle = shipping.value;
+                        valueQuantity = 1;
+                        valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                        valueOrder++
+                        let dataAdd = {
+                            "tax": {
+                                "id": "",
+                                "code": "",
+                                "title": "",
+                                "value": 0
+                            },
+                            "order": valueOrder,
+                            "product": {
+                                "id": shippingID,
+                                "code": "",
+                                "title": shippingTitle
+                            },
+                            "product_code": "",
+                            "product_title": shippingTitle,
+                            "unit_of_measure": {
+                                "id": "",
+                                "code": "",
+                                "title": ""
+                            },
+                            "product_quantity": valueQuantity,
+                            "product_uom_code": "",
+                            "product_tax_title": "",
+                            "product_tax_value": 0,
+                            "product_uom_title": "",
+                            "product_cost_price": valueSubtotal,
+                            "product_tax_amount": valueTaxAmount,
+                            "product_subtotal_price": valueSubtotal,
+                            "is_shipping": true,
+                            "shipping": {"id": shippingID},
+                        }
+                        tableCost.DataTable().row.add(dataAdd).draw();
                     }
                 }
                 // update total
@@ -618,8 +653,7 @@ $(function () {
             let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
             let dataCopyTo = {'id': dataCopy.id, 'option': 'all'};
             let type = $(this)[0].getAttribute('data-copy-type');
-            // if option copy is custom (choose product & quantity)
-            if (divCopyOption[0].querySelector('.check-option').checked === false) {
+            if (divCopyOption[0].querySelector('.check-option').checked === false) { // if option copy is CUSTOM (choose product & quantity)
                 let result = [];
                 let productCopyTo = [];
                 let order = 0;
@@ -645,16 +679,25 @@ $(function () {
                 dataCopy['quotation_products_data'] = result;
                 dataCopyTo['option'] = 'custom';
                 dataCopyTo['products'] = productCopyTo;
-            } else { // if option copy is all product
+            } else { // if option copy is ALL product
                 // Filter all data is not Promotion from quotation_products_data
-                dataCopy['quotation_products_data'] = filterDataProductNotPromotion(dataCopy.quotation_products_data);
+                // dataCopy['quotation_products_data'] = filterDataProductNotPromotion(dataCopy.quotation_products_data);
+                dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
             }
             if (type === 'copy-from') {
                 loadDataClass.loadDetailQuotation(dataCopy, true);
-                // load product
-                calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
-                // load expense
-                calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
+                if (dataCopyTo.option === "all") {
+                    $('#datable-quotation-create-product').DataTable().destroy();
+                    $('#datable-quotation-create-expense').DataTable().destroy();
+                    dataTableClass.dataTableProduct(dataCopy.quotation_products_data, 'datable-quotation-create-product');
+                    dataTableClass.dataTableExpense(dataCopy.quotation_expenses_data, 'datable-quotation-create-expense');
+                } else if (dataCopyTo.option === "custom") {
+                    // load product
+                    calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
+                    // load expense
+                    calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
+                }
+
                 // Clear table COST when copy
                 tableCost.DataTable().clear().draw();
                 document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -687,6 +730,7 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
+                    loadDataClass.loadDetailQuotation(dataCopy, true);
                     if (dataRaw.option === 'custom') { // if option copy is custom (choose product & quantity)
                         let products = dataRaw.products;
                         let result = [];
@@ -706,15 +750,16 @@ $(function () {
                             }
                         }
                         dataCopy['quotation_products_data'] = result;
+                        // load product
+                        calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
+                        // load expense
+                        calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                     } else if (dataRaw.option === 'all') { // if option copy is all product
-                        // Filter all data is not Promotion from quotation_products_data
-                        dataCopy['quotation_products_data'] = filterDataProductNotPromotion(dataCopy.quotation_products_data);
+                        $('#datable-quotation-create-product').DataTable().destroy();
+                        $('#datable-quotation-create-expense').DataTable().destroy();
+                        dataTableClass.dataTableProduct(dataCopy.quotation_products_data, 'datable-quotation-create-product');
+                        dataTableClass.dataTableExpense(dataCopy.quotation_expenses_data, 'datable-quotation-create-expense');
                     }
-                    loadDataClass.loadDetailQuotation(dataCopy, true);
-                    // load product
-                    calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
-                    // load expense
-                    calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
             }
         }
@@ -856,6 +901,7 @@ $(function () {
             // ReCalculate Total
             calculateClass.updateTotal(tableProduct[0], true, false, false)
             let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
+            let dataShipping = JSON.parse($(this)[0].getAttribute('data-shipping'));
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -871,12 +917,12 @@ $(function () {
                 },
                 "order": order,
                 "product": {
-                    "id": "",
+                    "id": dataShipping.id,
                     "code": "",
-                    "title": "Phí giao hàng nhanh"
+                    "title": dataShipping.shipping_title,
                 },
                 "product_code": "",
-                "product_title": "Phí giao hàng nhanh",
+                "product_title": dataShipping.shipping_title,
                 "unit_of_measure": {
                     "id": "",
                     "code": "",
@@ -889,7 +935,7 @@ $(function () {
                 "product_uom_title": "",
                 "product_tax_amount": 0,
                 "product_unit_price": shippingPrice,
-                "product_description": "Phí giao hàng nhanh",
+                "product_description": dataShipping.shipping_title,
                 "product_discount_value": 0,
                 "product_subtotal_price": shippingPrice,
                 "product_discount_amount": 0,

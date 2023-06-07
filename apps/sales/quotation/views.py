@@ -138,6 +138,20 @@ class QuotationExpenseListAPI(APIView):
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
 
+# Config
+class QuotationConfigDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/quotation_config.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class QuotationConfigDetailAPI(APIView):
     @mask_view(
         login_require=True,
@@ -147,7 +161,7 @@ class QuotationConfigDetailAPI(APIView):
     def get(self, request, *args, **kwargs):
         res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).get()
         if res.state:
-            return {'quotation_config': res.result}, status.HTTP_200_OK
+            return res.result, status.HTTP_200_OK
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
@@ -160,7 +174,8 @@ class QuotationConfigDetailAPI(APIView):
     def put(self, request, *args, **kwargs):
         res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).put(request.data)
         if res.state:
-            return {'result': res.result}, status.HTTP_200_OK
+            res.result['message'] = SaleMsg.QUOTATION_CONFIG_UPDATE
+            return res.result, status.HTTP_200_OK
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST

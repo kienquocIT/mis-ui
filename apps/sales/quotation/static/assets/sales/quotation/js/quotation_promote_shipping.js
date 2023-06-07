@@ -2,8 +2,7 @@
 function checkAvailablePromotion(data_promotion) {
     let tableProd = $('#datable-quotation-create-product');
     let tableEmpty = tableProd[0].querySelector('.dataTables_empty');
-    if (!tableEmpty) {
-        // DISCOUNT
+    if (!tableEmpty) { // DISCOUNT
         if (data_promotion.is_discount === true) {
             let is_before_tax = false;
             let is_after_tax = false;
@@ -181,7 +180,7 @@ function checkAvailablePromotion(data_promotion) {
         } else if (data_promotion.is_gift === true) { // GIFT
             let conditionCheck = data_promotion.gift_method;
             if (conditionCheck.is_free_product === true) {
-                if (conditionCheck.hasOwnProperty('is_min_purchase')) {
+                if (conditionCheck.hasOwnProperty('is_min_purchase')) { // Check total price
                     if (conditionCheck.before_after_tax === true) {
                         let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
                         let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
@@ -218,8 +217,7 @@ function checkAvailablePromotion(data_promotion) {
                             }
                         }
                     }
-
-                } else if (conditionCheck.hasOwnProperty('is_purchase')) {
+                } else if (conditionCheck.hasOwnProperty('is_purchase')) { // Check quantity
                     let purchase_product_id = conditionCheck.purchase_product.id;
                     let purchase_num = conditionCheck.purchase_num;
                     for (let i = 0; i < tableProd[0].tBodies[0].rows.length; i++) {
@@ -228,6 +226,8 @@ function checkAvailablePromotion(data_promotion) {
                         let quantity = row.querySelector('.table-row-quantity');
                         if (prod.value === purchase_product_id && parseFloat(quantity.value) > 0) {
                             if (parseFloat(quantity.value) >= purchase_num) {
+                                let total_received_raw = ((parseFloat(quantity.value) / parseFloat(purchase_num)) * parseFloat(conditionCheck.num_product_received))
+                                let total_received = Math.floor(total_received_raw);
                                 return {
                                     'is_pass': true,
                                     'condition': {
@@ -238,7 +238,7 @@ function checkAvailablePromotion(data_promotion) {
                                         'product_title': conditionCheck.product_received.title,
                                         'product_code': conditionCheck.product_received.code,
                                         'product_description': data_promotion.remark,
-                                        'product_quantity': parseFloat(conditionCheck.num_product_received),
+                                        'product_quantity': total_received,
                                     }
                                 }
                             }
@@ -397,7 +397,7 @@ function filterDataProductNotPromotion(data_products) {
     let order = 0;
     for (let i = 0; i < data_products.length; i++) {
         let dataProd = data_products[i];
-        if (!dataProd.hasOwnProperty('is_promotion')) {
+        if (!dataProd.hasOwnProperty('is_promotion') && !dataProd.hasOwnProperty('is_shipping')) {
             order++;
             dataProd['order'] = order;
             finalList.push(dataProd)
@@ -562,6 +562,8 @@ function reCalculateIfPromotion(table, promotion_discount_rate, promotion_amount
 function checkAvailableShipping(data_shipping, shippingAddress) {
     let final_shipping_price = 0;
     let formula_condition = data_shipping.formula_condition;
+    let margin = parseFloat(data_shipping.margin);
+    let isPass = false;
     for (let i = 0; i < formula_condition.length; i++) {
         let location_condition = formula_condition[i].location_condition
         for (let l = 0; l < location_condition.length; l++) {
@@ -591,59 +593,52 @@ function checkAvailableShipping(data_shipping, shippingAddress) {
                                     result_to_check += parseFloat(quantity.value);
                                 }
                             } else if (unit.title === "volume") { // if condition is volume
-
+                                return {
+                                    'is_pass': isPass,
+                                    'final_shipping_price': final_shipping_price
+                                }
                             } else if (unit.title === "weight") { // if condition is weight
-
+                                return {
+                                    'is_pass': isPass,
+                                    'final_shipping_price': final_shipping_price
+                                }
                             }
                         }
                     }
                     if (operator === 1) {
                         if (result_to_check < amount_condition) {
-                            if (data_shipping.cost_method === 0) {
-                                final_shipping_price = parseFloat(data_shipping.fixed_price);
-                            } else if (data_shipping.cost_method === 1) {
-                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
-                            }
-                            return {
-                                'is_pass': true,
-                                'final_shipping_price': final_shipping_price
-                            }
+                            isPass = true;
                         }
                     } else if (operator === 2) {
                         if (result_to_check > amount_condition) {
-                            if (data_shipping.cost_method === 0) {
-                                final_shipping_price = parseFloat(data_shipping.fixed_price);
-                            } else if (data_shipping.cost_method === 1) {
-                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
-                            }
-                            return {
-                                'is_pass': true,
-                                'final_shipping_price': final_shipping_price
-                            }
+                            isPass = true;
                         }
                     } else if (operator === 3) {
                         if (result_to_check <= amount_condition) {
-                            if (data_shipping.cost_method === 0) {
-                                final_shipping_price = parseFloat(data_shipping.fixed_price);
-                            } else if (data_shipping.cost_method === 1) {
-                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
-                            }
-                            return {
-                                'is_pass': true,
-                                'final_shipping_price': final_shipping_price
-                            }
+                            isPass = true;
                         }
                     } else if (operator === 4) {
                         if (result_to_check >= amount_condition) {
-                            if (data_shipping.cost_method === 0) {
-                                final_shipping_price = parseFloat(data_shipping.fixed_price);
-                            } else if (data_shipping.cost_method === 1) {
-                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
-                            }
-                            return {
-                                'is_pass': true,
-                                'final_shipping_price': final_shipping_price
-                            }
+                            isPass = true;
+                        }
+                    }
+                    if (isPass === true) {
+                        if (data_shipping.cost_method === 0) {
+                            final_shipping_price = parseFloat(data_shipping.fixed_price);
+                        } else if (data_shipping.cost_method === 1) {
+                            final_shipping_price = (shipping_price + (extra_amount * result_to_check));
+                        }
+                        if (margin > 0) {
+                            final_shipping_price = ((final_shipping_price * margin) / 100)
+                        }
+                        return {
+                            'is_pass': isPass,
+                            'final_shipping_price': final_shipping_price,
+                            'data_shipping': {
+                                'shipping_id': data_shipping.id,
+                                'shipping_title': data_shipping.title,
+                                'shipping_code': data_shipping.code,
+                            },
                         }
                     }
                 }
@@ -651,7 +646,7 @@ function checkAvailableShipping(data_shipping, shippingAddress) {
         }
     }
     return {
-        'is_pass': false,
+        'is_pass': isPass,
         'final_shipping_price': final_shipping_price
     }
 }

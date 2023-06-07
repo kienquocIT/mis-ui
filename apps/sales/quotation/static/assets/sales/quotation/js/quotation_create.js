@@ -691,6 +691,34 @@ $(function () {
                     $('#datable-quotation-create-expense').DataTable().destroy();
                     dataTableClass.dataTableProduct(dataCopy.quotation_products_data, 'datable-quotation-create-product');
                     dataTableClass.dataTableExpense(dataCopy.quotation_expenses_data, 'datable-quotation-create-expense');
+                    // load data dropdown for Tabs
+                    let tableProduct = document.getElementById('datable-quotation-create-product');
+                    let tableCost = document.getElementById('datable-quotation-create-cost');
+                    let tableExpense = document.getElementById('datable-quotation-create-expense');
+                    for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                        let row = tableProduct.tBodies[0].rows[i];
+                        if (row.querySelector('.table-row-item')) {
+                            loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                        }
+                    }
+                    for (let i = 0; i < tableCost.tBodies[0].rows.length; i++) {
+                        let row = tableCost.tBodies[0].rows[i];
+                        if (row.querySelector('.table-row-item')) {
+                            loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                        }
+                    }
+                    for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
+                        let row = tableExpense.tBodies[0].rows[i];
+                        if (row.querySelector('.table-row-item')) {
+                            loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                        }
+                    }
                 } else if (dataCopyTo.option === "custom") {
                     // load product
                     calculateClass.loadProductCopy(dataCopy, tableProduct, true, false);
@@ -759,6 +787,34 @@ $(function () {
                         $('#datable-quotation-create-expense').DataTable().destroy();
                         dataTableClass.dataTableProduct(dataCopy.quotation_products_data, 'datable-quotation-create-product');
                         dataTableClass.dataTableExpense(dataCopy.quotation_expenses_data, 'datable-quotation-create-expense');
+                        // load data dropdown for Tabs
+                        let tableProduct = document.getElementById('datable-quotation-create-product');
+                        let tableCost = document.getElementById('datable-quotation-create-cost');
+                        let tableExpense = document.getElementById('datable-quotation-create-expense');
+                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                            let row = tableProduct.tBodies[0].rows[i];
+                            if (row.querySelector('.table-row-item')) {
+                                loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                                loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                                loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                            }
+                        }
+                        for (let i = 0; i < tableCost.tBodies[0].rows.length; i++) {
+                            let row = tableCost.tBodies[0].rows[i];
+                            if (row.querySelector('.table-row-item')) {
+                                loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                                loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                                loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                            }
+                        }
+                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
+                            let row = tableExpense.tBodies[0].rows[i];
+                            if (row.querySelector('.table-row-item')) {
+                                loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                                loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
+                                loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+                            }
+                        }
                     }
                 }
             }

@@ -812,20 +812,22 @@ class loadDataHandle {
     loadInitQuotationConfig(config_id) {
         let jqueryId = '#' + config_id;
         let ele = $(jqueryId);
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('quotation_config')) {
-                        ele.val(JSON.stringify(data.quotation_config));
-                        // check config first time
-                        configClass.checkConfig(true);
+        if (ele.hasClass('quotation-config')) {
+            let url = ele.attr('data-url');
+            let method = ele.attr('data-method');
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('quotation_config')) {
+                            ele.val(JSON.stringify(data.quotation_config));
+                            // check config first time
+                            configClass.checkConfig(true);
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }
 

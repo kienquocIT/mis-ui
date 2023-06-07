@@ -213,12 +213,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
+    WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouse-stock')
 
     # shipping unit
     ITEM_UNIT_LIST = StringUrl('base/item-units')
 
     # good receipt
     GOOD_RECEIPT_API = StringUrl('saledata/good-receipt')
+    GOOD_RECEIPT_PRODUCT_API = StringUrl('saledata/good-receipt/product')
 
     # return advance
     RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
@@ -231,4 +233,3 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
-

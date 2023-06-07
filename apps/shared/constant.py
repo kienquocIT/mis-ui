@@ -6,6 +6,7 @@ __all__ = [
     'CUSTOMER_REVENUE',
     'PICKING_STATE',
     'WORKFLOW_ACTION',
+    'DELIVERY_STATE'
 ]
 
 CUSTOMER_REVENUE = [
@@ -35,6 +36,7 @@ DELIVERY_STATE = (
     (0, 'Wait'),
     (1, 'Partial'),
     (2, 'Full'),
+    (3, 'Done')
 )
 
 # Workflow

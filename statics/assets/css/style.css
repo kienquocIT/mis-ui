@@ -74440,7 +74440,6 @@ div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .input-group
   border-width: 1px;
   border-radius: 0.375rem;
   color: #6f6f6f;
-  overflow: hidden;
   justify-content: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
@@ -91088,6 +91087,9 @@ Project:	Jampack
 .form-check.readonly:hover{
     box-shadow: 0px 0px 0px 1px #cdcdcd inset;
     border-radius:6px;
+}
+.dropdown-menu p{
+    white-space: pre-wrap;
 }
 
 /*# sourceMappingURL=style.css.map */

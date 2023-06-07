@@ -269,21 +269,23 @@ function checkAvailablePromotion(data_promotion) {
                         let row = tableProd[0].tBodies[0].rows[i];
                         let prod = row.querySelector('.table-row-item');
                         let quantity = row.querySelector('.table-row-quantity');
-                        if (prod.value === purchase_product_id && parseFloat(quantity.value) > 0) {
-                            if (parseFloat(quantity.value) >= purchase_num) {
-                                let total_received_raw = ((parseFloat(quantity.value) / parseFloat(purchase_num)) * parseFloat(conditionCheck.num_product_received))
-                                let total_received = Math.floor(total_received_raw);
-                                return {
-                                    'is_pass': true,
-                                    'condition': {
-                                        'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                        'is_discount': false,
-                                        'is_gift': true,
-                                        'product_id': conditionCheck.product_received.id,
-                                        'product_title': conditionCheck.product_received.title,
-                                        'product_code': conditionCheck.product_received.code,
-                                        'product_description': data_promotion.remark,
-                                        'product_quantity': total_received,
+                        if (prod && quantity) {
+                            if (prod.value === purchase_product_id && parseFloat(quantity.value) > 0) {
+                                if (parseFloat(quantity.value) >= purchase_num) {
+                                    let total_received_raw = ((parseFloat(quantity.value) / parseFloat(purchase_num)) * parseFloat(conditionCheck.num_product_received))
+                                    let total_received = Math.floor(total_received_raw);
+                                    return {
+                                        'is_pass': true,
+                                        'condition': {
+                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                            'is_discount': false,
+                                            'is_gift': true,
+                                            'product_id': conditionCheck.product_received.id,
+                                            'product_title': conditionCheck.product_received.title,
+                                            'product_code': conditionCheck.product_received.code,
+                                            'product_description': data_promotion.remark,
+                                            'product_quantity': total_received,
+                                        }
                                     }
                                 }
                             }

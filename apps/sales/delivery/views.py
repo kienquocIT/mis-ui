@@ -10,6 +10,7 @@ __all__ = [
     'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail', 'OrderDeliveryDetailAPI'
 ]
 
+
 from apps.shared.constant import DELIVERY_STATE
 
 
@@ -174,10 +175,10 @@ class OrderDeliveryDetailAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).get()
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk)).get()
         if resp.state:
-            return {'picking_detail': resp.result}, status.HTTP_200_OK
+            return resp.result, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -188,10 +189,9 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk)).put(request.data)
         if resp.state:
             return resp.result, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-

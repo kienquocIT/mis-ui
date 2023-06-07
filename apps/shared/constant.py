@@ -4,6 +4,7 @@ __all__ = [
     'COMPANY_SIZE',
     'CUSTOMER_REVENUE',
     'PICKING_STATE',
+    'DELIVERY_STATE'
 ]
 
 CUSTOMER_REVENUE = [
@@ -33,4 +34,5 @@ DELIVERY_STATE = (
     (0, 'Wait'),
     (1, 'Partial'),
     (2, 'Full'),
+    (3, 'Done')
 )

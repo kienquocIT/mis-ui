@@ -2,7 +2,10 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
-    tbl.DataTableDefault({
+    tbl.DataTable({
+        searching: true,
+        ordering: false,
+        paginate: false,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -79,16 +82,13 @@ $(document).ready(function () {
             }, {
                 data: 'state',
                 render: (data, type, row, meta) => {
-                    let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
-                    switch (data) {
-                        case 0:
-                            templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
-                            break
-                        case 1:
-                            templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
-                            break
+                    const stateMap = {
+                        0: 'info',
+                        1: 'warning',
+                        2: 'success',
+                        3: 'primary'
                     }
-                    return templateEle.format_by_idx(letStateChoices?.[data]);
+                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
                 }
             }
         ]

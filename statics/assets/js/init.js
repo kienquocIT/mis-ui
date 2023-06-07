@@ -2146,7 +2146,7 @@ var DataTableAction = {
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
             if (data.hasOwnProperty(key.value))
-                htmlContent += `<div class="row mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+                htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
         }
         if (link) {
             link = link.format_url_with_uuid(data['id']);

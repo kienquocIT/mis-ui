@@ -144,7 +144,7 @@ class QuotationConfigDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/quotation/quotation_config.html',
+        template='sales/quotation/config/quotation_config.html',
         menu_active='',
         breadcrumb='',
     )

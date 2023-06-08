@@ -497,6 +497,13 @@ $(function () {
                         let shippingTitle = shipping.value;
                         valueQuantity = 1;
                         valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                        // check if margin then minus
+                        let shippingPriceMargin = shipping.getAttribute('data-shipping-price-margin');
+                        if (shippingPriceMargin) {
+                            if (parseFloat(shippingPriceMargin) > 0) {
+                                valueSubtotal = valueSubtotal - parseFloat(shippingPriceMargin);
+                            }
+                        }
                         valueOrder++
                         let dataAdd = {
                             "tax": {
@@ -962,6 +969,7 @@ $(function () {
             // ReCalculate Total
             calculateClass.updateTotal(tableProduct[0], true, false, false)
             let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
+            let shippingPriceMargin = parseFloat($(this)[0].getAttribute('data-shipping-price-margin'));
             let dataShipping = JSON.parse($(this)[0].getAttribute('data-shipping'));
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
@@ -1001,7 +1009,10 @@ $(function () {
                 "product_subtotal_price": shippingPrice,
                 "product_discount_amount": 0,
                 "is_shipping": true,
-                "shipping": {"id": $(this)[0].getAttribute('data-shipping-id')}
+                "shipping": {
+                    "id": $(this)[0].getAttribute('data-shipping-id'),
+                    "shipping_price_margin": shippingPriceMargin
+                }
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             // Re Calculate after add shipping (pretax, discount, total)

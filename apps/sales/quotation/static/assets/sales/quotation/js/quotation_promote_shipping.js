@@ -608,6 +608,7 @@ function reCalculateIfPromotion(table, promotion_discount_rate, promotion_amount
 // Shipping
 function checkAvailableShipping(data_shipping, shippingAddress) {
     let final_shipping_price = 0;
+    let margin_shipping_price = 0;
     let formula_condition = data_shipping.formula_condition;
     let margin = parseFloat(data_shipping.margin);
     let isPass = false;
@@ -676,11 +677,13 @@ function checkAvailableShipping(data_shipping, shippingAddress) {
                             final_shipping_price = (shipping_price + (extra_amount * result_to_check));
                         }
                         if (margin > 0) {
-                            final_shipping_price = ((final_shipping_price * margin) / 100)
+                            margin_shipping_price = ((final_shipping_price * margin) / 100);
+                            final_shipping_price = (final_shipping_price + margin_shipping_price)
                         }
                         return {
                             'is_pass': isPass,
                             'final_shipping_price': final_shipping_price,
+                            'margin_shipping_price': margin_shipping_price,
                             'data_shipping': {
                                 'shipping_id': data_shipping.id,
                                 'shipping_title': data_shipping.title,

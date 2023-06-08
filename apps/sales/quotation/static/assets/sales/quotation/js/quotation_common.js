@@ -912,6 +912,10 @@ class dataTableHandle {
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row.shipping.id);
                             }
+                            let price_margin = "0";
+                            if (row.shipping.hasOwnProperty('shipping_price_margin')) {
+                                price_margin = row.shipping.shipping_price_margin;
+                            }
                             return `<div class="row">
                                     <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -920,7 +924,7 @@ class dataTableHandle {
                                                 <i class="fas fa-shipping-fast"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1746,7 +1750,7 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-price="${row.final_shipping_price}" data-shipping-id="${row.id}" data-shipping="${JSON.stringify(row.data_shipping).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-price="${row.final_shipping_price}" data-shipping-price-margin="${row.margin_shipping_price}" data-shipping-id="${row.id}" data-shipping="${JSON.stringify(row.data_shipping).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
                             return `<button type="button" class="btn btn-primary apply-shipping" disabled>Apply</button>`;
                         }
@@ -1780,6 +1784,7 @@ class dataTableHandle {
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['final_shipping_price'] = check.final_shipping_price;
+                                        item['margin_shipping_price'] = check.margin_shipping_price;
                                         item['data_shipping'] = check.data_shipping;
                                         passList.push(item)
                                     } else {

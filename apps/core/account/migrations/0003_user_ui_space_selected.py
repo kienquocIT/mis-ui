@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='ui_space_selected',
-            field=models.CharField(default=None, help_text='Space code of user', max_length=100),
+            field=models.CharField(default=None, help_text='Space code of user', max_length=100, null=True),
         ),
     ]

@@ -11,6 +11,7 @@
             -webkit-appearance: none !important;
             margin: 0 !important;
         }
+        .text-cursor{cursor: pointer}
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -62,7 +63,7 @@
                     <div class="input-group">
                         <div class="input-affix-wrapper">
                             <div class="dropdown input-prefix">
-                                <i class="fas fa-info-circle"
+                                <i class="fas fa-info-circle text-blue"
                                    data-bs-toggle="dropdown"
                                    data-dropdown-animation
                                    aria-haspopup="true"
@@ -154,7 +155,13 @@
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
            data-error-done="{% trans 'Done column of line detail is empty!' %}"
+           data-outstock="{% trans 'Product in Warehouse out of stock' %}"
+           data-prod-outstock="{% trans ' out of stock' %}"
+           data-warehouse="{% trans 'Warehouse' %}"
+           data-stock="{% trans 'Available in Store place' %}"
     >
+    <input type="hidden" id="url-factory"
+           data-warehouse-stock="{% url 'WarehouseProductAPI' %}">
 {% endblock %}
 
 {% block jsFooter %}

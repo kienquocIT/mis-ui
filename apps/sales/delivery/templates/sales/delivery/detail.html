@@ -179,11 +179,7 @@
                         <th>{% trans 'Delivery before' %}</th>
                         <th>{% trans 'Remain' %}</th>
                         <th>{% trans 'Ready' %}</th>
-                        <th>
-                            <div class="d-flex align-items-center justify-content-start">
-                                {% trans 'Done' %}
-                            </div>
-                        </th>
+                        <th>{% trans 'Done' %}</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -224,13 +220,19 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p><a class="text-l" href="#"></a></p>
+                <p><a class="text-primary text-decoration-underline title_prod" href="#"></a></p>
                 <table id="productStockDetail" class="table w-100">
                     <thead>
                     <tr>
                         <th>{% trans 'Warehouse Code' %}</th>
                         <th>{% trans 'Warehouse name' %}</th>
-                        <th>{% trans 'Stock' %}</th>
+                        <th>
+                            {% if data.config.is_picking %}
+                                {% trans 'Picking Area' %}
+                            {% else %}
+                                {% trans 'Stock' %}
+                            {% endif %}
+                        </th>
                         <th>{% trans 'Get' %}</th>
                     </tr>
                     </thead>
@@ -248,6 +250,7 @@
 
 {% block dataHiddenGroup %}
     {{ data.state_choices|json_script:"dataStateChoices" }}
+    {{ data.config|json_script:'delivery_config' }}
     <input type="hidden" id="trans-factory"
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"

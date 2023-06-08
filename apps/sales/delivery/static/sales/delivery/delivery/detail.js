@@ -11,7 +11,7 @@ $(function () {
             return this.prodList
         }
 
-        contentModalHandle(prodID, idx) {
+        contentModalHandle(prodID, idx, config, prod_data) {
             const _this = this
             let url = $('#url-factory').attr('data-warehouse-prod')
             $.fn.callAjax(url, 'get', {'product': prodID})
@@ -19,7 +19,18 @@ $(function () {
                     const res = $.fn.switcherResp(req);
                     const table = $('#productStockDetail')
                     let isData = res.warehouse_stock.filter((item) => item.stock > 0)
-
+                    if (config.is_picking){
+                        let delivery = prod_data?.delivery_data;
+                        let listConvert_config1 = []
+                        for (let item of isData){
+                            if (delivery.hasOwnProperty(item.warehouse.id)){
+                                item.stock = delivery[item.warehouse.id]
+                                item.picked = delivery[item.warehouse.id]
+                                listConvert_config1.push(item)
+                            }
+                        }
+                        isData = listConvert_config1
+                    }
                     table.not('.dataTable').DataTable({
                         data: isData,
                         searching: false,
@@ -55,7 +66,7 @@ $(function () {
                                 targets: 3,
                                 class: 'w-15 text-center',
                                 render: (row, type, data, meta) => {
-                                    return `<input class="form-control" type="number" id="warehouse_stock-${meta.row}" value="${data.picked}">`;
+                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${data.picked}">`;
                                 }
                             },
                         ],
@@ -69,8 +80,6 @@ $(function () {
                                     table.DataTable().row(index).data(current).draw();
                                 }
                             })
-                        },
-                        drawCallback() {
                         }
                     })
                     if (table.hasClass('dataTable')) {
@@ -99,9 +108,12 @@ $(function () {
                 })
         }
 
+
+
         initTableProd() {
             const _this = this
-            let $table = $('#dtbPickingProductList')
+            let $table = $('#dtbPickingProductList');
+            const delivery_config = JSON.parse($('#delivery_config').text())
             $table.DataTable({
                 searching: false,
                 ordering: false,
@@ -150,6 +162,7 @@ $(function () {
                     {
                         targets: 4,
                         class: 'w-10 text-center',
+                        visible: delivery_config.is_partial_ship,
                         render: (row, type, data) => {
                             return `<p>${data.delivered_quantity_before}</p>`;
                         }
@@ -157,6 +170,7 @@ $(function () {
                     {
                         targets: 5,
                         class: 'w-10 text-center',
+                        visible: delivery_config.is_partial_ship,
                         render: (row, type, data) => {
                             return `<p>${data.remaining_quantity}</p>`;
                         }
@@ -164,41 +178,47 @@ $(function () {
                     {
                         targets: 6,
                         class: 'w-10 text-center',
-                        render: (row, type, data) => {
-                            return `<p>${data.ready_quantity}</p>`;
+                        visible: delivery_config.is_picking,
+                        data: 'ready_quantity',
+                        render: (row, type, data, meta) => {
+                            let html = `<p>${row}</p>`;
+                            if (delivery_config.is_picking){
+                                html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
+                                + `<p id="ready_row-${meta.row}">${row}<p/>`
+                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
+                                +`data-idx="${meta.row}" data-id="${data.product_data.id}">`
+                                +`<i class="bi bi-three-dots font-3"></i></button></div>`;
+                            }
+                            return html
                         }
                     },
                     {
                         targets: 7,
-                        class: 'w-15',
+                        class: `w-15 ${delivery_config.is_picking && !delivery_config.is_partial_ship ? 'text-center': ''}`,
                         render: (row, type, data, meta) => {
                             const isDisabled = ''
                             let quantity = 0
                             if (data.picked_quantity) quantity = data.picked_quantity
-                            return `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                + `<input disabled class="form-control" type="number" id="prod_row-${meta.row}" value="${quantity}"/>`
+                            let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
+                                + `<p id="prod_row-${meta.row}">${quantity}<p/>`
                                 + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
                                 +`data-idx="${meta.row}" data-id="${data.product_data.id}">`
                                 +`<i class="bi bi-three-dots font-3 ${isDisabled}"></i></button></div>`;
+                            if (delivery_config.is_picking && !delivery_config.is_partial_ship)
+                                html = `<p class="text-center">${quantity}<p/>`
+                            return html
                         }
                     },
                 ],
                 rowCallback(row, data, index) {
                     $('td:eq(0)', row).html(index + 1)
-                    $(`#prod_row-${index}`, row).on('blur', function () {
-                        let prod = _this.getProdList
-                        prod[index]['picked_quantity'] = parseInt(this.value)
-                        _this.setProdList = prod
-                    })
+                    // done click
                     $(`button.select-prod`, row).off().on('click', function (e) {
                         e.preventDefault()
                         const prodID = $(this).attr('data-id');
                         const idx = $(this).attr('data-idx');
-                        _this.contentModalHandle(prodID, idx)
+                        _this.contentModalHandle(prodID, idx, delivery_config, data)
                     })
-                },
-                drawCallback() {
-
                 }
             });
         }

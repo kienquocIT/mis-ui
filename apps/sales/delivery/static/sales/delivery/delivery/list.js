@@ -49,12 +49,6 @@ $(document).ready(function () {
                     return html
                 },
             }, {
-                render: (data, type, row) => {
-                    return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-primary">{2}</span></a>`.format_by_idx(
-                        frm.getUrlDetail(row.id), $.fn.getValueOrEmpty(row, 'title'), $.fn.getValueOrEmpty(row, 'code'),
-                    )
-                },
-            }, {
                 data: 'sale_order_data',
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
@@ -80,6 +74,11 @@ $(document).ready(function () {
                     return data ? data : "_";
                 },
             }, {
+                data: 'actual_delivery_date',
+                render: (data, type, row) => {
+                    return data ? data : "_";
+                },
+            }, {
                 data: 'state',
                 render: (data, type, row, meta) => {
                     const stateMap = {
@@ -89,6 +88,21 @@ $(document).ready(function () {
                         3: 'primary'
                     }
                     return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
+                }
+            },
+            {
+                class:'text-center',
+                render: (data, type, row, meta) => {
+                    const isTxt = $('#trans-factory').attr('data-return')
+                    return `<div class="dropdown pointer mr-2">
+                                <i class="fa-regular fa-window-restore"
+                                   data-bs-toggle="dropdown"
+                                   data-dropdown-animation
+                                   aria-haspopup="true"
+                                   aria-expanded="false"></i>
+                                <div class="dropdown-menu w-210p mt-2">
+                                <a class="dropdown-item" href="#">${isTxt}</a></div>
+                            </div>`;
                 }
             }
         ]

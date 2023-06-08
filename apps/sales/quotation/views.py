@@ -179,3 +179,18 @@ class QuotationConfigDetailAPI(APIView):
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class PaymentCostItemsListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get(data)
+        if resp.state:
+            return {'payment_cost_items_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

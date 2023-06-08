@@ -34,13 +34,6 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <select id="parent-account-id" name="parent_account" class="select2" data-method="GET">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
-    </select>
     <form id="form-create-account" data-method="POST" data-url="{% url "AccountCreateAPI" %}"
           data-url-redirect="{% url "AccountList" %}">
         {% csrf_token %}

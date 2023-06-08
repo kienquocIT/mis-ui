@@ -2,9 +2,9 @@ $(document).ready(function () {
     let shipping_address_id_dict = [];
     let billing_address_id_dict = [];
 
-    $('#shipping-city').select2();
-    $('#shipping-district').select2();
-    $('#shipping-ward').select2();
+    // $('#shipping-city').select2();
+    // $('#shipping-district').select2();
+    // $('#shipping-ward').select2();
 
     // load Cities SelectBox
     function loadCities() {
@@ -389,7 +389,6 @@ $(document).ready(function () {
             }
         )
     }
-
 
     function loadTableContact() {
         let dtb = $('#datatable-add-contact');

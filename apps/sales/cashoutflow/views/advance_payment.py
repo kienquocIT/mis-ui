@@ -32,6 +32,7 @@ class AdvancePaymentCreate(View):
         resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
+        resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         return {'data':
             {
                 'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -39,6 +40,7 @@ class AdvancePaymentCreate(View):
                 'quotation_list': resp2.result,
                 'expense_list': resp3.result,
                 'account_list': resp4.result,
+                'advance_payment_list': resp5.result,
             }
         }, status.HTTP_200_OK
 
@@ -92,6 +94,7 @@ class AdvancePaymentDetail(View):
         resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
+        resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         return {'data':
             {
                 'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -99,6 +102,7 @@ class AdvancePaymentDetail(View):
                 'quotation_list': resp2.result,
                 'expense_list': resp3.result,
                 'account_list': resp4.result,
+                'advance_payment_list': resp5.result,
             }
         }, status.HTTP_200_OK
 

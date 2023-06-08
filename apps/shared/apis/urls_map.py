@@ -148,6 +148,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
     ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/')
 
+    # payment
+    PAYMENT_LIST = StringUrl('cashoutflow/payments')
+    PAYMENT_DETAIL = StringUrl('cashoutflow/payments/')
+
+    PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
+
     # masterdata/price
     TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
     TAX_LIST = StringUrl('saledata/taxes')
@@ -180,6 +186,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_LIST = StringUrl('quotation/lists')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
+    QUOTATION_CONFIG = StringUrl('quotation/config')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -206,12 +213,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
+    WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouse-stock')
 
     # shipping unit
     ITEM_UNIT_LIST = StringUrl('base/item-units')
 
     # good receipt
     GOOD_RECEIPT_API = StringUrl('saledata/good-receipt')
+    GOOD_RECEIPT_PRODUCT_API = StringUrl('saledata/good-receipt/product')
 
     # return advance
     RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
@@ -224,4 +233,3 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
-

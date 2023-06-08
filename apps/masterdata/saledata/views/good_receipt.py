@@ -115,3 +115,4 @@ class GoodReceiptDetailAPI(APIView):
         elif req.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+

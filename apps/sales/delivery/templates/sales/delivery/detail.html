@@ -21,6 +21,10 @@
             text-align: center;
             cursor: pointer;
         }
+
+        .pointer {
+            cursor: pointer;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -58,60 +62,72 @@
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
-                    <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly disabled/>
+                    <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly/>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="inputDeliveryDate"
                            class="form-label">{% trans 'Delivery Date' %}</label>
-                    <input type="text" name="delivery_date" id="inputDeliveryDate" class="form-control date-picker"/>
+                    <div class="input-affix-wrapper">
+                        <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
+                               class="form-control date-picker"/>
+                        <span class="input-suffix">
+                            <i class="bi bi-calendar-week"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
-                    <label for="inputToLocation" class="form-label">{% trans 'from' %}</label>
-                    <input type="text" name="to_location" id="inputToLocation" class="form-control"/>
+                    <label for="customer_id" class="form-label">{% trans 'to Customer' %}</label>
+                    <div class="input-group">
+                        <div class="dropdown input-group-text pointer">
+                            <i class="fas fa-info-circle"
+                               data-bs-toggle="dropdown"
+                               data-dropdown-animation
+                               aria-haspopup="true"
+                               aria-expanded="false"></i>
+                            <div class="dropdown-menu w-210p mt-2"></div>
+                        </div>
+                        <input type="text" name="customer_id" id="customer_id" class="form-control" readonly/>
+                    </div>
                 </div>
             </div>
 
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                    <label for="inputActualDate"
-                           class="form-label">{% trans 'Actual Date' %}</label>
-                    <input type="text" name="actual_delivery_date" id="inputActualDate" class="form-control date-picker"/>
+                    <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" name="actual_delivery_date" id="inputActualDate"
+                               class="form-control date-picker"/>
+                        <span class="input-suffix">
+                            <i class="bi bi-calendar-week"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
-                    <label for="inputCustomer" class="form-label">{% trans 'To customer' %}</label>
+                    <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
                     <div class="input-group">
-                        <div class="input-affix-wrapper">
-                            <div class="dropdown input-prefix">
-                                <i class="fas fa-info-circle"
-                                   data-bs-toggle="dropdown"
-                                   data-dropdown-animation
-                                   aria-haspopup="true"
-                                   aria-expanded="false"
-                                   disabled></i>
-                                <div class="dropdown-menu w-210p mt-2"></div>
-                            </div>
-                            <select class="form-control dropdown-select_two" name="customer_id" id="inputCustomer"
-                                    data-prefix="account_list"
-                                    data-url="{% url 'AccountListAPI' %}"
-                                    data-params="{'account_types_mapped__account_type_order': '0'}"
-                                    data-link-detail="{% url 'AccountDetailAPI' 1 %}"
-                                    data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
-                            >
-                            </select>
+                        <div class="dropdown input-group-text pointer">
+                            <i class="fas fa-info-circle"
+                               data-bs-toggle="dropdown"
+                               data-dropdown-animation
+                               aria-haspopup="true"
+                               aria-expanded="false"></i>
+                            <div class="dropdown-menu w-210p mt-2"></div>
                         </div>
+                        <input type="text" name="contact_id" id="contact_id" class="form-control" readonly/>
                     </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
-                    <p name="inputState" id="inputState" readonly disabled></p>
+                    <p id="state"></p>
+                    <input type="hidden" name="state"/>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6 offset-sm-6 offset-xs-0">
@@ -121,6 +137,8 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" name="delivery_option" id="delivery_opt">
+        <input type="hidden" name="sub_id" id="sub_id">
     </form>
     <div class="row mb-3">
         <ul class="nav nav-light nav-tabs">
@@ -195,6 +213,37 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog"
+         aria-labelledby="warehouseStockModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Get Product' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><a class="text-l" href="#"></a></p>
+                <table id="productStockDetail" class="table w-100">
+                    <thead>
+                    <tr>
+                        <th>{% trans 'Warehouse Code' %}</th>
+                        <th>{% trans 'Warehouse name' %}</th>
+                        <th>{% trans 'Stock' %}</th>
+                        <th>{% trans 'Get' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer justify-content-between ">
+				<button type="button" class="btn btn-primary" id="save-stock">{% trans 'Get' %}</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+			</div>
+        </div>
+    </div>
+    </div>
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -203,9 +252,17 @@
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
            data-error-done="{% trans 'Done column of line detail is empty!' %}"
+           data-state-info="{% trans 'Wait' %}"
+           data-state-warning="{% trans 'Partial' %}"
+           data-state-success="{% trans 'Full' %}"
+           data-state-primary="{% trans 'Done' %}"
     >
     <input type="hidden" id="url-factory"
-    data-prod-detail="{% url 'ProductDetail' 1 %}">
+           data-prod-detail="{% url 'ProductDetail' 1 %}"
+           data-customer="{% url 'AccountDetail' 1 %}"
+           data-contact="{% url 'ContactDetail' 1 %}"
+           data-warehouse-prod="{% url 'WarehouseProductAPI' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}
@@ -213,6 +270,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
-    <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
+    <script src="{% static 'sales/delivery/delivery/detail.js' %}"></script>
 {% endblock %}
 

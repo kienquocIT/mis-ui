@@ -130,7 +130,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
 
     # Good receipt
-    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'PromotionList')
+    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'GoodReceiptList')
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
     # Transition Data Config

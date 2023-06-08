@@ -53,7 +53,7 @@
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     <form id="form-create-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
-{#          data-url="{% url "AdvancePaymentListAPI" %}"#}
+          data-url="{% url "PaymentListAPI" %}"
     >
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
@@ -69,18 +69,18 @@
                         <label class="col-3 col-form-label">Sale/Purchase code</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
-                                    data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
+                                    data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Sale</button>
                             <div role="menu" class="dropdown-menu" style="min-width: 150%; width: 150%">
                                 <div class="row ml-3">
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="non-sale" class="col-2 form-check-input sale_code_type" checked>
+                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="non-sale" class="col-2 form-check-input sale_code_type" disabled>
                                             <label class="form-check-label col-10" for="radio-non-sale">Non-sale</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type">
+                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type" checked>
                                             <label class="form-check-label col-10" for="radio-sale">Sale</label>
                                         </div>
                                     </div>
@@ -98,7 +98,7 @@
                                     data-url-quotation="{% url 'QuotationListAPI' %}" hidden
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
-                            <input placeholder="Select beneficiary first" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <input placeholder="Select one" style="background-color: white" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
@@ -256,11 +256,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_confirm_return">
-                        <span class="nav-link-text">{% trans 'Confirm return' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
                         <span class="nav-link-text">{% trans 'Attachment' %}</span>
                     </a>
@@ -278,28 +273,29 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
-                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th style="width: 17%">{% trans 'Expense/Cost items' %}</th>
+                            <th style="width: 11%">{% trans 'Type' %}</th>
                             <th style="width: 7%">{% trans 'UoM' %}</th>
                             <th style="width: 6%">{% trans 'Quantity' %}</th>
-                            <th style="width: 14%">{% trans 'Unit price' %}</th>
-                            <th style="width: 10%">{% trans 'Tax' %}</th>
-                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th style="width: 13%">{% trans 'Unit price' %}</th>
+                            <th style="width: 8%">{% trans 'Tax' %}</th>
+                            <th style="width: 13%">{% trans 'Subtotal price' %}</th>
+                            <th style="width: 13%">{% trans 'After tax subtotal' %}</th>
+                            <th style="width: 9%">{% trans 'Document number' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
-                    <div class="offcanvas offcanvas-end w-70" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
+                    <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
                         <div class="offcanvas-header mt-10">
-                            <h5 id="offcanvasRightLabel">Select Detail Advance Payment</h5>
+                            <h5 id="offcanvasRightLabel"></h5>
                             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                         </div>
                         <div class="offcanvas-body">
                             <div id="wizard">
-                                <h1>Select Advance Payment</h1>
+                                <h1>Select Advance Payment items</h1>
                                 <div>
                                     <table id="advance_payment_list_datatable" class="table nowrap w-100"
                                            data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
@@ -308,19 +304,19 @@
                                         <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-5"></th>
                                                 <th class="w-15">{% trans 'Code' %}</th>
-                                                <th class="w-30">{% trans 'Name' %}</th>
+                                                <th class="w-20">{% trans 'Name' %}</th>
                                                 <th class="w-15">{% trans 'To Payment' %}</th>
-                                                <th class="w-15">{% trans 'Return value' %}</th>
-                                                <th class="w-15">{% trans 'Remain value' %}</th>
+                                                <th class="w-15">{% trans 'Returned' %}</th>
+                                                <th class="w-15">{% trans 'Remain' %}</th>
+                                                <th class="w-15">{% trans 'Available' %}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
                                     </table>
                                 </div>
-                                <h1>Second Items</h1>
+                                <h1>Select Expense items</h1>
                                 <div data-simplebar class="nicescroll-bar">
                                     <div data-simplebar class="expense-tables nicescroll-bar"></div>
                                 </div>
@@ -360,6 +356,7 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <h6 class="text-danger">Not loaded yet</h6>
                 </div>
                 <div class="row">
                     <div class="col-12">
@@ -383,14 +380,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane fade" id="tab_confirm_return">
-{#                <div class="row">#}
-{#                    <div class="form-group col-3">#}
-{#                        <label class="form-label">{% trans "" %}</label>#}
-{#                        <select class="form-select"></select>#}
-{#                    </div>#}
-{#                </div>#}
             </div>
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="row">

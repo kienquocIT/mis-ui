@@ -17,15 +17,10 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        render: (data, type, row, meta) => {
-                            return ''
-                        }
-                    },
-                    {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-soft-indigo badge-outline">` + row.code + `</span>`
+                            return `<span style="width: 100%;" class="badge badge-primary">` + row.code + `</span>`
                         }
                     },
                     {
@@ -43,7 +38,7 @@ $(document).ready(function () {
                                 return `<span class="badge badge-soft-danger">` + row.advance_payment_type + `</span>`
                             }
                             else if (row.advance_payment_type === 'To Supplier') {
-                                return `<span class="badge badge-soft-pumpkin">` + row.advance_payment_type + `</span>`
+                                return `<span class="badge badge-soft-orange">` + row.advance_payment_type + `</span>`
                             }
                         }
                     },

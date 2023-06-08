@@ -290,7 +290,16 @@
                                         <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
                                     </div>
                                     <div class="col-4">
-                                        <button type="button" class="btn btn-soft-primary">{% trans 'Customer Confirm' %}</button>
+                                        <div class="form-check mt-2">
+                                            <input
+                                                    type="checkbox" class="form-check-input disabled-but-edit"
+                                                    id="quotation-customer-confirm"
+                                            >
+                                            <label
+                                                    class="form-check-label disabled-label"
+                                                    for="quotation-customer-confirm"
+                                            >{% trans 'Customer Confirm' %}</label>
+                                        </div>
                                     </div>
                                     <div class="col-3">
                                     </div>
@@ -861,6 +870,9 @@
                         <input
                                 type="hidden"
                                 id="quotation-config-data"
+                                class="quotation-config"
+                                data-url="{% url "QuotationConfigDetailAPI" %}"
+                                data-method="GET"
                         >
                     </div>
                 </div>

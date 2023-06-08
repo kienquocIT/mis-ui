@@ -52,6 +52,8 @@
     {{ data.state_choices|json_script:"dataStateChoices" }}
     <input type="hidden" id="url-factory"
     data-page-detail="{% url 'OrderDeliveryDetail' 1 %}">
+    <input type="hidden" id="trans-factory"
+    data-return="{% trans 'Return' %}">
 {% endblock %}
 
 {% block jsFooter %}

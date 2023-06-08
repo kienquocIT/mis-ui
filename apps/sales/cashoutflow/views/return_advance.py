@@ -11,7 +11,7 @@ class ReturnAdvanceList(View):
         auth_require=True,
         template='return_advance/return_advance_list.html',
         breadcrumb='RETURN_ADVANCE_LIST_PAGE',
-        menu_active='menu_return_advance_list',
+        menu_active='id_menu_return_advance',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

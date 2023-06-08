@@ -17,7 +17,7 @@ class PromotionList(View):
         auth_require=True,
         template='masterdata/promotion/promotion_list.html',
         breadcrumb='PROMOTION_LIST_PAGE',
-        menu_active='menu_pricing',
+        menu_active='id_menu_promotion_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

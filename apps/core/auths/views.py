@@ -1,36 +1,32 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import logout
-from django.utils.translation import gettext_lazy as _
-from rest_framework import status
 
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .forms import AuthLoginForm
 from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg
 from apps.core.account.models import User
+
+from .forms import AuthLoginForm
 
 
 class AuthLogin(APIView):
     permission_classes = [AllowAny]
 
-    @mask_view(
-        auth_require=False,
-        template='auths/login.html',
-        is_notify_key=False,
-    )
-    def get(self, request):
+    @classmethod
+    def get(cls, request):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp_data = ServerAPI(user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp_data.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
-        return {}, status.HTTP_200_OK
+        return render(request, 'auths/login.html', {'is_notify_key': False})
 
     @mask_view(
         auth_require=False,
@@ -82,3 +78,14 @@ class SwitchCompanyCurrentView(APIView):
         if response.state:
             return response.result, status.HTTP_200_OK
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class SpaceChangeView(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        space_code = request.data.get('space_code')
+        if space_code:
+            request.user.ui_space_selected = space_code
+            request.user.save(update_fields=['ui_space_selected'])
+            return {}, status.HTTP_200_OK
+        return {'space_code': 'Space Code is required'}

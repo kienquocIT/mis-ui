@@ -35,7 +35,6 @@
         <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/font-awesome.min.css' %}">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <style>
@@ -225,6 +224,7 @@
             data-cancel="{% trans 'Cancel' %}"
             data-loading="{% trans 'Loading' %}"
             data-success="{% trans 'Successfully' %}"
+            data-are-you-sure="{% trans 'Are you sure about this change?' %}"
     >
     <!-- /Message translate base -->
 
@@ -340,6 +340,49 @@
     <!-- // Typing text JS -->
 
     <script>
+        function change_space() {
+            $('.space-item').click(function (event) {
+                event.preventDefault();
+                let urlData = $(this).closest('.dropdown-menu').attr('data-url');
+                let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
+                let methodData = $(this).closest('.dropdown-menu').attr('data-method');
+                let spaceCode = $(this).attr('data-space-code');
+                let state = confirm(
+                    `"${$(this).text().trim()}" - ${$('#base-trans-factory').attr('data-are-you-sure')}`
+                );
+                if (state === true) {
+                    $.fn.showLoading();
+                    $.fn.callAjax(
+                        urlData,
+                        methodData,
+                        {'space_code': spaceCode},
+                        true,
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && data['status'] === 200) {
+                                $.fn.notifyB({
+                                    'description': $('#base-trans-factory').attr('data-success')
+                                }, 'success');
+                                setTimeout(
+                                    () => {
+                                        window.location.href = urlRedirectData;
+                                    }, 1000,
+                                );
+                            }
+                            setTimeout(
+                                ()=>{$.fn.hideLoading();},
+                                1000
+                            );
+                        },
+                        (errs) => {
+                            $.fn.hideLoading();
+                        }
+                    )
+                }
+            })
+        }
+
         function active_menu(item) {
             if (item.length > 0) {
                 item.first().addClass('active')
@@ -378,6 +421,10 @@
         });
 
         $(document).ready(function () {
+            <!-- Space current -->
+            change_space();
+            <!-- ## Space current -->
+
             <!-- Loading table ajax -->
             $(document).find('table').each((idx, tbl) => {
                 if (!$(tbl).attr('load-data-hide-spinner')) {

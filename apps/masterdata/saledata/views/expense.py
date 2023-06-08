@@ -9,7 +9,7 @@ class ExpenseList(View):
         auth_require=True,
         template='masterdata/saledata/expense/expense_list.html',
         breadcrumb='EXPENSE_LIST_PAGE',
-        menu_active='menu_account_list',
+        menu_active='id_menu_expense_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -20,7 +20,7 @@ class ExpenseCreate(View):
         auth_require=True,
         template='masterdata/saledata/expense/expense_create.html',
         breadcrumb='EXPENSE_CREATE_PAGE',
-        menu_active='menu_account_list',
+        menu_active='id_menu_expense_list',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get()

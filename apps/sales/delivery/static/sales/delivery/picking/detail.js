@@ -6,6 +6,7 @@ class pickupUtil {
     prodList = [];
     subInfo = {}
     pickingData = {}
+    warehouseList = []
 
     set setProdList(data) {
         this.prodList = data
@@ -31,16 +32,23 @@ class pickupUtil {
         return this.pickingData
     }
 
+    set setWarehouseList(data) {
+        this.warehouseList = data
+    }
+
+    get getWarehouseList() {
+        return this.warehouseList
+    }
+
     // Picked quantity on change
     pickedQuantityUtil(val, idx) {
         let value = parseInt(val);
         let currentList = this.getProdList
         // Cập nhật giá trị của input
-        if (value && value <= currentList[idx]['remaining_quantity']){
+        if (value && value <= currentList[idx]['remaining_quantity']) {
             currentList[idx]['picked_quantity'] = value
             this.setProdList = currentList
-        }
-        else if (value > currentList[idx]['remaining_quantity'])// giá trị nhập vào lớn hơn số tồn kho
+        } else if (value > currentList[idx]['remaining_quantity'])// giá trị nhập vào lớn hơn số tồn kho
             $.fn.notifyPopup({
                 description: $('#trans-factory').attr('data-error-picked-quantity')
             }, 'failure')
@@ -48,7 +56,7 @@ class pickupUtil {
         // nhập đủ tự check all
         let countTemp = 0
         let sub = this.getSubInfo
-        for (let item of currentList){
+        for (let item of currentList) {
             countTemp += item.picked_quantity
         }
         if (countTemp === sub.remaining_quantity)
@@ -57,13 +65,13 @@ class pickupUtil {
             $('#idxDoneAll').prop('checked', false)
     }
 
-    checkAllHandle(){
+    checkAllHandle() {
         let _this = this
-        $('#idxDoneAll').off().on('change', function(){
+        $('#idxDoneAll').off().on('change', function () {
             let currentList = _this.getProdList
             let $table = $('#dtbPickingProductList')
             // Cập nhật lại giá trị trên mỗi dòng
-            for (let [idx, item] of currentList.entries()){
+            for (let [idx, item] of currentList.entries()) {
                 if (this.checked)
                     currentList[idx]['picked_quantity'] = currentList[idx]['remaining_quantity']
                 else
@@ -74,22 +82,50 @@ class pickupUtil {
             _this.setProdList = currentList
         })
     }
+
+    getWarehouseStock() {
+        const _this = this
+        const warehouseID = $('#inputWareHouse').val();
+        let prodListID = [];
+        for (let item of this.getProdList) {
+            prodListID.push(item?.product_data?.id)
+        }
+        prodListID.join(",")
+        $.fn.callAjax(
+            $('#url-factory').attr('data-warehouse-stock'),
+            'GET',
+            {'product__in': prodListID, 'warehouse': warehouseID}
+        ).then(
+            (req) => {
+                let res = $.fn.switcherResp(req);
+                res = res.warehouse_stock;
+                let new_revert = {}
+                for (let item of res) {
+                    new_revert[item.product.id.toString()] = item.stock
+                }
+                _this.setWarehouseList = new_revert
+
+            });
+    }
 }
 
-function getWarehouse(){
+function getWarehouse(pickupInit) {
     const $elmWarehouse = $('#inputWareHouse')
     let defaultData = $elmWarehouse.attr('data-onload');
-    if (!defaultData){
+    if (!defaultData) {
         $.fn.callAjax($elmWarehouse.attr('data-url'), 'get')
             .then((req) => {
                 let res = $.fn.switcherResp(req);
-                if (res.hasOwnProperty('warehouse_list')){
+                if (res.hasOwnProperty('warehouse_list')) {
                     let firstData = res.warehouse_list[0];
                     $elmWarehouse.attr('data-onload', JSON.stringify({
                         'id': firstData.id,
                         'title': firstData.title
                     }));
                     initSelectBox($elmWarehouse);
+                    $elmWarehouse.on("select2:select", function (e) {
+                        pickupInit.getWarehouseStock()
+                    });
                 }
             })
     }
@@ -103,7 +139,7 @@ $(function () {
     loadDatePicker()
 
     // load default warehouse
-    getWarehouse()
+    getWarehouse(pickupInit)
 
     // call data when page loaded
     $.fn.callAjax(
@@ -111,15 +147,14 @@ $(function () {
         'GET',
         {},
         true,
-    ).then(
-        (resp) => {
+    ).then( (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && data.hasOwnProperty('picking_detail')
                 && data.picking_detail.hasOwnProperty('sub')
                 && data.picking_detail.sub.hasOwnProperty('products')
             ) {
                 // load sale order
-                console.log('picking_detail: ', data['picking_detail']);
+                // console.log('picking_detail: ', data['picking_detail']);
                 pickupInit.setPicking = data['picking_detail']
                 data = data.picking_detail
                 $('#inputSaleOrder').attr('value', data?.['sale_order_data']?.['id']).val(
@@ -166,16 +201,43 @@ $(function () {
                     $('#inputRemarks').val(remarks);
                 }
                 const toLocation = data?.to_location
-                if(toLocation) $('#inputToLocation').val(toLocation)
+                if (toLocation) $('#inputToLocation').val(toLocation)
 
                 // load product list
                 pickupInit.setSubInfo = data?.sub
+
+                pickupInit.getWarehouseStock(data)
                 loadProductList(
                     data?.sub['products']
-                );
+                )
             }
         }
     )
+
+    function getStockByProdID(prod, dropdownElm){
+        const prodID = prod.product_data.id
+        const $elmTrans = $('#trans-factory')
+        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
+        $.fn.callAjax(
+            $('#url-factory').attr('data-warehouse-stock'),
+            'GET',
+            {'product': prodID}
+        ).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            const datas = data.warehouse_stock;
+            let prodTotal = 0
+            let prodName = []
+            for (let data of datas){
+                if (data.stock > 0){
+                    prodTotal += data.stock
+                    prodName.push(data.warehouse.title)
+                }
+            }
+            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName.join(', ')}</p></div>`;
+            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-stock')}</i></h6><p>${prodTotal}</p></div>`;
+            $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent)
+        });
+    }
 
     // init product list by DataTable
     function loadProductList(data) {
@@ -193,7 +255,15 @@ $(function () {
                 },
                 {
                     render: (data, type, row, meta) => {
-                        return row?.['product_data']?.['title'];
+                        return `<div class="dropdown d-inline-block mr-2 text-cursor">
+                                <i class="fas fa-info-circle text-blue"
+                                   data-bs-toggle="dropdown"
+                                   data-dropdown-animation
+                                   aria-haspopup="true"
+                                   aria-expanded="false" data-product-id="${row?.product_data?.id}"
+                                   ></i>
+                                <div class="dropdown-menu w-210p mt-2"></div>
+                            </div> ${row?.['product_data']?.['title']}`
                     }
                 },
                 {
@@ -229,25 +299,39 @@ $(function () {
                     }
                 },
             ],
+            rowCallback(row, data, index) {
+                $(`.dropdown > i`, row).on('show.bs.dropdown', function () {
+                    getStockByProdID(data, $(this))
+                })
+            },
             drawCallback: function () {
-                var table = $(this).DataTable();
-                var data = table.rows().data();
+                const table = $(this).DataTable();
+                let data = table.rows().data();
 
                 // loop for all row and init event on change value of picked quantity
                 data.each(function (rowData, idx) {
                     // Đối với mỗi hàng, bạn có thể lấy được index của nó
-                    $(`#prod_row-${idx}`).off().on('blur', function(e){
-                        if (this.value){
-                            // format số âm, nhiều số 0. Ex. 0001, số thập phân
-                            let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace( /\.\d+$/, '');
+                    $(`#prod_row-${idx}`).off().on('blur', function (e) {
+                        if (this.value) {
+                            // format số âm, nhiều số 0. Ex. 0001, số thập phân.
+                            let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
                             this.value = value
-                            pickupInit.pickedQuantityUtil(value, idx)
+                            const listCompare = pickupInit.getWarehouseList
+                            if (listCompare.hasOwnProperty(rowData.product_data.id) && listCompare[rowData.product_data.id] > 0){
+                                pickupInit.pickedQuantityUtil(value, idx);
+                                $(this).removeClass('is-invalid cl-red')
+                            }
+                            else {
+                                $.fn.notifyPopup({description: $('#trans-factory').attr('data-outstock')}, 'failure');
+                                $(this).addClass('is-invalid cl-red')
+                                return false
+                            }
                         }
                     })
                 });
 
                 // xử lý event check all
-                pickupInit.checkAllHandle()
+                pickupInit.checkAllHandle();
             }
         });
     }
@@ -263,19 +347,19 @@ $(function () {
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',
     })
-    $form.on('submit', function(e){
+    $form.on('submit', function (e) {
         e.preventDefault();
         let _form = new SetupFormSubmit($form);
         let csr = $("[name=csrfmiddlewaretoken]").val();
         const $transElm = $('#trans-factory')
 
-        if (!_form.dataForm?.warehouse_id){
+        if (!_form.dataForm?.warehouse_id) {
             $.fn.notifyPopup({description: $transElm.attr('data-error-warehouse')}, 'failure')
             return false
         }
         const pickingData = pickupInit.getPicking
         delete pickingData['estimated_delivery_date']
-        if (_form.dataForm?.estimated_delivery_date){
+        if (_form.dataForm?.estimated_delivery_date) {
             pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
@@ -284,15 +368,26 @@ $(function () {
         pickingData['to_location'] = _form.dataForm['to_location']
 
         let prodSub = []
-        for (prod of pickupInit.getProdList){
-            if (prod.picked_quantity > 0)
-                prodSub.push({
-                    'product_id': prod.product_data.id,
-                    'done': prod.picked_quantity
-                })
+        const warehouseStock = pickupInit.getWarehouseList
+        for (prod of pickupInit.getProdList) {
+            if (warehouseStock.hasOwnProperty(prod.product_data.id)) {
+                if (prod.picked_quantity > 0){
+                    let temp = {
+                        'product_id': prod.product_data.id,
+                        'done': prod.picked_quantity,
+                        'delivery_data': {}
+                    }
+                    temp['delivery_data'][_form.dataForm['warehouse_id']] = prod.picked_quantity
+                    prodSub.push(temp)
+                }
+            }
+            else{
+                $.fn.notifyPopup({description: prod.product_data.title + $transElm.attr('data-prod-outstock')}, 'failure')
+                return false
+            }
         }
         pickingData.products = prodSub
-        if (!prodSub || !prodSub.length){
+        if (!prodSub || !prodSub.length) {
             $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
             return false
         }

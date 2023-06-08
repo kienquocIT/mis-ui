@@ -437,7 +437,8 @@ $(document).ready(function () {
 
                 loadCountries('country_mapped');
 
-                $('#credit-limit-id').val(data.credit_limit);
+                $('#credit-limit-id').attr('value', data.credit_limit);
+                $.fn.initMaskMoney2();
 
                 $('#account-type-id').prop('disabled', true);
                 $('#account-manager-id').prop('disabled', true);
@@ -1001,7 +1002,8 @@ $(document).ready(function () {
             frm.dataForm['parent_account'] = null;
         }
 
-        if (frm.dataForm['credit_limit'] === '') {
+        frm.dataForm['credit_limit'] = $('#credit-limit-id').attr('value');
+        if (frm.dataForm['credit_limit'] === 'NaN') {
             frm.dataForm['credit_limit'] = null;
         }
 

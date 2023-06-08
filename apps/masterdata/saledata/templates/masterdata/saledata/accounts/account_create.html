@@ -34,6 +34,13 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <select id="parent-account-id" name="parent_account" class="select2" data-method="GET">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+    </select>
     <form id="form-create-account" data-method="POST" data-url="{% url "AccountCreateAPI" %}"
           data-url-redirect="{% url "AccountList" %}">
         {% csrf_token %}
@@ -337,21 +344,21 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="label-field form-label required">{% trans "Province/City" %}</label>
-                                <select class="form-select" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET" aria-label=".form-select-sm">
+                                <select class="form-select" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="label-field form-label required">{% trans "District" %}</label>
-                                <select class="form-select" id="shipping-district" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
+                                <select class="form-select" id="shipping-district" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="label-field form-label">{% trans "Ward" %}</label>
-                                <select class="form-select" id="shipping-ward" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
+                                <select class="form-select" id="shipping-ward" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
                                 </select>
                             </div>
                         </div>

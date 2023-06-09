@@ -13,7 +13,7 @@ class ContactMasterDataList(View):
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_contact_list.html',
         breadcrumb='CONTACT_MASTER_DATA_LIST_PAGE',
-        menu_active='menu_contact_list',
+        menu_active='id_menu_master_data_contact',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -172,7 +172,7 @@ class ContactList(View):
         auth_require=True,
         template='masterdata/saledata/accounts/contact_list.html',
         breadcrumb='CONTACT_LIST_PAGE',
-        menu_active='menu_contact_list',
+        menu_active='id_menu_contact',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -310,7 +310,7 @@ class AccountMasterDataList(View):
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_account_list.html',
         breadcrumb='ACCOUNT_MASTER_DATA_LIST_PAGE',
-        menu_active='menu_contact_list',
+        menu_active='id_menu_master_data_account',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -542,7 +542,7 @@ class AccountList(View):
         auth_require=True,
         template='masterdata/saledata/accounts/account_list.html',
         breadcrumb='ACCOUNT_LIST_PAGE',
-        menu_active='menu_account_list',
+        menu_active='id_menu_account',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

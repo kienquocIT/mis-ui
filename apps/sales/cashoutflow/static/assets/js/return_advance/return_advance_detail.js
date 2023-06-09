@@ -131,5 +131,26 @@ $(function () {
         }
 
         loadDetail(id, frmDetail);
+
+        frmDetail.submit(function (event) {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+
+            frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
+            $.fn.callAjax(frm.getUrlDetail(id), frm.dataMethod, frm.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    }
+                )
+        })
     })
 })

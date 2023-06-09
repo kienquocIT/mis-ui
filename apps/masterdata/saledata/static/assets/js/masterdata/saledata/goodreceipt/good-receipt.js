@@ -1,18 +1,11 @@
 
 class lineDetailUtil{
     datalist = [];
-    currentIdx = 0;
     set setDatalist(data){
         this.datalist = data
     };
     get getDatalist(){
         return this.datalist;
-    }
-    set setcurrentIdx(crIdx){
-        this.currentIdx = crIdx
-    }
-    get getcurrentIdx(){
-        return this.currentIdx
     }
 
     /**
@@ -298,7 +291,9 @@ class lineDetailUtil{
                 $.fn.initMaskMoney2()
                 $('.actions-btn a', row).off().on('click', function(e){
                     $(row).closest('.table').DataTable().rows(row).remove().draw(false);
-                    _this.setcurrentIdx = _this.getcurrentIdx - 1;
+                    let changeData = _this.getDatalist
+                    changeData.splice(index, 1)
+                    _this.setDatalist = changeData
                     _this.handleTotal()
                 })
             }
@@ -333,10 +328,10 @@ class lineDetailUtil{
                 'subtotal_price': null,
             }
             let temp = _this.getDatalist
-            temp[_this.getcurrentIdx] = newData
+            let idx = temp.length
+            temp[idx] = newData
             _this.setDatalist = temp
             $tableElm.DataTable().row.add(newData).draw()
-            _this.setcurrentIdx = _this.getcurrentIdx + 1
         });
     };
 

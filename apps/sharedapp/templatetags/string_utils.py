@@ -21,4 +21,35 @@ def random_int(to_number: int) -> int:
     return random.randint(1, to_number)
 
 
+@register.simple_tag
+def class_name_animal():
+    return random.choice(
+        (
+            'fa-cat',
+            'fa-crow',
+            'fa-spider',
+            'fa-paw',
+            'fa-otter',
+            'fa-kiwi-bird',
+            'fa-horse-head',
+            'fa-horse',
+            'fa-hippo',
+            'fa-frog',
+            'fa-fish',
+            'fa-dragon',
+            'fa-dove',
+            'fa-dog',
+            'fa-bugs',
+            'fa-worm',
+            'fa-shrimp',
+            'fa-shield-dog',
+            'fa-shield-cat',
+            'fa-mosquitto',
+            'fa-locust',
+            'fa-fish-fins',
+            'fa-cow',
+        )
+    )
+
+
 register.filter('shorten_name', shorten_name)

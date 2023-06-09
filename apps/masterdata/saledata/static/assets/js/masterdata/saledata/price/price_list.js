@@ -37,6 +37,7 @@ $(document).ready(function () {
                     data.price_list.map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                     })
+
                     return data['price_list'];
                 }
                 return [];

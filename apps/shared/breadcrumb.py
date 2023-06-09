@@ -130,7 +130,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
 
     # Good receipt
-    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'PromotionList')
+    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'GoodReceiptList')
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
     # Transition Data Config
@@ -140,7 +140,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
     DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery detail'))
 
-# Return Advance
+    # Return Advance
     RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
     RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
     RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -359,13 +359,12 @@ class BreadcrumbView:
     GOOD_RECEIPT_CREATE_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_CREATE_PAGE]
     GOOD_RECEIPT_DETAIL_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_DETAIL_PAGE]
 
-# Return Advance
+    # Return Advance
     RETURN_ADVANCE_LIST_PAGE = [
         BreadcrumbItem.RETURN_ADVANCE_LIST_PAGE
     ]
     RETURN_ADVANCE_CREATE_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_CREATE_PAGE]
     RETURN_ADVANCE_DETAIL_PAGE = RETURN_ADVANCE_LIST_PAGE + [BreadcrumbItem.RETURN_ADVANCE_DETAIL_PAGE]
-
 
     # Delivery
     ORDER_PICKING_LIST_PAGE = [

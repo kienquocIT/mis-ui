@@ -29,7 +29,7 @@ from apps.masterdata.saledata.views.price import (
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
     ShippingDetailAPI, ShippingCheckListAPI
 from apps.masterdata.saledata.views.warehouse import (
-    WareHouseList, WareHouseListAPI, WareHouseDetailAPI,
+    WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI
 )
 
 urlpatterns = [
@@ -164,6 +164,7 @@ urlpatterns += [
     path('warehouses', WareHouseList.as_view(), name='WareHouseList'),
     path('warehouses/api', WareHouseListAPI.as_view(), name='WareHouseListAPI'),
     path('warehouse/api/<str:pk>', WareHouseDetailAPI.as_view(), name='WareHouseDetailAPI'),
+    path('warehouse/product/api', WarehouseProductAPI.as_view(), name='WarehouseProductAPI'),
 ]
 # // WareHouse
 # Good receipt
@@ -172,6 +173,6 @@ urlpatterns += [
     path('good-receipt/api', GoodReceiptListAPI.as_view(), name='GoodReceiptListAPI'),
     path('good-receipt/create', GoodReceiptCreate.as_view(), name='GoodReceiptCreate'),
     path('good-receipt/detail/<str:pk>', GoodReceiptDetail.as_view(), name='GoodReceiptDetail'),
-    path('good-receipt/detail/api/<str:pk>', GoodReceiptDetailAPI.as_view(), name='GoodReceiptDetailAPI'),
+    path('good-receipt/detail/api/<str:pk>', GoodReceiptDetailAPI.as_view(), name='GoodReceiptDetailAPI')
 ]
 # // WareHouse

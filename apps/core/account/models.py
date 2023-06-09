@@ -77,6 +77,8 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
 
 class User(AuthUser):
+    ui_space_selected = models.CharField(max_length=100, null=True, default=None, help_text='Space code of user')
+
     tenant_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
     company_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
     space_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')

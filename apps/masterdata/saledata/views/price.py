@@ -32,7 +32,7 @@ class PriceMasterDataList(View):
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_price.html',
         breadcrumb='CONTACT_LIST_PAGE',
-        menu_active='menu_contact_list',
+        menu_active='id_menu_master_data_price',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -320,7 +320,7 @@ class PriceList(View):
         auth_require=True,
         template='masterdata/saledata/price/price_list.html',
         breadcrumb='PRICE_LIST_PAGE',
-        menu_active='menu_contact_list',
+        menu_active='id_menu_pricing_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

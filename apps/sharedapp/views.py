@@ -11,7 +11,6 @@ class DefaultDataView(View):
     )
     def get(self, request, *args, **kwargs):
         data_list = ServerAPI(user=request.user, url='private-system/default-data').get()
-        print(data_list.result)
         result = []
         for plan, plan_data in data_list.result.items():
             for feature, feature_data in plan_data.items():
@@ -34,5 +33,4 @@ class DefaultDataView(View):
                         'data': data_tmp,
                     }
                 )
-        print('data_tmp: ', result)
         return {'default_data': result}, status.HTTP_200_OK

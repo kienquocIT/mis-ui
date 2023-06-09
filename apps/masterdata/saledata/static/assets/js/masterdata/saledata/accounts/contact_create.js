@@ -168,6 +168,8 @@ $(document).ready(function () {
             delete frm.dataForm['mobile'];
         }
 
+        frm.dataForm['system_status'] = 1; // save, not draft
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

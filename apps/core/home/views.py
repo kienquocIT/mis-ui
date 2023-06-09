@@ -17,7 +17,8 @@ class HomeView(View):
     @mask_view(
         auth_require=True,
         template='core/home/home.html',
-        breadcrumb='HOME_PAGE'
+        breadcrumb='HOME_PAGE',
+        menu_active='id_menu_home_page',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

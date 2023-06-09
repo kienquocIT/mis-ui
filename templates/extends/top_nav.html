@@ -8,71 +8,49 @@
                     class="icon"
             ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 
+            <!-- Space -->
+            <div class="btn-group mr-3" id="menu-tenant">
+                <button
+                        type="button" class="btn btn-outline-light dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        data-dropdown-animation aria-haspopup="true" aria-expanded="false"
+                >
+                    {% if base.space_current_detail.name %}
+                        {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
+                    {% else %}
+                        _
+                    {% endif %}
+                </button>
+                <div
+                        class="dropdown-menu" data-url="{% url 'SpaceChangeView' %}"
+                        data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
+                >
+                    {% csrf_token %}
+                    {% for item in base.space_list %}
+                        {% if item.child|length > 0 %}
+                            <h6 class="dropdown-header">{{ item.name }}</h6>
+                            {% for item_child in item.child %}
+                                <a
+                                        class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                        data-space-code="{{ item_child.code }}"
+                                        href="#"
+                                >
+                                    {{ item_child.icon|safe }}
+                                    <span class="ml-1">{{ item_child.name }}</span>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <a
+                                    class="dropdown-item  {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                    href="#"
+                            >{{ item.name }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- // Space -->
+
             <!-- Search -->
-            {% random_int 14 as num_random %}
-            {% if num_random == 1 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-cat"></i>
-                </a>
-            {% elif num_random == 2 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-crow" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 3 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-spider" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 4 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-paw" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 5 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-otter" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 6 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-kiwi-bird" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 7 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-horse-head" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 8 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-horse" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 9 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-hippo" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 10 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-frog" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 11 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-fish" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 12 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-dragon" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 13 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-dove" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 14 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-dog" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% endif %}
-            <select class="form-select" style="margin-left: 10px;margin-right: 10px;" id="menu-tenant">
-                <option selected>Select...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
             <form class="dropdown navbar-search">
                 <div
                         class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation
@@ -85,7 +63,8 @@
 							<span class="input-affix-wrapper input-search affix-border">
 								<input
                                         type="text" class="form-control  bg-transparent"
-                                        data-navbar-search-close="false" placeholder="Search..." aria-label="Search"
+                                        data-navbar-search-close="false" placeholder="{% trans 'Search' %}..."
+                                        aria-label="Search"
                                 >
 								<span class="input-suffix"><span>/</span>
 									<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
@@ -118,104 +97,8 @@
                         </div>
                     </div>
                     <!--/ Mobile Search -->
-                    <div data-simplebar class="dropdown-body p-2">
-                        <h6 class="dropdown-header">Recent Search
-                        </h6>
-                        <div class="dropdown-item bg-transparent">
-                            <a href="#" class="badge badge-pill badge-soft-secondary">Grunt</a>
-                            <a href="#" class="badge badge-pill badge-soft-secondary">Node JS</a>
-                            <a href="#" class="badge badge-pill badge-soft-secondary">SCSS</a>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Help
-                        </h6>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-											<span class="initial-wrap">
-												<span class="svg-icon">
-													<svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="icon icon-tabler icon-tabler-corner-down-right"
-                                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                    >
-														<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-														<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-													 </svg>
-												</span>
-											</span>
-                                    </div>
-                                </div>
-                                <div class="media-body"></div>
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-											<span class="initial-wrap">
-												<span class="svg-icon">
-													<svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="icon icon-tabler icon-tabler-corner-down-right"
-                                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                    >
-														<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-														<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-													 </svg>
-												</span>
-											</span>
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    View detail documentation
-                                </div>
-                            </div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Users
-                        </h6>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-rounded">
-                                        <img src="" alt="user" class="avatar-img">
-                                    </div>
-                                </div>
-                                <div class="media-body"></div>
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-soft-primary avatar-rounded">
-                                        <span class="initial-wrap">J</span>
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    Joe Jackson
-                                </div>
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-rounded">
-                                        <img src="" alt="user" class="avatar-img">
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    Maria Richard
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="dropdown-footer d-xl-flex d-none"><a href="#"><u>Search all</u></a></div>
+                    <div data-simplebar class="dropdown-body p-2"></div>
+                    <div class="dropdown-footer d-xl-flex d-none"><a href="#"><u></u></a></div>
                 </div>
             </form>
             <!-- /Search -->
@@ -226,10 +109,20 @@
         <div class="nav-end-wrap">
             <ul class="navbar-nav flex-row">
                 <li class="nav-item">
+                    <a
+                            href="{% url 'DefaultDataView' %}"
+                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                    >
+                         <span class="icon">
+                            <i class="fas {% class_name_animal %}"></i>
+                         </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <div class="dropdown dropdown-notifications">
                         <a
                                 href="#"
-                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret"
+                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret mr-1"
                                 data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true"
                                 aria-expanded="false"
                         >
@@ -244,41 +137,11 @@
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end p-0">
-                            <h6 class="dropdown-header px-4 fs-6">{% trans 'Notifications' %}
-                                <a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover">
-                                    <span class="icon">
-                                        <span class="feather-icon">
-                                            <i data-feather="settings"></i>
-                                        </span>
-                                    </span>
-                                </a>
-                            </h6>
-                            <div data-simplebar class="dropdown-body  p-2">
-                                <a href="javascript:void(0);" class="dropdown-item">
-                                    <div class="media">
-                                        <div class="media-head">
-                                            <div class="avatar avatar-rounded avatar-sm">
-                                                <img
-                                                        src="{% static 'assets/images/avatar/avatar.jpg' %}" alt="user"
-                                                        class="avatar-img"
-                                                >
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <div>
-                                                <div class="notifications-text">Morgan Freeman accepted your
-                                                    invitation to join the team
-                                                </div>
-                                                <div class="notifications-info">
-                                                    <span class="badge badge-soft-success">Collaboration</span>
-                                                    <div class="notifications-time">Today, 10:14 PM</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
+                            <h6 class="dropdown-header px-4 fs-6">{% trans 'Notifications' %}</h6>
+                            <div data-simplebar class="dropdown-body p-2">
                             </div>
-                            <div class="dropdown-footer"><a href="#"><u>View all notifications</u></a></div>
+                            <div class="dropdown-footer"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
+                            </div>
                         </div>
                     </div>
                 </li>

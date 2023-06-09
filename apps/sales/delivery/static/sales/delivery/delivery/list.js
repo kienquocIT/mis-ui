@@ -2,7 +2,10 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
-    tbl.DataTableDefault({
+    tbl.DataTable({
+        searching: true,
+        ordering: false,
+        paginate: false,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -46,12 +49,6 @@ $(document).ready(function () {
                     return html
                 },
             }, {
-                render: (data, type, row) => {
-                    return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-primary">{2}</span></a>`.format_by_idx(
-                        frm.getUrlDetail(row.id), $.fn.getValueOrEmpty(row, 'title'), $.fn.getValueOrEmpty(row, 'code'),
-                    )
-                },
-            }, {
                 data: 'sale_order_data',
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
@@ -77,18 +74,35 @@ $(document).ready(function () {
                     return data ? data : "_";
                 },
             }, {
+                data: 'actual_delivery_date',
+                render: (data, type, row) => {
+                    return data ? data : "_";
+                },
+            }, {
                 data: 'state',
                 render: (data, type, row, meta) => {
-                    let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
-                    switch (data) {
-                        case 0:
-                            templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
-                            break
-                        case 1:
-                            templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
-                            break
+                    const stateMap = {
+                        0: 'info',
+                        1: 'warning',
+                        2: 'success',
+                        3: 'primary'
                     }
-                    return templateEle.format_by_idx(letStateChoices?.[data]);
+                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
+                }
+            },
+            {
+                class:'text-center',
+                render: (data, type, row, meta) => {
+                    const isTxt = $('#trans-factory').attr('data-return')
+                    return `<div class="dropdown pointer mr-2">
+                                <i class="fa-regular fa-window-restore"
+                                   data-bs-toggle="dropdown"
+                                   data-dropdown-animation
+                                   aria-haspopup="true"
+                                   aria-expanded="false"></i>
+                                <div class="dropdown-menu w-210p mt-2">
+                                <a class="dropdown-item" href="#">${isTxt}</a></div>
+                            </div>`;
                 }
             }
         ]

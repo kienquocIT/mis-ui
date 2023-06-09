@@ -165,7 +165,15 @@ class OrderDeliveryDetail(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        return {'pk': pk, 'state_choices': {key: value for key, value in DELIVERY_STATE}}, status.HTTP_200_OK
+        config = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
+        res_config = {}
+        if config.state:
+            res_config = config.result
+        return {
+                   'pk': pk,
+                   'state_choices': {key: value for key, value in DELIVERY_STATE},
+                   'config': res_config,
+               }, status.HTTP_200_OK
 
 
 class OrderDeliveryDetailAPI(APIView):
@@ -174,10 +182,10 @@ class OrderDeliveryDetailAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).get()
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk)).get()
         if resp.state:
-            return {'picking_detail': resp.result}, status.HTTP_200_OK
+            return resp.result, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -188,10 +196,9 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk)).put(request.data)
         if resp.state:
             return resp.result, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-

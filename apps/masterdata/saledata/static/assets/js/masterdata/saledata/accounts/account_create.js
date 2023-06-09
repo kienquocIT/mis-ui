@@ -2,9 +2,9 @@ $(document).ready(function () {
     let shipping_address_id_dict = [];
     let billing_address_id_dict = [];
 
-    $('#shipping-city').select2();
-    $('#shipping-district').select2();
-    $('#shipping-ward').select2();
+    // $('#shipping-city').select2();
+    // $('#shipping-district').select2();
+    // $('#shipping-ward').select2();
 
     // load Cities SelectBox
     function loadCities() {
@@ -390,7 +390,6 @@ $(document).ready(function () {
         )
     }
 
-
     function loadTableContact() {
         let dtb = $('#datatable-add-contact');
         let frm = new SetupFormSubmit(dtb);
@@ -715,6 +714,8 @@ $(document).ready(function () {
         frm.dataForm['billing_address'] = billing_address_list;
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
+
+        frm.dataForm['system_status'] = 1; // save, not draft
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

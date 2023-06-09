@@ -145,6 +145,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
     RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+# Opportunity Detail
+    OPPORTUNITY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -378,4 +381,7 @@ class BreadcrumbView:
     DELIVERY_CONFIG = [
         BreadcrumbItem.DELIVERY_CONFIG_PAGE
     ]
+
+    # Opportunity detail
+    OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.OPPORTUNITY_DETAIL_PAGE]
 

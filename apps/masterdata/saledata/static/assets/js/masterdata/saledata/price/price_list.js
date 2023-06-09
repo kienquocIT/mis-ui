@@ -30,7 +30,15 @@ $(document).ready(function () {
             type: tbl.attr('data-method'),
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('price_list')) return data['price_list'];
+                if (data && data.hasOwnProperty('price_list')) {
+                    let ele = $('#select-box-price-list');
+                    ele.html('');
+                    ele.append(`<option></option>`)
+                    data.price_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                    })
+                    return data['price_list'];
+                }
                 return [];
             },
         },
@@ -184,6 +192,8 @@ $(document).ready(function () {
             }
         })
     })
+
+    // function load
 
     /* Date range picker with times*/
     $('#valid_time').daterangepicker({

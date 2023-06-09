@@ -225,3 +225,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
 
+    # Opportunity detail
+    OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
+
+

@@ -14,7 +14,7 @@
             <span class="icon">
                 <span class="feather-icon">
                     <i
-                        data-feather="plus">
+                            data-feather="plus">
                     </i>
                 </span>
                 <span class="font-3 ml-1">
@@ -26,7 +26,7 @@
 
 {% block pageContent %}
     <input type="hidden" id="opportunity-link"
-           data-link-update=""
+           data-link-update="{% url 'OpportunityDetail' pk=0 %}"
            data-link-list="{% url 'OpportunityList' %}"
     >
     <div class="row">
@@ -79,25 +79,25 @@
                 </div>
                 <div class="modal-body">
                     <form
-                        data-url="{% url 'OpportunityListAPI' %}"
-                        data-url-redirect="{% url 'OpportunityList' %}"
-                        data-method="POST"
-                        id="form-create_opportunity"
-                        method="post"
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-url-redirect="{% url 'OpportunityList' %}"
+                            data-method="POST"
+                            id="form-create_opportunity"
+                            method="post"
                     >
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label" for="exampleDropdownFormEmail1">
+                            <label class="form-label">
                                 {% trans 'Select Customer' %}
                                 <sup class="field-required">(*)</sup>
                             </label>
                             <select
-                                class="form-select"
-                                id="select-box-opportunity-create-customer"
-                                data-url="{% url "AccountListAPI" %}"
-                                data-method="GET"
-                                name="customer"
-                                required
+                                    class="form-select"
+                                    id="select-box-opportunity-create-customer"
+                                    data-url="{% url "AccountListAPI" %}"
+                                    data-method="GET"
+                                    name="customer"
+                                    required
                             ></select>
                         </div>
                         <div class="mb-3">
@@ -110,7 +110,19 @@
                                     placeholder="" name="title" required
                             >
                         </div>
-                        <button type="submit" class="btn btn-primary" id="btn-create_opportunity">{% trans 'Save' %}</button>
+                        <div class="mb-3 form-group">
+                            <label class="form-label">{% trans "Product Category" %}</label>
+                            <select class="form-control select2"
+                                    name="product_category"
+                                    id="select-box-product-category"
+                                    multiple
+                                    data-method="GET"
+                                    data-url="{% url 'ProductCategoryListAPI' %}"
+                            >
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                                id="btn-create_opportunity">{% trans 'Save' %}</button>
                     </form>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 $(function () {
     $(document).ready(function () {
         let boxCustomer = $('#select-box-opportunity-create-customer');
+        let boxProductCategory = $('#select-box-product-category');
 
         let $table = $('#table_opportunity_list')
         let listURL = $table.attr('data-url')
@@ -23,14 +24,14 @@ $(function () {
                 url: listURL,
                 type: "GET",
                 dataSrc: 'data.opportunity_list',
-                data:function(params){
+                data: function (params) {
                     let txtSearch = $('#search_input').val();
                     if (txtSearch.length > 0)
                         params['search'] = txtSearch
                     params['is_ajax'] = true;
                     return params
                 },
-                error: function(jqXHR) {
+                error: function (jqXHR) {
                     $table.find('.dataTables_empty').text(jqXHR.responseJSON.data.errors)
                 }
             },
@@ -72,15 +73,15 @@ $(function () {
                     render: (data, type, row) => {
                         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
                         return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
-                            +`data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
-                            +`data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
-                            +`<i data-feather="trash-2"></i></span></span></a></div>`;
+                            + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
+                            + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
+                            + `<i data-feather="trash-2"></i></span></span></a></div>`;
                     },
                 }
             ],
         });
 
-        $('#search_input').on('keyup', function(evt){
+        $('#search_input').on('keyup', function (evt) {
             const keycode = evt.which;
             if (keycode === 13) //enter to search
                 _dataTable.ajax.reload()
@@ -140,7 +141,26 @@ $(function () {
                 )
         });
 
+        function loadProductCategory() {
+            let ele = boxProductCategory;
+            let url = ele.attr('data-url');
+            let method = ele.attr('data-method');
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('product_category_list') && Array.isArray(data.product_category_list)) {
+                            data.product_category_list.map(function (item) {
+                                boxProductCategory.append(`<option value="${item.id}">
+                                                            <span>${item.title}</span>
+                                                        </option>`)
+                            })
+                        }
+                    }
+                }
+            )
+        }
 
-
+        loadProductCategory();
     });
 });

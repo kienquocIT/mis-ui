@@ -289,7 +289,7 @@ $(document).ready(function () {
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
             let sale_code_id = $(this).attr('data-value');
-            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_order=' + sale_code_id, 'GET').then((resp) => {
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {

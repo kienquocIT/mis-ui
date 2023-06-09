@@ -13,6 +13,10 @@ $(document).ready(function () {
     let quotation_selected_list = [];
     let load_default = 0;
     let current_value_converted_from_ap = '';
+    let payment_cost_items_filtered = [];
+    let oppcode_selected = [];
+    let expense_type_id_selected = [];
+
 
     function loadSaleOrderExpense(filter_sale_order) {
         $('#tab_plan_datatable').remove();
@@ -34,11 +38,6 @@ $(document).ready(function () {
                 },
             },
             columns: [
-                {
-                    render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
                 {
                     data: 'expense_title',
                     className: 'wrap-text',
@@ -122,11 +121,6 @@ $(document).ready(function () {
                 },
             },
             columns: [
-                {
-                    render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
                 {
                     data: 'expense_title',
                     className: 'wrap-text',
@@ -316,6 +310,18 @@ $(document).ready(function () {
         ele.append(`</optgroup>`);
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
+            let sale_code_id = $(this).attr('data-value');
+            oppcode_selected = $(this).attr('title').split(': ')[0];
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                        payment_cost_items_filtered = data.payment_cost_items_list;
+                        console.log(payment_cost_items_filtered)
+                    }
+                }
+            })
+
             $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
             $('#sale-code-select-box option:selected').attr('selected', false);
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
@@ -946,7 +952,7 @@ $(document).ready(function () {
             if (item.general_information.tax_code) {
                 tax_code_id = item.general_information.tax_code.id;
             }
-            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type_id="` + item.general_information.expense_type.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
         })
     }
 

@@ -829,6 +829,8 @@ class loadDataHandle {
     }
 }
 
+let loadDataClass = new loadDataHandle();
+
 class dataTableHandle {
     dataTableProduct(data, table_id) {
         // init dataTable
@@ -841,12 +843,23 @@ class dataTableHandle {
             ordering: false,
             paginate: false,
             info: false,
-            drawCallback: function (row, data) {
+            drawCallback: function (settings) {
                 // render icon after table callback
                 feather.replace();
                 $.fn.initMaskMoney2();
+                // load data dropdown
+                let table = settings.oInstance.api(); // Get the DataTables instance
+                let order = table.rows().count(); // Get the total number of rows in the table
+                if (order > 0) {
+                    let selectProductID = 'quotation-create-product-box-product-' + String(order);
+                    let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
+                    let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
+                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+                }
             },
-            rowCallback: function (row, data) {
+            rowCallback: function (row, data, index) {
                 // $.fn.initMaskMoney2();
             },
             columns: [
@@ -1330,10 +1343,21 @@ class dataTableHandle {
             ordering: false,
             paginate: false,
             info: false,
-            drawCallback: function (row, data) {
+            drawCallback: function (settings) {
                 // render icon after table callback
                 feather.replace();
                 $.fn.initMaskMoney2();
+                // load data dropdown
+                let table = settings.oInstance.api(); // Get the DataTables instance
+                let order = table.rows().count(); // Get the total number of rows in the table
+                if (order > 0) {
+                    let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
+                    let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
+                    let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
+                    loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
+                    loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
+                }
             },
             rowCallback: function (row, data) {
                 // $.fn.initMaskMoney2();

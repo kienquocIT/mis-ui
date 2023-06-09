@@ -2463,7 +2463,7 @@ msgstr "Kho"
 
 #
 msgid "Return Advance"
-msgstr "Tiền tạm ứng trả hàng"
+msgstr "Hoàn ứng"
 
 #
 msgid "Setup login return exception"
@@ -2853,7 +2853,7 @@ msgstr "Danh sách kho"
 
 #
 msgid "Cash Outflow"
-msgstr "Chi tiêu tiền mặt"
+msgstr "Dòng tiền"
 
 #
 msgid "Payment"

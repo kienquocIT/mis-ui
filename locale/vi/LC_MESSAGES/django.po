@@ -1516,7 +1516,7 @@ msgstr "Thuế"
 
 #
 msgid "Subtotal price"
-msgstr "Tổng tiền phụ"
+msgstr "Tổng tiền"
 
 #
 msgid "Add product"
@@ -1973,7 +1973,7 @@ msgstr "Chi phí/Các hạng mục chi phí"
 
 #
 msgid "After tax subtotal"
-msgstr "Tổng phụ sau thuế"
+msgstr "Tổng tiền sau thuế"
 
 #
 msgid "Plan After Tax"
@@ -2950,3 +2950,15 @@ msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá
 #
 msgid "If long sale (with opportunity), disable input discount on total"
 msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên tổng."
+
+#
+msgid "Document Number"
+msgstr "Số chứng từ"
+
+#
+msgid "No bank accounts information!"
+msgstr "Không có thông tin ngân hàng!"
+
+#
+msgid "Sale Order/Quotation is not selected!"
+msgstr "Sale Order/Quotation chưa được chọn!"

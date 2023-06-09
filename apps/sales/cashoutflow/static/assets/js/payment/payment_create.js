@@ -14,8 +14,6 @@ $(document).ready(function () {
     let load_default = 0;
     let current_value_converted_from_ap = '';
     let payment_cost_items_filtered = [];
-    let oppcode_selected = [];
-    let expense_type_id_selected = [];
 
 
     function loadSaleOrderExpense(filter_sale_order) {
@@ -311,7 +309,6 @@ $(document).ready(function () {
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
             let sale_code_id = $(this).attr('data-value');
-            oppcode_selected = $(this).attr('title').split(': ')[0];
             $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {

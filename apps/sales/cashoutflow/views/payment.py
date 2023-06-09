@@ -12,7 +12,7 @@ class PaymentList(View):
         auth_require=True,
         template='payment/payment_list.html',
         breadcrumb='PAYMENT_LIST_PAGE',
-        menu_active='menu_payment_list',
+        menu_active='id_menu_payment',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

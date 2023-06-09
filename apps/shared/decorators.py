@@ -7,12 +7,13 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from rest_framework import status
 
+from rest_framework import status
 from rest_framework.response import Response
 
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
+from .menus import SpaceItem, SpaceGroup
 from .caches import CacheController, CacheKeyCollect
 from .constant import WORKFLOW_ACTION
 
@@ -56,55 +57,31 @@ class ArgumentDecorator:
         return data
 
     @staticmethod
-    def parse_spaces(space_code: str) -> (dict, list):
+    def parse_spaces(space_code: str) -> (list, list):
         """default parse space list"""
-        space_list = {
-            'sale': {
-                'name': 'Sale',
-                'code': 'sale',
-                'icon': '<i class="fas fa-user-astronaut"></i>'
-            },
-            'e-office': {
-                'name': 'E-Office',
-                'code': 'e-office',
-                'icon': '<i class="fas fa-rocket"></i>'
-            },
-            'hrm': {
-                'name': 'HRM',
-                'code': 'hrm',
-                'icon': '<i class="fas fa-satellite"></i>'
-            },
-        }
-
-        space_selected = {}
-        # if space_code and space_code in space_list.keys():
-        if space_code and space_code in space_list:
-            space_all_list = []
-            space_selected = space_list[space_code]
-            for key, value in space_list.items():
-                if key != space_code:
-                    space_all_list.append(value)
-        else:
-            space_all_list = [v for k, v in space_list.items()]
-        return space_selected, space_all_list
+        return SpaceGroup.get_space_all(), SpaceItem.get_space_detail(space_code), SpaceItem.get_menus_of_space(
+            space_code
+        )
 
     @classmethod
-    def parse_base(cls, user, cls_kwargs) -> dict:
+    def parse_base(cls, user) -> dict:
         """parse base link"""
         if isinstance(user, get_user_model()):
-            space_selected, space_list = cls.parse_spaces(cls_kwargs.get('space_code', None))
+            space_list, space_current_detail, space_menus = cls.parse_spaces(user.ui_space_selected)
             return {
                 'fullname': user.get_full_name(),
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,
-                'space_selected': space_selected,
-                'space_list': space_list,
                 'tenant_current_data': user.tenant_current_data,
                 'company_current_data': user.company_current_data,
                 'space_current_data': user.space_current_data,
                 'employee_current_data': user.employee_current_data,
                 'companies_data': user.companies_data,
-                'language': user.language
+                'language': user.language,
+                # data display menus and space
+                'space_list': space_list,
+                'space_current_detail': space_current_detail,
+                'menus': space_menus,
             }
         return {}
 
@@ -229,7 +206,7 @@ def mask_view(**parent_kwargs):
                                 }, status=http_status
                             )
                 elif cls_check.template_path:
-                    if request.user and not isinstance(request.user, AnonymousUser):
+                    if request.user and not isinstance(request.user, AnonymousUser) and request.user.is_authenticated:
                         match http_status:
                             case status.HTTP_401_UNAUTHORIZED:
                                 request.session.flush()
@@ -240,7 +217,7 @@ def mask_view(**parent_kwargs):
                             case _:
                                 ctx['is_debug'] = 1 if settings.DEBUG_JS else 0
                                 ctx['is_notify_key'] = 1 if is_notify_key is True else 0
-                                ctx['base'] = cls_check.parse_base(request.user, cls_kwargs=kwargs)
+                                ctx['base'] = cls_check.parse_base(request.user)
                                 ctx['base_workflow'] = WORKFLOW_ACTION if kwargs.get('pk', None) else {}
                                 ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()

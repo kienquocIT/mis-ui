@@ -12,7 +12,7 @@ class AdvancePaymentList(View):
         auth_require=True,
         template='advancepayment/advance_payment_list.html',
         breadcrumb='ADVANCE_PAYMENT_LIST_PAGE',
-        menu_active='menu_advance_payment_list',
+        menu_active='id_menu_advance_payment',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

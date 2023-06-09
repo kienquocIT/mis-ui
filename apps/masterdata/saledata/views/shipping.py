@@ -10,7 +10,7 @@ class ShippingList(View):
         auth_require=True,
         template='masterdata/saledata/shipping/shipping_list.html',
         breadcrumb='SHIPPING_LIST_PAGE',
-        menu_active='menu_shipping_list',
+        menu_active='id_menu_shipping_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

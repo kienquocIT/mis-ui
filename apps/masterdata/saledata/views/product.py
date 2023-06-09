@@ -12,7 +12,7 @@ class ProductMasterDataList(View):
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_product_list.html',
         breadcrumb='PRODUCT_MASTER_DATA_LIST_PAGE',
-        menu_active='menu_account_list',
+        menu_active='id_menu_master_data_product',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -361,7 +361,7 @@ class ProductList(View):
         auth_require=True,
         template='masterdata/saledata/product/product_list.html',
         breadcrumb='PRODUCT_LIST_PAGE',
-        menu_active='menu_product_list',
+        menu_active='id_menu_product_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

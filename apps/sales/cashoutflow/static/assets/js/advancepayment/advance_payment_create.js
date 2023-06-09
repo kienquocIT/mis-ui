@@ -906,11 +906,6 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
-                {
                     data: 'expense_title',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
@@ -1025,11 +1020,6 @@ $(document).ready(function () {
                 },
             },
             columns: [
-                {
-                    render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
                 {
                     data: 'expense_title',
                     className: 'wrap-text',

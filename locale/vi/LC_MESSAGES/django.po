@@ -2925,28 +2925,28 @@ msgstr "Xem tất cả các thông báo"
 
 #
 msgid "If short sale (without opportunity), enable to select price from price list"
-msgstr "Nếu bán hàng nhanh, cho phép chọn giá từ danh sách giá"
+msgstr "Nếu bán hàng nhanh, cho phép chọn giá từ danh sách giá."
 
 #
 msgid "If short sale (without opportunity), enable to input price"
-msgstr "Nếu bán hàng nhanh, cho phép nhập giá sản phẩm"
+msgstr "Nếu bán hàng nhanh, cho phép nhập giá sản phẩm."
 
 #
 msgid "If short sale (without opportunity), enable to input discount rate on product"
-msgstr "Nếu bán hàng nhanh, cho phép nhập tỉ lệ giảm giá trên sản phẩm"
+msgstr "Nếu bán hàng nhanh, cho phép nhập tỉ lệ giảm giá trên sản phẩm."
 
 #
 msgid "If short sale (without opportunity), enable to input discount rate on total"
-msgstr "Nếu bán hàng nhanh, cho phép nhập tỉ lệ giảm giá trên tổng"
+msgstr "Nếu bán hàng nhanh, cho phép nhập tỉ lệ giảm giá trên tổng."
 
 #
 msgid "If long sale (with opportunity), disable input price"
-msgstr "Nếu bán hàng dự án, không cho nhập giá sản phẩm"
+msgstr "Nếu bán hàng dự án, không cho nhập giá sản phẩm."
 
 #
 msgid "If long sale (with opportunity), disable input discount on product"
-msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên sản phẩm"
+msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên sản phẩm."
 
 #
 msgid "If long sale (with opportunity), disable input discount on total"
-msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên tổng"
+msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên tổng."

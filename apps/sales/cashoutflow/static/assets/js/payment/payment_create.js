@@ -339,7 +339,6 @@ $(document).ready(function () {
             $('#tab_line_detail_datatable tbody').html('');
         })
 
-
         let ele2 = $('#sale-code-select-box');
         ele2.html('');
         ele2.append(`<option></option>`);
@@ -419,10 +418,14 @@ $(document).ready(function () {
                     sale_code_selected_list.push($(this).attr('id'));
                     if ($(this).attr('data-type') === '0') {
                         sale_order_selected_list.push($(this).attr('id'))
+                        loadSaleOrderExpense($(this).attr('id'))
                     }
                     if ($(this).attr('data-type') === '1') {
                         quotation_selected_list.push($(this).attr('id'))
+                        loadQuotationExpense($(this).attr('id'))
                     }
+                    $('#notify-none-sale-code').prop('hidden', true);
+                    $('#tab_plan_datatable').prop('hidden', false);
                 }
             });
         })

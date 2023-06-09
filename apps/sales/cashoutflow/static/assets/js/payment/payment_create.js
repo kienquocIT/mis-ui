@@ -1450,7 +1450,7 @@ $(document).ready(function () {
                     })
                 }
 
-                if (price_after_tax_value < expense_detail_value) {
+                if (price_after_tax_value < expense_detail_value && expense_detail_value > 0) {
                     can_submit = 0;
                     $.fn.notifyPopup({description: 'Detail tab - line ' + i + ': Expense value declared < Sum SaleCode values'}, 'failure');
                 }

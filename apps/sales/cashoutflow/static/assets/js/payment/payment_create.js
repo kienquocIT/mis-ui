@@ -1450,7 +1450,6 @@ $(document).ready(function () {
                     })
                 }
 
-                console.log(price_after_tax_value, expense_detail_value)
                 if (price_after_tax_value < expense_detail_value) {
                     can_submit = 0;
                     $.fn.notifyPopup({description: 'Detail tab - line ' + i + ': Expense value declared < Sum SaleCode values'}, 'failure');
@@ -1512,19 +1511,19 @@ $(document).ready(function () {
 
         // console.log(frm.dataForm)
         if (can_submit) {
-            // $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            // .then(
-            //     (resp) => {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data) {
-            //             $.fn.notifyPopup({description: "Successfully"}, 'success')
-            //             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-            //         }
-            //     },
-            //     (errs) => {
-            //         $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-            //     }
-            // )
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+            )
         }
     })
 

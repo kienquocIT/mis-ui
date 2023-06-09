@@ -300,7 +300,7 @@ $(document).ready(function () {
 
             advance_payment_expense_items = [];
             for (let i = 0; i < ap_list.length; i++) {
-                if (ap_list[i].sale_order_mapped === $(this).attr('data-value')) {
+                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
                     advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                 }
             }
@@ -938,12 +938,7 @@ $(document).ready(function () {
                     data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        if (row.sum_AP_approved > 0) {
-                            return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
-                        else {
-                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
+                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
@@ -971,12 +966,7 @@ $(document).ready(function () {
                     data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        if (row.available > 0) {
-                            return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
-                        else {
-                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
+                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 }
             ],
@@ -1068,12 +1058,7 @@ $(document).ready(function () {
                     data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        if (row.sum_AP_approved > 0) {
-                            return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
-                        else {
-                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
+                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
@@ -1101,12 +1086,7 @@ $(document).ready(function () {
                     data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        if (row.available > 0) {
-                            return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
-                        else {
-                            return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                        }
+                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 }
             ],

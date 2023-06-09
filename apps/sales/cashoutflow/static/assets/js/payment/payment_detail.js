@@ -8,7 +8,6 @@ $(document).ready(function () {
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            console.log(data)
             let opp_code_list = [];
             let payment_detail = data.payment_detail;
             $('#payment-code').text(payment_detail.code);

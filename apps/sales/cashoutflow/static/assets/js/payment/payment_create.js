@@ -1388,7 +1388,7 @@ $(document).ready(function () {
 
         if ($('#tab_line_detail tbody').find('tr').length > 0) {
             let table_body = $('#tab_line_detail tbody');
-            let row_count = table_body.find('tr').length;
+            let row_count = table_body.find('.row-number').length;
             let expense_valid_list = [];
             for (let i = 1; i <= row_count; i++) {
                 let expense_detail_value = 0;
@@ -1452,7 +1452,7 @@ $(document).ready(function () {
 
                 if (price_after_tax_value < expense_detail_value || expense_detail_value === 0) {
                     can_submit = 0;
-                    $.fn.notifyPopup({description: 'Detail tab - line ' + i + ': Expense value declared < Sum SaleCode values'}, 'failure');
+                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value declared < Sum SaleCode values (or Empty)'}, 'failure');
                 }
             }
             frm.dataForm['expense_valid_list'] = expense_valid_list;

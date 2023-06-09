@@ -98,7 +98,13 @@ $(document).ready(function () {
                         data: '',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a type="button" class="badge badge-soft-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>`
+                            return `<div class="dropdown">
+                                        <a type="button" data-bs-toggle="dropdown" class="badge badge-soft-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>
+                                        <div class="dropdown-menu">
+                                             <a class="dropdown-item" href="{0}">Return Advance</a>
+                                        </div>
+                                    </div>`.format_by_idx($('#datatable_advance_list').data('return-advance') + `?advance_payment_id={0}`.format_by_idx(row.id));
+
                         }
                     }
                 ],
@@ -108,7 +114,4 @@ $(document).ready(function () {
 
     loadAdvanceList();
 
-    $(document).on('click', '.btn-change-status', function () {
-        alert('Waiting "Return Advance" and "Payment"');
-    })
 })

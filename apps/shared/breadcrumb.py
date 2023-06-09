@@ -112,6 +112,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
 
     # Quotation
+    QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
@@ -376,4 +377,7 @@ class BreadcrumbView:
     # Transition Data Config
     DELIVERY_CONFIG = [
         BreadcrumbItem.DELIVERY_CONFIG_PAGE
+    ]
+    QUOTATION_CONFIG = [
+        BreadcrumbItem.QUOTATION_CONFIG_PAGE
     ]

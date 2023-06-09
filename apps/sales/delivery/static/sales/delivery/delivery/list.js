@@ -3,9 +3,9 @@ $(document).ready(function () {
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
     tbl.DataTable({
-        searching: true,
+        searching: false,
         ordering: false,
-        paginate: false,
+        paginate: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,

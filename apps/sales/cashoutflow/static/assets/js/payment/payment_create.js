@@ -393,13 +393,11 @@ $(document).ready(function () {
                     loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
-                    loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('value'));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
-                    loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
                 }
-                $('#notify-none-sale-code').prop('hidden', true);
-                $('#tab_plan_datatable').prop('hidden', false);
+                // $('#notify-none-sale-code').prop('hidden', true);
+                // $('#tab_plan_datatable').prop('hidden', false);
             }
             else {
                 $('#notify-none-sale-code').prop('hidden', false);
@@ -509,106 +507,10 @@ $(document).ready(function () {
                     sale_code_selected_list.push($(this).attr('id'));
                     if ($(this).attr('data-type') === '0') {
                         sale_order_selected_list.push($(this).attr('id'));
-                        loadSaleOrderExpense($(this).attr('id'));
-                        // $.fn.callAjax($('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + $(this).attr('id'), 'GET').then((resp) => {
-                        //     let data = $.fn.switcherResp(resp);
-                        //     if (data) {
-                        //         let data_detail = data.sale_order_expense_list;
-                        //         for (let i = 0; i < data_detail.length; i++) {
-                        //             let expense_id = data_detail[i].expense_id;
-                        //             let results = advance_payment_expense_items.filter(function(item) {
-                        //                 return item.expense.id === expense_id;
-                        //             });
-                        //             let sum_AP_approved = results.reduce(function(s, item) {
-                        //                 return s + item.after_tax_price;
-                        //             }, 0);
-                        //             let returned = results.reduce(function(s, item) {
-                        //                 return s + item.returned_total;
-                        //             }, 0);
-                        //             let to_payment = results.reduce(function(s, item) {
-                        //                 return s + item.to_payment_total;
-                        //             }, 0);
-                        //
-                        //             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                        //                 return item.expense_id === expense_id;
-                        //             });
-                        //             let others_payment = payment_cost_items_list.reduce(function(s, item) {
-                        //                 return s + item.real_value;
-                        //             }, 0);
-                        //
-                        //             let available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
-                        //
-                        //             let tax_html = ``;
-                        //             if (data_detail[i].tax.title) {
-                        //                 tax_html =  `<span class="badge badge-soft-indigo badge-outline">` + data_detail[i].tax.title + `</span>`
-                        //             }
-                        //
-                        //             $('#tab_plan_datatable').append(`<tr>
-                        //                 <td>` + data_detail[i].expense_title +`</td>
-                        //                 <td>` + tax_html + `</td>
-                        //                 <td><span>` + data_detail[i].plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //             </tr>`)
-                        //         }
-                        //     }
-                        // })
                     }
                     else if ($(this).attr('data-type') === '1') {
                         quotation_selected_list.push($(this).attr('id'));
-                        loadQuotationExpense($(this).attr('id'));
-                        // $.fn.callAjax($('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + $(this).attr('id'), 'GET').then((resp) => {
-                        //     let data = $.fn.switcherResp(resp);
-                        //     if (data) {
-                        //         let data_detail = data.quotation_expense_list;
-                        //         for (let i = 0; i < data_detail.length; i++) {
-                        //             let expense_id = data_detail[i].expense_id;
-                        //             let results = advance_payment_expense_items.filter(function(item) {
-                        //                 return item.expense.id === expense_id;
-                        //             });
-                        //             let sum_AP_approved = results.reduce(function(s, item) {
-                        //                 return s + item.after_tax_price;
-                        //             }, 0);
-                        //             let returned = results.reduce(function(s, item) {
-                        //                 return s + item.returned_total;
-                        //             }, 0);
-                        //             let to_payment = results.reduce(function(s, item) {
-                        //                 return s + item.to_payment_total;
-                        //             }, 0);
-                        //
-                        //             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                        //                 return item.expense_id === expense_id;
-                        //             });
-                        //             let others_payment = payment_cost_items_list.reduce(function(s, item) {
-                        //                 return s + item.real_value;
-                        //             }, 0);
-                        //
-                        //             let available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
-                        //
-                        //             let tax_html = ``;
-                        //             if (data_detail[i].tax.title) {
-                        //                 tax_html =  `<span class="badge badge-soft-indigo badge-outline">` + data_detail[i].tax.title + `</span>`
-                        //             }
-                        //
-                        //             $('#tab_plan_datatable').append(`<tr>
-                        //                 <td>` + data_detail[i].expense_title +`</td>
-                        //                 <td>` + tax_html + `</td>
-                        //                 <td><span>` + data_detail[i].plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //                 <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        //             </tr>`)
-                        //         }
-                        //     }
-                        // })
                     }
-                    $('#notify-none-sale-code').prop('hidden', true);
-                    $('#tab_plan_datatable').prop('hidden', false);
                 }
             });
         })

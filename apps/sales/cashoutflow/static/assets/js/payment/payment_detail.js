@@ -243,6 +243,12 @@ $(document).ready(function () {
                 }
             }
 
+            $('#supplier-detail-span').prop('hidden', false);
+            $('#supplier-name').text($('#supplier-select-box option:selected').attr('data-name'));
+            $('#supplier-code').text($('#supplier-select-box option:selected').attr('data-code'));
+            $('#supplier-owner').text($('#supplier-select-box option:selected').attr('data-owner'));
+            $('#supplier-industry').text($('#supplier-select-box option:selected').attr('data-industry'));
+
             $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_mapped[0].id, 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {

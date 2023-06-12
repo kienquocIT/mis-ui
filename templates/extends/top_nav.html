@@ -237,7 +237,7 @@
                                             {{ base.fullname }}
                                         </div>
                                         <div class="fs-7">
-                                            <a href="mailto:{{ base.email }}">{{ base.email }}</a>
+                                            <a id="email-request-owner" href="mailto:{{ base.email }}">{{ base.email }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -286,12 +286,6 @@
                                     <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
                                 {% endif %}
                             {% endif %}
-                            <a class="dropdown-item" href="#">
-                                <span class="dropdown-icon feather-icon">
-                                    <i data-feather="settings"></i>
-                                </span>
-                                <span>{% trans 'Settings' %}</span>
-                            </a>
                             <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>
@@ -300,19 +294,19 @@
                             </a>
 
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRaiseTicket">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="tag"></i>
                                 </span>
                                 <span>{% trans 'Raise a ticket' %}</span>
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'TermsAndConditionsView' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="book"></i>
                                 </span>
                                 <span>{% trans 'Terms & Conditions' %}</span>
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'HelpAndSupportView' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="help-circle"></i>
                                 </span>

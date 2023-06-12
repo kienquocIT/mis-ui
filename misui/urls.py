@@ -9,7 +9,7 @@ from apps.shared import BreadcrumbView
 
 urlpatterns = \
     [
-        path('admin/', admin.site.urls),
+        path('system-admin/', admin.site.urls),
         path('', include('apps.core.urls')),
         path('', include('apps.masterdata.urls')),
         path('private-system/', include('apps.sharedapp.urls')),

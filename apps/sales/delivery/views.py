@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -138,7 +140,10 @@ class OrderDeliveryListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST).get()
         if resp.state:
-            return {'delivery_list': resp.result}, status.HTTP_200_OK
+            list_sub = []
+            for item in resp.result:
+                list_sub.extend(item.get('sub_list', []))
+            return {'delivery_list': list_sub}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -183,7 +188,7 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).get()
         if resp.state:
             return resp.result, status.HTTP_200_OK
         elif resp.status == 401:
@@ -196,7 +201,7 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).put(request.data)
         if resp.state:
             return resp.result, status.HTTP_200_OK
         elif resp.status == 401:

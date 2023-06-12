@@ -1,7 +1,8 @@
-$(function () {
+$(async function () {
     // prod tab handle
     class prodDetailUtil {
         prodList = {}
+        wareHouseList = {}
 
         set setProdList(data) {
             this.prodList = data
@@ -11,26 +12,48 @@ $(function () {
             return this.prodList
         }
 
-        contentModalHandle(prodID, idx, config, prod_data) {
+        set setWarehouseList(data) {
+            this.wareHouseList = data
+        }
+
+        get getWarehouseList() {
+            return this.wareHouseList
+        }
+
+        contentModalHandle(idx, config, prod_data) {
             const _this = this
             let url = $('#url-factory').attr('data-warehouse-prod')
-            $.fn.callAjax(url, 'get', {'product': prodID})
+            $.fn.callAjax(url, 'get', {
+                'product_id': prod_data?.product_data?.id,
+                'uom_id': prod_data?.uom_data?.id
+            })
                 .then((req) => {
+                    const isKey = `${prod_data?.product_data?.id}.${prod_data?.uom_data?.id}`
+                    let temp = _this.getWarehouseList
                     const res = $.fn.switcherResp(req);
                     const table = $('#productStockDetail')
-                    let isData = res.warehouse_stock.filter((item) => item.stock > 0)
-                    if (config.is_picking){
-                        let delivery = prod_data?.delivery_data;
-                        let listConvert_config1 = []
-                        for (let item of isData){
-                            if (delivery.hasOwnProperty(item.warehouse.id)){
-                                item.stock = delivery[item.warehouse.id]
-                                item.picked = delivery[item.warehouse.id]
-                                listConvert_config1.push(item)
-                            }
+                    // let isData = res.warehouse_stock.filter((item) => item.stock > 0)
+                    let isData = res.warehouse_stock
+                    temp[isKey] = isData
+                    _this.setWarehouseList = temp
+                    // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
+                    // nếu có tạo thêm key là picked. mục đích show lên poup mục get cho user thấy
+                    let delivery = prod_data?.delivery_data;
+                    let listConvert_config1 = []
+                    for (let [idx, item] of isData.entries()){
+                        if (!config.is_picking && !config.is_partial_ship){
+                            item.picked = 0
+                            if (delivery[idx]
+                                && delivery[idx].warehouse === item.id
+                                && delivery[idx].uom === prod_data.uom_data.id
+                            )
+                            item.picked = delivery[idx].stock
                         }
-                        isData = listConvert_config1
+                        else
+                            item.picked = 0
+                        listConvert_config1.push(item)
                     }
+                    isData = listConvert_config1
                     table.not('.dataTable').DataTable({
                         data: isData,
                         searching: false,
@@ -41,23 +64,23 @@ $(function () {
                             {
                                 targets: 0,
                                 class: 'w-20 text-center',
-                                data: 'warehouse',
+                                data: 'code',
                                 render: (row, type, data) => {
-                                    return `<p>${row?.code}</p>`;
+                                    return `<p>${row}</p>`;
                                 }
                             },
                             {
                                 targets: 1,
                                 class: 'w-50 text-center',
-                                data: 'warehouse',
+                                data: 'title',
                                 render: (row, type, data) => {
-                                    return `<p>${row?.title}</p>`;
+                                    return `<p>${row}</p>`;
                                 }
                             },
                             {
                                 targets: 2,
                                 class: 'w-15 text-center',
-                                data: 'stock',
+                                data: 'product_amount',
                                 render: (row, type, data) => {
                                     return `<p>${row}</p>`;
                                 }
@@ -65,8 +88,9 @@ $(function () {
                             {
                                 targets: 3,
                                 class: 'w-15 text-center',
+                                data: 'picked',
                                 render: (row, type, data, meta) => {
-                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${data.picked}">`;
+                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${row}">`;
                                 }
                             },
                         ],
@@ -80,7 +104,34 @@ $(function () {
                                     table.DataTable().row(index).data(current).draw();
                                 }
                             })
-                        }
+                        },
+                        footerCallback: function (row, data, start, end, display) {
+                            var api = this.api();
+
+                            // Remove the formatting to get integer data for summation
+                            var intVal = function (i) {
+                                return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                            };
+
+                            // Total over this page
+                            const allStock = api
+                                .column(2, {page: 'current'})
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+
+
+                            const GetStock = api
+                                .column(3, {page: 'current'})
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                            // Update footer
+                            $(api.column(2).footer()).html(`<b><i>${allStock}</i></b>`);
+                            $(api.column(3).footer()).html(`<b><i>${GetStock}</i></b>`);
+                        },
                     })
                     if (table.hasClass('dataTable')) {
                         table.DataTable().clear().draw();
@@ -94,7 +145,7 @@ $(function () {
                         for (let item of isSelected) {
                             if (item.picked > 0){
                                 temp_picked += item.picked
-                                sub_delivery_data[item.warehouse.id] = item.picked
+                                sub_delivery_data[item.id] = item.picked
                             }
                         }
                         let tableTargetData = _this.getProdList
@@ -107,8 +158,6 @@ $(function () {
                     })
                 })
         }
-
-
 
         initTableProd() {
             const _this = this
@@ -185,7 +234,7 @@ $(function () {
                             if (delivery_config.is_picking){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<p id="ready_row-${meta.row}">${row}<p/>`
-                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
+                                + `<button type="button" class="btn btn-flush-primary btn-animated show-prod" `
                                 +`data-idx="${meta.row}" data-id="${data.product_data.id}">`
                                 +`<i class="bi bi-three-dots font-3"></i></button></div>`;
                             }
@@ -194,15 +243,16 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        class: `w-15 ${delivery_config.is_picking && !delivery_config.is_partial_ship ? 'text-center': ''}`,
+                        class: 'w-15 text-center',
                         render: (row, type, data, meta) => {
                             const isDisabled = ''
                             let quantity = 0
                             if (data.picked_quantity) quantity = data.picked_quantity
+                            // if (parseInt($('[name="state"]').val()) === 2)
+                            //     quantity = data.delivery_quantity
                             let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<p id="prod_row-${meta.row}">${quantity}<p/>`
-                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
-                                +`data-idx="${meta.row}" data-id="${data.product_data.id}">`
+                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod">`
                                 +`<i class="bi bi-three-dots font-3 ${isDisabled}"></i></button></div>`;
                             if (delivery_config.is_picking && !delivery_config.is_partial_ship)
                                 html = `<p class="text-center">${quantity}<p/>`
@@ -215,9 +265,9 @@ $(function () {
                     // done click
                     $(`button.select-prod`, row).off().on('click', function (e) {
                         e.preventDefault()
-                        const prodID = $(this).attr('data-id');
-                        const idx = $(this).attr('data-idx');
-                        _this.contentModalHandle(prodID, idx, delivery_config, data)
+                        e.stopPropagation()
+                        // const idx = $(this).attr('data-idx');
+                        _this.contentModalHandle(index, delivery_config, data)
                     })
                 }
             });
@@ -236,7 +286,7 @@ $(function () {
                 const res = $.fn.switcherResp(req);
                 const $saleOrder = $('#inputSaleOrder')
                 $saleOrder.val(res.sale_order_data.title)
-                $saleOrder.attr('value', res.sale_order_data.id)
+                $('.title-code').text(res.code)
                 if (res.estimated_delivery_date) {
                     const deliveryDate = moment(res.estimated_delivery_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
                     $('#inputDeliveryDate').val(deliveryDate)
@@ -259,25 +309,26 @@ $(function () {
                     const conContent = DataTableAction.item_view(res.contact_data, $url.attr('data-contact'))
                     $conID.prev().find('.dropdown-menu').html(conContent)
                 }
-                $('#inputState').val(res.state)
                 if (res.state !== undefined && Number.isInteger(res.state)) {
                     const stateMap = {
-                        0: 'info',
-                        1: 'warning',
+                        0: 'warning',
+                        1: 'info',
                         2: 'success',
-                        3: 'primary'
                     }
                     let templateEle = `<span class="badge badge-${stateMap[res.state]} badge-outline">`
                         + `${$trans.attr('data-state-' + stateMap[res.state])}</span>`;
                     $('#state').html(templateEle);
-                    $('[name="state"]').val(res.state)
+                    if (res.state === 2){
+                        $('#config-one-all').attr('disabled', true)
+                        $('button[type="submit"]').attr('disabled', true)
+                        $('#save-stock').attr('disabled', true)
+                    }
                 }
                 $('#textareaRemarks').val(res.remarks)
-                prodTable.setProdList = res.sub.products
+                prodTable.setProdList = res.products
+                $('#request-data').text(JSON.stringify(res))
                 // run table
                 prodTable.initTableProd()
-                $('#delivery_opt').val(res.delivery_option)
-                $('#sub_id').val(res?.sub?.id)
                 $('#textareaShippingAddress').val(res.sale_order_data?.shipping_address)
                 $('#textareaBilling').val(res.sale_order_data?.billing_address)
                 $('#input-attachment').val(res.attachments)
@@ -288,6 +339,7 @@ $(function () {
         const $form = $('#delivery_form')
         $form.on('submit', function (e) {
             e.preventDefault();
+            const $storedData = JSON.parse($('#request-data').text())
             let _form = new SetupFormSubmit($form);
             const csr = $("[name=csrfmiddlewaretoken]").val();
             let putData = {}
@@ -300,10 +352,14 @@ $(function () {
                 'DD/MM/YYYY hh:mm A'
             ).format('YYYY-MM-DD hh:mm:ss')
             putData['remarks'] = _form.dataForm['remarks']
-            putData['kind_pickup'] = 0
-            putData['sale_order_id'] = $('#inputSaleOrder').attr('value')
-            putData['sub_id'] = $('#sub_id').attr('value')
-            putData['delivery_option'] = parseInt($('#delivery_opt').attr('value'))
+            putData['order_delivery'] = $storedData.order_delivery
+            putData['state'] = $storedData.state
+            putData['times'] = $storedData['times']
+            putData['delivery_quantity'] = $storedData.delivery_quantity
+            putData['delivered_quantity_before'] = $storedData.delivered_quantity_before
+            putData['remaining_quantity'] = $storedData.remaining_quantity
+            putData['ready_quantity'] = $storedData.ready_quantity
+            putData['is_updated'] = $storedData.is_updated
             let prodSub = []
             for (prod of prodTable.getProdList) {
                 if (prod.picked_quantity > 0)
@@ -346,4 +402,70 @@ $(function () {
     })
     // handle before form submit
     formSubmit()
+
+    // quick pick product form one warehouse
+    async function handleOnClickDone(){
+        const tableData = prodTable.getProdList
+        const callableWarehouse = prodTable.getWarehouseList
+        for (const item of tableData){
+            const key = `${item.product_data.id}.${item.uom_data.id}`;
+            let prodCheck = []
+            if (callableWarehouse.hasOwnProperty(key)) prodCheck = callableWarehouse[key]
+            else{
+                const listPromise = await $.fn.callAjax(
+                    $('#url-factory').attr('data-warehouse-prod'),
+                    'GET',
+                    {'product_id': item.product_data.id, 'uom_id': item.uom_data.id}
+                )
+                if (listPromise.data.status === 200){
+                    prodCheck = listPromise.data.warehouse_stock
+                }
+            }
+            let flag = false
+            item.picked_quantity = 0
+            item.delivery_data = []
+            for (const value of prodCheck){
+                if (item.picked_quantity !== item.delivery_quantity){
+                    // kiem tra pick chưa đủ
+                    const remain = item.delivery_quantity - item.picked_quantity
+                    if(value.product_amount > 0){
+                        let temp = {
+                            'warehouse': value.id,
+                            'uom': item.uom_data.id,
+                            'stock': 0
+                        }
+                        if (value.product_amount >= remain){
+                            temp.stock = remain
+                            item.picked_quantity += remain
+                        }
+                        else{
+                            temp.stock = value.product_amount
+                            item.picked_quantity += value.product_amount
+                        }
+                        item.delivery_data.push(temp)
+                        if (item.picked_quantity === item.delivery_quantity){
+                            flag= true
+                            break
+                        }
+                    }
+                }
+            }
+            if(!flag){
+                $.fn.notifyPopup({description: $('#trans-factory').attr('data-outstock')}, 'failure')
+            }
+            // else if (!configData.is_picking && configData.is_partial_ship)
+            //     // config 2
+            // else if (configData.is_picking && !configData.is_partial_ship)
+            //     // config 3
+            // else
+            //     // config 4
+
+        }
+        prodTable.setProdList = tableData
+        $('#dtbPickingProductList').DataTable().clear().rows.add(tableData).draw();
+    }
+    $('#config-one-all').off().on('click', function(e){
+        e.preventDefault()
+        handleOnClickDone()
+    })
 }, (jQuery));

@@ -1208,7 +1208,7 @@ msgstr "Thêm liên hệ"
 
 #
 msgid "Job title"
-msgstr "Tiêu đề công việc"
+msgstr "Chức danh"
 
 #
 msgid "Phone number"

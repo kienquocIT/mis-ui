@@ -513,11 +513,11 @@ $(document).ready(function () {
                     sale_code_selected_list.push($(this).attr('id'));
                     if ($(this).attr('data-type') === '0') {
                         sale_order_selected_list.push($(this).attr('id'))
-                        loadSaleOrderExpense($(this).attr('id'))
+                        // loadSaleOrderExpense($(this).attr('id'))
                     }
                     if ($(this).attr('data-type') === '1') {
                         quotation_selected_list.push($(this).attr('id'))
-                        loadQuotationExpense($(this).attr('id'))
+                        // loadQuotationExpense($(this).attr('id'))
                     }
                     $('#notify-none-sale-code').prop('hidden', true);
                     $('#tab_plan_datatable').prop('hidden', false);

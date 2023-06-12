@@ -15,8 +15,8 @@ $(document).ready(function () {
     let current_value_converted_from_ap = '';
     let payment_cost_items_filtered = [];
     let advance_payment_expense_items = [];
+    let plan_table_html = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
-
 
     function loadSaleOrderExpense(filter_sale_order) {
         $('#tab_plan_datatable').remove();
@@ -61,6 +61,7 @@ $(document).ready(function () {
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
                         }
+                        plan_table_html = plan_table_html.concat(resp.data['sale_order_expense_list']);
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
                     return [];
@@ -174,6 +175,7 @@ $(document).ready(function () {
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
                         }
+                        plan_table_html = plan_table_html.concat(resp.data['quotation_expense_list']);
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }
                     return [];
@@ -483,6 +485,8 @@ $(document).ready(function () {
         ele.append(quotation_not_opp);
 
         $('#sale-code-select-box2 .multi-sale-code').on('click', function () {
+            $('#tab_plan_datatable').remove();
+            $('#tab_plan_datatable_div').html(plan_db);
             sale_code_selected_list = [];
             sale_order_selected_list = [];
             quotation_selected_list = [];
@@ -500,19 +504,111 @@ $(document).ready(function () {
 
                     advance_payment_expense_items = [];
                     for (let i = 0; i < ap_list.length; i++) {
-                        if (ap_list[i].sale_order_mapped === $(this).attr('id') || ap_list[i].quotation_mapped === $(this).attr('id')) {
+                        if (ap_list[i].sale_order_mapped === sale_code_id || ap_list[i].quotation_mapped === sale_code_id) {
                             advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                         }
                     }
 
                     sale_code_selected_list.push($(this).attr('id'));
                     if ($(this).attr('data-type') === '0') {
-                        sale_order_selected_list.push($(this).attr('id'))
-                        loadSaleOrderExpense($(this).attr('id'))
+                        sale_order_selected_list.push($(this).attr('id'));
+                        loadSaleOrderExpense($(this).attr('id'));
+                        // $.fn.callAjax($('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + $(this).attr('id'), 'GET').then((resp) => {
+                        //     let data = $.fn.switcherResp(resp);
+                        //     if (data) {
+                        //         let data_detail = data.sale_order_expense_list;
+                        //         for (let i = 0; i < data_detail.length; i++) {
+                        //             let expense_id = data_detail[i].expense_id;
+                        //             let results = advance_payment_expense_items.filter(function(item) {
+                        //                 return item.expense.id === expense_id;
+                        //             });
+                        //             let sum_AP_approved = results.reduce(function(s, item) {
+                        //                 return s + item.after_tax_price;
+                        //             }, 0);
+                        //             let returned = results.reduce(function(s, item) {
+                        //                 return s + item.returned_total;
+                        //             }, 0);
+                        //             let to_payment = results.reduce(function(s, item) {
+                        //                 return s + item.to_payment_total;
+                        //             }, 0);
+                        //
+                        //             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                        //                 return item.expense_id === expense_id;
+                        //             });
+                        //             let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                        //                 return s + item.real_value;
+                        //             }, 0);
+                        //
+                        //             let available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+                        //
+                        //             let tax_html = ``;
+                        //             if (data_detail[i].tax.title) {
+                        //                 tax_html =  `<span class="badge badge-soft-indigo badge-outline">` + data_detail[i].tax.title + `</span>`
+                        //             }
+                        //
+                        //             $('#tab_plan_datatable').append(`<tr>
+                        //                 <td>` + data_detail[i].expense_title +`</td>
+                        //                 <td>` + tax_html + `</td>
+                        //                 <td><span>` + data_detail[i].plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //             </tr>`)
+                        //         }
+                        //     }
+                        // })
                     }
-                    if ($(this).attr('data-type') === '1') {
-                        quotation_selected_list.push($(this).attr('id'))
-                        loadQuotationExpense($(this).attr('id'))
+                    else if ($(this).attr('data-type') === '1') {
+                        quotation_selected_list.push($(this).attr('id'));
+                        loadQuotationExpense($(this).attr('id'));
+                        // $.fn.callAjax($('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + $(this).attr('id'), 'GET').then((resp) => {
+                        //     let data = $.fn.switcherResp(resp);
+                        //     if (data) {
+                        //         let data_detail = data.quotation_expense_list;
+                        //         for (let i = 0; i < data_detail.length; i++) {
+                        //             let expense_id = data_detail[i].expense_id;
+                        //             let results = advance_payment_expense_items.filter(function(item) {
+                        //                 return item.expense.id === expense_id;
+                        //             });
+                        //             let sum_AP_approved = results.reduce(function(s, item) {
+                        //                 return s + item.after_tax_price;
+                        //             }, 0);
+                        //             let returned = results.reduce(function(s, item) {
+                        //                 return s + item.returned_total;
+                        //             }, 0);
+                        //             let to_payment = results.reduce(function(s, item) {
+                        //                 return s + item.to_payment_total;
+                        //             }, 0);
+                        //
+                        //             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                        //                 return item.expense_id === expense_id;
+                        //             });
+                        //             let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                        //                 return s + item.real_value;
+                        //             }, 0);
+                        //
+                        //             let available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+                        //
+                        //             let tax_html = ``;
+                        //             if (data_detail[i].tax.title) {
+                        //                 tax_html =  `<span class="badge badge-soft-indigo badge-outline">` + data_detail[i].tax.title + `</span>`
+                        //             }
+                        //
+                        //             $('#tab_plan_datatable').append(`<tr>
+                        //                 <td>` + data_detail[i].expense_title +`</td>
+                        //                 <td>` + tax_html + `</td>
+                        //                 <td><span>` + data_detail[i].plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //                 <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        //             </tr>`)
+                        //         }
+                        //     }
+                        // })
                     }
                     $('#notify-none-sale-code').prop('hidden', true);
                     $('#tab_plan_datatable').prop('hidden', false);

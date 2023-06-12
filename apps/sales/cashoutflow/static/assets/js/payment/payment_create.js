@@ -399,13 +399,13 @@ $(document).ready(function () {
                     loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id'));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
-                    loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('value'));
+                    // loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('value'));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
-                    loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
+                    // loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
                 }
-                $('#notify-none-sale-code').prop('hidden', true);
-                $('#tab_plan_datatable').prop('hidden', false);
+                $('#notify-none-sale-code').prop('hidden', false);
+                $('#tab_plan_datatable').prop('hidden', true);
             }
             else {
                 $('#notify-none-sale-code').prop('hidden', false);
@@ -519,8 +519,8 @@ $(document).ready(function () {
                         quotation_selected_list.push($(this).attr('id'))
                         // loadQuotationExpense($(this).attr('id'))
                     }
-                    $('#notify-none-sale-code').prop('hidden', true);
-                    $('#tab_plan_datatable').prop('hidden', false);
+                    $('#notify-none-sale-code').prop('hidden', false);
+                    $('#tab_plan_datatable').prop('hidden', true);
                 }
             });
         })

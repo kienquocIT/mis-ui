@@ -185,9 +185,6 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen+1);
             }
-            let selectProductID = 'quotation-create-product-box-product-' + String(order);
-            let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
-            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -222,6 +219,10 @@ $(function () {
             }
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             configClass.checkConfig(false, newRow);
+            // load data dropdown
+            let selectProductID = 'quotation-create-product-box-product-' + String(order);
+            let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
             loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
@@ -314,9 +315,6 @@ $(function () {
             if (tableLen !== 0 && !tableEmpty) {
                 order = (tableLen + 1);
             }
-            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
-            let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
-            let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -348,6 +346,10 @@ $(function () {
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
             configClass.checkConfig(false, newRow);
+            // load data dropdown
+            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
+            let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
@@ -692,16 +694,16 @@ $(function () {
                 dataCopyTo['option'] = 'custom';
                 dataCopyTo['products'] = productCopyTo;
             } else { // if option copy is ALL product
-                // Filter all data is not Promotion from quotation_products_data
-                // dataCopy['quotation_products_data'] = filterDataProductNotPromotion(dataCopy.quotation_products_data);
                 dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
             }
             if (type === 'copy-from') {
                 loadDataClass.loadDetailQuotation(dataCopy, true);
                 if (dataCopyTo.option === "all") {
                     $('#datable-quotation-create-product').DataTable().destroy();
+                    $('#datable-quotation-create-cost').DataTable().destroy();
                     $('#datable-quotation-create-expense').DataTable().destroy();
                     dataTableClass.dataTableProduct(dataCopy.quotation_products_data, 'datable-quotation-create-product');
+                    dataTableClass.dataTableCost(dataCopy.quotation_costs_data, 'datable-quotation-create-cost');
                     dataTableClass.dataTableExpense(dataCopy.quotation_expenses_data, 'datable-quotation-create-expense');
                     // load data dropdown for Tabs
                     let tableProduct = document.getElementById('datable-quotation-create-product');
@@ -737,12 +739,6 @@ $(function () {
                     // load expense
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
-
-                // Clear table COST when copy
-                tableCost.DataTable().clear().draw();
-                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-                document.getElementById('quotation-create-cost-total').innerHTML = "0";
             } else if (type === 'copy-to') {
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -796,8 +792,10 @@ $(function () {
                         calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                     } else if (dataRaw.option === 'all') { // if option copy is all product
                         $('#datable-quotation-create-product').DataTable().destroy();
+                        $('#datable-quotation-create-cost').DataTable().destroy();
                         $('#datable-quotation-create-expense').DataTable().destroy();
                         dataTableClass.dataTableProduct(dataCopy.quotation_products_data, 'datable-quotation-create-product');
+                        dataTableClass.dataTableCost(dataCopy.quotation_costs_data, 'datable-quotation-create-cost');
                         dataTableClass.dataTableExpense(dataCopy.quotation_expenses_data, 'datable-quotation-create-expense');
                         // load data dropdown for Tabs
                         let tableProduct = document.getElementById('datable-quotation-create-product');

@@ -830,7 +830,7 @@ class loadDataHandle {
 }
 
 class dataTableHandle {
-    dataTableProduct(data, table_id) {
+    dataTableProduct(data, table_id, is_load_detail = false) {
         // init dataTable
         let listData = data ? data : [];
         let jqueryId = '#' + table_id;
@@ -846,7 +846,7 @@ class dataTableHandle {
                 feather.replace();
                 $.fn.initMaskMoney2();
             },
-            rowCallback: function (row, data) {
+            rowCallback: function (row, data, index) {
                 // $.fn.initMaskMoney2();
             },
             columns: [
@@ -861,8 +861,9 @@ class dataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
+                                return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
@@ -888,6 +889,36 @@ class dataTableHandle {
                                     </span>
                                 </div>
                             </div>`;
+                            } else {
+                                let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
+                                return `<div class="row">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <div class="btn-group dropstart">
+                                                <i
+                                                    class="fas fa-info-circle"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                        </span>
+                                        <select 
+                                        class="form-select table-row-item disabled-but-edit" 
+                                        id="${selectProductID}"
+                                        required
+                                        disabled>
+                                            <option value="${row.product.id}">${row.product.title}</option>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>`;
+                            }
                         } else if (row.hasOwnProperty('is_promotion')) {
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
@@ -935,9 +966,15 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                return `<div class="row">
                                 <input type="text" class="form-control table-row-description" value="${row.product_description}">
                             </div>`;
+                            } else {
+                                return `<div class="row">
+                                <input type="text" class="form-control table-row-description disabled-but-edit" value="${row.product_description}" disabled>
+                            </div>`;
+                            }
                         } else {
                             return `<div class="row">
                                         <input type="text" class="form-control table-row-description disabled-custom-show" value="${row.product_description}" data-bs-toggle="tooltip" title="${row.product_description}" disabled>
@@ -950,12 +987,21 @@ class dataTableHandle {
                     width: "1%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
+                                return `<div class="row">
                                         <select class="form-select table-row-uom" id="${selectUOMID}" required>
                                             <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
                                         </select>
                                     </div>`;
+                            } else {
+                                let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
+                                return `<div class="row">
+                                        <select class="form-select table-row-uom disabled-but-edit" id="${selectUOMID}" required disabled>
+                                            <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                                        </select>
+                                    </div>`;
+                            }
                         } else {
                             return `<div class="row">
                                         <select class="form-select table-row-uom disabled-custom-show" required disabled>
@@ -971,9 +1017,15 @@ class dataTableHandle {
                     width: "1%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
                             </div>`;
+                            } else {
+                                return `<div class="row">
+                                <input type="text" class="form-control table-row-quantity validated-number disabled-but-edit" value="${row.product_quantity}" required disabled>
+                            </div>`;
+                            }
                         } else {
                             return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number disabled-custom-show" value="${row.product_quantity}" disabled>
@@ -985,7 +1037,8 @@ class dataTableHandle {
                     targets: 5,
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
@@ -1003,6 +1056,27 @@ class dataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
+                            } else {
+                                return `<div class="row">
+                                <div class="dropdown">
+                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <span class="input-affix-wrapper">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price disabled-but-edit" 
+                                            value="${row.product_unit_price}"
+                                            data-return-type="number"
+                                            disabled
+                                        >
+                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                    </span>
+                                    </div>
+                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                    <a class="dropdown-item" data-value=""></a>
+                                    </div>
+                                </div>
+                            </div>`;
+                            }
                         } else {
                             return `<div class="row">
                                 <div class="dropdown">
@@ -1030,7 +1104,8 @@ class dataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-discount validated-number" value="${row.product_discount_value}">
@@ -1044,6 +1119,22 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                            } else {
+                                return `<div class="row">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-discount validated-number disabled-but-edit" value="${row.product_discount_value}" disabled>
+                                        <span class="input-suffix">%</span>
+                                    </span>
+                                </div>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-discount-amount"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                            </div>`;
+                            }
                         } else {
                             return `<div class="row">
                                 <div class="input-group">
@@ -1073,7 +1164,8 @@ class dataTableHandle {
                             taxRate = row.tax.value;
                         }
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            return `<div class="row">
+                            if (is_load_detail === false) {
+                                return `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
@@ -1091,6 +1183,26 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                            } else {
+                                return `<div class="row">
+                                <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
+                                    hidden
+                                >
+                            </div>`;
+                            }
                         } else {
                             return `<div class="row">
                                 <select class="form-select table-row-tax disabled-custom-show" id="${selectTaxID}" disabled>
@@ -1146,7 +1258,7 @@ class dataTableHandle {
 
     }
 
-    dataTableCost(data, table_id) {
+    dataTableCost(data, table_id, is_load_detail = false) {
         // init dataTable
         let listData = data ? data : [];
         let jqueryId = '#' + table_id;
@@ -1246,7 +1358,8 @@ class dataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            return `<div class="row">
                                 <input 
                                     type="text" 
                                     class="form-control mask-money table-row-price" 
@@ -1255,19 +1368,32 @@ class dataTableHandle {
                                     required
                                 >
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price disabled-but-edit" 
+                                    data-return-type="number"
+                                    value="${row.product_cost_price}"
+                                    required
+                                    disabled
+                                >
+                            </div>`;
+                        }
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
-                        let taxID = "";
-                        let taxRate = "";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value;
-                        }
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
+                            let taxID = "";
+                            let taxRate = "";
+                            if (row.tax) {
+                                taxID = row.tax.id;
+                                taxRate = row.tax.value;
+                            }
+                            return `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
@@ -1285,6 +1411,33 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                        } else {
+                            let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
+                            let taxID = "";
+                            let taxRate = "";
+                            if (row.tax) {
+                                taxID = row.tax.id;
+                                taxRate = row.tax.value;
+                            }
+                            return `<div class="row">
+                                <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
+                                    hidden
+                                >
+                            </div>`;
+                        }
                     }
                 },
                 {
@@ -1319,7 +1472,7 @@ class dataTableHandle {
         });
     }
 
-    dataTableExpense(data, table_id) {
+    dataTableExpense(data, table_id, is_load_detail = false) {
         // init dataTable
         let listData = data ? data : [];
         let jqueryId = '#' + table_id;
@@ -1349,8 +1502,9 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
+                            return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
@@ -1376,33 +1530,79 @@ class dataTableHandle {
                                     </span>
                                 </div>
                             </div>`;
+                        } else {
+                            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
+                            return `<div class="row">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <div class="btn-group dropstart">
+                                                <i
+                                                    class="fas fa-info-circle"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                        </span>
+                                        <select 
+                                        class="form-select table-row-item disabled-but-edit" 
+                                        id="${selectExpenseID}"
+                                        required
+                                        disabled>
+                                            <option value="${row.expense.id}">${row.expense.title}</option>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>`;
+                        }
                     }
                 },
                 {
                     targets: 2,
                     width: "1%",
                     render: (data, type, row) => {
-                        let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
+                            return `<div class="row">
                                 <select class="form-select table-row-uom" id="${selectUOMID}" required>
                                     <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
                                 </select>
                             </div>`;
+                        } else {
+                            let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
+                            return `<div class="row">
+                                <select class="form-select table-row-uom disabled-but-edit" id="${selectUOMID}" required disabled>
+                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                                </select>
+                            </div>`;
+                        }
                     },
                 },
                 {
                     targets: 3,
                     width: "1%",
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.expense_quantity}" required>
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <input type="text" class="form-control table-row-quantity validated-number disabled-but-edit" value="${row.expense_quantity}" required disabled>
+                            </div>`;
+                        }
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
@@ -1420,19 +1620,41 @@ class dataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
+                        } else {
+                            return `<div class="row">
+                                <div class="dropdown">
+                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <span class="input-affix-wrapper">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price disabled-but-edit" 
+                                            value="${row.expense_price}"
+                                            data-return-type="number"
+                                            disabled
+                                        >
+                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                    </span>
+                                    </div>
+                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                    <a class="dropdown-item" data-value=""></a>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
-                        let taxID = "";
-                        let taxRate = "";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value
-                        }
-                        return `<div class="row">
+                        if (is_load_detail === false) {
+                            let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
+                            let taxID = "";
+                            let taxRate = "";
+                            if (row.tax) {
+                                taxID = row.tax.id;
+                                taxRate = row.tax.value
+                            }
+                            return `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
@@ -1450,6 +1672,33 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                        } else {
+                            let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
+                            let taxID = "";
+                            let taxRate = "";
+                            if (row.tax) {
+                                taxID = row.tax.id;
+                                taxRate = row.tax.value
+                            }
+                            return `<div class="row">
+                                <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.expense_tax_amount}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.expense_tax_amount}"
+                                    hidden
+                                >
+                            </div>`;
+                        }
                     }
                 },
                 {

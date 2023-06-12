@@ -857,73 +857,75 @@ class checkConfigHandle {
 
     reCheckTable(config, row, is_short_sale = false, is_long_sale = false) {
         if (row) {
-            if (is_short_sale === true) {
-                let elePriceList = row.querySelector('.dropdown-action');
-                let elePrice = row.querySelector('.table-row-price');
-                let eleDiscount = row.querySelector('.table-row-discount');
-                if (config.short_sale_config.is_choose_price_list === false) {
-                    if (elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.removeAttribute('data-bs-toggle')
+            if (row.querySelector('.table-row-item')) {
+                if (is_short_sale === true) {
+                    let elePriceList = row.querySelector('.dropdown-action');
+                    let elePrice = row.querySelector('.table-row-price');
+                    let eleDiscount = row.querySelector('.table-row-discount');
+                    if (config.short_sale_config.is_choose_price_list === false) {
+                        if (elePriceList.hasAttribute('data-bs-toggle')) {
+                            elePriceList.removeAttribute('data-bs-toggle')
+                        }
+                    } else {
+                        if (!elePriceList.hasAttribute('data-bs-toggle')) {
+                            elePriceList.setAttribute('data-bs-toggle', 'dropdown')
+                        }
                     }
-                } else {
+                    if (config.short_sale_config.is_input_price === false) {
+                        if (!elePrice.hasAttribute('disabled')) {
+                            elePrice.setAttribute('disabled', 'true');
+                            elePrice.classList.add('disabled-custom-show');
+                            $(elePrice).attr('value', String(0));
+                        }
+                    } else {
+                        if (elePrice.hasAttribute('disabled')) {
+                            elePrice.removeAttribute('disabled');
+                            elePrice.classList.remove('disabled-custom-show');
+                        }
+                    }
+                    if (eleDiscount) {
+                        if (config.short_sale_config.is_discount_on_product === false) {
+                            if (!eleDiscount.hasAttribute('disabled')) {
+                                eleDiscount.setAttribute('disabled', 'true');
+                                eleDiscount.classList.add('disabled-custom-show');
+                                eleDiscount.value = "0";
+                            }
+                        } else {
+                            if (eleDiscount.hasAttribute('disabled')) {
+                                eleDiscount.removeAttribute('disabled');
+                                eleDiscount.classList.remove('disabled-custom-show');
+                            }
+                        }
+                    }
+                } else if (is_long_sale === true) {
+                    let elePriceList = row.querySelector('.dropdown-action');
+                    let elePrice = row.querySelector('.table-row-price');
+                    let eleDiscount = row.querySelector('.table-row-discount');
                     if (!elePriceList.hasAttribute('data-bs-toggle')) {
                         elePriceList.setAttribute('data-bs-toggle', 'dropdown')
                     }
-                }
-                if (config.short_sale_config.is_input_price === false) {
-                    if (!elePrice.hasAttribute('disabled')) {
-                        elePrice.setAttribute('disabled', 'true');
-                        elePrice.classList.add('disabled-custom-show');
-                        $(elePrice).attr('value', String(0));
-                    }
-                } else {
-                    if (elePrice.hasAttribute('disabled')) {
-                        elePrice.removeAttribute('disabled');
-                        elePrice.classList.remove('disabled-custom-show');
-                    }
-                }
-                if (eleDiscount) {
-                    if (config.short_sale_config.is_discount_on_product === false) {
-                        if (!eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.setAttribute('disabled', 'true');
-                            eleDiscount.classList.add('disabled-custom-show');
-                            eleDiscount.value = "0";
+                    if (config.long_sale_config.is_not_input_price === false) {
+                        if (elePrice.hasAttribute('disabled')) {
+                            elePrice.removeAttribute('disabled');
+                            elePrice.classList.remove('disabled-custom-show');
                         }
                     } else {
-                        if (eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.removeAttribute('disabled');
-                            eleDiscount.classList.remove('disabled-custom-show');
+                        if (!elePrice.hasAttribute('disabled')) {
+                            elePrice.setAttribute('disabled', 'true');
+                            elePrice.classList.add('disabled-custom-show');
                         }
                     }
-                }
-            } else if (is_long_sale === true) {
-                let elePriceList = row.querySelector('.dropdown-action');
-                let elePrice = row.querySelector('.table-row-price');
-                let eleDiscount = row.querySelector('.table-row-discount');
-                if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                    elePriceList.setAttribute('data-bs-toggle', 'dropdown')
-                }
-                if (config.long_sale_config.is_not_input_price === false) {
-                    if (elePrice.hasAttribute('disabled')) {
-                        elePrice.removeAttribute('disabled');
-                        elePrice.classList.remove('disabled-custom-show');
-                    }
-                } else {
-                    if (!elePrice.hasAttribute('disabled')) {
-                        elePrice.setAttribute('disabled', 'true');
-                        elePrice.classList.add('disabled-custom-show');
-                    }
-                }
-                if (eleDiscount) {
-                    if (config.long_sale_config.is_not_discount_on_product === false) {
-                        if (eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.removeAttribute('disabled');
-                            eleDiscount.classList.remove('disabled-custom-show');
-                        }
-                    } else {
-                        if (!eleDiscount.hasAttribute('disabled')) {
-                            eleDiscount.setAttribute('disabled', 'true');
-                            eleDiscount.classList.add('disabled-custom-show');
+                    if (eleDiscount) {
+                        if (config.long_sale_config.is_not_discount_on_product === false) {
+                            if (eleDiscount.hasAttribute('disabled')) {
+                                eleDiscount.removeAttribute('disabled');
+                                eleDiscount.classList.remove('disabled-custom-show');
+                            }
+                        } else {
+                            if (!eleDiscount.hasAttribute('disabled')) {
+                                eleDiscount.setAttribute('disabled', 'true');
+                                eleDiscount.classList.add('disabled-custom-show');
+                            }
                         }
                     }
                 }

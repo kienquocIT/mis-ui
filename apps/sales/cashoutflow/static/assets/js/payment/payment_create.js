@@ -15,7 +15,6 @@ $(document).ready(function () {
     let current_value_converted_from_ap = '';
     let payment_cost_items_filtered = [];
     let advance_payment_expense_items = [];
-    let plan_table_html = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
 
     function loadSaleOrderExpense(filter_sale_order) {
@@ -61,7 +60,6 @@ $(document).ready(function () {
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
                         }
-                        plan_table_html = plan_table_html.concat(resp.data['sale_order_expense_list']);
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
                     return [];
@@ -175,7 +173,6 @@ $(document).ready(function () {
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
                         }
-                        plan_table_html = plan_table_html.concat(resp.data['quotation_expense_list']);
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }
                     return [];

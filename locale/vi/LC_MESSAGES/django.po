@@ -2953,12 +2953,12 @@ msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá
 
 #
 msgid "Document Number"
-msgstr "Số chứng từ"
+msgstr "Số chứng từ."
 
 #
 msgid "No bank accounts information!"
-msgstr "Không có thông tin ngân hàng!"
+msgstr "Không có thông tin ngân hàng"
 
 #
 msgid "Sale Order/Quotation is not selected!"
-msgstr "Sale Order/Quotation chưa được chọn!"
+msgstr "Sale Order/Quotation chưa được chọn"

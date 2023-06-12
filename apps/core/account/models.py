@@ -5,10 +5,11 @@ from django.contrib.auth.models import PermissionsMixin
 from django.conf import settings
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
-from django.db.models import Manager
 from django.utils import timezone
 
 from apps.shared import AuthMsg, RandomGenerate
+
+from .managers import AccountManager
 
 
 class AuthUser(AbstractBaseUser, PermissionsMixin):
@@ -41,7 +42,11 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
     last_login = models.DateTimeField(verbose_name='Last Login', null=True)
 
-    objects = Manager()
+    is_active = models.BooleanField(verbose_name='active', default=True)
+    is_staff = models.BooleanField(verbose_name='staff status', default=False)
+    is_superuser = models.BooleanField(default=False, verbose_name='superuser')
+
+    objects = AccountManager()
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username_auth'

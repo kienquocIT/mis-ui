@@ -33,3 +33,22 @@ class ComponentCollections(View):
     def get(self, request, *args, **kwargs):
         cond_formset = ConditionFormset()
         return {"form": cond_formset}, status.HTTP_200_OK
+
+
+class TermsAndConditionsView(View):
+    @mask_view(
+        auth_require=True,
+        template='core/terms/terms.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class HelpAndSupportView(View):
+    @mask_view(
+        auth_require=True,
+        template='core/help_support/help_support.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+

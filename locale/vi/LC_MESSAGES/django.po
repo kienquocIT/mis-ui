@@ -2952,6 +2952,26 @@ msgid "If long sale (with opportunity), disable input discount on total"
 msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên tổng."
 
 #
+msgid "Allow input new tag"
+msgstr "Cho phép nhập thêm tag mới"
+
+#
+msgid "Accept type"
+msgstr "Cho phép các loại"
+
+#
+msgid "Attachments"
+msgstr "Tệp đính kèm"
+
+#
+msgid "Descriptions"
+msgstr "Mô tả"
+
+#
+msgid "Location raise"
+msgstr "Đường dẫn có xảy ra lỗi"
+
+#
 msgid "Document Number"
 msgstr "Số chứng từ."
 

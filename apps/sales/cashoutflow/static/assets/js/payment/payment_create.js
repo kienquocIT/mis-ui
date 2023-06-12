@@ -380,7 +380,6 @@ $(document).ready(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
                         payment_cost_items_filtered = data.payment_cost_items_list;
-                        console.log(payment_cost_items_filtered)
                     }
                 }
             })
@@ -489,7 +488,10 @@ $(document).ready(function () {
         ele.append(quotation_not_opp);
 
         $('#sale-code-select-box2 .multi-sale-code').on('click', function () {
-            $(this).each(function() {
+            sale_code_selected_list = [];
+            sale_order_selected_list = [];
+            quotation_selected_list = [];
+            $('.multi-sale-code').each(function() {
                 if ($(this).is(':checked')) {
                     let sale_code_id = $(this).attr('id');
                     $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
@@ -497,18 +499,14 @@ $(document).ready(function () {
                         if (data) {
                             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
                                 payment_cost_items_filtered = data.payment_cost_items_list;
-                                console.log(payment_cost_items_filtered)
                             }
                         }
                     })
 
                     advance_payment_expense_items = [];
-                    console.log(ap_list.length)
                     for (let i = 0; i < ap_list.length; i++) {
-                        console.log(ap_list[i])
                         if (ap_list[i].sale_order_mapped === $(this).attr('id') || ap_list[i].quotation_mapped === $(this).attr('id')) {
                             advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                            console.log(advance_payment_expense_items)
                         }
                     }
 
@@ -1228,7 +1226,6 @@ $(document).ready(function () {
                             let quotation_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
                                 return sale_code_id.includes(item.quotation_mapped);
                             });
-                            console.log(sale_order_mapped_ap.concat(quotation_mapped_ap))
                             return sale_order_mapped_ap.concat(quotation_mapped_ap)
                         }
                         else {

@@ -1019,7 +1019,10 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <span class="hidden" id="dataUrlSaleOrderCallDelivery" data-url="{% url 'SaleOrderDetailDeliveryAPI' pk=url_pattern.pk %}"></span>
+    <span class="hidden" id="dataUrlSaleOrderCallDelivery" data-url="{% url 'SaleOrderDetailDeliveryAPI' pk=url_pattern.pk %}"
+    data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
+    ></span>
+
 {% endblock %}
 
 {% block jsFooter %}
@@ -1039,7 +1042,8 @@
         $(document).ready(function (){
             $('#btnDeliverySaleOrder').click(function (event){
                 $.fn.showLoading();
-                let callDeliveryUrl = $('#dataUrlSaleOrderCallDelivery').attr('data-url');
+                const urlElm = $('#dataUrlSaleOrderCallDelivery')
+                let callDeliveryUrl = urlElm.attr('data-url');
                 if (callDeliveryUrl){
                     $.fn.callAjax(
                         callDeliveryUrl,
@@ -1050,8 +1054,11 @@
                         (resp)=>{
                             let data = $.fn.switcherResp(resp);
                             if (data?.['status'] === 200){
+                                const config = data?.config
+                                let is_URL = urlElm.attr('data-delivery')
+                                if (config?.is_picking) is_URL = urlElm.attr('data-picking')
                                 setTimeout(()=>{
-                                    window.location.reload()
+                                    window.location.href = is_URL
                                 }, 1000);
                             }
                         },

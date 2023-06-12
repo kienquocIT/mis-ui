@@ -1799,7 +1799,7 @@ class dataTableHandle {
                             $('#datable-quotation-create-promotion').DataTable().destroy();
                             data.promotion_check_list.map(function (item) {
                                 if (!checkList.includes(item.id)) {
-                                    let check = checkAvailablePromotion(item);
+                                    let check = checkAvailablePromotion(item, customer_id);
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['condition'] = check.condition;

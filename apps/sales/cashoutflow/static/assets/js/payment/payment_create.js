@@ -47,13 +47,9 @@ $(document).ready(function () {
                             let to_payment = results.reduce(function(s, item) {
                                 return s + item.to_payment_total;
                             }, 0);
-                            let available = results.reduce(function(s, item) {
-                                return s + item.available_total;
-                            }, 0);
                             data_detail[i].sum_AP_approved = sum_AP_approved;
                             data_detail[i].returned = returned;
                             data_detail[i].to_payment = to_payment;
-                            data_detail[i].available = available;
 
                             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
                                 return item.expense_id === expense_id;
@@ -63,6 +59,7 @@ $(document).ready(function () {
                             }, 0);
                             data_detail[i].others_payment = others_payment;
 
+                            data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
                         }
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
@@ -153,6 +150,7 @@ $(document).ready(function () {
                             let results = advance_payment_expense_items.filter(function(item) {
                                 return item.expense.id === expense_id;
                             });
+                            console.log(results)
                             let sum_AP_approved = results.reduce(function(s, item) {
                                 return s + item.after_tax_price;
                             }, 0);
@@ -162,13 +160,9 @@ $(document).ready(function () {
                             let to_payment = results.reduce(function(s, item) {
                                 return s + item.to_payment_total;
                             }, 0);
-                            let available = results.reduce(function(s, item) {
-                                return s + item.available_total;
-                            }, 0);
                             data_detail[i].sum_AP_approved = sum_AP_approved;
                             data_detail[i].returned = returned;
                             data_detail[i].to_payment = to_payment;
-                            data_detail[i].available = available;
 
                             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
                                 return item.expense_id === expense_id;
@@ -178,6 +172,7 @@ $(document).ready(function () {
                             }, 0);
                             data_detail[i].others_payment = others_payment;
 
+                            data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
                         }
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }

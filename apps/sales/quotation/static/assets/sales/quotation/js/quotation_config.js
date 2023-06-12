@@ -89,5 +89,111 @@ $(function () {
         });
 
 
+        // TAB INDICATOR
+        function loadIndicatorDbl() {
+            let $table = $('#table_indicator_list')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('quotation_indicator_list')) {
+                            return resp.data['quotation_indicator_list'] ? resp.data['quotation_indicator_list'] : []
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columnDefs: [
+                    {
+                        "width": "10%",
+                        "targets": 0
+                    }, {
+                        "width": "35%",
+                        "targets": 1
+                    }, {
+                        "width": "10%",
+                        "targets": 2
+                    }, {
+                        "width": "35%",
+                        "targets": 3
+                    }, {
+                        "width": "10%",
+                        "targets": 4
+                    }
+                ],
+                columns: [
+                    {
+                        targets: 0,
+                        render: (data, type, row) => {
+                            return `<span>${row.order}</span>`
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row) => {
+                            return `<span>${row.title}</span>`
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row) => {
+                            return `<i 
+                                        class="fa-regular fa-pen-to-square"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#indicatorEditModalCenter"
+                                    ></i>
+                                    <div
+                                            class="modal fade" id="indicatorEditModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="indicatorEditModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Formula</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row) => {
+                            return `<span>${row.description}</span>`
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: (data, type, row) => {
+                            return `<i class="fa-regular fa-trash-can"></i>`
+                        }
+                    }
+                ],
+            });
+        }
+
+        $('#tab-indicator').on('click', function () {
+            $('#table_indicator_list').DataTable().destroy();
+            loadIndicatorDbl();
+        })
+
+
     });
 });

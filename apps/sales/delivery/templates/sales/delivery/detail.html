@@ -68,7 +68,7 @@
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="inputDeliveryDate"
-                           class="form-label">{% trans 'Delivery Date' %}</label>
+                           class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
                                class="form-control date-picker"/>
@@ -127,7 +127,6 @@
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
                     <p id="state"></p>
-                    <input type="hidden" name="state"/>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6 offset-sm-6 offset-xs-0">
@@ -137,8 +136,7 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" name="delivery_option" id="delivery_opt">
-        <input type="hidden" name="sub_id" id="sub_id">
+
     </form>
     <div class="row mb-3">
         <ul class="nav nav-light nav-tabs">
@@ -179,7 +177,13 @@
                         <th>{% trans 'Delivery before' %}</th>
                         <th>{% trans 'Remain' %}</th>
                         <th>{% trans 'Ready' %}</th>
-                        <th>{% trans 'Done' %}</th>
+                        <th>
+                            {% if not data.config.is_picking and not data.config.is_parial_ship %}
+                                <button type="button" class="btn btn-soft-success" id="config-one-all">{% trans 'Done' %}</button>
+                            {% else %}
+                                {% trans 'Done' %}
+                            {% endif %}
+                        </th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -237,6 +241,13 @@
                     </tr>
                     </thead>
                     <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2"><p style="text-align:right">{% trans 'Total' %}:</p></th>
+                            <th><b><i>0</i></b></th>
+                            <th><b><i>0</i></b></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <div class="modal-footer justify-content-between ">
@@ -255,10 +266,10 @@
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
            data-error-done="{% trans 'Done column of line detail is empty!' %}"
-           data-state-info="{% trans 'Wait' %}"
-           data-state-warning="{% trans 'Partial' %}"
-           data-state-success="{% trans 'Full' %}"
-           data-state-primary="{% trans 'Done' %}"
+           data-state-warning="{% trans 'Wait' %}"
+           data-state-info="{% trans 'Ready' %}"
+           data-state-success="{% trans 'Done' %}"
+           data-outstock="{% trans 'Product out of stock.' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"
@@ -266,6 +277,7 @@
            data-contact="{% url 'ContactDetail' 1 %}"
            data-warehouse-prod="{% url 'WarehouseProductAPI' %}"
     >
+    <script id="request-data" type="application/json"></script>
 {% endblock %}
 
 {% block jsFooter %}

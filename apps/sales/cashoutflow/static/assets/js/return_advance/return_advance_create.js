@@ -18,7 +18,7 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        console.log(data)
+                        // console.log(data)
                         let sale_code_ele = $('[name="sale_code"]');
                         if (data.advance_payment_detail.sale_order_mapped !== null) {
                             sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
@@ -121,7 +121,7 @@ $(function () {
                                 <td class="number text-center wrap-text">${cnt}</td>
                                 <td class="wrap-text col-expense" data-id="${item.id}"><span>${item.expense.title}</span></td>
                                 <td class="wrap-text"><span>${item.expense.type.title}</span></td>
-                                <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
+                                <td class="wrap-text"><span class="mask-money" data-init-money="${item.available_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
                             </tr>`;
                 table.find('tbody').append(html);

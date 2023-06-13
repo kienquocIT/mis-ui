@@ -219,6 +219,13 @@ $(function () {
             }
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             configClass.checkConfig(false, newRow);
+            // load data dropdown
+            let selectProductID = 'quotation-create-product-box-product-' + String(order);
+            let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
+            loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
+            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
             // Clear table COST if add new row Product
             tableCost.DataTable().clear().draw();
             document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -338,7 +345,13 @@ $(function () {
                 "expense_subtotal_price": 0
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-            configClass.checkConfig(false, newRow);
+            // load data dropdown
+            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
+            let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
+            let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
+            loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
+            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
+            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
         });
 
 // Action on delete row expense
@@ -836,6 +849,7 @@ $(function () {
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function(e) {
             if (boxCustomer.val()) {
+                // destroy dataTable then call API load-check again
                 dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
             }
         });

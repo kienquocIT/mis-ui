@@ -18,7 +18,6 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        console.log(data)
                         let sale_code_ele = $('[name="sale_code"]');
                         if (data.advance_payment_detail.sale_order_mapped !== null) {
                             sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
@@ -151,13 +150,7 @@ $(function () {
             let frm = new SetupFormSubmit($(this));
             frm.dataForm['creator'] = $('[name="creator"]').attr('data-id');
             frm.dataForm['status'] = 0;
-            if($('#money-received').is(':checked')){
-                frm.dataForm['money_received'] = true;
-            }
-            else{
-                frm.dataForm['money_received'] = false;
-            }
-
+            frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
             let tbExpense = $('#dtbExpense');
             let cost_list = []
             tbExpense.find('tbody tr').each(function (){

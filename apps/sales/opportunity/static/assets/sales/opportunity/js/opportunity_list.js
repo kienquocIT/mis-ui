@@ -52,7 +52,7 @@ $(function () {
                     targets: 1,
                     render: (data, type, row) => {
                         const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.code}</a>`
+                        return `<a href="${link}" class="link-primary underline_hover">${row.code}</a>`
                     }
                 },
                 {
@@ -69,6 +69,31 @@ $(function () {
                 },
                 {
                     targets: 4,
+                    render: (data, type, row) => {
+                        let html = ``;
+                        let cnt = 0;
+                        row.sale_person.map(function (item){
+                            if (cnt !== 0 && cnt % 3 === 0){
+                                html += '<br/>'
+                            }
+                            html += `<span class="badge badge badge-soft-success  ml-2 mt-2">${item.name}</span>`;
+                            cnt += 1
+                        })
+                        return `<p>${html}</p>`
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        let open_date = null;
+                        if (row.open_date !== null){
+                            open_date = row.open_date.split(" ")[0]
+                        }
+                        return `<p>${open_date}</p>`
+                    }
+                },
+                {
+                    targets: 6,
                     className: 'action-center',
                     render: (data, type, row) => {
                         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
@@ -163,4 +188,5 @@ $(function () {
 
         loadProductCategory();
     });
+
 });

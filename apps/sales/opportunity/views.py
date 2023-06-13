@@ -101,3 +101,18 @@ class OpportunityDetailAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class OpportunityCustomerDecisionFactorListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).get()
+        if resp.state:
+            return {'opportunity_decision_factor': resp.result}, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

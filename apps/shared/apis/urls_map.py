@@ -237,4 +237,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
 
-
+    # Opportunity config
+    OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')

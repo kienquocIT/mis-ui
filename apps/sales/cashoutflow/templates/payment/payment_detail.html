@@ -53,6 +53,7 @@
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
+    {{ data.data.opportunity_list | json_script:"opportunity_list" }}
     <form id="form-update-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
           data-url-detail="{% url "PaymentDetailAPI" '0' %}"

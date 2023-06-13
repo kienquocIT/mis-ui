@@ -348,7 +348,8 @@
                     <table id="tab_plan_datatable" class="table nowrap w-100" data-method="GET"
                            data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
                            data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
-                           data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
+                           data-url-quotation="{% url 'QuotationExpenseListAPI' %}"
+                           data-url-opportunity="{% url 'OpportunityExpenseListAPI' %}">
                         <thead>
                         <tr>
                             <th>{% trans 'Expense items' %}</th>

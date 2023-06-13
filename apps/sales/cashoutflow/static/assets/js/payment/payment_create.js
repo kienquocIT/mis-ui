@@ -12,6 +12,7 @@ $(document).ready(function () {
     let sale_code_selected_list = [];
     let sale_order_selected_list = [];
     let quotation_selected_list = [];
+    let opportunity_selected_list = [];
     let load_default = 0;
     let current_value_converted_from_ap = '';
     let payment_cost_items_filtered = [];
@@ -201,7 +202,6 @@ $(document).ready(function () {
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
             if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
                 if ($('#radio-non-sale').is(':checked') === false) {
-                    console.log($('#sale-code-select-box option:selected').attr('data-sale-person-id').split(','))
                     loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id').split(','));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
@@ -258,13 +258,15 @@ $(document).ready(function () {
                     sale_person_id_list.push(item.sale_person[i].id)
                 }
                 if (sale_person_id_list.includes(beneficiary)) {
-                    ele2.append(`<option data-type="2" data-sale-person-id="` + sale_person_id_list + `" value="` + item.id + `">(` + item.code + `) ` + item.title + `</option>`);
+                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-person-id="` + sale_person_id_list + `" value="` + item.id + `">(` + item.code + `) ` + item.title + `</option>`);
                 }
             }
         })
     }
 
     function loadSaleCodeMulti() {
+        let sale_order_loaded = [];
+        let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
         ele.append(`<div class="h-400p"></div>`);
@@ -272,43 +274,57 @@ $(document).ready(function () {
 
         let sale_not_opp = '';
         let quotation_not_opp = '';
-        ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Sale order</b></div></div>`)
         sale_order_list.map(function (item) {
+            sale_order_loaded.push(item.customer.id);
             if (item.opportunity.id) {
+                oppcode_loaded.push(item.opportunity.id);
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
-                                <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
+                                <span class="text-danger col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
                                 <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
                             </div>`)
             }
             else {
                 sale_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
-                                    <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
+                                    <span class="text-danger col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                     <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
                                     <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
                                 </div>`
             }
         })
         ele.append(sale_not_opp);
-
-        ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Quotation</b></div></div>`)
         quotation_list.map(function (item) {
-            if (item.opportunity.id) {
-                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
-                                <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
-                                <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
-                            </div>`)
-            }
-            else {
-                quotation_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
-                                        <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
-                                        <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                        <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
-                                    </div>`
+            if (sale_order_loaded.includes(item.customer.id) === false) {
+                if (item.opportunity.id) {
+                    oppcode_loaded.push(item.opportunity.id);
+                    ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
+                                    <span class="text-primary col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
+                                    <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title + `</span>
+                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
+                                </div>`)
+                } else {
+                    quotation_not_opp += `<div class="row mb-2" title="` + item.code + `: ` + item.title + `">
+                                            <span class="text-primary col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
+                                            <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title + `</span>
+                                            <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
+                                        </div>`
+                }
             }
         })
         ele.append(quotation_not_opp);
+        opportunity_list.map(function (item) {
+            if (oppcode_loaded.includes(item.id) === false) {
+                let sale_person_id_list = [];
+                for (let i = 0; i < item.sale_person.length; i++) {
+                    sale_person_id_list.push(item.sale_person[i].id)
+                }
+                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
+                                <span class="text-blue col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
+                                <span class="col-7 title-span" data-sale-person-id="` + sale_person_id_list + `">` + item.title + `</span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="2" id="` + item.id + `"></span>
+                            </div>`)
+            }
+        })
 
         $('#sale-code-select-box2 .multi-sale-code').on('click', function () {
             $('#tab_plan_datatable').remove();
@@ -316,6 +332,7 @@ $(document).ready(function () {
             sale_code_selected_list = [];
             sale_order_selected_list = [];
             quotation_selected_list = [];
+            opportunity_selected_list = [];
             $('.multi-sale-code').each(function() {
                 if ($(this).is(':checked')) {
                     let sale_code_id = $(this).attr('id');
@@ -341,6 +358,9 @@ $(document).ready(function () {
                     }
                     else if ($(this).attr('data-type') === '1') {
                         quotation_selected_list.push($(this).attr('id'));
+                    }
+                    else if ($(this).attr('data-type') === '2') {
+                        opportunity_selected_list.push($(this).attr('id'));
                     }
                 }
             });
@@ -590,6 +610,7 @@ $(document).ready(function () {
         sale_code_selected_list = [];
         sale_order_selected_list = [];
         quotation_selected_list = [];
+        opportunity_selected_list = [];
         $('#tab_line_detail_datatable tbody').html('');
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
@@ -619,7 +640,7 @@ $(document).ready(function () {
         else if ($(this).val() === 'MULTI') {
             sale_code_selected_list = [];
             $('#beneficiary-select-box').prop('disabled', true);
-            loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+            loadBeneficiary($('#data-init-payment-create-request-employee-id').val());
             $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
@@ -806,6 +827,7 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
                 $('.expense-tables').html(``);
                 $('#wizard-t-0').click();
+                console.log(sale_code_id_list)
                 loadAPList(sale_code_id_list);
             });
 
@@ -1047,7 +1069,10 @@ $(document).ready(function () {
                             let quotation_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
                                 return sale_code_id.includes(item.quotation_mapped);
                             });
-                            return sale_order_mapped_ap.concat(quotation_mapped_ap)
+                            let opportunity_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
+                                return sale_code_id.includes(item.opportunity_mapped);
+                            });
+                            return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
                         }
                         else {
                             return [];
@@ -1393,6 +1418,7 @@ $(document).ready(function () {
             delete frm.dataForm['sale_code']
             frm.dataForm['sale_order_selected_list'] = sale_order_selected_list;
             frm.dataForm['quotation_selected_list'] = quotation_selected_list;
+            frm.dataForm['opportunity_selected_list'] = opportunity_selected_list;
         }
         else if (frm.dataForm['sale_code_type'] === 0) {  // sale
             if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
@@ -1400,6 +1426,9 @@ $(document).ready(function () {
             }
             if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
                 frm.dataForm['sale_code_detail'] = 1;
+            }
+            if ($('#sale-code-select-box option:selected').attr('data-type') === '2') {
+                frm.dataForm['sale_code_detail'] = 2;
             }
         }
 

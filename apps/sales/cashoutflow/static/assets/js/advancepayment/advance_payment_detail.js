@@ -29,7 +29,11 @@ $(document).ready(function () {
                 if (advance_payment.quotation_mapped) {
                     quotation_mapped_id = advance_payment.quotation_mapped.id;
                 }
-                loadSaleCode(sale_order_mapped_id, quotation_mapped_id);
+                let opportunity_mapped_id = '';
+                if (advance_payment.opportunity_mapped) {
+                    opportunity_mapped_id = advance_payment.opportunity_mapped.id;
+                }
+                loadSaleCode(sale_order_mapped_id, quotation_mapped_id, opportunity_mapped_id);
                 $('#beneficiary-select-box').prop('disabled', true);
             }
             else if (advance_payment.sale_code_type === 1) {
@@ -94,7 +98,7 @@ $(document).ready(function () {
             $('#return_date_id').val(advance_payment.return_date.split(' ')[0])
 
             if (advance_payment.beneficiary) {
-                loadBeneficiary(advance_payment.beneficiary);
+                loadBeneficiary(advance_payment.beneficiary.id);
             }
 
             if (advance_payment.expense_items.length > 0) {
@@ -192,6 +196,9 @@ $(document).ready(function () {
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
                     loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
                 }
+                if ($('#sale-code-select-box option:selected').attr('data-type') === '2') {
+                    $('#beneficiary-select-box').prop('disabled', false);
+                }
                 $('#notify-none-sale-code').prop('hidden', true);
                 $('#tab_plan_datatable').prop('hidden', false);
             }
@@ -239,6 +246,7 @@ $(document).ready(function () {
     const quotation_list = JSON.parse($('#quotation_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
     const account_list = JSON.parse($('#account_list').text());
+    const opportunity_list = JSON.parse($('#opportunity_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
         return obj;
@@ -506,14 +514,17 @@ $(document).ready(function () {
         total_div.attr('data-init-money', sum_price_after_tax_value);
     }
 
-    function loadSaleCode(sale_order_mapped, quotation_mapped) {
+    function loadSaleCode(sale_order_mapped, quotation_mapped, opportunity_mapped) {
+        let sale_order_loaded = [];
+        let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
         let sale_not_opp = '';
         let quotation_not_opp = '';
-        ele.append(`<optgroup label="Sale Order" class="text-primary">`)
         sale_order_list.map(function (item) {
+            sale_order_loaded.push(item.customer.id);
             if (item.opportunity.id) {
+                oppcode_loaded.push(item.opportunity.id);
                 ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
             else {
@@ -521,18 +532,26 @@ $(document).ready(function () {
             }
         })
         ele.append(sale_not_opp);
-        ele.append(`</optgroup>`);
-        ele.append(`<optgroup label="Quotation" class="text-primary">`);
         quotation_list.map(function (item) {
-            if (item.opportunity.id) {
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
-            }
-            else {
-                quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+            if (sale_order_loaded.includes(item.customer.id) === false) {
+                if (item.opportunity.id) {
+                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                } else {
+                    oppcode_loaded.push(item.opportunity.id);
+                    quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                }
             }
         })
         ele.append(quotation_not_opp);
-        ele.append(`</optgroup>`);
+        opportunity_list.map(function (item) {
+            if (oppcode_loaded.includes(item.id) === false) {
+                let sale_person_id_list = [];
+                for (let i = 0; i < item.sale_person.length; i++) {
+                    sale_person_id_list.push(item.sale_person[i].id)
+                }
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + sale_person_id_list + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+            }
+        })
 
         let sale_code_mapped = '';
         if (sale_order_mapped) {
@@ -540,6 +559,9 @@ $(document).ready(function () {
         }
         if (quotation_mapped) {
             sale_code_mapped = quotation_mapped;
+        }
+        if (opportunity_mapped) {
+            sale_code_mapped = opportunity_mapped;
         }
         let sale_order_mapped_title = $('#sale-code-select-box2').find(`.dropdown-item[data-value="` + sale_code_mapped + `"]`).find('.title-span').text()
         $('#sale-code-select-box2-show').val(sale_order_mapped_title);
@@ -568,7 +590,6 @@ $(document).ready(function () {
         let ele2 = $('#sale-code-select-box');
         ele2.html('');
         ele2.append(`<option></option>`);
-        ele2.append(`<optgroup label="Sale Order">`);
         sale_order_list.map(function (item) {
             let selected = '';
             if (sale_order_mapped === item.id) {
@@ -581,8 +602,6 @@ $(document).ready(function () {
                 ele2.append(`<option ` + selected + ` data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(No OppCode) ` + item.title +`</option>`);
             }
         })
-        ele2.append(`</optgroup>`);
-        ele2.append(`<optgroup label="Quotation">`);
         quotation_list.map(function (item) {
             let selected = '';
             if (quotation_mapped === item.id) {
@@ -595,7 +614,19 @@ $(document).ready(function () {
                 ele2.append(`<option ` + selected + ` data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(No OppCode) ` + item.title +`</option>`);
             }
         })
-        ele2.append(`</optgroup>`);
+        opportunity_list.map(function (item) {
+            if (oppcode_loaded.includes(item.id) === false) {
+                let selected = '';
+                if (opportunity_mapped === item.id) {
+                    selected = 'selected';
+                }
+                let sale_person_id_list = [];
+                for (let i = 0; i < item.sale_person.length; i++) {
+                    sale_person_id_list.push(item.sale_person[i].id)
+                }
+                ele2.append(`<option ` + selected + ` data-type="2" data-sale-person-id="` + sale_person_id_list + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
+            }
+        })
 
         let sale_code_id = $('#sale-code-select-box option:selected').attr('value');
         $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {

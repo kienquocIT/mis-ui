@@ -823,7 +823,6 @@ class checkConfigHandle {
             let opportunity = $('#select-box-quotation-create-opportunity').val();
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
             let empty_list = ["", null]
             if (!opportunity || empty_list.includes(opportunity)) { // short sale
                 if (is_change_opp === true) {
@@ -845,13 +844,6 @@ class checkConfigHandle {
                         if (eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.removeAttribute('disabled');
                             eleDiscountTotal.classList.remove('disabled-custom-show');
-                        }
-                    }
-                    // ReCheck Table Expense
-                    if (!tableExpense.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                            let row = tableExpense.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, true, false);
                         }
                     }
                 } else {
@@ -884,13 +876,6 @@ class checkConfigHandle {
                         if (!eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
-                        }
-                    }
-                    // ReCheck Table Expense
-                    if (!tableExpense.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                            let row = tableExpense.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, false, true);
                         }
                     }
                 } else {

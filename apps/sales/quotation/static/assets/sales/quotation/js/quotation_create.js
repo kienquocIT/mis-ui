@@ -345,7 +345,6 @@ $(function () {
                 "expense_subtotal_price": 0
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-            configClass.checkConfig(false, newRow);
             // load data dropdown
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);

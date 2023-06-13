@@ -1777,7 +1777,7 @@ class dataTableHandle {
         });
     }
 
-    loadTableQuotationPromotion(promotion_id, customer_id = null) {
+    loadTableQuotationPromotion(promotion_id, customer_id = null, is_submit_check = false) {
         let self = this;
         let jqueryId = '#' + promotion_id;
         let ele = $(jqueryId);
@@ -1799,14 +1799,30 @@ class dataTableHandle {
                             $('#datable-quotation-create-promotion').DataTable().destroy();
                             data.promotion_check_list.map(function (item) {
                                 if (!checkList.includes(item.id)) {
-                                    let check = checkAvailablePromotion(item);
+                                    let check = checkAvailablePromotion(item, customer_id);
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['condition'] = check.condition;
-                                        passList.push(item)
+                                        passList.push(item);
                                     } else {
                                         item['is_pass'] = false;
-                                        failList.push(item)
+                                        failList.push(item);
+                                        if (is_submit_check === true) { // check again promotion limit when submit
+                                            let tableProduct = document.getElementById('datable-quotation-create-product');
+                                            let rowPromotion = tableProduct.querySelector('.table-row-promotion');
+                                            if (rowPromotion) {
+                                                if (item.id === rowPromotion.getAttribute('data-id')) {
+                                                    // Delete Promotion Row & ReCalculate Total
+                                                    deletePromotionRows($(tableProduct), true, false);
+                                                    calculateClass.updateTotal(tableProduct[0], true, false, false);
+                                                    return true
+                                                } else {
+                                                    return true
+                                                }
+                                            } else {
+                                                return true
+                                            }
+                                        }
                                     }
                                     checkList.push(item.id)
                                 }
@@ -1818,6 +1834,7 @@ class dataTableHandle {
                 }
             )
         }
+        return true
     }
 
     dataTableCopyQuotation(data, table_id) {
@@ -2339,6 +2356,8 @@ class calculateCaseHandle {
     }
 
 }
+
+let calculateClass = new calculateCaseHandle();
 
 class submitHandle {
     setupDataProduct() {

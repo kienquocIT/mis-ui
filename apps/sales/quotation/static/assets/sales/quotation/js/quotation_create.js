@@ -345,7 +345,6 @@ $(function () {
                 "expense_subtotal_price": 0
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-            configClass.checkConfig(false, newRow);
             // load data dropdown
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
@@ -850,6 +849,7 @@ $(function () {
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function(e) {
             if (boxCustomer.val()) {
+                // destroy dataTable then call API load-check again
                 dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
             }
         });

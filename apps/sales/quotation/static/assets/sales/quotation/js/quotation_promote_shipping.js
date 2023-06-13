@@ -1,15 +1,23 @@
 // Promotions
-function checkAvailablePromotion(data_promotion) {
+function checkAvailablePromotion(data_promotion, customer_id = null) {
     let tableProd = $('#datable-quotation-create-product');
     let tableEmpty = tableProd[0].querySelector('.dataTables_empty');
-    if (!tableEmpty) { // DISCOUNT
-        if (data_promotion.is_discount === true) {
+    if (!tableEmpty) {
+        if (data_promotion.is_discount === true) { // DISCOUNT
             let is_before_tax = false;
             let is_after_tax = false;
             let percentDiscount = 0;
             let maxDiscountAmount = 0;
             let fixDiscountAmount = 0;
             let conditionCheck = data_promotion.discount_method;
+            // check limit used on Sale Order
+            let check_limit = checkLimit(data_promotion, conditionCheck, customer_id);
+            if (check_limit === false) {
+                return {
+                    'is_pass': false,
+                }
+            }
+            // end check limit
             if (conditionCheck.before_after_tax === true) {
                 is_before_tax = true;
             } else {
@@ -298,6 +306,55 @@ function checkAvailablePromotion(data_promotion) {
     return {
         'is_pass': false,
     }
+}
+
+function checkLimit(data_promotion, conditionCheck, customer_id) {
+    let max_usages = conditionCheck.max_usages;
+    if (data_promotion.sale_order_used.length >= max_usages && max_usages > 0) {
+        return false
+    }
+    let use_count = conditionCheck.use_count;
+    let times_condition = conditionCheck.times_condition;
+    let check_by_customer = 0;
+    for (let i = 0; i < data_promotion.sale_order_used.length; i++) {
+        let order_used = data_promotion.sale_order_used[i];
+        if (order_used.customer_id === customer_id) {
+            if (times_condition === 1) { // IN VALID TIME
+                let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
+                let startDate = new Date(data_promotion.valid_date_start).getTime();
+                let endDate = new Date(data_promotion.valid_date_end).getTime();
+                if (dateToCheck >= startDate && dateToCheck <= endDate) {
+                    check_by_customer++
+                }
+            } else if (times_condition === 2) { // IN CURRENT WEEK
+                let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
+                let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                const weekNumber1 = getWeekNumber(dateToCheck);
+                const weekNumber2 = getWeekNumber(dateCurrent);
+                if (weekNumber1 === weekNumber2) {
+                    check_by_customer++
+                }
+            } else if (times_condition === 3) { // IN CURRENT MONTH
+                let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
+                let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
+                if (dateToCheck === dateCurrent) {
+                    check_by_customer++
+                }
+            }
+        }
+    }
+    if (check_by_customer >= use_count && use_count > 0) {
+        return false
+    }
+}
+
+// Function to calculate the ISO week number for a given date
+function getWeekNumber(date) {
+    const yearStart = new Date(date.getFullYear(), 0, 1);
+    const weekNumber = Math.ceil(
+        ((date - yearStart) / 86400000 + yearStart.getDay() + 1) / 7
+    );
+    return weekNumber;
 }
 
 function getPromotionResult(condition) {
@@ -766,7 +823,6 @@ class checkConfigHandle {
             let opportunity = $('#select-box-quotation-create-opportunity').val();
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
             let empty_list = ["", null]
             if (!opportunity || empty_list.includes(opportunity)) { // short sale
                 if (is_change_opp === true) {
@@ -788,13 +844,6 @@ class checkConfigHandle {
                         if (eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.removeAttribute('disabled');
                             eleDiscountTotal.classList.remove('disabled-custom-show');
-                        }
-                    }
-                    // ReCheck Table Expense
-                    if (!tableExpense.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                            let row = tableExpense.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, true, false);
                         }
                     }
                 } else {
@@ -827,13 +876,6 @@ class checkConfigHandle {
                         if (!eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
-                        }
-                    }
-                    // ReCheck Table Expense
-                    if (!tableExpense.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                            let row = tableExpense.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, false, true);
                         }
                     }
                 } else {

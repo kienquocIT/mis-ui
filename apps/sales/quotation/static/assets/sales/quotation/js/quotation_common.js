@@ -1777,7 +1777,7 @@ class dataTableHandle {
         });
     }
 
-    loadTableQuotationPromotion(promotion_id, customer_id = null) {
+    loadTableQuotationPromotion(promotion_id, customer_id = null, is_save_check = false) {
         let self = this;
         let jqueryId = '#' + promotion_id;
         let ele = $(jqueryId);
@@ -1786,6 +1786,7 @@ class dataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
+        let passIDList = [];
         if (customer_id) {
             let data_filter = {
                 'customer_type': 0,
@@ -1803,7 +1804,8 @@ class dataTableHandle {
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['condition'] = check.condition;
-                                        passList.push(item)
+                                        passList.push(item);
+                                        passIDList.push(item.id)
                                     } else {
                                         item['is_pass'] = false;
                                         failList.push(item)
@@ -1811,6 +1813,9 @@ class dataTableHandle {
                                     checkList.push(item.id)
                                 }
                             })
+                            if (is_save_check === true) { // check again promotion limit when submit
+                                return passIDList
+                            }
                             passList = passList.concat(failList);
                             self.dataTablePromotion(passList, 'datable-quotation-create-promotion');
                         }
@@ -1818,6 +1823,7 @@ class dataTableHandle {
                 }
             )
         }
+        return true
     }
 
     dataTableCopyQuotation(data, table_id) {

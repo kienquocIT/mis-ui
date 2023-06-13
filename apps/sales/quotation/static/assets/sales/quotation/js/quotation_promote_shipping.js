@@ -318,30 +318,29 @@ function checkLimit(data_promotion, conditionCheck, customer_id) {
     let check_by_customer = 0;
     for (let i = 0; i < data_promotion.sale_order_used.length; i++) {
         let order_used = data_promotion.sale_order_used[i];
-        if (times_condition === 1) { // VALID TIME
-            let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
-            let startDate = new Date(data_promotion.valid_date_start).getTime();
-            let endDate = new Date(data_promotion.valid_date_end).getTime();
-            if (dateToCheck >= startDate && dateToCheck <= endDate) {
-                check_by_customer++
-            }
-        } else if (times_condition === 2) { // WEEK
-            let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-            let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
-            const weekNumber1 = getWeekNumber(dateToCheck);
-            const weekNumber2 = getWeekNumber(dateCurrent);
-            if (weekNumber1 === weekNumber2) {
-                check_by_customer++
-            }
-        } else if (times_condition === 3) { // MONTH
-            let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-            let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
-            if (dateToCheck === dateCurrent) {
-                check_by_customer++
-            }
-        }
         if (order_used.customer_id === customer_id) {
-            //
+            if (times_condition === 1) { // IN VALID TIME
+                let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
+                let startDate = new Date(data_promotion.valid_date_start).getTime();
+                let endDate = new Date(data_promotion.valid_date_end).getTime();
+                if (dateToCheck >= startDate && dateToCheck <= endDate) {
+                    check_by_customer++
+                }
+            } else if (times_condition === 2) { // IN CURRENT WEEK
+                let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
+                let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                const weekNumber1 = getWeekNumber(dateToCheck);
+                const weekNumber2 = getWeekNumber(dateCurrent);
+                if (weekNumber1 === weekNumber2) {
+                    check_by_customer++
+                }
+            } else if (times_condition === 3) { // IN CURRENT MONTH
+                let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
+                let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
+                if (dateToCheck === dateCurrent) {
+                    check_by_customer++
+                }
+            }
         }
     }
     if (check_by_customer >= use_count && use_count > 0) {

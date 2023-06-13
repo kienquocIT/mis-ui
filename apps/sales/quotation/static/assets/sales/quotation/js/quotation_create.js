@@ -850,6 +850,7 @@ $(function () {
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function(e) {
             if (boxCustomer.val()) {
+                // destroy dataTable then call API load-check again
                 dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
             }
         });

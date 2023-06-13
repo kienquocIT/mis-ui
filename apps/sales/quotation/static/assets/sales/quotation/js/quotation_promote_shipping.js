@@ -11,7 +11,7 @@ function checkAvailablePromotion(data_promotion, customer_id = null) {
             let fixDiscountAmount = 0;
             let conditionCheck = data_promotion.discount_method;
             // check limit used on Sale Order
-            let check_limit = checkLimit(data_promotion, conditionCheck);
+            let check_limit = checkLimit(data_promotion, conditionCheck, customer_id);
             if (check_limit === false) {
                 return {
                     'is_pass': false,

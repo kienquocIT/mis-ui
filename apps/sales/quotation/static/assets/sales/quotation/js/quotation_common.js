@@ -1777,7 +1777,7 @@ class dataTableHandle {
         });
     }
 
-    loadTableQuotationPromotion(promotion_id, customer_id = null, is_save_check = false) {
+    loadTableQuotationPromotion(promotion_id, customer_id = null, is_submit_check = false) {
         let self = this;
         let jqueryId = '#' + promotion_id;
         let ele = $(jqueryId);
@@ -1786,7 +1786,6 @@ class dataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
-        let passIDList = [];
         if (customer_id) {
             let data_filter = {
                 'customer_type': 0,
@@ -1805,17 +1804,29 @@ class dataTableHandle {
                                         item['is_pass'] = true;
                                         item['condition'] = check.condition;
                                         passList.push(item);
-                                        passIDList.push(item.id)
                                     } else {
                                         item['is_pass'] = false;
-                                        failList.push(item)
+                                        failList.push(item);
+                                        if (is_submit_check === true) { // check again promotion limit when submit
+                                            let tableProduct = document.getElementById('datable-quotation-create-product');
+                                            let rowPromotion = tableProduct.querySelector('.table-row-promotion');
+                                            if (rowPromotion) {
+                                                if (item.id === rowPromotion.getAttribute('data-id')) {
+                                                    // Delete Promotion Row & ReCalculate Total
+                                                    deletePromotionRows($(tableProduct), true, false);
+                                                    calculateClass.updateTotal(tableProduct[0], true, false, false);
+                                                    return true
+                                                } else {
+                                                    return true
+                                                }
+                                            } else {
+                                                return true
+                                            }
+                                        }
                                     }
                                     checkList.push(item.id)
                                 }
                             })
-                            if (is_save_check === true) { // check again promotion limit when submit
-                                return passIDList
-                            }
                             passList = passList.concat(failList);
                             self.dataTablePromotion(passList, 'datable-quotation-create-promotion');
                         }
@@ -2345,6 +2356,8 @@ class calculateCaseHandle {
     }
 
 }
+
+let calculateClass = new calculateCaseHandle();
 
 class submitHandle {
     setupDataProduct() {

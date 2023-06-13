@@ -45,7 +45,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, is_load_detail = false) {
+    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null) {
         let self = this;
         let jqueryId = '#' + customer_id;
         let ele = $(jqueryId);
@@ -83,7 +83,6 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-                                if (is_load_detail === false) {
                                     // load Shipping & Billing by Customer
                                     self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
                                     // load Contact by Customer
@@ -94,7 +93,6 @@ class loadDataHandle {
                                     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id)
                                     // Store Account Price List
                                     document.getElementById('customer-price-list').value = item.price_list_mapped.id;
-                                }
                             }
                         })
                         if (dataMapOpp) {
@@ -765,7 +763,7 @@ class loadDataHandle {
             self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);
         }
         if (data.customer) {
-            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), true)
+            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'))
         }
         if (data.contact) {
             self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)

@@ -223,13 +223,7 @@ class ContactCreateAPI(APIView):
         if response.state:
             return response.result, status.HTTP_200_OK
         if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, response.status
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return {'errors': response.errors}, response.status
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -265,7 +259,8 @@ class ContactDetailAPI(APIView):
 class ContactUpdate(View):
     @mask_view(
         auth_require=True, template='masterdata/saledata/accounts/contact_update.html',
-        breadcrumb='CONTACT_UPDATE_PAGE'
+        breadcrumb='CONTACT_DETAIL_PAGE',
+        menu_active='menu_contact_detail',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -281,11 +276,7 @@ class ContactUpdateAPI(APIView):
             return response.result, status.HTTP_200_OK
         if response.errors:
             if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, response.status
+                return {'errors': response.errors}, response.status
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 

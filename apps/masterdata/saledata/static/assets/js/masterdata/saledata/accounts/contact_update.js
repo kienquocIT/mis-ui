@@ -168,6 +168,7 @@ $(document).ready(function () {
                     else {
                         loadInterestList([]);
                     }
+                    $.fn.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
                 }
             }
         )
@@ -255,18 +256,34 @@ $(document).ready(function () {
 
         let pk = window.location.pathname.split('/').pop();
 
+        $.fn.showLoading();
         $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
-                    $.fn.notifyPopup({description: resp.detail}, 'success');
-                    setTimeout(location.reload.bind(location), 1000);
-                    window.location.replace("/saledata/contacts");
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data['status'] === 200){
+                        $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
+                        setTimeout(
+                            ()=>{
+                                // window.location.replace("/saledata/contacts");
+                                // location.reload.bind(location)
+                                window.location.reload();
+                            }, 1000
+                        );
+                    }
+                    setTimeout(
+                    ()=>{
+                        $.fn.hideLoading();
+                    },
+                    1000
+                )
                 }, (err) => {
+                    $.fn.hideLoading();
                     // $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     })
-})
+});
 
 
 $("#first_name_id").on('change', function () {

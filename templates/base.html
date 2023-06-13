@@ -172,7 +172,7 @@
                             <div class="hk-sidebar-togglable active"></div>
                         </header>
                         <div class="blog-body">
-                            <div data-simplebar class="nicescroll-bar">
+                            <div data-simplebar class="nicescroll-bar" id="idxPageContent">
                                 {% block pageContent %}
                                 {% endblock %}
                             </div>
@@ -221,6 +221,7 @@
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
         <span id="idWFRuntime" data-runtime-id=""></span>
         <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
+        <span id="idPKDetail" data-pk="{{ pk }}"></span>
     </div>
     <!-- /Message translate usually -->
     <!-- /Message translate base -->
@@ -291,7 +292,7 @@
 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="tab_block_activities">
+                    <div class="tab-pane fade" id="tab_block_activities" data-url="{% url 'ActivityLogListAPI' %}?doc_id={{ pk }}">
                         <span id="elementTypingText"></span>
                     </div>
                 </div>
@@ -378,7 +379,10 @@
                         </div>
                         <div class="form-group hidden">
                             <label for="staticTicketResp" class="form-label">{% trans 'Code Ticket' %}</label>
-                            <input type="text" readonly class="form-control-plaintext text-danger" id="staticTicketResp">
+                            <input
+                                    type="text" readonly class="form-control-plaintext text-danger"
+                                    id="staticTicketResp"
+                            >
                         </div>
                     </div>
                     <div class="modal-footer">

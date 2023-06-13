@@ -40,6 +40,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
 
+    # Logging
+    LOG_ACTIVITIES = StringUrl('log/activities')
+
     # state of task background
     TASK_BG = StringUrl('task-bg/{pk}')
 

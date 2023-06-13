@@ -1172,6 +1172,31 @@ $(document).ready(function () {
         return ulStages.join("");
     }
 
+    function renderLogActivities(tabActivityLog, log_data) {
+        tabActivityLog.empty();
+        log_data.map(
+            (item) => {
+                console.log('item?.[\'data_change\']: ', item?.['data_change']);
+                let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${item.date_created}</span>`;
+                let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
+                let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
+                let dataChangeHTML = `<pre class="log-act-data-change hidden">${JSON.stringify(item?.['data_change'], null, 2)}</pre>`;
+                let baseHTML = ``;
+                if (item?.['automated_logging'] === true) {
+                    baseHTML = `<div class="avatar avatar-icon avatar-xxs avatar-soft-dark avatar-rounded mr-1"><span class="initial-wrap"><i class="fa-solid fa-gear"></i></span></div>`;
+                } else {
+                    baseHTML = `<span class="badge badge-primary mr-1">${item?.['employee_data']?.['full_name']}</span>`;
+                }
+                tabActivityLog.append(`<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`);
+            }
+        );
+    }
+
+    $(document).on('click', '.btn-log-act-more', function (event) {
+        event.preventDefault();
+        $(this).closest('p').next('.log-act-data-change').toggleClass('hidden');
+    })
+
     $('.btn-action-wf').click(function (event) {
         event.preventDefault();
 
@@ -1204,6 +1229,8 @@ $(document).ready(function () {
 
     $('#btnLogShow').click(function (event) {
         event.preventDefault();
+
+        // log runtime
         let groupLogEle = $('#drawer_log_data');
         let baseUrl = groupLogEle.attr('data-url');
         if (baseUrl && !groupLogEle.attr('data-log-loaded')) {
@@ -1222,6 +1249,26 @@ $(document).ready(function () {
                 })
             }
         }
+
+        // log activities
+        let tabActivityLog = $('#tab_block_activities');
+        let activityUrl = tabActivityLog.attr('data-url');
+        $.fn.callAjax(
+            activityUrl,
+            'GET',
+            {},
+            true,
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                    renderLogActivities(tabActivityLog, data['log_data']);
+                }
+            },
+            (errs) => {
+
+            }
+        )
     });
     // -- Action support Workflow in Doc Detail
 });
@@ -1245,10 +1292,12 @@ $.fn.extend({
     arrayIncludesAll: function (a, b) {
         return b.every(value => a.includes(value));
     },
-    shortName: function (name) {
-        return name.split(" ").map((item) => {
+    shortName: function (name, length = 2) {
+        let rs = name.split(" ").map((item) => {
             return item ? item.charAt(0) : ""
         }).join("");
+        if (rs.length > length) return rs.slice(0, length);
+        return rs;
     },
     isBoolean(value) {
         return typeof value === 'boolean';
@@ -1470,6 +1519,9 @@ $.fn.extend({
         }
         return false;
     },
+    getPkDetail: function () {
+        return $('#idPKDetail').attr('data-pk');
+    },
 
     // default components
     dateRangePickerDefault: function (opts) {
@@ -1502,6 +1554,12 @@ $.fn.extend({
                 des_tmp = option.description;
             } else if (Array.isArray(option.description)) {
                 des_tmp = option.description.join(", ");
+            } else if (typeof option.description === 'object') {
+                let des_tmp_arr = [];
+                for (const [_key, value] of Object.entries(option.description)) {
+                    des_tmp_arr.push(value);
+                }
+                des_tmp = des_tmp_arr.join(", ");
             } else {
                 des_tmp = option.description.toString();
             }
@@ -1720,7 +1778,7 @@ $.fn.extend({
                     return jQuery.fn.redirectLogin(1000);
                 // return {}
                 case 403:
-                    jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
+                    jQuery.fn.notifyB({'description': resp.data.errors}, 'failure');
                     return {};
                 case 500:
                     return {};
@@ -1767,13 +1825,40 @@ $.fn.extend({
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
         return new Promise(function (resolve, reject) {
+            // handle body data before send
+            // check WF ID, task ID, url exist PK
+            // False: return data input
+            // True: convert body data with Zone Accept
+            let pk = $.fn.getPkDetail();
+            if (
+                $.fn.getWFRuntimeID() && $.fn.getTaskWF() &&
+                pk && url.includes(pk) && (
+                    method === 'PUT' || method === 'put'
+                )
+            ) {
+                let taskID = $.fn.getTaskWF();
+                let keyOk = $.fn.getZoneData();
+                let newData = {};
+                for (let key in data) {
+                    if (keyOk.includes(key)) {
+                        newData[key] = data[key];
+                    }
+                }
+                data = newData;
+                data['task_id'] = taskID;
+                console.log('body data have WF ID: ', data, keyOk, taskID);
+            }
+            // Setup then Call Ajax
             let ctx = {
                 url: url,
                 type: method,
                 dataType: 'json',
                 contentType: content_type,
                 data: content_type === "application/json" ? JSON.stringify(data) : data,
-                headers: {"X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers},
+                headers: {
+                    "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
+                    ...headers
+                },
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
                     if (data) resolve(rest); else resolve({'status': jqXHR.status});
@@ -1818,7 +1903,64 @@ $.fn.extend({
         return rs;
     },
 
+    //
     // workflow
+    //
+    // zone
+    setZoneData: function (zonesData) {
+        let body_fields = [];
+        if (zonesData && Array.isArray(zonesData)) {
+            zonesData.map(
+                (item) => {
+                    body_fields.push(item.code);
+                }
+            );
+        }
+        $('html').append(`<textarea class="hidden" id="idxZonesData">${JSON.stringify(body_fields)}</textarea>`)
+    },
+    getZoneData: function () {
+        let itemEle = $('#idxZonesData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    },
+    activeZoneInDoc: function (zonesData) {
+        $.fn.setZoneData(zonesData);
+        if (zonesData && Array.isArray(zonesData)) {
+            if (zonesData.length > 0) {
+                let pageEle = $('#idxPageContent');
+                pageEle.find('.required').removeClass('required');
+                pageEle.find('.field-required').remove();
+                pageEle.find('input, select, textarea').prop({
+                    'readonly': true,
+                    'disabled': true,
+                }).removeAttr('required');
+                $('#select-box-emp').prop('readonly', true);
+                zonesData.map(
+                    (item) => {
+                        if (item.code) {
+                            let findText = "[name=" + item.code + "]";
+                            pageEle.find(findText).each(function () {
+                                $(this).closest('.form-group').find('.form-label').addClass('required');
+                                $(this).removeAttr('readonly').removeAttr('disabled').prop('required', true).addClass('border-danger');
+                            })
+                        }
+                    }
+                )
+            }
+        }
+    },
+    // -- zone
+    // task
+    setTaskWF: function (taskID) {
+        $('#idxGroupAction').attr('data-wf-task-id', taskID);
+    },
+    getTaskWF: function () {
+        return $('#idxGroupAction').attr('data-wf-task-id');
+    },
+    // -- task
+    // runtime
     setWFRuntimeID: function (runtime_id) {
         if (runtime_id) {
             let btn = $('#btnLogShow');
@@ -1833,7 +1975,7 @@ $.fn.extend({
                         let grouAction = $('#idxGroupAction');
                         let taskID = actionMySelf['id'];
                         if (taskID) {
-                            grouAction.attr('data-wf-task-id', taskID);
+                            $.fn.setTaskWF(taskID);
 
                             let actions = actionMySelf['actions'];
                             if (actions && Array.isArray(actions) && actions.length > 0) {
@@ -1855,6 +1997,9 @@ $.fn.extend({
                                 grouAction.closest('.dropdown').removeClass('hidden');
                             }
                         }
+
+                        // zones handler
+                        $.fn.activeZoneInDoc(actionMySelf['zones']);
                     }
                 }
             })
@@ -1864,6 +2009,7 @@ $.fn.extend({
     getWFRuntimeID: function () {
         return $('#idWFRuntime').attr('data-runtime-id');
     },
+    // -- runtime
 })
 
 // support for Form Submit

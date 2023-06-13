@@ -1,3 +1,5 @@
+let promotionClass = new promotionHandle();
+let shippingClass = new shippingHandle();
 let configClass = new checkConfigHandle();
 
 class loadDataHandle {
@@ -1799,7 +1801,7 @@ class dataTableHandle {
                             $('#datable-quotation-create-promotion').DataTable().destroy();
                             data.promotion_check_list.map(function (item) {
                                 if (!checkList.includes(item.id)) {
-                                    let check = checkAvailablePromotion(item, customer_id);
+                                    let check = promotionClass.checkAvailablePromotion(item, customer_id);
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['condition'] = check.condition;
@@ -2046,7 +2048,7 @@ class dataTableHandle {
                         if (shippingAddress) {
                             data.shipping_check_list.map(function (item) {
                                 if (!checkList.includes(item.id)) {
-                                    let check = checkAvailableShipping(item, shippingAddress)
+                                    let check = shippingClass.checkAvailableShipping(item, shippingAddress)
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['final_shipping_price'] = check.final_shipping_price;

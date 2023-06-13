@@ -8,6 +8,8 @@ $(function () {
         let dataTableClass = new dataTableHandle();
         let calculateClass = new calculateCaseHandle();
         let submitClass = new submitHandle();
+        let promotionClass = new promotionHandle();
+        let shippingClass = new shippingHandle();
         let configClass = new checkConfigHandle();
 
         let data = JSON.parse($('#data-quotation').val());
@@ -862,7 +864,7 @@ $(function () {
             calculateClass.updateTotal(tableProduct[0], true, false, false)
             // get promotion condition to apply
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
-            let promotionResult = getPromotionResult(promotionCondition);
+            let promotionResult = promotionClass.getPromotionResult(promotionCondition);
             let is_promotion_on_row = false;
             if (promotionResult.hasOwnProperty('is_promotion_on_row')) {
                 if (promotionResult.is_promotion_on_row === true) {
@@ -929,9 +931,9 @@ $(function () {
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
                             if (promotionResult.is_before_tax === true) {
-                                reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
+                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
                             } else {
-                                reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
+                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
                             }
                         }
                     }
@@ -1014,7 +1016,7 @@ $(function () {
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             // Re Calculate after add shipping (pretax, discount, total)
-            reCalculateIfShipping(shippingPrice);
+            shippingClass.reCalculateIfShipping(shippingPrice);
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
             // Clear table COST if add new row Product

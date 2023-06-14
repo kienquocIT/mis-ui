@@ -53,6 +53,7 @@
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
+    {{ data.data.opportunity_list | json_script:"opportunity_list" }}
     <form id="form-create-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
     >
@@ -100,7 +101,7 @@
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
                             <input placeholder="Select one" style="background-color: white" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
+                            <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 120%; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group mb-4">

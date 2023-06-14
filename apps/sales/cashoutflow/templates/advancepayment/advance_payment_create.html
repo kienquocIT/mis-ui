@@ -51,6 +51,7 @@
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
+    {{ data.data.opportunity_list | json_script:"opportunity_list" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
@@ -99,7 +100,7 @@
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
                             <input placeholder="Can not select with Non-Sale" readonly disabled id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 100%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
+                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 120%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group mb-4">

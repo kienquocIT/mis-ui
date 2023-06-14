@@ -233,7 +233,15 @@ $(document).ready(function () {
                             }, 1000);
                         }
                     }, (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        Swal.fire({
+                            html: '<div><h6 class="text-danger mb-0">Source/Non-empty Price List can not be deleted!</h6></div>',
+                            customClass: {
+                                content: 'text-center',
+                                confirmButton: 'btn btn-primary',
+                            },
+                            buttonsStyling: false,
+                        })
                     })
             }
         })

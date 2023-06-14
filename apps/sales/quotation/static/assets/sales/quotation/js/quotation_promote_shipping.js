@@ -769,41 +769,6 @@ class shippingHandle {
 }
 
 // Config
-function loadPriceProduct(ele) {
-        let optionSelected = ele[0].options[ele[0].selectedIndex];
-        let productData = optionSelected.querySelector('.data-default');
-        if (productData) {
-            let data = JSON.parse(productData.value);
-            let price = ele[0].closest('tr').querySelector('.table-row-price');
-            let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
-            // load PRICE
-            if (price && priceList) {
-                let valList = [];
-                let account_price_list = document.getElementById('customer-price-list').value;
-                $(priceList).empty();
-                for (let i = 0; i < data.price_list.length; i++) {
-                    if (data.price_list[i].id === account_price_list) {
-                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                    <div class="row">
-                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                        <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                    </div>
-                                </a>`;
-                        $(priceList).append(option);
-                    }
-                }
-                // get Min Price to display
-                if (valList.length > 0) {
-                    let minVal = Math.min(...valList);
-                    $(price).attr('value', String(minVal));
-                }
-            }
-        }
-        $.fn.initMaskMoney2();
-    }
-
 class checkConfigHandle {
     checkConfig(is_change_opp = false, new_row = null) {
         let self = this;
@@ -865,6 +830,7 @@ class checkConfigHandle {
                         if (!eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
+                            eleDiscountTotal.value = "0";
                         }
                     }
                 } else {
@@ -887,15 +853,18 @@ class checkConfigHandle {
     }
 
     reCheckTable(config, row, is_short_sale = false, is_long_sale = false) {
+        let self = this;
         if (row) {
-            if (row.querySelector('.table-row-item')) {
+            let eleProduct = row.querySelector('.table-row-item');
+            if (eleProduct) {
+                let elePriceList = row.querySelector('.dropdown-action');
+                let elePrice = row.querySelector('.table-row-price');
+                let eleDiscount = row.querySelector('.table-row-discount');
                 if (is_short_sale === true) {
-                    let elePriceList = row.querySelector('.dropdown-action');
-                    let elePrice = row.querySelector('.table-row-price');
-                    let eleDiscount = row.querySelector('.table-row-discount');
                     if (config.short_sale_config.is_choose_price_list === false) {
                         if (elePriceList.hasAttribute('data-bs-toggle')) {
-                            elePriceList.removeAttribute('data-bs-toggle')
+                            elePriceList.removeAttribute('data-bs-toggle');
+                            self.loadPriceProduct(eleProduct);
                         }
                     } else {
                         if (!elePriceList.hasAttribute('data-bs-toggle')) {
@@ -906,7 +875,8 @@ class checkConfigHandle {
                         if (!elePrice.hasAttribute('disabled')) {
                             elePrice.setAttribute('disabled', 'true');
                             elePrice.classList.add('disabled-custom-show');
-                            $(elePrice).attr('value', String(0));
+                            // $(elePrice).attr('value', String(0));
+                            self.loadPriceProduct(eleProduct);
                         }
                     } else {
                         if (elePrice.hasAttribute('disabled')) {
@@ -929,11 +899,8 @@ class checkConfigHandle {
                         }
                     }
                 } else if (is_long_sale === true) {
-                    let elePriceList = row.querySelector('.dropdown-action');
-                    let elePrice = row.querySelector('.table-row-price');
-                    let eleDiscount = row.querySelector('.table-row-discount');
                     if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.setAttribute('data-bs-toggle', 'dropdown')
+                        elePriceList.setAttribute('data-bs-toggle', 'dropdown');
                     }
                     if (config.long_sale_config.is_not_input_price === false) {
                         if (elePrice.hasAttribute('disabled')) {
@@ -944,6 +911,7 @@ class checkConfigHandle {
                         if (!elePrice.hasAttribute('disabled')) {
                             elePrice.setAttribute('disabled', 'true');
                             elePrice.classList.add('disabled-custom-show');
+                            self.loadPriceProduct(eleProduct);
                         }
                     }
                     if (eleDiscount) {
@@ -956,12 +924,48 @@ class checkConfigHandle {
                             if (!eleDiscount.hasAttribute('disabled')) {
                                 eleDiscount.setAttribute('disabled', 'true');
                                 eleDiscount.classList.add('disabled-custom-show');
+                                eleDiscount.value = "0";
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    loadPriceProduct(eleProduct) {
+        let optionSelected = eleProduct.options[eleProduct.selectedIndex];
+        let productData = optionSelected.querySelector('.data-default');
+        if (productData) {
+            let data = JSON.parse(productData.value);
+            let price = eleProduct.closest('tr').querySelector('.table-row-price');
+            let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+            // load PRICE
+            if (price && priceList) {
+                let valList = [];
+                let account_price_list = document.getElementById('customer-price-list').value;
+                $(priceList).empty();
+                for (let i = 0; i < data.price_list.length; i++) {
+                    if (data.price_list[i].id === account_price_list) {
+                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
+                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                    <div class="row">
+                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                        <div class="col-2"></div>
+                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                    </div>
+                                </a>`;
+                        $(priceList).append(option);
+                    }
+                }
+                // get Min Price to display
+                if (valList.length > 0) {
+                    let minVal = Math.min(...valList);
+                    $(price).attr('value', String(minVal));
+                }
+            }
+        }
+        $.fn.initMaskMoney2();
     }
 }
 

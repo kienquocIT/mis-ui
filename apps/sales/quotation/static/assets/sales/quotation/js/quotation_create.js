@@ -1031,16 +1031,14 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        $('#btn-create_quotation').on('click', function (e) {
+        $('#frm_quotation_create').submit(function (e) {
             e.preventDefault()
-            let $form = document.getElementById('frm_quotation_create');
             let is_sale_order = false;
             let appNotify = "Quotation";
-            if ($form.classList.contains('sale-order')) {
+            if ($(this)[0].classList.contains('sale-order')) {
                 is_sale_order = true;
-                appNotify = "Sale Order"
             }
-            let _form = new SetupFormSubmit($('#frm_quotation_create'));
+            let _form = new SetupFormSubmit($(this));
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1132,12 +1130,11 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        // $.fn.notifyPopup({description: appNotify + " create fail"}, 'failure')
                     }
                 )
         });

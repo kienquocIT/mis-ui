@@ -1519,7 +1519,7 @@ msgid "Subtotal price"
 msgstr "Tổng tiền"
 
 #
-msgid "Add product"
+msgid "Add Product"
 msgstr "Thêm sản phẩm"
 
 #
@@ -2611,11 +2611,11 @@ msgstr "Cập nhật cơ hội kinh doanh thành công"
 
 #
 msgid "Quotation create successfully"
-msgstr "Tạo cơ hội kinh doanh thành công"
+msgstr "Tạo báo giá thành công"
 
 #
 msgid "Quotation update successfully"
-msgstr "Cập nhật cơ hội kinh doanh thành công"
+msgstr "Cập nhật báo giá thành công"
 
 #
 msgid "Sale order create successfully"
@@ -2982,3 +2982,7 @@ msgstr "Không có thông tin ngân hàng"
 #
 msgid "Sale Order/Quotation is not selected!"
 msgstr "Sale Order/Quotation chưa được chọn"
+
+#
+msgid "Quotation config update successfully"
+msgstr "Cập nhật cấu hình báo giá thành công"

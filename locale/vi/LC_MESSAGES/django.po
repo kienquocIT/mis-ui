@@ -1144,7 +1144,7 @@ msgstr "Chủ tài khoản"
 
 #
 msgid "Job Title"
-msgstr "Tiêu đề công việc"
+msgstr "Chức danh"
 
 #
 msgid "Account Manager"
@@ -1208,7 +1208,7 @@ msgstr "Thêm liên hệ"
 
 #
 msgid "Job title"
-msgstr "Tiêu đề công việc"
+msgstr "Chức danh"
 
 #
 msgid "Phone number"
@@ -1256,7 +1256,7 @@ msgstr "Địa chỉ của Tài khoản"
 
 #
 msgid "Contact owner"
-msgstr "Chủ sở hữu thông tin liên hệ"
+msgstr "Người có thông tin liên hệ"
 
 #
 msgid "Mobile"
@@ -1268,7 +1268,7 @@ msgstr "Thêm liên hệ mới"
 
 #
 msgid "Contact Owner"
-msgstr "Chủ sở hữu thông tin liên hệ"
+msgstr "Người có thông tin liên hệ"
 
 #
 msgid "Account Title"
@@ -1340,7 +1340,7 @@ msgstr "Thêm tài khoản ngân hàng"
 
 #
 msgid "Country"
-msgstr "Đất nước"
+msgstr "Quốc gia"
 
 #
 msgid "Bank Name"
@@ -1392,7 +1392,7 @@ msgstr "Nhấn vào đây để tải hình ảnh lên"
 
 #
 msgid "Salutation"
-msgstr "Lời mở đầu"
+msgstr "Danh xưng"
 
 #
 msgid "Firstname"
@@ -1464,11 +1464,11 @@ msgstr "Loại chi phí"
 
 #
 msgid "UoM Group"
-msgstr "Nhóm đơn vị đo"
+msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "UoM"
-msgstr "Đơn vị đo"
+msgstr "Đơn vị tính"
 
 #
 msgid "Good receipt create"
@@ -1476,7 +1476,7 @@ msgstr "Tạo nhập hàng"
 
 #
 msgid "Supplier"
-msgstr "Nhà cùng cấp"
+msgstr "Nhà cung cấp"
 
 #
 msgid "Receipt for PO"
@@ -1516,7 +1516,7 @@ msgstr "Thuế"
 
 #
 msgid "Subtotal price"
-msgstr "Tổng tiền phụ"
+msgstr "Tổng tiền"
 
 #
 msgid "Add product"
@@ -1581,11 +1581,11 @@ msgstr "Chỉnh sửa loại tài khoản"
 
 #
 msgid "Salutations"
-msgstr "Lời mở đầu"
+msgstr "Danh xưng"
 
 #
 msgid "Edit Salutation"
-msgstr "Chỉnh sửa lời mở đầu"
+msgstr "Chỉnh sửa Danh xưng"
 
 #
 msgid "Tax Category"
@@ -1621,7 +1621,7 @@ msgstr "Thêm dòng mới"
 
 #
 msgid "Value"
-msgstr "Giá trị"
+msgstr "Chi phí giá vốn"
 
 #
 msgid "Value type"
@@ -1709,11 +1709,11 @@ msgstr "Danh mục sản phẩm"
 
 #
 msgid "Unit Of Measure"
-msgstr "Đơn vị đo"
+msgstr "Đơn vị tính"
 
 #
 msgid "Unit Of Measure Group"
-msgstr "Nhóm đơn vị đo"
+msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "Is referenced unit"
@@ -1733,11 +1733,11 @@ msgstr "Làm tròn"
 
 #
 msgid "Unit Of Measure Detail"
-msgstr "Chi tiết đơn vị đo"
+msgstr "Chi tiết Đơn vị tính"
 
 #
 msgid "Edit Unit Of Measure Group"
-msgstr "Chỉnh sửa nhóm đơn vị đo"
+msgstr "Chỉnh sửa nhóm Đơn vị tính"
 
 #
 msgid "Create Price List"
@@ -1797,7 +1797,7 @@ msgstr "Tên mục"
 
 #
 msgid "UoM group"
-msgstr "Nhóm đơn vị đo"
+msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "Select price list type"
@@ -1853,11 +1853,11 @@ msgstr "Nặng"
 
 #
 msgid "UoM Code"
-msgstr "Mã đơn vị đo"
+msgstr "Mã Đơn vị tính"
 
 #
 msgid "UoM Name"
-msgstr "Tên đơn vị đo"
+msgstr "Tên Đơn vị tính"
 
 #
 msgid "Inventory Level Min"
@@ -1973,7 +1973,7 @@ msgstr "Chi phí/Các hạng mục chi phí"
 
 #
 msgid "After tax subtotal"
-msgstr "Tổng phụ sau thuế"
+msgstr "Tổng tiền sau thuế"
 
 #
 msgid "Plan After Tax"
@@ -2098,7 +2098,7 @@ msgstr "Tạo cơ hội kinh doanh"
 
 #
 msgid "Select Customer"
-msgstr "Chọn khách hàng"
+msgstr "Khách hàng"
 
 #
 msgid "title of quotation"
@@ -2106,7 +2106,7 @@ msgstr "Tiêu đề của báo giá"
 
 #
 msgid "Select Opportunity"
-msgstr "Chọn cơ hội kinh doanh"
+msgstr "Cơ hội kinh doanh"
 
 #
 msgid "Opportunity link to quotation"
@@ -2118,7 +2118,7 @@ msgstr "Khách hàng liên kết với báo giá"
 
 #
 msgid "Select Contact"
-msgstr "Chọn công ty"
+msgstr "Tên liên hệ"
 
 #
 msgid "Contact link to quotation"
@@ -2138,7 +2138,7 @@ msgstr "Trạng thái của báo giá"
 
 #
 msgid "Select Sale Person"
-msgstr "Lựa chọn người bán hàng"
+msgstr "Nhân viên kinh doanh"
 
 #
 msgid "Sale person of quotation"
@@ -2146,7 +2146,7 @@ msgstr "Người bán hàng của báo giá"
 
 #
 msgid "Select Payment Terms"
-msgstr "Lựa chọn điều khoản thanh toán"
+msgstr "Điều khoản thanh toán"
 
 #
 msgid "Payment term of quotation"
@@ -2158,7 +2158,7 @@ msgstr "Hậu cần"
 
 #
 msgid "Cost"
-msgstr "Giá trị"
+msgstr "Chi phí giá vốn"
 
 #
 msgid "Expense"
@@ -2178,7 +2178,7 @@ msgstr "Đơn giá"
 
 #
 msgid "Subtotal Price"
-msgstr "Tổng giá phụ"
+msgstr "Thành tiền"
 
 #
 msgid "Add Shipping Fee"
@@ -2922,3 +2922,63 @@ msgstr "Bạn chắc chắn về sự thay đổi này?"
 #
 msgid "View all notifications"
 msgstr "Xem tất cả các thông báo"
+
+#
+msgid "If short sale (without opportunity), enable to select price from price list"
+msgstr "Nếu bán hàng nhanh, cho phép chọn giá từ danh sách giá."
+
+#
+msgid "If short sale (without opportunity), enable to input price"
+msgstr "Nếu bán hàng nhanh, cho phép nhập giá sản phẩm."
+
+#
+msgid "If short sale (without opportunity), enable to input discount rate on product"
+msgstr "Nếu bán hàng nhanh, cho phép nhập tỉ lệ giảm giá trên sản phẩm."
+
+#
+msgid "If short sale (without opportunity), enable to input discount rate on total"
+msgstr "Nếu bán hàng nhanh, cho phép nhập tỉ lệ giảm giá trên tổng."
+
+#
+msgid "If long sale (with opportunity), disable input price"
+msgstr "Nếu bán hàng dự án, không cho nhập giá sản phẩm."
+
+#
+msgid "If long sale (with opportunity), disable input discount on product"
+msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên sản phẩm."
+
+#
+msgid "If long sale (with opportunity), disable input discount on total"
+msgstr "Nếu bán hàng dự án, không cho phép nhập tỉ lệ giảm giá trên tổng."
+
+#
+msgid "Allow input new tag"
+msgstr "Cho phép nhập thêm tag mới"
+
+#
+msgid "Accept type"
+msgstr "Cho phép các loại"
+
+#
+msgid "Attachments"
+msgstr "Tệp đính kèm"
+
+#
+msgid "Descriptions"
+msgstr "Mô tả"
+
+#
+msgid "Location raise"
+msgstr "Đường dẫn có xảy ra lỗi"
+
+#
+msgid "Document Number"
+msgstr "Số chứng từ."
+
+#
+msgid "No bank accounts information!"
+msgstr "Không có thông tin ngân hàng"
+
+#
+msgid "Sale Order/Quotation is not selected!"
+msgstr "Sale Order/Quotation chưa được chọn"

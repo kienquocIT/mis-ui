@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary btn-animated btn-xs"
+            form="frm-detail-opportunity-config"
+            data-bs-original-title="Save Opportunity Config">
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i
+                                data-feather="save">
+                        </i>
+                    </span>
+                    <span class="font-3 ml-1">
+                        {% trans 'Save' %}
+                    </span>
+                </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <ul class="nav nav-light nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                    <span class="nav-link-text">{% trans 'General' %}</span>
+                </a>
+            </li>
+            <li class="nav-item" id="tab-indicator">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                    <span class="nav-link-text">{% trans 'Stage' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <form id="frm-detail-opportunity-config" data-method="PUT" data-url="{% url 'OpportunityConfigAPI' %}">
+        {% csrf_token %}
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_block_1">
+                <div class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input" id="is-select-stage" name="is_select_stage">
+                    <label
+                            class="form-check-label disabled-label" for="is-select-stage"
+                    >{% trans 'User choise stage of Opportunity' %}</label>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input" id="is-input-win-rate" name="is_input_win_rate">
+                    <label
+                            class="form-check-label disabled-label" for="is-input-win-rate"
+                    >{% trans 'User can input win rate of Opportunity' %}</label>
+                </div>
+                <br/><br/><br/><br/>
+                <div class="row border-top">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-link btn-animated mt-3" data-bs-toggle="modal"
+                                data-bs-target="#modalCreateFactor">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon">
+                                        <i data-feather="plus"></i>
+                                    </span>
+                                </span>
+                                <span>{% trans 'Add Factor' %}</span>
+                            </span>
+                        </button>
+                        <div class="table-responsive">
+                            <table class="table nowrap" id="table-opportunity-customer-decision-factor"
+                                   data-method="GET" data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"
+                                   data-url-redirect="{% url 'OpportunityConfig' %}"
+                                   data-url-detail="{% url 'OpportunityCustomerDecisionFactorDetailAPI' pk=0 %}">
+                                <thead>
+                                <tr>
+                                    <th class="wrap-text w-5">#</th>
+                                    <th class="wrap-text w-85">{% trans 'Factor' %}</th>
+                                    <th class="wrap-text w-10">{% trans 'Actions' %}</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <span id="msgConfirmDeleteFactor"
+                              class="hidden">{% trans 'Are you sure you want to remove "{0}"?' %}</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="tab_block_2">
+
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="modalCreateFactor" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Create New Factor" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm-create-factor" data-method="POST"
+                          data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Title' %}</label>
+                                <input class="form-control" type="text" name="title"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="frm-create-factor">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_config.js' %}"></script>
+{% endblock %}

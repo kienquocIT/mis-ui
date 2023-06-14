@@ -25,6 +25,8 @@
 {% endblock %}
 
 {% block pageContent %}
+    <input type="hidden" id="data-customer">
+    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <input type="hidden" id="opportunity-link"
            data-link-update="{% url 'OpportunityDetail' pk=0 %}"
            data-link-list="{% url 'OpportunityList' %}"
@@ -82,7 +84,7 @@
                 <div class="modal-body">
                     <form
                             data-url="{% url 'OpportunityListAPI' %}"
-                            data-url-redirect="{% url 'OpportunityList' %}"
+                            data-url-redirect="{% url 'OpportunityDetail' pk=0 %}"
                             data-method="POST"
                             id="form-create_opportunity"
                             method="post"
@@ -120,6 +122,16 @@
                                     multiple
                                     data-method="GET"
                                     data-url="{% url 'ProductCategoryListAPI' %}"
+                            >
+                            </select>
+                        </div>
+                        <div class="mb-3 form-group">
+                            <label class="form-label">{% trans "Sale Person" %}</label>
+                            <select class="form-control select2"
+                                    name="sale_person"
+                                    id="select-box-sale-person"
+                                    data-method="GET"
+                                    data-url="{% url 'EmployeeListAPI' %}"
                             >
                             </select>
                         </div>

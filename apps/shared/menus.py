@@ -116,6 +116,14 @@ class MenusCoreConfigurations:
                 name='Delivery', code='menu_delivery_config', view_name='DeliveryConfigDetail',
                 icon='<i class="fas fa-truck"></i>',
             ),
+            MenuCommon(
+                name='Quotation', code='menu_quotation_config', view_name='QuotationConfigDetail',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
+                name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
+                icon='<i class="far fa-lightbulb"></i>',
+            )
         ]
     )
 

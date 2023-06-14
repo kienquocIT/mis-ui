@@ -3,9 +3,9 @@ $(document).ready(function () {
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
     tbl.DataTable({
-        searching: true,
+        searching: false,
         ordering: false,
-        paginate: false,
+        paginate: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -20,19 +20,19 @@ $(document).ready(function () {
         rowIdx: false,
         columnDefs: [
             {
-                "width": "10%",
+                "width": "30%",
                 "targets": 0
             }, {
-                "width": "20%",
+                "width": "30%",
                 "targets": 1
             }, {
-                "width": "20%",
+                "width": "10%",
                 "targets": 2
             }, {
-                "width": "20%",
+                "width": "10%",
                 "targets": 3
             }, {
-                "width": "20%",
+                "width": "10%",
                 "targets": 4
             }, {
                 "width": "10%",
@@ -41,10 +41,11 @@ $(document).ready(function () {
         ],
         columns: [
             {
+                data: 'code',
                 render: (row, type, data, meta) => {
                     let html = '--';
                     let url = $('#url-factory').attr('data-page-detail');
-                    if (data.code) html = data.code
+                    if (row) html = row
                     html = `<a href="${url.format_url_with_uuid(data.id)}" target="_blank">${html}</a>`
                     return html
                 },
@@ -66,26 +67,31 @@ $(document).ready(function () {
             }, {
                 data: 'date_created',
                 render: (data, type, row) => {
+                    data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                     return data;
                 },
             }, {
                 data: 'estimated_delivery_date',
                 render: (data, type, row) => {
-                    return data ? data : "_";
+                    if (data)
+                        data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
+                    return data ? data : "--";
                 },
             }, {
                 data: 'actual_delivery_date',
                 render: (data, type, row) => {
-                    return data ? data : "_";
+                    if (data)
+                        data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
+                    return data ? data : "--";
                 },
             }, {
                 data: 'state',
+                class: 'text-center',
                 render: (data, type, row, meta) => {
                     const stateMap = {
-                        0: 'info',
-                        1: 'warning',
+                        0: 'warning',
+                        1: 'info',
                         2: 'success',
-                        3: 'primary'
                     }
                     return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
                 }
@@ -95,7 +101,7 @@ $(document).ready(function () {
                 render: (data, type, row, meta) => {
                     const isTxt = $('#trans-factory').attr('data-return')
                     return `<div class="dropdown pointer mr-2">
-                                <i class="fa-regular fa-window-restore"
+                                <i class="far fa-window-maximize"
                                    data-bs-toggle="dropdown"
                                    data-dropdown-animation
                                    aria-haspopup="true"

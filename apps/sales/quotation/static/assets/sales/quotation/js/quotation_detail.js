@@ -17,13 +17,13 @@ $(function () {
                     $('#datable-quotation-create-cost').DataTable().destroy();
                     $('#datable-quotation-create-expense').DataTable().destroy();
                     if (!$form.hasClass('sale-order')) {
-                        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
-                        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
-                        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+                        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product', true);
+                        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost', true);
+                        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense', true);
                     } else {
-                        dataTableClass.dataTableProduct(data.sale_order_products_data, 'datable-quotation-create-product');
-                        dataTableClass.dataTableCost(data.sale_order_costs_data, 'datable-quotation-create-cost');
-                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense');
+                        dataTableClass.dataTableProduct(data.sale_order_products_data, 'datable-quotation-create-product', true);
+                        dataTableClass.dataTableCost(data.sale_order_costs_data, 'datable-quotation-create-cost', true);
+                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense', true);
                     }
                     // prepare for copy quotation to sale order
                     $('#data-copy-quotation-detail').val(JSON.stringify(data))

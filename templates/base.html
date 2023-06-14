@@ -47,6 +47,16 @@
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         {% block cssHeader %}
         {% endblock %}
+        <style>
+            {#  Override css of select2 for select2 working in Bootstrap Modal  #}
+            .select2-close-mask {
+                z-index: 2099;
+            }
+
+            .select2-dropdown {
+                z-index: 3051;
+            }
+        </style>
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
@@ -289,6 +299,99 @@
         </div>
     </div>
     <!-- // Drawer Log and Activity -->
+
+    <!-- Raise a ticket -->
+    <div
+            class="modal fade" id="modalRaiseTicket" tabindex="-1" role="dialog" aria-labelledby="modalRaiseTicket"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form
+                        id="frm-send-a-ticket" data-url="{% url 'TicketErrorCreateAPI' %}" data-method="POST"
+                        enctype="multipart/form-data"
+                >
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Raise a ticket' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- hidden input -->
+                        <div class="form-group hidden">
+                            <label for="ticket-email-auto" class="form-label">{% trans 'Email' %}</label>
+                            <input class="form-control" type="text" id="ticket-email-auto" name="email"/>
+                        </div>
+                        <div class="form-group hidden">
+                            <label
+                                    for="ticket-location-raise-auto" class="form-label"
+                            >{% trans 'Location raise' %}</label>
+                            <input
+                                    class="form-control" type="text" id="ticket-location-raise-auto"
+                                    name="location_raise"
+                            />
+                        </div>
+                        <!-- hidden input -->
+                        <div class="form-group">
+                            <label for="ticket-email" class="form-label">{% trans 'Email' %}</label>
+                            <input class="form-control" type="text" id="ticket-email" name="email_input"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="ticket-location-raise" class="form-label">{% trans 'Location raise' %}</label>
+                            <input
+                                    class="form-control" type="text" id="ticket-location-raise"
+                                    name="location_raise_input"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="ticket-title" class="form-label required">{% trans 'Title' %}</label>
+                            <input type="text" class="form-control" id="ticket-title" name="title"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="ticket-hash-tag" class="form-label required">{% trans 'Hash Tag' %}</label>
+                            <select
+                                    name="hash_tags" id="ticket-hash-tag" class="form-control" multiple="multiple"
+                            >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                            <small class="text-muted">{% trans 'Allow input new tag' %}</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="ticket-remarks" class="form-label required">{% trans 'Descriptions' %}</label>
+                            <textarea class="form-control" id="ticket-remarks" name="remarks"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div id="ticket-attachment-preview">
+                            </div>
+                            <label
+                                    for="ticket-attachments" class="form-label"
+                            >{% trans 'Attachments' %}</label>
+                            <input
+                                    type="file" class="form-control" id="ticket-attachments" name="attachments" multiple
+                                    accept="image/jpeg, image/png, image/gif"
+                            />
+                            <small class="text-muted">{% trans 'Accept type' %}: *.jpeg, *.png, *.gif</small>
+                        </div>
+                        <div class="form-group hidden">
+                            <label for="staticTicketResp" class="form-label">{% trans 'Code Ticket' %}</label>
+                            <input type="text" readonly class="form-control-plaintext text-danger" id="staticTicketResp">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                                type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        >{% trans 'Close' %}</button>
+                        <button type="submit" class="btn btn-primary">{% trans 'Send a ticket' %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- // Raise a ticket -->
 </div>
 <!-- /Wrapper -->
 
@@ -370,7 +473,9 @@
                                 );
                             }
                             setTimeout(
-                                ()=>{$.fn.hideLoading();},
+                                () => {
+                                    $.fn.hideLoading();
+                                },
                                 1000
                             );
                         },
@@ -444,6 +549,81 @@
             <!-- Init select2 -->
             $(".select2").select2();
             <!-- ## Init select2 -->
+
+            <!-- Raise a ticket -->
+            $('#ticket-hash-tag').select2({
+                tags: true,
+                tokenSeparators: [',', ' ']
+            });
+            $('#modalRaiseTicket').on('shown.bs.modal', function () {
+                $('#ticket-email').val($('#email-request-owner').text());
+                $('#ticket-email-auto').val($('#email-request-owner').text());
+                $('#ticket-location-raise').val(window.location);
+                $('#ticket-location-raise-auto').val(window.location);
+            });
+
+            $("#ticket-attachments").change(function () {
+                let previewContainer = $("#ticket-attachment-preview");
+                previewContainer.empty();
+
+                if (this.files) {
+                    let filesAmount = this.files.length;
+                    for (let i = 0; i < filesAmount; i++) {
+                        let reader = new FileReader();
+                        reader.onload = function (event) {
+                            let imgElement = $("<img>");
+                            imgElement.attr("src", event.target.result);
+                            imgElement.css({
+                                "max-width": "100px",
+                                "max-height": "100px"
+                            });
+                            previewContainer.append(imgElement);
+                        };
+                        reader.readAsDataURL(this.files[i]);
+                    }
+                }
+            });
+
+            let ticketFrm = $('#frm-send-a-ticket');
+            ticketFrm.submit(function (event) {
+                event.preventDefault();
+
+                let urlData = $(this).attr('data-url');
+                let methodData = $(this).attr('data-method');
+
+                let formData = new FormData(this);
+                formData.append("attachments", document.getElementById('ticket-attachments').files);
+
+                $.fn.showLoading();
+                $.ajax({
+                    url: urlData, // point to server-side URL
+                    dataType: 'json', // what to expect back from server
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
+                    data: formData,
+                    type: methodData,
+                    success: function (resp) { // display success response
+                        let data = $.fn.switcherResp(resp)
+                        ticketFrm.find('input').attr('readonly', 'readonly');
+                        ticketFrm.find('textarea').attr('readonly', 'readonly');
+                        $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
+                        $.fn.notifyB({
+                            'description': $('#base-trans-factory').attr('data-success')
+                        }, 'success')
+                        $.fn.hideLoading();
+                    },
+                    error: function (response) {
+                        $.fn.notifyB({
+                            'description': 'Try again!'
+                        }, 'failure');
+                        $.fn.hideLoading();
+                    }
+                });
+            });
+            <!-- ## Raise a ticket -->
+
         });
     </script>
     {% block jsFooter %}

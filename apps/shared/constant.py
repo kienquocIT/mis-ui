@@ -34,9 +34,8 @@ PICKING_STATE = (
 # Delivery
 DELIVERY_STATE = (
     (0, 'Wait'),
-    (1, 'Partial'),
-    (2, 'Full'),
-    (3, 'Done')
+    (1, 'Ready'),
+    (2, 'Done')
 )
 
 # Workflow

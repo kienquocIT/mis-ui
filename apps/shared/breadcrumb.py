@@ -112,6 +112,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
 
     # Quotation
+    QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
@@ -145,8 +146,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
     RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
-# Opportunity Detail
+    # Opportunity Detail
     OPPORTUNITY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Opportunity Config
+    OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfig')
 
 
 class BreadcrumbView:
@@ -380,7 +384,12 @@ class BreadcrumbView:
     DELIVERY_CONFIG = [
         BreadcrumbItem.DELIVERY_CONFIG_PAGE
     ]
+    QUOTATION_CONFIG = [
+        BreadcrumbItem.QUOTATION_CONFIG_PAGE
+    ]
 
-    # Opportunity detail
+# Opportunity detail
     OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.OPPORTUNITY_DETAIL_PAGE]
 
+    # Opportunity Config
+    OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]

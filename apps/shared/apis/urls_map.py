@@ -187,6 +187,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
+    QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicator-lists')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -213,7 +214,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
-    WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouse-stock')
+    WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
 
     # shipping unit
     ITEM_UNIT_LIST = StringUrl('base/item-units')
@@ -233,9 +234,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
-
-    # Opportunity detail
+    DELIVERY_SUB_LIST = StringUrl('delivery/sub')
+# Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
 
     # Opportunity config
+    OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
+    OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')

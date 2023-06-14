@@ -1765,14 +1765,14 @@ $.fn.extend({
             }
         }, timeout);
     },
-    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}) {
+    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
         return new Promise(function (resolve, reject) {
             let ctx = {
                 url: url,
                 type: method,
                 dataType: 'json',
-                contentType: "application/json",
-                data: JSON.stringify(data),
+                contentType: content_type,
+                data: content_type === "application/json" ? JSON.stringify(data) : data,
                 headers: {"X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers},
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);

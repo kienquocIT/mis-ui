@@ -30,7 +30,9 @@
     <div id="section-advance-list">
         <table id="datatable_advance_list" class="table nowrap w-100 mb-5" data-method="GET"
                data-url="{% url 'AdvancePaymentListAPI' %}"
-               data-url-detail="{% url 'AdvancePaymentDetail' '0' %}">
+               data-url-detail="{% url 'AdvancePaymentDetail' '0' %}"
+               data-return-advance="{% url 'ReturnAdvanceCreate' %}"
+        >
             <thead>
             <th>{% trans "Code" %}</th>
             <th>{% trans "Name" %}</th>

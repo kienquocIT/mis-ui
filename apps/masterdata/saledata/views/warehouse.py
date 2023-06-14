@@ -97,7 +97,10 @@ class WarehouseProductAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_STOCK_PRODUCT).get(params)
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.WAREHOUSE_STOCK_PRODUCT.fill_key(product_id=params['product_id'], uom_id=params['uom_id'])
+        ).get(params)
         if resp.state:
             return {'warehouse_stock': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

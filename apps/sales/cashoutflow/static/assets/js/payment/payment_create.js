@@ -13,6 +13,10 @@ $(document).ready(function () {
     let quotation_selected_list = [];
     let load_default = 0;
     let current_value_converted_from_ap = '';
+    let payment_cost_items_filtered = [];
+    let advance_payment_expense_items = [];
+    const ap_list = JSON.parse($('#advance_payment_list').text());
+
 
     function loadSaleOrderExpense(filter_sale_order) {
         $('#tab_plan_datatable').remove();
@@ -28,17 +32,44 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let data_detail = data.sale_order_expense_list
+                        for (let i = 0; i < data_detail.length; i++) {
+                            let expense_id = data_detail[i].expense_id;
+                            let results = advance_payment_expense_items.filter(function(item) {
+                                return item.expense.id === expense_id;
+                            });
+                            let sum_AP_approved = results.reduce(function(s, item) {
+                                return s + item.after_tax_price;
+                            }, 0);
+                            let returned = results.reduce(function(s, item) {
+                                return s + item.returned_total;
+                            }, 0);
+                            let to_payment = results.reduce(function(s, item) {
+                                return s + item.to_payment_total;
+                            }, 0);
+                            let available = results.reduce(function(s, item) {
+                                return s + item.available_total;
+                            }, 0);
+                            data_detail[i].sum_AP_approved = sum_AP_approved;
+                            data_detail[i].returned = returned;
+                            data_detail[i].to_payment = to_payment;
+                            data_detail[i].available = available;
+
+                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                                return item.expense_id === expense_id;
+                            });
+                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                                return s + item.real_value;
+                            }, 0);
+                            data_detail[i].others_payment = others_payment;
+
+                        }
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
                     return [];
                 },
             },
             columns: [
-                {
-                    render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
                 {
                     data: 'expense_title',
                     className: 'wrap-text',
@@ -64,38 +95,38 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'returned',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'others_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 }
             ],
@@ -116,17 +147,44 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        let data_detail = data.quotation_expense_list
+                        for (let i = 0; i < data_detail.length; i++) {
+                            let expense_id = data_detail[i].expense_id;
+                            let results = advance_payment_expense_items.filter(function(item) {
+                                return item.expense.id === expense_id;
+                            });
+                            let sum_AP_approved = results.reduce(function(s, item) {
+                                return s + item.after_tax_price;
+                            }, 0);
+                            let returned = results.reduce(function(s, item) {
+                                return s + item.returned_total;
+                            }, 0);
+                            let to_payment = results.reduce(function(s, item) {
+                                return s + item.to_payment_total;
+                            }, 0);
+                            let available = results.reduce(function(s, item) {
+                                return s + item.available_total;
+                            }, 0);
+                            data_detail[i].sum_AP_approved = sum_AP_approved;
+                            data_detail[i].returned = returned;
+                            data_detail[i].to_payment = to_payment;
+                            data_detail[i].available = available;
+
+                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                                return item.expense_id === expense_id;
+                            });
+                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                                return s + item.real_value;
+                            }, 0);
+                            data_detail[i].others_payment = others_payment;
+
+                        }
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }
                     return [];
                 },
             },
             columns: [
-                {
-                    render: (data, type, row, meta) => {
-                        return ''
-                    }
-                },
                 {
                     data: 'expense_title',
                     className: 'wrap-text',
@@ -152,38 +210,38 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'returned',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'others_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 },
                 {
-                    data: 'code',
+                    data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span class="badge badge-soft-indigo badge-outline"></span>`
+                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
                     }
                 }
             ],
@@ -316,6 +374,23 @@ $(document).ready(function () {
         ele.append(`</optgroup>`);
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
+            let sale_code_id = $(this).attr('data-value');
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                        payment_cost_items_filtered = data.payment_cost_items_list;
+                    }
+                }
+            })
+
+            advance_payment_expense_items = [];
+            for (let i = 0; i < ap_list.length; i++) {
+                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+            }
+
             $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
             $('#sale-code-select-box option:selected').attr('selected', false);
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
@@ -338,7 +413,6 @@ $(document).ready(function () {
             }
             $('#tab_line_detail_datatable tbody').html('');
         })
-
 
         let ele2 = $('#sale-code-select-box');
         ele2.html('');
@@ -414,15 +488,39 @@ $(document).ready(function () {
         ele.append(quotation_not_opp);
 
         $('#sale-code-select-box2 .multi-sale-code').on('click', function () {
-            $(this).each(function() {
+            sale_code_selected_list = [];
+            sale_order_selected_list = [];
+            quotation_selected_list = [];
+            $('.multi-sale-code').each(function() {
                 if ($(this).is(':checked')) {
+                    let sale_code_id = $(this).attr('id');
+                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                                payment_cost_items_filtered = data.payment_cost_items_list;
+                            }
+                        }
+                    })
+
+                    advance_payment_expense_items = [];
+                    for (let i = 0; i < ap_list.length; i++) {
+                        if (ap_list[i].sale_order_mapped === $(this).attr('id') || ap_list[i].quotation_mapped === $(this).attr('id')) {
+                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                        }
+                    }
+
                     sale_code_selected_list.push($(this).attr('id'));
                     if ($(this).attr('data-type') === '0') {
                         sale_order_selected_list.push($(this).attr('id'))
+                        loadSaleOrderExpense($(this).attr('id'))
                     }
                     if ($(this).attr('data-type') === '1') {
                         quotation_selected_list.push($(this).attr('id'))
+                        loadQuotationExpense($(this).attr('id'))
                     }
+                    $('#notify-none-sale-code').prop('hidden', true);
+                    $('#tab_plan_datatable').prop('hidden', false);
                 }
             });
         })
@@ -943,7 +1041,7 @@ $(document).ready(function () {
             if (item.general_information.tax_code) {
                 tax_code_id = item.general_information.tax_code.id;
             }
-            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type_id="` + item.general_information.expense_type.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
         })
     }
 
@@ -1128,7 +1226,6 @@ $(document).ready(function () {
                             let quotation_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
                                 return sale_code_id.includes(item.quotation_mapped);
                             });
-                            console.log(sale_order_mapped_ap.concat(quotation_mapped_ap))
                             return sale_order_mapped_ap.concat(quotation_mapped_ap)
                         }
                         else {
@@ -1381,15 +1478,18 @@ $(document).ready(function () {
     $('#wizard-p-1').addClass('w-100');
 
     $('#form-create-payment').submit(function (event) {
+        let can_submit = 1;
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
         if ($('#tab_line_detail tbody').find('tr').length > 0) {
             let table_body = $('#tab_line_detail tbody');
-            let row_count = table_body.find('tr').length;
+            let row_count = table_body.find('.row-number').length;
             let expense_valid_list = [];
             for (let i = 1; i <= row_count; i++) {
+                let expense_detail_value = 0;
+
                 let row_id = '#row-' + i.toString();
                 let document_number = table_body.find(row_id + ' .expense-document-number').val();
                 let expense_selected = table_body.find(row_id + ' .expense-select-box option:selected');
@@ -1429,6 +1529,8 @@ $(document).ready(function () {
                         'sum_value':  sum_value,
                         'converted_value_detail': converted_value_detail
                     })
+
+                    expense_detail_value = parseFloat(expense_detail_value) + parseFloat(sum_value);
                 });
                 if (!isNaN(subtotal_price_value) && !isNaN(price_after_tax_value) && !isNaN(tax_value)) {
                     expense_valid_list.push({
@@ -1443,6 +1545,11 @@ $(document).ready(function () {
                         'document_number': document_number,
                         'expense_ap_detail_list': expense_ap_detail_list
                     })
+                }
+
+                if (price_after_tax_value < expense_detail_value || expense_detail_value === 0) {
+                    can_submit = 0;
+                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value declared < Sum SaleCode values (or Empty)'}, 'failure');
                 }
             }
             frm.dataForm['expense_valid_list'] = expense_valid_list;
@@ -1500,20 +1607,21 @@ $(document).ready(function () {
         }
 
         // console.log(frm.dataForm)
-
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+        if (can_submit) {
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
-            },
-            (errs) => {
-                $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-            }
-        )
+            )
+        }
     })
 
     $('#input-file-now').dropify({

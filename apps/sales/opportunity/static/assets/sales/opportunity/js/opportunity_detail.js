@@ -2,14 +2,6 @@ $(document).ready(function () {
     const pk = window.location.pathname.split('/').pop();
     const frmDetail = $('#frm-detail');
 
-    $('#rangeInput').on('mousedown', function () {
-        return false;
-    });
-
-    $('#input-rate').on('change', function () {
-        $('#rangeInput').val($(this).val());
-    })
-
     // config input date
     $('input[name="open_date"]').daterangepicker({
         singleDatePicker: true,
@@ -200,7 +192,6 @@ $(document).ready(function () {
         })
     }
 
-
     function addRowProduct(data) {
         let table = $('#table-products');
         let col_empty = table.find('.col-table-empty');
@@ -287,7 +278,7 @@ $(document).ready(function () {
         }
     }
 
-    function loadDecisionFactor(list_factor){
+    function loadDecisionFactor(list_factor) {
         let ele = $('#box-select-factor');
 
         let url = ele.data('url');
@@ -298,7 +289,7 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_decision_factor')) {
                     data.opportunity_decision_factor.map(function (item) {
-                        if(list_factor.includes(item.id)){
+                        if (list_factor.includes(item.id)) {
                             ele.append(`<option value="${item.id}" selected>${item.title}</option>`);
                         }
                         ele.append(`<option value="${item.id}">${item.title}</option>`);
@@ -332,9 +323,11 @@ $(document).ready(function () {
                         $('#input-open-date').val(data.opportunity.open_date.split(' ')[0]);
                     if (data.opportunity.close_date !== null)
                         $('#input-close-date').val(data.opportunity.close_date.split(' ')[0]);
-                    let ele_decision_maker = $('#input-decision-maker');
-                    ele_decision_maker.val(data.opportunity.decision_maker.name);
-                    ele_decision_maker.attr('data-id', data.opportunity.decision_maker.id);
+                    if (data.opportunity.decision_maker !== null) {
+                        let ele_decision_maker = $('#input-decision-maker');
+                        ele_decision_maker.val(data.opportunity.decision_maker.name);
+                        ele_decision_maker.attr('data-id', data.opportunity.decision_maker.id);
+                    }
                     loadProduct(data.opportunity.product_category, data.opportunity.opportunity_product_datas);
                     loadContact(data.opportunity.customer, data.opportunity.end_customer, data.opportunity.opportunity_contact_role_datas);
                     loadDecisionFactor(data.opportunity.customer_decision_factor);
@@ -346,131 +339,7 @@ $(document).ready(function () {
 
     loadDetail();
 
-
-    $('#check-agency-role').on('change', function () {
-        let ele_end_customer = $('#select-box-end-customer');
-        if ($(this).is(':checked')) {
-            ele_end_customer.prop('disabled', false);
-        } else {
-            ele_end_customer.prop('disabled', true);
-        }
-    })
-
-    // get data form
-    function getDataForm(data_form) {
-        let ele_customer = $('#select-box-customer.tag-change');
-        let ele_end_customer = $('#select-box-end-customer.tag-change');
-        let ele_budget = $('#input-budget.tag-change');
-        let ele_decision_maker = $('#input-decision-maker.tag-change');
-        let ele_product_category = $('#select-box-product-category.tag-change');
-        let ele_tr_products = $('#table-products.tag-change tbody tr:not(.hidden)');
-        let ele_tr_competitors = $('#table-competitors.tag-change tbody tr:not(.hidden)');
-        let ele_tr_contact_role = $('#table-contact-role.tag-change tbody tr:not(.hidden)');
-        let ele_decision_factor = $('#box-select-factor.tag-change');
-
-        data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
-        ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
-        ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
-        ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
-        ele_decision_maker.data('id') !== undefined || '' ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
-
-        ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
-        ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
-
-        // tab product
-        let list_product_data = []
-        ele_tr_products.each(function () {
-            let ele_product = $(this).find('.select-box-product');
-            let product_id = ele_product.val();
-            let product_name = ele_product.find('option:selected').text();
-            if (ele_product.length === 0) {
-                product_id = null;
-                product_name = $(this).find('.input-product-name').val();
-            }
-            let data = {
-                'product': product_id,
-                'product_category': $(this).find('.box-select-product-category').val(),
-                'tax': $(this).find('.box-select-tax').val(),
-                'uom': $(this).find('.box-select-uom').val(),
-                'product_name': product_name,
-                'product_quantity': $(this).find('.input-quantity').val(),
-                'product_unit_price': $(this).find('.input-unit-price').attr('value'),
-                'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
-            }
-            list_product_data.push(data);
-        })
-        data_form['total_product'] = $('#input-product-total').valCurrency();
-        data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
-        data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
-
-        if ($('#table-products').hasClass('tag-change')) {
-            data_form['opportunity_product_datas'] = list_product_data;
-        }
-
-        // tab competitor
-        let list_competitor_data = []
-        ele_tr_competitors.each(function () {
-            let win_deal = false;
-            if ($(this).find('.input-win-deal').is(':checked')) {
-                win_deal = true;
-            }
-
-            let data = {
-                'competitor': $(this).find('.box-select-competitor').val(),
-                'strength': $(this).find('.input-strength').val(),
-                'weakness': $(this).find('.input-weakness').val(),
-                'win_deal': win_deal,
-            }
-
-            list_competitor_data.push(data);
-        })
-
-        if ($('#table-competitors').hasClass('tag-change')) {
-            data_form['opportunity_competitors_datas'] = list_competitor_data;
-        }
-
-        // tab contact role
-        let list_contact_role_data = []
-        ele_tr_contact_role.each(function () {
-            let data = {
-                'type_customer': $(this).find('.box-select-type-customer').val(),
-                'contact': $(this).find('.box-select-contact').val(),
-                'job_title': $(this).find('.input-job-title').val(),
-                'role': $(this).find('.box-select-role').val(),
-            }
-            list_contact_role_data.push(data);
-        })
-
-        if ($('#table-contact-role').hasClass('tag-change')) {
-            data_form['opportunity_contact_role_datas'] = list_contact_role_data;
-        }
-
-        return data_form
-    }
-
-    // submit form edit
-    frmDetail.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        frm.dataForm = getDataForm(frm.dataForm);
-        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                }
-            )
-    })
-
     // even in tab product
-
     $('#btn-add-select-product').on('click', function () {
         let table = $('#table-products');
         let col_empty = table.find('.col-table-empty');
@@ -635,7 +504,7 @@ $(document).ready(function () {
         })
         $(this).closest('tr').find('.input-job-title').val(contact.job_title);
 
-        if($(this).closest('tr').find('.box-select-role option:selected').val() === '0'){
+        if ($(this).closest('tr').find('.box-select-role option:selected').val() === '0') {
             let ele_decision_maker = $('#input-decision-maker');
             ele_decision_maker.val($(this).find('option:selected').text());
             ele_decision_maker.attr('data-id', $(this).val());
@@ -646,8 +515,7 @@ $(document).ready(function () {
         if ($('.box-select-role').find('option[value="0"]:selected').length === 1) {
             if ($(this).find('option[value="0"]:selected').length === 0)
                 $(this).find('option[value="0"]').attr('disabled', 'disabled');
-        }
-        else{
+        } else {
             $(this).find('option[value="0"]').removeAttr('disabled');
         }
     })
@@ -660,8 +528,7 @@ $(document).ready(function () {
             ele_decision_maker.attr('data-id', ele_contact.val());
             ele_decision_maker.addClass('tag-change');
         } else {
-            if($('.box-select-role option[value="0"]:selected').length === 0)
-            {
+            if ($('.box-select-role option[value="0"]:selected').length === 0) {
                 ele_decision_maker.val('');
                 ele_decision_maker.attr('data-id', '');
                 ele_decision_maker.addClass('tag-change');
@@ -670,9 +537,149 @@ $(document).ready(function () {
     })
 
 
+    // event general
     $(document).on('change', 'select, input', function () {
         $(this).addClass('tag-change');
         $(this).closest('tr').addClass('tag-change');
         $(this).closest('table').addClass('tag-change');
+    })
+
+    $('#check-agency-role').on('change', function () {
+        let ele_end_customer = $('#select-box-end-customer');
+        if ($(this).is(':checked')) {
+            ele_end_customer.prop('disabled', false);
+        } else {
+            ele_end_customer.prop('disabled', true);
+        }
+    })
+
+    $('#check-input-rate').on('change', function (){
+        if($(this).is(':checked')){
+            $('#input-rate').prop('readonly', false);
+        }
+        else{
+            $('#input-rate').prop('readonly', true);
+        }
+    })
+
+    $('#rangeInput').on('mousedown', function () {
+        return false;
+    });
+
+    $('#input-rate').on('change', function () {
+        $('#rangeInput').val($(this).val());
+    })
+
+    // get data form
+    function getDataForm(data_form) {
+        let ele_customer = $('#select-box-customer.tag-change');
+        let ele_end_customer = $('#select-box-end-customer.tag-change');
+        let ele_budget = $('#input-budget.tag-change');
+        let ele_decision_maker = $('#input-decision-maker.tag-change');
+        let ele_product_category = $('#select-box-product-category.tag-change');
+        let ele_tr_products = $('#table-products.tag-change tbody tr:not(.hidden)');
+        let ele_tr_competitors = $('#table-competitors.tag-change tbody tr:not(.hidden)');
+        let ele_tr_contact_role = $('#table-contact-role.tag-change tbody tr:not(.hidden)');
+        let ele_decision_factor = $('#box-select-factor.tag-change');
+
+        data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
+        ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
+        ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
+        ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
+        ele_decision_maker.data('id') !== undefined || '' ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
+
+        ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
+        ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
+
+        // tab product
+        let list_product_data = []
+        ele_tr_products.each(function () {
+            let ele_product = $(this).find('.select-box-product');
+            let product_id = ele_product.val();
+            let product_name = ele_product.find('option:selected').text();
+            if (ele_product.length === 0) {
+                product_id = null;
+                product_name = $(this).find('.input-product-name').val();
+            }
+            let data = {
+                'product': product_id,
+                'product_category': $(this).find('.box-select-product-category').val(),
+                'tax': $(this).find('.box-select-tax').val(),
+                'uom': $(this).find('.box-select-uom').val(),
+                'product_name': product_name,
+                'product_quantity': $(this).find('.input-quantity').val(),
+                'product_unit_price': $(this).find('.input-unit-price').attr('value'),
+                'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
+            }
+            list_product_data.push(data);
+        })
+        data_form['total_product'] = $('#input-product-total').valCurrency();
+        data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
+        data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
+
+        if ($('#table-products').hasClass('tag-change')) {
+            data_form['opportunity_product_datas'] = list_product_data;
+        }
+
+        // tab competitor
+        let list_competitor_data = []
+        ele_tr_competitors.each(function () {
+            let win_deal = false;
+            if ($(this).find('.input-win-deal').is(':checked')) {
+                win_deal = true;
+            }
+
+            let data = {
+                'competitor': $(this).find('.box-select-competitor').val(),
+                'strength': $(this).find('.input-strength').val(),
+                'weakness': $(this).find('.input-weakness').val(),
+                'win_deal': win_deal,
+            }
+
+            list_competitor_data.push(data);
+        })
+
+        if ($('#table-competitors').hasClass('tag-change')) {
+            data_form['opportunity_competitors_datas'] = list_competitor_data;
+        }
+
+        // tab contact role
+        let list_contact_role_data = []
+        ele_tr_contact_role.each(function () {
+            let data = {
+                'type_customer': $(this).find('.box-select-type-customer').val(),
+                'contact': $(this).find('.box-select-contact').val(),
+                'job_title': $(this).find('.input-job-title').val(),
+                'role': $(this).find('.box-select-role').val(),
+            }
+            list_contact_role_data.push(data);
+        })
+
+        if ($('#table-contact-role').hasClass('tag-change')) {
+            data_form['opportunity_contact_role_datas'] = list_contact_role_data;
+        }
+
+        return data_form
+    }
+
+    // submit form edit
+    frmDetail.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        frm.dataForm = getDataForm(frm.dataForm);
+        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                }
+            )
     })
 })

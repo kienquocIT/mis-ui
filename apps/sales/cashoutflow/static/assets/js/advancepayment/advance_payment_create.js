@@ -269,7 +269,7 @@ $(document).ready(function () {
         let quotation_not_opp = '';
         sale_order_list.map(function (item) {
             sale_order_loaded.push(item.customer.id);
-            if (item.opportunity.id) {
+            if (item.opportunity) {
                 oppcode_loaded.push(item.opportunity.id);
                 ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="text-danger code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
@@ -280,7 +280,7 @@ $(document).ready(function () {
         ele.append(sale_not_opp);
         quotation_list.map(function (item) {
             if (sale_order_loaded.includes(item.customer.id) === false) {
-                if (item.opportunity.id) {
+                if (item.opportunity) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="text-primary code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 }
@@ -330,7 +330,7 @@ $(document).ready(function () {
                     loadQuotationExpense($('#sale-code-select-box option:selected').attr('value'));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '2') {
-                    $('#beneficiary-select-box').prop('disabled', false);
+                    $('#beneficiary-select-box').prop('disabled', true);
                 }
                 $('#notify-none-sale-code').prop('hidden', true);
                 $('#tab_plan_datatable').prop('hidden', false);
@@ -346,7 +346,7 @@ $(document).ready(function () {
         ele2.append(`<option></option>`);
         sale_order_list.map(function (item) {
             sale_order_loaded.push(item.customer.id);
-            if (item.opportunity.id) {
+            if (item.opportunity) {
                 oppcode_loaded.push(item.opportunity.id);
                 ele2.append(`<option data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
@@ -356,7 +356,7 @@ $(document).ready(function () {
         })
         quotation_list.map(function (item) {
             if (sale_order_loaded.includes(item.customer.id) === false) {
-                if (item.opportunity.id) {
+                if (item.opportunity) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele2.append(`<option data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
                 }

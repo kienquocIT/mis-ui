@@ -30,7 +30,7 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Sale order</b></div></div>`)
                 payment_detail.sale_order_mapped.map(function (item) {
                     opp_code_list.push(item.opportunity.code);
-                    if (item.opportunity.id) {
+                    if (item.opportunity) {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span">` + item.title +`</span>
@@ -50,7 +50,7 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Quotation</b></div></div>`)
                 payment_detail.quotation_mapped.map(function (item) {
                     opp_code_list.push(item.opportunity.code);
-                    if (item.opportunity.id) {
+                    if (item.opportunity) {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span">` + item.title +`</span>
@@ -83,7 +83,7 @@ $(document).ready(function () {
 
             $('select[name="method"]').find(`option[value="` + payment_detail.method + `"]`).prop('selected', true)
 
-            let sale_code_id_list = payment_detail.sale_order_mapped.concat(payment_detail.quotation_mapped).concat(payment_detail.opportunity_mapped);
+            let sale_code_id_list = [].concat(payment_detail.sale_order_mapped).concat(payment_detail.quotation_mapped).concat(payment_detail.opportunity_mapped);
             let sale_code_length = sale_code_id_list.length;
             if (sale_code_length > 0) {
                 let table_body = $('#tab_line_detail_datatable tbody');

@@ -8,6 +8,7 @@ $(document).ready(function () {
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
+            console.log(data)
             let advance_payment = data.advance_payment_detail;
             $('#advance-payment-code').text(advance_payment.code);
             $('#advance-payment-title').val(advance_payment.title);
@@ -34,6 +35,8 @@ $(document).ready(function () {
                     opportunity_mapped_id = advance_payment.opportunity_mapped.id;
                 }
                 loadSaleCode(sale_order_mapped_id, quotation_mapped_id, opportunity_mapped_id);
+                let sale_code_mapped = advance_payment.sale_order_mapped.concat(advance_payment.quotation_mapped).concat(advance_payment.opportunity_mapped)
+                $('#sale-code-select-box2-show').val(sale_code_mapped[0].title)
                 $('#beneficiary-select-box').prop('disabled', true);
             }
             else if (advance_payment.sale_code_type === 1) {
@@ -523,7 +526,7 @@ $(document).ready(function () {
         let quotation_not_opp = '';
         sale_order_list.map(function (item) {
             sale_order_loaded.push(item.customer.id);
-            if (item.opportunity.id) {
+            if (item.opportunity) {
                 oppcode_loaded.push(item.opportunity.id);
                 ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
@@ -534,10 +537,10 @@ $(document).ready(function () {
         ele.append(sale_not_opp);
         quotation_list.map(function (item) {
             if (sale_order_loaded.includes(item.customer.id) === false) {
-                if (item.opportunity.id) {
+                if (item.opportunity) {
+                    oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 } else {
-                    oppcode_loaded.push(item.opportunity.id);
                     quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
                 }
             }
@@ -595,7 +598,7 @@ $(document).ready(function () {
             if (sale_order_mapped === item.id) {
                 selected = 'selected';
             }
-            if (item.opportunity.id) {
+            if (item.opportunity) {
                 ele2.append(`<option ` + selected + ` data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
             else {
@@ -607,7 +610,7 @@ $(document).ready(function () {
             if (quotation_mapped === item.id) {
                 selected = 'selected';
             }
-            if (item.opportunity.id) {
+            if (item.opportunity) {
                 ele2.append(`<option ` + selected + ` data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
             else {

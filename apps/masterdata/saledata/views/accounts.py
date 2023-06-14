@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, InputMappingProperties
 from apps.shared.constant import COMPANY_SIZE, CUSTOMER_REVENUE
 
 
@@ -263,7 +263,10 @@ class ContactUpdate(View):
         menu_active='menu_contact_detail',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.SALE_DATA_CONTACT
+        return {
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-create-contact'
+               }, status.HTTP_200_OK
 
 
 class ContactUpdateAPI(APIView):

@@ -1177,7 +1177,7 @@ $(document).ready(function () {
         log_data.map(
             (item) => {
                 console.log('item?.[\'data_change\']: ', item?.['data_change']);
-                let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${item.date_created}</span>`;
+                let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
                 let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
                 let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
                 let dataChangeHTML = `<pre class="log-act-data-change hidden">${JSON.stringify(item?.['data_change'], null, 2)}</pre>`;
@@ -1271,6 +1271,17 @@ $(document).ready(function () {
         )
     });
     // -- Action support Workflow in Doc Detail
+
+    // Edit in Zone at DocDetail Page
+    $('#btn-active-edit-zone-wf').click(function (event) {
+        event.preventDefault();
+        $(this).addClass('hidden');
+        $.fn.activeZoneInDoc();
+    })
+
+    // -- Edit in Zone at DocDetail Page
+
+
 });
 
 // function extend to jQuery
@@ -1521,6 +1532,12 @@ $.fn.extend({
     },
     getPkDetail: function () {
         return $('#idPKDetail').attr('data-pk');
+    },
+    getElePageContent: function () {
+        return $('#idxPageContent');
+    },
+    getElePageAction: function () {
+        return $("#idxPageAction");
     },
 
     // default components
@@ -1837,7 +1854,7 @@ $.fn.extend({
                 )
             ) {
                 let taskID = $.fn.getTaskWF();
-                let keyOk = $.fn.getZoneData();
+                let keyOk = $.fn.getZoneKeyData();
                 let newData = {};
                 for (let key in data) {
                     if (keyOk.includes(key)) {
@@ -1916,7 +1933,17 @@ $.fn.extend({
                 }
             );
         }
-        $('html').append(`<textarea class="hidden" id="idxZonesData">${JSON.stringify(body_fields)}</textarea>`)
+        $('html').append(
+            `<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` +
+            `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`
+        );
+    },
+    getZoneKeyData: function () {
+        let itemEle = $('#idxZonesKeyData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
     },
     getZoneData: function () {
         let itemEle = $('#idxZonesData');
@@ -1925,11 +1952,24 @@ $.fn.extend({
         }
         return [];
     },
-    activeZoneInDoc: function (zonesData) {
+    activeButtonOpenZone: function (zonesData) {
         $.fn.setZoneData(zonesData);
         if (zonesData && Array.isArray(zonesData)) {
+            $('#btn-active-edit-zone-wf').removeClass('hidden');
+        }
+    },
+    activeZoneInDoc: function () {
+        let zonesData = $.fn.getZoneData();
+        console.log(zonesData);
+        if (zonesData && Array.isArray(zonesData)) {
+            let pageEle = $.fn.getElePageContent();
+            let input_mapping_properties = $('#input_mapping_properties').text();
+            if (input_mapping_properties) {
+                input_mapping_properties = JSON.parse(input_mapping_properties);
+            } else {
+                input_mapping_properties = {}
+            }
             if (zonesData.length > 0) {
-                let pageEle = $('#idxPageContent');
                 pageEle.find('.required').removeClass('required');
                 pageEle.find('.field-required').remove();
                 pageEle.find('input, select, textarea').prop({
@@ -1940,15 +1980,109 @@ $.fn.extend({
                 zonesData.map(
                     (item) => {
                         if (item.code) {
-                            let findText = "[name=" + item.code + "]";
-                            pageEle.find(findText).each(function () {
-                                $(this).closest('.form-group').find('.form-label').addClass('required');
-                                $(this).removeAttr('readonly').removeAttr('disabled').prop('required', true).addClass('border-danger');
-                            })
+                            let inputMapProperties = input_mapping_properties[item.code];
+                            if (inputMapProperties && typeof inputMapProperties === 'object') {
+                                let arrTmpFind = {};
+                                let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                                inputMapProperties['name'].map(
+                                    (nameFind) => {
+                                        arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                    }
+                                )
+                                inputMapProperties['id'].map(
+                                    (idFind) => {
+                                        arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                    }
+                                )
+                                Object.keys(arrTmpFind).map(
+                                    (key) => {
+                                        let findText = arrTmpFind[key];
+                                        pageEle.find(findText).each(function () {
+                                            if (readonly_not_disable.includes(key)) {
+                                                $(this).changePropertiesElementIsZone(key, readonly_not_disable, {
+                                                    'add_require_label': true,
+                                                    'add_require': false,
+                                                    'remove_disable': true,
+                                                    'add_readonly': true,
+                                                    'add_border': true,
+                                                });
+                                            } else {
+                                                $(this).changePropertiesElementIsZone(key, readonly_not_disable, {
+                                                    'add_require_label': true,
+                                                    'add_require': false,
+                                                    'remove_disable': true,
+                                                    'remove_readonly': true,
+                                                    'add_border': true,
+                                                });
+                                            }
+                                        })
+                                    }
+                                );
+                                inputMapProperties['id_border_zones'].map(
+                                    (item) => {
+                                        pageEle.find('#' + item).changePropertiesElementIsZone(item, [], {
+                                            'add_border': true,
+                                        });
+                                    }
+                                )
+                            }
                         }
                     }
                 )
             }
+
+            // add button save at zones
+            // idFormID
+            let idFormID = $('#idFormID').attr('data-form-id');
+            if (idFormID) {
+                $.fn.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+            }
+        }
+    },
+    changePropertiesElementIsZone: function (
+        key, readonly_not_disable,
+        opts
+    ) {
+        let config = {
+            'add_require_label': false,
+            'add_require': false,
+            'remove_disable': false,
+            'add_disable': false,
+            'remove_readonly': false,
+            'add_readonly': false,
+            'add_border': false,
+            ...opts
+        }
+        if (config.add_require_label === true) {
+            $(this).closest('.form-group').find('.form-label').addClass('required');
+        }
+        if (config.add_disable === true) {
+            $(this).attr('disabled', 'disabled');
+        }
+        if (config.remove_disable === true) {
+            $(this).removeAttr('disabled');
+        }
+        if (config.add_readonly === true) {
+            $(this).attr('readonly', 'readonly');
+        }
+        if (config.remove_readonly === true) {
+            $(this).removeAttr('readonly');
+        }
+        if (config.add_require === true) {
+            $(this).prop('required', true);
+        }
+        if (config.add_border === true) {
+            $(this).addClass('border-warning');
+        }
+
+        // active border for select2
+        if ($(this).is("select") && $(this).hasClass('select2')) {
+            $(this).next('.select2-container').find('.select2-selection').changePropertiesElementIsZone(
+                key,
+                readonly_not_disable,
+                config
+            );
         }
     },
     // -- zone
@@ -1999,7 +2133,7 @@ $.fn.extend({
                         }
 
                         // zones handler
-                        $.fn.activeZoneInDoc(actionMySelf['zones']);
+                        $.fn.activeButtonOpenZone(actionMySelf['zones']);
                     }
                 }
             })

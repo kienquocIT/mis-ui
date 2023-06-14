@@ -2982,3 +2982,23 @@ msgstr "Không có thông tin ngân hàng"
 #
 msgid "Sale Order/Quotation is not selected!"
 msgstr "Sale Order/Quotation chưa được chọn"
+
+#
+msgid "Edit Home Address"
+msgstr "Địa chỉ nhà"
+
+#
+msgid "Edit Work Address"
+msgstr "Địa chỉ văn phòng làm việc"
+
+#
+msgid "Open edit in Zones"
+msgstr "Mở trình chỉnh sửa trên Phân Vùng Quy Trình"
+
+#
+msgid "Save in Zone"
+msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
+
+#
+msgid "Collapse"
+msgstr "Thu gọn/Mở rộng"

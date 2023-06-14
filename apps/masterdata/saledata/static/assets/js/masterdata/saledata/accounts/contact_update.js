@@ -1,5 +1,12 @@
 $(document).ready(function () {
-    let option_emp = [{'val': '', 'text': ''}];
+    let option_emp = [
+        {
+            'val': '',
+            'text': ''
+        }
+    ];
+
+    let frmEle = $("#form-create-contact");
 
     function loadSalutationList(id) {
         let ele = $('#select-box-salutation');
@@ -65,7 +72,10 @@ $(document).ready(function () {
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
                             }
-                            option_emp.push({'val': item.id, 'text': item.full_name})
+                            option_emp.push({
+                                'val': item.id,
+                                'text': item.full_name
+                            })
                         })
                     }
                 }
@@ -138,7 +148,7 @@ $(document).ready(function () {
         $('#select-box-interests').select2();
 
         let pk = window.location.pathname.split('/').pop();
-        let url_loaded = $('#form-create-contact').attr('data-url-loaded').replace(0, pk);
+        let url_loaded = frmEle.attr('data-url-loaded').replace(0, pk);
 
         $.fn.callAjax(url_loaded, 'GET').then(
             (resp) => {
@@ -164,8 +174,7 @@ $(document).ready(function () {
                         $('#gmail_id').val(data.contact_detail.additional_information.gmail);
                         $('#linkedln_id').val(data.contact_detail.additional_information.linkedln);
                         $('#twitter_id').val(data.contact_detail.additional_information.twitter);
-                    }
-                    else {
+                    } else {
                         loadInterestList([]);
                     }
                     $.fn.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
@@ -203,7 +212,7 @@ $(document).ready(function () {
         $(`#select-box-report-to option[value="` + id_emp + `"]`).remove();
     });
 
-    // remove employee in onwer (selected in report to)
+    // remove employee in owner (selected in report to)
     $('#select-box-report-to').on('change', function () {
         let id_emp = $(this).val()
         let ele = $('#select-box-emp');
@@ -216,10 +225,10 @@ $(document).ready(function () {
         $(`#select-box-emp option[value="` + id_emp + `"]`).remove();
     });
 
-    $('#save-contact').on('click', function (event) {
+    frmEle.submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($('#form-create-contact'));
+        let frm = new SetupFormSubmit(frmEle);
         frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
@@ -261,10 +270,10 @@ $(document).ready(function () {
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && data['status'] === 200){
+                    if (data && data['status'] === 200) {
                         $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
                         setTimeout(
-                            ()=>{
+                            () => {
                                 // window.location.replace("/saledata/contacts");
                                 // location.reload.bind(location)
                                 window.location.reload();
@@ -272,17 +281,17 @@ $(document).ready(function () {
                         );
                     }
                     setTimeout(
-                    ()=>{
-                        $.fn.hideLoading();
-                    },
-                    1000
-                )
+                        () => {
+                            $.fn.hideLoading();
+                        },
+                        1000
+                    )
                 }, (err) => {
                     $.fn.hideLoading();
                     // $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
-    })
+    });
 });
 
 

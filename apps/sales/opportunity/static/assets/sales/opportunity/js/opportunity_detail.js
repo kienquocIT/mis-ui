@@ -1,6 +1,7 @@
 $(document).ready(function () {
     const pk = window.location.pathname.split('/').pop();
     const frmDetail = $('#frm-detail');
+    const ele_select_product_category = $('#select-box-product-category')
 
     // config input date
     $('input[name="open_date"]').daterangepicker({
@@ -82,9 +83,9 @@ $(document).ready(function () {
                     $('#input-data-product').attr('value', JSON.stringify(dict_product));
                     data.product_list.map(function (item) {
                         if (list_category.length > 0 && list_category.includes(item.general_information.product_category.id)) {
-                            ele.prepend(`<option value="${item.id}">${item.title}</option>`);
+                            ele.prepend(`<option value="${item.id}" data-category-id="${item.general_information.product_category.id}">${item.title}</option>`);
                         } else {
-                            let html = `<option value="${item.id}" disabled>${item.title}</option>`;
+                            let html = `<option value="${item.id}" data-category-id="${item.general_information.product_category.id}" disabled>${item.title}</option>`;
                             ele.append(html);
                         }
                     })
@@ -129,6 +130,7 @@ $(document).ready(function () {
                         if (item.id === end_customer_id) {
                             ele_end_customer.append(`<option selected value="${item.id}">${item.name}</option>`);
                             $('#check-agency-role').prop('checked', true);
+                            $('.box-select-type-customer option[value="1"]').prop('disabled', false);
                             ele_end_customer.prop('disabled', false);
                         } else {
                             ele_end_customer.append(`<option value="${item.id}">${item.name}</option>`);
@@ -142,8 +144,8 @@ $(document).ready(function () {
         })
     }
 
-    function loadProductCategory(list_id, data) {
-        let ele = $('#select-box-product-category');
+    function loadProductCategory(list_id) {
+        let ele = ele_select_product_category;
         let ele_in_table = $('.box-select-product-category');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -367,6 +369,20 @@ $(document).ready(function () {
         last_row.find('.num-product').text(table.find('tbody tr').length - 2);
     })
 
+    ele_select_product_category.on('select2:unselect', function (e) {
+        let removedOption = e.params.data;
+        $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').remove();
+        $('#table-product').addClass('tag-change');
+
+        $(`.select-box-product option[data-category-id="${removedOption.id}"]`).prop('disabled', true);
+
+    });
+
+    ele_select_product_category.on('select2:select', function (e) {
+        let removedOption = e.params.data;
+        $(`.select-box-product option[data-category-id="${removedOption.id}"]`).prop('disabled', false);
+    });
+
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
         let dict = JSON.parse($('#input-data-product').val());
@@ -455,7 +471,9 @@ $(document).ready(function () {
     $(document).on('change', '#select-box-end-customer', function () {
         let contact_data = JSON.parse($('#input-data-contact').val());
         let table = $('#table-contact-role');
-        table.addClass('tag-change');
+        if (table.find('tbody tr.col-table-empty').length === 0) {
+            table.addClass('tag-change');
+        }
         let account_id = $(this).val();
 
         table.find('.box-select-type-customer option[value="1"]:selected').closest('tr').remove();
@@ -545,19 +563,25 @@ $(document).ready(function () {
     })
 
     $('#check-agency-role').on('change', function () {
+        let table = $('#table-contact-role');
         let ele_end_customer = $('#select-box-end-customer');
         if ($(this).is(':checked')) {
             ele_end_customer.prop('disabled', false);
+            table.find('.box-select-type-customer option[value="1"]').prop('disabled', false);
         } else {
+            ele_end_customer.val(null).trigger('change');
             ele_end_customer.prop('disabled', true);
+            table.find('.box-select-type-customer option[value="1"]:selected').closest('tr').remove();
+            table.find('.box-select-type-customer option[value="1"]').prop('disabled', true);
+
         }
+        ele_end_customer.addClass('tag-change');
     })
 
-    $('#check-input-rate').on('change', function (){
-        if($(this).is(':checked')){
+    $('#check-input-rate').on('change', function () {
+        if ($(this).is(':checked')) {
             $('#input-rate').prop('readonly', false);
-        }
-        else{
+        } else {
             $('#input-rate').prop('readonly', true);
         }
     })
@@ -586,10 +610,18 @@ $(document).ready(function () {
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
         ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
         ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
-        ele_decision_maker.data('id') !== undefined || '' ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
+        ele_decision_maker.data('id') !== undefined ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
 
         ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
         ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
+
+        if (data_form['end_customer'] === '') {
+            data_form['end_customer'] = null;
+        }
+
+        if (data_form['decision_maker'] === '') {
+            data_form['decision_maker'] = null;
+        }
 
         // tab product
         let list_product_data = []

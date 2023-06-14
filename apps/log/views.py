@@ -2,11 +2,12 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
 from rest_framework.views import APIView
 
-from apps.shared import mask_view
+from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.log.seriallizers import TicketErrorCreateSerializer
 
 __all__ = [
     'TicketErrorCreateAPI',
+    'ActivityLogListAPI',
 ]
 
 
@@ -27,3 +28,14 @@ class TicketErrorCreateAPI(APIView):
             obj = ser.save()
             return {'detail': 'Success', 'ticket': {'id': str(obj.id), 'code': str(obj.code)}}, status.HTTP_200_OK
         return {'errors': ser.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class ActivityLogListAPI(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(url=ApiURL.LOG_ACTIVITIES, user=request.user).get(data=request.query_params)
+        if resp.state:
+            return {'log_data': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

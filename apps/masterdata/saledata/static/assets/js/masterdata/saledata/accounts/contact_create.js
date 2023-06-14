@@ -4,80 +4,72 @@ $(document).ready(function () {
         let ele = $('#select-box-salutation');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('salutation_list') && Array.isArray(data.salutation_list)) {
-                        ele.append(`<option selected></option>`)
-                        data.salutation_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                if (data.hasOwnProperty('salutation_list') && Array.isArray(data.salutation_list)) {
+                    ele.append(`<option selected></option>`)
+                    data.salutation_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     function loadInterestList() {
         let ele = $('#select-box-interests');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
-                        ele.append(`<option></option>`)
-                        data.interests_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
+                    ele.append(`<option></option>`)
+                    data.interests_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     function loadEmployee() {
         let ele = $('#select-box-emp');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        ele.append(`<option selected></option>`)
-                        data.employee_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                    ele.append(`<option selected></option>`)
+                    data.employee_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.full_name + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     function loadAccountName() {
         let ele = $('#select-box-account_name');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
-                        ele.append(`<option selected>` + `</option>`)
-                        data.account_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.name + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
+                    ele.append(`<option selected>` + `</option>`)
+                    data.account_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.name + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     function loadDefaultData() {
@@ -111,20 +103,18 @@ $(document).ready(function () {
             ele.attr('disabled', false);
             let url = ele.attr('data-url').replace('0', account_id);
             let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        resp.data.account_detail.owner.map(function (item) {
-                        })
-                        ele.text("");
-                        ele.append(`<option selected>` + `</option>`)
-                        data.account_detail.owner.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
-                        })
-                    }
+            $.fn.callAjax(url, method).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    resp.data.account_detail.owner.map(function (item) {
+                    })
+                    ele.text("");
+                    ele.append(`<option selected>` + `</option>`)
+                    data.account_detail.owner.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
+                    })
                 }
-            )
+            })
         } else {
             ele.attr('disabled', true);
         }
@@ -170,25 +160,35 @@ $(document).ready(function () {
 
         frm.dataForm['system_status'] = 1; // save, not draft
 
+        $.fn.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    $.fn.notifyPopup({description: resp.detail}, 'success');
-                    setTimeout(location.reload.bind(location), 1000);
-                    window.location.replace(frm.dataUrlRedirect);
-                }, (err) => {
-                    // $.fn.notifyPopup({description: err.detail}, 'failure');
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data['status'] === 201 || data['status'] === 200) {
+                    $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
+                    setTimeout(() => {
+                        window.location.replace(frm.dataUrlRedirect);
+                    }, 1000)
                 }
-            )
+                setTimeout(
+                    ()=>{
+                        $.fn.hideLoading();
+                    },
+                    1000
+                )
+            }, (err) => {
+                $.fn.hideLoading();
+                // $.fn.notifyPopup({description: err.detail}, 'failure');
+            })
     })
 })
-
 
 $("#first_name_id").on('change', function () {
     if ($(this).val() !== '' && $("#last_name_id").val() !== '') {
         $("#full_name_id").val($(this).val() + ' ' + $("#last_name_id").val())
     }
 })
+
 $("#last_name_id").on('change', function () {
     if ($("#first_name_id").val() !== '' && $(this).val() !== '') {
         $("#full_name_id").val($("#first_name_id").val() + ' ' + $(this).val())

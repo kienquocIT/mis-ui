@@ -96,8 +96,34 @@
                             <div class="d-flex align-items-center">
                                 {% include 'extends/breadcrumb.html' %}
                             </div>
-                            <div class="blog-options-wrap">
+                            <div class="blog-options-wrap" id="idxPageAction">
                                 {% block pageAction %}{% endblock %}
+                                <button
+                                        type="submit"
+                                        class="hidden btn-save-at-zone-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        form=""
+                                        data-value=""
+                                        id="idxSaveInZoneWF"
+                                >
+                                    <span
+                                            class="icon"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Save in Zone' %}"
+                                    ><i class="fa-solid fa-floppy-disk"></i></span>
+                                </button>
+                                <button
+                                        type="button"
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        id="btn-active-edit-zone-wf"
+                                >
+                                    <span
+                                            class="icon"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Open edit in Zones' %}"
+                                    ><i class="fa-solid fa-unlock"></i></span>
+                                </button>
                                 <button
                                         type="button"
                                         class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
@@ -107,7 +133,7 @@
                                     <span
                                             class="icon"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
+                                            data-bs-placement="bottom"
                                             data-bs-original-title="{% trans 'Approval' %}"
                                     ></span>
                                 </button>
@@ -121,7 +147,7 @@
                                         <span
                                                 class="icon"
                                                 data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                data-bs-placement="bottom"
                                                 data-bs-original-title="{% trans 'More actions' %}"
                                         >
                                             ...
@@ -143,36 +169,39 @@
 
                                 <div class="v-separator  d-lg-inline-block d-none"></div>
 
-                                <a
+                                <button
                                         id="btnLogShow"
-                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ntt-drawer-toggle-link"
+                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
                                         data-drawer-target="#drawer_log_data"
                                         data-drawer-active="false"
                                         href="#"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
+                                        data-bs-placement="bottom"
                                         data-bs-original-title="{% trans 'Log' %}"
                                         data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
                                 >
-                                    <span class="icon">
-                                        <i class="fas fa-history"></i>
+                                    <span class="icon icon-xs">
+                                        <i class="fas fa-history fa-sm"></i>
                                     </span>
-                                </a>
-                                <a
-                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover hk-navbar-togglable flex-shrink-0  d-lg-inline-block d-none"
-                                        href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-                                        data-bs-original-title="Collapse"
+                                </button>
+                                <button
+                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Collapse' %}"
                                 >
-										<span class="icon">
-											<span class="feather-icon"><i data-feather="chevron-up"></i></span>
-											<span class="feather-icon d-none"><i data-feather="chevron-down"></i></span>
-										</span>
-                                </a>
+                                    <span class="icon">
+                                        <i class="fa-solid fa-chevron-up fa-sm"></i>
+                                        <i class="fa-solid fa-chevron-down fa-sm d-none"></i>
+                                        <!-- <span class="feather-icon"><i data-feather="chevron-up"></i></span> -->
+                                        <!-- <span class="feather-icon d-none"><i data-feather="chevron-down"></i></span> -->
+                                    </span>
+                                </button>
                             </div>
                             <div class="hk-sidebar-togglable active"></div>
                         </header>
                         <div class="blog-body">
-                            <div data-simplebar class="nicescroll-bar">
+                            <div data-simplebar class="nicescroll-bar" id="idxPageContent">
                                 {% block pageContent %}
                                 {% endblock %}
                             </div>
@@ -221,6 +250,14 @@
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
         <span id="idWFRuntime" data-runtime-id=""></span>
         <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
+        <span id="idPKDetail" data-pk="{{ pk }}"></span>
+
+        {% if data.input_mapping_properties %}
+            {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+        {% endif %}
+        {% if data.form_id %}
+            <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
+        {% endif %}
     </div>
     <!-- /Message translate usually -->
     <!-- /Message translate base -->
@@ -291,7 +328,10 @@
 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="tab_block_activities">
+                    <div
+                            class="tab-pane fade" id="tab_block_activities"
+                            data-url="{% url 'ActivityLogListAPI' %}?doc_id={{ pk }}"
+                    >
                         <span id="elementTypingText"></span>
                     </div>
                 </div>
@@ -378,7 +418,10 @@
                         </div>
                         <div class="form-group hidden">
                             <label for="staticTicketResp" class="form-label">{% trans 'Code Ticket' %}</label>
-                            <input type="text" readonly class="form-control-plaintext text-danger" id="staticTicketResp">
+                            <input
+                                    type="text" readonly class="form-control-plaintext text-danger"
+                                    id="staticTicketResp"
+                            >
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -525,6 +568,12 @@
         });
 
         $(document).ready(function () {
+            <!-- Toggle Collapse -->
+            $('.hk-navbar-togglable').click(function (event){
+                $(this).find('.icon').children().toggleClass('d-none');
+            });
+            <!-- ## Toggle Collapse -->
+
             <!-- Space current -->
             change_space();
             <!-- ## Space current -->

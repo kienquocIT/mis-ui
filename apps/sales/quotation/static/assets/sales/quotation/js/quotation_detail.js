@@ -6,6 +6,7 @@ $(function () {
         let $form = $('#frm_quotation_create');
         let dataTableClass = new dataTableHandle();
         let loadDataClass = new loadDataHandle();
+        let configClass = new checkConfigHandle();
 
         // call ajax get info quotation detail
         $.fn.callAjax($form.data('url'), 'GET').then(
@@ -40,7 +41,10 @@ $(function () {
         $('#btn-edit_quotation').on('click', function () {
             $(this)[0].setAttribute('hidden', true)
             $('#btn-create_quotation')[0].removeAttribute('hidden');
-            $form.find('.disabled-but-edit').removeAttr('disabled');
+            $form.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+            $('#datable-quotation-create-product').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+            $('#datable-quotation-create-cost').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+            $('#datable-quotation-create-expense').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             // load data dropdown for Tabs
             let tableProduct = document.getElementById('datable-quotation-create-product');
             let tableCost = document.getElementById('datable-quotation-create-cost');
@@ -69,6 +73,12 @@ $(function () {
                     loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
                 }
             }
+            // Check config when begin edit
+            configClass.checkConfig(true);
         });
+
+
+
+
     });
 });

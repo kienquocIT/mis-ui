@@ -1172,6 +1172,31 @@ $(document).ready(function () {
         return ulStages.join("");
     }
 
+    function renderLogActivities(tabActivityLog, log_data) {
+        tabActivityLog.empty();
+        log_data.map(
+            (item) => {
+                console.log('item?.[\'data_change\']: ', item?.['data_change']);
+                let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
+                let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
+                let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
+                let dataChangeHTML = `<pre class="log-act-data-change hidden">${JSON.stringify(item?.['data_change'], null, 2)}</pre>`;
+                let baseHTML = ``;
+                if (item?.['automated_logging'] === true) {
+                    baseHTML = `<div class="avatar avatar-icon avatar-xxs avatar-soft-dark avatar-rounded mr-1"><span class="initial-wrap"><i class="fa-solid fa-gear"></i></span></div>`;
+                } else {
+                    baseHTML = `<span class="badge badge-primary mr-1">${item?.['employee_data']?.['full_name']}</span>`;
+                }
+                tabActivityLog.append(`<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`);
+            }
+        );
+    }
+
+    $(document).on('click', '.btn-log-act-more', function (event) {
+        event.preventDefault();
+        $(this).closest('p').next('.log-act-data-change').toggleClass('hidden');
+    })
+
     $('.btn-action-wf').click(function (event) {
         event.preventDefault();
 
@@ -1204,6 +1229,8 @@ $(document).ready(function () {
 
     $('#btnLogShow').click(function (event) {
         event.preventDefault();
+
+        // log runtime
         let groupLogEle = $('#drawer_log_data');
         let baseUrl = groupLogEle.attr('data-url');
         if (baseUrl && !groupLogEle.attr('data-log-loaded')) {
@@ -1222,8 +1249,39 @@ $(document).ready(function () {
                 })
             }
         }
+
+        // log activities
+        let tabActivityLog = $('#tab_block_activities');
+        let activityUrl = tabActivityLog.attr('data-url');
+        $.fn.callAjax(
+            activityUrl,
+            'GET',
+            {},
+            true,
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                    renderLogActivities(tabActivityLog, data['log_data']);
+                }
+            },
+            (errs) => {
+
+            }
+        )
     });
     // -- Action support Workflow in Doc Detail
+
+    // Edit in Zone at DocDetail Page
+    $('#btn-active-edit-zone-wf').click(function (event) {
+        event.preventDefault();
+        $(this).addClass('hidden');
+        $.fn.activeZoneInDoc();
+    })
+
+    // -- Edit in Zone at DocDetail Page
+
+
 });
 
 // function extend to jQuery
@@ -1245,10 +1303,12 @@ $.fn.extend({
     arrayIncludesAll: function (a, b) {
         return b.every(value => a.includes(value));
     },
-    shortName: function (name) {
-        return name.split(" ").map((item) => {
+    shortName: function (name, length = 2) {
+        let rs = name.split(" ").map((item) => {
             return item ? item.charAt(0) : ""
         }).join("");
+        if (rs.length > length) return rs.slice(0, length);
+        return rs;
     },
     isBoolean(value) {
         return typeof value === 'boolean';
@@ -1470,6 +1530,15 @@ $.fn.extend({
         }
         return false;
     },
+    getPkDetail: function () {
+        return $('#idPKDetail').attr('data-pk');
+    },
+    getElePageContent: function () {
+        return $('#idxPageContent');
+    },
+    getElePageAction: function () {
+        return $("#idxPageAction");
+    },
 
     // default components
     dateRangePickerDefault: function (opts) {
@@ -1502,6 +1571,12 @@ $.fn.extend({
                 des_tmp = option.description;
             } else if (Array.isArray(option.description)) {
                 des_tmp = option.description.join(", ");
+            } else if (typeof option.description === 'object') {
+                let des_tmp_arr = [];
+                for (const [_key, value] of Object.entries(option.description)) {
+                    des_tmp_arr.push(value);
+                }
+                des_tmp = des_tmp_arr.join(", ");
             } else {
                 des_tmp = option.description.toString();
             }
@@ -1720,7 +1795,7 @@ $.fn.extend({
                     return jQuery.fn.redirectLogin(1000);
                 // return {}
                 case 403:
-                    jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
+                    jQuery.fn.notifyB({'description': resp.data.errors}, 'failure');
                     return {};
                 case 500:
                     return {};
@@ -1767,13 +1842,40 @@ $.fn.extend({
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
         return new Promise(function (resolve, reject) {
+            // handle body data before send
+            // check WF ID, task ID, url exist PK
+            // False: return data input
+            // True: convert body data with Zone Accept
+            let pk = $.fn.getPkDetail();
+            if (
+                $.fn.getWFRuntimeID() && $.fn.getTaskWF() &&
+                pk && url.includes(pk) && (
+                    method === 'PUT' || method === 'put'
+                )
+            ) {
+                let taskID = $.fn.getTaskWF();
+                let keyOk = $.fn.getZoneKeyData();
+                let newData = {};
+                for (let key in data) {
+                    if (keyOk.includes(key)) {
+                        newData[key] = data[key];
+                    }
+                }
+                data = newData;
+                data['task_id'] = taskID;
+                console.log('body data have WF ID: ', data, keyOk, taskID);
+            }
+            // Setup then Call Ajax
             let ctx = {
                 url: url,
                 type: method,
                 dataType: 'json',
                 contentType: content_type,
                 data: content_type === "application/json" ? JSON.stringify(data) : data,
-                headers: {"X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers},
+                headers: {
+                    "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
+                    ...headers
+                },
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
                     if (data) resolve(rest); else resolve({'status': jqXHR.status});
@@ -1818,7 +1920,181 @@ $.fn.extend({
         return rs;
     },
 
+    //
     // workflow
+    //
+    // zone
+    setZoneData: function (zonesData) {
+        let body_fields = [];
+        if (zonesData && Array.isArray(zonesData)) {
+            zonesData.map(
+                (item) => {
+                    body_fields.push(item.code);
+                }
+            );
+        }
+        $('html').append(
+            `<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` +
+            `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`
+        );
+    },
+    getZoneKeyData: function () {
+        let itemEle = $('#idxZonesKeyData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    },
+    getZoneData: function () {
+        let itemEle = $('#idxZonesData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    },
+    activeButtonOpenZone: function (zonesData) {
+        $.fn.setZoneData(zonesData);
+        if (zonesData && Array.isArray(zonesData)) {
+            $('#btn-active-edit-zone-wf').removeClass('hidden');
+        }
+    },
+    activeZoneInDoc: function () {
+        let zonesData = $.fn.getZoneData();
+        console.log(zonesData);
+        if (zonesData && Array.isArray(zonesData)) {
+            let pageEle = $.fn.getElePageContent();
+            let input_mapping_properties = $('#input_mapping_properties').text();
+            if (input_mapping_properties) {
+                input_mapping_properties = JSON.parse(input_mapping_properties);
+            } else {
+                input_mapping_properties = {}
+            }
+            if (zonesData.length > 0) {
+                pageEle.find('.required').removeClass('required');
+                pageEle.find('.field-required').remove();
+                pageEle.find('input, select, textarea').prop({
+                    'readonly': true,
+                    'disabled': true,
+                }).removeAttr('required');
+                $('#select-box-emp').prop('readonly', true);
+                zonesData.map(
+                    (item) => {
+                        if (item.code) {
+                            let inputMapProperties = input_mapping_properties[item.code];
+                            if (inputMapProperties && typeof inputMapProperties === 'object') {
+                                let arrTmpFind = {};
+                                let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                                inputMapProperties['name'].map(
+                                    (nameFind) => {
+                                        arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                    }
+                                )
+                                inputMapProperties['id'].map(
+                                    (idFind) => {
+                                        arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                    }
+                                )
+                                Object.keys(arrTmpFind).map(
+                                    (key) => {
+                                        let findText = arrTmpFind[key];
+                                        pageEle.find(findText).each(function () {
+                                            if (readonly_not_disable.includes(key)) {
+                                                $(this).changePropertiesElementIsZone(key, readonly_not_disable, {
+                                                    'add_require_label': true,
+                                                    'add_require': false,
+                                                    'remove_disable': true,
+                                                    'add_readonly': true,
+                                                    'add_border': true,
+                                                });
+                                            } else {
+                                                $(this).changePropertiesElementIsZone(key, readonly_not_disable, {
+                                                    'add_require_label': true,
+                                                    'add_require': false,
+                                                    'remove_disable': true,
+                                                    'remove_readonly': true,
+                                                    'add_border': true,
+                                                });
+                                            }
+                                        })
+                                    }
+                                );
+                                inputMapProperties['id_border_zones'].map(
+                                    (item) => {
+                                        pageEle.find('#' + item).changePropertiesElementIsZone(item, [], {
+                                            'add_border': true,
+                                        });
+                                    }
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
+            // add button save at zones
+            // idFormID
+            let idFormID = $('#idFormID').attr('data-form-id');
+            if (idFormID) {
+                $.fn.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+            }
+        }
+    },
+    changePropertiesElementIsZone: function (
+        key, readonly_not_disable,
+        opts
+    ) {
+        let config = {
+            'add_require_label': false,
+            'add_require': false,
+            'remove_disable': false,
+            'add_disable': false,
+            'remove_readonly': false,
+            'add_readonly': false,
+            'add_border': false,
+            ...opts
+        }
+        if (config.add_require_label === true) {
+            $(this).closest('.form-group').find('.form-label').addClass('required');
+        }
+        if (config.add_disable === true) {
+            $(this).attr('disabled', 'disabled');
+        }
+        if (config.remove_disable === true) {
+            $(this).removeAttr('disabled');
+        }
+        if (config.add_readonly === true) {
+            $(this).attr('readonly', 'readonly');
+        }
+        if (config.remove_readonly === true) {
+            $(this).removeAttr('readonly');
+        }
+        if (config.add_require === true) {
+            $(this).prop('required', true);
+        }
+        if (config.add_border === true) {
+            $(this).addClass('border-warning');
+        }
+
+        // active border for select2
+        if ($(this).is("select") && $(this).hasClass('select2')) {
+            $(this).next('.select2-container').find('.select2-selection').changePropertiesElementIsZone(
+                key,
+                readonly_not_disable,
+                config
+            );
+        }
+    },
+    // -- zone
+    // task
+    setTaskWF: function (taskID) {
+        $('#idxGroupAction').attr('data-wf-task-id', taskID);
+    },
+    getTaskWF: function () {
+        return $('#idxGroupAction').attr('data-wf-task-id');
+    },
+    // -- task
+    // runtime
     setWFRuntimeID: function (runtime_id) {
         if (runtime_id) {
             let btn = $('#btnLogShow');
@@ -1833,7 +2109,7 @@ $.fn.extend({
                         let grouAction = $('#idxGroupAction');
                         let taskID = actionMySelf['id'];
                         if (taskID) {
-                            grouAction.attr('data-wf-task-id', taskID);
+                            $.fn.setTaskWF(taskID);
 
                             let actions = actionMySelf['actions'];
                             if (actions && Array.isArray(actions) && actions.length > 0) {
@@ -1855,6 +2131,9 @@ $.fn.extend({
                                 grouAction.closest('.dropdown').removeClass('hidden');
                             }
                         }
+
+                        // zones handler
+                        $.fn.activeButtonOpenZone(actionMySelf['zones']);
                     }
                 }
             })
@@ -1864,6 +2143,7 @@ $.fn.extend({
     getWFRuntimeID: function () {
         return $('#idWFRuntime').attr('data-runtime-id');
     },
+    // -- runtime
 })
 
 // support for Form Submit

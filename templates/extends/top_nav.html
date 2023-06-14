@@ -9,7 +9,13 @@
             ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 
             <!-- Space -->
-            <div class="btn-group mr-3" id="menu-tenant">
+            <div
+                    class="btn-group mr-3"
+                    id="menu-tenant"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-bs-original-title="Space Menus"
+            >
                 <button
                         type="button" class="btn btn-outline-light dropdown-toggle"
                         data-bs-toggle="dropdown"
@@ -126,7 +132,12 @@
                                 data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true"
                                 aria-expanded="false"
                         >
-                            <span class="icon">
+                            <span
+                                    class="icon"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="{% trans 'Notifications' %}"
+                            >
                                 <span class="position-relative">
                                     <span class="feather-icon">
                                         <i data-feather="bell"></i>
@@ -237,7 +248,9 @@
                                             {{ base.fullname }}
                                         </div>
                                         <div class="fs-7">
-                                            <a id="email-request-owner" href="mailto:{{ base.email }}">{{ base.email }}</a>
+                                            <a
+                                                    id="email-request-owner" href="mailto:{{ base.email }}"
+                                            >{{ base.email }}</a>
                                         </div>
                                     </div>
                                 </div>

@@ -573,12 +573,15 @@ $(function () {
             if (eleContent && eleShow) {
                 eleShow[0].value = eleContent.value;
             }
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            let rowShipping = tableProduct[0].querySelector('.table-row-shipping');
+            if (rowShipping) {
+                // Delete all promotion rows
+                deletePromotionRows(tableProduct, true, false);
+                // Delete all shipping rows
+                deletePromotionRows(tableProduct, false, true);
+                // ReCalculate Total
+                calculateClass.updateTotal(tableProduct[0], true, false, false);
+            }
         });
 
 // Action on click choose billing

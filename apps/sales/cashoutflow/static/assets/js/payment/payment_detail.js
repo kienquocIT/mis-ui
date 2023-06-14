@@ -15,7 +15,10 @@ $(document).ready(function () {
             $('#created_date_id').val(payment_detail.date_created.split(' ')[0]);
             loadBeneficiary(payment_detail.beneficiary)
 
-            let sale_code_mapped = payment_detail.sale_order_mapped.concat(payment_detail.quotation_mapped).concat(payment_detail.opportunity_mapped)
+            let sale_code_mapped = null;
+            if (payment_detail.sale_order_mapped.length > 0) {sale_code_mapped = payment_detail.sale_order_mapped}
+            if (payment_detail.quotation_mapped.length > 0) {sale_code_mapped = payment_detail.quotation_mapped}
+            if (payment_detail.opportunity_mapped.length > 0) {sale_code_mapped = payment_detail.opportunity_mapped}
 
             if (payment_detail.sale_code_type === 3) {
                 $('#radio-special').prop('checked', true);
@@ -49,7 +52,9 @@ $(document).ready(function () {
 
                 ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Quotation</b></div></div>`)
                 payment_detail.quotation_mapped.map(function (item) {
-                    opp_code_list.push(item.opportunity.code);
+                    if (item.opportunity) {
+                        opp_code_list.push(item.opportunity.code);
+                    }
                     if (item.opportunity) {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
@@ -70,11 +75,13 @@ $(document).ready(function () {
             else if (payment_detail.sale_code_type === 0) {
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
-                opp_code_list.push(sale_code_mapped[0].opportunity.code);
+                if (sale_code_mapped[0].opportunity) {
+                    opp_code_list.push(sale_code_mapped[0].opportunity.code);
+                    $('#sale-code-select-box2-show').attr('title', sale_code_mapped[0].opportunity.code + ': ' + sale_code_mapped[0].opportunity.title);
+                }
                 $('#sale-code-select-box2-show').val(sale_code_mapped[0].title);
                 $('#sale-code-select-box2-show').attr('data-bs-toggle', 'tooltip');
                 $('#sale-code-select-box2-show').attr('data-bs-placement', 'right');
-                $('#sale-code-select-box2-show').attr('title', sale_code_mapped[0].opportunity.code + ': ' + sale_code_mapped[0].opportunity.title);
             }
 
             loadSupplier(payment_detail.supplier);
@@ -83,7 +90,11 @@ $(document).ready(function () {
 
             $('select[name="method"]').find(`option[value="` + payment_detail.method + `"]`).prop('selected', true)
 
-            let sale_code_id_list = [].concat(payment_detail.sale_order_mapped).concat(payment_detail.quotation_mapped).concat(payment_detail.opportunity_mapped);
+            let sale_code_id_list = null;
+            if (payment_detail.sale_order_mapped.length > 0) {sale_code_id_list = payment_detail.sale_order_mapped}
+            if (payment_detail.quotation_mapped.length > 0) {sale_code_id_list = payment_detail.quotation_mapped}
+            if (payment_detail.opportunity_mapped.length > 0) {sale_code_id_list = payment_detail.opportunity_mapped}
+
             let sale_code_length = sale_code_id_list.length;
             if (sale_code_length > 0) {
                 let table_body = $('#tab_line_detail_datatable tbody');

@@ -20,14 +20,64 @@ $(document).ready(function () {
     const ap_list = JSON.parse($('#advance_payment_list').text());
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
+        let ap_item = ap_list.find(function(item) {
+            return item.sale_order_mapped === filter_sale_order_id;
+        });
+        let ap_expense_list_mapped = []
+        if (ap_item !== undefined) {
+            for (let i = 0; i < ap_item.expense_items.length; i++) {
+                let ap_expense_item = ap_item.expense_items[i];
+                ap_expense_list_mapped.push(
+                    {
+                        'expense_id': ap_expense_item.expense.id,
+                        'ap_approved': ap_expense_item.after_tax_price,
+                        'remain_ap': ap_expense_item.remain_total,
+                        'available': ap_expense_item.available_total}
+                )
+            }
+            console.log(ap_item)
+        }
+        $('#tab_plan_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').append(`<tr>
             <td colspan="3"><span class="badge badge-secondary">` + filter_sale_order_code + `</span></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="4"></td>
         </tr>`)
+        let url = $('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + filter_sale_order_id;
+        $.fn.callAjax(url, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                console.log(ap_expense_list_mapped)
+                for (let i = 0; i < data.sale_order_expense_list.length; i++) {
+                    let expense_item = data.sale_order_expense_list[i];
+                    let tax_item = '';
+                    if (expense_item.tax.title) {
+                        tax_item = expense_item.tax.title;
+                    }
+
+                    let expense_get = ap_expense_list_mapped.find(function(item) {
+                        return item.expense_id === expense_item.expense_id;
+                    });
+                    let remain_ap = 0;
+                    let ap_approved = 0;
+                    let available = 0;
+                    if (expense_get !== undefined) {
+                        remain_ap = expense_get.remain_ap;
+                        ap_approved = expense_get.ap_approved;
+                        available = expense_get.available;
+                    }
+
+                    $('#tab_plan_datatable tbody').append(`<tr>
+                        <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
+                        <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
+                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td></td>
+                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                    </tr>`)
+                }
+            }
+        })
     }
 
     function loadQuotationPlan(filter_quotation_id, filter_quotation_code) {

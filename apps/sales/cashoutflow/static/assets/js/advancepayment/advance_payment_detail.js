@@ -35,7 +35,11 @@ $(document).ready(function () {
                     opportunity_mapped_id = advance_payment.opportunity_mapped.id;
                 }
                 loadSaleCode(sale_order_mapped_id, quotation_mapped_id, opportunity_mapped_id);
-                let sale_code_mapped = advance_payment.sale_order_mapped.concat(advance_payment.quotation_mapped).concat(advance_payment.opportunity_mapped)
+                let sale_code_mapped = null;
+                if (advance_payment.sale_order_mapped.length > 0) {sale_code_mapped = advance_payment.sale_order_mapped}
+                if (advance_payment.quotation_mapped.length > 0) {sale_code_mapped = advance_payment.quotation_mapped}
+                if (advance_payment.opportunity_mapped.length > 0) {sale_code_mapped = advance_payment.opportunity_mapped}
+
                 $('#sale-code-select-box2-show').val(sale_code_mapped[0].title)
                 $('#beneficiary-select-box').prop('disabled', true);
             }

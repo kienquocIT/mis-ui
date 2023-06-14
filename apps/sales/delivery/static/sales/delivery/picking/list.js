@@ -64,21 +64,25 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'date_created',
-                render: (data, type, row) => {
-                    return data;
+                render: (row, type, data) => {
+                    let time = '--';
+                    if (row) time = moment(row).format('DD/MM/YYYY');
+                    return time
                 },
             }, {
                 data: 'estimated_delivery_date',
-                render: (data, type, row) => {
-                    return data ? data : "_";
+                render: (row, type, data) => {
+                    let time = '--';
+                    if (row) time = moment(row).format('DD/MM/YYYY');
+                    return time
                 },
             }, {
                 data: 'state',
                 render: (data, type, row, meta) => {
-                    let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
+                    let templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
                     switch (data) {
                         case 0:
-                            templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
+                            templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
                             break
                         case 1:
                             templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;

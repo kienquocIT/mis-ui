@@ -4,9 +4,13 @@ function loadDatePicker() {
 
 class pickupUtil {
     prodList = [];
-    subInfo = {}
-    pickingData = {}
-    warehouseList = []
+    pickingData = {};
+    warehouseList = [];
+    // constructor of warehouseList: object{}
+    // {
+    //   productID: {warehouseID1: product_amount1, warehouseID2: product_amount2},
+    //   productID2: {warehouseID3: product_amount3, warehouseID4: product_amount4}
+    // }
 
     set setProdList(data) {
         this.prodList = data
@@ -14,14 +18,6 @@ class pickupUtil {
 
     get getProdList() {
         return this.prodList
-    }
-
-    set setSubInfo(data) {
-        this.subInfo = data
-    }
-
-    get getSubInfo() {
-        return this.subInfo
     }
 
     set setPicking(data) {
@@ -48,14 +44,15 @@ class pickupUtil {
         if (value && value <= currentList[idx]['remaining_quantity']) {
             currentList[idx]['picked_quantity'] = value
             this.setProdList = currentList
-        } else if (value > currentList[idx]['remaining_quantity'])// giá trị nhập vào lớn hơn số tồn kho
+        }
+        else if (value > currentList[idx]['remaining_quantity'])// giá trị nhập vào lớn hơn số tồn kho
             $.fn.notifyPopup({
                 description: $('#trans-factory').attr('data-error-picked-quantity')
             }, 'failure')
 
         // nhập đủ tự check all
         let countTemp = 0
-        let sub = this.getSubInfo
+        let sub = this.getPicking
         for (let item of currentList) {
             countTemp += item.picked_quantity
         }
@@ -83,33 +80,39 @@ class pickupUtil {
         })
     }
 
-    getWarehouseStock() {
+    async getWarehouseStock(dataProd) {
         const _this = this
         const warehouseID = $('#inputWareHouse').val();
-        let prodListID = [];
-        for (let item of this.getProdList) {
-            prodListID.push(item?.product_data?.id)
-        }
-        prodListID.join(",")
-        $.fn.callAjax(
-            $('#url-factory').attr('data-warehouse-stock'),
-            'GET',
-            {'product__in': prodListID, 'warehouse': warehouseID}
-        ).then(
-            (req) => {
-                let res = $.fn.switcherResp(req);
+        let currentWHList = this.getWarehouseList
+        let checkResult = 0
+        if (dataProd && dataProd?.product_data?.id && dataProd?.uom_data?.id){
+            let prodKey = `${dataProd.product_data.id}.${dataProd.uom_data.id}`
+            if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.warehouseID)
+                checkResult = currentWHList[prodKey].warehouseID
+            let callData = await $.fn.callAjax(
+                $('#url-factory').attr('data-warehouse-stock'),
+                'GET',
+                {'product_id': dataProd.product_data.id, 'uom_id': dataProd.uom_data.id}
+            )
+            if(callData.status === 200) {
+                let res = $.fn.switcherResp(callData);
                 res = res.warehouse_stock;
-                let new_revert = {}
-                for (let item of res) {
-                    new_revert[item.product.id.toString()] = item.stock
+                if (res.length){
+                    let dataFormated = {}
+                    for (const warehouse of res){
+                        dataFormated[warehouse.id] = warehouse.product_amount
+                        if (warehouse.id === warehouseID) checkResult = warehouse.product_amount
+                    }
+                    currentWHList[prodKey] = dataFormated
+                    _this.setWarehouseList = currentWHList
                 }
-                _this.setWarehouseList = new_revert
-
-            });
+            }
+        }
+        return checkResult
     }
 }
 
-function getWarehouse(pickupInit) {
+function getWarehouse() {
     const $elmWarehouse = $('#inputWareHouse')
     let defaultData = $elmWarehouse.attr('data-onload');
     if (!defaultData) {
@@ -123,15 +126,12 @@ function getWarehouse(pickupInit) {
                         'title': firstData.title
                     }));
                     initSelectBox($elmWarehouse);
-                    $elmWarehouse.on("select2:select", function (e) {
-                        pickupInit.getWarehouseStock()
-                    });
                 }
             })
     }
 }
 
-$(function () {
+$(async function () {
     // declare variable
     const pickupInit = new pickupUtil();
 
@@ -147,90 +147,78 @@ $(function () {
         'GET',
         {},
         true,
-    ).then( (resp) => {
+    ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && data.hasOwnProperty('picking_detail')
-                && data.picking_detail.hasOwnProperty('sub')
-                && data.picking_detail.sub.hasOwnProperty('products')
-            ) {
-                // load sale order
-                // console.log('picking_detail: ', data['picking_detail']);
-                pickupInit.setPicking = data['picking_detail']
-                data = data.picking_detail
-                $('#inputSaleOrder').attr('value', data?.['sale_order_data']?.['id']).val(
-                    data?.['sale_order_data']?.['title']
-                );
-
-                // state
-                let state = data?.['state'];
-                if (state !== undefined && Number.isInteger(state)) {
-                    let letStateChoices = JSON.parse($('#dataStateChoices').text());
-                    let templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
-                    switch (state) {
-                        case 0:
-                            templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
-                            break
-                        case 1:
-                            templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
-                            break
-                    }
-                    $('#inputState').append(templateEle.format_by_idx(letStateChoices?.[state]));
+            // load sale order
+            pickupInit.setPicking = data.picking_detail
+            data = data.picking_detail
+            $('#inputSaleOrder').val(data?.sale_order_data?.title);
+            $('.title-code').text(data.code)
+            // state
+            let state = data?.state;
+            if (state !== undefined && Number.isInteger(state)) {
+                let letStateChoices = JSON.parse($('#dataStateChoices').text());
+                let templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
+                switch (state) {
+                    case 0:
+                        templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
+                        break
+                    case 1:
+                        templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
+                        break
                 }
+                $('#inputState').append(templateEle.format_by_idx(letStateChoices[state]));
+            }
 
-                // picking delivery date
-                let estimate_delivery_date = data?.['estimated_delivery_date'];
-                if (estimate_delivery_date) {
-                    $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
-                    loadDatePicker();
-                }
+            // picking delivery date
+            let estimate_delivery_date = data?.['estimated_delivery_date'];
+            if (estimate_delivery_date) {
+                $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
+                loadDatePicker();
+            }
 
-                // warehouse
-                let warehouse_data = data?.['ware_house_data'];
-                if (warehouse_data.hasOwnProperty('code')) {
-                    $('#inputWareHouse').append(
-                        `<option value="{0}">{1}</option>`.format_by_idx(
-                            warehouse_data['id'],
-                            warehouse_data['code'] + " - " + warehouse_data['title'],
-                        )
+            // warehouse
+            let warehouse_data = data?.['ware_house_data'];
+            if (warehouse_data.hasOwnProperty('code')) {
+                $('#inputWareHouse').append(
+                    `<option value="{0}">{1}</option>`.format_by_idx(
+                        warehouse_data['id'],
+                        warehouse_data['code'] + " - " + warehouse_data['title'],
                     )
-                }
-
-                // descriptions
-                let remarks = data?.['remarks']
-                if (remarks) {
-                    $('#inputRemarks').val(remarks);
-                }
-                const toLocation = data?.to_location
-                if (toLocation) $('#inputToLocation').val(toLocation)
-
-                // load product list
-                pickupInit.setSubInfo = data?.sub
-
-                pickupInit.getWarehouseStock(data)
-                loadProductList(
-                    data?.sub['products']
                 )
             }
+
+            // descriptions
+            let remarks = data?.['remarks']
+            if (remarks) {
+                $('#inputRemarks').val(remarks);
+            }
+            const toLocation = data?.to_location
+            if (toLocation) $('#inputToLocation').val(toLocation)
+
+            // load product list
+            loadProductList(
+                data?.['products']
+            )
         }
     )
 
-    function getStockByProdID(prod, dropdownElm){
-        const prodID = prod.product_data.id
+    function getStockByProdID(prod, dropdownElm) {
         const $elmTrans = $('#trans-factory')
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
         $.fn.callAjax(
             $('#url-factory').attr('data-warehouse-stock'),
             'GET',
-            {'product': prodID}
+            {'product_id': prod.product_data.id, uom_id:prod.uom_data.id}
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             const datas = data.warehouse_stock;
             let prodTotal = 0
             let prodName = []
-            for (let data of datas){
-                if (data.stock > 0){
-                    prodTotal += data.stock
-                    prodName.push(data.warehouse.title)
+            for (let data of datas) {
+                if (data.product_amount > 0) {
+                    prodTotal += data.product_amount
+                    prodName.push(data.title)
                 }
             }
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName.join(', ')}</p></div>`;
@@ -300,7 +288,7 @@ $(function () {
                 },
             ],
             rowCallback(row, data, index) {
-                $(`.dropdown > i`, row).on('show.bs.dropdown', function () {
+                $(`.dropdown > i`, row).off().on('show.bs.dropdown', function () {
                     getStockByProdID(data, $(this))
                 })
             },
@@ -309,20 +297,23 @@ $(function () {
                 let data = table.rows().data();
 
                 // loop for all row and init event on change value of picked quantity
-                data.each(function (rowData, idx) {
+                data.each( function (rowData, idx) {
                     // Đối với mỗi hàng, bạn có thể lấy được index của nó
-                    $(`#prod_row-${idx}`).off().on('blur', function (e) {
+                    $(`#prod_row-${idx}`).off().on('blur',async function (e) {
                         if (this.value) {
                             // format số âm, nhiều số 0. Ex. 0001, số thập phân.
                             let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
                             this.value = value
-                            const listCompare = pickupInit.getWarehouseList
-                            if (listCompare.hasOwnProperty(rowData.product_data.id) && listCompare[rowData.product_data.id] > 0){
+                            const listCompare = await pickupInit.getWarehouseStock(rowData)
+                            if (listCompare > 0) {
                                 pickupInit.pickedQuantityUtil(value, idx);
                                 $(this).removeClass('is-invalid cl-red')
                             }
                             else {
-                                $.fn.notifyPopup({description: $('#trans-factory').attr('data-outstock')}, 'failure');
+                                $.fn.notifyPopup(
+                                    {description: $('#trans-factory').attr('data-outstock')},
+                                    'failure'
+                                );
                                 $(this).addClass('is-invalid cl-red')
                                 return false
                             }
@@ -358,7 +349,6 @@ $(function () {
             return false
         }
         const pickingData = pickupInit.getPicking
-        delete pickingData['estimated_delivery_date']
         if (_form.dataForm?.estimated_delivery_date) {
             pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
@@ -366,23 +356,31 @@ $(function () {
         pickingData['ware_house'] = _form.dataForm['warehouse_id']
         pickingData['remarks'] = _form.dataForm['remarks']
         pickingData['to_location'] = _form.dataForm['to_location']
+        pickingData['sale_order_id'] = pickingData['sale_order_data']['id']
 
         let prodSub = []
         const warehouseStock = pickupInit.getWarehouseList
         for (prod of pickupInit.getProdList) {
-            if (warehouseStock.hasOwnProperty(prod.product_data.id)) {
-                if (prod.picked_quantity > 0){
+            const isKey = `${prod.product_data.id}.${prod.uom_data.id}`
+            if (warehouseStock.hasOwnProperty(isKey) &&
+                warehouseStock[isKey][pickingData['ware_house']]
+            ) {
+                if (prod.picked_quantity > 0) {
                     let temp = {
-                        'product_id': prod.product_data.id,
+                        'product_id':prod.product_data.id,
                         'done': prod.picked_quantity,
-                        'delivery_data': {}
+                        'delivery_data': [{
+                            'warehouse': _form.dataForm['warehouse_id'],
+                            'uom': prod.uom_data.id,
+                            'stock': prod.picked_quantity,
+                        }]
                     }
-                    temp['delivery_data'][_form.dataForm['warehouse_id']] = prod.picked_quantity
                     prodSub.push(temp)
                 }
-            }
-            else{
-                $.fn.notifyPopup({description: prod.product_data.title + $transElm.attr('data-prod-outstock')}, 'failure')
+            } else {
+                $.fn.notifyPopup(
+                    {description: prod.product_data.title + $transElm.attr('data-prod-outstock')},
+                    'failure')
                 return false
             }
         }
@@ -391,8 +389,6 @@ $(function () {
             $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
             return false
         }
-        pickingData.sub = pickingData.sub.id
-        // console.log('pickingData', pickingData)
         //call ajax to update picking
         $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
             .then(

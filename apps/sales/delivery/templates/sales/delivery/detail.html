@@ -32,7 +32,7 @@
 {% block pageAction %}
     <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="delivery_form"
             data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
+            data-bs-original-title="Save" {% if data.config.is_picking %}disabled{% endif %}>
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
@@ -180,6 +180,8 @@
                         <th>
                             {% if not data.config.is_picking and not data.config.is_parial_ship %}
                                 <button type="button" class="btn btn-soft-success" id="config-one-all">{% trans 'Done' %}</button>
+                            {% elif data.config.is_picking and not data.config.is_parial_ship %}
+                                <button type="button" class="btn btn-soft-success" disabled id="config-three-all">{% trans 'Done' %}</button>
                             {% else %}
                                 {% trans 'Done' %}
                             {% endif %}

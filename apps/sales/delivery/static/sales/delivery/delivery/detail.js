@@ -32,25 +32,37 @@ $(async function () {
                     let temp = _this.getWarehouseList
                     const res = $.fn.switcherResp(req);
                     const table = $('#productStockDetail')
-                    // let isData = res.warehouse_stock.filter((item) => item.stock > 0)
                     let isData = res.warehouse_stock
                     temp[isKey] = isData
                     _this.setWarehouseList = temp
                     // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
-                    // nếu có tạo thêm key là picked. mục đích show lên poup mục get cho user thấy
+                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy
                     let delivery = prod_data?.delivery_data;
                     let listConvert_config1 = []
                     for (let [idx, item] of isData.entries()){
+                        item.picked = 0
                         if (!config.is_picking && !config.is_partial_ship){
-                            item.picked = 0
-                            if (delivery[idx]
-                                && delivery[idx].warehouse === item.id
-                                && delivery[idx].uom === prod_data.uom_data.id
-                            )
-                            item.picked = delivery[idx].stock
+                            // config 1, 2
+                            if (delivery)
+                                for (const val of delivery){
+                                    if (val.warehouse === item.id
+                                        && val.uom === prod_data.uom_data.id
+                                    )
+                                    item.picked = val.stock
+                                }
                         }
-                        else
-                            item.picked = 0
+                        else if (config.is_picking && !config.is_partial_ship && delivery){
+                            // config 3
+                                item.product_amount = 0
+                                for (const val of delivery){
+                                    if (val.warehouse === item.id
+                                        && val.uom === prod_data.uom_data.id
+                                    ){
+                                        item.product_amount += val.stock
+                                        item.picked += val.stock
+                                    }
+                                }
+                        }
                         listConvert_config1.push(item)
                     }
                     isData = listConvert_config1
@@ -90,7 +102,8 @@ $(async function () {
                                 class: 'w-15 text-center',
                                 data: 'picked',
                                 render: (row, type, data, meta) => {
-                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${row}">`;
+                                    const disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                                 }
                             },
                         ],
@@ -141,11 +154,15 @@ $(async function () {
                     $('#save-stock').off().on('click', function (e) {
                         let isSelected = table.DataTable().data().toArray()
                         let temp_picked = 0
-                        let sub_delivery_data = {}
+                        let sub_delivery_data = []
                         for (let item of isSelected) {
                             if (item.picked > 0){
+                                sub_delivery_data.push({
+                                    'warehouse': item.id,
+                                    'uom': prod_data.uom_data.id,
+                                    'stock': item.picked
+                                })
                                 temp_picked += item.picked
-                                sub_delivery_data[item.id] = item.picked
                             }
                         }
                         let tableTargetData = _this.getProdList
@@ -234,7 +251,7 @@ $(async function () {
                             if (delivery_config.is_picking){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<p id="ready_row-${meta.row}">${row}<p/>`
-                                + `<button type="button" class="btn btn-flush-primary btn-animated show-prod" `
+                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
                                 +`data-idx="${meta.row}" data-id="${data.product_data.id}">`
                                 +`<i class="bi bi-three-dots font-3"></i></button></div>`;
                             }
@@ -262,7 +279,7 @@ $(async function () {
                 ],
                 rowCallback(row, data, index) {
                     $('td:eq(0)', row).html(index + 1)
-                    // done click
+                    // delivery modal popup
                     $(`button.select-prod`, row).off().on('click', function (e) {
                         e.preventDefault()
                         e.stopPropagation()
@@ -332,6 +349,10 @@ $(async function () {
                 $('#textareaShippingAddress').val(res.sale_order_data?.shipping_address)
                 $('#textareaBilling').val(res.sale_order_data?.billing_address)
                 $('#input-attachment').val(res.attachments)
+                if (res.remaining_quantity === res.ready_quantity && res.state < 2){
+                    if($('#config-three-all').length) $('#config-three-all').attr('disabled', false)
+                    $('button[form="delivery_form"]').attr('disabled', false)
+                }
             })
     };
 
@@ -369,6 +390,10 @@ $(async function () {
                         'delivery_data': prod.delivery_data
                     })
             }
+            if (!prodSub || !prodSub.length) {
+                $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
+                return false
+            }
             putData.products = prodSub
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, putData, csr)
                 .then(
@@ -389,7 +414,7 @@ $(async function () {
     // run get detail func
     getPageDetail()
     // run datetimepicker
-    $('input[type=text].date-picker').dateRangePickerDefault({
+    $('input[type=text].date-picker').daterangepicker({
         minYear: 1901,
         singleDatePicker: true,
         timePicker: true,
@@ -468,4 +493,15 @@ $(async function () {
         e.preventDefault()
         handleOnClickDone()
     })
+
+    // quick select config 3
+    $('#config-three-all').off().on('click', function(e){
+        e.preventDefault()
+        const tableData = prodTable.getProdList
+        for (let item of tableData){
+            item.picked_quantity = item.ready_quantity
+        }
+        prodTable.setProdList = tableData
+        $('#dtbPickingProductList').DataTable().clear().rows.add(tableData).draw();
+    });
 }, (jQuery));

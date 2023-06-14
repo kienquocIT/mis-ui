@@ -8,6 +8,8 @@ $(function () {
         let dataTableClass = new dataTableHandle();
         let calculateClass = new calculateCaseHandle();
         let submitClass = new submitHandle();
+        let promotionClass = new promotionHandle();
+        let shippingClass = new shippingHandle();
         let configClass = new checkConfigHandle();
 
         let data = JSON.parse($('#data-quotation').val());
@@ -73,14 +75,15 @@ $(function () {
                     let valueToSelect = data.customer.id;
                     loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling);
                 }
-            } else {
+            } else { // No Value => load again dropdowns
                 loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
-                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadDataClass.loadInformationSelectBox($(this));
-            // ReCheck Config
-            configClass.checkConfig(true);
-            //
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
             loadDataClass.loadDataProductAll()
         });
 
@@ -110,12 +113,18 @@ $(function () {
                     if (Object.keys(data.price_list_mapped).length !== 0) {
                         document.getElementById('customer-price-list').value = data.price_list_mapped.id;
                     }
-                } else {
+                } else { // No Value => load again dropdowns
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
+                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+                    document.getElementById('customer-price-list').value = "";
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
-            //
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
             loadDataClass.loadDataProductAll();
         });
 
@@ -277,7 +286,7 @@ $(function () {
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
-            // Re Calculate all data
+            // Re Calculate all data of rows & total
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
@@ -571,12 +580,15 @@ $(function () {
             if (eleContent && eleShow) {
                 eleShow[0].value = eleContent.value;
             }
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            let rowShipping = tableProduct[0].querySelector('.table-row-shipping');
+            if (rowShipping) {
+                // Delete all promotion rows
+                deletePromotionRows(tableProduct, true, false);
+                // Delete all shipping rows
+                deletePromotionRows(tableProduct, false, true);
+                // ReCalculate Total
+                calculateClass.updateTotal(tableProduct[0], true, false, false);
+            }
         });
 
 // Action on click choose billing
@@ -862,7 +874,7 @@ $(function () {
             calculateClass.updateTotal(tableProduct[0], true, false, false)
             // get promotion condition to apply
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
-            let promotionResult = getPromotionResult(promotionCondition);
+            let promotionResult = promotionClass.getPromotionResult(promotionCondition);
             let is_promotion_on_row = false;
             if (promotionResult.hasOwnProperty('is_promotion_on_row')) {
                 if (promotionResult.is_promotion_on_row === true) {
@@ -929,9 +941,9 @@ $(function () {
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
                             if (promotionResult.is_before_tax === true) {
-                                reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
+                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
                             } else {
-                                reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
+                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
                             }
                         }
                     }
@@ -1014,7 +1026,7 @@ $(function () {
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             // Re Calculate after add shipping (pretax, discount, total)
-            reCalculateIfShipping(shippingPrice);
+            shippingClass.reCalculateIfShipping(shippingPrice);
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
             // Clear table COST if add new row Product
@@ -1026,16 +1038,14 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        $('#btn-create_quotation').on('click', function (e) {
+        $('#frm_quotation_create').submit(function (e) {
             e.preventDefault()
-            let $form = document.getElementById('frm_quotation_create');
             let is_sale_order = false;
             let appNotify = "Quotation";
-            if ($form.classList.contains('sale-order')) {
+            if ($(this)[0].classList.contains('sale-order')) {
                 is_sale_order = true;
-                appNotify = "Sale Order"
             }
-            let _form = new SetupFormSubmit($('#frm_quotation_create'));
+            let _form = new SetupFormSubmit($(this));
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1127,12 +1137,11 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        // $.fn.notifyPopup({description: appNotify + " create fail"}, 'failure')
                     }
                 )
         });

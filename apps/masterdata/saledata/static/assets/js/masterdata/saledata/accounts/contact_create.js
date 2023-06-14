@@ -80,6 +80,26 @@ $(document).ready(function () {
         )
     }
 
+    function loadReportTo(id) {
+        let ele = $('#select-box-report-to');
+        ele.attr('disabled', false);
+        let url = ele.attr('data-url').replace('0', id);
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option selected>` + `</option>`)
+                    for (let i = 0; i < data.account_detail.contact_mapped.length; i++) {
+                        let contact_mapped = data.account_detail.contact_mapped[i];
+                        ele.append(`<option value="` + contact_mapped.id + `">` + contact_mapped.fullname + `</option>`)
+                    }
+                }
+            }
+        )
+    }
+
     function loadDefaultData() {
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');
@@ -108,23 +128,7 @@ $(document).ready(function () {
         let ele = $('#select-box-report-to');
         ele.empty();
         if (account_id !== '') {
-            ele.attr('disabled', false);
-            let url = ele.attr('data-url').replace('0', account_id);
-            let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        resp.data.account_detail.owner.map(function (item) {
-                        })
-                        ele.text("");
-                        ele.append(`<option selected>` + `</option>`)
-                        data.account_detail.owner.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
-                        })
-                    }
-                }
-            )
+            loadReportTo(account_id);
         } else {
             ele.attr('disabled', true);
         }
@@ -155,9 +159,16 @@ $(document).ready(function () {
         if (frm.dataForm['report_to'] === '') {
             delete frm.dataForm['report_to'];
         }
+        else {
+            frm.dataForm['report_to_mapped'] = frm.dataForm['report_to'];
+            delete frm.dataForm['report_to'];
+        }
 
         if (frm.dataForm['owner'] === '') {
             frm.dataForm['owner'] = null;
+        }
+        else {
+            frm.dataForm['owner_mapped'] = frm.dataForm['owner']
         }
 
         if (frm.dataForm['email'] === '') {
@@ -177,7 +188,7 @@ $(document).ready(function () {
                     setTimeout(location.reload.bind(location), 1000);
                     window.location.replace(frm.dataUrlRedirect);
                 }, (err) => {
-                    // $.fn.notifyPopup({description: err.detail}, 'failure');
+                    $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     })

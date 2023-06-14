@@ -107,17 +107,16 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data)
                     ele.text("");
                     ele.append(`<option selected>` + `</option>`)
-                    data.account_detail.owner.map(function (item) {
-                        if (item.id === id_report_to) {
-                            ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
+                    for (let i = 0; i < data.account_detail.contact_mapped.length; i++) {
+                        let contact_mapped = data.account_detail.contact_mapped[i];
+                        if (contact_mapped.id === id_report_to) {
+                            ele.append(`<option value="` + contact_mapped.id + `" selected>` + contact_mapped.fullname + `</option>`)
                         } else {
-                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
+                            ele.append(`<option value="` + contact_mapped.id + `">` + contact_mapped.fullname + `</option>`)
                         }
-
-                    })
+                    }
                 }
             }
         )
@@ -144,9 +143,9 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    loadEmployee(data.contact_detail.owner.id);
+                    loadEmployee(data.contact_detail.owner_mapped.id);
                     loadSalutationList(data.contact_detail.salutation.id);
-                    loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to.id);
+                    loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to_mapped.id);
                     $('#first_name_id').val(data.contact_detail.fullname.first_name);
                     $('#last_name_id').val(data.contact_detail.fullname.last_name);
                     $('#full_name_id').val(data.contact_detail.fullname.fullname);
@@ -240,9 +239,16 @@ $(document).ready(function () {
         if (frm.dataForm['report_to'] === '') {
             delete frm.dataForm['report_to'];
         }
+        else {
+            frm.dataForm['report_to_mapped'] = frm.dataForm['report_to'];
+            delete frm.dataForm['report_to'];
+        }
 
         if (frm.dataForm['owner'] === '') {
             frm.dataForm['owner'] = null;
+        }
+        else {
+            frm.dataForm['owner_mapped'] = frm.dataForm['owner']
         }
 
         if (frm.dataForm['email'] === '') {
@@ -262,7 +268,7 @@ $(document).ready(function () {
                     setTimeout(location.reload.bind(location), 1000);
                     window.location.replace("/saledata/contacts");
                 }, (err) => {
-                    // $.fn.notifyPopup({description: err.detail}, 'failure');
+                    $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     })

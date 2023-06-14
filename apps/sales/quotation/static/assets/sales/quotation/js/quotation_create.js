@@ -227,6 +227,11 @@ $(function () {
                 "product_discount_amount": 0
             }
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+
+            // check disable
+            tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+
+            // check Config for new row
             configClass.checkConfig(false, newRow);
             // load data dropdown
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
@@ -360,7 +365,10 @@ $(function () {
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
-            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID)
+            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+
+            // check disable
+            tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // Action on delete row expense
@@ -552,6 +560,9 @@ $(function () {
                 // update total
                 calculateClass.updateTotal(tableCost[0], false, true, false);
             }
+
+            // check disable
+            tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total

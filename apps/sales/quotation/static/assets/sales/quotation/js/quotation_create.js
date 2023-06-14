@@ -75,14 +75,15 @@ $(function () {
                     let valueToSelect = data.customer.id;
                     loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling);
                 }
-            } else {
+            } else { // No Value => load again dropdowns
                 loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
-                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
             }
             loadDataClass.loadInformationSelectBox($(this));
-            // ReCheck Config
-            configClass.checkConfig(true);
-            //
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
             loadDataClass.loadDataProductAll()
         });
 
@@ -112,12 +113,18 @@ $(function () {
                     if (Object.keys(data.price_list_mapped).length !== 0) {
                         document.getElementById('customer-price-list').value = data.price_list_mapped.id;
                     }
-                } else {
+                } else { // No Value => load again dropdowns
                     loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
+                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+                    document.getElementById('customer-price-list').value = "";
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
-            //
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
             loadDataClass.loadDataProductAll();
         });
 
@@ -279,7 +286,7 @@ $(function () {
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
-            // Re Calculate all data
+            // Re Calculate all data of rows & total
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
@@ -1031,16 +1038,14 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        $('#btn-create_quotation').on('click', function (e) {
+        $('#frm_quotation_create').submit(function (e) {
             e.preventDefault()
-            let $form = document.getElementById('frm_quotation_create');
             let is_sale_order = false;
             let appNotify = "Quotation";
-            if ($form.classList.contains('sale-order')) {
+            if ($(this)[0].classList.contains('sale-order')) {
                 is_sale_order = true;
-                appNotify = "Sale Order"
             }
-            let _form = new SetupFormSubmit($('#frm_quotation_create'));
+            let _form = new SetupFormSubmit($(this));
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1132,12 +1137,11 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        // $.fn.notifyPopup({description: appNotify + " create fail"}, 'failure')
                     }
                 )
         });

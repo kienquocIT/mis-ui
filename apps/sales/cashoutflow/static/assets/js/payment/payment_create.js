@@ -31,8 +31,10 @@ $(document).ready(function () {
                     {
                         'expense_id': ap_expense_item.expense.id,
                         'ap_approved': ap_expense_item.after_tax_price,
+                        'paid': ap_expense_item.to_payment_total,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total}
+                        'available': ap_expense_item.available_total
+                    }
                 )
             }
             console.log(ap_item)
@@ -60,10 +62,12 @@ $(document).ready(function () {
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
+                    let paid = 0;
                     if (expense_get !== undefined) {
                         remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
                         available = expense_get.available;
+                        paid = expense_get.paid
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -72,7 +76,7 @@ $(document).ready(function () {
                         <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
                         <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
                         <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td></td>
+                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
                         <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
                     </tr>`)
                 }

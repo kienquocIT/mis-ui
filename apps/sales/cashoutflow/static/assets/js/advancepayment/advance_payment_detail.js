@@ -23,16 +23,16 @@ $(document).ready(function () {
                 $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
 
                 let sale_order_mapped_id = '';
-                if (advance_payment.sale_order_mapped) {
-                    sale_order_mapped_id = advance_payment.sale_order_mapped.id;
+                if (advance_payment.sale_order_mapped.length > 0) {
+                    sale_order_mapped_id = advance_payment.sale_order_mapped[0].id;
                 }
                 let quotation_mapped_id = '';
-                if (advance_payment.quotation_mapped) {
-                    quotation_mapped_id = advance_payment.quotation_mapped.id;
+                if (advance_payment.quotation_mapped.length > 0) {
+                    quotation_mapped_id = advance_payment.quotation_mapped[0].id;
                 }
                 let opportunity_mapped_id = '';
-                if (advance_payment.opportunity_mapped) {
-                    opportunity_mapped_id = advance_payment.opportunity_mapped.id;
+                if (advance_payment.opportunity_mapped.length > 0) {
+                    opportunity_mapped_id = advance_payment.opportunity_mapped[0].id;
                 }
                 loadSaleCode(sale_order_mapped_id, quotation_mapped_id, opportunity_mapped_id);
                 let sale_code_mapped = null;
@@ -635,7 +635,7 @@ $(document).ready(function () {
             }
         })
 
-        let sale_code_id = $('#sale-code-select-box option:selected').attr('value');
+        let sale_code_id = sale_code_mapped;
         $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {

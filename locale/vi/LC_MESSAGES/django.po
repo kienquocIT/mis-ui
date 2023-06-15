@@ -3102,3 +3102,7 @@ msgstr "Người dùng có thể tự nhập tỷ lệ thành công của cơ h�
 #
 msgid "Add Factor"
 msgstr "Thêm yếu tố"
+
+#
+msgid "Reason why customer buy your product"
+msgstr "Lý do vì sao khách hàng mua sản phẩm của bạn"

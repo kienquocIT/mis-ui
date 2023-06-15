@@ -365,6 +365,7 @@
                                     <th class="wrap-text">{% trans "Unit Price" %}</th>
                                     <th class="wrap-text">{% trans "Tax" %}</th>
                                     <th class="wrap-text">{% trans "Subtotal Price" %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -403,6 +404,13 @@
                                                    data-return-type="number" readonly>
                                         </div>
                                     </td>
+                                    <td>
+                                        <a class="btn btn-icon btn-del-item">
+                                            <span class="btn-icon-wrap">
+                                                <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                            </span>
+                                        </a>
+                                    </td>
                                 </tr>
 
                                 <tr class="col-input-product hidden">
@@ -435,6 +443,13 @@
                                             <input class="form-control mask-money w-200p input-subtotal" type="text"
                                                    data-return-type="number" readonly>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-icon btn-del-item">
+                                            <span class="btn-icon-wrap">
+                                                <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                            </span>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -515,6 +530,7 @@
                                     <th class="wrap-text w-30">{% trans 'Strength' %}</th>
                                     <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
                                     <th class="wrap-text w-10">{% trans "Win deal" %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -533,8 +549,17 @@
                                     <td class="wrap-text text-center">
                                         <input type="text" class="form-control input-weakness"/>
                                     </td>
-                                    <td class="wrap-text text-center">
-                                        <input type="checkbox" class="pb-2 form-check-input input-win-deal"/>
+                                    <td class="wrap-text text-center mb-5">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input input-win-deal"/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-icon btn-del-item">
+                                            <span class="btn-icon-wrap">
+                                                <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                            </span>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -563,6 +588,7 @@
                                     <th class="wrap-text w-25">{% trans 'Name' %}</th>
                                     <th class="wrap-text w-25">{% trans 'Job title' %}</th>
                                     <th class="wrap-text w-25">{% trans "Role" %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -591,6 +617,13 @@
                                             <option value="1">{% trans "Influence" %}</option>
                                             <option value="2">{% trans "Contact Involved" %}</option>
                                         </select>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-icon btn-del-item">
+                                            <span class="btn-icon-wrap">
+                                                <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                            </span>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>

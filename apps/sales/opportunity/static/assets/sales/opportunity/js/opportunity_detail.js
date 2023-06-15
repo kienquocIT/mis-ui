@@ -312,10 +312,9 @@ $(document).ready(function () {
                     data.employee_list.map(function (employee) {
                         if (list_manager.includes(employee_current_id)) {
                             if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
-                                if(employee.id === sale_person_id){
+                                if (employee.id === sale_person_id) {
                                     ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                                }
-                                else{
+                                } else {
                                     ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
                                 }
                             }
@@ -402,10 +401,10 @@ $(document).ready(function () {
         $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').remove();
         $('#table-product').addClass('tag-change');
 
-        let list_product_remove = list_product.filter(function (item){
+        let list_product_remove = list_product.filter(function (item) {
             return item.general_information.product_category.id === removedOption.id;
         })
-        list_product_remove.map(function (item){
+        list_product_remove.map(function (item) {
             $(`.select-box-product option[value="${item.id}"]`).remove();
         })
 
@@ -415,10 +414,10 @@ $(document).ready(function () {
     ele_select_product_category.on('select2:select', function (e) {
         let addOption = e.params.data;
         let list_product = JSON.parse($('#data-product').val());
-        let list_product_add = list_product.filter(function (item){
+        let list_product_add = list_product.filter(function (item) {
             return item.general_information.product_category.id === addOption.id;
         })
-        list_product_add.map(function (item){
+        list_product_add.map(function (item) {
             $('.select-box-product').append(`<option value="${item.id}">${item.title}</option>`)
         })
     });
@@ -438,7 +437,7 @@ $(document).ready(function () {
     })
 
     function getTotalPrice() {
-        let ele_tr_products = $('#table-products tbody tr.tag-change');
+        let ele_tr_products = $('#table-products tbody tr:not(.hidden)');
         let tax_value = 0;
         let total_pretax = 0;
         ele_tr_products.each(function () {
@@ -745,7 +744,6 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         frm.dataForm = getDataForm(frm.dataForm);
-        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -759,5 +757,25 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
+    })
+
+    $(document).on('click', '.btn-del-item', function () {
+        let table = $(this).closest(`table`);
+        table.addClass('tag-change');
+
+        $(this).closest('tr').remove();
+        switch (table.attr('id')){
+            case 'table-products':
+                getTotalPrice();
+                break;
+            case 'table-contact-role':
+                console.log(table.find(`.box-select-role option[value="0"]:selected`));
+                if (table.find(`.box-select-role option[value="0"]:selected`).length === 0){
+                    let ele_decision_maker = $('#input-decision-maker');
+                    ele_decision_maker.val('');
+                    ele_decision_maker.attr('data-id', '');
+            }
+        }
+
     })
 })

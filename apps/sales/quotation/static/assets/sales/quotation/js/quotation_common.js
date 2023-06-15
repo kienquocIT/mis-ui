@@ -349,6 +349,7 @@ class loadDataHandle {
         let eleBox = $(jqueryId);
         if (ele && eleBox) {
             let data = JSON.parse(ele.value);
+            let optionSelected = ``;
             eleBox.empty();
             eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
@@ -362,12 +363,18 @@ class loadDataHandle {
                                 <input type="hidden" class="data-info" value="${dataStr}">
                             </option>`
                 if (valueToSelect && valueToSelect === data[i].id) {
-                    option = `<option value="${data[i].id}" selected>
+                    optionSelected = `<option value="${data[i].id}" selected>
                                 <span class="uom-title">${data[i].title}</span>
                                 <input type="hidden" class="data-info" value="${dataStr}">
                             </option>`
                 }
                 eleBox.append(option)
+            }
+            // check if option selected
+            if (optionSelected) {
+                eleBox.empty();
+                eleBox.append(`<option value=""></option>`);
+                eleBox.append(optionSelected);
             }
         }
     }
@@ -943,7 +950,7 @@ class dataTableHandle {
                                                 <i class="fas fa-gift"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1259,7 +1266,7 @@ class dataTableHandle {
                     targets: 9,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
                         return `${bt3}`
                     }
                 },
@@ -1474,7 +1481,7 @@ class dataTableHandle {
                     targets: 7,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
                         return `${bt3}`
                     }
                 },
@@ -1735,7 +1742,7 @@ class dataTableHandle {
                     targets: 7,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
+                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
                         return `${bt3}`
                     }
                 },
@@ -2639,7 +2646,7 @@ class submitHandle {
                 rowData['shipping'] = null;
             } else if (elePromotion) { // PROMOTION
                 rowData['is_promotion'] = true;
-                rowData['product'] = null;
+                rowData['product'] = elePromotion.getAttribute('data-id-product');
                 rowData['promotion'] = elePromotion.getAttribute('data-id');
                 rowData['shipping'] = null;
                 rowData['product_title'] = elePromotion.value;
@@ -2647,6 +2654,12 @@ class submitHandle {
                 rowData['unit_of_measure'] = null;
                 rowData['product_uom_title'] = "";
                 rowData['product_uom_code'] = "";
+                let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
+                if (uomData) {
+                    rowData['unit_of_measure'] = uomData.id;
+                    rowData['product_uom_title'] = uomData.title;
+                    rowData['product_uom_code'] = uomData.code;
+                }
                 let eleTax = row.querySelector('.table-row-tax');
                 if (eleTax) {
                     let optionSelected = eleTax.options[eleTax.selectedIndex];
@@ -3095,3 +3108,19 @@ function loadPriceProduct(eleProduct) {
         }
         $.fn.initMaskMoney2();
     }
+
+function getDataByProductID(product_id) {
+    let uom_data = {};
+    let eleDataList = document.getElementById('data-init-quotation-create-tables-product');
+    let dataList = JSON.parse(eleDataList.value);
+    for (let i = 0; i < dataList.length; i++) {
+        let data = dataList[i];
+        if (data.id === product_id) {
+            if (data.sale_information) {
+                uom_data = data.sale_information.default_uom;
+                break
+            }
+        }
+    }
+    return uom_data
+}

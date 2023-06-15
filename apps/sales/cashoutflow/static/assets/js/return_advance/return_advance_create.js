@@ -7,6 +7,7 @@ $(function () {
         const choose_AP_ele = $('#chooseAdvancePayment');
 
         function loadDetailOpp(data) {
+            console.log(data)
             let dropdown = $('#dropdownOpp');
             if (data === null){
                 dropdown.find('.opp-info').addClass('hidden');

@@ -194,12 +194,11 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
+                        $('#data-sale-person').val(JSON.stringify(data.employee_list));
                         data.employee_list.map(function (employee) {
                             if (employee.id === employee_current_id) {
-                                ele.append(`<option value="${employee.id}" selected data-group-id="${employee.group.id}">${employee.full_name}</option>`);
-                            }
-                            else{
-                                ele.append(`<option value="${employee.id}" data-group-id="${employee.group.id}" disabled>${employee.full_name}</option>`);
+                                ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
+                                $('#group_id_emp_login').val(employee.group.id)
                             }
                         })
 
@@ -212,7 +211,7 @@ $(function () {
         loadSalePerson();
 
         let dict_customer = {}
-
+        let dict_sale_person = {}
         boxCustomer.on('change', function () {
             if (Object.keys(dict_customer).length === 0) {
                 dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
@@ -221,14 +220,23 @@ $(function () {
                 }, {});
             }
 
+            if(Object.keys(dict_sale_person).length === 0){
+                dict_sale_person = JSON.parse($('#data-sale-person').val()).reduce((obj, item) => {
+                    obj[item.id] = item;
+                    return obj;
+                }, {});
+            }
+
             let customer = dict_customer[$(this).val()];
-            let ele_employee_current = $(`option[value="${employee_current_id}"]`);
-            let group_id = ele_employee_current.data('group-id');
-            $("#select-box-sale-person").val(employee_current_id).trigger('change');
-            $("#select-box-sale-person option:not(:selected)").attr('disabled', 'disabled');
+            let group_id = $('#group_id_emp_login').val();
+            let select_box_sale_person = $("#select-box-sale-person");
+            select_box_sale_person.html('');
             customer.manager.map(function (item){
-                $(`option[value="${item.id}"][data-group-id="${group_id}"]`).removeAttr('disabled');
+                if (dict_sale_person[item.id].group.id === group_id){
+                    select_box_sale_person.append(`<option value="${item.id}" selected">${item.fullname}</option>`)
+                }
             })
+            select_box_sale_person.val(employee_current_id).trigger('change');
         })
     });
 });

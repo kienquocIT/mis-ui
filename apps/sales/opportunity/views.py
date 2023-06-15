@@ -83,7 +83,9 @@ class OpportunityDetail(View):
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+               }, status.HTTP_200_OK
 
 
 class OpportunityDetailAPI(APIView):

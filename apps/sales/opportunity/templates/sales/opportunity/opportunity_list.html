@@ -26,7 +26,9 @@
 
 {% block pageContent %}
     <input type="hidden" id="data-customer">
+    <input type="hidden" id="data-sale-person">
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+    <input type="hidden" id="group_id_emp_login">
     <input type="hidden" id="opportunity-link"
            data-link-update="{% url 'OpportunityDetail' pk=0 %}"
            data-link-list="{% url 'OpportunityList' %}"

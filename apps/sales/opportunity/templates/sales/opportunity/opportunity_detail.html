@@ -26,6 +26,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <div id="json-data">
+        <input id="emp-current-id" class="hidden" value="{{ data.employee_current_id }}">
+        <input id="data-sale-person" class="hidden">
+        <input id="group_id_emp_login" class="hidden">
+        <input id="data-product" class="hidden">
+    </div>
     <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=0 %}"
           data-url-redirect="{% url "OpportunityList" %}">
         {% csrf_token %}
@@ -74,6 +80,13 @@
                     <label class="form-label">{% trans "Product Category" %}</label>
                     <select class="select2 form-control" multiple id="select-box-product-category" data-method="GET"
                             data-url="{% url 'ProductCategoryListAPI' %}">
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label class="form-label">{% trans "Sale Person" %}</label>
+                    <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
+                            data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
+                        <option></option>
                     </select>
                 </div>
                 <div class="form-group mt-2">
@@ -338,7 +351,6 @@
                 </div>
                 <div class="tab-content ml-4 mr-4">
                     <div class="tab-pane fade show active mb-25" id="tab_product">
-                        <input id="input-data-product" hidden>
                         <input data-method="GET" data-url="{% url 'TaxListAPI' %}" hidden id="input-data-tax">
                         <input data-method="GET" data-url="{% url 'UnitOfMeasureListAPI' %}" hidden id="input-data-uom">
                         <div class="table-responsive overflow-auto">

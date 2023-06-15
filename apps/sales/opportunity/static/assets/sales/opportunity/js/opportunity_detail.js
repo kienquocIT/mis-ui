@@ -1,7 +1,10 @@
 $(document).ready(function () {
     const pk = window.location.pathname.split('/').pop();
     const frmDetail = $('#frm-detail');
-    const ele_select_product_category = $('#select-box-product-category')
+    const ele_select_product_category = $('#select-box-product-category');
+    let employee_current_id = $('#emp-current-id').val();
+
+    let dict_product = {}
 
     // config input date
     $('input[name="open_date"]').daterangepicker({
@@ -76,20 +79,14 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    let dict_product = data.product_list.reduce((obj, item) => {
-                        obj[item.id] = item;
-                        return obj;
-                    }, {});
-                    $('#input-data-product').attr('value', JSON.stringify(dict_product));
+                    ele.append(`<option></option>`);
+                    $('#data-product').val(JSON.stringify(data.product_list));
                     data.product_list.map(function (item) {
                         if (list_category.length > 0 && list_category.includes(item.general_information.product_category.id)) {
-                            ele.prepend(`<option value="${item.id}" data-category-id="${item.general_information.product_category.id}">${item.title}</option>`);
-                        } else {
-                            let html = `<option value="${item.id}" data-category-id="${item.general_information.product_category.id}" disabled>${item.title}</option>`;
-                            ele.append(html);
+                            ele.append(`<option value="${item.id}" data-category-id="${item.general_information.product_category.id}">${item.title}</option>`);
                         }
                     })
-                    ele.prepend(`<option></option>`);
+
                 }
             }
             if (product_datas.length > 0) {
@@ -107,7 +104,7 @@ $(document).ready(function () {
         })
     }
 
-    function loadCustomer(id, end_customer_id, data_competitor) {
+    function loadCustomer(id, end_customer_id, data_competitor, sale_person_id) {
         let ele = $('#select-box-customer');
         let ele_end_customer = $('#select-box-end-customer');
         let ele_competitor = $('.box-select-competitor');
@@ -122,6 +119,7 @@ $(document).ready(function () {
                     data.account_list.map(function (item) {
                         if (item.id === id) {
                             ele.append(`<option selected value="${item.id}">${item.name}</option>`);
+                            loadSalePerson(item.manager.map(obj => obj.id), sale_person_id);
                         } else {
                             ele_competitor.append(`<option value="${item.id}">${item.name}</option>`);
                             ele.append(`<option value="${item.id}">${item.name}</option>`);
@@ -301,6 +299,34 @@ $(document).ready(function () {
         })
     }
 
+    function loadSalePerson(list_manager, sale_person_id) {
+        let ele = $('#select-box-sale-person');
+        let ele_emp_current_group = $('#group_id_emp_login');
+        $.fn.callAjax(ele.data('url'), ele.data('method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
+                    $('#data-sale-person').val(JSON.stringify(data.employee_list));
+                    let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
+                    ele_emp_current_group.val(emp_current.group.id);
+                    data.employee_list.map(function (employee) {
+                        if (list_manager.includes(employee_current_id)) {
+                            if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
+                                if(employee.id === sale_person_id){
+                                    ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                                }
+                                else{
+                                    ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
     function loadDetail() {
         let url = frmDetail.data('url').replace(0, pk);
         $.fn.callAjax(url, 'GET').then((resp) => {
@@ -316,7 +342,7 @@ $(document).ready(function () {
                         $('#check-input-rate').prop('checked', true);
                     } else
                         $('#check-input-rate').prop('checked', false);
-                    loadCustomer(data.opportunity.customer, data.opportunity.end_customer, data.opportunity.opportunity_competitors_datas);
+                    loadCustomer(data.opportunity.customer, data.opportunity.end_customer, data.opportunity.opportunity_competitors_datas, data.opportunity.sale_person.id);
                     loadProductCategory(data.opportunity.product_category);
                     loadTax();
                     loadUoM();
@@ -334,6 +360,7 @@ $(document).ready(function () {
                     loadContact(data.opportunity.customer, data.opportunity.end_customer, data.opportunity.opportunity_contact_role_datas);
                     loadDecisionFactor(data.opportunity.customer_decision_factor);
                     $.fn.initMaskMoney2();
+
                 }
             }
         })
@@ -371,22 +398,40 @@ $(document).ready(function () {
 
     ele_select_product_category.on('select2:unselect', function (e) {
         let removedOption = e.params.data;
+        let list_product = JSON.parse($('#data-product').val());
         $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').remove();
         $('#table-product').addClass('tag-change');
 
-        $(`.select-box-product option[data-category-id="${removedOption.id}"]`).prop('disabled', true);
+        let list_product_remove = list_product.filter(function (item){
+            return item.general_information.product_category.id === removedOption.id;
+        })
+        list_product_remove.map(function (item){
+            $(`.select-box-product option[value="${item.id}"]`).remove();
+        })
+
 
     });
 
     ele_select_product_category.on('select2:select', function (e) {
-        let removedOption = e.params.data;
-        $(`.select-box-product option[data-category-id="${removedOption.id}"]`).prop('disabled', false);
+        let addOption = e.params.data;
+        let list_product = JSON.parse($('#data-product').val());
+        let list_product_add = list_product.filter(function (item){
+            return item.general_information.product_category.id === addOption.id;
+        })
+        list_product_add.map(function (item){
+            $('.select-box-product').append(`<option value="${item.id}">${item.title}</option>`)
+        })
     });
 
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
-        let dict = JSON.parse($('#input-data-product').val());
-        let product = dict[$(this).val().toString()];
+        if (Object.keys(dict_product).length === 0) {
+            dict_product = JSON.parse($('#data-product').val()).reduce((obj, item) => {
+                obj[item.id] = item;
+                return obj;
+            }, {});
+        }
+        let product = dict_product[$(this).val().toString()];
         ele_tr.find(`.box-select-product-category`).val(product['general_information']['product_category']['id']);
         ele_tr.find('.box-select-uom').val(product['sale_information']['default_uom']['id']);
         ele_tr.find('.box-select-tax').val(product['sale_information']['tax_code']['id']);
@@ -700,6 +745,7 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         frm.dataForm = getDataForm(frm.dataForm);
+        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

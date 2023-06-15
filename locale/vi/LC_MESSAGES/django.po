@@ -3006,3 +3006,7 @@ msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
 #
 msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
+
+#
+msgid "Sale order config update successfully"
+msgstr "Cập nhật cấu hình đơn hàng thành công"

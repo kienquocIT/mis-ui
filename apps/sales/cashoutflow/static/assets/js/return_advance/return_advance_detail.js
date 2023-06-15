@@ -8,9 +8,17 @@ $(function () {
 
         function loadDetailOpp(data) {
             let dropdown = $('#dropdownOpp');
-            dropdown.find('[name="opp-name"]').text(data.title);
-            dropdown.find('[name="opp-code"]').text(data.code);
-            dropdown.find('[name="opp-customer"]').text(data.customer);
+            if (data === null){
+                dropdown.find('.opp-info').addClass('hidden');
+                dropdown.find('.non-opp').removeClass('hidden');
+            }
+            else{
+                dropdown.find('.opp-info').removeClass('hidden');
+                dropdown.find('.non-opp').addClass('hidden');
+                dropdown.find('[name="opp-name"]').text(data.title);
+                dropdown.find('[name="opp-code"]').text(data.code);
+                dropdown.find('[name="opp-customer"]').text(data.customer);
+            }
         }
 
         function loadDetailAdvancePayment(url) {
@@ -19,16 +27,17 @@ $(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                         let sale_code_ele = $('[name="sale_code"]');
-                        if (data.advance_payment_detail.sale_order_mapped !== null) {
-                            sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
-                            loadDetailOpp(data.advance_payment_detail.sale_order_mapped.opportunity);
+                        sale_code_ele.val(data.advance_payment_detail.code);
+                        if (data.advance_payment_detail.sale_order_mapped.length > 0) {
+                            // sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
+                            loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
                         } else {
-                            if (data.advance_payment_detail.quotation_mapped !== null) {
-                                sale_code_ele.val(data.advance_payment_detail.quotation_mapped.title);
-                                loadDetailOpp(data.advance_payment_detail.quotation_mapped.opportunity);
+                            if (data.advance_payment_detail.quotation_mapped.length > 0) {
+                                // sale_code_ele.val(data.advance_payment_detail.quotation_mapped.title);
+                                loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
                             }
                             else{
-                                sale_code_ele.val("Advance Payment is None-Sale");
+                                loadDetailOpp(null);
                             }
                         }
                         $('#chooseBeneficiary').append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
@@ -87,7 +96,7 @@ $(function () {
             let cnt = table.find('tbody tr').length;
             data.map(function (item) {
                 let html = `<tr>
-                                <td class="number text-center wrap-text">${cnt}</td>
+                                <td class="number text-center wrap-text">${cnt + 1}</td>
                                 <td class="wrap-text col-expense" data-id="${item.id}"><span>${item.expense.title}</span></td>
                                 <td class="wrap-text"><span>${item.expense_type}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>

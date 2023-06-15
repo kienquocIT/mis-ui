@@ -124,6 +124,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Sale order
+    SALE_ORDER_CONFIG_PAGE = BreadcrumbChildren(_('Sale order'), 'SaleOrderConfigDetail')
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
     SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
@@ -382,4 +383,7 @@ class BreadcrumbView:
     ]
     QUOTATION_CONFIG = [
         BreadcrumbItem.QUOTATION_CONFIG_PAGE
+    ]
+    SALE_ORDER_CONFIG = [
+        BreadcrumbItem.SALE_ORDER_CONFIG_PAGE
     ]

@@ -72,6 +72,26 @@ $(document).ready(function () {
         })
     }
 
+    function loadReportTo(id) {
+        let ele = $('#select-box-report-to');
+        ele.attr('disabled', false);
+        let url = ele.attr('data-url').replace('0', id);
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option selected>` + `</option>`)
+                    for (let i = 0; i < data.account_detail.contact_mapped.length; i++) {
+                        let contact_mapped = data.account_detail.contact_mapped[i];
+                        ele.append(`<option value="` + contact_mapped.id + `">` + contact_mapped.fullname + `</option>`)
+                    }
+                }
+            }
+        )
+    }
+
     function loadDefaultData() {
         $('#input-avatar').on('change', function (ev) {
             let upload_img = $('#upload-area');
@@ -100,21 +120,7 @@ $(document).ready(function () {
         let ele = $('#select-box-report-to');
         ele.empty();
         if (account_id !== '') {
-            ele.attr('disabled', false);
-            let url = ele.attr('data-url').replace('0', account_id);
-            let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    resp.data.account_detail.owner.map(function (item) {
-                    })
-                    ele.text("");
-                    ele.append(`<option selected>` + `</option>`)
-                    data.account_detail.owner.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
-                    })
-                }
-            })
+            loadReportTo(account_id);
         } else {
             ele.attr('disabled', true);
         }
@@ -162,13 +168,13 @@ $(document).ready(function () {
 
         $.fn.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data['status'] === 201 || data['status'] === 200) {
-                    $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
-                    setTimeout(() => {
-                        window.location.replace(frm.dataUrlRedirect);
-                    }, 1000)
+            .then(
+                (resp) => {
+                    $.fn.notifyPopup({description: resp.detail}, 'success');
+                    setTimeout(location.reload.bind(location), 1000);
+                    window.location.replace(frm.dataUrlRedirect);
+                }, (err) => {
+                    $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
                 setTimeout(
                     ()=>{

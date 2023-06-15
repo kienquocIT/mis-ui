@@ -27,17 +27,22 @@ $(document).ready(function () {
         if (ap_item !== undefined) {
             for (let i = 0; i < ap_item.expense_items.length; i++) {
                 let ap_expense_item = ap_item.expense_items[i];
+                let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                    return item.expense_id === ap_expense_item.expense.id;
+                });
+                let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                    return s + item.real_value;
+                }, 0);
                 ap_expense_list_mapped.push(
                     {
                         'expense_id': ap_expense_item.expense.id,
                         'ap_approved': ap_expense_item.after_tax_price,
-                        'paid': ap_expense_item.to_payment_total,
+                        'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
                         'available': ap_expense_item.available_total
                     }
                 )
             }
-            console.log(ap_item)
         }
         $('#tab_plan_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').append(`<tr>
@@ -48,7 +53,6 @@ $(document).ready(function () {
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(ap_expense_list_mapped)
                 for (let i = 0; i < data.sale_order_expense_list.length; i++) {
                     let expense_item = data.sale_order_expense_list[i];
                     let tax_item = '';
@@ -235,22 +239,6 @@ $(document).ready(function () {
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
             let sale_code_id = $(this).attr('data-value');
-            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                        payment_cost_items_filtered = data.payment_cost_items_list;
-                    }
-                }
-            })
-
-            advance_payment_expense_items = [];
-            for (let i = 0; i < ap_list.length; i++) {
-                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
-                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                }
-            }
-
             $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
             $('#sale-code-select-box option:selected').attr('selected', false);
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
@@ -259,7 +247,22 @@ $(document).ready(function () {
                     loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id').split(','));
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
-                    loadSaleOrderPlan($('#sale-code-select-box option:selected').attr('value'), $('#sale-code-select-box option:selected').attr('data-sale-code'))
+                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                                payment_cost_items_filtered = data.payment_cost_items_list;
+                                loadSaleOrderPlan($('#sale-code-select-box option:selected').attr('value'), $('#sale-code-select-box option:selected').attr('data-sale-code'))
+                            }
+                        }
+                    })
+
+                    advance_payment_expense_items = [];
+                    for (let i = 0; i < ap_list.length; i++) {
+                        if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                        }
+                    }
                 }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
                     loadQuotationPlan($('#sale-code-select-box option:selected').attr('value'), $('#sale-code-select-box option:selected').attr('data-sale-code'));

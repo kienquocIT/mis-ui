@@ -248,7 +248,7 @@ $(async function () {
                         data: 'ready_quantity',
                         render: (row, type, data, meta) => {
                             let html = `<p>${row}</p>`;
-                            if (delivery_config.is_picking){
+                            if (delivery_config.is_picking && !delivery_config.is_partial_ship){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<p id="ready_row-${meta.row}">${row}<p/>`
                                 + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
@@ -266,7 +266,7 @@ $(async function () {
                             let quantity = 0
                             if (data.picked_quantity) quantity = data.picked_quantity
                             // if (parseInt($('[name="state"]').val()) === 2)
-                            //     quantity = data.delivery_quantity
+                            // quantity = data.delivery_quantity
                             let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<p id="prod_row-${meta.row}">${quantity}<p/>`
                                 + `<button type="button" class="btn btn-flush-primary btn-animated select-prod">`
@@ -283,7 +283,6 @@ $(async function () {
                     $(`button.select-prod`, row).off().on('click', function (e) {
                         e.preventDefault()
                         e.stopPropagation()
-                        // const idx = $(this).attr('data-idx');
                         _this.contentModalHandle(index, delivery_config, data)
                     })
                 }
@@ -298,10 +297,10 @@ $(async function () {
         const $form = $('#delivery_form')
         $.fn.callAjax($form.attr('data-url'), 'get')
             .then((req) => {
-                const $trans = $('#trans-factory')
-                const $url = $('#url-factory')
+                const $trans = $('#trans-factory');
+                const $url = $('#url-factory');
                 const res = $.fn.switcherResp(req);
-                const $saleOrder = $('#inputSaleOrder')
+                const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.val(res.sale_order_data.title)
                 $('.title-code').text(res.code)
                 if (res.estimated_delivery_date) {
@@ -478,13 +477,6 @@ $(async function () {
             if(!flag){
                 $.fn.notifyPopup({description: $('#trans-factory').attr('data-outstock')}, 'failure')
             }
-            // else if (!configData.is_picking && configData.is_partial_ship)
-            //     // config 2
-            // else if (configData.is_picking && !configData.is_partial_ship)
-            //     // config 3
-            // else
-            //     // config 4
-
         }
         prodTable.setProdList = tableData
         $('#dtbPickingProductList').DataTable().clear().rows.add(tableData).draw();

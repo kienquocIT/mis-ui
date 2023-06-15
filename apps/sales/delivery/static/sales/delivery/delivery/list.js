@@ -97,7 +97,7 @@ $(document).ready(function () {
                 }
             },
             {
-                class:'text-center',
+                class: 'text-center',
                 render: (data, type, row, meta) => {
                     const isTxt = $('#trans-factory').attr('data-return')
                     return `<div class="dropdown pointer mr-2">
@@ -113,4 +113,98 @@ $(document).ready(function () {
             }
         ]
     }, false)
+
+    $('#sale_order_select').on('shown.bs.modal', function (e) {
+        e.stopPropagation();
+        const $Table = $('#sale_order_approved');
+        $Table.not('.dataTable').DataTable({
+            searching: false,
+            ordering: false,
+            paginate: true,
+            ajax: {
+                url: $('#url-factory').attr('data-sale-order'),
+                type: 'GET',
+                dataSrc: 'data.sale_order_list',
+                data: function (params) {
+                    params['delivery_call'] = true;
+                    params['is_approved'] = true
+                    return params
+                },
+            },
+            rowIdx: true,
+            columnDefs: [
+                {
+                    "width": "10%",
+                    "targets": 0
+                }, {
+                    "width": "70%",
+                    "targets": 1
+                }, {
+                    "width": "20%",
+                    "targets": 2
+                }
+            ],
+            columns: [
+                {
+                    defaultContent: '',
+                }, {
+                    data: 'title',
+                    render: (data, type, row, meta) => {
+                        const title = `<div class="form-check">`
+                            + `<input type="checkbox" class="form-check-input input_select" id="customChecks_${meta.row}">`
+                            + `<label class="form-check-label" for="customChecks_${meta.row}">${data}</label>`
+                            + `</div>`
+                        return title;
+                    },
+                }, {
+                    data: 'code',
+                    render: (row, type, data) => {
+                        return row;
+                    },
+                }
+            ],
+            rowCallback(row, data, index) {
+                $('td:eq(0)', row).html(index + 1);
+                $('input[type="checkbox"]', row).on('change', function(){
+                    $('input[type="checkbox"]', $('#sale_order_approved')).not(this).prop('checked', false);
+                });
+            }
+        });
+        if ($Table.hasClass('dataTable')) $Table.DataTable().ajax.reload();
+    });
+    $('#call_delivery').off().on('click', function () {
+        $.fn.showLoading();
+        const row = $('tr input[type="checkbox"]:checked', $('#sale_order_approved'))
+        const isData = $Table.DataTable().row(row).data();
+        const url = $('#url-factory').attr('data-create-delivery').format_url_with_uuid(isData.id);
+        if (isData && isData.hasOwnProperty('id')){
+            $.fn.callAjax(
+                callDeliveryUrl,
+                'POST',
+                {},
+                true,
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        const config = data?.config
+                        let is_URL = urlElm.attr('data-picking')
+                        if (config?.is_picking){
+                            is_URL = urlElm.attr('data-picking')
+                            setTimeout(() => {
+                                window.location.href = is_URL
+                            }, 1000);
+                        }
+                        else{
+                            $.fn.hideLoading();
+                            $('#dtbDeliveryList').DataTable().ajax.reload();
+                        }
+                    }
+                },
+                (errs) => {
+                    $.fn.hideLoading();
+                }
+            )
+        }
+    })
 });

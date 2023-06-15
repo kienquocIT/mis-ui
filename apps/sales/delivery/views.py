@@ -75,7 +75,10 @@ class OrderPickingListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_LIST).get()
         if resp.state:
-            return {'picking_list': resp.result}, status.HTTP_200_OK
+            list_sub = []
+            for item in resp.result:
+                list_sub.extend(item.get('sub_list', []))
+            return {'picking_list': list_sub}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -89,7 +92,15 @@ class OrderPickingDetail(View):
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        return {'pk': pk, 'state_choices': {key: value for key, value in PICKING_STATE}}, status.HTTP_200_OK
+        config = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
+        res_config = {}
+        if config.state:
+            res_config = config.result
+        return {
+                   'pk': pk,
+                   'state_choices': {key: value for key, value in PICKING_STATE},
+                   'config': res_config
+               }, status.HTTP_200_OK
 
 
 class OrderPickingDetailAPI(APIView):

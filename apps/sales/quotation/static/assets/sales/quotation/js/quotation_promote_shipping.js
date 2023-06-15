@@ -234,7 +234,6 @@ class promotionHandle {
                 }
             } else if (data_promotion.is_gift === true) { // GIFT
                 let conditionCheck = data_promotion.gift_method;
-
                 // check limit used on Sale Order
                 let check_limit = self.checkLimit(data_promotion, conditionCheck, customer_id);
                 if (check_limit === false) {
@@ -243,7 +242,6 @@ class promotionHandle {
                     }
                 }
                 // end check limit
-
                 if (conditionCheck.is_free_product === true) {
                     if (conditionCheck.hasOwnProperty('is_min_purchase')) { // Check total price
                         if (conditionCheck.before_after_tax === true) {

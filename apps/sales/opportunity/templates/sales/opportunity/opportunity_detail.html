@@ -359,7 +359,7 @@
                                 <tr>
                                     <th class="">#</th>
                                     <th class="wrap-text">{% trans "Product" %}</th>
-                                    <th class="wrap-text">{% trans 'Product category' %}</th>
+                                    <th class="wrap-text">{% trans 'Product Category' %}</th>
                                     <th class="wrap-text">{% trans 'UoM' %}</th>
                                     <th class="wrap-text">{% trans "Quantity" %}</th>
                                     <th class="wrap-text">{% trans "Unit Price" %}</th>
@@ -445,7 +445,7 @@
                                 <button type="button" data-bs-toggle="dropdown" class="btn btn-link btn-animated"
                                 >
                                     <span><span class="icon"><span class="feather-icon"><i
-                                            data-feather="plus"></i></span></span><span>{% trans 'Add product' %}</span></span>
+                                            data-feather="plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#"
@@ -587,7 +587,7 @@
                                     <td class="wrap-text text-center">
                                         <select class="form-select box-select-role">
                                             <option></option>
-                                            <option value="0">{% trans "Decision maker" %}</option>
+                                            <option value="0">{% trans "Decision Maker" %}</option>
                                             <option value="1">{% trans "Influence" %}</option>
                                             <option value="2">{% trans "Contact Involved" %}</option>
                                         </select>
@@ -598,7 +598,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">{% trans "Select Reason why customer buy you product" %}</label>
+                            <label class="form-label">{% trans "Select Reason why customer buy your product" %}</label>
                             <select class="form-control select2" multiple id="box-select-factor" data-method="GET"
                                     data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"></select>
                         </div>

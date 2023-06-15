@@ -3006,3 +3006,99 @@ msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
 #
 msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
+
+#
+msgid "Win Rate"
+msgstr "Tỷ lệ thắng"
+
+#
+msgid "Manually input rate"
+msgstr "Tự nhập tỷ lệ"
+
+#
+msgid "agency role"
+msgstr "Vai trò đại lý"
+
+#
+msgid "End Customer"
+msgstr "Khách hàng cuối cùng"
+
+#
+msgid "Budget"
+msgstr "Ngân sách"
+
+#
+msgid "Open Date"
+msgstr "Ngày mở"
+
+#
+msgid "Close Date"
+msgstr "Ngày đóng"
+
+#
+msgid "Decision Maker"
+msgstr "Người đưa ra quyết định"
+
+#
+msgid "Competitors"
+msgstr "Đối thủ cạnh tranh"
+
+#
+msgid "Contact Role"
+msgstr "Vai trò liên hệ"
+
+#
+msgid "Select Product"
+msgstr "Chọn sản phẩm đã có"
+
+#
+msgid "Input Product"
+msgstr "Nhập sản phẩm"
+
+#
+msgid "Select Reason why customer buy your product"
+msgstr "Chọn lý do vì sao khách hàng mua sản phẩm của bạn"
+
+#
+msgid "Direct Customer"
+msgstr "Khách hàng trực tiếp"
+
+#
+msgid "Influence"
+msgstr "Người ảnh hưởng"
+
+#
+msgid "Contact Involved"
+msgstr "Người liên quan"
+
+#
+msgid "Add Competitor"
+msgstr "Thêm đối thủ"
+
+#
+msgid "Which Customer"
+msgstr "Đối tượng khách hàng"
+
+#
+msgid "Strength"
+msgstr "Điểm mạnh"
+
+#
+msgid "Weakness"
+msgstr "Điểm yếu"
+
+#
+msgid "Win deal"
+msgstr "Thắng giao dịch"
+
+#
+msgid "User choise stage of Opportunity"
+msgstr "Người dùng tự chọn giai đoạn của cơ hội kinh doanh"
+
+#
+msgid "User can input win rate of Opportunity"
+msgstr "Người dùng có thể tự nhập tỷ lệ thành công của cơ hội kinh doanh"
+
+#
+msgid "Add Factor"
+msgstr "Thêm yếu tố"

@@ -44,7 +44,6 @@ $(document).ready(function () {
                 )
             }
         }
-        $('#tab_plan_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').append(`<tr>
             <td colspan="3"><span class="badge badge-secondary">` + filter_sale_order_code + `</span></td>
             <td colspan="4"></td>
@@ -113,10 +112,8 @@ $(document).ready(function () {
                 )
             }
         }
-        $('#tab_plan_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').append(`<tr>
-            <td colspan="3"><span class="badge badge-secondary">` + filter_quotation_code + `</span></td>
-            <td colspan="4"></td>
+            <td colspan="3"><span class="badge badge-secondary">` + filter_quotation_code + `</span></td><td colspan="4"></td>
         </tr>`)
         let url = $('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + filter_quotation_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
@@ -296,6 +293,7 @@ $(document).ready(function () {
         })
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
+            $('#tab_plan_datatable tbody').html(``);
             let sale_code_id = $(this).attr('data-value');
             $('#sale-code-select-box2-show').val($(this).find('.title-span').text())
             $('#sale-code-select-box option:selected').attr('selected', false);

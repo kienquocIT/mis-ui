@@ -8,7 +8,7 @@ $(document).ready(function () {
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            console.log(data)
+            // console.log(data)
             let opp_code_list = [];
             let payment_detail = data.payment_detail;
             $('#payment-code').text(payment_detail.code);
@@ -29,12 +29,10 @@ $(document).ready(function () {
                 ele.append(`<div class="h-400p"></div>`);
                 ele = $('#sale-code-select-box2 .h-400p');
 
-                let sale_not_opp = '';
-                let quotation_not_opp = '';
                 ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Sale order</b></div></div>`)
                 payment_detail.sale_order_mapped.map(function (item) {
                     opp_code_list.push(item.opportunity.code);
-                    if (item.opportunity) {
+                    if (Object.keys(item.opportunity).length !== 0) {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span">` + item.title +`</span>
@@ -42,21 +40,20 @@ $(document).ready(function () {
                                     </div>`)
                     }
                     else {
-                        sale_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
+                        ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                             <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                             <span class="col-7 title-span">` + item.title +`</span>
                                             <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
-                                        </div>`
+                                        </div>`)
                     }
                 })
-                ele.append(sale_not_opp);
 
                 ele.append(`<div class="row mb-3"><div class="col-12 text-primary"><b>Quotation</b></div></div>`)
                 payment_detail.quotation_mapped.map(function (item) {
-                    if (item.opportunity) {
+                    if (Object.keys(item.opportunity).length !== 0) {
                         opp_code_list.push(item.opportunity.code);
                     }
-                    if (item.opportunity) {
+                    if (Object.keys(item.opportunity).length !== 0) {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span">` + item.title +`</span>
@@ -64,14 +61,13 @@ $(document).ready(function () {
                                     </div>`)
                     }
                     else {
-                        quotation_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
+                        ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                             <span class="col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                             <span class="col-7 title-span">` + item.title +`</span>
                                             <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
-                                        </div>`
+                                        </div>`)
                     }
                 })
-                ele.append(quotation_not_opp);
             }
             else if (payment_detail.sale_code_type === 0) {
                 $('#radio-sale').prop('checked', true);

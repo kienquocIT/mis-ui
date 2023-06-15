@@ -252,34 +252,31 @@ $(document).ready(function () {
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
-        let sale_not_opp = '';
-        let quotation_not_opp = '';
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 sale_order_loaded.push(item.customer.id);
-                if (item.opportunity) {
+                if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="text-danger code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 }
                 else {
-                    sale_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="text-danger code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;}
+                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="text-danger code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                }
             }
         })
-        ele.append(sale_not_opp);
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 if (sale_order_loaded.includes(item.customer.id) === false) {
-                    if (item.opportunity) {
+                    if (Object.keys(item.opportunity).length !== 0) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="text-primary code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                     }
                     else {
-                        quotation_not_opp += `<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="text-primary code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`;
+                        ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code"><div class="row"><span class="text-primary code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                     }
                 }
             }
         })
-        ele.append(quotation_not_opp);
         opportunity_list.map(function (item) {
             if (oppcode_loaded.includes(item.id) === false) {
                 let sale_person_id_list = [];
@@ -357,7 +354,7 @@ $(document).ready(function () {
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 sale_order_loaded.push(item.customer.id);
-                if (item.opportunity) {
+                if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
@@ -369,7 +366,7 @@ $(document).ready(function () {
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 if (sale_order_loaded.includes(item.customer.id) === false) {
-                    if (item.opportunity) {
+                    if (Object.keys(item.opportunity).length !== 0) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
                     }
@@ -400,11 +397,9 @@ $(document).ready(function () {
         ele.append(`<div class="h-400p"></div>`);
         ele = $('#sale-code-select-box2 .h-400p');
 
-        let sale_not_opp = '';
-        let quotation_not_opp = '';
         sale_order_list.map(function (item) {
             sale_order_loaded.push(item.customer.id);
-            if (item.opportunity) {
+            if (Object.keys(item.opportunity).length !== 0) {
                 oppcode_loaded.push(item.opportunity.id);
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                 <span class="text-danger col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
@@ -413,17 +408,16 @@ $(document).ready(function () {
                             </div>`)
             }
             else {
-                sale_not_opp += `<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
+                ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                     <span class="text-danger col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                     <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
                                     <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
-                                </div>`
+                                </div>`)
             }
         })
-        ele.append(sale_not_opp);
         quotation_list.map(function (item) {
             if (sale_order_loaded.includes(item.customer.id) === false) {
-                if (item.opportunity) {
+                if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                     <span class="text-primary col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
@@ -431,15 +425,14 @@ $(document).ready(function () {
                                     <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
                                 </div>`)
                 } else {
-                    quotation_not_opp += `<div class="row mb-2" title="` + item.code + `: ` + item.title + `">
+                    ele.append(`<div class="row mb-2" title="` + item.code + `: ` + item.title + `">
                                             <span class="text-primary col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                             <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title + `</span>
                                             <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
-                                        </div>`
+                                        </div>`)
                 }
             }
         })
-        ele.append(quotation_not_opp);
         opportunity_list.map(function (item) {
             if (oppcode_loaded.includes(item.id) === false) {
                 let sale_person_id_list = [];

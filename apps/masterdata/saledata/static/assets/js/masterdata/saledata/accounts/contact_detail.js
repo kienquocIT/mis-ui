@@ -8,14 +8,14 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 let contactDetail = data?.['contact_detail']
                 if (data) {
-                    console.log(data)
-                    $("#owner_id").val(contactDetail.owner_mapped.fullname);
+                    // console.log(data)
+                    $("#owner_id").val(contactDetail.owner.fullname);
                     $('#full_name_id').val(contactDetail.fullname.fullname);
                     $('#bio_id').val(contactDetail.biography);
                     $('#salutation_id').val(contactDetail.salutation.title);
                     $('#account_name_id').val(contactDetail.account_name.name);
                     $('#job_title_id').val(contactDetail.job_title);
-                    $('#report_to_id').val(contactDetail.report_to_mapped.fullname)
+                    $('#report_to_id').val(contactDetail.report_to.fullname)
                     $('#phone_id').val(contactDetail.phone);
                     $('#mobile_id').val(contactDetail.mobile);
                     $('#email_id').val(contactDetail.email);

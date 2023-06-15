@@ -143,9 +143,9 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    loadEmployee(data.contact_detail.owner_mapped.id);
+                    loadEmployee(data.contact_detail.owner.id);
                     loadSalutationList(data.contact_detail.salutation.id);
-                    loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to_mapped.id);
+                    loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to.id);
                     $('#first_name_id').val(data.contact_detail.fullname.first_name);
                     $('#last_name_id').val(data.contact_detail.fullname.last_name);
                     $('#full_name_id').val(data.contact_detail.fullname.fullname);
@@ -239,16 +239,9 @@ $(document).ready(function () {
         if (frm.dataForm['report_to'] === '') {
             delete frm.dataForm['report_to'];
         }
-        else {
-            frm.dataForm['report_to_mapped'] = frm.dataForm['report_to'];
-            delete frm.dataForm['report_to'];
-        }
 
         if (frm.dataForm['owner'] === '') {
             frm.dataForm['owner'] = null;
-        }
-        else {
-            frm.dataForm['owner_mapped'] = frm.dataForm['owner']
         }
 
         if (frm.dataForm['email'] === '') {

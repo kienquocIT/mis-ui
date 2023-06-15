@@ -28,9 +28,9 @@ $(document).ready(function () {
                     return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-danger">` + row.job_title + `</span>`
                 }
             }, {
-                'data': 'owner_mapped',
+                'data': 'owner',
                 'render': (data, type, row, meta) => {
-                    return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-indigo">` + row.owner_mapped.fullname + `</span>`
+                    return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-indigo">` + row.owner.fullname + `</span>`
                 }
             }, {
                 'data': 'account_name',
@@ -98,9 +98,9 @@ $(document).ready(function () {
                         return `<span>` + row.job_title + `</span>`
                     }
                 }, {
-                    'data': 'owner_mapped',
+                    'data': 'owner',
                     'render': (data, type, row, meta) => {
-                        return `<span>` + row.owner_mapped + `</span>`
+                        return `<span>` + row.owner + `</span>`
                     }
                 }, {
                     'data': 'account_name',

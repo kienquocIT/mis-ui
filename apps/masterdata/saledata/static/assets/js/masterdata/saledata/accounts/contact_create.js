@@ -159,16 +159,9 @@ $(document).ready(function () {
         if (frm.dataForm['report_to'] === '') {
             delete frm.dataForm['report_to'];
         }
-        else {
-            frm.dataForm['report_to_mapped'] = frm.dataForm['report_to'];
-            delete frm.dataForm['report_to'];
-        }
 
         if (frm.dataForm['owner'] === '') {
             frm.dataForm['owner'] = null;
-        }
-        else {
-            frm.dataForm['owner_mapped'] = frm.dataForm['owner']
         }
 
         if (frm.dataForm['email'] === '') {

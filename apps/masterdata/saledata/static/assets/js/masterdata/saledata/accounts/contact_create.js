@@ -175,7 +175,6 @@ $(document).ready(function () {
                     window.location.replace(frm.dataUrlRedirect);
                 }, (err) => {
                     $.fn.notifyPopup({description: err.detail}, 'failure');
-                }
                 setTimeout(
                     ()=>{
                         $.fn.hideLoading();

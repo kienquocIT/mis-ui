@@ -33,8 +33,9 @@ $(document).ready(function () {
                         $('#twitter_id').val(contactDetail.additional_information.twitter);
                         let list_interest = contactDetail.additional_information.interests.map(obj => obj.title)
                         list_interest.forEach(function (item) {
-                            $('#input_tags').append(`<option>` + item + `</option>`);
+                            $('#input_tags').append(`<option selected>` + item + `</option>`);
                         })
+                        $('#input_tags').select2()
                     }
                     $.fn.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
                 }

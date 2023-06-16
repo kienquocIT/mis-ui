@@ -432,8 +432,12 @@ $(document).ready(function () {
         }
         let product = dict_product[$(this).val().toString()];
         ele_tr.find(`.box-select-product-category`).val(product['general_information']['product_category']['id']);
-        ele_tr.find('.box-select-uom').val(product['sale_information']['default_uom']['id']);
-        ele_tr.find('.box-select-tax').val(product['sale_information']['tax_code']['id']);
+        if ($.fn.hasOwnProperties(product['sale_information'], ['default_uom'])) {
+            ele_tr.find('.box-select-uom').val(product['sale_information']['default_uom']['id']);
+        }
+        if ($.fn.hasOwnProperties(product['sale_information'], ['tax_code'])) {
+            ele_tr.find('.box-select-tax').val(product['sale_information']['tax_code']['id']);
+        }
     })
 
     function getTotalPrice() {
@@ -766,17 +770,17 @@ $(document).ready(function () {
         table.addClass('tag-change');
 
         $(this).closest('tr').remove();
-        switch (table.attr('id')){
+        switch (table.attr('id')) {
             case 'table-products':
                 getTotalPrice();
                 break;
             case 'table-contact-role':
-                if (table.find(`.box-select-role option[value="0"]:selected`).length === 0){
+                if (table.find(`.box-select-role option[value="0"]:selected`).length === 0) {
                     let ele_decision_maker = $('#input-decision-maker');
                     ele_decision_maker.val('');
                     ele_decision_maker.attr('data-id', '');
                     ele_decision_maker.addClass('tag-change');
-            }
+                }
         }
 
     })

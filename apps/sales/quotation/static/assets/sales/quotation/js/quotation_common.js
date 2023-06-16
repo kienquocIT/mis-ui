@@ -2646,7 +2646,10 @@ class submitHandle {
                 rowData['shipping'] = null;
             } else if (elePromotion) { // PROMOTION
                 rowData['is_promotion'] = true;
-                rowData['product'] = elePromotion.getAttribute('data-id-product');
+                rowData['product'] = null;
+                if (elePromotion.getAttribute('data-id-product')) {
+                   rowData['product'] = elePromotion.getAttribute('data-id-product');
+                }
                 rowData['promotion'] = elePromotion.getAttribute('data-id');
                 rowData['shipping'] = null;
                 rowData['product_title'] = elePromotion.value;
@@ -2655,7 +2658,7 @@ class submitHandle {
                 rowData['product_uom_title'] = "";
                 rowData['product_uom_code'] = "";
                 let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
-                if (uomData) {
+                if (uomData && Object.keys(uomData).length > 0) {
                     rowData['unit_of_measure'] = uomData.id;
                     rowData['product_uom_title'] = uomData.title;
                     rowData['product_uom_code'] = uomData.code;

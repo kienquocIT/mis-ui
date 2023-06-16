@@ -65,6 +65,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact list'), 'ContactList')
     CONTACT_CREATE_PAGE = BreadcrumbChildren(_('Contact create'), 'ContactCreate')
     CONTACT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CONTACT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
     ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
@@ -118,6 +119,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Sale order
+    SALE_ORDER_CONFIG_PAGE = BreadcrumbChildren(_('Sale order'), 'SaleOrderConfigDetail')
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
     SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
@@ -262,6 +264,7 @@ class BreadcrumbView:
     ]
     CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
     CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
+    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_UPDATE_PAGE]
 
     ACCOUNT_LIST_PAGE = [
         BreadcrumbItem.ACCOUNT_LIST_PAGE
@@ -375,4 +378,7 @@ class BreadcrumbView:
     ]
     QUOTATION_CONFIG = [
         BreadcrumbItem.QUOTATION_CONFIG_PAGE
+    ]
+    SALE_ORDER_CONFIG = [
+        BreadcrumbItem.SALE_ORDER_CONFIG_PAGE
     ]

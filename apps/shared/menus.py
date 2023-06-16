@@ -119,6 +119,10 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Quotation', code='menu_quotation_config', view_name='QuotationConfigDetail',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
+                name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
+                icon='<i class="fas fa-file-invoice"></i>',
             )
         ]
     )

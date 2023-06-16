@@ -39,8 +39,13 @@
 {% block pageContent %}
     <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="PUT" method="post"
           novalidate data-url-redirect="{% url 'OrderPickingList' %}">
+        {% csrf_token %}
         <div class="row mb-3">
-            {% csrf_token %}
+            <div class="col-xs-12 col-sm-3 offset-sm-6 offset-xs-0">
+                <span class="title-code text-primary font-4">--</span>
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                 <div class="form-group">
                     <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
@@ -151,6 +156,7 @@
 {% block dataHiddenGroup %}
     <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
     {{ data.state_choices|json_script:"dataStateChoices" }}
+    {{ data.config|json_script:'deliver_config' }}
     <input type="hidden" id="trans-factory"
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"

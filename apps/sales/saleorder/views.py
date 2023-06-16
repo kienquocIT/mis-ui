@@ -166,3 +166,46 @@ class SaleOrderDetailDeliveryAPI(APIView):
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+
+# Config
+class SaleOrderConfigDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/saleorder/config/sale_order_config.html',
+        menu_active='menu_sale_order_config',
+        breadcrumb='SALE_ORDER_CONFIG',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class SaleOrderConfigDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_CONFIG).get()
+        if res.state:
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_CONFIG).put(request.data)
+        if res.state:
+            res.result['message'] = SaleMsg.SALE_ORDER_CONFIG_UPDATE
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST

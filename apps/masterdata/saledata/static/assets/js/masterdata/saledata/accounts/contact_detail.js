@@ -8,6 +8,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 let contactDetail = data?.['contact_detail']
                 if (data) {
+                    // console.log(data)
                     $("#owner_id").val(contactDetail.owner.fullname);
                     $('#full_name_id').val(contactDetail.fullname.fullname);
                     $('#bio_id').val(contactDetail.biography);

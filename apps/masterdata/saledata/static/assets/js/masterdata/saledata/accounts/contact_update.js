@@ -118,17 +118,14 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option selected>` + `</option>`);
-                    let ownerData = data?.['account_detail']?.['owner'];
-                    if (ownerData && Array.isArray(ownerData)) {
-                        ownerData.map(function (item) {
-                            if (item.id === id_report_to) {
-                                ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
-                            } else {
-                                ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
-                            }
-
-                        })
+                    ele.append(`<option selected>` + `</option>`)
+                    for (let i = 0; i < data.account_detail.contact_mapped.length; i++) {
+                        let contact_mapped = data.account_detail.contact_mapped[i];
+                        if (contact_mapped.id === id_report_to) {
+                            ele.append(`<option value="` + contact_mapped.id + `" selected>` + contact_mapped.fullname + `</option>`)
+                        } else {
+                            ele.append(`<option value="` + contact_mapped.id + `">` + contact_mapped.fullname + `</option>`)
+                        }
                     }
                 }
             }
@@ -292,8 +289,7 @@ $(document).ready(function () {
                         1000
                     )
                 }, (err) => {
-                    $.fn.hideLoading();
-                    // $.fn.notifyPopup({description: err.detail}, 'failure');
+                    $.fn.notifyPopup({description: err.detail}, 'failure');
                 }
             )
     });

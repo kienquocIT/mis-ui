@@ -252,6 +252,7 @@ $(document).ready(function () {
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
+        ele.append(`<input class="form-control mb-2" type="text" id="search-sale-code-Input" placeholder="Search by sale code title">`)
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
                 sale_order_loaded.push(item.customer.id);
@@ -288,6 +289,25 @@ $(document).ready(function () {
                 }
             }
         })
+
+        const searchInput = $('#search-sale-code-Input');
+        const dropdownList = $('.dropdown-menu');
+        const items = dropdownList.find('.title-span');
+
+        searchInput.on('input', function() {
+            const input = searchInput.val().toLowerCase();
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                const text = item.textContent.toLowerCase();
+
+                if (text.indexOf(input) > -1) {
+                    item.closest('a').style.display = '';
+                } else {
+                    item.closest('a').style.display = 'none';
+                }
+            }
+        });
 
         $('#sale-code-select-box2 .dropdown-item').on('click', function () {
             $('#tab_plan_datatable tbody').html(``);

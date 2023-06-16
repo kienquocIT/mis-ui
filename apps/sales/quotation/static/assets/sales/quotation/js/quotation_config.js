@@ -163,10 +163,9 @@ $(function () {
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label class="form-label">Editor</label>
-                                                            <textarea class="form-control" rows="3" cols="50" name="" id=""></textarea>
+                                                            <textarea class="form-control" rows="2" cols="50" name="" id=""></textarea>
                                                         </div>
                                                     </div>
-                                                    <br>
                                                     <div class="row">
                                                         <ul class="nav nav-light nav-tabs">
                                                             <li class="nav-item">
@@ -193,14 +192,32 @@ $(function () {
                                                         
                                                         <div class="tab-content">
                                                             <div class="row tab-pane fade show active" id="tab_indicator">
-                                                                <div class="col-6">
+                                                                <div class="col-3">
                                                                     <div class="beauty_scroll h-250p">
-                                                                    <p class="white-space-wrap">
-                                                                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
-                                                                    </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Revenue
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Total Cost
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Gross Profit
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Pretax Amount
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Tax Amount
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Operating Expense
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Net Income
+                                                                        </p>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-6"></div>
+                                                                <div class="col-9"></div>
                                                             </div>
                                                         <div class="row tab-pane fade" id="tab_param">
                                                             <div class="col-6">

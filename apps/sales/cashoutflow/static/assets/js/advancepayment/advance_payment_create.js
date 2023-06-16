@@ -265,6 +265,7 @@ $(document).ready(function () {
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
+        ele.append(`<input class="form-control mb-2" type="text" id="search-sale-code-Input" placeholder="Search by sale code title">`)
         sale_order_list.map(function (item) {
             sale_order_loaded.push(item.customer.id);
             if (Object.keys(item.opportunity).length !== 0) {
@@ -370,6 +371,25 @@ $(document).ready(function () {
                 ele2.append(`<option data-type="2" data-sale-person-id="` + sale_person_id_list + `" value="` + item.id + `">(` + item.code + `) ` + item.title +`</option>`);
             }
         })
+
+        const searchInput = $('#search-sale-code-Input');
+        const dropdownList = $('.dropdown-menu');
+        const items = dropdownList.find('.title-span');
+
+        searchInput.on('input', function() {
+            const input = searchInput.val().toLowerCase();
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                const text = item.textContent.toLowerCase();
+
+                if (text.indexOf(input) > -1) {
+                    item.closest('a').style.display = '';
+                } else {
+                    item.closest('a').style.display = 'none';
+                }
+            }
+        });
     }
 
     function loadCreator() {

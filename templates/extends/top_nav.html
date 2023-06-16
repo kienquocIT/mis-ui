@@ -123,27 +123,64 @@
                                 class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret mr-1"
                                 data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true"
                                 aria-expanded="false"
+                                id="notifyDropdownData"
+                                data-url="{% url 'MyNotifyAllAPI' %}"
+                                data-method="GET"
                         >
                             <span
+                                    id="idxNotifyBell"
+                                    data-url="{% url 'MyNotifyNoDoneCountAPI' %}"
                                     class="icon"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="top"
                                     data-bs-original-title="{% trans 'Notifications' %}"
                             >
                                 <span class="position-relative">
-                                    <span class="feather-icon">
-                                        <i data-feather="bell"></i>
-                                    </span>
-                                    <span class="badge badge-success badge-indicator position-top-end-overflow-1">
-                                    </span>
+                                    <div class="avatar avatar-icon avatar-xxs avatar-rounded">
+                                        <span class="initial-wrap">
+                                            <i class="fa-regular fa-bell fa-sm my-bell" id="idxNotifyBellIcon"></i>
+                                        </span>
+                                        <span
+                                                class="badge badge-warning badge-sm position-top-end-overflow-1"
+                                                id="my-notify-count"
+                                        ></span>
+                                    </div>
                                 </span>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end p-0">
-                            <h6 class="dropdown-header px-4 fs-6">{% trans 'Notifications' %}</h6>
-                            <div data-simplebar class="dropdown-body p-2">
+                            <h6 class="dropdown-header px-4 fs-6">
+                                {% trans 'Notifications' %}
+                                <div>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifySeenAll"
+                                            data-url="{% url 'MyNotifySeenAllAPI' %}"
+                                            data-method="PUT"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Seen all' %}"
+                                    >
+                                        <span class="icon"><i class="fa-solid fa-check-double"></i></span>
+                                    </button>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifyClearAll"
+                                            data-url="{% url 'MyNotifyCleanAllAPI' %}"
+                                            data-method="DELETE"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Delete all viewed notifications' %}"
+                                    >
+                                        <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
+                                    </button>
+                                </div>
+                            </h6>
+                            <div data-simplebar class="dropdown-body p-2" id="idxNotifyShowData">
+                                <div class="spinner-grow hidden" role="status"><span class="sr-only">Loading...</span>
+                                </div>
                             </div>
-                            <div class="dropdown-footer"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
+                            <div class="dropdown-footer hidden"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
                             </div>
                         </div>
                     </div>

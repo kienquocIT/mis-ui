@@ -3018,3 +3018,19 @@ msgstr "Cập nhật Space thành "
 #
 msgid "Auto reload has been applied after the timeout!"
 msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"
+
+#
+msgid "Successful"
+msgstr "Thành công"
+
+#
+msgid "No data available"
+msgstr "Không có dữ liệu nào để hiển thị"
+
+#
+msgid "Seen all"
+msgstr "Đọc tất cả"
+
+#
+msgid "Delete all viewed notifications"
+msgstr "Xóa tất cả thông báo đã xem"

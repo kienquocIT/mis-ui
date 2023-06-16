@@ -1075,6 +1075,154 @@ function buildSelect2() {
 }
 
 $(document).ready(function () {
+    // push count notify to bell-alert
+    let bellIdx = $('#idxNotifyBell');
+    let bellIdxIcon = $('#idxNotifyBellIcon');
+    let bellCount = $('#my-notify-count');
+    let notifyCountUrl = bellIdx.attr('data-url');
+
+    function checkNotifyCount(){
+        $.fn.callAjax(
+            notifyCountUrl,
+            'GET',
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && data.hasOwnProperty('count') && data['count'] > 0) {
+                    bellCount.text(data['count']);
+                    bellIdxIcon.addClass('my-bell-ring');
+                }
+            }
+        )
+    }
+
+    if (notifyCountUrl) checkNotifyCount();
+    $('#notifyDropdownData').on("show.bs.dropdown", function () {
+        let dataArea = $('#idxNotifyShowData').find('.simplebar-content');
+        dataArea.find(':not(.spinner-grow)').remove();
+        dataArea.find('.spinner-grow').removeClass('hidden');
+
+        let dataUrl = $(this).attr('data-url');
+        let dataMethod = $(this).attr('data-method');
+
+        $.fn.callAjax(
+            dataUrl,
+            dataMethod
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                let baseItemNotify = `
+                    <a href="javascript:void(0);" class="dropdown-item mb-1 border border-light {classBgLight}">
+                        <div class="media">
+                            <div class="media-head">
+                                <div class="avatar avatar-rounded avatar-sm">
+                                    <span class="initial-wrap">{avatarSender}</span>
+                                </div>
+                            </div>
+                            <div class="media-body">
+                                <div>
+                                    <div class="notifications-text">
+                                        <span class="text-primary title">{title}</span>
+                                    </div>
+                                    <div class="notifications-text mb-3">
+                                        <small class="text-muted">{msg}</small>
+                                    </div>
+                                    <div class="notifications-info">
+                                         <span class="badge badge-soft-success">{label}</span>
+                                         <div class="notifications-time">{date}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+
+                let arr_no_seen = [];
+                let arr_seen = [];
+                if (data && data.hasOwnProperty('notify_data')) {
+                    data['notify_data'].map(
+                        (item) => {
+                            let senderData = item?.['employee_sender_data']?.['full_name'];
+                            let tmp = baseItemNotify.replace(
+                                "{avatarSender}",
+                                senderData ? $.fn.shortName(senderData) : `<i class="fa-solid fa-gear"></i>`
+                            ).replace(
+                                "{title}", item?.['title']
+                            ).replace(
+                                "{msg}", item?.['msg']
+                            ).replace(
+                                "{label}", item?.['doc_app']
+                            ).replace(
+                                "{date}", item?.['date_created']
+                            );
+                            if (item?.['is_done'] === true) {
+                                arr_seen.push(tmp.replace(
+                                    "{classBgLight}", ""
+                                ));
+                            } else {
+                                arr_no_seen.push(tmp.replace(
+                                    "{classBgLight}", "bg-light"
+                                ));
+                            }
+                        }
+                    )
+                }
+                if (arr_no_seen.length > 0 || arr_seen.length > 0){
+                    dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
+                } else {
+                    dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
+                }
+                dataArea.find('.spinner-grow').addClass('hidden');
+            },
+            (errs) => {
+                dataArea.find('.spinner-grow').addClass('hidden');
+            }
+        )
+    });
+    $('#btnNotifySeenAll').click(function (event) {
+        event.preventDefault();
+        let dataUrl = $(this).attr('data-url');
+        let dataMethod = $(this).attr('data-method');
+        if (dataUrl && dataMethod) {
+            $.fn.callAjax(
+                dataUrl,
+                dataMethod,
+                {},
+                true,
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        bellIdxIcon.removeClass('my-bell-ring');
+                        bellCount.text("");
+                    }
+
+                },
+            )
+        }
+    });
+    $('#btnNotifyClearAll').click(function (event) {
+        event.preventDefault();
+        let dataUrl = $(this).attr('data-url');
+        let dataMethod = $(this).attr('data-method');
+        if (dataUrl && dataMethod) {
+            $.fn.callAjax(
+                dataUrl,
+                dataMethod,
+                {},
+                true,
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 204) {
+                        checkNotifyCount();
+                    }
+                },
+            )
+        }
+    });
+    // -- push count notify to bell-alert
+
     // Listen event select and select2-init-v1 for set previous selected data
     $(document).on('focus', 'select', function () {
         $(this).data('previousValue', $(this).val());
@@ -1943,7 +2091,9 @@ $.fn.extend({
             case 2:
                 break
             case 3:
-                $.fn.getElePageAction().find('[type="submit"]').each(function (){$(this).addClass("hidden")});
+                $.fn.getElePageAction().find('[type="submit"]').each(function () {
+                    $(this).addClass("hidden")
+                });
                 break
             default:
                 break
@@ -1986,9 +2136,11 @@ $.fn.extend({
         return [];
     },
     activeButtonOpenZone: function (zonesData) {
-        $.fn.setZoneData(zonesData);
-        if (zonesData && Array.isArray(zonesData)) {
-            $('#btn-active-edit-zone-wf').removeClass('hidden');
+        if (window.location.href.includes('/update/')) {
+            $.fn.setZoneData(zonesData);
+            if (zonesData && Array.isArray(zonesData)) {
+                $('#btn-active-edit-zone-wf').removeClass('hidden');
+            }
         }
     },
     activeZoneInDoc: function () {

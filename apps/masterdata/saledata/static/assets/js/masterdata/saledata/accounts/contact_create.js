@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let work_address_dict = [];
+    let home_address_dict = [];
 
     // load Cities SelectBox
     function loadCitiesWork() {
@@ -82,15 +84,18 @@ $(document).ready(function () {
             let district = $('#workdistrict').find(`option:selected`).text();
             let ward = $('#workward').find(`option:selected`).text();
 
+            let country_id = $('#workcity').find(`option:selected`).attr('data-country-id');
+            let city_id = $('#workcity').find(`option:selected`).attr('value');
+            let district_id = $('#workdistrict').find(`option:selected`).attr('value');
+            let ward_id = $('#workward').find(`option:selected`).attr('value');
+
             let work_address = '';
             if (city !== '' && district !== '' && detail_work_address !== '') {
-
                 if (ward === '') {
                     work_address = detail_work_address + ', ' + district + ', ' + city;
                 } else {
                     work_address = detail_work_address + ', ' + ward + ', ' + district + ', ' + city;
                 }
-
                 $('#modal-work-address').modal('hide');
                 $('#detail-modal-work-address').val('');
             } else {
@@ -99,6 +104,13 @@ $(document).ready(function () {
 
             if (work_address !== '') {
                 $('#work_address_id').val(work_address);
+                work_address_dict.push({
+                    'work_country_id': country_id,
+                    'work_detail_address': detail_work_address,
+                    'work_city_id': city_id,
+                    'work_district_id': district_id,
+                    'work_ward_id': ward_id,
+                })
             }
         } catch (error) {
             $.fn.notifyPopup({description: "No address information!"}, 'failure');
@@ -187,15 +199,18 @@ $(document).ready(function () {
             let district = $('#homedistrict').find(`option:selected`).text();
             let ward = $('#homeward').find(`option:selected`).text();
 
+            let country_id = $('#homecity').find(`option:selected`).attr('data-country-id');
+            let city_id = $('#homecity').find(`option:selected`).attr('value');
+            let district_id = $('#homedistrict').find(`option:selected`).attr('value');
+            let ward_id = $('#homeward').find(`option:selected`).attr('value');
+
             let home_address = '';
             if (city !== '' && district !== '' && detail_home_address !== '') {
-
                 if (ward === '') {
                     home_address = detail_home_address + ', ' + district + ', ' + city;
                 } else {
                     home_address = detail_home_address + ', ' + ward + ', ' + district + ', ' + city;
                 }
-
                 $('#modal-home-address').modal('hide');
                 $('#detail-modal-home-address').val('');
             } else {
@@ -204,6 +219,16 @@ $(document).ready(function () {
 
             if (home_address !== '') {
                 $('#home_address_id').val(home_address);
+                if (home_address !== '') {
+                    $('#home_address_id').val(home_address);
+                    home_address_dict.push({
+                        'home_country_id': country_id,
+                        'home_detail_address': detail_home_address,
+                        'home_city_id': city_id,
+                        'home_district_id': district_id,
+                        'home_ward_id': ward_id,
+                    })
+                }
             }
         } catch (error) {
             $.fn.notifyPopup({description: "No address information!"}, 'failure');
@@ -373,6 +398,10 @@ $(document).ready(function () {
         if (frm.dataForm['mobile'] === '') {
             delete frm.dataForm['mobile'];
         }
+
+        frm.dataForm['home_address_dict'] = home_address_dict;
+
+        frm.dataForm['work_address_dict'] = work_address_dict;
 
         frm.dataForm['system_status'] = 1; // save, not draft
 

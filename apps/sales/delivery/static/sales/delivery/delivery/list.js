@@ -114,10 +114,12 @@ $(document).ready(function () {
         ]
     }, false)
 
+    const $Table = $('#sale_order_approved');
     $('#sale_order_select').on('shown.bs.modal', function (e) {
         e.stopPropagation();
-        const $Table = $('#sale_order_approved');
-        $Table.not('.dataTable').DataTable({
+        if ($Table.hasClass('dataTable')) $Table.DataTable().ajax.reload();
+        else
+            $Table.not('.dataTable').DataTable({
             searching: false,
             ordering: false,
             paginate: true,
@@ -170,29 +172,25 @@ $(document).ready(function () {
                 });
             }
         });
-        if ($Table.hasClass('dataTable')) $Table.DataTable().ajax.reload();
+
     });
     $('#call_delivery').off().on('click', function () {
         $.fn.showLoading();
-        const row = $('tr input[type="checkbox"]:checked', $('#sale_order_approved'))
-        const isData = $Table.DataTable().row(row).data();
-        const url = $('#url-factory').attr('data-create-delivery').format_url_with_uuid(isData.id);
+        const row = $('input[type="checkbox"]:checked', $('#sale_order_approved'))
+        const isData = $Table.DataTable().row(row.closest('tr')).data();
         if (isData && isData.hasOwnProperty('id')){
+            const url = $('#url-factory').attr('data-create-delivery').replace('1', isData.id);
             $.fn.callAjax(
-                callDeliveryUrl,
-                'POST',
-                {},
-                true,
+                url,
+                'POST', {}, true
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data?.['status'] === 200) {
                         const config = data?.config
-                        let is_URL = urlElm.attr('data-picking')
                         if (config?.is_picking){
-                            is_URL = urlElm.attr('data-picking')
                             setTimeout(() => {
-                                window.location.href = is_URL
+                                window.location.href = $('#url-factory').attr('data-picking')
                             }, 1000);
                         }
                         else{

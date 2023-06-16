@@ -72,9 +72,12 @@ $(document).ready(function () {
             else if (payment_detail.sale_code_type === 0) {
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
-                if (sale_code_mapped[0].opportunity) {
+                if (Object.keys(sale_code_mapped[0].opportunity).length !== 0) {
                     opp_code_list.push(sale_code_mapped[0].opportunity.code);
                     $('#sale-code-select-box2-show').attr('title', sale_code_mapped[0].opportunity.code + ': ' + sale_code_mapped[0].opportunity.title);
+                }
+                else {
+                    $('#sale-code-select-box2-show').attr('title', 'No Opportunity Code');
                 }
                 $('#sale-code-select-box2-show').val(sale_code_mapped[0].title);
                 $('#sale-code-select-box2-show').attr('data-bs-toggle', 'tooltip');

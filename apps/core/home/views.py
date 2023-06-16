@@ -52,3 +52,11 @@ class HelpAndSupportView(View):
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
+
+class UtilitiesView(View):
+    @mask_view(
+        auth_require=True,
+        template='core/utilities/index.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

@@ -13,8 +13,9 @@
                     class="btn-group mr-3"
                     id="menu-tenant"
                     data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
+                    data-bs-placement="right"
                     data-bs-original-title="Space Menus"
+                    data-space-selected="{{ base.space_current_detail.code }}"
             >
                 <button
                         type="button" class="btn btn-outline-light dropdown-toggle"
@@ -39,6 +40,7 @@
                                 <a
                                         class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
                                         data-space-code="{{ item_child.code }}"
+                                        data-space-name="{{ item_child.name }}"
                                         href="#"
                                 >
                                     {{ item_child.icon|safe }}
@@ -114,16 +116,6 @@
         <!-- End Nav -->
         <div class="nav-end-wrap">
             <ul class="navbar-nav flex-row">
-                <li class="nav-item">
-                    <a
-                            href="{% url 'DefaultDataView' %}"
-                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-                    >
-                         <span class="icon">
-                            <i class="fas {% class_name_animal %}"></i>
-                         </span>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <div class="dropdown dropdown-notifications">
                         <a
@@ -325,6 +317,29 @@
                                 </span>
                                 <span>{% trans 'Help & Support' %}</span>
                             </a>
+
+                            {% if is_debug %}
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Testing Product</h6>
+                                <a class="dropdown-item" href="{% url 'UtilitiesView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-toolbox"></i>
+                                    </span>
+                                    <span>Utility tools page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'DefaultDataView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-table"></i>
+                                    </span>
+                                    <span>System default data page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'ComponentCollections' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-puzzle-piece"></i>
+                                    </span>
+                                    <span>Components</span>
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </li>

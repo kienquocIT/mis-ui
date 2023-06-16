@@ -42,9 +42,7 @@
                 <div class="col-8">
                     <div class="row">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Contact Owner" %}<span
-                                    class="field-required"
-                            >(*)</span></label>
+                            <label class="form-label required">{% trans "Contact Owner" %}</label>
                             <select
                                     id="select-box-emp" name="owner" class="form-select" data-method="GET" required
                                     data-url="{% url "EmployeeListAPI" %}"
@@ -84,9 +82,7 @@
                 </div>
                 <div class="col-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "First Name" %}<span
-                                class="field-required"
-                        >(*)</span></label>
+                        <label class="form-label required">{% trans "First Name" %}</label>
                         <input
                                 type="text" class="form-control" placeholder="Nguyen Van" name="first_name"
                                 id="first_name_id"
@@ -96,7 +92,7 @@
                 </div>
                 <div class="col-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "Last Name" %}<span class="field-required">(*)</span></label>
+                        <label class="form-label required">{% trans "Last Name" %}</label>
                         <input
                                 type="text" class="form-control" placeholder="A" name="last_name" id="last_name_id"
                                 required value=""
@@ -107,7 +103,7 @@
             <div class="row">
                 <div class="col-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "Full Name" %}<span class="field-required">(*)</span></label>
+                        <label class="form-label required">{% trans "Full Name" %}</label>
                         <input
                                 type="text" class="form-control" name="fullname" value=""
                                 id="full_name_id" readonly

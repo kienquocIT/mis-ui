@@ -106,11 +106,11 @@ $(document).ready(function () {
             $.fn.callAjax(url, method).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    resp.data.account_detail.owner.map(function (item) {
+                    data?.['account_detail']?.['owner']?.map(function (item) {
                     })
                     ele.text("");
                     ele.append(`<option selected>` + `</option>`)
-                    data.account_detail.owner.map(function (item) {
+                    data?.['account_detail']?.['owner'].map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
                     })
                 }

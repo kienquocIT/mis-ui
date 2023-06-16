@@ -23,7 +23,7 @@ def random_int(to_number: int) -> int:
 
 @register.simple_tag
 def class_name_animal():
-    return random.choice(
+    icon = random.choice(
         (
             'fa-cat',
             'fa-crow',
@@ -50,6 +50,19 @@ def class_name_animal():
             'fa-cow',
         )
     )
+    color = random.choice(
+        (
+            'text-primary',
+            'text-secondary',
+            'text-success',
+            'text-danger',
+            'text-warning',
+            'text-info',
+            'text-dark',
+            'text-muted',
+        )
+    )
+    return f'{icon} {color}'
 
 
 register.filter('shorten_name', shorten_name)

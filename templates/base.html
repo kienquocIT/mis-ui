@@ -57,6 +57,7 @@
                 z-index: 3051;
             }
         </style>
+        <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
@@ -97,7 +98,9 @@
                                 {% include 'extends/breadcrumb.html' %}
                             </div>
                             <div class="blog-options-wrap" id="idxPageAction">
-                                {% block pageAction %}{% endblock %}
+                                <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                    {% block pageAction %}{% endblock %}
+                                </div>
                                 <button
                                         type="submit"
                                         class="hidden btn-save-at-zone-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
@@ -171,7 +174,7 @@
 
                                 <button
                                         id="btnLogShow"
-                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
+                                        class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
                                         data-drawer-target="#drawer_log_data"
                                         data-drawer-active="false"
                                         href="#"
@@ -244,6 +247,8 @@
         <span id="urlCompanyConfig1" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
         <span id="urlCompanyConfigData1"></span>
 
+        <span id="msgReloadPageIn">{% trans 'Auto reload has been applied after the timeout!' %}</span>
+        <span id="msgLabelReloadPageIn">{% trans 'Change Space to ' %}</span>
         <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
         <span id="msgSuccess">{% trans 'Successfully' %}</span>
         <span id="flagIsDebug" data-is-debug={{ is_debug }}></span>
@@ -258,6 +263,7 @@
         {% if data.form_id %}
             <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
         {% endif %}
+        <span id="idBtnIDLastSubmit" data-id></span>
     </div>
     <!-- /Message translate usually -->
     <!-- /Message translate base -->
@@ -269,6 +275,7 @@
             data-added="{% trans 'Added' %}"
             data-finish="{% trans 'Finish' %}"
             data-cancel="{% trans 'Cancel' %}"
+            data-confirm="{% trans 'Confirm' %}"
             data-loading="{% trans 'Loading' %}"
             data-success="{% trans 'Successfully' %}"
             data-are-you-sure="{% trans 'Are you sure about this change?' %}"
@@ -471,6 +478,7 @@
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
 
     <!-- Typing text JS -->
     <script src="{% static 'assets/js/plugins/typed.umd.js' %}"></script>
@@ -486,46 +494,76 @@
 
     <script>
         function change_space() {
+            function executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData) {
+                let baseMsg = $('#base-trans-factory');
+                Swal.fire({
+                    title: $('#msgLabelReloadPageIn').text() + `"${spaceName}"`,
+                    html: $('#msgReloadPageIn').text() + '<br>',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showCancelButton: true,
+                    cancelButtonText: baseMsg.attr('data-cancel'),
+                    showConfirmButton: true,  // Hiển thị nút Confirm
+                    confirmButtonText: baseMsg.attr('data-confirm'),
+                }).then((result) => {
+                    if (result.value) {
+                        {#console.log('Người dùng đã xác nhận');#}
+                        callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData);
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        {#console.log('Người dùng đã hủy bỏ');#}
+                    } else if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed) {
+                        {#console.log('Timeout or confirmed!')#}
+                        callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData);
+                    }
+                });
+            }
+
+            $('#btnTestAlert').click(function () {
+                executeTimeOutChangeSpace();
+            })
+
+            function callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData) {
+                $.fn.showLoading();
+                $.fn.callAjax(
+                    urlData,
+                    methodData,
+                    {'space_code': spaceCode},
+                    true,
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && data['status'] === 200) {
+                            $.fn.notifyB({
+                                'description': $('#base-trans-factory').attr('data-success')
+                            }, 'success');
+                            setTimeout(
+                                () => {
+                                    window.location.href = urlRedirectData;
+                                }, 1000,
+                            );
+                        }
+                        setTimeout(
+                            () => {
+                                $.fn.hideLoading();
+                            },
+                            1000
+                        );
+                    },
+                    (errs) => {
+                        $.fn.hideLoading();
+                    }
+                )
+            }
+
             $('.space-item').click(function (event) {
                 event.preventDefault();
+                let space_selected = $('#menu-tenant').attr('data-space-selected');
                 let urlData = $(this).closest('.dropdown-menu').attr('data-url');
                 let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
                 let methodData = $(this).closest('.dropdown-menu').attr('data-method');
                 let spaceCode = $(this).attr('data-space-code');
-                let state = confirm(
-                    `"${$(this).text().trim()}" - ${$('#base-trans-factory').attr('data-are-you-sure')}`
-                );
-                if (state === true) {
-                    $.fn.showLoading();
-                    $.fn.callAjax(
-                        urlData,
-                        methodData,
-                        {'space_code': spaceCode},
-                        true,
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && data['status'] === 200) {
-                                $.fn.notifyB({
-                                    'description': $('#base-trans-factory').attr('data-success')
-                                }, 'success');
-                                setTimeout(
-                                    () => {
-                                        window.location.href = urlRedirectData;
-                                    }, 1000,
-                                );
-                            }
-                            setTimeout(
-                                () => {
-                                    $.fn.hideLoading();
-                                },
-                                1000
-                            );
-                        },
-                        (errs) => {
-                            $.fn.hideLoading();
-                        }
-                    )
+                if (spaceCode !== space_selected) {
+                    executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
                 }
             })
         }
@@ -569,7 +607,7 @@
 
         $(document).ready(function () {
             <!-- Toggle Collapse -->
-            $('.hk-navbar-togglable').click(function (event){
+            $('.hk-navbar-togglable').click(function (event) {
                 $(this).find('.icon').children().toggleClass('d-none');
             });
             <!-- ## Toggle Collapse -->

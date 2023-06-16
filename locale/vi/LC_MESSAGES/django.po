@@ -251,7 +251,7 @@ msgstr "Thêm"
 
 #
 msgid "Cancel"
-msgstr "Hủy"
+msgstr "Hủy bỏ"
 
 #: .\apps\core\company\templates\core\company\company_list.html:240
 msgid "Language"
@@ -3006,3 +3006,11 @@ msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
 #
 msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
+
+#
+msgid "Change Space to "
+msgstr "Cập nhật Space thành "
+
+#
+msgid "Auto reload has been applied after the timeout!"
+msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"

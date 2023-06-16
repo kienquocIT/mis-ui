@@ -8,8 +8,8 @@ class FieldMapCommon:
     name_mapping: ALL_STYLE
     id_mapping: ALL_STYLE
     readonly_not_disable: ALL_STYLE, exclude "remove readonly"
-    id_border_zones: Only apply "add border"
-    cls_border_zones: Only apply "add border"
+    id_border_zones: Only apply "add border", "add readonly"
+    cls_border_zones: Only apply "add border", "add readonly"
     """
     name_mapping: list[str]
     id_mapping: list[str]

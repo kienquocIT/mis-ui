@@ -117,17 +117,19 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(data)
                     ele.text("");
-                    ele.append(`<option selected>` + `</option>`)
-                    data.account_detail.owner.map(function (item) {
-                        if (item.id === id_report_to) {
-                            ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
-                        } else {
-                            ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
-                        }
+                    ele.append(`<option selected>` + `</option>`);
+                    let ownerData = data?.['account_detail']?.['owner'];
+                    if (ownerData && Array.isArray(ownerData)) {
+                        ownerData.map(function (item) {
+                            if (item.id === id_report_to) {
+                                ele.append(`<option value="` + item.id + `" selected>` + item.fullname + `</option>`)
+                            } else {
+                                ele.append(`<option value="` + item.id + `">` + item.fullname + `</option>`)
+                            }
 
-                    })
+                        })
+                    }
                 }
             }
         )
@@ -154,26 +156,29 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    loadEmployee(data.contact_detail.owner.id);
-                    loadSalutationList(data.contact_detail.salutation.id);
-                    loadAccountName(data.contact_detail.account_name.id, data.contact_detail.report_to.id);
-                    $('#first_name_id').val(data.contact_detail.fullname.first_name);
-                    $('#last_name_id').val(data.contact_detail.fullname.last_name);
-                    $('#full_name_id').val(data.contact_detail.fullname.fullname);
-                    $('#text-bio').val(data.contact_detail.biography);
-                    $('#inp-phone').val(data.contact_detail.phone);
-                    $('#inp-mobile').val(data.contact_detail.mobile);
-                    $('#inp-email').val(data.contact_detail.email);
-                    $('#inp-jobtitle').val(data.contact_detail.job_title);
-                    $('#work_address_id').val(data.contact_detail.address_information.work_address);
-                    $('#home_address_id').val(data.contact_detail.address_information.home_address);
-                    if (Object.keys(data.contact_detail.additional_information).length > 0) {
-                        loadInterestList(data.contact_detail.additional_information.interests.map(obj => obj.id));
-                        $('#tag_id').val(data.contact_detail.additional_information.tags);
-                        $('#facebook_id').val(data.contact_detail.additional_information.facebook);
-                        $('#gmail_id').val(data.contact_detail.additional_information.gmail);
-                        $('#linkedln_id').val(data.contact_detail.additional_information.linkedln);
-                        $('#twitter_id').val(data.contact_detail.additional_information.twitter);
+                    let contact_detail = data?.['contact_detail'];
+                    $.fn.compareStatusShowPageAction(contact_detail);
+
+                    loadEmployee(contact_detail.owner.id);
+                    loadSalutationList(contact_detail.salutation.id);
+                    loadAccountName(contact_detail.account_name.id, contact_detail.report_to.id);
+                    $('#first_name_id').val(contact_detail.fullname.first_name);
+                    $('#last_name_id').val(contact_detail.fullname.last_name);
+                    $('#full_name_id').val(contact_detail.fullname.fullname);
+                    $('#text-bio').val(contact_detail.biography);
+                    $('#inp-phone').val(contact_detail.phone);
+                    $('#inp-mobile').val(contact_detail.mobile);
+                    $('#inp-email').val(contact_detail.email);
+                    $('#inp-jobtitle').val(contact_detail.job_title);
+                    $('#work_address_id').val(contact_detail.address_information.work_address);
+                    $('#home_address_id').val(contact_detail.address_information.home_address);
+                    if (Object.keys(contact_detail.additional_information).length > 0) {
+                        loadInterestList(contact_detail.additional_information.interests.map(obj => obj.id));
+                        $('#tag_id').val(contact_detail.additional_information.tags);
+                        $('#facebook_id').val(contact_detail.additional_information.facebook);
+                        $('#gmail_id').val(contact_detail.additional_information.gmail);
+                        $('#linkedln_id').val(contact_detail.additional_information.linkedln);
+                        $('#twitter_id').val(contact_detail.additional_information.twitter);
                     } else {
                         loadInterestList([]);
                     }

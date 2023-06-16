@@ -1,5 +1,215 @@
 $(document).ready(function () {
 
+    // load Cities SelectBox
+    function loadCitiesWork() {
+        $("#workdistrict option:selected").prop("selected", false);
+        $("#workcity option:selected").prop("selected", false);
+        let ele = $('#workcity');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                        data.cities.map(function (item) {
+                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+    loadCitiesWork();
+
+    // load Districts SelectBox
+    function loadDistrictsWork() {
+        let ele = $('#workdistrict');
+        let url = ele.attr('data-url').replace('pk', $('#workcity').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
+                        data.districts.map(function (item) {
+                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Wards SelectBox
+    function loadWardsWork() {
+        let ele = $('#workward');
+        let url = ele.attr('data-url').replace('pk', $('#workdistrict').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
+                        data.wards.map(function (item) {
+                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    $('#workcity').on('change', function () {
+        loadDistrictsWork();
+        $('#workward').html('<option value="" selected>---</option>');
+    })
+
+    $('#workdistrict').on('change', function () {
+        loadWardsWork();
+    })
+
+    $('#save-changes-modal-work-address').on('click', function () {
+        try {
+            let detail_work_address = $('#detail-modal-work-address').val();
+            let city = $('#workcity').find(`option:selected`).text();
+            let district = $('#workdistrict').find(`option:selected`).text();
+            let ward = $('#workward').find(`option:selected`).text();
+
+            let work_address = '';
+            if (city !== '' && district !== '' && detail_work_address !== '') {
+
+                if (ward === '') {
+                    work_address = detail_work_address + ', ' + district + ', ' + city;
+                } else {
+                    work_address = detail_work_address + ', ' + ward + ', ' + district + ', ' + city;
+                }
+
+                $('#modal-work-address').modal('hide');
+                $('#detail-modal-work-address').val('');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (work_address !== '') {
+                $('#work_address_id').val(work_address);
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+        }
+    })
+
+    // load Cities SelectBox
+    function loadCitiesHome() {
+        $("#homedistrict option:selected").prop("selected", false);
+        $("#homecity option:selected").prop("selected", false);
+        let ele = $('#homecity');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                        data.cities.map(function (item) {
+                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+    loadCitiesHome();
+
+    // load Districts SelectBox
+    function loadDistrictsHome() {
+        let ele = $('#homedistrict');
+        let url = ele.attr('data-url').replace('pk', $('#homecity').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
+                        data.districts.map(function (item) {
+                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    // load Wards SelectBox
+    function loadWardsHome() {
+        let ele = $('#homeward');
+        let url = ele.attr('data-url').replace('pk', $('#homedistrict').val())
+        let method = ele.attr('data-method');
+        $.fn.callAjax(url, method).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    ele.text("");
+                    ele.append(`<option value="" selected>---</option>`)
+                    if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
+                        data.wards.map(function (item) {
+                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                        })
+                    }
+                }
+            }
+        )
+    }
+
+    $('#homecity').on('change', function () {
+        loadDistrictsHome();
+        $('#homeward').html('<option value="" selected>---</option>');
+    })
+
+    $('#homedistrict').on('change', function () {
+        loadWardsHome();
+    })
+
+    $('#save-changes-modal-home-address').on('click', function () {
+        try {
+            let detail_home_address = $('#detail-modal-home-address').val();
+            let city = $('#homecity').find(`option:selected`).text();
+            let district = $('#homedistrict').find(`option:selected`).text();
+            let ward = $('#homeward').find(`option:selected`).text();
+
+            let home_address = '';
+            if (city !== '' && district !== '' && detail_home_address !== '') {
+
+                if (ward === '') {
+                    home_address = detail_home_address + ', ' + district + ', ' + city;
+                } else {
+                    home_address = detail_home_address + ', ' + ward + ', ' + district + ', ' + city;
+                }
+
+                $('#modal-home-address').modal('hide');
+                $('#detail-modal-home-address').val('');
+            } else {
+                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+            }
+
+            if (home_address !== '') {
+                $('#home_address_id').val(home_address);
+            }
+        } catch (error) {
+            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+        }
+    })
+
     function loadSalutationList() {
         let ele = $('#select-box-salutation');
         let url = ele.attr('data-url');

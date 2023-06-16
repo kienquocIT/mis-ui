@@ -1075,6 +1075,9 @@ function buildSelect2() {
 }
 
 $(document).ready(function () {
+    // temp solution
+    $('#idxRealAction').removeClass('hidden');
+
     // push count notify to bell-alert
     let bellIdx = $('#idxNotifyBell');
     let bellIdxIcon = $('#idxNotifyBellIcon');

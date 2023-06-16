@@ -251,7 +251,7 @@ msgstr "Thêm"
 
 #
 msgid "Cancel"
-msgstr "Hủy"
+msgstr "Hủy bỏ"
 
 #: .\apps\core\company\templates\core\company\company_list.html:240
 msgid "Language"
@@ -3010,6 +3010,14 @@ msgstr "Thu gọn/Mở rộng"
 #
 msgid "Sale order config update successfully"
 msgstr "Cập nhật cấu hình đơn hàng thành công"
+
+#
+msgid "Change Space to "
+msgstr "Cập nhật Space thành "
+
+#
+msgid "Auto reload has been applied after the timeout!"
+msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"
 
 #
 msgid "Win Rate"

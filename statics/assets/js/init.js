@@ -1105,6 +1105,11 @@ $(document).ready(function () {
     });
     // -- Listen event select and select2-init-v1 for set previous selected data
 
+    // button event submit form (last click)
+    $(document).on('click', "[type='submit']", function (event) {
+        $.fn.setBtnIDLastSubmit($(this).attr('id'));
+    });
+
     // clean notify child
     new NotifyPopup().cleanChildNotifyBlock();
     $('.btn-redirect').click(function () {
@@ -1176,7 +1181,6 @@ $(document).ready(function () {
         tabActivityLog.empty();
         log_data.map(
             (item) => {
-                console.log('item?.[\'data_change\']: ', item?.['data_change']);
                 let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
                 let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
                 let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
@@ -1539,6 +1543,12 @@ $.fn.extend({
     getElePageAction: function () {
         return $("#idxPageAction");
     },
+    setBtnIDLastSubmit: function (idx) {
+        $('#idBtnIDLastSubmit').attr('data-id', idx);
+    },
+    getBtnIDLastSubmit: function () {
+        return $('#idBtnIDLastSubmit').attr('data-id');
+    },
 
     // default components
     dateRangePickerDefault: function (opts) {
@@ -1843,11 +1853,13 @@ $.fn.extend({
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
         return new Promise(function (resolve, reject) {
             // handle body data before send
+            // if BtnIdLastSubmit = 'idxSaveInZoneWF' => is update data in zones
             // check WF ID, task ID, url exist PK
             // False: return data input
             // True: convert body data with Zone Accept
             let pk = $.fn.getPkDetail();
             if (
+                $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' &&
                 $.fn.getWFRuntimeID() && $.fn.getTaskWF() &&
                 pk && url.includes(pk) && (
                     method === 'PUT' || method === 'put'
@@ -1863,8 +1875,8 @@ $.fn.extend({
                 }
                 data = newData;
                 data['task_id'] = taskID;
-                console.log('body data have WF ID: ', data, keyOk, taskID);
             }
+
             // Setup then Call Ajax
             let ctx = {
                 url: url,
@@ -1924,6 +1936,27 @@ $.fn.extend({
     // workflow
     //
     // zone
+    compareStatusShowPageAction: function (resultDetail) {
+        switch (resultDetail?.['system_status']) {
+            case 1:
+                break
+            case 2:
+                break
+            case 3:
+                $.fn.getElePageAction().find('[type="submit"]').each(function (){$(this).addClass("hidden")});
+                break
+            default:
+                break
+        }
+        $('#idxRealAction').removeClass('hidden');
+    },
+    getInputMappingProperties: function () {
+        let input_mapping_properties = $('#input_mapping_properties').text();
+        if (input_mapping_properties) {
+            return JSON.parse(input_mapping_properties);
+        }
+        return {}
+    },
     setZoneData: function (zonesData) {
         let body_fields = [];
         if (zonesData && Array.isArray(zonesData)) {
@@ -1960,23 +1993,56 @@ $.fn.extend({
     },
     activeZoneInDoc: function () {
         let zonesData = $.fn.getZoneData();
-        console.log(zonesData);
         if (zonesData && Array.isArray(zonesData)) {
             let pageEle = $.fn.getElePageContent();
-            let input_mapping_properties = $('#input_mapping_properties').text();
-            if (input_mapping_properties) {
-                input_mapping_properties = JSON.parse(input_mapping_properties);
-            } else {
-                input_mapping_properties = {}
-            }
+            let input_mapping_properties = $.fn.getInputMappingProperties();
             if (zonesData.length > 0) {
                 pageEle.find('.required').removeClass('required');
-                pageEle.find('.field-required').remove();
-                pageEle.find('input, select, textarea').prop({
-                    'readonly': true,
-                    'disabled': true,
-                }).removeAttr('required');
-                $('#select-box-emp').prop('readonly', true);
+                pageEle.find('input, select, textarea').each(function (event) {
+                    let inputMapProperties = input_mapping_properties[$(this).attr('name')];
+                    if (inputMapProperties && typeof inputMapProperties === 'object') {
+                        let arrTmpFind = [];
+                        inputMapProperties['name'].map(
+                            (nameFind) => {
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                            }
+                        )
+                        inputMapProperties['id'].map(
+                            (idFind) => {
+                                arrTmpFind.push("[id=" + idFind + "]");
+                            }
+                        )
+                        inputMapProperties['id_border_zones'].map(
+                            (item) => {
+                                arrTmpFind.push('#' + item)
+                            }
+                        )
+                        inputMapProperties['cls_border_zones'].map(
+                            (item) => {
+                                arrTmpFind.push('.' + item);
+                            }
+                        )
+                        arrTmpFind.map(
+                            (item) => {
+                                pageEle.find(item).each(function (event) {
+                                    $(this).changePropertiesElementIsZone({
+                                        add_disable: true,
+                                        add_readonly: true,
+                                        remove_required: true,
+                                    });
+                                });
+                            }
+                        )
+                    } else {
+                        $(this).changePropertiesElementIsZone({
+                            add_disable: true,
+                            add_readonly: true,
+                            remove_required: true,
+                        });
+                    }
+                });
+
+                // $('#select-box-emp').prop('readonly', true);
                 zonesData.map(
                     (item) => {
                         if (item.code) {
@@ -1999,7 +2065,7 @@ $.fn.extend({
                                         let findText = arrTmpFind[key];
                                         pageEle.find(findText).each(function () {
                                             if (readonly_not_disable.includes(key)) {
-                                                $(this).changePropertiesElementIsZone(key, readonly_not_disable, {
+                                                $(this).changePropertiesElementIsZone({
                                                     'add_require_label': true,
                                                     'add_require': false,
                                                     'remove_disable': true,
@@ -2007,7 +2073,7 @@ $.fn.extend({
                                                     'add_border': true,
                                                 });
                                             } else {
-                                                $(this).changePropertiesElementIsZone(key, readonly_not_disable, {
+                                                $(this).changePropertiesElementIsZone({
                                                     'add_require_label': true,
                                                     'add_require': false,
                                                     'remove_disable': true,
@@ -2020,8 +2086,18 @@ $.fn.extend({
                                 );
                                 inputMapProperties['id_border_zones'].map(
                                     (item) => {
-                                        pageEle.find('#' + item).changePropertiesElementIsZone(item, [], {
-                                            'add_border': true,
+                                        console.log('id_border_zones: ', item);
+                                        pageEle.find('#' + item).changePropertiesElementIsZone({
+                                            add_border: true,
+                                            add_readonly: true,
+                                        });
+                                    }
+                                )
+                                inputMapProperties['cls_border_zones'].map(
+                                    (item) => {
+                                        pageEle.find('.' + item).changePropertiesElementIsZone({
+                                            add_border: true,
+                                            add_readonly: true,
                                         });
                                     }
                                 )
@@ -2040,13 +2116,11 @@ $.fn.extend({
             }
         }
     },
-    changePropertiesElementIsZone: function (
-        key, readonly_not_disable,
-        opts
-    ) {
+    changePropertiesElementIsZone: function (opts) {
         let config = {
             'add_require_label': false,
             'add_require': false,
+            'remove_required': false,
             'remove_disable': false,
             'add_disable': false,
             'remove_readonly': false,
@@ -2059,12 +2133,23 @@ $.fn.extend({
         }
         if (config.add_disable === true) {
             $(this).attr('disabled', 'disabled');
+            if ($(this).is('div')) {
+                $(this).css('cursor', 'no-drop')
+                $(this).addClass('bg-light');
+            }
+        }
+        if (config.remove_required === true) {
+            $(this).removeAttr('required');
         }
         if (config.remove_disable === true) {
             $(this).removeAttr('disabled');
         }
         if (config.add_readonly === true) {
-            $(this).attr('readonly', 'readonly');
+            if ($(this).is('div')) {
+                $(this).addClass('bg-light');
+            } else {
+                $(this).attr('readonly', 'readonly');
+            }
         }
         if (config.remove_readonly === true) {
             $(this).removeAttr('readonly');
@@ -2078,11 +2163,7 @@ $.fn.extend({
 
         // active border for select2
         if ($(this).is("select") && $(this).hasClass('select2')) {
-            $(this).next('.select2-container').find('.select2-selection').changePropertiesElementIsZone(
-                key,
-                readonly_not_disable,
-                config
-            );
+            $(this).next('.select2-container').find('.select2-selection').changePropertiesElementIsZone(config);
         }
     },
     // -- zone

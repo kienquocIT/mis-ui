@@ -27,11 +27,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HOME_PAGE = BreadcrumbChildren(
         _('Home Page'), 'HomeView'
     )
-    HOME_VIEW_SPACE = BreadcrumbChildren(
-        _('Employee List'),
-        'HomeViewSpace',
-        kw_pattern={'space_code': 'e-office'}
-    )
 
     # hr
     HR_PAGE = BreadcrumbChildren(_('HR'))

@@ -640,6 +640,8 @@ $(document).ready(function () {
 
     // get data form
     function getDataForm(data_form) {
+
+        // only add field is change to form
         let ele_customer = $('#select-box-customer.tag-change');
         let ele_end_customer = $('#select-box-end-customer.tag-change');
         let ele_budget = $('#input-budget.tag-change');
@@ -769,7 +771,6 @@ $(document).ready(function () {
                 getTotalPrice();
                 break;
             case 'table-contact-role':
-                console.log(table.find(`.box-select-role option[value="0"]:selected`));
                 if (table.find(`.box-select-role option[value="0"]:selected`).length === 0){
                     let ele_decision_maker = $('#input-decision-maker');
                     ele_decision_maker.val('');

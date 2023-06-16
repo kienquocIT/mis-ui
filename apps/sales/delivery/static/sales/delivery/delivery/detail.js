@@ -75,7 +75,7 @@ $(async function () {
                         columns: [
                             {
                                 targets: 0,
-                                class: 'w-20 text-center',
+                                class: 'w-15 text-center',
                                 data: 'code',
                                 render: (row, type, data) => {
                                     return `<p>${row}</p>`;
@@ -83,7 +83,7 @@ $(async function () {
                             },
                             {
                                 targets: 1,
-                                class: 'w-50 text-center',
+                                class: 'w-45 text-center',
                                 data: 'title',
                                 render: (row, type, data) => {
                                     return `<p>${row}</p>`;
@@ -91,9 +91,11 @@ $(async function () {
                             },
                             {
                                 targets: 2,
-                                class: 'w-15 text-center',
+                                class: 'w-25 text-center',
                                 data: 'product_amount',
                                 render: (row, type, data) => {
+                                    if (data.picked_ready > 0)
+                                        return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
                                     return `<p>${row}</p>`;
                                 }
                             },
@@ -197,16 +199,19 @@ $(async function () {
                         data: 'product_data',
                         render: (row, type, data) => {
                             const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'))
+                            let is_gift = ''
+                            if (data.is_promotion)
+                                is_gift = '<span class="ml-2"><i class="fa-solid fa-gift text-gift"></i></span>'
                             let html = `<div class="input-group">
                                             <div class="dropdown pointer mr-2">
-                                                <i class="fas fa-info-circle "
+                                                <i class="fas fa-info-circle text-blue"
                                                    data-bs-toggle="dropdown"
                                                    data-dropdown-animation
                                                    aria-haspopup="true"
                                                    aria-expanded="false"></i>
                                                 <div class="dropdown-menu w-210p mt-2">${dataCont}</div>
                                             </div>
-                                            <p>${row.title}</p>
+                                            <p>${row.title}</p>${is_gift}
                                         </div>`
                             return html;
                         }
@@ -386,7 +391,8 @@ $(async function () {
                     prodSub.push({
                         'product_id': prod.product_data.id,
                         'done': prod.picked_quantity,
-                        'delivery_data': prod.delivery_data
+                        'delivery_data': prod.delivery_data,
+                        'order': prod.order,
                     })
             }
             if (!prodSub || !prodSub.length) {

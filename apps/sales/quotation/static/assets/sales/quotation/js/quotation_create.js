@@ -874,6 +874,8 @@ $(function () {
             if (boxCustomer.val()) {
                 // destroy dataTable then call API load-check again
                 dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
+            } else {
+                dataTableClass.dataTablePromotion([], 'datable-quotation-create-promotion');
             }
         });
 

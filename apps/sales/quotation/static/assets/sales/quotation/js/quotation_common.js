@@ -2080,6 +2080,7 @@ class dataTableHandle {
                             passList = passList.concat(failList);
                             self.dataTableShipping(passList, 'datable-quotation-create-shipping');
                         } else {
+                            self.dataTableShipping(passList, 'datable-quotation-create-shipping');
                             $.fn.notifyPopup({description: 'Must select shipping address.'}, 'failure');
                         }
                     }

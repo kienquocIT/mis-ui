@@ -192,50 +192,64 @@ $(function () {
                                                         
                                                         <div class="tab-content">
                                                             <div class="row tab-pane fade show active" id="tab_indicator">
-                                                                <div class="col-3">
-                                                                    <div class="beauty_scroll h-250p">
-                                                                        <p class="white-space-wrap">
-                                                                            Revenue
-                                                                        </p>
-                                                                        <p class="white-space-wrap">
-                                                                            Total Cost
-                                                                        </p>
-                                                                        <p class="white-space-wrap">
-                                                                            Gross Profit
-                                                                        </p>
-                                                                        <p class="white-space-wrap">
-                                                                            Pretax Amount
-                                                                        </p>
-                                                                        <p class="white-space-wrap">
-                                                                            Tax Amount
-                                                                        </p>
-                                                                        <p class="white-space-wrap">
-                                                                            Operating Expense
-                                                                        </p>
-                                                                        <p class="white-space-wrap">
-                                                                            Net Income
-                                                                        </p>
+                                                                <div class="row">
+                                                                    <div class="col-4">
+                                                                        <div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-200p position-relative overflow-y-scroll">
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-flush-light">
+                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Revenue</span></span></div>
+                                                                                    <input class="data-show" hidden>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-flush-light">
+                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Total Cost</span></span></div>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-flush-light">
+                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Gross Profit</span></span></div>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-flush-light">
+                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Pretax Amount</span></span></div>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-flush-light">
+                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Operating Expense</span></span></div>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-flush-light">
+                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Net Income</span></span></div>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-8">
+                                                                    <div data-simplebar class="nicescroll-bar h-200p">
+                                                                        <div>
+                                                                        <h5>Revenue</h5>
+                                                                        <p>indicator revenue</p>
+                                                                        <b>Syntax</b>
+                                                                            <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
+                                                                        <b>Example</b>
+                                                                            <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
+                                                                            <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-9"></div>
+                                                                </div>
                                                             </div>
                                                         <div class="row tab-pane fade" id="tab_param">
                                                             <div class="col-6">
-                                                                <div class="beauty_scroll h-250p">
-                                                                <p class="white-space-wrap">
-                                                                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
-                                                                </p>
-                                                                </div>
                                                             </div>
                                                             <div class="col-6"></div>
                                                         </div>
                                                         <div class="row tab-pane fade" id="tab_function">
                                                             <div class="col-6">
-                                                                <div class="beauty_scroll h-250p">
-                                                                <p class="white-space-wrap">
-                                                                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
-                                                                </p>
-                                                                </div>
                                                             </div>
                                                             <div class="col-6"></div>
                                                         </div>

@@ -24,9 +24,12 @@ $(document).ready(function () {
                     $('#home_address_id').val(contactDetail.address_information.home_address);
                     if (Object.keys(contactDetail.additional_information).length > 0) {
                         $('#tag_id').val(contactDetail.additional_information.tags);
-                        $('#facebook_id').val(contactDetail.additional_information.facebook);
-                        $('#gmail_id').val(contactDetail.additional_information.gmail);
-                        $('#linkedln_id').val(contactDetail.additional_information.linkedln);
+                        $('#facebook_id').text(contactDetail.additional_information.facebook);
+                        $('#gmail_id').text(contactDetail.additional_information.gmail);
+                        $('#linkedln_id').text(contactDetail.additional_information.linkedln);
+                        $('#facebook_id').attr('href', contactDetail.additional_information.facebook);
+                        $('#gmail_id').attr('href', contactDetail.additional_information.gmail);
+                        $('#linkedln_id').attr('href', contactDetail.additional_information.linkedln);
                         $('#twitter_id').val(contactDetail.additional_information.twitter);
                         let list_interest = contactDetail.additional_information.interests.map(obj => obj.title)
                         list_interest.forEach(function (item) {

@@ -774,6 +774,7 @@ $(document).ready(function () {
                     let ele_decision_maker = $('#input-decision-maker');
                     ele_decision_maker.val('');
                     ele_decision_maker.attr('data-id', '');
+                    ele_decision_maker.addClass('tag-change');
             }
         }
 

@@ -87,24 +87,27 @@ class pickupUtil {
         let checkResult = 0
         if (dataProd && dataProd?.product_data?.id && dataProd?.uom_data?.id){
             let prodKey = `${dataProd.product_data.id}.${dataProd.uom_data.id}`
-            if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.warehouseID)
-                checkResult = currentWHList[prodKey].warehouseID
-            let callData = await $.fn.callAjax(
-                $('#url-factory').attr('data-warehouse-stock'),
-                'GET',
-                {'product_id': dataProd.product_data.id, 'uom_id': dataProd.uom_data.id}
-            )
-            if(callData.status === 200) {
-                let res = $.fn.switcherResp(callData);
-                res = res.warehouse_stock;
-                if (res.length){
-                    let dataFormated = {}
-                    for (const warehouse of res){
-                        dataFormated[warehouse.id] = warehouse.product_amount
-                        if (warehouse.id === warehouseID) checkResult = warehouse.product_amount
+            if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.[warehouseID])
+                checkResult = currentWHList[prodKey][warehouseID]
+            else{
+                let callData = await $.fn.callAjax(
+                    $('#url-factory').attr('data-warehouse-stock'),
+                    'GET',
+                    {'product_id': dataProd.product_data.id, 'uom_id': dataProd.uom_data.id}
+                )
+                if(callData.status === 200) {
+                    let res = $.fn.switcherResp(callData);
+                    res = res.warehouse_stock;
+                    if (res.length){
+                        let dataFormated = {}
+                        for (const warehouse of res){
+                            const avai_stock = warehouse.product_amount - warehouse.picked_ready
+                            dataFormated[warehouse.id] = avai_stock
+                            if (warehouse.id === warehouseID) checkResult = avai_stock
+                        }
+                        currentWHList[prodKey] = dataFormated
+                        _this.setWarehouseList = currentWHList
                     }
-                    currentWHList[prodKey] = dataFormated
-                    _this.setWarehouseList = currentWHList
                 }
             }
         }
@@ -216,8 +219,8 @@ $(async function () {
             let prodTotal = 0
             let prodName = []
             for (let data of datas) {
-                if (data.product_amount > 0) {
-                    prodTotal += data.product_amount
+                if (data.product_amount > 0 && (data.product_amount - data.picked_ready) > 0) {
+                    prodTotal += (data.product_amount - data.picked_ready)
                     prodName.push(data.title)
                 }
             }
@@ -234,6 +237,7 @@ $(async function () {
             rowIdx: true,
             visibleSearchField: false,
             visiblePaging: false,
+            paginate: false,
             data: pickupInit.getProdList,
             columns: [
                 {
@@ -305,7 +309,7 @@ $(async function () {
                             let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
                             this.value = value
                             const listCompare = await pickupInit.getWarehouseStock(rowData)
-                            if (listCompare > 0) {
+                            if (listCompare > 0 && listCompare >= parseFloat(value)) {
                                 pickupInit.pickedQuantityUtil(value, idx);
                                 $(this).removeClass('is-invalid cl-red')
                             }
@@ -315,7 +319,6 @@ $(async function () {
                                     'failure'
                                 );
                                 $(this).addClass('is-invalid cl-red')
-                                return false
                             }
                         }
                     })
@@ -373,7 +376,8 @@ $(async function () {
                             'warehouse': _form.dataForm['warehouse_id'],
                             'uom': prod.uom_data.id,
                             'stock': prod.picked_quantity,
-                        }]
+                        }],
+                        'order': prod.order,
                     }
                     prodSub.push(temp)
                 }
@@ -381,7 +385,6 @@ $(async function () {
                 $.fn.notifyPopup(
                     {description: prod.product_data.title + $transElm.attr('data-prod-outstock')},
                     'failure')
-                return false
             }
         }
         pickingData.products = prodSub

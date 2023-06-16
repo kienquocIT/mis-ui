@@ -713,35 +713,22 @@ $(document).ready(function () {
     })
 
     $('#beneficiary-select-box').on('change', function () {
-        if ($(this).val() !== '') {
-            loadSaleCode($(this).val());
-            $('#beneficiary-detail-span').prop('hidden', false);
-            $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
-            $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
-            $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
-            let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
-            $('#btn-detail-beneficiary-tab').attr('href', url);
-            if ($('#radio-non-sale').is(':checked')) {
-                loadSaleCode($(this).val());
-                $('#sale-code-select-box').prop('disabled', false);
-                $('#sale-code-select-box2-show').css({
-                    'background': 'none',
-                });
-                $('#sale-code-select-box2-show').attr('disabled', false);
-                $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
-            }
-        }
-        else {
-            loadSaleCode();
-            $('#beneficiary-detail-span').prop('hidden', true);
-            $('#btn-detail-beneficiary-tab').attr('href', '#');
-            if ($('#radio-non-sale').is(':checked')) {
-                $('#sale-code-select-box').prop('disabled', true);
-                $('#sale-code-select-box').val('');
-                $('#sale-code-select-box2-show').attr('style', '');
-                $('#sale-code-select-box2-show').attr('disabled', true);
-                $('#sale-code-select-box2-show').attr('placeholder', 'Select beneficiary');
-            }
+        loadSaleCode($(this).val());
+        $('#sale-code-select-box').find('option:selected').prop('selected', false);
+        $('#sale-code-select-box2-show').val('');
+        $('#beneficiary-detail-span').prop('hidden', false);
+        $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+        $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+        $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
+        let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
+        $('#btn-detail-beneficiary-tab').attr('href', url);
+        if ($('#radio-non-sale').is(':checked')) {
+            $('#sale-code-select-box').prop('disabled', false);
+            $('#sale-code-select-box2-show').css({
+                'background': 'none',
+            });
+            $('#sale-code-select-box2-show').attr('disabled', false);
+            $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
         }
     })
 

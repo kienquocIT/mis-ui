@@ -8,7 +8,7 @@ $(document).ready(function () {
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            // console.log(data)
+            console.log(data)
             let opp_code_list = [];
             let payment_detail = data.payment_detail;
             $('#payment-code').text(payment_detail.code);
@@ -255,6 +255,9 @@ $(document).ready(function () {
 
                 let sale_code_id = sale_code_id_list[0].id;
                 let sale_code_oppcode = sale_code_id_list[0].opportunity.code;
+                if (sale_code_oppcode === undefined) {
+                    sale_code_oppcode = sale_code_id_list[0].code;
+                }
                 if ($('#radio-non-sale').is(':checked') === false) {
                     loadBeneficiary(payment_detail.beneficiary);
                 }

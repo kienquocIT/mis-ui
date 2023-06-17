@@ -2,9 +2,13 @@
 $(function () {
     $(document).ready(function () {
         let boxCustomer = $('#select-box-opportunity-create-customer');
+        let boxProductCategory = $('#select-box-product-category');
 
-        let $table = $('#table_opportunity_list')
-        let listURL = $table.attr('data-url')
+        let $table = $('#table_opportunity_list');
+        let listURL = $table.attr('data-url');
+
+        let employee_current_id = $('#employee_current_id').val();
+
         let _dataTable = $table.DataTable({
             searching: false,
             language: {
@@ -23,14 +27,14 @@ $(function () {
                 url: listURL,
                 type: "GET",
                 dataSrc: 'data.opportunity_list',
-                data:function(params){
+                data: function (params) {
                     let txtSearch = $('#search_input').val();
                     if (txtSearch.length > 0)
                         params['search'] = txtSearch
                     params['is_ajax'] = true;
                     return params
                 },
-                error: function(jqXHR) {
+                error: function (jqXHR) {
                     $table.find('.dataTables_empty').text(jqXHR.responseJSON.data.errors)
                 }
             },
@@ -51,7 +55,7 @@ $(function () {
                     targets: 1,
                     render: (data, type, row) => {
                         const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.code}</a>`
+                        return `<a href="${link}" class="link-primary underline_hover">${row.code}</a>`
                     }
                 },
                 {
@@ -68,19 +72,35 @@ $(function () {
                 },
                 {
                     targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row.sale_person.name}</span>`
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        let open_date = null;
+                        if (row.open_date !== null) {
+                            open_date = row.open_date.split(" ")[0]
+                        }
+                        return `<p>${open_date}</p>`
+                    }
+                },
+                {
+                    targets: 6,
                     className: 'action-center',
                     render: (data, type, row) => {
                         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
                         return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
-                            +`data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
-                            +`data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
-                            +`<i data-feather="trash-2"></i></span></span></a></div>`;
+                            + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
+                            + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
+                            + `<i data-feather="trash-2"></i></span></span></a></div>`;
                     },
                 }
             ],
         });
 
-        $('#search_input').on('keyup', function(evt){
+        $('#search_input').on('keyup', function (evt) {
             const keycode = evt.which;
             if (keycode === 13) //enter to search
                 _dataTable.ajax.reload()
@@ -97,10 +117,14 @@ $(function () {
                         if (data) {
                             if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
                                 boxCustomer.append(`<option value=""></option>`);
+                                $('#data-customer').attr('value', JSON.stringify(data.account_list));
                                 data.account_list.map(function (item) {
-                                    boxCustomer.append(`<option value="${item.id}">
+                                    let list_manager = item.manager.map(obj => obj.id)
+                                    if (list_manager.includes(employee_current_id)) {
+                                        boxCustomer.append(`<option value="${item.id}">
                                                             <span class="account-title">${item.name}</span>
                                                         </option>`)
+                                    }
                                 })
                             }
                         }
@@ -116,13 +140,15 @@ $(function () {
             let submitFields = [
                 'title',
                 'code',
-                'customer'
+                'customer',
+                'sale_person',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
+            _form.dataForm['product_category'] = $('#select-box-product-category').val();
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
                 .then(
@@ -130,7 +156,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($($form).attr('data-url-redirect').format_url_with_uuid(data.id), 1000);
                         }
                     },
                     (errs) => {
@@ -140,7 +166,77 @@ $(function () {
                 )
         });
 
+        function loadProductCategory() {
+            let ele = boxProductCategory;
+            let url = ele.attr('data-url');
+            let method = ele.attr('data-method');
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('product_category_list') && Array.isArray(data.product_category_list)) {
+                            data.product_category_list.map(function (item) {
+                                boxProductCategory.append(`<option value="${item.id}">
+                                                            <span>${item.title}</span>
+                                                        </option>`)
+                            })
+                        }
+                    }
+                }
+            )
+        }
 
+        loadProductCategory();
 
+        function loadSalePerson() {
+            let ele = $('#select-box-sale-person');
+            $.fn.callAjax(ele.data('url'), ele.data('method')).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
+                        $('#data-sale-person').val(JSON.stringify(data.employee_list));
+                        data.employee_list.map(function (employee) {
+                            if (employee.id === employee_current_id) {
+                                ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
+                                $('#group_id_emp_login').val(employee.group.id)
+                            }
+                        })
+
+                    }
+                }
+            }, (errs) => {
+            },)
+        }
+
+        loadSalePerson();
+
+        let dict_customer = {}
+        let dict_sale_person = {}
+        boxCustomer.on('change', function () {
+            if (Object.keys(dict_customer).length === 0) {
+                dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
+                    obj[item.id] = item;
+                    return obj;
+                }, {});
+            }
+
+            if(Object.keys(dict_sale_person).length === 0){
+                dict_sale_person = JSON.parse($('#data-sale-person').val()).reduce((obj, item) => {
+                    obj[item.id] = item;
+                    return obj;
+                }, {});
+            }
+
+            let customer = dict_customer[$(this).val()];
+            let group_id = $('#group_id_emp_login').val();
+            let select_box_sale_person = $("#select-box-sale-person");
+            select_box_sale_person.html('');
+            customer.manager.map(function (item){
+                if (dict_sale_person[item.id].group.id === group_id){
+                    select_box_sale_person.append(`<option value="${item.id}" selected">${item.fullname}</option>`)
+                }
+            })
+            select_box_sale_person.val(employee_current_id).trigger('change');
+        })
     });
 });

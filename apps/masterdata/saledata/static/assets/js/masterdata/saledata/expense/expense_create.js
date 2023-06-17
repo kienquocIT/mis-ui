@@ -138,6 +138,8 @@ $(document).ready(function () {
             frm.dataForm['general_information']['currency_using'] = currency_primary.id;
         }
 
+        console.log(frm.dataForm);
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -149,15 +151,17 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                }
-            )
+                })
     })
 
     // load Price List
     function getTreePriceList(dataTree, parent_id, child) {
         for (let i = 0; i < dataTree.length; i++) {
             if (dataTree[i].item.id === parent_id) {
-                dataTree[i].child.push({'item': child, 'child': []})
+                dataTree[i].child.push({
+                    'item': child,
+                    'child': []
+                })
             } else {
                 if (dataTree[i].child.length === 0)
                     continue;
@@ -268,7 +272,10 @@ $(document).ready(function () {
         price_list.map(function (item) {
             if (item.price_list_type.value === 2) {
                 if (item.price_list_mapped === null) {
-                    dataTree.push({'item': item, 'child': []})
+                    dataTree.push({
+                        'item': item,
+                        'child': []
+                    })
                 } else {
                     dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
                 }

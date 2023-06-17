@@ -244,3 +244,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
+# Opportunity detail
+    OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
+
+    # Opportunity config
+    OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
+    OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
+    OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')

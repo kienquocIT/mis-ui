@@ -76,18 +76,22 @@
                             <div class="row">
                                 <span class="col-7">{% trans "More information" %}</span>
                             </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Opportunity Title" %}</span>
-                                <span class="col-7 text-primary" name="opp-name"></span>
+                            <div class="opp-info hidden">
+                                <div class="row">
+                                    <span class="col-5">{% trans "Opportunity Title" %}</span>
+                                    <span class="col-7 text-primary" name="opp-name"></span>
+                                </div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Opportunity Code" %}</span>
+                                    <span class="col-7 text-primary" name="opp-code"></span>
+                                </div>
+                                <div class="row ">
+                                    <span class="col-5">{% trans "Customer" %}</span>
+                                    <span class="col-7 text-primary" name="opp-customer"></span>
+                                </div>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Opportunity Code" %}</span>
-                                <span class="col-7 text-primary" name="opp-code"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Customer" %}</span>
-                                <span class="col-7 text-primary" name="opp-customer"></span>
+                            <div class="non-opp row hidden">
+                                <span class="text-primary">{% trans "Advance Payment is None Sale" %}</span>
                             </div>
                         </span>
                     </span>

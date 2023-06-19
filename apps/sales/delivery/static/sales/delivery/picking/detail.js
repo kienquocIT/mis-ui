@@ -141,9 +141,6 @@ $(async function () {
     // init datetime picker
     loadDatePicker()
 
-    // load default warehouse
-    getWarehouse(pickupInit)
-
     // call data when page loaded
     $.fn.callAjax(
         $('#idxUrlPickingDetail').text(),
@@ -189,7 +186,10 @@ $(async function () {
                         warehouse_data['id'],
                         warehouse_data['code'] + " - " + warehouse_data['title'],
                     )
-                )
+                ).attr('disabled', true)
+            }else{
+                // load default warehouse
+                getWarehouse(pickupInit)
             }
 
             // descriptions

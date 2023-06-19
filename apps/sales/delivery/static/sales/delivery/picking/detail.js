@@ -404,6 +404,11 @@ $(async function () {
                         $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                     }
                 },
+                (errs) => {
+                    if (errs.data.errors.hasOwnProperty('detail')) {
+                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    }
+                }
             )
             .catch((err) => {
                 console.log(err)

@@ -248,14 +248,16 @@ $(document).ready(function () {
     }
 
     function loadSaleCode(beneficiary) {
-        let sale_order_loaded = [];
+        let quotation_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
         ele.append(`<input class="form-control mb-2" type="text" id="search-sale-code-Input" placeholder="Search by sale code title">`)
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                sale_order_loaded.push(item.customer.id);
+                if (Object.keys(item.quotation).length !== 0) {
+                    quotation_loaded.push(item.quotation.id);
+                }
                 if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="text-danger code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
@@ -267,7 +269,7 @@ $(document).ready(function () {
         })
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                if (sale_order_loaded.includes(item.customer.id) === false) {
+                if (quotation_loaded.includes(item.id) === false) {
                     if (Object.keys(item.opportunity).length !== 0) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="text-primary code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
@@ -279,13 +281,9 @@ $(document).ready(function () {
             }
         })
         opportunity_list.map(function (item) {
-            if (oppcode_loaded.includes(item.id) === false) {
-                let sale_person_id_list = [];
-                for (let i = 0; i < item.sale_person.length; i++) {
-                    sale_person_id_list.push(item.sale_person[i].id)
-                }
-                if (sale_person_id_list.includes(beneficiary)) {
-                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + sale_person_id_list + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+            if (item.sale_person.id === beneficiary) {
+                if (oppcode_loaded.includes(item.id) === false) {
+                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 }
             }
         })
@@ -370,7 +368,9 @@ $(document).ready(function () {
         ele2.append(`<option></option>`);
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                sale_order_loaded.push(item.customer.id);
+                if (Object.keys(item.quotation).length !== 0) {
+                    quotation_loaded.push(item.quotation.id);
+                }
                 if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
@@ -382,7 +382,7 @@ $(document).ready(function () {
         })
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                if (sale_order_loaded.includes(item.customer.id) === false) {
+                if (quotation_loaded.includes(item.id) === false) {
                     if (Object.keys(item.opportunity).length !== 0) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
@@ -394,13 +394,9 @@ $(document).ready(function () {
             }
         })
         opportunity_list.map(function (item) {
-            if (oppcode_loaded.includes(item.id) === false) {
-                let sale_person_id_list = [];
-                for (let i = 0; i < item.sale_person.length; i++) {
-                    sale_person_id_list.push(item.sale_person[i].id)
-                }
-                if (sale_person_id_list.includes(beneficiary)) {
-                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-person-id="` + sale_person_id_list + `" value="` + item.id + `">(` + item.code + `) ` + item.title + `</option>`);
+            if (item.sale_person.id === beneficiary) {
+                if (oppcode_loaded.includes(item.id) === false) {
+                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title + `</option>`);
                 }
             }
         })

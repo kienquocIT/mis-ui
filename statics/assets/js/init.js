@@ -2673,17 +2673,18 @@ var DataTableAction = {
         return html
     },
     'item_view': function (data, link, format = null) {
+        const $elmTrans = $('#base-trans-factory');
         let keyArg = [
             {
-                name: 'Title',
+                name: $elmTrans.attr('data-title'),
                 value: 'title'
             }, {
-                name: 'Code',
+                name: $elmTrans.attr('data-code'),
                 value: 'code'
             },
         ];
         if (format) keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
-        let $elmTrans = $('#base-trans-factory');
+
 
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {

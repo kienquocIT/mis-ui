@@ -153,11 +153,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
-    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments')
 
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
-    PAYMENT_DETAIL = StringUrl('cashoutflow/payments/')
+    PAYMENT_DETAIL = StringUrl('cashoutflow/payments')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 

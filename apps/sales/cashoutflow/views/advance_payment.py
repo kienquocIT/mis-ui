@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
 
 
 class AdvancePaymentList(View):
@@ -70,16 +70,11 @@ class AdvancePaymentListAPI(APIView):
         data = request.data
         response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).post(data)
         if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            response.result['message'] = SaleMsg.ADVANCE_PAYMENT_CREATE
+            return response.result, status.HTTP_201_CREATED
+        elif response.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class AdvancePaymentDetail(View):
@@ -119,11 +114,9 @@ class AdvancePaymentDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).get()
         if resp.state:
-            return {
-                       'advance_payment_detail': resp.result,
-                   }, status.HTTP_200_OK
+            return {'advance_payment_detail': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
@@ -134,15 +127,10 @@ class AdvancePaymentDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL + pk).put(data)
+        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).put(data)
         if response.state:
+            response.result['message'] = SaleMsg.ADVANCE_PAYMENT_UPDATE
             return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        elif response.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST

@@ -368,6 +368,7 @@ $(async function () {
             let _form = new SetupFormSubmit($form);
             const csr = $("[name=csrfmiddlewaretoken]").val();
             let putData = {}
+            const $transElm = $('#trans-factory')
             putData['estimated_delivery_date'] = moment(
                 _form.dataForm['estimated_delivery_date'],
                 'DD/MM/YYYY hh:mm A'

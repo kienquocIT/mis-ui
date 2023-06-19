@@ -331,36 +331,38 @@ $(document).ready(function () {
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity')) {
-                    let ele_header = $('#header-title');
-                    ele_header.text(data.opportunity.title);
-                    ele_header.append(`<span class="text-primary"> (${data.opportunity.code})</span>`)
-                    $('#rangeInput').val(data.opportunity.win_rate);
-                    $('#input-rate').val(data.opportunity.win_rate);
-                    if (data.opportunity.is_input_rate) {
-                        $('#check-input-rate').prop('checked', true);
-                    } else
-                        $('#check-input-rate').prop('checked', false);
-                    loadCustomer(data.opportunity.customer, data.opportunity.end_customer, data.opportunity.opportunity_competitors_datas, data.opportunity.sale_person.id);
-                    loadProductCategory(data.opportunity.product_category);
-                    loadTax();
-                    loadUoM();
-                    $('#input-budget').attr('value', data.opportunity.budget_value);
-                    if (data.opportunity.open_date !== null)
-                        $('#input-open-date').val(data.opportunity.open_date.split(' ')[0]);
-                    if (data.opportunity.close_date !== null)
-                        $('#input-close-date').val(data.opportunity.close_date.split(' ')[0]);
-                    if (data.opportunity.decision_maker !== null) {
-                        let ele_decision_maker = $('#input-decision-maker');
-                        ele_decision_maker.val(data.opportunity.decision_maker.name);
-                        ele_decision_maker.attr('data-id', data.opportunity.decision_maker.id);
-                    }
-                    loadProduct(data.opportunity.product_category, data.opportunity.opportunity_product_datas);
-                    loadContact(data.opportunity.customer, data.opportunity.end_customer, data.opportunity.opportunity_contact_role_datas);
-                    loadDecisionFactor(data.opportunity.customer_decision_factor);
-                    $.fn.initMaskMoney2();
+                let opportunity_detail = data?.['opportunity'];
+                $.fn.compareStatusShowPageAction(opportunity_detail);
 
+                let ele_header = $('#header-title');
+                ele_header.text(opportunity_detail.title);
+                ele_header.append(`<span class="text-primary"> (${opportunity_detail.code})</span>`)
+                $('#rangeInput').val(opportunity_detail.win_rate);
+                $('#input-rate').val(opportunity_detail.win_rate);
+                if (opportunity_detail.is_input_rate) {
+                    $('#check-input-rate').prop('checked', true);
+                } else
+                    $('#check-input-rate').prop('checked', false);
+                loadCustomer(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_competitors_datas, opportunity_detail.sale_person.id);
+                loadProductCategory(opportunity_detail.product_category);
+                loadTax();
+                loadUoM();
+                $('#input-budget').attr('value', opportunity_detail.budget_value);
+                if (opportunity_detail.open_date !== null)
+                    $('#input-open-date').val(opportunity_detail.open_date.split(' ')[0]);
+                if (opportunity_detail.close_date !== null)
+                    $('#input-close-date').val(opportunity_detail.close_date.split(' ')[0]);
+                if (opportunity_detail.decision_maker !== null) {
+                    let ele_decision_maker = $('#input-decision-maker');
+                    ele_decision_maker.val(opportunity_detail.decision_maker.name);
+                    ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
                 }
+                loadProduct(opportunity_detail.product_category, opportunity_detail.opportunity_product_datas);
+                loadContact(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_contact_role_datas);
+                loadDecisionFactor(opportunity_detail.customer_decision_factor);
+                $.fn.initMaskMoney2();
+
+                
             }
         })
     }

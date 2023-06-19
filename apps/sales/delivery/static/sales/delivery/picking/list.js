@@ -42,9 +42,9 @@ $(document).ready(function () {
                     return ''
                 },
             }, {
-                render: (data, type, row) => {
-                    return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-primary">{2}</span></a>`.format_by_idx(
-                        frm.getUrlDetail(row.id), $.fn.getValueOrEmpty(row, 'title'), $.fn.getValueOrEmpty(row, 'code'),
+                render: (row, type, data) => {
+                    return `<a href="{0}" class="text-link"><span>{1}</span></a>`.format_by_idx(
+                        frm.getUrlDetail(data.id), $.fn.getValueOrEmpty(data, 'code'),
                     )
                 },
             }, {

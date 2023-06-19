@@ -3,13 +3,13 @@ $(document).ready(function () {
     let payment_cost_items_filtered = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
 
-    let pk = window.location.pathname.split('/').pop();
-    let url_detail = $('#form-update-advance').attr('data-url-detail').replace('0', pk)
+    let url_detail = $('#form-update-advance').attr('data-url-detail').replace('0', $.fn.getPkDetail())
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             // console.log(data)
             let advance_payment = data.advance_payment_detail;
+            $.fn.compareStatusShowPageAction(advance_payment);
             $('#advance-payment-code').text(advance_payment.code);
             $('#advance-payment-title').val(advance_payment.title);
             if (advance_payment.sale_code_type === 0) {
@@ -214,7 +214,7 @@ $(document).ready(function () {
                 $('#tab_plan_datatable').prop('hidden', true);
             }
 
-            $('#return_date_id').daterangepicker({
+            $('#return_date_id').dateRangePickerDefault({
                 singleDatePicker: true,
                 timePicker: false,
                 showDropdowns: true,

@@ -8,6 +8,7 @@ $(document).ready(function () {
     }, {});
 
     const currency_primary = JSON.parse($('#id-currency-list').text()).find(obj => obj.is_primary === true);
+    const frmDetail = $('#frmUpdateExpense');
 
     $(".select2").select2();
 
@@ -294,23 +295,24 @@ $(document).ready(function () {
     })
 
     function loadDetailExpense() {
-        let frmDetail = $('#frmUpdateExpense')
         let frm = new SetupFormSubmit(frmDetail);
         $.fn.callAjax(frm.dataUrl.replace('1', pk), 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
-                    $('#expenseCode').val(data.expense.code);
-                    $('#expenseTitle').val(data.expense.title);
-                    loadExpenseType(data.expense.general_information.expense_type.id);
-                    loadUoMGroup(data.expense.general_information.uom_group.id);
-                    loadUoM(data.expense.general_information.uom_group.id, data.expense.general_information.uom.id);
-                    if (data.expense.general_information.tax_code !== null)
-                        loadTaxCode(data.expense.general_information.tax_code.id);
+                    let expense_detail = data?.['expense'];
+                    $.fn.compareStatusShowPageAction(expense_detail);
+                    $('#expenseCode').val(expense_detail.code);
+                    $('#expenseTitle').val(expense_detail.title);
+                    loadExpenseType(expense_detail.general_information.expense_type.id);
+                    loadUoMGroup(expense_detail.general_information.uom_group.id);
+                    loadUoM(expense_detail.general_information.uom_group.id, expense_detail.general_information.uom.id);
+                    if (expense_detail.general_information.tax_code !== null)
+                        loadTaxCode(expense_detail.general_information.tax_code.id);
                     else
                         loadTaxCode(null);
 
-                    let price_list_expense = data.expense.general_information.price_list;
+                    let price_list_expense = expense_detail.general_information.price_list;
                     price_list_expense.map(function (item) {
                         if (price_dict[item.id].auto_update === false) {
                             document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).disabled = false;
@@ -332,8 +334,8 @@ $(document).ready(function () {
     loadDetailExpense()
 
     //submit form update expense
-    let frmCreate = $('#frmUpdateExpense')
-    frmCreate.submit(function (event) {
+
+    frmDetail.submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));

@@ -2395,7 +2395,7 @@ $.fn.extend({
     showLoadingWaitResponse: function () {
         $(this).addClass('hidden');
         $(
-            `<div class="spinner spinner-border" role="status"><span class="sr-only">Loading...</span></div>`
+            `<div class="spinner spinner-border text-secondary my-3" role="status"><span class="sr-only">Loading...</span></div>`
         ).insertBefore($(this));
     },
     hideLoadingWaitResponse: function (){

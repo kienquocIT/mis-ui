@@ -661,8 +661,19 @@
             <!-- Loading table ajax -->
             $(document).find('table').each((idx, tbl) => {
                 if (!$(tbl).attr('load-data-hide-spinner')) {
-                    $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
-                    $(tbl).on('draw.dt', () => $.fn.hideLoading());
+                    $(tbl).on('preXhr.dt', (e, settings, data) => {
+                        // show loading full page
+                        {#$.fn.showLoading();#}
+                        // show loading tbody table
+                        $(tbl).find('tbody').showLoadingWaitResponse();
+                    });
+                    $(tbl).on('draw.dt', () => {
+                        // hide loading full page
+                        {#$.fn.hideLoading();#}
+
+                        // hide loading tbody table
+                        $(tbl).find('tbody').hideLoadingWaitResponse();
+                    });
                 }
             });
             <!-- ## Loading table ajax -->

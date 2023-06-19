@@ -155,7 +155,7 @@ $(async function () {
             // load sale order
             pickupInit.setPicking = data.picking_detail
             data = data.picking_detail
-            $('#inputSaleOrder').val(data?.sale_order_data?.title);
+            $('#inputSaleOrder').val(data?.sale_order_data?.code);
             $('.title-code').text(data.code)
             // state
             let state = data?.state;
@@ -168,6 +168,7 @@ $(async function () {
                         break
                     case 1:
                         templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
+                        $('button[form="picking_form"]').attr('disabled', true)
                         break
                 }
                 $('#inputState').append(templateEle.format_by_idx(letStateChoices[state]));

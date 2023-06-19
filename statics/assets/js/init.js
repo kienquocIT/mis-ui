@@ -1084,7 +1084,7 @@ $(document).ready(function () {
     let bellCount = $('#my-notify-count');
     let notifyCountUrl = bellIdx.attr('data-url');
 
-    function checkNotifyCount(){
+    function checkNotifyCount() {
         $.fn.callAjax(
             notifyCountUrl,
             'GET',
@@ -1170,7 +1170,7 @@ $(document).ready(function () {
                         }
                     )
                 }
-                if (arr_no_seen.length > 0 || arr_seen.length > 0){
+                if (arr_no_seen.length > 0 || arr_seen.length > 0) {
                     dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
                 } else {
                     dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
@@ -1437,6 +1437,10 @@ $(document).ready(function () {
     // -- Edit in Zone at DocDetail Page
 
 
+    // test sticky header
+    // $('#idxPageContent')
+    // -- test sticky header
+
 });
 
 // function extend to jQuery
@@ -1553,6 +1557,9 @@ $.fn.extend({
 
         // return data
         let configFinal = {
+            // scrollY: '400px',
+            // scrollCollapse: true,
+            // fixedHeader: true,
             autoFill: false,
             search: $.fn.DataTable.ext.type.search['html-numeric'],
             searching: true,
@@ -1591,6 +1598,9 @@ $.fn.extend({
         return configFinal;
     },
     DataTableDefault: function (opts) {
+        // adding header sticky table
+        // $(this).addClass('table-bordered sticky-table-header').find('thead').addClass('thead-primary');
+
         // init DataTable
         let tbl = $(this).DataTable($.fn._parseDtlOpts(opts));
         tbl.on('init.dt', function () {
@@ -2380,6 +2390,19 @@ $.fn.extend({
         return $('#idWFRuntime').attr('data-runtime-id');
     },
     // -- runtime
+
+    // loading wait response data
+    showLoadingWaitResponse: function () {
+        $(this).addClass('hidden');
+        $(
+            `<div class="spinner spinner-border" role="status"><span class="sr-only">Loading...</span></div>`
+        ).insertBefore($(this));
+    },
+    hideLoadingWaitResponse: function (){
+        $(this).removeClass('hidden');
+        $(this).prev('.spinner').addClass('hidden');
+    },
+    // -- loading wait response data
 })
 
 // support for Form Submit

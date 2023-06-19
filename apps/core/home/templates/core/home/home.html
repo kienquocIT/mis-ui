@@ -1,16 +1,205 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block cssHeader %}
-{% endblock %}
+{% block cssHeader %}{% endblock %}
 
 {% block pageContent %}
-    <div style="text-align: center;">
-        <p>{% trans 'Page is being developed!' %}</p>
-        <p>{% trans 'Coming soon' %} <i class="far fa-laugh-wink"></i></p>
+    {#    <div style="text-align: center;">#}
+    {#        <p>{% trans 'Page is being developed!' %}</p>#}
+    {#        <p>{% trans 'Coming soon' %} <i class="far fa-laugh-wink"></i></p>#}
+    {#    </div>#}
+
+    <div class="row">
+        <div class="col-xxl-9 col-lg-8 col-md-7 mb-md-4 mb-3">
+            <div class="card card-border mb-0 h-100">
+                <div class="card-header card-header-action">
+                    <h6>Overview</h6>
+                    <div class="card-action-wrap">
+                        <div class="btn-group d-lg-flex d-none" role="group" aria-label="Basic outlined example">
+                            <button type="button" class="btn btn-outline-light active">All</button>
+                            <button type="button" class="btn btn-outline-light">Sessions</button>
+                            <button type="button" class="btn btn-outline-light">Source</button>
+                            <button type="button" class="btn btn-outline-light">Referrals</button>
+                        </div>
+                        <select class="form-select d-lg-none d-flex">
+                            <option selected="" value="1">All</option>
+                            <option value="2">Sessions</option>
+                            <option value="3">Source</option>
+                            <option value="4">Referrals</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-report-data">
+                        <div class="text-center">
+                            <div class="d-inline-block">
+													<span class="badge-status">
+														<span class="badge bg-primary badge-indicator badge-indicator-nobdr"></span>
+														<span class="badge-label">Direct</span>
+													</span>
+                            </div>
+                            <div class="d-inline-block ms-3">
+													<span class="badge-status">
+														<span class="badge bg-primary-light-2 badge-indicator badge-indicator-nobdr"></span>
+														<span class="badge-label">Organic search</span>
+													</span>
+                            </div>
+                            <div class="d-inline-block ms-3">
+													<span class="badge-status">
+														<span class="badge bg-primary-light-4 badge-indicator badge-indicator-nobdr"></span>
+														<span class="badge-label">Referral</span>
+													</span>
+                            </div>
+                        </div>
+                        <div id="column_chart_2"></div>
+                        <div class="separator-full mt-5"></div>
+                        <div class="flex-grow-1 ms-lg-3">
+                            <div class="row">
+                                <div class="col-xxl-3 col-sm-6 mb-xxl-0 mb-3">
+                                    <span class="d-block fw-medium fs-7">Users</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="d-block fs-4 fw-medium text-dark mb-0">8.8k</span>
+                                        <span class="badge badge-sm badge-soft-success ms-1">
+																<i class="bi bi-arrow-up"></i> 7.5%
+															</span>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-sm-6 mb-xxl-0 mb-3">
+                                    <span class="d-block fw-medium fs-7">Sessions</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="d-block fs-4 fw-medium text-dark mb-0">18.2k</span>
+                                        <span class="badge badge-sm badge-soft-success ms-1">
+																<i class="bi bi-arrow-up"></i> 7.2%
+															</span>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-sm-6 mb-xxl-0 mb-3">
+                                    <span class="d-block fw-medium fs-7">Bounce rate</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="d-block fs-4 fw-medium text-dark mb-0">46.2%</span>
+                                        <span class="badge badge-sm badge-soft-danger ms-1">
+																<i class="bi bi-arrow-down"></i> 0.2%
+															</span>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-sm-6">
+                                    <span class="d-block fw-medium fs-7">Session duration</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="d-block fs-4 fw-medium text-dark mb-0">4m 24s</span>
+                                        <span class="badge badge-sm badge-soft-success ms-1">
+																<i class="bi bi-arrow-up"></i> 10.8%
+															</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-lg-4 col-md-5 mb-md-4 mb-3">
+            <div class="card card-border mb-0  h-100">
+                <div class="card-header card-header-action">
+                    <h6>Returning</h6>
+                    <div class="card-action-wrap">
+                        <a
+                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret"
+                                href="#" data-bs-toggle="dropdown"
+                        ><span class="icon"><span class="feather-icon"><i
+                                data-feather="more-vertical"
+                        ></i></span></span></a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Separated link</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <div class="card-report-data">
+                        <div id="radial_chart_2"></div>
+                        <div class="d-inline-block mt-4">
+                            <div class="mb-4">
+													<span class="d-block badge-status lh-1">
+														<span class="badge bg-primary badge-indicator badge-indicator-nobdr d-inline-block"></span>
+														<span class="badge-label d-inline-block">Organic</span>
+													</span>
+                                <span class="d-block text-dark fs-5 fw-medium mb-0 mt-1">$243.50</span>
+                            </div>
+                            <div>
+													<span class="badge-status lh-1">
+														<span class="badge bg-primary-light-2 badge-indicator badge-indicator-nobdr"></span>
+														<span class="badge-label">Marketing</span>
+													</span>
+                                <span class="d-block text-dark fs-5 fw-medium mb-0 mt-1">$1469</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-md-4 mb-3">
+            <div class="card card-border mb-0 h-100">
+                <div class="card-header card-header-action">
+                    <h6>{% trans 'My Task List' %}
+                        <span class="badge badge-sm badge-light ms-1">240</span>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="card-report-data">
+                        <div class="contact-list-view">
+                            <table id="datable_my_task_list" class="table nowrap w-100 mb-5">
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Title' %}</th>
+                                    <th>{% trans 'Application' %}</th>
+                                    <th>{% trans 'Current node' %}</th>
+                                    <th>{% trans 'State' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="text-high-em">Phone Pay</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-soft-light">Sale Order</span>
+                                    </td>
+                                    <td><span class="badge badge-soft-success">Manager Approval</span></td>
+                                    <td>
+                                        <span class="badge-status">
+                                            <span class="badge-label">{% trans 'Wait' %}</span>
+                                            <span class="badge badge-primary badge-indicator"></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <button
+                                                    class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                    data-bs-toggle="tooltip"
+                                                    data-placement="bottom"
+                                                    data-bs-original-title="{% trans 'Go to detail page' %}"
+                                            >
+                                                <span class="icon">
+                                                    <i class="fa-solid fa-info"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
-{% block jsFooter %}
-    <!-- Customize JS -->
-{#    <script src="{% static 'core/home/js/homelist.js' %}"></script>#}
-{% endblock %}
+{% block jsFooter %}{% endblock %}

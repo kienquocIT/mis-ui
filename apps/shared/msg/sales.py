@@ -13,3 +13,7 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     QUOTATION_CONFIG_UPDATE = _('Quotation config update successfully')
     SALE_ORDER_CONFIG_UPDATE = _('Sale order config update successfully')
     OPPORTUNITY_CONFIG_UPDATE = _('Opportunity config update successfully')
+    ADVANCE_PAYMENT_CREATE = _('Advance payment create successfully')
+    ADVANCE_PAYMENT_UPDATE = _('Advance payment update successfully')
+    PAYMENT_CREATE = _('Payment create successfully')
+    PAYMENT_UPDATE = _('Payment update successfully')

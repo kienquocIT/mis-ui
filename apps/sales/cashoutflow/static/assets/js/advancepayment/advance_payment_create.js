@@ -667,7 +667,7 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#return_date_id').daterangepicker({
+    $('#return_date_id').dateRangePickerDefault({
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
@@ -680,7 +680,7 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY')) + 100
     });
 
-    $('#created_date_id').daterangepicker({
+    $('#created_date_id').dateRangePickerDefault({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,

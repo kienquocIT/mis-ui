@@ -675,7 +675,7 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#created_date_id').daterangepicker({
+    $('#created_date_id').dateRangePickerDefault({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,

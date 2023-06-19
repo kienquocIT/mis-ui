@@ -78,6 +78,20 @@
             </div>
         </div>
     </form>
+
+
+    <input
+            type="hidden"
+            id="init-indicator-list"
+            class="quotation-config"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-property-param"
+            class="quotation-config"
+            data-url="{% url "ApplicationPropertyListAPI" %}"
+            data-method="GET"
+    >
 {% endblock %}
 
 

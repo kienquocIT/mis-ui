@@ -212,13 +212,40 @@ class QuotationIndicatorListAPI(APIView):
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
-    # @mask_view(
-    #     auth_require=True,
-    #     is_api=True
-    # )
-    # def post(self, request, *args, **kwargs):
-    #     return create_quotation(
-    #         request=request,
-    #         url=ApiURL.QUOTATION_LIST,
-    #         msg=SaleMsg.QUOTATION_CREATE
-    #     )
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_quotation(
+            request=request,
+            url=ApiURL.QUOTATION_INDICATOR_LIST,
+            msg=SaleMsg.QUOTATION_INDICATOR_CREATE
+        )
+
+
+class QuotationIndicatorDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.push_id(pk)).get()
+        if res.state:
+            return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_quotation(
+            request=request,
+            url=ApiURL.QUOTATION_INDICATOR_DETAIL,
+            pk=pk,
+            msg=SaleMsg.QUOTATION_INDICATOR_UPDATE
+        )

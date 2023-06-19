@@ -14,6 +14,67 @@ function loadConfig(data) {
     }
 }
 
+function loadInitIndicatorList(indicator_id, eleShow) {
+    let jqueryId = '#' + indicator_id;
+    let ele = $(jqueryId);
+    if (ele.val()) {
+        if (eleShow.is(':empty')) {
+            let data_list = JSON.parse(ele.val());
+            let indicator_list = ``;
+            for (let i = 0; i < data_list.length; i++) {
+                let item = data_list[i];
+                item['is_indicator'] = true;
+                item['syntax'] = "indicator(" + item.title + ")";
+                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                indicator_list += `<div class="row property-item">
+                                        <button type="button" class="btn btn-flush-light">
+                                            <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
+                                            <input type="hidden" class="data-show" value="${dataStr}">
+                                        </button>
+                                    </div>`
+            }
+            eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                ${indicator_list}
+                            </div>`);
+        }
+    }
+}
+
+function loadInitPropertyList(property_id, eleShow) {
+    let jqueryId = '#' + property_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    let code_app = "quotation";
+    let data_filter = {'application__code': code_app};
+    if (eleShow.is(':empty')) {
+        $.fn.callAjax(url, method, data_filter).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
+                        let param_list = ``;
+                        data.application_property_list.map(function (item) {
+                            item['is_param'] = true;
+                            item['syntax'] = "prop(" + item.title + ")";
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            param_list += `<div class="row property-item">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                        })
+                        eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                    }
+                }
+            }
+        )
+    }
+}
+
 function setupSubmit() {
     let result = {}
     result['short_sale_config'] = {
@@ -34,6 +95,8 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_config_create');
+        let tableIndicator = $('#table_indicator_list');
+        let btnCreateIndicator = $('#btn-create-indicator');
 
         // call ajax get info quotation config detail
         $.fn.callAjax($form.data('url'), 'GET').then(
@@ -70,8 +133,7 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-
-            let csr = $("[name=csrfmiddlewaretoken]").val()
+            let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
                 .then(
                     (resp) => {
@@ -90,7 +152,7 @@ $(function () {
 
         // TAB INDICATOR
         function loadIndicatorDbl() {
-            let $table = $('#table_indicator_list')
+            let $table = tableIndicator;
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 ajax: {
@@ -99,6 +161,7 @@ $(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('quotation_indicator_list')) {
+                            $('#init-indicator-list').val(JSON.stringify(resp.data['quotation_indicator_list']));
                             return resp.data['quotation_indicator_list'] ? resp.data['quotation_indicator_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -138,8 +201,16 @@ $(function () {
                     {
                         targets: 2,
                         render: (data, type, row) => {
+                            let tabIndicatorID = "tab_indicator_" + String(row.order);
+                            let tabIndicatorHref = "#tab_indicator_" + String(row.order);
+                            let tabPropertyID = "tab_property_" + String(row.order);
+                            let tabPropertyHref = "#tab_property_" + String(row.order);
+                            let tabFunctionID = "tab_function_" + String(row.order);
+                            let tabFunctionHref = "#tab_function_" + String(row.order);
+                            let tabOperatorID = "tab_operator_" + String(row.order);
+                            let tabOperatorHref = "#tab_operator_" + String(row.order);
                             return `<i 
-                                        class="fa-regular fa-pen-to-square"
+                                        class="fa-regular fa-pen-to-square modal-edit-formula"
                                         data-bs-toggle="modal"
                                         data-bs-target="#indicatorEditModalCenter"
                                     ></i>
@@ -163,114 +234,65 @@ $(function () {
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label class="form-label">Editor</label>
-                                                            <textarea class="form-control" rows="2" cols="50" name="" id=""></textarea>
+                                                            <textarea class="form-control indicator-editor" rows="2" cols="50" name=""></textarea>
+                                                            <input type="hidden" class="data-editor-submit">
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <ul class="nav nav-light nav-tabs">
+                                                        <ul class="nav nav-light">
                                                             <li class="nav-item">
-                                                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_indicator">
+                                                                <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
                                                                 <span class="nav-link-text">Indicator</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
-                                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_param">
+                                                                <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
                                                                 <span class="nav-link-text">Param</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
-                                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_function">
+                                                                <a class="nav-link" data-bs-toggle="tab" href="${tabFunctionHref}">
                                                                 <span class="nav-link-text">Functions</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
-                                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_operator">
+                                                                <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
                                                                 <span class="nav-link-text">Operators</span>
                                                                 </a>
                                                             </li>
                                                         </ul>
                                                         
                                                         <div class="tab-content">
-                                                            <div class="row tab-pane fade show active" id="tab_indicator">
+                                                            <div class="row tab-pane fade show active" id="${tabIndicatorID}">
                                                                 <div class="row">
-                                                                    <div class="col-4">
-                                                                        <div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-200p position-relative overflow-y-scroll">
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-flush-light">
-                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Revenue</span></span></div>
-                                                                                    <input class="data-show" hidden>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-flush-light">
-                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Total Cost</span></span></div>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-flush-light">
-                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Gross Profit</span></span></div>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-flush-light">
-                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Pretax Amount</span></span></div>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-flush-light">
-                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Operating Expense</span></span></div>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-flush-light">
-                                                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span>Net Income</span></span></div>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-8">
-                                                                    <div data-simplebar class="nicescroll-bar h-200p">
-                                                                        <div>
-                                                                        <h5>Revenue</h5>
-                                                                        <p>indicator revenue</p>
-                                                                        <b>Syntax</b>
-                                                                            <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
-                                                                        <b>Example</b>
-                                                                            <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
-                                                                            <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                    <div class="col-4 indicator-list"></div>
+                                                                    <div class="col-8 indicator-description"></div>
                                                                 </div>
                                                             </div>
-                                                        <div class="row tab-pane fade" id="tab_param">
-                                                            <div class="col-6">
-                                                            </div>
-                                                            <div class="col-6"></div>
-                                                        </div>
-                                                        <div class="row tab-pane fade" id="tab_function">
-                                                            <div class="col-6">
-                                                            </div>
-                                                            <div class="col-6"></div>
-                                                        </div>
-                                                        <div class="row tab-pane fade" id="tab_operator">
-                                                            <div class="col-6">
-                                                                <div class="beauty_scroll h-250p">
-                                                                <p class="white-space-wrap">
-                                                                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
-                                                                </p>
+                                                            <div class="row tab-pane fade" id="${tabPropertyID}">
+                                                                <div class="row">
+                                                                    <div class="col-4 property-list"></div>
+                                                                    <div class="col-8 property-description"></div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-6"></div>
-                                                        </div>
+                                                            <div class="row tab-pane fade" id="${tabFunctionID}">
+                                                                <div class="col-6"></div>
+                                                                <div class="col-6"></div>
+                                                            </div>
+                                                            <div class="row tab-pane fade" id="${tabOperatorID}">
+                                                                <div class="col-6"></div>
+                                                                <div class="col-6"></div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button 
+                                                    type="button" 
+                                                    class="btn btn-primary btn-edit-indicator"
+                                                    data-id="${row.id}"
+                                                    >Save</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -296,7 +318,158 @@ $(function () {
         $('#tab-indicator').on('click', function () {
             $('#table_indicator_list').DataTable().destroy();
             loadIndicatorDbl();
-        })
+        });
+
+        tableIndicator.on('click', '.modal-edit-formula', function(e) {
+            let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
+            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow));
+            let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
+            loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+        });
+
+        tableIndicator.on('click', '.property-item', function(e) {
+            let propertySelected = $(this)[0].querySelector('.data-show');
+            if (propertySelected) {
+                let dataShow = JSON.parse(propertySelected.value);
+                // show editor
+                let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
+                editor.value = editor.value + dataShow.syntax;
+            }
+        });
+
+        tableIndicator.on('mouseenter', '.property-item', function(e) {
+            let propertySelected = $(this)[0].querySelector('.data-show');
+            if (propertySelected) {
+                let dataShow = JSON.parse(propertySelected.value);
+                // show description
+                let eleDescription = null;
+                if ($(this)[0].closest('.tab-pane').querySelector('.property-description')) {
+                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.property-description');
+                } else if ($(this)[0].closest('.tab-pane').querySelector('.indicator-description')) {
+                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.indicator-description');
+                }
+                if (eleDescription) {
+                    eleDescription.innerHTML = "";
+                    $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
+                                                <div class="row mb-2">
+                                                    <h5>${dataShow.title}</h5>
+                                                    <p>${dataShow.description}</p>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <b>Syntax</b>
+                                                    <p>${dataShow.syntax}</p>
+                                                </div>
+                                                <div class="row">
+                                                    <b>Example</b>
+                                                    <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
+                                                </div>
+                                            </div>`)
+                }
+            }
+        });
+
+        function setupFormula(data_submit, ele) {
+            // setup formula
+            let formula_data = [];
+            let row = ele[0].closest('tr');
+            let editor = row.querySelector('.indicator-editor');
+            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-]/g;
+            const formula_list_raw = editor.value.match(regex);
+            for (let item of formula_list_raw) {
+                if (item.includes("indicator")) {
+                    let indicatorValue = item.match(/\((.*?)\)/)[1];
+                    checkMatchParam(formula_data, indicatorValue, row, true, false);
+                } else if (item.includes("prop")) {
+                    let propertyValue = item.match(/\((.*?)\)/)[1];
+                    checkMatchParam(formula_data, propertyValue, row, false, true);
+                } else {
+                    formula_data.push(item)
+                }
+            }
+            data_submit['formula_data'] = formula_data;
+            data_submit['formula_data_show'] = editor.value;
+            return true
+        }
+
+        function checkMatchParam(formula_data, check_value, row, is_indicator = false, is_property = false) {
+            let classCheck = '';
+            if (is_indicator === true) {
+                classCheck = '.indicator-list';
+            } else if (is_property === true) {
+                classCheck = '.property-list';
+            }
+            let choiceList = row.querySelector(classCheck);
+            let allChoice = choiceList.querySelectorAll('.property-item');
+            for (let indi of allChoice) {
+                let dataShow = indi.querySelector('.data-show');
+                if (dataShow) {
+                    let dataShowValue = JSON.parse(dataShow.value);
+                    if (dataShowValue.title === check_value) {
+                        formula_data.push(dataShowValue);
+                        break
+                    }
+                }
+            }
+        }
+
+        // submit create indicator
+        btnCreateIndicator.on('click', function(e) {
+            let url = $(this).attr('data-url');
+            let url_redirect = $(this).attr('data-url-redirect');
+            let method = $(this).attr('data-method');
+            let data_submit = {};
+            data_submit['title'] = $('#indicator-create-title').val();
+            data_submit['description'] = $('#indicator-create-description').val();
+            let order = 1;
+            let tableEmpty = tableIndicator[0].querySelector('.dataTables_empty');
+            let tableLen = tableIndicator[0].tBodies[0].rows.length;
+            if (tableLen !== 0 && !tableEmpty) {
+                order = (tableLen + 1);
+            }
+            data_submit['order'] = order;
+            let application_code = 'quotation'
+            data_submit['application_code'] = application_code;
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, data_submit, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(url_redirect, 3000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+        });
+
+        // submit update indicator
+        tableIndicator.on('click', '.btn-edit-indicator', function (e) {
+            let url_update = btnCreateIndicator.attr('data-url-update');
+            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
+            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
+            let method = "put";
+            let data_submit = {};
+            setupFormula(data_submit, $(this));
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, data_submit, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(url_redirect, 3000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+        });
+
+
 
 
     });

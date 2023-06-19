@@ -123,6 +123,10 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
                 icon='<i class="fas fa-file-invoice"></i>',
+            ),
+			MenuCommon(
+                name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
+                icon='<i class="far fa-lightbulb"></i>',
             )
         ]
     )

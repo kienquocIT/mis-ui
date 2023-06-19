@@ -194,6 +194,8 @@ $(document).ready(function () {
         })
     })
 
+    // function load
+
     /* Date range picker with times*/
     $('#valid_time').daterangepicker({
         timePicker: true,

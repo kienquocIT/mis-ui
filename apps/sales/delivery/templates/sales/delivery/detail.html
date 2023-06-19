@@ -25,6 +25,9 @@
         .pointer {
             cursor: pointer;
         }
+        .text-gift{
+            color:#e95144;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -178,9 +181,9 @@
                         <th>{% trans 'Remain' %}</th>
                         <th>{% trans 'Ready' %}</th>
                         <th>
-                            {% if not data.config.is_picking and not data.config.is_parial_ship %}
+                            {% if not data.config.is_picking and not data.config.is_partial_ship %}
                                 <button type="button" class="btn btn-soft-success" id="config-one-all">{% trans 'Done' %}</button>
-                            {% elif data.config.is_picking and not data.config.is_parial_ship %}
+                            {% elif data.config.is_picking and not data.config.is_partial_ship %}
                                 <button type="button" class="btn btn-soft-success" disabled id="config-three-all">{% trans 'Done' %}</button>
                             {% else %}
                                 {% trans 'Done' %}
@@ -234,9 +237,13 @@
                         <th>{% trans 'Warehouse name' %}</th>
                         <th>
                             {% if data.config.is_picking %}
-                                {% trans 'Picking Area' %}
+                                <span class="mr-2">{% trans 'Picking Area' %}</span>
+                                <i class="fa-solid fa-circle-info text-blue font-3" data-toggle="popover"
+                                   title="{% trans 'Note' %}" data-bs-placement="bottom"
+                                   data-bs-content="{% trans 'Store' %}&nbsp;&nbsp;({% trans 'Picking zone' %})"
+                                ></i>
                             {% else %}
-                                {% trans 'Stock' %}
+                                <p>{% trans 'Stock' %}</p>
                             {% endif %}
                         </th>
                         <th>{% trans 'Get' %}</th>

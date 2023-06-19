@@ -56,6 +56,36 @@
             .select2-dropdown {
                 z-index: 3051;
             }
+
+            {# bell ringing #}
+            @keyframes bell-shake {
+                0% {
+                    transform: rotate(0deg);
+                }
+                20% {
+                    transform: rotate(0deg);
+                }
+                40% {
+                    transform: rotate(15deg);
+                }
+                50% {
+                    transform: rotate(-15deg);
+                }
+                60% {
+                    transform: rotate(15deg);
+                }
+                80% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(0deg);
+                }
+            }
+
+            .my-bell-ring {
+                animation: bell-shake 1s infinite;
+            }
+            {#  -- bell ringing #}
         </style>
         <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
@@ -279,6 +309,7 @@
             data-loading="{% trans 'Loading' %}"
             data-success="{% trans 'Successfully' %}"
             data-are-you-sure="{% trans 'Are you sure about this change?' %}"
+            data-no-data="{% trans 'No data available' %}"
     >
     <!-- /Message translate base -->
 

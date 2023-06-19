@@ -42,6 +42,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Logging
     LOG_ACTIVITIES = StringUrl('log/activities')
+    LOG_MY_NOTIFY_DATA_ALL = StringUrl('log/notifies/me')
+    LOG_MY_NOTIFY_COUNT = StringUrl('log/notifies/me/count')
+    LOG_MY_NOTIFY_SEEN_ALL = StringUrl('log/notifies/me/seen-all')
+    LOG_MY_NOTIFY_CLEAN_ALL = StringUrl('log/notifies/me/clean-all')
 
     # state of task background
     TASK_BG = StringUrl('task-bg/{pk}')

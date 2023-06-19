@@ -177,7 +177,7 @@ $(document).ready(function () {
                         }
                     })
                     if (load_default === 0) {
-                        $('#beneficiary-select-box').prop('disabled', true);
+                        // $('#beneficiary-select-box').prop('disabled', true);
                         loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
                         $('#sale-code-select-box').prop('disabled', false);
                         $('#sale-code-select-box2-show').css({
@@ -203,7 +203,6 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    ele.append(`<option></option>`);
                     if (sale_person_id) {
                         resp.data.employee_list.map(function (item) {
                             if (sale_person_id.includes(item.id)) {
@@ -316,9 +315,6 @@ $(document).ready(function () {
             $('#sale-code-select-box option:selected').attr('selected', false);
             $('#sale-code-select-box').find(`option[value="` + $(this).attr('data-value') + `"]`).attr('selected', true);
             if ($('#sale-code-select-box option:selected').attr('data-sale-person-id')) {
-                if ($('#radio-non-sale').is(':checked') === false) {
-                    loadBeneficiary($('#sale-code-select-box option:selected').attr('data-sale-person-id').split(','));
-                }
                 if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
                     $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
                         let data = $.fn.switcherResp(resp);
@@ -717,33 +713,22 @@ $(document).ready(function () {
     })
 
     $('#beneficiary-select-box').on('change', function () {
-        if ($(this).val() !== '') {
-            $('#beneficiary-detail-span').prop('hidden', false);
-            $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
-            $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
-            $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
-            let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
-            $('#btn-detail-beneficiary-tab').attr('href', url);
-            if ($('#radio-non-sale').is(':checked')) {
-                loadSaleCode($(this).val());
-                $('#sale-code-select-box').prop('disabled', false);
-                $('#sale-code-select-box2-show').css({
-                    'background': 'none',
-                });
-                $('#sale-code-select-box2-show').attr('disabled', false);
-                $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
-            }
-        }
-        else {
-            $('#beneficiary-detail-span').prop('hidden', true);
-            $('#btn-detail-beneficiary-tab').attr('href', '#');
-            if ($('#radio-non-sale').is(':checked')) {
-                $('#sale-code-select-box').prop('disabled', true);
-                $('#sale-code-select-box').val('');
-                $('#sale-code-select-box2-show').attr('style', '');
-                $('#sale-code-select-box2-show').attr('disabled', true);
-                $('#sale-code-select-box2-show').attr('placeholder', 'Select beneficiary');
-            }
+        loadSaleCode($(this).val());
+        $('#sale-code-select-box').find('option:selected').prop('selected', false);
+        $('#sale-code-select-box2-show').val('');
+        $('#beneficiary-detail-span').prop('hidden', false);
+        $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+        $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+        $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
+        let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
+        $('#btn-detail-beneficiary-tab').attr('href', url);
+        if ($('#radio-non-sale').is(':checked')) {
+            $('#sale-code-select-box').prop('disabled', false);
+            $('#sale-code-select-box2-show').css({
+                'background': 'none',
+            });
+            $('#sale-code-select-box2-show').attr('disabled', false);
+            $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
         }
     })
 
@@ -756,8 +741,7 @@ $(document).ready(function () {
         $('#tab_plan_datatable tbody').html(``);
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
-            $('#beneficiary-select-box').prop('disabled', true);
-            loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+            $('#beneficiary-select-box').prop('disabled', false);
             $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
@@ -770,7 +754,6 @@ $(document).ready(function () {
         }
         else if ($(this).val() === 'non-sale') {
             $('#beneficiary-select-box').prop('disabled', false);
-            loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), '');
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
             $('#sale-code-select-box2-show').attr('style', '');
@@ -782,7 +765,7 @@ $(document).ready(function () {
         else if ($(this).val() === 'MULTI') {
             sale_code_selected_list = [];
             $('#beneficiary-select-box').prop('disabled', true);
-            loadBeneficiary($('#data-init-payment-create-request-employee-id').val());
+            loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
             $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',

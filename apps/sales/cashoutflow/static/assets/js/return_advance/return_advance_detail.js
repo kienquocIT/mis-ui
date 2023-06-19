@@ -8,11 +8,10 @@ $(function () {
 
         function loadDetailOpp(data) {
             let dropdown = $('#dropdownOpp');
-            if (data === null){
+            if (data === null) {
                 dropdown.find('.opp-info').addClass('hidden');
                 dropdown.find('.non-opp').removeClass('hidden');
-            }
-            else{
+            } else {
                 dropdown.find('.opp-info').removeClass('hidden');
                 dropdown.find('.non-opp').addClass('hidden');
                 dropdown.find('[name="opp-name"]').text(data.title);
@@ -35,8 +34,7 @@ $(function () {
                             if (data.advance_payment_detail.quotation_mapped.length > 0) {
                                 // sale_code_ele.val(data.advance_payment_detail.quotation_mapped.title);
                                 loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
-                            }
-                            else{
+                            } else {
                                 loadDetailOpp(null);
                             }
                         }
@@ -115,25 +113,25 @@ $(function () {
             $.fn.callAjax(frm.getUrlDetail(id), "GET").then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('return_advance')) {
-                        $('[name="title"]').val(data.return_advance.title);
-                        choose_AP_ele.find(`option[value="${data.return_advance.advance_payment}"]`).prop('selected', true);
-                        loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, data.return_advance.advance_payment));
-                        loadDetailBeneficiary(data.return_advance.beneficiary);
-                        loadCreator(data.return_advance.creator);
-                        $('[name="date_created"]').val(data.return_advance.date_created.split(" ")[0]);
-                        $('[name="method"]').val(data.return_advance.method);
-                        $('.select2').select2();
-                        loadExpenseTable(data.return_advance.cost);
-                        let total_value = data.return_advance.cost.map(obj=>obj.return_price).reduce((a, b) => a + b, 0)
-                        $('#total-value').attr('data-init-money', total_value);
-                        if(data.return_advance.money_received){
-                            $('#money-received').prop('checked', true);
-                        }
-                        else{
-                            $('#money-received').prop('checked', false);
-                        }
+                    let return_advance_detail = data?.['return_advance'];
+                    $.fn.compareStatusShowPageAction(return_advance_detail);
+                    $('[name="title"]').val(return_advance_detail.title);
+                    choose_AP_ele.find(`option[value="${return_advance_detail.advance_payment}"]`).prop('selected', true);
+                    loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, return_advance_detail.advance_payment));
+                    loadDetailBeneficiary(return_advance_detail.beneficiary);
+                    loadCreator(return_advance_detail.creator);
+                    $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
+                    $('[name="method"]').val(return_advance_detail.method);
+                    $('.select2').select2();
+                    loadExpenseTable(return_advance_detail.cost);
+                    let total_value = return_advance_detail.cost.map(obj => obj.return_price).reduce((a, b) => a + b, 0)
+                    $('#total-value').attr('data-init-money', total_value);
+                    if (return_advance_detail.money_received) {
+                        $('#money-received').prop('checked', true);
+                    } else {
+                        $('#money-received').prop('checked', false);
                     }
+                    
                 }
             }, (errs) => {
             },)

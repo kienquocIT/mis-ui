@@ -208,31 +208,31 @@ $(document).ready(function () {
         $.fn.callAjax(frm.getUrlDetail(pk), 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('shipping')) {
-                    $('#inpTitle').val(data.shipping.title);
-                    $('#inpMargin').val(data.shipping.margin);
-                    if (data.shipping.is_active === true) {
-                        $('#inputActive').prop('checked', true)
-                    }
-                    loadCurrency(data.shipping.currency);
-                    switch (data.shipping.cost_method) {
-                        case 0:
-                            $('#inputAmount').attr('value', data.shipping.fixed_price);
-                            break;
-                        case 1:
-                            $(`input[name="cost_method"][value="` + data.shipping.cost_method + `"]`).prop('checked', true);
-                            $('#inputAmount').prop('disabled', true);
-                            $('.condition-content').removeClass('hidden');
-                            loadCities(city_list)
-                            loadCondition(data.shipping.formula_condition);
-                            updateOptions();
-                            break;
-                    }
-                    $.fn.initMaskMoney2();
-                    $('.condition-content').on('change', 'select, input', function () {
-                        isChangeCondition = true;
-                    });
+                let shipping_detail = data?.['shipping'];
+                $.fn.compareStatusShowPageAction(shipping_detail);
+                $('#inpTitle').val(shipping_detail.title);
+                $('#inpMargin').val(shipping_detail.margin);
+                if (shipping_detail.is_active === true) {
+                    $('#inputActive').prop('checked', true)
                 }
+                loadCurrency(shipping_detail.currency);
+                switch (shipping_detail.cost_method) {
+                    case 0:
+                        $('#inputAmount').attr('value', shipping_detail.fixed_price);
+                        break;
+                    case 1:
+                        $(`input[name="cost_method"][value="` + shipping_detail.cost_method + `"]`).prop('checked', true);
+                        $('#inputAmount').prop('disabled', true);
+                        $('.condition-content').removeClass('hidden');
+                        loadCities(city_list)
+                        loadCondition(shipping_detail.formula_condition);
+                        updateOptions();
+                        break;
+                }
+                $.fn.initMaskMoney2();
+                $('.condition-content').on('change', 'select, input', function () {
+                    isChangeCondition = true;
+                });
             }
         }, (errs) => {
         },)

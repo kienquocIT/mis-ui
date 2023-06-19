@@ -211,7 +211,7 @@
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group">
                     <div id="upload-area" class="form-control">
-                        Click here to upload image
+                        {% trans "Click here to upload image" %}
                     </div>
                     <input id="input-attachment" type="file" class="hidden" name="attachments">
                 </div>
@@ -234,13 +234,13 @@
                     <thead>
                     <tr>
                         <th>{% trans 'Warehouse Code' %}</th>
-                        <th>{% trans 'Warehouse name' %}</th>
+                        <th>{% trans 'Warehouse Name' %}</th>
                         <th>
                             {% if data.config.is_picking %}
                                 <span class="mr-2">{% trans 'Picking Area' %}</span>
                                 <i class="fa-solid fa-circle-info text-blue font-3" data-toggle="popover"
-                                   title="{% trans 'Note' %}" data-bs-placement="bottom"
-                                   data-bs-content="{% trans 'Store' %}&nbsp;&nbsp;({% trans 'Picking zone' %})"
+                                   title="{% trans 'Notes' %}" data-bs-placement="bottom"
+                                   data-bs-content="{% trans 'Stock' %}&nbsp;&nbsp;({% trans 'Picking zone' %})"
                                 ></i>
                             {% else %}
                                 <p>{% trans 'Stock' %}</p>
@@ -278,7 +278,7 @@
            data-state-warning="{% trans 'Wait' %}"
            data-state-info="{% trans 'Ready' %}"
            data-state-success="{% trans 'Done' %}"
-           data-outstock="{% trans 'Product out of stock.' %}"
+           data-outstock="{% trans 'Out of stock' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"

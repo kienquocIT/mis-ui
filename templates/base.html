@@ -286,31 +286,33 @@
     <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
     <span id="idPKDetail" data-pk="{{ pk }}"></span>
 
-    {% if data.input_mapping_properties %}
-        {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
-    {% endif %}
-    {% if data.form_id %}
-        <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
-    {% endif %}
-    <span id="idBtnIDLastSubmit" data-id></span>
-</div>
-<!-- /Message translate usually -->
-<!-- /Message translate base -->
-<input
-        type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
-        data-more-info="{% trans 'More Information' %}"
-        data-draft="{% trans 'Draft' %}"
-        data-created="{% trans 'Created' %}"
-        data-added="{% trans 'Added' %}"
-        data-finish="{% trans 'Finish' %}"
-        data-cancel="{% trans 'Cancel' %}"
-        data-confirm="{% trans 'Confirm' %}"
-        data-loading="{% trans 'Loading' %}"
-        data-success="{% trans 'Successfully' %}"
-        data-are-you-sure="{% trans 'Are you sure about this change?' %}"
-        data-no-data="{% trans 'No data available' %}"
->
-<!-- /Message translate base -->
+        {% if data.input_mapping_properties %}
+            {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+        {% endif %}
+        {% if data.form_id %}
+            <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
+        {% endif %}
+        <span id="idBtnIDLastSubmit" data-id></span>
+    </div>
+    <!-- /Message translate usually -->
+    <!-- /Message translate base -->
+    <input
+            type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
+            data-more-info="{% trans 'More information' %}"
+            data-draft="{% trans 'Draft' %}"
+            data-created="{% trans 'Created' %}"
+            data-added="{% trans 'Added' %}"
+            data-finish="{% trans 'Finish' %}"
+            data-cancel="{% trans 'Cancel' %}"
+            data-confirm="{% trans 'Confirm' %}"
+            data-loading="{% trans 'Loading' %}"
+            data-success="{% trans 'Successfully' %}"
+            data-are-you-sure="{% trans 'Are you sure about this change?' %}"
+            data-no-data="{% trans 'No data available' %}"
+            data-title="{% trans 'Title' %}"
+            data-code="{% trans 'Code' %}"
+    >
+    <!-- /Message translate base -->
 
 <!-- Render Company Config -->
 {{ config|json_script:"idConfigValue" }}

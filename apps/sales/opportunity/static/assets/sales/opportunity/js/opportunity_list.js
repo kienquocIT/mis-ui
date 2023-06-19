@@ -198,7 +198,9 @@ $(function () {
                         data.employee_list.map(function (employee) {
                             if (employee.id === employee_current_id) {
                                 ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
-                                $('#group_id_emp_login').val(employee.group.id)
+                                $('#group_id_emp_login').val(employee.group.id);
+                                console.log(employee)
+                                console.log(employee.group.id)
                             }
                         })
 
@@ -231,6 +233,10 @@ $(function () {
             let group_id = $('#group_id_emp_login').val();
             let select_box_sale_person = $("#select-box-sale-person");
             select_box_sale_person.html('');
+            if(group_id === ''){
+                let emp_current = dict_sale_person[employee_current_id];
+                select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
+            }
             customer.manager.map(function (item){
                 if (dict_sale_person[item.id].group.id === group_id){
                     select_box_sale_person.append(`<option value="${item.id}" selected">${item.fullname}</option>`)

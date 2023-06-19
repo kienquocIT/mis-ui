@@ -3,14 +3,14 @@ $(document).ready(function () {
     let payment_cost_items_filtered = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
 
-    let pk = window.location.pathname.split('/').pop();
-    let url_detail = $('#form-update-payment').attr('data-url-detail').replace('0', pk)
+    let url_detail = $('#form-update-payment').attr('data-url-detail').replace('0', $.fn.getPkDetail())
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            console.log(data)
+            // console.log(data)
             let opp_code_list = [];
             let payment_detail = data.payment_detail;
+            $.fn.compareStatusShowPageAction(payment_detail);
             $('#payment-code').text(payment_detail.code);
             $('#payment-title').val(payment_detail.title);
             $('#created_date_id').val(payment_detail.date_created.split(' ')[0]);

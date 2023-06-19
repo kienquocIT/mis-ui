@@ -44,14 +44,15 @@ $(document).ready(function () {
                 )
             }
         }
-        $('#tab_plan_datatable tbody').append(`<tr>
-            <td colspan="3"><span class="badge badge-secondary">` + filter_sale_order_code + `</span></td>
-            <td colspan="4"></td>
-        </tr>`)
+
         let url = $('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + filter_sale_order_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                $('#tab_plan_datatable tbody').append(`<tr>
+                    <td colspan="3"><span class="badge badge-primary">` + filter_sale_order_code + `</span></td>
+                    <td colspan="4"></td>
+                </tr>`)
                 for (let i = 0; i < data.sale_order_expense_list.length; i++) {
                     let expense_item = data.sale_order_expense_list[i];
                     let tax_item = '';
@@ -112,13 +113,13 @@ $(document).ready(function () {
                 )
             }
         }
-        $('#tab_plan_datatable tbody').append(`<tr>
-            <td colspan="3"><span class="badge badge-secondary">` + filter_quotation_code + `</span></td><td colspan="4"></td>
-        </tr>`)
         let url = $('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + filter_quotation_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                $('#tab_plan_datatable tbody').append(`<tr>
+                    <td colspan="3"><span class="badge badge-green">` + filter_quotation_code + `</span></td><td colspan="4"></td>
+                </tr>`)
                 for (let i = 0; i < data.quotation_expense_list.length; i++) {
                     let expense_item = data.quotation_expense_list[i];
                     let tax_item = '';
@@ -420,14 +421,14 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                 <span class="text-danger col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.opportunity.code + `" data-type="0" id="` + item.id + `"></span>
                             </div>`)
             }
             else {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                     <span class="text-danger col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                     <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title +`</span>
-                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="0" id="` + item.id + `"></span>
                                 </div>`)
             }
         })
@@ -438,13 +439,13 @@ $(document).ready(function () {
                     ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                     <span class="text-primary col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                     <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title + `</span>
-                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
+                                    <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.opportunity.code + `" data-type="1" id="` + item.id + `"></span>
                                 </div>`)
                 } else {
                     ele.append(`<div class="row mb-2" title="` + item.code + `: ` + item.title + `">
                                             <span class="text-primary col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                             <span class="col-7 title-span" data-sale-person-id="` + item.sale_person.id + `">` + item.title + `</span>
-                                            <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="1" id="` + item.id + `"></span>
+                                            <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="1" id="` + item.id + `"></span>
                                         </div>`)
                 }
             }
@@ -464,8 +465,7 @@ $(document).ready(function () {
         })
 
         $('#sale-code-select-box2 .multi-sale-code').on('click', function () {
-            $('#tab_plan_datatable').remove();
-            $('#tab_plan_datatable_div').html(plan_db);
+            $('#tab_plan_datatable tbody').html(``);
             sale_code_selected_list = [];
             sale_order_selected_list = [];
             quotation_selected_list = [];
@@ -473,34 +473,63 @@ $(document).ready(function () {
             $('.multi-sale-code').each(function() {
                 if ($(this).is(':checked')) {
                     let sale_code_id = $(this).attr('id');
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_id, 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                payment_cost_items_filtered = data.payment_cost_items_list;
-                            }
-                        }
-                    })
+                    let sale_code_data_type = $(this).attr('data-type');
 
-                    advance_payment_expense_items = [];
-                    for (let i = 0; i < ap_list.length; i++) {
-                        if (ap_list[i].sale_order_mapped === sale_code_id || ap_list[i].quotation_mapped === sale_code_id) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                    }
 
-                    sale_code_selected_list.push($(this).attr('id'));
-                    if ($(this).attr('data-type') === '0') {
-                        sale_order_selected_list.push($(this).attr('id'));
+                    sale_code_selected_list.push(sale_code_id);
+                    if (sale_code_data_type === '0') {
+                        sale_order_selected_list.push(sale_code_id);
                     }
-                    else if ($(this).attr('data-type') === '1') {
-                        quotation_selected_list.push($(this).attr('id'));
+                    if (sale_code_data_type === '1') {
+                        quotation_selected_list.push(sale_code_id);
                     }
-                    else if ($(this).attr('data-type') === '2') {
-                        opportunity_selected_list.push($(this).attr('id'));
+                    if (sale_code_data_type === '2') {
+                        opportunity_selected_list.push(sale_code_id);
+                        // $('#beneficiary-select-box').prop('disabled', false);
                     }
                 }
             });
+            for (let i = 0; i < sale_order_selected_list.length; i++) {
+                $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_order_selected_list[i], 'GET').then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                            payment_cost_items_filtered = data.payment_cost_items_list;
+                            loadSaleOrderPlan(sale_order_selected_list[i], $('#' + sale_order_selected_list[i]).attr('data-sale-code'));
+                        }
+                    }
+                })
+
+                advance_payment_expense_items = [];
+                for (let i = 0; i < ap_list.length; i++) {
+                    if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                }
+            }
+            for (let i = 0; i < quotation_selected_list.length; i++) {
+                $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + quotation_selected_list[i], 'GET').then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                            payment_cost_items_filtered = data.payment_cost_items_list;
+                            loadQuotationPlan(quotation_selected_list[i], $('#' + quotation_selected_list[i]).attr('data-sale-code'));
+                        }
+                    }
+                })
+
+                advance_payment_expense_items = [];
+                for (let i = 0; i < ap_list.length; i++) {
+                    if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                }
+            }
+            for (let i = 0; i < opportunity_selected_list.length; i++) {
+                // $('#beneficiary-select-box').prop('disabled', false);
+            }
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
         })
     }
 
@@ -675,7 +704,7 @@ $(document).ready(function () {
     $('#beneficiary-select-box').select2();
     loadSupplier();
 
-    $('#created_date_id').daterangepicker({
+    $('#created_date_id').dateRangePickerDefault({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,
@@ -763,6 +792,7 @@ $(document).ready(function () {
             $('#sale-code-select-box2').prop('hidden', false);
         }
         else if ($(this).val() === 'MULTI') {
+            loadSaleCodeMulti();
             sale_code_selected_list = [];
             $('#beneficiary-select-box').prop('disabled', true);
             loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
@@ -772,7 +802,6 @@ $(document).ready(function () {
             });
             $('#sale-code-select-box2-show').attr('disabled', false);
             $('#sale-code-select-box2-show').attr('placeholder', 'Select multi Sale Code available');
-            loadSaleCodeMulti();
             $('#sale-code-select-box2-show').val('');
         }
     })
@@ -952,7 +981,6 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
                 $('.expense-tables').html(``);
                 $('#wizard-t-0').click();
-                console.log(sale_code_id_list)
                 loadAPList(sale_code_id_list);
             });
 

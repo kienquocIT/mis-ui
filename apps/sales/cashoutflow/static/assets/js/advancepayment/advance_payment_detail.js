@@ -123,12 +123,7 @@ $(document).ready(function () {
                     <td><input class="form-control expense-type" disabled></td>
                     <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
                     <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
-                    <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
-                            <span class="input-affix-wrapper">
-                                <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" placeholder="Select a price or enter">
-                            </span>
-                        </div>
-                        <div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
+                    <td><input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" placeholder="Select a price or enter"></td>
                     <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
                     <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
                     <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" disabled></td>
@@ -1158,6 +1153,9 @@ $(document).ready(function () {
                             data_detail[i].others_payment = others_payment;
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
                         }
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
@@ -1270,6 +1268,10 @@ $(document).ready(function () {
                             data_detail[i].others_payment = others_payment;
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
                         }
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }

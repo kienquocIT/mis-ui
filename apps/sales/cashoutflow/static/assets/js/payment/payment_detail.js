@@ -144,20 +144,30 @@ $(document).ready(function () {
 
                     for (let i = 0; i < sale_code_length; i++) {
                         let expense_ap_detail_item = expense_ap_detail_list[i];
+                        let real_value = expense_ap_detail_item.real_value;
+                        if (real_value === undefined) {
+                            real_value = 0;
+                        }
+                        let converted_value = expense_ap_detail_item.converted_value;
+                        if (converted_value === undefined) {
+                            converted_value = 0;
+                        }
+                        let sale_code_detail_show = opp_code_list[i];
+                        if (sale_code_detail_show === undefined) {sale_code_detail_show = sale_code_id_list[i].code}
                         table_body.append(`<tr class="" hidden>
                             <td colspan="1"></td>
                             <td colspan="1">
-                                <span class="sale_code_expense_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_list[i] + `"><b>`+ opp_code_list[i] + `</b></span>
+                                <span class="sale_code_expense_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_list[i].id + `"><b>`+ sale_code_detail_show+ `</b></span>
                             </td>
                             <td colspan="2">
-                                <input value="` + expense_ap_detail_item.real_value + `" data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money">
+                                <input value="` + real_value + `" data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money">
                             </td>
                             <td colspan="1">
                                 <center><i class="fas fa-plus text-primary"></i></center>
                             </td>
                             <td colspan="2">
                                 <div class="input-group">
-                                    <input value="` + expense_ap_detail_item.converted_value + `" data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" disabled style="color: black">
+                                    <input value="` + converted_value + `" data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" disabled style="color: black">
                                     <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" disabled
                                     data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
                                     class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">

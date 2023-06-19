@@ -430,14 +430,7 @@ $(document).ready(function () {
                         // $('#beneficiary-select-box').prop('disabled', true);
                         loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-advance-create-request-employee-id').val());
                         $('#sale-code-select-box').prop('disabled', false);
-                        $('#sale-code-select-box2-show').css({
-                            'background': 'none',
-                        });
-                        $('#sale-code-select-box2-show').attr('disabled', false);
-                        $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
                         loadSaleCode($('#data-init-advance-create-request-employee-id').val());
-                        $('#sale-code-select-box2-show').val('');
-                        $('#sale-code-select-box2').prop('hidden', false);
                         load_default = 1;
                     }
                 }
@@ -947,6 +940,10 @@ $(document).ready(function () {
                             }, 0);
                             data_detail[i].others_payment = others_payment;
 
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
+
                         }
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
@@ -1062,6 +1059,9 @@ $(document).ready(function () {
                             }, 0);
                             data_detail[i].others_payment = others_payment;
 
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
                         }
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }

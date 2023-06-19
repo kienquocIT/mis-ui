@@ -1225,6 +1225,7 @@ $(document).ready(function () {
                             let opportunity_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
                                 return sale_code_id.includes(item.opportunity_mapped);
                             });
+                            console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
                             return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
                         }
                         else {
@@ -1237,7 +1238,12 @@ $(document).ready(function () {
             columns: [
                 {
                     render: (data, type, row, meta) => {
-                        return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                        if (row.available_value <= 0) {
+                            return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox" disabled>`
+                        }
+                        else {
+                            return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                        }
                     }
                 },
                 {
@@ -1436,7 +1442,9 @@ $(document).ready(function () {
         current_value_converted_from_ap.closest('div').find('.value-converted-from-ap-inp').attr('value', result_total_value);
 
         let value_input_ap = parseFloat(current_value_converted_from_ap.closest('tr').find('.value-inp').attr('value'));
-        if (isNaN(value_input_ap)) { value_input_ap = 0; }
+        if (isNaN(value_input_ap)) {
+            value_input_ap = 0;
+        }
         current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('data-init-money', result_total_value + value_input_ap);
         current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(get_ap_expense_items()));
 
@@ -1456,8 +1464,10 @@ $(document).ready(function () {
         let ap_expense_items = [];
         $('.expense-tables').find('.expense-selected').each(function (index, element) {
             if ($(this).is(':checked')) {
-                let value = $(this).closest('tr').find('.converted-value-inp').attr('value');
-                ap_expense_items.push({'id': $(this).attr('data-id'), 'value': value});
+                let value = parseFloat($(this).closest('tr').find('.converted-value-inp').attr('value'));
+                if ($(this).attr('data-id') && value > 0) {
+                    ap_expense_items.push({'id': $(this).attr('data-id'), 'value': value});
+                }
             }
         })
         return ap_expense_items;
@@ -1514,7 +1524,7 @@ $(document).ready(function () {
                         real_value = $(this).find('.value-inp').attr('value');
                     }
                     let converted_value = $(this).find('.value-converted-from-ap-inp').attr('value');
-                    if (converted_value_detail[0]['id'] === null) {
+                    if (converted_value_detail.length <= 0) {
                         converted_value = 0;
                     }
                     let sum_value = 0;
@@ -1546,9 +1556,9 @@ $(document).ready(function () {
                     })
                 }
 
-                if (price_after_tax_value < expense_detail_value || expense_detail_value === 0) {
+                if (price_after_tax_value !== expense_detail_value) {
                     can_submit = 0;
-                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value declared < Sum SaleCode values (or Empty)'}, 'failure');
+                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value must be equal to sum Sale Code value.'}, 'failure');
                 }
             }
             frm.dataForm['expense_valid_list'] = expense_valid_list;

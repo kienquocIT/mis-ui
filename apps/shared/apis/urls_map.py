@@ -40,6 +40,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
 
+    # Logging
+    LOG_ACTIVITIES = StringUrl('log/activities')
+    LOG_MY_NOTIFY_DATA_ALL = StringUrl('log/notifies/me')
+    LOG_MY_NOTIFY_COUNT = StringUrl('log/notifies/me/count')
+    LOG_MY_NOTIFY_SEEN_ALL = StringUrl('log/notifies/me/seen-all')
+    LOG_MY_NOTIFY_CLEAN_ALL = StringUrl('log/notifies/me/clean-all')
+
     # state of task background
     TASK_BG = StringUrl('task-bg/{pk}')
 
@@ -181,12 +188,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
+    OPPORTUNITY_EXPENSE_LIST = StringUrl('opportunity/opportunity-expense-list/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
+    QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicator-lists')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -209,6 +218,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
+    SALE_ORDER_CONFIG = StringUrl('saleorder/config')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')

@@ -9,7 +9,14 @@
             ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 
             <!-- Space -->
-            <div class="btn-group mr-3" id="menu-tenant">
+            <div
+                    class="btn-group mr-3"
+                    id="menu-tenant"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-original-title="Space Menus"
+                    data-space-selected="{{ base.space_current_detail.code }}"
+            >
                 <button
                         type="button" class="btn btn-outline-light dropdown-toggle"
                         data-bs-toggle="dropdown"
@@ -33,6 +40,7 @@
                                 <a
                                         class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
                                         data-space-code="{{ item_child.code }}"
+                                        data-space-name="{{ item_child.name }}"
                                         href="#"
                                 >
                                     {{ item_child.icon|safe }}
@@ -109,38 +117,70 @@
         <div class="nav-end-wrap">
             <ul class="navbar-nav flex-row">
                 <li class="nav-item">
-                    <a
-                            href="{% url 'DefaultDataView' %}"
-                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-                    >
-                         <span class="icon">
-                            <i class="fas {% class_name_animal %}"></i>
-                         </span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <div class="dropdown dropdown-notifications">
                         <a
                                 href="#"
                                 class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret mr-1"
                                 data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true"
                                 aria-expanded="false"
+                                id="notifyDropdownData"
+                                data-url="{% url 'MyNotifyAllAPI' %}"
+                                data-method="GET"
                         >
-                            <span class="icon">
+                            <span
+                                    id="idxNotifyBell"
+                                    data-url="{% url 'MyNotifyNoDoneCountAPI' %}"
+                                    class="icon"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="{% trans 'Notifications' %}"
+                            >
                                 <span class="position-relative">
-                                    <span class="feather-icon">
-                                        <i data-feather="bell"></i>
-                                    </span>
-                                    <span class="badge badge-success badge-indicator position-top-end-overflow-1">
-                                    </span>
+                                    <div class="avatar avatar-icon avatar-xxs avatar-rounded">
+                                        <span class="initial-wrap">
+                                            <i class="fa-regular fa-bell fa-sm my-bell" id="idxNotifyBellIcon"></i>
+                                        </span>
+                                        <span
+                                                class="badge badge-warning badge-sm position-top-end-overflow-1"
+                                                id="my-notify-count"
+                                        ></span>
+                                    </div>
                                 </span>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end p-0">
-                            <h6 class="dropdown-header px-4 fs-6">{% trans 'Notifications' %}</h6>
-                            <div data-simplebar class="dropdown-body p-2">
+                            <h6 class="dropdown-header px-4 fs-6">
+                                {% trans 'Notifications' %}
+                                <div>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifySeenAll"
+                                            data-url="{% url 'MyNotifySeenAllAPI' %}"
+                                            data-method="PUT"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Seen all' %}"
+                                    >
+                                        <span class="icon"><i class="fa-solid fa-check-double"></i></span>
+                                    </button>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifyClearAll"
+                                            data-url="{% url 'MyNotifyCleanAllAPI' %}"
+                                            data-method="DELETE"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Delete all viewed notifications' %}"
+                                    >
+                                        <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
+                                    </button>
+                                </div>
+                            </h6>
+                            <div data-simplebar class="dropdown-body p-2" id="idxNotifyShowData">
+                                <div class="spinner-grow hidden" role="status"><span class="sr-only">Loading...</span>
+                                </div>
                             </div>
-                            <div class="dropdown-footer"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
+                            <div class="dropdown-footer hidden"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
                             </div>
                         </div>
                     </div>
@@ -237,7 +277,9 @@
                                             {{ base.fullname }}
                                         </div>
                                         <div class="fs-7">
-                                            <a href="mailto:{{ base.email }}">{{ base.email }}</a>
+                                            <a
+                                                    id="email-request-owner" href="mailto:{{ base.email }}"
+                                            >{{ base.email }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -286,12 +328,6 @@
                                     <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
                                 {% endif %}
                             {% endif %}
-                            <a class="dropdown-item" href="#">
-                                <span class="dropdown-icon feather-icon">
-                                    <i data-feather="settings"></i>
-                                </span>
-                                <span>{% trans 'Settings' %}</span>
-                            </a>
                             <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>
@@ -300,24 +336,47 @@
                             </a>
 
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRaiseTicket">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="tag"></i>
                                 </span>
                                 <span>{% trans 'Raise a ticket' %}</span>
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'TermsAndConditionsView' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="book"></i>
                                 </span>
                                 <span>{% trans 'Terms & Conditions' %}</span>
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'HelpAndSupportView' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="help-circle"></i>
                                 </span>
                                 <span>{% trans 'Help & Support' %}</span>
                             </a>
+
+                            {% if is_debug %}
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Testing Product</h6>
+                                <a class="dropdown-item" href="{% url 'UtilitiesView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-toolbox"></i>
+                                    </span>
+                                    <span>Utility tools page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'DefaultDataView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-table"></i>
+                                    </span>
+                                    <span>System default data page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'ComponentCollections' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-puzzle-piece"></i>
+                                    </span>
+                                    <span>Components</span>
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </li>

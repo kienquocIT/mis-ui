@@ -1,12 +1,14 @@
 from django.urls import path
 from apps.sales.quotation.views import (
     QuotationCreate, QuotationList, QuotationListAPI, QuotationDetail, QuotationConfigDetail,
-    QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI, PaymentCostItemsListAPI
+    QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI, PaymentCostItemsListAPI,
+    QuotationIndicatorListAPI
 )
 
 urlpatterns = [
     path('config', QuotationConfigDetail.as_view(), name='QuotationConfigDetail'),
     path('config/api', QuotationConfigDetailAPI.as_view(), name='QuotationConfigDetailAPI'),
+    path('indicators/api', QuotationIndicatorListAPI.as_view(), name='QuotationIndicatorListAPI'),
 
     path('lists', QuotationList.as_view(), name='QuotationList'),
     path('api/lists', QuotationListAPI.as_view(), name='QuotationListAPI'),

@@ -41,6 +41,7 @@ INSTALLED_APPS = \
     ] + [
         'compressor',
         'apps.sharedapp',
+        'apps.log',
     ] + [  # Core Application
         'apps.core.account',
         'apps.core.auths',

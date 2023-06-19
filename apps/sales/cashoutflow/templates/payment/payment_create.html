@@ -52,6 +52,8 @@
     {{ data.data.quotation_list | json_script:"quotation_list" }}
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
+    {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
+    {{ data.data.opportunity_list | json_script:"opportunity_list" }}
     <form id="form-create-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
     >
@@ -99,7 +101,7 @@
                                     data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
                             </select>
                             <input placeholder="Select one" style="background-color: white" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
+                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 120%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group mb-4">
@@ -338,25 +340,23 @@
             <div class="tab-pane fade mb-25" id="tab_plan">
                 <div class="row" id="tab_plan_datatable_div">
                     <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
+                           data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
                            data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
                            data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 2%"></th>
-                            <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'Expense items' %}</th>
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>
-                            <th>{% trans 'Return' %}</th>
-                            <th>{% trans 'To Payment' %}</th>
-                            <th>{% trans 'Other Payment' %}</th>
+                            <th>{% trans 'Remain AP' %}</th>
+                            <th>{% trans 'Paid' %}</th>
                             <th>{% trans 'Available' %}</th>
                         </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
-                    <h6 class="text-danger">Not loaded yet</h6>
                 </div>
                 <div class="row">
                     <div class="col-12">

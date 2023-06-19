@@ -52,11 +52,10 @@ $(function () {
             $form.find('.disabled-but-edit').removeAttr('disabled');
         });
 
-        // Submit form quotation + sale order
-        $('#btn-create_quotation_config').on('click', function (e) {
+        // Submit form config quotation + sale order
+        $form.submit(function (e) {
             e.preventDefault()
-            let $form = document.getElementById('frm_quotation_config_create');
-            let _form = new SetupFormSubmit($('#frm_quotation_config_create'));
+            let _form = new SetupFormSubmit($(this));
             let dataSubmit = setupSubmit();
             if (dataSubmit) {
                 _form.dataForm['short_sale_config'] = dataSubmit.short_sale_config;
@@ -79,7 +78,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
@@ -87,6 +86,203 @@ $(function () {
                     }
                 )
         });
+
+
+        // TAB INDICATOR
+        function loadIndicatorDbl() {
+            let $table = $('#table_indicator_list')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('quotation_indicator_list')) {
+                            return resp.data['quotation_indicator_list'] ? resp.data['quotation_indicator_list'] : []
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columnDefs: [
+                    {
+                        "width": "10%",
+                        "targets": 0
+                    }, {
+                        "width": "35%",
+                        "targets": 1
+                    }, {
+                        "width": "10%",
+                        "targets": 2
+                    }, {
+                        "width": "35%",
+                        "targets": 3
+                    }, {
+                        "width": "10%",
+                        "targets": 4
+                    }
+                ],
+                columns: [
+                    {
+                        targets: 0,
+                        render: (data, type, row) => {
+                            return `<span>${row.order}</span>`
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row) => {
+                            return `<span>${row.title}</span>`
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row) => {
+                            return `<i 
+                                        class="fa-regular fa-pen-to-square"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#indicatorEditModalCenter"
+                                    ></i>
+                                    <div
+                                            class="modal fade" id="indicatorEditModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="indicatorEditModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Formula</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Editor</label>
+                                                            <textarea class="form-control" rows="2" cols="50" name="" id=""></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <ul class="nav nav-light nav-tabs">
+                                                            <li class="nav-item">
+                                                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_indicator">
+                                                                <span class="nav-link-text">Indicator</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_param">
+                                                                <span class="nav-link-text">Param</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_function">
+                                                                <span class="nav-link-text">Functions</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_operator">
+                                                                <span class="nav-link-text">Operators</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                        
+                                                        <div class="tab-content">
+                                                            <div class="row tab-pane fade show active" id="tab_indicator">
+                                                                <div class="col-3">
+                                                                    <div class="beauty_scroll h-250p">
+                                                                        <p class="white-space-wrap">
+                                                                            Revenue
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Total Cost
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Gross Profit
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Pretax Amount
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Tax Amount
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Operating Expense
+                                                                        </p>
+                                                                        <p class="white-space-wrap">
+                                                                            Net Income
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-9"></div>
+                                                            </div>
+                                                        <div class="row tab-pane fade" id="tab_param">
+                                                            <div class="col-6">
+                                                                <div class="beauty_scroll h-250p">
+                                                                <p class="white-space-wrap">
+                                                                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
+                                                                </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6"></div>
+                                                        </div>
+                                                        <div class="row tab-pane fade" id="tab_function">
+                                                            <div class="col-6">
+                                                                <div class="beauty_scroll h-250p">
+                                                                <p class="white-space-wrap">
+                                                                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
+                                                                </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6"></div>
+                                                        </div>
+                                                        <div class="row tab-pane fade" id="tab_operator">
+                                                            <div class="col-6">
+                                                                <div class="beauty_scroll h-250p">
+                                                                <p class="white-space-wrap">
+                                                                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passageContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage
+                                                                </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6"></div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row) => {
+                            return `<span>${row.description}</span>`
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: (data, type, row) => {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`
+                        }
+                    }
+                ],
+            });
+        }
+
+        $('#tab-indicator').on('click', function () {
+            $('#table_indicator_list').DataTable().destroy();
+            loadIndicatorDbl();
+        })
 
 
     });

@@ -7,6 +7,7 @@ $(function () {
         const choose_AP_ele = $('#chooseAdvancePayment');
 
         function loadDetailOpp(data) {
+            console.log(data)
             let dropdown = $('#dropdownOpp');
             dropdown.find('[name="opp-name"]').text(data.title);
             dropdown.find('[name="opp-code"]').text(data.code);
@@ -18,15 +19,16 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        console.log(data)
+                        // console.log(data)
                         let sale_code_ele = $('[name="sale_code"]');
-                        if (data.advance_payment_detail.sale_order_mapped !== null) {
-                            sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
-                            loadDetailOpp(data.advance_payment_detail.sale_order_mapped.opportunity);
-                        } else {
-                            if (data.advance_payment_detail.quotation_mapped !== null) {
-                                sale_code_ele.val(data.advance_payment_detail.quotation_mapped.title);
-                                loadDetailOpp(data.advance_payment_detail.quotation_mapped.opportunity);
+                        if (data.advance_payment_detail.sale_order_mapped.length > 0) {
+                            sale_code_ele.val(data.advance_payment_detail.sale_order_mapped[0].title);
+                            loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
+                        }
+                        else {
+                            if (data.advance_payment_detail.quotation_mapped.length > 0) {
+                                sale_code_ele.val(data.advance_payment_detail.quotation_mapped[0].title);
+                                loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
                             }
                             else{
                                 sale_code_ele.val("Advance Payment is None-Sale");

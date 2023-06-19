@@ -224,6 +224,7 @@
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data.status === 200) {
+                                localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
                                 $.fn.notifyB({description: data.detail}, 'success');
                                 let path_redirect = "/";
                                 const params = Object.fromEntries(new URLSearchParams(location.search));
@@ -251,11 +252,16 @@
                 if (tenant_element.attr('data-loaded') !== true) {
                     $.fn.callAjax(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
                         (resp) => {
+                            let beforeTenantCode = localStorage.getItem('tenant_code');
                             let code_list = [];
                             tenant_element.attr('data-loaded', true);
                             tenant_element.children().remove();
                             resp.result.map((element) => {
-                                tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                if (beforeTenantCode && element.code === beforeTenantCode){
+                                    tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                } else {
+                                    tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                }
                                 code_list.push(element.code);
                             });
 
@@ -266,7 +272,7 @@
                                     tenant_element.find('option[value=' + code_selected + ']').attr('selected', 'selected');
                                 }
                             }
-                            tenant_element.children().last().attr('selected', 'selected');
+                            {#tenant_element.children().last().attr('selected', 'selected');#}
                         },
                         (err) => {
                             tenant_element.attr('data-loaded', false);

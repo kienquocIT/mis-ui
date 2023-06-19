@@ -1,0 +1,32 @@
+{% load static i18n %}
+
+<!-- Config Indicator -->
+<br>
+<button type="button" class="btn btn-link btn-animated" id="btn-add-indicator">
+    <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Indicator' %}</span></span>
+</button>
+<br>
+<input
+        type="hidden" id="quotation-link"
+        data-link-update="{% url 'QuotationDetail' 1 %}"
+        data-link-list="{% url 'QuotationList' %}"
+>
+<table
+        id="table_indicator_list"
+        class="table nowrap w-100 mb-5"
+        data-url="{% url 'QuotationIndicatorListAPI' %}"
+        data-method="get"
+>
+    <thead>
+    <tr>
+        <th>{% trans 'STT' %}</th>
+        <th>{% trans 'Indicator' %}</th>
+        <th></th>
+        <th>{% trans 'Description' %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<!-- Config Indicator -->

@@ -27,11 +27,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HOME_PAGE = BreadcrumbChildren(
         _('Home Page'), 'HomeView'
     )
-    HOME_VIEW_SPACE = BreadcrumbChildren(
-        _('Employee List'),
-        'HomeViewSpace',
-        kw_pattern={'space_code': 'e-office'}
-    )
 
     # hr
     HR_PAGE = BreadcrumbChildren(_('HR'))
@@ -70,6 +65,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact list'), 'ContactList')
     CONTACT_CREATE_PAGE = BreadcrumbChildren(_('Contact create'), 'ContactCreate')
     CONTACT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CONTACT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
     ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
@@ -112,6 +108,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
 
     # Quotation
+    QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
@@ -122,6 +119,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Sale order
+    SALE_ORDER_CONFIG_PAGE = BreadcrumbChildren(_('Sale order'), 'SaleOrderConfigDetail')
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
     SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
@@ -266,6 +264,7 @@ class BreadcrumbView:
     ]
     CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
     CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
+    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_UPDATE_PAGE]
 
     ACCOUNT_LIST_PAGE = [
         BreadcrumbItem.ACCOUNT_LIST_PAGE
@@ -376,4 +375,10 @@ class BreadcrumbView:
     # Transition Data Config
     DELIVERY_CONFIG = [
         BreadcrumbItem.DELIVERY_CONFIG_PAGE
+    ]
+    QUOTATION_CONFIG = [
+        BreadcrumbItem.QUOTATION_CONFIG_PAGE
+    ]
+    SALE_ORDER_CONFIG = [
+        BreadcrumbItem.SALE_ORDER_CONFIG_PAGE
     ]

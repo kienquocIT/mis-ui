@@ -8,6 +8,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 let contactDetail = data?.['contact_detail']
                 if (data) {
+                    // console.log(data)
                     $("#owner_id").val(contactDetail.owner.fullname);
                     $('#full_name_id').val(contactDetail.fullname.fullname);
                     $('#bio_id').val(contactDetail.biography);
@@ -23,14 +24,18 @@ $(document).ready(function () {
                     $('#home_address_id').val(contactDetail.address_information.home_address);
                     if (Object.keys(contactDetail.additional_information).length > 0) {
                         $('#tag_id').val(contactDetail.additional_information.tags);
-                        $('#facebook_id').val(contactDetail.additional_information.facebook);
-                        $('#gmail_id').val(contactDetail.additional_information.gmail);
-                        $('#linkedln_id').val(contactDetail.additional_information.linkedln);
+                        $('#facebook_id').text(contactDetail.additional_information.facebook);
+                        $('#gmail_id').text(contactDetail.additional_information.gmail);
+                        $('#linkedln_id').text(contactDetail.additional_information.linkedln);
+                        $('#facebook_id').attr('href', contactDetail.additional_information.facebook);
+                        $('#gmail_id').attr('href', contactDetail.additional_information.gmail);
+                        $('#linkedln_id').attr('href', contactDetail.additional_information.linkedln);
                         $('#twitter_id').val(contactDetail.additional_information.twitter);
                         let list_interest = contactDetail.additional_information.interests.map(obj => obj.title)
                         list_interest.forEach(function (item) {
-                            $('#input_tags').append(`<option>` + item + `</option>`);
+                            $('#input_tags').append(`<option selected>` + item + `</option>`);
                         })
+                        $('#input_tags').select2()
                     }
                     $.fn.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
                 }

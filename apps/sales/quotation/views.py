@@ -145,8 +145,8 @@ class QuotationConfigDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/quotation/config/quotation_config.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_quotation_config',
+        breadcrumb='QUOTATION_CONFIG',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -194,3 +194,31 @@ class PaymentCostItemsListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+# QUOTATION INDICATOR
+class QuotationIndicatorListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = {'application_code': 'quotation'}
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_LIST).get(data)
+        if resp.state:
+            return {'quotation_indicator_list': resp.result}, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+    # @mask_view(
+    #     auth_require=True,
+    #     is_api=True
+    # )
+    # def post(self, request, *args, **kwargs):
+    #     return create_quotation(
+    #         request=request,
+    #         url=ApiURL.QUOTATION_LIST,
+    #         msg=SaleMsg.QUOTATION_CREATE
+    #     )

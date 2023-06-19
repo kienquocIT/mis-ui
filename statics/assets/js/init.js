@@ -1075,6 +1075,154 @@ function buildSelect2() {
 }
 
 $(document).ready(function () {
+    // push count notify to bell-alert
+    let bellIdx = $('#idxNotifyBell');
+    let bellIdxIcon = $('#idxNotifyBellIcon');
+    let bellCount = $('#my-notify-count');
+    let notifyCountUrl = bellIdx.attr('data-url');
+
+    function checkNotifyCount(){
+        $.fn.callAjax(
+            notifyCountUrl,
+            'GET',
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && data.hasOwnProperty('count') && data['count'] > 0) {
+                    bellCount.text(data['count']);
+                    bellIdxIcon.addClass('my-bell-ring');
+                }
+            }
+        )
+    }
+
+    if (notifyCountUrl) checkNotifyCount();
+    $('#notifyDropdownData').on("show.bs.dropdown", function () {
+        let dataArea = $('#idxNotifyShowData').find('.simplebar-content');
+        dataArea.find(':not(.spinner-grow)').remove();
+        dataArea.find('.spinner-grow').removeClass('hidden');
+
+        let dataUrl = $(this).attr('data-url');
+        let dataMethod = $(this).attr('data-method');
+
+        $.fn.callAjax(
+            dataUrl,
+            dataMethod
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                let baseItemNotify = `
+                    <a href="javascript:void(0);" class="dropdown-item mb-1 border border-light {classBgLight}">
+                        <div class="media">
+                            <div class="media-head">
+                                <div class="avatar avatar-rounded avatar-sm">
+                                    <span class="initial-wrap">{avatarSender}</span>
+                                </div>
+                            </div>
+                            <div class="media-body">
+                                <div>
+                                    <div class="notifications-text">
+                                        <span class="text-primary title">{title}</span>
+                                    </div>
+                                    <div class="notifications-text mb-3">
+                                        <small class="text-muted">{msg}</small>
+                                    </div>
+                                    <div class="notifications-info">
+                                         <span class="badge badge-soft-success">{label}</span>
+                                         <div class="notifications-time">{date}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+
+                let arr_no_seen = [];
+                let arr_seen = [];
+                if (data && data.hasOwnProperty('notify_data')) {
+                    data['notify_data'].map(
+                        (item) => {
+                            let senderData = item?.['employee_sender_data']?.['full_name'];
+                            let tmp = baseItemNotify.replace(
+                                "{avatarSender}",
+                                senderData ? $.fn.shortName(senderData) : `<i class="fa-solid fa-gear"></i>`
+                            ).replace(
+                                "{title}", item?.['title']
+                            ).replace(
+                                "{msg}", item?.['msg']
+                            ).replace(
+                                "{label}", item?.['doc_app']
+                            ).replace(
+                                "{date}", item?.['date_created']
+                            );
+                            if (item?.['is_done'] === true) {
+                                arr_seen.push(tmp.replace(
+                                    "{classBgLight}", ""
+                                ));
+                            } else {
+                                arr_no_seen.push(tmp.replace(
+                                    "{classBgLight}", "bg-light"
+                                ));
+                            }
+                        }
+                    )
+                }
+                if (arr_no_seen.length > 0 || arr_seen.length > 0){
+                    dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
+                } else {
+                    dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
+                }
+                dataArea.find('.spinner-grow').addClass('hidden');
+            },
+            (errs) => {
+                dataArea.find('.spinner-grow').addClass('hidden');
+            }
+        )
+    });
+    $('#btnNotifySeenAll').click(function (event) {
+        event.preventDefault();
+        let dataUrl = $(this).attr('data-url');
+        let dataMethod = $(this).attr('data-method');
+        if (dataUrl && dataMethod) {
+            $.fn.callAjax(
+                dataUrl,
+                dataMethod,
+                {},
+                true,
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        bellIdxIcon.removeClass('my-bell-ring');
+                        bellCount.text("");
+                    }
+
+                },
+            )
+        }
+    });
+    $('#btnNotifyClearAll').click(function (event) {
+        event.preventDefault();
+        let dataUrl = $(this).attr('data-url');
+        let dataMethod = $(this).attr('data-method');
+        if (dataUrl && dataMethod) {
+            $.fn.callAjax(
+                dataUrl,
+                dataMethod,
+                {},
+                true,
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 204) {
+                        checkNotifyCount();
+                    }
+                },
+            )
+        }
+    });
+    // -- push count notify to bell-alert
+
     // Listen event select and select2-init-v1 for set previous selected data
     $(document).on('focus', 'select', function () {
         $(this).data('previousValue', $(this).val());
@@ -1104,6 +1252,11 @@ $(document).ready(function () {
         }
     });
     // -- Listen event select and select2-init-v1 for set previous selected data
+
+    // button event submit form (last click)
+    $(document).on('click', "[type='submit']", function (event) {
+        $.fn.setBtnIDLastSubmit($(this).attr('id'));
+    });
 
     // clean notify child
     new NotifyPopup().cleanChildNotifyBlock();
@@ -1172,6 +1325,30 @@ $(document).ready(function () {
         return ulStages.join("");
     }
 
+    function renderLogActivities(tabActivityLog, log_data) {
+        tabActivityLog.empty();
+        log_data.map(
+            (item) => {
+                let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
+                let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
+                let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
+                let dataChangeHTML = `<pre class="log-act-data-change hidden">${JSON.stringify(item?.['data_change'], null, 2)}</pre>`;
+                let baseHTML = ``;
+                if (item?.['automated_logging'] === true) {
+                    baseHTML = `<div class="avatar avatar-icon avatar-xxs avatar-soft-dark avatar-rounded mr-1"><span class="initial-wrap"><i class="fa-solid fa-gear"></i></span></div>`;
+                } else {
+                    baseHTML = `<span class="badge badge-primary mr-1">${item?.['employee_data']?.['full_name']}</span>`;
+                }
+                tabActivityLog.append(`<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`);
+            }
+        );
+    }
+
+    $(document).on('click', '.btn-log-act-more', function (event) {
+        event.preventDefault();
+        $(this).closest('p').next('.log-act-data-change').toggleClass('hidden');
+    })
+
     $('.btn-action-wf').click(function (event) {
         event.preventDefault();
 
@@ -1204,6 +1381,8 @@ $(document).ready(function () {
 
     $('#btnLogShow').click(function (event) {
         event.preventDefault();
+
+        // log runtime
         let groupLogEle = $('#drawer_log_data');
         let baseUrl = groupLogEle.attr('data-url');
         if (baseUrl && !groupLogEle.attr('data-log-loaded')) {
@@ -1222,8 +1401,39 @@ $(document).ready(function () {
                 })
             }
         }
+
+        // log activities
+        let tabActivityLog = $('#tab_block_activities');
+        let activityUrl = tabActivityLog.attr('data-url');
+        $.fn.callAjax(
+            activityUrl,
+            'GET',
+            {},
+            true,
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                    renderLogActivities(tabActivityLog, data['log_data']);
+                }
+            },
+            (errs) => {
+
+            }
+        )
     });
     // -- Action support Workflow in Doc Detail
+
+    // Edit in Zone at DocDetail Page
+    $('#btn-active-edit-zone-wf').click(function (event) {
+        event.preventDefault();
+        $(this).addClass('hidden');
+        $.fn.activeZoneInDoc();
+    })
+
+    // -- Edit in Zone at DocDetail Page
+
+
 });
 
 // function extend to jQuery
@@ -1245,10 +1455,12 @@ $.fn.extend({
     arrayIncludesAll: function (a, b) {
         return b.every(value => a.includes(value));
     },
-    shortName: function (name) {
-        return name.split(" ").map((item) => {
+    shortName: function (name, length = 2) {
+        let rs = name.split(" ").map((item) => {
             return item ? item.charAt(0) : ""
         }).join("");
+        if (rs.length > length) return rs.slice(0, length);
+        return rs;
     },
     isBoolean(value) {
         return typeof value === 'boolean';
@@ -1470,6 +1682,21 @@ $.fn.extend({
         }
         return false;
     },
+    getPkDetail: function () {
+        return $('#idPKDetail').attr('data-pk');
+    },
+    getElePageContent: function () {
+        return $('#idxPageContent');
+    },
+    getElePageAction: function () {
+        return $("#idxPageAction");
+    },
+    setBtnIDLastSubmit: function (idx) {
+        $('#idBtnIDLastSubmit').attr('data-id', idx);
+    },
+    getBtnIDLastSubmit: function () {
+        return $('#idBtnIDLastSubmit').attr('data-id');
+    },
 
     // default components
     dateRangePickerDefault: function (opts) {
@@ -1502,6 +1729,12 @@ $.fn.extend({
                 des_tmp = option.description;
             } else if (Array.isArray(option.description)) {
                 des_tmp = option.description.join(", ");
+            } else if (typeof option.description === 'object') {
+                let des_tmp_arr = [];
+                for (const [_key, value] of Object.entries(option.description)) {
+                    des_tmp_arr.push(value);
+                }
+                des_tmp = des_tmp_arr.join(", ");
             } else {
                 des_tmp = option.description.toString();
             }
@@ -1720,7 +1953,7 @@ $.fn.extend({
                     return jQuery.fn.redirectLogin(1000);
                 // return {}
                 case 403:
-                    jQuery.fn.notifyB({'description': resp.data.detail}, 'failure');
+                    jQuery.fn.notifyB({'description': resp.data.errors}, 'failure');
                     return {};
                 case 500:
                     return {};
@@ -1765,15 +1998,44 @@ $.fn.extend({
             }
         }, timeout);
     },
-    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}) {
+    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
         return new Promise(function (resolve, reject) {
+            // handle body data before send
+            // if BtnIdLastSubmit = 'idxSaveInZoneWF' => is update data in zones
+            // check WF ID, task ID, url exist PK
+            // False: return data input
+            // True: convert body data with Zone Accept
+            let pk = $.fn.getPkDetail();
+            if (
+                $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' &&
+                $.fn.getWFRuntimeID() && $.fn.getTaskWF() &&
+                pk && url.includes(pk) && (
+                    method === 'PUT' || method === 'put'
+                )
+            ) {
+                let taskID = $.fn.getTaskWF();
+                let keyOk = $.fn.getZoneKeyData();
+                let newData = {};
+                for (let key in data) {
+                    if (keyOk.includes(key)) {
+                        newData[key] = data[key];
+                    }
+                }
+                data = newData;
+                data['task_id'] = taskID;
+            }
+
+            // Setup then Call Ajax
             let ctx = {
                 url: url,
                 type: method,
                 dataType: 'json',
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                headers: {"X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers},
+                contentType: content_type,
+                data: content_type === "application/json" ? JSON.stringify(data) : data,
+                headers: {
+                    "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
+                    ...headers
+                },
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
                     if (data) resolve(rest); else resolve({'status': jqXHR.status});
@@ -1818,7 +2080,254 @@ $.fn.extend({
         return rs;
     },
 
+    //
     // workflow
+    //
+    // zone
+    compareStatusShowPageAction: function (resultDetail) {
+        switch (resultDetail?.['system_status']) {
+            case 1:
+                break
+            case 2:
+                break
+            case 3:
+                $.fn.getElePageAction().find('[type="submit"]').each(function () {
+                    $(this).addClass("hidden")
+                });
+                break
+            default:
+                break
+        }
+        $('#idxRealAction').removeClass('hidden');
+    },
+    getInputMappingProperties: function () {
+        let input_mapping_properties = $('#input_mapping_properties').text();
+        if (input_mapping_properties) {
+            return JSON.parse(input_mapping_properties);
+        }
+        return {}
+    },
+    setZoneData: function (zonesData) {
+        let body_fields = [];
+        if (zonesData && Array.isArray(zonesData)) {
+            zonesData.map(
+                (item) => {
+                    body_fields.push(item.code);
+                }
+            );
+        }
+        $('html').append(
+            `<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` +
+            `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`
+        );
+    },
+    getZoneKeyData: function () {
+        let itemEle = $('#idxZonesKeyData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    },
+    getZoneData: function () {
+        let itemEle = $('#idxZonesData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    },
+    activeButtonOpenZone: function (zonesData) {
+        if (window.location.href.includes('/update/')) {
+            $.fn.setZoneData(zonesData);
+            if (zonesData && Array.isArray(zonesData)) {
+                $('#btn-active-edit-zone-wf').removeClass('hidden');
+            }
+        }
+    },
+    activeZoneInDoc: function () {
+        let zonesData = $.fn.getZoneData();
+        if (zonesData && Array.isArray(zonesData)) {
+            let pageEle = $.fn.getElePageContent();
+            let input_mapping_properties = $.fn.getInputMappingProperties();
+            if (zonesData.length > 0) {
+                pageEle.find('.required').removeClass('required');
+                pageEle.find('input, select, textarea').each(function (event) {
+                    let inputMapProperties = input_mapping_properties[$(this).attr('name')];
+                    if (inputMapProperties && typeof inputMapProperties === 'object') {
+                        let arrTmpFind = [];
+                        inputMapProperties['name'].map(
+                            (nameFind) => {
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                            }
+                        )
+                        inputMapProperties['id'].map(
+                            (idFind) => {
+                                arrTmpFind.push("[id=" + idFind + "]");
+                            }
+                        )
+                        inputMapProperties['id_border_zones'].map(
+                            (item) => {
+                                arrTmpFind.push('#' + item)
+                            }
+                        )
+                        inputMapProperties['cls_border_zones'].map(
+                            (item) => {
+                                arrTmpFind.push('.' + item);
+                            }
+                        )
+                        arrTmpFind.map(
+                            (item) => {
+                                pageEle.find(item).each(function (event) {
+                                    $(this).changePropertiesElementIsZone({
+                                        add_disable: true,
+                                        add_readonly: true,
+                                        remove_required: true,
+                                    });
+                                });
+                            }
+                        )
+                    } else {
+                        $(this).changePropertiesElementIsZone({
+                            add_disable: true,
+                            add_readonly: true,
+                            remove_required: true,
+                        });
+                    }
+                });
+
+                // $('#select-box-emp').prop('readonly', true);
+                zonesData.map(
+                    (item) => {
+                        if (item.code) {
+                            let inputMapProperties = input_mapping_properties[item.code];
+                            if (inputMapProperties && typeof inputMapProperties === 'object') {
+                                let arrTmpFind = {};
+                                let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                                inputMapProperties['name'].map(
+                                    (nameFind) => {
+                                        arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                    }
+                                )
+                                inputMapProperties['id'].map(
+                                    (idFind) => {
+                                        arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                    }
+                                )
+                                Object.keys(arrTmpFind).map(
+                                    (key) => {
+                                        let findText = arrTmpFind[key];
+                                        pageEle.find(findText).each(function () {
+                                            if (readonly_not_disable.includes(key)) {
+                                                $(this).changePropertiesElementIsZone({
+                                                    'add_require_label': true,
+                                                    'add_require': false,
+                                                    'remove_disable': true,
+                                                    'add_readonly': true,
+                                                    'add_border': true,
+                                                });
+                                            } else {
+                                                $(this).changePropertiesElementIsZone({
+                                                    'add_require_label': true,
+                                                    'add_require': false,
+                                                    'remove_disable': true,
+                                                    'remove_readonly': true,
+                                                    'add_border': true,
+                                                });
+                                            }
+                                        })
+                                    }
+                                );
+                                inputMapProperties['id_border_zones'].map(
+                                    (item) => {
+                                        console.log('id_border_zones: ', item);
+                                        pageEle.find('#' + item).changePropertiesElementIsZone({
+                                            add_border: true,
+                                            add_readonly: true,
+                                        });
+                                    }
+                                )
+                                inputMapProperties['cls_border_zones'].map(
+                                    (item) => {
+                                        pageEle.find('.' + item).changePropertiesElementIsZone({
+                                            add_border: true,
+                                            add_readonly: true,
+                                        });
+                                    }
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
+            // add button save at zones
+            // idFormID
+            let idFormID = $('#idFormID').attr('data-form-id');
+            if (idFormID) {
+                $.fn.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+            }
+        }
+    },
+    changePropertiesElementIsZone: function (opts) {
+        let config = {
+            'add_require_label': false,
+            'add_require': false,
+            'remove_required': false,
+            'remove_disable': false,
+            'add_disable': false,
+            'remove_readonly': false,
+            'add_readonly': false,
+            'add_border': false,
+            ...opts
+        }
+        if (config.add_require_label === true) {
+            $(this).closest('.form-group').find('.form-label').addClass('required');
+        }
+        if (config.add_disable === true) {
+            $(this).attr('disabled', 'disabled');
+            if ($(this).is('div')) {
+                $(this).css('cursor', 'no-drop')
+                $(this).addClass('bg-light');
+            }
+        }
+        if (config.remove_required === true) {
+            $(this).removeAttr('required');
+        }
+        if (config.remove_disable === true) {
+            $(this).removeAttr('disabled');
+        }
+        if (config.add_readonly === true) {
+            if ($(this).is('div')) {
+                $(this).addClass('bg-light');
+            } else {
+                $(this).attr('readonly', 'readonly');
+            }
+        }
+        if (config.remove_readonly === true) {
+            $(this).removeAttr('readonly');
+        }
+        if (config.add_require === true) {
+            $(this).prop('required', true);
+        }
+        if (config.add_border === true) {
+            $(this).addClass('border-warning');
+        }
+
+        // active border for select2
+        if ($(this).is("select") && $(this).hasClass('select2')) {
+            $(this).next('.select2-container').find('.select2-selection').changePropertiesElementIsZone(config);
+        }
+    },
+    // -- zone
+    // task
+    setTaskWF: function (taskID) {
+        $('#idxGroupAction').attr('data-wf-task-id', taskID);
+    },
+    getTaskWF: function () {
+        return $('#idxGroupAction').attr('data-wf-task-id');
+    },
+    // -- task
+    // runtime
     setWFRuntimeID: function (runtime_id) {
         if (runtime_id) {
             let btn = $('#btnLogShow');
@@ -1833,7 +2342,7 @@ $.fn.extend({
                         let grouAction = $('#idxGroupAction');
                         let taskID = actionMySelf['id'];
                         if (taskID) {
-                            grouAction.attr('data-wf-task-id', taskID);
+                            $.fn.setTaskWF(taskID);
 
                             let actions = actionMySelf['actions'];
                             if (actions && Array.isArray(actions) && actions.length > 0) {
@@ -1855,6 +2364,9 @@ $.fn.extend({
                                 grouAction.closest('.dropdown').removeClass('hidden');
                             }
                         }
+
+                        // zones handler
+                        $.fn.activeButtonOpenZone(actionMySelf['zones']);
                     }
                 }
             })
@@ -1864,6 +2376,7 @@ $.fn.extend({
     getWFRuntimeID: function () {
         return $('#idWFRuntime').attr('data-runtime-id');
     },
+    // -- runtime
 })
 
 // support for Form Submit

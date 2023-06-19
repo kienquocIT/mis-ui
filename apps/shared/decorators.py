@@ -109,6 +109,7 @@ def mask_view(**parent_kwargs):
         # pylint: disable=R0911
         def wrapper(self, request, *args, **kwargs):
             ctx = {}
+            pk = kwargs.get('pk', None)
 
             # check authenticated
             login_require = parent_kwargs.get('login_require', False)
@@ -215,10 +216,11 @@ def mask_view(**parent_kwargs):
                             case status.HTTP_500_INTERNAL_SERVER_ERROR:
                                 return HttpResponse(status=500)
                             case _:
+                                ctx['pk'] = pk
                                 ctx['is_debug'] = 1 if settings.DEBUG_JS else 0
                                 ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
-                                ctx['base_workflow'] = WORKFLOW_ACTION if kwargs.get('pk', None) else {}
+                                ctx['base_workflow'] = WORKFLOW_ACTION if pk else {}
                                 ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()
                                 ctx['url_pattern'] = cls_check.parse_url_pattern(url_pattern_keys, kwargs)

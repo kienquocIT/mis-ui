@@ -136,7 +136,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking list'), 'OrderPickingList')
     DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
     DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
-    DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery detail'))
+    DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery Detail'))
 
     # Return Advance
     RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')

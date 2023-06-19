@@ -168,7 +168,7 @@ class MenusCRM:
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(
-                name='Good Receipt List', code='menu_good_receipt_list', view_name='GoodReceiptList',
+                name='Good receipt', code='menu_good_receipt_list', view_name='GoodReceiptList',
                 icon='<i class="bi bi-receipt"></i>',
             ),
             MenuCommon(

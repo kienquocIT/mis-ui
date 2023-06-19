@@ -384,7 +384,7 @@ $(async function () {
                 }
             } else {
                 $.fn.notifyPopup(
-                    {description: prod.product_data.title + $transElm.attr('data-prod-outstock')},
+                    {description: prod.product_data.title + ' ' + $transElm.attr('data-prod-outstock')},
                     'failure')
             }
         }

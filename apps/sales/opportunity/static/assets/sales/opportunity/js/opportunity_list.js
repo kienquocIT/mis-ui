@@ -199,11 +199,8 @@ $(function () {
                             if (employee.id === employee_current_id) {
                                 ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
                                 $('#group_id_emp_login').val(employee.group.id);
-                                console.log(employee)
-                                console.log(employee.group.id)
                             }
                         })
-
                     }
                 }
             }, (errs) => {

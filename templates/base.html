@@ -131,7 +131,7 @@
                                 </div>
                                 <button
                                         type="submit"
-                                        class="hidden btn-save-at-zone-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                         form=""
                                         data-value=""
                                         id="idxSaveInZoneWF"
@@ -143,6 +143,25 @@
                                             data-bs-original-title="{% trans 'Save in Zone' %}"
                                     ><i class="fa-solid fa-floppy-disk"></i></span>
                                 </button>
+
+                                <button
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        type="submit"
+                                        form=""
+                                        data-wf-action=""
+                                        id="idxSaveInZoneWFThenNext"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Save in zone then call next station' %}"
+                                >
+{#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
+{#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
+                                    <span class="icon">
+                                        <i class="fa-solid fa-check-double text-success"></i>
+                                    </span>
+                                </button>
+
+
                                 <button
                                         type="button"
                                         class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
@@ -160,12 +179,12 @@
                                         class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                         data-value=""
                                         id="btnMainAction"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Approval' %}"
                                 >
                                     <span
                                             class="icon"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Approval' %}"
                                     ></span>
                                 </button>
 
@@ -309,6 +328,7 @@
         data-success="{% trans 'Successfully' %}"
         data-are-you-sure="{% trans 'Are you sure about this change?' %}"
         data-no-data="{% trans 'No data available' %}"
+        data-action-wf="{% trans 'Action in Workflow' %}"
 >
 <!-- /Message translate base -->
 
@@ -532,6 +552,7 @@
             },
             1500
         )
+
         // -- test loading wait response area
 
 
@@ -687,7 +708,10 @@
             <!-- ## Init Mask Money -->
 
             <!-- Init select2 -->
-            $(".select2").select2();
+            $(".select2").each(function () {
+                $(this).initSelect2();
+            });
+
             <!-- ## Init select2 -->
 
             <!-- Raise a ticket -->

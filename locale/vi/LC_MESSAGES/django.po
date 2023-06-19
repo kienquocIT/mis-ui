@@ -3004,6 +3004,10 @@ msgid "Save in Zone"
 msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
 
 #
+msgid "Save in zone then call next station"
+msgstr "Lưu cập nhật trên phần vùng quy trình, sau đó gọi chuyển trạm"
+
+#
 msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
 
@@ -3134,3 +3138,8 @@ msgstr "Thêm yếu tố"
 #
 msgid "Factors that customer decision to buy your product"
 msgstr "Các yếu tố quyết định khách hàng sẽ mua sản phẩm"
+
+#
+msgid "Action in Workflow"
+msgstr "Thao tác trên Quy trình"
+

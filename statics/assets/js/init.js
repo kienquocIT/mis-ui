@@ -1085,18 +1085,13 @@ $(document).ready(function () {
     let notifyCountUrl = bellIdx.attr('data-url');
 
     function checkNotifyCount() {
-        $.fn.callAjax(
-            notifyCountUrl,
-            'GET',
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('count') && data['count'] > 0) {
-                    bellCount.text(data['count']);
-                    bellIdxIcon.addClass('my-bell-ring');
-                }
+        $.fn.callAjax(notifyCountUrl, 'GET',).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && data.hasOwnProperty('count') && data['count'] > 0) {
+                bellCount.text(data['count']);
+                bellIdxIcon.addClass('my-bell-ring');
             }
-        )
+        })
     }
 
     if (notifyCountUrl) checkNotifyCount();
@@ -1108,13 +1103,9 @@ $(document).ready(function () {
         let dataUrl = $(this).attr('data-url');
         let dataMethod = $(this).attr('data-method');
 
-        $.fn.callAjax(
-            dataUrl,
-            dataMethod
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                let baseItemNotify = `
+        $.fn.callAjax(dataUrl, dataMethod).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            let baseItemNotify = `
                     <a href="javascript:void(0);" class="dropdown-item mb-1 border border-light {classBgLight}">
                         <div class="media">
                             <div class="media-head">
@@ -1140,68 +1131,42 @@ $(document).ready(function () {
                     </a>
                 `;
 
-                let arr_no_seen = [];
-                let arr_seen = [];
-                if (data && data.hasOwnProperty('notify_data')) {
-                    data['notify_data'].map(
-                        (item) => {
-                            let senderData = item?.['employee_sender_data']?.['full_name'];
-                            let tmp = baseItemNotify.replace(
-                                "{avatarSender}",
-                                senderData ? $.fn.shortName(senderData) : `<i class="fa-solid fa-gear"></i>`
-                            ).replace(
-                                "{title}", item?.['title']
-                            ).replace(
-                                "{msg}", item?.['msg']
-                            ).replace(
-                                "{label}", item?.['doc_app']
-                            ).replace(
-                                "{date}", item?.['date_created']
-                            );
-                            if (item?.['is_done'] === true) {
-                                arr_seen.push(tmp.replace(
-                                    "{classBgLight}", ""
-                                ));
-                            } else {
-                                arr_no_seen.push(tmp.replace(
-                                    "{classBgLight}", "bg-light"
-                                ));
-                            }
-                        }
-                    )
-                }
-                if (arr_no_seen.length > 0 || arr_seen.length > 0) {
-                    dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
-                } else {
-                    dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
-                }
-                dataArea.find('.spinner-grow').addClass('hidden');
-            },
-            (errs) => {
-                dataArea.find('.spinner-grow').addClass('hidden');
+            let arr_no_seen = [];
+            let arr_seen = [];
+            if (data && data.hasOwnProperty('notify_data')) {
+                data['notify_data'].map((item) => {
+                    let senderData = item?.['employee_sender_data']?.['full_name'];
+                    let tmp = baseItemNotify.replace("{avatarSender}", senderData ? $.fn.shortName(senderData) : `<i class="fa-solid fa-gear"></i>`).replace("{title}", item?.['title']).replace("{msg}", item?.['msg']).replace("{label}", item?.['doc_app']).replace("{date}", item?.['date_created']);
+                    if (item?.['is_done'] === true) {
+                        arr_seen.push(tmp.replace("{classBgLight}", ""));
+                    } else {
+                        arr_no_seen.push(tmp.replace("{classBgLight}", "bg-light"));
+                    }
+                })
             }
-        )
+            if (arr_no_seen.length > 0 || arr_seen.length > 0) {
+                dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
+            } else {
+                dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
+            }
+            dataArea.find('.spinner-grow').addClass('hidden');
+        }, (errs) => {
+            dataArea.find('.spinner-grow').addClass('hidden');
+        })
     });
     $('#btnNotifySeenAll').click(function (event) {
         event.preventDefault();
         let dataUrl = $(this).attr('data-url');
         let dataMethod = $(this).attr('data-method');
         if (dataUrl && dataMethod) {
-            $.fn.callAjax(
-                dataUrl,
-                dataMethod,
-                {},
-                true,
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        bellIdxIcon.removeClass('my-bell-ring');
-                        bellCount.text("");
-                    }
+            $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    bellIdxIcon.removeClass('my-bell-ring');
+                    bellCount.text("");
+                }
 
-                },
-            )
+            },)
         }
     });
     $('#btnNotifyClearAll').click(function (event) {
@@ -1209,19 +1174,12 @@ $(document).ready(function () {
         let dataUrl = $(this).attr('data-url');
         let dataMethod = $(this).attr('data-method');
         if (dataUrl && dataMethod) {
-            $.fn.callAjax(
-                dataUrl,
-                dataMethod,
-                {},
-                true,
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data['status'] === 204) {
-                        checkNotifyCount();
-                    }
-                },
-            )
+            $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data['status'] === 204) {
+                    checkNotifyCount();
+                }
+            },)
         }
     });
     // -- push count notify to bell-alert
@@ -1330,21 +1288,19 @@ $(document).ready(function () {
 
     function renderLogActivities(tabActivityLog, log_data) {
         tabActivityLog.empty();
-        log_data.map(
-            (item) => {
-                let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
-                let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
-                let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
-                let dataChangeHTML = `<pre class="log-act-data-change hidden">${JSON.stringify(item?.['data_change'], null, 2)}</pre>`;
-                let baseHTML = ``;
-                if (item?.['automated_logging'] === true) {
-                    baseHTML = `<div class="avatar avatar-icon avatar-xxs avatar-soft-dark avatar-rounded mr-1"><span class="initial-wrap"><i class="fa-solid fa-gear"></i></span></div>`;
-                } else {
-                    baseHTML = `<span class="badge badge-primary mr-1">${item?.['employee_data']?.['full_name']}</span>`;
-                }
-                tabActivityLog.append(`<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`);
+        log_data.map((item) => {
+            let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
+            let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
+            let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
+            let dataChangeHTML = `<pre class="log-act-data-change hidden">${JSON.stringify(item?.['data_change'], null, 2)}</pre>`;
+            let baseHTML = ``;
+            if (item?.['automated_logging'] === true) {
+                baseHTML = `<div class="avatar avatar-icon avatar-xxs avatar-soft-dark avatar-rounded mr-1"><span class="initial-wrap"><i class="fa-solid fa-gear"></i></span></div>`;
+            } else {
+                baseHTML = `<span class="badge badge-primary mr-1">${item?.['employee_data']?.['full_name']}</span>`;
             }
-        );
+            tabActivityLog.append(`<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`);
+        });
     }
 
     $(document).on('click', '.btn-log-act-more', function (event) {
@@ -1354,32 +1310,7 @@ $(document).ready(function () {
 
     $('.btn-action-wf').click(function (event) {
         event.preventDefault();
-
-        let actionSelected = $(this).attr('data-value');
-        let taskID = $('#idxGroupAction').attr('data-wf-task-id');
-        let urlBase = $('#idUrlTaskDetail').attr('data-url');
-        if (actionSelected !== undefined && taskID && urlBase) {
-            let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
-            $.fn.showLoading();
-            $.fn.callAjax(urlData, 'PUT', {'action': actionSelected}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data?.['status'] === 200) {
-                    $.fn.notifyB({
-                        'description': $('#base-trans-factory').attr('data-success')
-                    }, 'success');
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000)
-                }
-                setTimeout(() => {
-                    $.fn.hideLoading();
-                }, 1000)
-            }, (errs) => {
-                setTimeout(() => {
-                    $.fn.hideLoading();
-                }, 500)
-            })
-        }
+        return $.fn.callActionWF($(this))
     });
 
     $('#btnLogShow').click(function (event) {
@@ -1408,22 +1339,14 @@ $(document).ready(function () {
         // log activities
         let tabActivityLog = $('#tab_block_activities');
         let activityUrl = tabActivityLog.attr('data-url');
-        $.fn.callAjax(
-            activityUrl,
-            'GET',
-            {},
-            true,
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
-                    renderLogActivities(tabActivityLog, data['log_data']);
-                }
-            },
-            (errs) => {
-
+        $.fn.callAjax(activityUrl, 'GET', {}, true,).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                renderLogActivities(tabActivityLog, data['log_data']);
             }
-        )
+        }, (errs) => {
+
+        })
     });
     // -- Action support Workflow in Doc Detail
 
@@ -1446,6 +1369,13 @@ $(document).ready(function () {
 // function extend to jQuery
 $.fn.extend({
     // utils
+    parseJsonDefault: function (data, defaultReturn = {}) {
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            return defaultReturn;
+        }
+    },
     generateRandomString: function (length) {
         let result = '';
         let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -1471,153 +1401,6 @@ $.fn.extend({
     },
     isBoolean(value) {
         return typeof value === 'boolean';
-    },
-    _parseDomDtl: function (opts) {
-        let domDTL = "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
-        let utilsDom = {
-            // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
-            // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
-            // "t": Đại diện cho bảng (table) chứa dữ liệu.
-            // "i": Đại diện cho thông tin về số hàng hiển thị và tổng số hàng.
-            // "p": Đại diện cho thanh phân trang (pagination).
-            // "r": Đại diện cho sắp xếp (ordering) của các cột.
-            // "s": Đại diện cho hộp chọn số hàng hiển thị.
-            visiblePaging: true, // "l"
-            visibleSearchField: true,   // "f"
-            visibleDisplayRowTotal: true,   // "i"
-            visiblePagination: true,   // "p"
-            visibleOrder: true,   // "r"
-            visibleRowQuantity: true,   // "s"
-        }
-
-        // show or hide search field
-        if (opts.hasOwnProperty('visiblePaging')) {
-            if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
-            if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
-            delete opts['visiblePaging']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleSearchField')) {
-            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
-            if (utilsDom.visibleSearchField === false) {
-
-                domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
-            }
-            delete opts['visibleSearchField']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
-            if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
-            if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
-            delete opts['visibleDisplayRowTotal']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visiblePagination')) {
-            if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
-            if (utilsDom.visiblePagination === false) domDTL = domDTL.replace('p>', '>');
-            delete opts['visiblePagination']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleOrder')) {
-            if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
-            if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
-            delete opts['visibleOrder']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleRowQuantity')) {
-            if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
-            if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
-            delete opts['visibleRowQuantity']
-        }
-
-        return [opts, domDTL];
-    },
-    _parseDtlOpts: function (opts) {
-        // init table
-        let [parsedOpts, domDTL] = $.fn._parseDomDtl(opts);
-
-        // reload currency in table
-        let reloadCurrency = opts?.['reloadCurrency'];
-        if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
-        reloadCurrency = $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
-
-        // row callback |  rowIdx = true
-        let rowIdx = opts?.['rowIdx'];
-        if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
-
-        // ajax
-        if (opts?.['ajax']) {
-            if (!opts['ajax']?.['error']) {
-                opts['ajax']['error'] = function (xhr, error, thrown) {
-                    $.fn.switcherResp(xhr?.['responseJSON']);
-                    if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
-                }
-            }
-        }
-
-        // return data
-        let configFinal = {
-            // scrollY: '400px',
-            // scrollCollapse: true,
-            // fixedHeader: true,
-            autoFill: false,
-            search: $.fn.DataTable.ext.type.search['html-numeric'],
-            searching: true,
-            ordering: false,
-            paginate: true,
-            pageLength: 10,
-            dom: domDTL,
-            language: {
-                url: $('#msg-datatable-language-config').text().trim(),
-            },
-            drawCallback: function () {
-                feather.replace();
-                if (reloadCurrency === true) {
-                    // reload all currency
-                    $.fn.initMaskMoney2();
-                }
-                // buildSelect2();
-                setTimeout(() => {
-                    buildSelect2();
-                }, 0)
-            },
-            initComplete: function () {
-                $(this.api().table().container()).find('input').attr('autocomplete', 'off');
-            },
-            rowCallback: function (row, data, index) {
-                if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
-            },
-            data: [],
-            ...parsedOpts,
-        };
-
-        // ajax delete data
-        if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
-
-        // returned
-        return configFinal;
-    },
-    DataTableDefault: function (opts) {
-        // adding header sticky table
-        // $(this).addClass('table-bordered sticky-table-header').find('thead').addClass('thead-primary');
-
-        // init DataTable
-        let tbl = $(this).DataTable($.fn._parseDtlOpts(opts));
-        tbl.on('init.dt', function () {
-            let minerGroup = $(this).closest('.waiter-miner-group');
-            if (minerGroup.length > 0) {
-                let filterGroup = $(minerGroup[0]).find('.miner-group');
-                let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
-                if (filterGroup.length > 0 && filterItem.length > 0) {
-                    filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
-                    filterGroup.append(filterItem);
-                    $('.dataTables_filter input').removeClass('form-control-sm');
-                }
-            }
-            $(this).closest('.dataTables_wrapper').find('.select2').select2();
-            $.fn.initMaskMoney2();
-        });
-        return tbl;
     },
     initElementInitSelect: function (opts, html_or_$ = 'html') {
         let configData = {
@@ -1722,8 +1505,7 @@ $.fn.extend({
             "cancelClass": "btn-secondary",
             locale: {
                 format: 'MM/DD/YYYY hh:mm A'
-            },
-            ...(opts && typeof opts === 'object' ? opts : {})
+            }, ...(opts && typeof opts === 'object' ? opts : {})
         });
     },
 
@@ -1811,19 +1593,15 @@ $.fn.extend({
                     jQuery.fn.notifyB(notify_data, 'failure');
                 });
             } else if (typeof errs === 'string') {
-                jQuery.fn.notifyB(
-                    {
-                        'description': errs
-                    }, 'failure'
-                );
+                jQuery.fn.notifyB({
+                    'description': errs
+                }, 'failure');
             } else if (Array.isArray(errs)) {
-                errs.map(
-                    (item) => {
-                        jQuery.fn.notifyB({
-                            'description': item
-                        }, 'failure');
-                    }
-                )
+                errs.map((item) => {
+                    jQuery.fn.notifyB({
+                        'description': item
+                    }, 'failure');
+                })
             }
         }
     },
@@ -2020,11 +1798,15 @@ $.fn.extend({
             // True: convert body data with Zone Accept
             let pk = $.fn.getPkDetail();
             if (
-                $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' &&
-                $.fn.getWFRuntimeID() && $.fn.getTaskWF() &&
-                pk && url.includes(pk) && (
-                    method === 'PUT' || method === 'put'
-                )
+                (
+                    $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' ||
+                    $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext'
+                ) &&
+                $.fn.getWFRuntimeID() &&
+                $.fn.getTaskWF() &&
+                pk &&
+                url.includes(pk) &&
+                (method === 'PUT' || method === 'put')
             ) {
                 let taskID = $.fn.getTaskWF();
                 let keyOk = $.fn.getZoneKeyData();
@@ -2046,12 +1828,36 @@ $.fn.extend({
                 contentType: content_type,
                 data: content_type === "application/json" ? JSON.stringify(data) : data,
                 headers: {
-                    "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
-                    ...headers
+                    "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
                 },
                 success: function (rest, textStatus, jqXHR) {
                     let data = $.fn.switcherResp(rest);
-                    if (data) resolve(rest); else resolve({'status': jqXHR.status});
+                    if (data) {
+                        if ($.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
+                            let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                            let dataWFAction = btnSubmit.attr('data-wf-action');
+                            if (btnSubmit && dataWFAction) {
+                                let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                if (eleActionDoneTask.length > 0) {
+                                    $.fn.setBtnIDLastSubmit(null);
+                                    $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                    $.fn.callActionWF($(eleActionDoneTask[0])).then(
+                                        () => {
+                                            resolve(rest);
+                                        }
+                                    )
+                                } else {
+                                    resolve(rest);
+                                }
+                            } else {
+                                resolve(rest);
+                            }
+                        } else {
+                            resolve(rest);
+                        }
+
+                    } else resolve({'status': jqXHR.status});
+
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     let resp_data = jqXHR.responseJSON;
@@ -2067,6 +1873,152 @@ $.fn.extend({
     },
 
     // Table: loading
+    _parseDomDtl: function (opts) {
+        let domDTL = "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        let utilsDom = {
+            // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
+            // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
+            // "t": Đại diện cho bảng (table) chứa dữ liệu.
+            // "i": Đại diện cho thông tin về số hàng hiển thị và tổng số hàng.
+            // "p": Đại diện cho thanh phân trang (pagination).
+            // "r": Đại diện cho sắp xếp (ordering) của các cột.
+            // "s": Đại diện cho hộp chọn số hàng hiển thị.
+            visiblePaging: true, // "l"
+            visibleSearchField: true,   // "f"
+            visibleDisplayRowTotal: true,   // "i"
+            visiblePagination: true,   // "p"
+            visibleOrder: true,   // "r"
+            visibleRowQuantity: true,   // "s"
+        }
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePaging')) {
+            if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
+            if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
+            delete opts['visiblePaging']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleSearchField')) {
+            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
+            if (utilsDom.visibleSearchField === false) {
+
+                domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
+            }
+            delete opts['visibleSearchField']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
+            if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
+            if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
+            delete opts['visibleDisplayRowTotal']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePagination')) {
+            if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
+            if (utilsDom.visiblePagination === false) domDTL = domDTL.replace('p>', '>');
+            delete opts['visiblePagination']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleOrder')) {
+            if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
+            if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
+            delete opts['visibleOrder']
+        }
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleRowQuantity')) {
+            if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
+            if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
+            delete opts['visibleRowQuantity']
+        }
+
+        return [opts, domDTL];
+    },
+    _parseDtlOpts: function (opts) {
+        // init table
+        let [parsedOpts, domDTL] = $.fn._parseDomDtl(opts);
+
+        // reload currency in table
+        let reloadCurrency = opts?.['reloadCurrency'];
+        if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
+        reloadCurrency = $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
+
+        // row callback |  rowIdx = true
+        let rowIdx = opts?.['rowIdx'];
+        if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
+
+        // ajax
+        if (opts?.['ajax']) {
+            if (!opts['ajax']?.['error']) {
+                opts['ajax']['error'] = function (xhr, error, thrown) {
+                    $.fn.switcherResp(xhr?.['responseJSON']);
+                    if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
+                }
+            }
+        }
+
+        // return data
+        let configFinal = {
+            // scrollY: '400px',
+            // scrollCollapse: true,
+            // fixedHeader: true,
+            autoFill: false,
+            search: $.fn.DataTable.ext.type.search['html-numeric'],
+            searching: true,
+            ordering: false,
+            paginate: true,
+            pageLength: 10,
+            dom: domDTL,
+            language: {
+                url: $('#msg-datatable-language-config').text().trim(),
+            },
+            drawCallback: function () {
+                feather.replace();
+                if (reloadCurrency === true) {
+                    // reload all currency
+                    $.fn.initMaskMoney2();
+                }
+                // buildSelect2();
+                setTimeout(() => {
+                    buildSelect2();
+                }, 0)
+            },
+            initComplete: function () {
+                $(this.api().table().container()).find('input').attr('autocomplete', 'off');
+            },
+            rowCallback: function (row, data, index) {
+                if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
+            },
+            data: [], ...parsedOpts,
+        };
+
+        // ajax delete data
+        if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
+
+        // returned
+        return configFinal;
+    },
+    DataTableDefault: function (opts) {
+        // adding header sticky table
+        // $(this).addClass('table-bordered sticky-table-header').find('thead').addClass('thead-primary');
+
+        // init DataTable
+        let tbl = $(this).DataTable($.fn._parseDtlOpts(opts));
+        tbl.on('init.dt', function () {
+            let minerGroup = $(this).closest('.waiter-miner-group');
+            if (minerGroup.length > 0) {
+                let filterGroup = $(minerGroup[0]).find('.miner-group');
+                let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
+                if (filterGroup.length > 0 && filterItem.length > 0) {
+                    filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
+                    filterGroup.append(filterItem);
+                    $('.dataTables_filter input').removeClass('form-control-sm');
+                }
+            }
+            $(this).closest('.dataTables_wrapper').find('.select2').select2();
+            $.fn.initMaskMoney2();
+        });
+        return tbl;
+    },
     showLoading: function (timeout) {
         $('#loadingContainer').removeClass('hidden');
         if (timeout) {
@@ -2093,6 +2045,20 @@ $.fn.extend({
         return rs;
     },
 
+    // select2
+    initSelect2: function (opts) {
+        let tokenSeparators = $.fn.parseJsonDefault($(this).attr('data-select2-tokenSeparators'), null);
+        $(this).select2({
+            multiple: !!$(this).attr('multiple') || !!$(this).attr('data-select2-multiple'),
+            closeOnSelect: !!$(this).attr('data-select2-closeOnSelect'),
+            allowClear: !!$(this).attr('data-select2-allowClear'),
+            disabled: !!$(this).attr('data-select2-disabled'),
+            placeholder: !!$(this).attr('data-select2-placeholder'),
+            tags: !!$(this).attr('data-select2-tags'),
+            tokenSeparators: tokenSeparators ? tokenSeparators : [","], ...opts
+        });
+    }, // -- select2
+
     //
     // workflow
     //
@@ -2104,6 +2070,11 @@ $.fn.extend({
             case 2:
                 break
             case 3:
+                $.fn.getElePageAction().find('[type="submit"]').each(function () {
+                    $(this).addClass("hidden")
+                });
+                break
+            case 4:
                 $.fn.getElePageAction().find('[type="submit"]').each(function () {
                     $(this).addClass("hidden")
                 });
@@ -2123,16 +2094,11 @@ $.fn.extend({
     setZoneData: function (zonesData) {
         let body_fields = [];
         if (zonesData && Array.isArray(zonesData)) {
-            zonesData.map(
-                (item) => {
-                    body_fields.push(item.code);
-                }
-            );
+            zonesData.map((item) => {
+                body_fields.push(item.code);
+            });
         }
-        $('html').append(
-            `<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` +
-            `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`
-        );
+        $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
     },
     getZoneKeyData: function () {
         let itemEle = $('#idxZonesKeyData');
@@ -2167,37 +2133,27 @@ $.fn.extend({
                     let inputMapProperties = input_mapping_properties[$(this).attr('name')];
                     if (inputMapProperties && typeof inputMapProperties === 'object') {
                         let arrTmpFind = [];
-                        inputMapProperties['name'].map(
-                            (nameFind) => {
-                                arrTmpFind.push("[name=" + nameFind + "]");
-                            }
-                        )
-                        inputMapProperties['id'].map(
-                            (idFind) => {
-                                arrTmpFind.push("[id=" + idFind + "]");
-                            }
-                        )
-                        inputMapProperties['id_border_zones'].map(
-                            (item) => {
-                                arrTmpFind.push('#' + item)
-                            }
-                        )
-                        inputMapProperties['cls_border_zones'].map(
-                            (item) => {
-                                arrTmpFind.push('.' + item);
-                            }
-                        )
-                        arrTmpFind.map(
-                            (item) => {
-                                pageEle.find(item).each(function (event) {
-                                    $(this).changePropertiesElementIsZone({
-                                        add_disable: true,
-                                        add_readonly: true,
-                                        remove_required: true,
-                                    });
+                        inputMapProperties['name'].map((nameFind) => {
+                            arrTmpFind.push("[name=" + nameFind + "]");
+                        })
+                        inputMapProperties['id'].map((idFind) => {
+                            arrTmpFind.push("[id=" + idFind + "]");
+                        })
+                        inputMapProperties['id_border_zones'].map((item) => {
+                            arrTmpFind.push('#' + item)
+                        })
+                        inputMapProperties['cls_border_zones'].map((item) => {
+                            arrTmpFind.push('.' + item);
+                        })
+                        arrTmpFind.map((item) => {
+                            pageEle.find(item).each(function (event) {
+                                $(this).changePropertiesElementIsZone({
+                                    add_disable: true,
+                                    add_readonly: true,
+                                    remove_required: true,
                                 });
-                            }
-                        )
+                            });
+                        })
                     } else {
                         $(this).changePropertiesElementIsZone({
                             add_disable: true,
@@ -2208,68 +2164,56 @@ $.fn.extend({
                 });
 
                 // $('#select-box-emp').prop('readonly', true);
-                zonesData.map(
-                    (item) => {
-                        if (item.code) {
-                            let inputMapProperties = input_mapping_properties[item.code];
-                            if (inputMapProperties && typeof inputMapProperties === 'object') {
-                                let arrTmpFind = {};
-                                let readonly_not_disable = inputMapProperties['readonly_not_disable'];
-                                inputMapProperties['name'].map(
-                                    (nameFind) => {
-                                        arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                    }
-                                )
-                                inputMapProperties['id'].map(
-                                    (idFind) => {
-                                        arrTmpFind[idFind] = "[id=" + idFind + "]";
-                                    }
-                                )
-                                Object.keys(arrTmpFind).map(
-                                    (key) => {
-                                        let findText = arrTmpFind[key];
-                                        pageEle.find(findText).each(function () {
-                                            if (readonly_not_disable.includes(key)) {
-                                                $(this).changePropertiesElementIsZone({
-                                                    'add_require_label': true,
-                                                    'add_require': false,
-                                                    'remove_disable': true,
-                                                    'add_readonly': true,
-                                                    'add_border': true,
-                                                });
-                                            } else {
-                                                $(this).changePropertiesElementIsZone({
-                                                    'add_require_label': true,
-                                                    'add_require': false,
-                                                    'remove_disable': true,
-                                                    'remove_readonly': true,
-                                                    'add_border': true,
-                                                });
-                                            }
-                                        })
-                                    }
-                                );
-                                inputMapProperties['id_border_zones'].map(
-                                    (item) => {
-                                        console.log('id_border_zones: ', item);
-                                        pageEle.find('#' + item).changePropertiesElementIsZone({
-                                            add_border: true,
-                                            add_readonly: true,
+                zonesData.map((item) => {
+                    if (item.code) {
+                        let inputMapProperties = input_mapping_properties[item.code];
+                        if (inputMapProperties && typeof inputMapProperties === 'object') {
+                            let arrTmpFind = {};
+                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            inputMapProperties['name'].map((nameFind) => {
+                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                            })
+                            inputMapProperties['id'].map((idFind) => {
+                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                            })
+                            Object.keys(arrTmpFind).map((key) => {
+                                let findText = arrTmpFind[key];
+                                pageEle.find(findText).each(function () {
+                                    if (readonly_not_disable.includes(key)) {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_require_label': true,
+                                            'add_require': false,
+                                            'remove_disable': true,
+                                            'add_readonly': true,
+                                            'add_border': true,
+                                        });
+                                    } else {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_require_label': true,
+                                            'add_require': false,
+                                            'remove_disable': true,
+                                            'remove_readonly': true,
+                                            'add_border': true,
                                         });
                                     }
-                                )
-                                inputMapProperties['cls_border_zones'].map(
-                                    (item) => {
-                                        pageEle.find('.' + item).changePropertiesElementIsZone({
-                                            add_border: true,
-                                            add_readonly: true,
-                                        });
-                                    }
-                                )
-                            }
+                                })
+                            });
+                            inputMapProperties['id_border_zones'].map((item) => {
+                                console.log('id_border_zones: ', item);
+                                pageEle.find('#' + item).changePropertiesElementIsZone({
+                                    add_border: true,
+                                    add_readonly: true,
+                                });
+                            })
+                            inputMapProperties['cls_border_zones'].map((item) => {
+                                pageEle.find('.' + item).changePropertiesElementIsZone({
+                                    add_border: true,
+                                    add_readonly: true,
+                                });
+                            })
                         }
                     }
-                )
+                })
             }
 
             // add button save at zones
@@ -2278,6 +2222,24 @@ $.fn.extend({
             if (idFormID) {
                 $.fn.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                 $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+
+                let actionList = $.fn.getActionsList();
+                let actionBubble = null;
+                if (actionList.includes(1)) {
+                    actionBubble = 1;
+                } else if (actionList.includes(4)) {
+                    actionBubble = 4;
+                }
+                if (actionBubble) {
+                    $('#idxSaveInZoneWFThenNext').attr(
+                        'form', idFormID
+                    ).attr(
+                        'data-wf-action',
+                        actionBubble
+                    ).attr(
+                        'data-actions-list', JSON.stringify($.fn.getActionsList())
+                    ).removeClass('hidden');
+                }
             }
         }
     },
@@ -2290,8 +2252,7 @@ $.fn.extend({
             'add_disable': false,
             'remove_readonly': false,
             'add_readonly': false,
-            'add_border': false,
-            ...opts
+            'add_border': false, ...opts
         }
         if (config.add_require_label === true) {
             $(this).closest('.form-group').find('.form-label').addClass('required');
@@ -2330,16 +2291,25 @@ $.fn.extend({
         if ($(this).is("select") && $(this).hasClass('select2')) {
             $(this).next('.select2-container').find('.select2-selection').changePropertiesElementIsZone(config);
         }
-    },
-    // -- zone
+    }, // -- zone
     // task
     setTaskWF: function (taskID) {
         $('#idxGroupAction').attr('data-wf-task-id', taskID);
     },
     getTaskWF: function () {
         return $('#idxGroupAction').attr('data-wf-task-id');
+    }, // -- task
+    // action
+    setActionsList: function (actions) {
+        $('html').append(`<script class="hidden" id="idxWFActionsData">${JSON.stringify(actions)}</script>`);
     },
-    // -- task
+    getActionsList: function () {
+        let itemEle = $('#idxWFActionsData');
+        if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }, // -- action
     // runtime
     setWFRuntimeID: function (runtime_id) {
         if (runtime_id) {
@@ -2359,22 +2329,22 @@ $.fn.extend({
 
                             let actions = actionMySelf['actions'];
                             if (actions && Array.isArray(actions) && actions.length > 0) {
-                                // $('#btnMainAction').removeClass('hidden').find('.icon').html(`<i class="fas fa-check text-success"></i>`);
-                                $('#btnMainAction').removeClass('hidden').find('.icon').html(`<i class="far fa-thumbs-up text-success"></i>`);
-
+                                $.fn.setActionsList(actions);
                                 let priorityAdded = false;
                                 actions.map((item) => {
                                     let liFound = grouAction.find('li[data-value=' + item + ']')
                                     let iconFound = liFound.find('.icon-action-wf');
                                     if (priorityAdded === false) {
-                                        if (item === 0 || item === 1) {
+                                        if (item === 0 || item === 1 || item === 4) {
                                             priorityAdded = true;
-                                            $('#btnMainAction').attr('data-value', item).removeClass('hidden').find('.icon').html(iconFound.clone());
+                                            $('#btnMainAction').attr('data-value', item).attr('data-bs-original-title', liFound.find('.dropdown-item').text()).removeClass('hidden').find('.icon').html(iconFound.clone());
                                         }
                                     }
                                     liFound.removeClass('hidden');
                                 })
-                                grouAction.closest('.dropdown').removeClass('hidden');
+                                if (!(priorityAdded === true && actions.length === 1)){
+                                    grouAction.closest('.dropdown').removeClass('hidden');
+                                }
                             }
                         }
 
@@ -2388,21 +2358,55 @@ $.fn.extend({
     },
     getWFRuntimeID: function () {
         return $('#idWFRuntime').attr('data-runtime-id');
-    },
-    // -- runtime
+    }, // -- runtime
 
     // loading wait response data
     showLoadingWaitResponse: function () {
         $(this).addClass('hidden');
-        $(
-            `<div class="spinner spinner-border text-secondary my-3" role="status"><span class="sr-only">Loading...</span></div>`
-        ).insertBefore($(this));
+        $(`<div class="spinner spinner-border text-secondary my-3" role="status"><span class="sr-only">Loading...</span></div>`).insertBefore($(this));
     },
-    hideLoadingWaitResponse: function (){
+    hideLoadingWaitResponse: function () {
         $(this).removeClass('hidden');
         $(this).prev('.spinner').addClass('hidden');
     },
     // -- loading wait response data
+
+    // wf call action
+    callActionWF: function (ele$) {
+        let actionSelected = $(ele$).attr('data-value');
+        let taskID = $('#idxGroupAction').attr('data-wf-task-id');
+        let urlBase = $('#idUrlTaskDetail').attr('data-url');
+        if (actionSelected !== undefined && taskID && urlBase) {
+            let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
+            $.fn.showLoading();
+            return $.fn.callAjax(urlData, 'PUT', {'action': actionSelected}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data?.['status'] === 200) {
+                    $.fn.notifyB({
+                        'description': $('#base-trans-factory').attr('data-action-wf') + ': ' + $('#base-trans-factory').attr('data-success'),
+                    }, 'success');
+                    if (
+                        !($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)
+                    ) {
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 1000)
+                    }
+                }
+                setTimeout(() => {
+                    $.fn.hideLoading();
+                }, 1000)
+            }, (errs) => {
+                setTimeout(() => {
+                    $.fn.hideLoading();
+                }, 500)
+            });
+        } else {
+            return new Promise(function (resolve, reject) {
+            });
+        }
+    },
+    // -- wf call action
 })
 
 // support for Form Submit
@@ -2673,8 +2677,7 @@ var DataTableAction = {
             {
                 name: 'Title',
                 value: 'title'
-            },
-            {
+            }, {
                 name: 'Code',
                 value: 'code'
             },
@@ -2684,8 +2687,7 @@ var DataTableAction = {
 
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
-            if (data.hasOwnProperty(key.value))
-                htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+            if (data.hasOwnProperty(key.value)) htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
         }
         if (link) {
             link = link.format_url_with_uuid(data['id']);

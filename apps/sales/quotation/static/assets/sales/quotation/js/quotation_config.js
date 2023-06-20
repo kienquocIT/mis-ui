@@ -14,7 +14,7 @@ function loadConfig(data) {
     }
 }
 
-function loadInitIndicatorList(indicator_id, eleShow) {
+function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null, row = null) {
     let jqueryId = '#' + indicator_id;
     let ele = $(jqueryId);
     if (ele.val()) {
@@ -32,6 +32,13 @@ function loadInitIndicatorList(indicator_id, eleShow) {
                                             <input type="hidden" class="data-show" value="${dataStr}">
                                         </button>
                                     </div>`
+                // load detail editor by ID indicator
+                if (indicator_detail_id) {
+                    if (item.id === indicator_detail_id) {
+                        let editor = row.querySelector('.indicator-editor');
+                        editor.value = item.formula_data_show;
+                    }
+                }
             }
             eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
                                 ${indicator_list}
@@ -55,7 +62,7 @@ function loadInitPropertyList(property_id, eleShow) {
                     if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
                         let param_list = ``;
                         data.application_property_list.map(function (item) {
-                            item['is_param'] = true;
+                            item['is_property'] = true;
                             item['syntax'] = "prop(" + item.title + ")";
                             let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                             param_list += `<div class="row property-item">
@@ -169,19 +176,19 @@ $(function () {
                 },
                 columnDefs: [
                     {
-                        "width": "10%",
+                        "width": "5%",
                         "targets": 0
                     }, {
-                        "width": "35%",
+                        "width": "40%",
                         "targets": 1
                     }, {
                         "width": "10%",
                         "targets": 2
                     }, {
-                        "width": "35%",
+                        "width": "40%",
                         "targets": 3
                     }, {
-                        "width": "10%",
+                        "width": "5%",
                         "targets": 4
                     }
                 ],
@@ -195,12 +202,15 @@ $(function () {
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            return `<span>${row.title}</span>`
+                            // return `<span>${row.title}</span>`
+                            return `<input type="text" class="form-control table-row-title" value="${row.title}">`
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row) => {
+                            let modalID = "indicatorEditModalCenter" + String(row.order);
+                            let modalTarget = "#indicatorEditModalCenter" + String(row.order);
                             let tabIndicatorID = "tab_indicator_" + String(row.order);
                             let tabIndicatorHref = "#tab_indicator_" + String(row.order);
                             let tabPropertyID = "tab_property_" + String(row.order);
@@ -209,14 +219,15 @@ $(function () {
                             let tabFunctionHref = "#tab_function_" + String(row.order);
                             let tabOperatorID = "tab_operator_" + String(row.order);
                             let tabOperatorHref = "#tab_operator_" + String(row.order);
-                            return `<i 
-                                        class="fa-regular fa-pen-to-square modal-edit-formula"
+                            return `<button
+                                        type="button"
+                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover modal-edit-formula"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#indicatorEditModalCenter"
-                                    ></i>
+                                        data-bs-target="${modalTarget}"
+                                    ><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                     <div
-                                            class="modal fade" id="indicatorEditModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="indicatorEditModalCenter"
+                                            class="modal fade" id="${modalID}" tabindex="-1"
+                                            role="dialog" aria-labelledby="${modalID}"
                                             aria-hidden="true"
                                     >
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -289,9 +300,9 @@ $(function () {
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                     <button 
-                                                    type="button" 
-                                                    class="btn btn-primary btn-edit-indicator"
-                                                    data-id="${row.id}"
+                                                        type="button" 
+                                                        class="btn btn-primary btn-edit-indicator"
+                                                        data-id="${row.id}"
                                                     >Save</button>
                                                 </div>
                                             </div>
@@ -302,13 +313,17 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            return `<span>${row.description}</span>`
+                            // return `<span>${row.description}</span>`
+                            return `<input type="text" class="form-control table-row-description" value="${row.description}">`
                         }
                     },
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`
+                            // return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`
+                            let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
+                            let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            return btn_edit + btn_delete;
                         }
                     }
                 ],
@@ -316,13 +331,54 @@ $(function () {
         }
 
         $('#tab-indicator').on('click', function () {
+            // disable main edit & save btn
+            document.getElementById('btn-edit_quotation_config').setAttribute('hidden', 'true');
+            document.getElementById('btn-create_quotation_config').setAttribute('hidden', 'true');
+            // load table indicator
             $('#table_indicator_list').DataTable().destroy();
             loadIndicatorDbl();
         });
 
+        $('#tab-config').on('click', function () {
+            // enable main edit & save btn
+            document.getElementById('btn-edit_quotation_config').removeAttribute('hidden');
+        });
+
+        tableIndicator.on('change', '.table-row-title, .table-row-description', function(e) {
+            $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
+        });
+
+        tableIndicator.on('click', '.table-row-save', function(e) {
+            let url_update = btnCreateIndicator.attr('data-url-update');
+            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
+            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
+            let method = "put";
+            let data_submit = {};
+            data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
+            data_submit['description'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, data_submit, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(url_redirect, 3000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+            // disable save btn
+            $(this)[0].setAttribute('disabled', true);
+        });
+
         tableIndicator.on('click', '.modal-edit-formula', function(e) {
             let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
-            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow));
+            let row = $(this)[0].closest('tr');
+            let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
+            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
             loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
         });
@@ -373,7 +429,7 @@ $(function () {
             let formula_data = [];
             let row = ele[0].closest('tr');
             let editor = row.querySelector('.indicator-editor');
-            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-]/g;
+            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-]|(\d+)|'(\d+)'/g;
             const formula_list_raw = editor.value.match(regex);
             for (let item of formula_list_raw) {
                 if (item.includes("indicator")) {

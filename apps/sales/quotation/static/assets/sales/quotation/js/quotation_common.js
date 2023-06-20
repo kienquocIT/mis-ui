@@ -517,17 +517,19 @@ class loadDataHandle {
                 let valList = [];
                 let account_price_list = document.getElementById('customer-price-list').value;
                 $(priceList).empty();
-                for (let i = 0; i < data.price_list.length; i++) {
-                    if (data.price_list[i].id === account_price_list) {
-                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                    <div class="row">
-                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                        <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                    </div>
-                                </a>`;
-                        $(priceList).append(option);
+                if (data.price_list) {
+                    for (let i = 0; i < data.price_list.length; i++) {
+                        if (data.price_list[i].id === account_price_list) {
+                            valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
+                            let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                        <div class="row">
+                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                            <div class="col-2"></div>
+                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                        </div>
+                                    </a>`;
+                            $(priceList).append(option);
+                        }
                     }
                 }
                 // get Min Price to display
@@ -1175,7 +1177,7 @@ class dataTableHandle {
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
                         let taxID = "";
-                        let taxRate = "";
+                        let taxRate = "0";
                         if (row.tax) {
                             taxID = row.tax.id;
                             taxRate = row.tax.value;
@@ -1200,7 +1202,7 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
-                            } else {
+                            } else { // PROMOTION & SHIPPING
                                 return `<div class="row">
                                 <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
@@ -1266,8 +1268,13 @@ class dataTableHandle {
                     targets: 9,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        return `${bt3}`
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
+                        // return `${bt3}`
+                        if (is_load_detail === false) {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        } else {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row disabled-but-edit" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        }
                     }
                 },
             ],
@@ -1742,8 +1749,13 @@ class dataTableHandle {
                     targets: 7,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        return `${bt3}`
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
+                        // return `${bt3}`
+                        if (is_load_detail === false) {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        } else {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row disabled-but-edit" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        }
                     }
                 },
             ],
@@ -2646,9 +2658,10 @@ class submitHandle {
                 rowData['promotion'] = null;
                 rowData['shipping'] = null;
             } else if (elePromotion) { // PROMOTION
+                let check_none_blank_list = ['', "", null, "undefined"];
                 rowData['is_promotion'] = true;
                 rowData['product'] = null;
-                if (elePromotion.getAttribute('data-id-product')) {
+                if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
                    rowData['product'] = elePromotion.getAttribute('data-id-product');
                 }
                 rowData['promotion'] = elePromotion.getAttribute('data-id');

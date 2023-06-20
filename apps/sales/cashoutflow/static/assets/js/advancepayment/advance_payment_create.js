@@ -71,9 +71,9 @@ $(document).ready(function () {
         })
     });
 
-    console.log(sale_order_list)
-    console.log(quotation_list)
-    console.log(opportunity_list)
+    // console.log(sale_order_list)
+    // console.log(quotation_list)
+    // console.log(opportunity_list)
 
     function loadExpenseList(row_id) {
         let ele = $('#' + row_id + ' .expense-select-box');

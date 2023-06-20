@@ -8,7 +8,9 @@ $(function () {
             type: tb.attr('data-method'),
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
-                if (data && resp.data.hasOwnProperty('role_list')) config['data'] = data['role_list'];
+                if (data) {
+                    return resp.data['role_list'] ? resp.data['role_list'] : [];
+                }
                 return [];
             },
         },
@@ -100,7 +102,6 @@ $(function () {
         $('.check-select').attr('checked', true);
         let table = $('#datatable_role_list').DataTable();
         let indexList = table.rows().indexes();
-        console.log(indexList.length)
         if ($(this).is(":checked")) {
             for (let idx = 0; idx < indexList.length; idx++) {
                 let rowNode = table.rows(indexList[idx]).nodes()[0];

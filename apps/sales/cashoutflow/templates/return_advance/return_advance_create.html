@@ -54,7 +54,7 @@
                             name="advance_payment">'
                         <option></option>
                         {% for item in data.advance_payment %}
-                            {% if item.status == 'Approved' and item.remain_value != item.return_value %}
+                            {% if item.status == 'Approved' %}
                                 <option value="{{ item.id }}">{{ item.title }}</option>
                             {% endif %}
                         {% endfor %}
@@ -95,7 +95,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label required">{% trans "Method" %}</label>
-                    <select class="form-control select2" name="method">
+                    <select class="form-select" name="method">
                         <option selected></option>
                         <option value="0">{% trans "Cash" %}</option>
                         <option value="1">{% trans "Bank transfer" %}</option>

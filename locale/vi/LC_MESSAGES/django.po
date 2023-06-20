@@ -3274,3 +3274,43 @@ msgstr "Kho còn hàng"
 msgid "Action in Workflow"
 msgstr "Thao tác trên Quy trình"
 
+
+#
+msgid "Add Member"
+msgstr "Thêm thành viên"
+
+#
+msgid "Member"
+msgstr "Thành viên"
+
+#
+msgid "View Detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "Employee Name"
+msgstr "Tên nhân viên"
+
+#
+msgid "Employee Code"
+msgstr "Mã nhân viên"
+
+#
+msgid "Add member to Sale team"
+msgstr "Thêm thành viên cho nhóm kinh doanh"
+
+#
+msgid "rate must not be less than 0 or greater than 100"
+msgstr "Tỷ lệ không được nhỏ hơn 0 hoặc lớn hơn 100"
+
+#
+msgid "quantity must not be less than zero"
+msgstr "Số lượng không được nhỏ hơn 0"
+
+#
+msgid "money must not be less than zero"
+msgstr "Số tiền không được nhỏ hơn 0"
+
+#
+msgid "The closing date must not be later than the opening date"
+msgstr "Ngày đóng phải sau ngày mở"

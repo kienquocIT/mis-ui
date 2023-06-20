@@ -3314,4 +3314,3 @@ msgstr "Số tiền không được nhỏ hơn 0"
 #
 msgid "The closing date must not be later than the opening date"
 msgstr "Ngày đóng phải sau ngày mở"
-

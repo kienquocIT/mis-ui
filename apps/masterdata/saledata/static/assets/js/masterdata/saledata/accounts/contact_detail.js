@@ -7,6 +7,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 let contactDetail = data?.['contact_detail']
+                $.fn.compareStatusShowPageAction(contactDetail);
                 if (data) {
                     // console.log(data)
                     $("#owner_id").val(contactDetail.owner.fullname);

@@ -123,12 +123,7 @@ $(document).ready(function () {
                     <td><input class="form-control expense-type" disabled></td>
                     <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
                     <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
-                    <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
-                            <span class="input-affix-wrapper">
-                                <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" placeholder="Select a price or enter">
-                            </span>
-                        </div>
-                        <div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
+                    <td><input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" placeholder="Select a price or enter"></td>
                     <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
                     <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
                     <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" disabled></td>
@@ -522,12 +517,14 @@ $(document).ready(function () {
     }
 
     function loadSaleCode(sale_order_mapped, quotation_mapped, opportunity_mapped) {
-        let sale_order_loaded = [];
+        let quotation_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
         sale_order_list.map(function (item) {
-            sale_order_loaded.push(item.customer.id);
+            if (Object.keys(item.quotation).length !== 0) {
+                quotation_loaded.push(item.quotation.id);
+            }
             if (Object.keys(item.opportunity).length !== 0) {
                 oppcode_loaded.push(item.opportunity.id);
                 ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
@@ -537,7 +534,7 @@ $(document).ready(function () {
             }
         })
         quotation_list.map(function (item) {
-            if (sale_order_loaded.includes(item.customer.id) === false) {
+            if (quotation_loaded.includes(item.id) === false) {
                 if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` + item.opportunity.title + `"><div class="row"><span class="code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-right" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
@@ -548,11 +545,7 @@ $(document).ready(function () {
         })
         opportunity_list.map(function (item) {
             if (oppcode_loaded.includes(item.id) === false) {
-                let sale_person_id_list = [];
-                for (let i = 0; i < item.sale_person.length; i++) {
-                    sale_person_id_list.push(item.sale_person[i].id)
-                }
-                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + sale_person_id_list + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+                ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
             }
         })
 
@@ -1158,6 +1151,9 @@ $(document).ready(function () {
                             data_detail[i].others_payment = others_payment;
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
                         }
                         return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
@@ -1270,6 +1266,10 @@ $(document).ready(function () {
                             data_detail[i].others_payment = others_payment;
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
                         }
                         return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }

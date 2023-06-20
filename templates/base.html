@@ -85,6 +85,7 @@
             .my-bell-ring {
                 animation: bell-shake 1s infinite;
             }
+
             {#  -- bell ringing #}
         </style>
         <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
@@ -118,9 +119,6 @@
     <div class="hk-pg-wrapper pb-0">
         <div class="hk-pg-body py-0">
             <div class="blogapp-wrap blogapp-sidebar-toggle">
-                <nav class="blogapp-sidebar">
-                    {% include 'extends/app_sidebar.html' %}
-                </nav>
                 <div class="blogapp-content">
                     <div class="blogapp-detail-wrap">
                         <header class="blog-header">
@@ -133,7 +131,7 @@
                                 </div>
                                 <button
                                         type="submit"
-                                        class="hidden btn-save-at-zone-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                         form=""
                                         data-value=""
                                         id="idxSaveInZoneWF"
@@ -145,6 +143,25 @@
                                             data-bs-original-title="{% trans 'Save in Zone' %}"
                                     ><i class="fa-solid fa-floppy-disk"></i></span>
                                 </button>
+
+                                <button
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        type="submit"
+                                        form=""
+                                        data-wf-action=""
+                                        id="idxSaveInZoneWFThenNext"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Save in zone then call next station' %}"
+                                >
+{#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
+{#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
+                                    <span class="icon">
+                                        <i class="fa-solid fa-check-double text-success"></i>
+                                    </span>
+                                </button>
+
+
                                 <button
                                         type="button"
                                         class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
@@ -162,12 +179,12 @@
                                         class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                         data-value=""
                                         id="btnMainAction"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Approval' %}"
                                 >
                                     <span
                                             class="icon"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Approval' %}"
                                     ></span>
                                 </button>
 
@@ -243,25 +260,26 @@
                 </div>
             </div>
         </div>
-        <!-- /Page Body -->
     </div>
-    <!-- /Main Content -->
+    <!-- /Page Body -->
+</div>
+<!-- /Main Content -->
 
-    <!-- spinner loading -->
-    <div id="loadingContainer" class="loading-container hidden">
-        <div class="my-spinner">
-            <div class="my-circle my-circle-1"></div>
-            <div class="my-circle my-circle-2"></div>
-            <div class="my-circle my-circle-3"></div>
-            <div class="my-circle my-circle-4"></div>
-            <div class="my-circle my-circle-5"></div>
-        </div>
+<!-- spinner loading -->
+<div id="loadingContainer" class="loading-container hidden">
+    <div class="my-spinner">
+        <div class="my-circle my-circle-1"></div>
+        <div class="my-circle my-circle-2"></div>
+        <div class="my-circle my-circle-3"></div>
+        <div class="my-circle my-circle-4"></div>
+        <div class="my-circle my-circle-5"></div>
     </div>
-    <!-- /spinner loading -->
-    <!-- Message translate usually -->
-    <div class="hidden">
-        <span id="msg-user-language">{{ base.language }}</span>
-        <span id="msg-datatable-language-config">
+</div>
+<!-- /spinner loading -->
+<!-- Message translate usually -->
+<div class="hidden">
+    <span id="msg-user-language">{{ base.language }}</span>
+    <span id="msg-datatable-language-config">
             {% if base.language == 'vi' %}
                 {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
             {% elif base.language == 'en' %}
@@ -271,208 +289,211 @@
                 {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
             {% endif %}
         </span>
-        <span id="urlCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
-        <span id="urlCompanyConfigData"></span>
+    <span id="urlCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
+    <span id="urlCompanyConfigData"></span>
 
-        <span id="urlCompanyConfig1" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
-        <span id="urlCompanyConfigData1"></span>
+    <span id="urlCompanyConfig1" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
+    <span id="urlCompanyConfigData1"></span>
 
-        <span id="msgReloadPageIn">{% trans 'Auto reload has been applied after the timeout!' %}</span>
-        <span id="msgLabelReloadPageIn">{% trans 'Change Space to ' %}</span>
-        <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
-        <span id="msgSuccess">{% trans 'Successfully' %}</span>
-        <span id="flagIsDebug" data-is-debug={{ is_debug }}></span>
-        <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-        <span id="idWFRuntime" data-runtime-id=""></span>
-        <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
-        <span id="idPKDetail" data-pk="{{ pk }}"></span>
+    <span id="msgReloadPageIn">{% trans 'Auto reload has been applied after the timeout!' %}</span>
+    <span id="msgLabelReloadPageIn">{% trans 'Change Space to ' %}</span>
+    <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
+    <span id="msgSuccess">{% trans 'Successfully' %}</span>
+    <span id="flagIsDebug" data-is-debug={{ is_debug }}></span>
+    <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
+    <span id="idWFRuntime" data-runtime-id=""></span>
+    <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
+    <span id="idPKDetail" data-pk="{{ pk }}"></span>
 
-        {% if data.input_mapping_properties %}
-            {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
-        {% endif %}
-        {% if data.form_id %}
-            <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
-        {% endif %}
-        <span id="idBtnIDLastSubmit" data-id></span>
-    </div>
-    <!-- /Message translate usually -->
-    <!-- /Message translate base -->
-    <input
-            type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
-            data-more-info="{% trans 'More Information' %}"
-            data-draft="{% trans 'Draft' %}"
-            data-created="{% trans 'Created' %}"
-            data-added="{% trans 'Added' %}"
-            data-finish="{% trans 'Finish' %}"
-            data-cancel="{% trans 'Cancel' %}"
-            data-confirm="{% trans 'Confirm' %}"
-            data-loading="{% trans 'Loading' %}"
-            data-success="{% trans 'Successfully' %}"
-            data-are-you-sure="{% trans 'Are you sure about this change?' %}"
-            data-no-data="{% trans 'No data available' %}"
-    >
-    <!-- /Message translate base -->
+    {% if data.input_mapping_properties %}
+        {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+    {% endif %}
+    {% if data.form_id %}
+        <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
+    {% endif %}
+    <span id="idBtnIDLastSubmit" data-id></span>
+</div>
+<!-- /Message translate usually -->
+<!-- /Message translate base -->
+<input
+        type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
+        data-more-info="{% trans 'More Information' %}"
+        data-draft="{% trans 'Draft' %}"
+        data-created="{% trans 'Created' %}"
+        data-added="{% trans 'Added' %}"
+        data-finish="{% trans 'Finish' %}"
+        data-cancel="{% trans 'Cancel' %}"
+        data-confirm="{% trans 'Confirm' %}"
+        data-loading="{% trans 'Loading' %}"
+        data-success="{% trans 'Successfully' %}"
+        data-are-you-sure="{% trans 'Are you sure about this change?' %}"
+        data-no-data="{% trans 'No data available' %}"
+        data-title="{% trans 'Title' %}"
+        data-code="{% trans 'Code' %}"
+        data-action-wf="{% trans 'Action in Workflow' %}"
+>
+<!-- /Message translate base -->
 
-    <!-- Render Company Config -->
-    {{ config|json_script:"idConfigValue" }}
-    <!-- // Render Company Config -->
+<!-- Render Company Config -->
+{{ config|json_script:"idConfigValue" }}
+<!-- // Render Company Config -->
 
-    <div class="hidden">
-        {% block dataHiddenGroup %}{% endblock %}
-    </div>
+<div class="hidden">
+    {% block dataHiddenGroup %}{% endblock %}
+</div>
 
-    <!-- Drawer Log and Activity -->
-    <div
-            data-simplebar
-            class="ntt-drawer ntt-drawer-right nicescroll-bar"
-            data-drawer-width="500"
-            data-drawer-push="true"
-            id="drawer_log_data"
-            data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"
-    >
-        <div class="ntt-drawer-header">
-            <div><span class="ntt-drawer-header-text"></span></div>
-            <button class="btn btn-icon btn-xs btn-rounded bg-dark-hover ntt-drawer-close">
+<!-- Drawer Log and Activity -->
+<div
+        data-simplebar
+        class="ntt-drawer ntt-drawer-right nicescroll-bar"
+        data-drawer-width="500"
+        data-drawer-push="true"
+        id="drawer_log_data"
+        data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"
+>
+    <div class="ntt-drawer-header">
+        <div><span class="ntt-drawer-header-text"></span></div>
+        <button class="btn btn-icon btn-xs btn-rounded bg-dark-hover ntt-drawer-close">
                 <span class="icon">
                     <span aria-hidden="true"><i class="fas fa-times"></i></span>
                 </span>
-            </button>
-        </div>
-        <div class="ntt-drawer-body">
-            <div class="ntt-drawer-content-wrap">
-                <ul class="nav nav-light nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_diagram">
-                            <span class="nav-link-text">{% trans 'Diagram' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_activities">
-                            <span class="nav-link-text">{% trans 'Activities' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_block_diagram">
-                        <div class="spinner-grow" id="idxDataRuntimeLoading" role="status">
-                            <span class="sr-only">{% trans 'Loading' %}...</span>
-                        </div>
-                        <div class="hidden" id="idxDataRuntimeNotFound">
-                            <b>
-                                {% trans "The document approved because the feature config don't apply workflow" %}
-                            </b>
-                        </div>
-                        <div id="idxDataRuntime" class="hidden" style="width: calc(100% - 3px)">
+        </button>
+    </div>
+    <div class="ntt-drawer-body">
+        <div class="ntt-drawer-content-wrap">
+            <ul class="nav nav-light nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_diagram">
+                        <span class="nav-link-text">{% trans 'Diagram' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_activities">
+                        <span class="nav-link-text">{% trans 'Activities' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_block_diagram">
+                    <div class="spinner-grow" id="idxDataRuntimeLoading" role="status">
+                        <span class="sr-only">{% trans 'Loading' %}...</span>
+                    </div>
+                    <div class="hidden" id="idxDataRuntimeNotFound">
+                        <b>
+                            {% trans "The document approved because the feature config don't apply workflow" %}
+                        </b>
+                    </div>
+                    <div id="idxDataRuntime" class="hidden" style="width: calc(100% - 3px)">
 
-                        </div>
                     </div>
-                    <div
-                            class="tab-pane fade" id="tab_block_activities"
-                            data-url="{% url 'ActivityLogListAPI' %}?doc_id={{ pk }}"
-                    >
-                        <span id="elementTypingText"></span>
-                    </div>
+                </div>
+                <div
+                        class="tab-pane fade" id="tab_block_activities"
+                        data-url="{% url 'ActivityLogListAPI' %}?doc_id={{ pk }}"
+                >
+                    <span id="elementTypingText"></span>
                 </div>
             </div>
         </div>
     </div>
-    <!-- // Drawer Log and Activity -->
+</div>
+<!-- // Drawer Log and Activity -->
 
-    <!-- Raise a ticket -->
-    <div
-            class="modal fade" id="modalRaiseTicket" tabindex="-1" role="dialog" aria-labelledby="modalRaiseTicket"
-            aria-hidden="true"
-    >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form
-                        id="frm-send-a-ticket" data-url="{% url 'TicketErrorCreateAPI' %}" data-method="POST"
-                        enctype="multipart/form-data"
-                >
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Raise a ticket' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+<!-- Raise a ticket -->
+<div
+        class="modal fade" id="modalRaiseTicket" tabindex="-1" role="dialog" aria-labelledby="modalRaiseTicket"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form
+                    id="frm-send-a-ticket" data-url="{% url 'TicketErrorCreateAPI' %}" data-method="POST"
+                    enctype="multipart/form-data"
+            >
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Raise a ticket' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- hidden input -->
+                    <div class="form-group hidden">
+                        <label for="ticket-email-auto" class="form-label">{% trans 'Email' %}</label>
+                        <input class="form-control" type="text" id="ticket-email-auto" name="email"/>
                     </div>
-                    <div class="modal-body">
-                        <!-- hidden input -->
-                        <div class="form-group hidden">
-                            <label for="ticket-email-auto" class="form-label">{% trans 'Email' %}</label>
-                            <input class="form-control" type="text" id="ticket-email-auto" name="email"/>
-                        </div>
-                        <div class="form-group hidden">
-                            <label
-                                    for="ticket-location-raise-auto" class="form-label"
-                            >{% trans 'Location raise' %}</label>
-                            <input
-                                    class="form-control" type="text" id="ticket-location-raise-auto"
-                                    name="location_raise"
-                            />
-                        </div>
-                        <!-- hidden input -->
-                        <div class="form-group">
-                            <label for="ticket-email" class="form-label">{% trans 'Email' %}</label>
-                            <input class="form-control" type="text" id="ticket-email" name="email_input"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="ticket-location-raise" class="form-label">{% trans 'Location raise' %}</label>
-                            <input
-                                    class="form-control" type="text" id="ticket-location-raise"
-                                    name="location_raise_input"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="ticket-title" class="form-label required">{% trans 'Title' %}</label>
-                            <input type="text" class="form-control" id="ticket-title" name="title"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="ticket-hash-tag" class="form-label required">{% trans 'Hash Tag' %}</label>
-                            <select
-                                    name="hash_tags" id="ticket-hash-tag" class="form-control" multiple="multiple"
-                            >
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                            <small class="text-muted">{% trans 'Allow input new tag' %}</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="ticket-remarks" class="form-label required">{% trans 'Descriptions' %}</label>
-                            <textarea class="form-control" id="ticket-remarks" name="remarks"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <div id="ticket-attachment-preview">
-                            </div>
-                            <label
-                                    for="ticket-attachments" class="form-label"
-                            >{% trans 'Attachments' %}</label>
-                            <input
-                                    type="file" class="form-control" id="ticket-attachments" name="attachments" multiple
-                                    accept="image/jpeg, image/png, image/gif"
-                            />
-                            <small class="text-muted">{% trans 'Accept type' %}: *.jpeg, *.png, *.gif</small>
-                        </div>
-                        <div class="form-group hidden">
-                            <label for="staticTicketResp" class="form-label">{% trans 'Code Ticket' %}</label>
-                            <input
-                                    type="text" readonly class="form-control-plaintext text-danger"
-                                    id="staticTicketResp"
-                            >
-                        </div>
+                    <div class="form-group hidden">
+                        <label
+                                for="ticket-location-raise-auto" class="form-label"
+                        >{% trans 'Location raise' %}</label>
+                        <input
+                                class="form-control" type="text" id="ticket-location-raise-auto"
+                                name="location_raise"
+                        />
                     </div>
-                    <div class="modal-footer">
-                        <button
-                                type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        >{% trans 'Close' %}</button>
-                        <button type="submit" class="btn btn-primary">{% trans 'Send a ticket' %}</button>
+                    <!-- hidden input -->
+                    <div class="form-group">
+                        <label for="ticket-email" class="form-label">{% trans 'Email' %}</label>
+                        <input class="form-control" type="text" id="ticket-email" name="email_input"/>
                     </div>
-                </form>
-            </div>
+                    <div class="form-group">
+                        <label for="ticket-location-raise" class="form-label">{% trans 'Location raise' %}</label>
+                        <input
+                                class="form-control" type="text" id="ticket-location-raise"
+                                name="location_raise_input"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-title" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" class="form-control" id="ticket-title" name="title"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-hash-tag" class="form-label required">{% trans 'Hash Tag' %}</label>
+                        <select
+                                name="hash_tags" id="ticket-hash-tag" class="form-control" multiple="multiple"
+                        >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                        <small class="text-muted">{% trans 'Allow input new tag' %}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-remarks" class="form-label required">{% trans 'Descriptions' %}</label>
+                        <textarea class="form-control" id="ticket-remarks" name="remarks"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div id="ticket-attachment-preview">
+                        </div>
+                        <label
+                                for="ticket-attachments" class="form-label"
+                        >{% trans 'Attachments' %}</label>
+                        <input
+                                type="file" class="form-control" id="ticket-attachments" name="attachments" multiple
+                                accept="image/jpeg, image/png, image/gif"
+                        />
+                        <small class="text-muted">{% trans 'Accept type' %}: *.jpeg, *.png, *.gif</small>
+                    </div>
+                    <div class="form-group hidden">
+                        <label for="staticTicketResp" class="form-label">{% trans 'Code Ticket' %}</label>
+                        <input
+                                type="text" readonly class="form-control-plaintext text-danger"
+                                id="staticTicketResp"
+                        >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    >{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans 'Send a ticket' %}</button>
+                </div>
+            </form>
         </div>
     </div>
-    <!-- // Raise a ticket -->
+</div>
+<!-- // Raise a ticket -->
 </div>
 <!-- /Wrapper -->
 
@@ -524,6 +545,19 @@
     <!-- // Typing text JS -->
 
     <script>
+        // test loading wait response area
+        let cardReportData = $('.card-report-data');
+        cardReportData.showLoadingWaitResponse();
+        setTimeout(
+            () => {
+                cardReportData.hideLoadingWaitResponse();
+            },
+            1500
+        )
+
+        // -- test loading wait response area
+
+
         function change_space() {
             function executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData) {
                 let baseMsg = $('#base-trans-factory');
@@ -650,8 +684,19 @@
             <!-- Loading table ajax -->
             $(document).find('table').each((idx, tbl) => {
                 if (!$(tbl).attr('load-data-hide-spinner')) {
-                    $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
-                    $(tbl).on('draw.dt', () => $.fn.hideLoading());
+                    $(tbl).on('preXhr.dt', (e, settings, data) => {
+                        // show loading full page
+                        {#$.fn.showLoading();#}
+                        // show loading tbody table
+                        $(tbl).find('tbody').showLoadingWaitResponse();
+                    });
+                    $(tbl).on('draw.dt', () => {
+                        // hide loading full page
+                        {#$.fn.hideLoading();#}
+
+                        // hide loading tbody table
+                        $(tbl).find('tbody').hideLoadingWaitResponse();
+                    });
                 }
             });
             <!-- ## Loading table ajax -->
@@ -665,7 +710,10 @@
             <!-- ## Init Mask Money -->
 
             <!-- Init select2 -->
-            $(".select2").select2();
+            $(".select2").each(function () {
+                $(this).initSelect2();
+            });
+
             <!-- ## Init select2 -->
 
             <!-- Raise a ticket -->

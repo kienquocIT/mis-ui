@@ -3004,6 +3004,10 @@ msgid "Save in Zone"
 msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
 
 #
+msgid "Save in zone then call next station"
+msgstr "Lưu cập nhật trên phần vùng quy trình, sau đó gọi chuyển trạm"
+
+#
 msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
 
@@ -3136,6 +3140,142 @@ msgid "Factors that customer decision to buy your product"
 msgstr "Các yếu tố quyết định khách hàng sẽ mua sản phẩm"
 
 #
+msgid "Number is larger than Remain number"
+msgstr "Số lượng lấy lớn hơn số lượng còn lại"
+
+#
+msgid "Warehouse is required!"
+msgstr "Kho là trường bắt buộc!"
+
+#
+msgid "Done column of line detail is empty!"
+msgstr "Cột hoàn tất của bảng sản phầm đang trống"
+
+#
+msgid "Ready"
+msgstr "Sẵn sàng"
+
+#
+msgid "Out of stock"
+msgstr "Hết hàng"
+
+#
+msgid "Delivery Detail"
+msgstr "Chi tiết phiếu giao hàng"
+
+#
+msgid "Estimated Delivery Date"
+msgstr "Ngày giao hàng dự kiến"
+
+#
+msgid "to Customer"
+msgstr "Đến khách hàng"
+
+#
+msgid "Actual Date"
+msgstr "Ngày thực tế"
+
+#
+msgid "Contact name"
+msgstr "Tên liên hệ"
+
+#
+msgid "Notes"
+msgstr "Ghi chú"
+
+#
+msgid "Total order"
+msgstr "Tổng số lượng"
+
+#
+msgid "Get Product"
+msgstr "Lấy hàng"
+
+#
+msgid "Picking Area"
+msgstr "Khu vực lấy hàng"
+
+#
+msgid "Store"
+msgstr "SL kho"
+
+#
+msgid "Picking zone"
+msgstr "SL hàng lấy"
+
+#
+msgid "Get"
+msgstr "Lấy"
+
+#
+msgid "Picking"
+msgstr "Lấy hàng"
+#
+msgid "Picking list"
+msgstr "Danh sách lấy hàng"
+
+#
+msgid "Good receipt"
+msgstr "Nhập hàng"
+
+#
+msgid "Good receipt List"
+msgstr "Danh sách nhập hàng"
+
+#
+msgid "Delivery"
+msgstr "Giao hàng"
+
+#
+msgid "Delivery list"
+msgstr "Danh sách giao hàng"
+
+#
+msgid "Expected Date"
+msgstr "Ngày dự kiến"
+
+#
+msgid "Select Order"
+msgstr "Chọn đơn hàng"
+
+#
+msgid "Select"
+msgstr "Chọn"
+
+#
+msgid "Picking detail"
+msgstr "Chi tiết phiếu lấy hàng"
+
+#
+msgid "Estimate Delivery Date"
+msgstr "Ngày giao hàng dự kiến"
+
+#
+msgid "To Location"
+msgstr "đến khu vực"
+
+#
+msgid "Picked Before"
+msgstr "SL lấy trước đó"
+
+#
+msgid "Remain"
+msgstr "còn lại"
+
+#
+msgid "Product in Warehouse out of stock"
+msgstr "Sản phẩm trong kho hết hàng"
+
+#
+msgid "Available in Store place"
+msgstr "Kho còn hàng"
+
+#
+msgid "Action in Workflow"
+msgstr "Thao tác trên Quy trình"
+
+
+#
 msgid "Add Member"
 msgstr "Thêm thành viên"
 
@@ -3170,3 +3310,4 @@ msgstr "Số lượng không được nhỏ hơn 0"
 #
 msgid "money not less than 0"
 msgstr "Số tiền không được nhỏ hơn 0"
+

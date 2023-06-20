@@ -33,17 +33,17 @@ PICKING_STATE = (
 )
 # Delivery
 DELIVERY_STATE = (
-    (0, 'Wait'),
-    (1, 'Ready'),
-    (2, 'Done')
+    (0, _('Wait')),
+    (1, _('Ready')),
+    (2, _('Done'))
 )
 
 # Workflow
 WORKFLOW_ACTION = {
     0: [WorkflowMsg.ACTION_CREATE, 'fas fa-plus'],
-    1: [WorkflowMsg.ACTION_APPROVED, 'far fa-thumbs-up text-success'],
+    1: [WorkflowMsg.ACTION_APPROVED, 'fas fa-check text-success'],
     2: [WorkflowMsg.ACTION_REJECT, 'fas fa-times'],
     3: [WorkflowMsg.ACTION_RETURN, 'fas fa-fast-backward'],
-    4: [WorkflowMsg.ACTION_RECEIVE, 'fas fa-spell-check'],
+    4: [WorkflowMsg.ACTION_RECEIVE, 'fas fa-check text-success'],
     5: [WorkflowMsg.ACTION_TODO, 'far fa-list-alt'],
 }

@@ -1266,7 +1266,6 @@ $(document).ready(function () {
                             data_detail[i].others_payment = others_payment;
 
                             data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
-
                             if (data_detail[i].available < 0) {
                                 data_detail[i].available = 0;
                             }

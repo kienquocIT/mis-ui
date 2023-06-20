@@ -9,6 +9,7 @@ $(document).ready(function () {
         obj[item.id] = item.bank_accounts_information;
         return obj;
     }, {});
+
     let sale_code_selected_list = [];
     let sale_order_selected_list = [];
     let quotation_selected_list = [];
@@ -18,6 +19,24 @@ $(document).ready(function () {
     let payment_cost_items_filtered = [];
     let advance_payment_expense_items = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sale_code_mapped_parameter = urlParams.get('sale_code_mapped');
+    let sale_order = sale_order_list.filter(function(element) {
+        return element.id === sale_code_mapped_parameter;
+    });
+    console.log(sale_order);
+    let quotation = quotation_list.filter(function(element) {
+        return element.id === sale_code_mapped_parameter;
+    });
+    console.log(quotation);
+    let opportunity = opportunity_list.filter(function(element) {
+        return element.id === sale_code_mapped_parameter;
+    });
+    console.log(opportunity);
+    if (sale_order.length > 0) {
+        console.log(sale_order[0].sale_person.id)
+    }
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
         let ap_item = ap_list.find(function(item) {
@@ -179,7 +198,7 @@ $(document).ready(function () {
                     })
                     if (load_default === 0) {
                         // $('#beneficiary-select-box').prop('disabled', true);
-                        loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+                        loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
                         $('#sale-code-select-box').prop('disabled', false);
                         $('#sale-code-select-box2-show').css({
                             'background': 'none',
@@ -197,16 +216,16 @@ $(document).ready(function () {
         },)
     }
 
-    function loadBeneficiary(sale_person_id, department_id, creator_id) {
+    function loadBeneficiary(department_id, creator_id) {
         let ele = $('#beneficiary-select-box');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    if (sale_person_id) {
-                        resp.data.employee_list.map(function (item) {
-                            if (sale_person_id.includes(item.id)) {
+                    resp.data.employee_list.map(function (item) {
+                        if (item.group.id === department_id) {
+                            if (item.id === creator_id) {
                                 ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
                                 $('#beneficiary-detail-span').prop('hidden', false);
                                 $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
@@ -214,33 +233,18 @@ $(document).ready(function () {
                                 $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
                                 let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
                                 $('#btn-detail-beneficiary-tab').attr('href', url);
-                            }
-                        })
-                    }
-                    else {
-                        resp.data.employee_list.map(function (item) {
-                            if (item.group.id === department_id) {
-                                if (item.id === creator_id) {
-                                    ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                                    $('#beneficiary-detail-span').prop('hidden', false);
-                                    $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
-                                    $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
-                                    $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
-                                    let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
-                                    $('#btn-detail-beneficiary-tab').attr('href', url);
-                                } else {
-                                    ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                                    if ($('#radio-non-sale').is(':checked')) {
-                                        $('#beneficiary-detail-span').prop('hidden', true);
-                                        $('#beneficiary-name').text('');
-                                        $('#beneficiary-code').text('');
-                                        $('#beneficiary-department').text('');
-                                        $('#btn-detail-beneficiary-tab').attr('href', '#');
-                                    }
+                            } else {
+                                ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                                if ($('#radio-non-sale').is(':checked')) {
+                                    $('#beneficiary-detail-span').prop('hidden', true);
+                                    $('#beneficiary-name').text('');
+                                    $('#beneficiary-code').text('');
+                                    $('#beneficiary-department').text('');
+                                    $('#btn-detail-beneficiary-tab').attr('href', '#');
                                 }
                             }
-                        })
-                    }
+                        }
+                    })
                 }
             }
         }, (errs) => {
@@ -791,7 +795,7 @@ $(document).ready(function () {
             loadSaleCodeMulti();
             sale_code_selected_list = [];
             $('#beneficiary-select-box').prop('disabled', true);
-            loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+            loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
             $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',

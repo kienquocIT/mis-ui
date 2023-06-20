@@ -366,12 +366,10 @@ $(async function () {
         const warehouseStock = pickupInit.getWarehouseList
         for (prod of pickupInit.getProdList) {
             const isKey = `${prod.product_data.id}.${prod.uom_data.id}`
-            if (warehouseStock.hasOwnProperty(isKey) &&
-                warehouseStock[isKey][pickingData['ware_house']]
-            ) {
-                if (prod.picked_quantity > 0) {
+            if (prod.picked_quantity > 0) {
+                if (warehouseStock.hasOwnProperty(isKey) && warehouseStock[isKey][pickingData['ware_house']]) {
                     let temp = {
-                        'product_id':prod.product_data.id,
+                        'product_id': prod.product_data.id,
                         'done': prod.picked_quantity,
                         'delivery_data': [{
                             'warehouse': _form.dataForm['warehouse_id'],
@@ -381,11 +379,11 @@ $(async function () {
                         'order': prod.order,
                     }
                     prodSub.push(temp)
+                } else {
+                    $.fn.notifyPopup(
+                        {description: prod.product_data.title + ' ' + $transElm.attr('data-prod-outstock')},
+                        'failure')
                 }
-            } else {
-                $.fn.notifyPopup(
-                    {description: prod.product_data.title + ' ' + $transElm.attr('data-prod-outstock')},
-                    'failure')
             }
         }
         pickingData.products = prodSub

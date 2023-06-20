@@ -104,8 +104,10 @@ $(async function () {
                                 class: 'w-15 text-center',
                                 data: 'picked',
                                 render: (row, type, data, meta) => {
-                                    const disabled = data.product_amount <= 0 ? 'disabled' : '';
-                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                                    let disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    // if condition for config 3 purpose.
+                                    if (config.is_picking && !config.is_partial_ship) disabled = 'disabled'
+                                    return `<input class="form-control" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                                 }
                             },
                         ],

@@ -17,14 +17,14 @@ $(document).ready(function () {
             format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'), 10) + 100
+        maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
     });
     $('input[name="close_date"]').daterangepicker({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,
         drops: 'auto',
-        minYear: parseInt(moment().format('YYYY'), 10),
+        minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
         locale: {
             format: 'YYYY-MM-DD'
         },
@@ -542,7 +542,7 @@ $(document).ready(function () {
 
     $(document).on('change', '.input-quantity', function () {
         let quantity = $(this).val();
-        if (quantity < 0){
+        if (quantity < 0) {
             $.fn.notifyPopup({description: $('#limit-quantity').text()}, 'failure');
             $(this).val(0);
             quantity = 0;
@@ -935,11 +935,19 @@ $(document).ready(function () {
         $('#card-member').addClass('tag-change');
     })
 
-    $(document).on('change', '.mask-money' ,function (){
-        if ($(this).valCurrency() < 0){
+    $(document).on('change', '.mask-money', function () {
+        if ($(this).valCurrency() < 0) {
             $.fn.notifyPopup({description: $('#limit-money').text()}, 'failure');
             $(this).attr('value', 0);
             $.fn.initMaskMoney2();
+        }
+    })
+
+    $(document).on('change', '#input-close-date', function () {
+        let open_date = $('#input-open-date').val();
+        if ($(this).val() < open_date) {
+            $.fn.notifyPopup({description: $('#limit-close-date').text()}, 'failure');
+            $(this).val(open_date);
         }
     })
 })

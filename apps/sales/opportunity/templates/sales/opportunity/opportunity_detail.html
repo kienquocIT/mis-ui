@@ -33,9 +33,10 @@
         <input id="data-product" class="hidden">
     </div>
     <div id="text-notify" hidden>
-        <span id="limit-rate">{% trans "rate not less than 0 or greater than 100" %}</span>
-        <span id="limit-quantity">{% trans "quantity not less than 0" %}</span>
-        <span id="limit-money">{% trans "money not less than 0" %}</span>
+        <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
+        <span id="limit-quantity">{% trans "quantity must not be less than zero" %}</span>
+        <span id="limit-money">{% trans "money must not be less than zero" %}</span>
+        <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
     </div>
     <div id="div-url" hidden>
         <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">

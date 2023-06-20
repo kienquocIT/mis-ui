@@ -3300,14 +3300,18 @@ msgid "Add member to Sale team"
 msgstr "Thêm thành viên cho nhóm kinh doanh"
 
 #
-msgid "rate not less than 0 or greater than 100"
+msgid "rate must not be less than 0 or greater than 100"
 msgstr "Tỷ lệ không được nhỏ hơn 0 hoặc lớn hơn 100"
 
 #
-msgid "quantity not less than 0"
+msgid "quantity must not be less than zero"
 msgstr "Số lượng không được nhỏ hơn 0"
 
 #
-msgid "money not less than 0"
+msgid "money must not be less than zero"
 msgstr "Số tiền không được nhỏ hơn 0"
+
+#
+msgid "The closing date must not be later than the opening date"
+msgstr "Ngày đóng phải sau ngày mở"
 

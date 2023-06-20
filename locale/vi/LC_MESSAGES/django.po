@@ -3134,3 +3134,39 @@ msgstr "Thêm yếu tố"
 #
 msgid "Factors that customer decision to buy your product"
 msgstr "Các yếu tố quyết định khách hàng sẽ mua sản phẩm"
+
+#
+msgid "Add Member"
+msgstr "Thêm thành viên"
+
+#
+msgid "Member"
+msgstr "Thành viên"
+
+#
+msgid "View Detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "Employee Name"
+msgstr "Tên nhân viên"
+
+#
+msgid "Employee Code"
+msgstr "Mã nhân viên"
+
+#
+msgid "Add member to Sale team"
+msgstr "Thêm thành viên cho nhóm kinh doanh"
+
+#
+msgid "rate not less than 0 or greater than 100"
+msgstr "Tỷ lệ không được nhỏ hơn 0 hoặc lớn hơn 100"
+
+#
+msgid "quantity not less than 0"
+msgstr "Số lượng không được nhỏ hơn 0"
+
+#
+msgid "money not less than 0"
+msgstr "Số tiền không được nhỏ hơn 0"

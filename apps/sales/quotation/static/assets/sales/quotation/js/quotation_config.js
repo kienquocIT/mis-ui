@@ -258,7 +258,7 @@ $(function () {
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
-                                                                <span class="nav-link-text">Param</span>
+                                                                <span class="nav-link-text">Property</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
@@ -314,7 +314,7 @@ $(function () {
                         targets: 3,
                         render: (data, type, row) => {
                             // return `<span>${row.description}</span>`
-                            return `<input type="text" class="form-control table-row-description" value="${row.description}">`
+                            return `<input type="text" class="form-control table-row-description" value="${row.remark}">`
                         }
                     },
                     {
@@ -409,7 +409,7 @@ $(function () {
                     $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
                                                 <div class="row mb-2">
                                                     <h5>${dataShow.title}</h5>
-                                                    <p>${dataShow.description}</p>
+                                                    <p>${dataShow.remark}</p>
                                                 </div>
                                                 <div class="row mb-2">
                                                     <b>Syntax</b>
@@ -429,7 +429,7 @@ $(function () {
             let formula_data = [];
             let row = ele[0].closest('tr');
             let editor = row.querySelector('.indicator-editor');
-            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-]|(\d+)|'(\d+)'/g;
+            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-*\/()]|(\d+)|'(\d+)'/g;
             const formula_list_raw = editor.value.match(regex);
             for (let item of formula_list_raw) {
                 if (item.includes("indicator")) {
@@ -475,7 +475,7 @@ $(function () {
             let method = $(this).attr('data-method');
             let data_submit = {};
             data_submit['title'] = $('#indicator-create-title').val();
-            data_submit['description'] = $('#indicator-create-description').val();
+            data_submit['remark'] = $('#indicator-create-description').val();
             let order = 1;
             let tableEmpty = tableIndicator[0].querySelector('.dataTables_empty');
             let tableLen = tableIndicator[0].tBodies[0].rows.length;

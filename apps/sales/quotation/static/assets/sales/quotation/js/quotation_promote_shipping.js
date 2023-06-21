@@ -655,6 +655,52 @@ class promotionHandle {
 
         $.fn.initMaskMoney2();
     }
+
+    checkPromotionIfSubmit(promotion_id, customer_id = null) {
+        let jqueryId = '#' + promotion_id;
+        let ele = $(jqueryId);
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        let checkList = [];
+        if (customer_id) {
+            let data_filter = {
+                'customer_type': 0,
+                'customers_map_promotion__id': customer_id
+            };
+            $.fn.callAjax(url, method, data_filter).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
+                            let check_length = 0;
+                            let eleCheck = $('#quotation-check-promotion');
+                            data.promotion_check_list.map(function (item) {
+                                if (!checkList.includes(item.id)) {
+                                    let check = promotionClass.checkAvailablePromotion(item, customer_id);
+                                    if (check.is_pass === false) {
+                                        let tableProduct = document.getElementById('datable-quotation-create-product');
+                                        let rowPromotion = tableProduct.querySelector('.table-row-promotion');
+                                        if (rowPromotion) {
+                                            if (item.id === rowPromotion.getAttribute('data-id')) {
+                                                eleCheck.val('false');
+                                            }
+                                        }
+                                    }
+                                    checkList.push(item.id)
+                                }
+                                check_length++;
+                                if (check_length === data.promotion_check_list.length) {
+                                    if (!eleCheck.val()) {
+                                        eleCheck.val('true');
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+            )
+        }
+    }
 }
 
 // Shipping

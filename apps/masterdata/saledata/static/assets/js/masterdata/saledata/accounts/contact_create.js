@@ -9,21 +9,20 @@ $(document).ready(function () {
         let ele = $('#workcity');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
-                    if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
-                        data.cities.map(function (item) {
-                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option value="" selected>---</option>`)
+                if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                    data.cities.map(function (item) {
+                        ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
+
     loadCitiesWork();
 
     // load Districts SelectBox
@@ -31,20 +30,18 @@ $(document).ready(function () {
         let ele = $('#workdistrict');
         let url = ele.attr('data-url').replace('pk', $('#workcity').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
-                    if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
-                        data.districts.map(function (item) {
-                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option value="" selected>---</option>`)
+                if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
+                    data.districts.map(function (item) {
+                        ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     // load Wards SelectBox
@@ -52,20 +49,18 @@ $(document).ready(function () {
         let ele = $('#workward');
         let url = ele.attr('data-url').replace('pk', $('#workdistrict').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
-                    if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
-                        data.wards.map(function (item) {
-                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option value="" selected>---</option>`)
+                if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
+                    data.wards.map(function (item) {
+                        ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     $('#workcity').on('change', function () {
@@ -124,21 +119,20 @@ $(document).ready(function () {
         let ele = $('#homecity');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
-                    if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
-                        data.cities.map(function (item) {
-                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option value="" selected>---</option>`)
+                if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                    data.cities.map(function (item) {
+                        ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
+
     loadCitiesHome();
 
     // load Districts SelectBox
@@ -146,20 +140,18 @@ $(document).ready(function () {
         let ele = $('#homedistrict');
         let url = ele.attr('data-url').replace('pk', $('#homecity').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
-                    if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
-                        data.districts.map(function (item) {
-                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option value="" selected>---</option>`)
+                if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
+                    data.districts.map(function (item) {
+                        ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     // load Wards SelectBox
@@ -167,20 +159,18 @@ $(document).ready(function () {
         let ele = $('#homeward');
         let url = ele.attr('data-url').replace('pk', $('#homedistrict').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
-                    if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
-                        data.wards.map(function (item) {
-                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option value="" selected>---</option>`)
+                if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
+                    data.wards.map(function (item) {
+                        ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
             }
-        )
+        })
     }
 
     $('#homecity').on('change', function () {
@@ -312,19 +302,17 @@ $(document).ready(function () {
         ele.attr('disabled', false);
         let url = ele.attr('data-url').replace('0', id);
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    ele.append(`<option selected>` + `</option>`)
-                    for (let i = 0; i < data.account_detail.contact_mapped.length; i++) {
-                        let contact_mapped = data.account_detail.contact_mapped[i];
-                        ele.append(`<option value="` + contact_mapped.id + `">` + contact_mapped.fullname + `</option>`)
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                ele.text("");
+                ele.append(`<option selected>` + `</option>`)
+                for (let i = 0; i < data.account_detail.contact_mapped.length; i++) {
+                    let contact_mapped = data.account_detail.contact_mapped[i];
+                    ele.append(`<option value="` + contact_mapped.id + `">` + contact_mapped.fullname + `</option>`)
                 }
             }
-        )
+        })
     }
 
     function loadDefaultData() {
@@ -407,22 +395,20 @@ $(document).ready(function () {
 
         $.fn.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    $.fn.notifyPopup({description: resp.detail}, 'success');
-                    setTimeout(location.reload.bind(location), 1000);
-                    window.location.replace(frm.dataUrlRedirect);
-                }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
-                setTimeout(
-                    ()=>{
-                        $.fn.hideLoading();
-                    },
-                    1000
-                )
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                console.log(data);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
+                    setTimeout(() => {
+                        window.location.replace(frm.dataUrlRedirect);
+                        location.reload.bind(location);
+                    }, 1000);
+                }
             }, (err) => {
-                $.fn.hideLoading();
-                // $.fn.notifyPopup({description: err.detail}, 'failure');
+                setTimeout(() => {
+                    $.fn.hideLoading();
+                }, 1000)
             })
     })
 })

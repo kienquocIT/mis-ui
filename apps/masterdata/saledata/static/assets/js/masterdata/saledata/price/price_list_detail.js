@@ -233,50 +233,52 @@ $(document).ready(function () {
     }
 
     // load detail price list
-    let frm = $('#form-update-price-list')
+    let frm = $('#form-update-price-list');
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (data.price.auto_update || data.price.is_default) {
+                let price_list_detail = data?.['price'];
+                $.fn.compareStatusShowPageAction(price_list_detail);
+                if (price_list_detail.auto_update || price_list_detail.is_default) {
                     $('#btn-add-new-item').prop('disabled', true);
                 } else {
                     $('#btn-add-new-item').prop('disabled', false);
                 }
 
-                if (data.price.is_default) {
-                    $('#price_list_name').text(data.price.title.toUpperCase())
+                if (price_list_detail.is_default) {
+                    $('#price_list_name').text(price_list_detail.title.toUpperCase())
                 } else {
                     $('#setting-nav').removeClass('disabled');
-                    if (data.price.auto_update) {
-                        $('#price_list_name').html(data.price.title + `
-                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + data.price.price_list_mapped.title + `"'>
+                    if (price_list_detail.auto_update) {
+                        $('#price_list_name').html(price_list_detail.title + `
+                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + price_list_detail.price_list_mapped.title + `"'>
                         </i>`
                         )
                     } else {
-                        $('#price_list_name').text(data.price.title)
+                        $('#price_list_name').text(price_list_detail.title)
                     }
                 }
 
-                if (data.price.valid_time_start && data.price.valid_time_start) {
-                    if (data.price.is_default) {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
+                if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
+                    if (price_list_detail.is_default) {
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
                     } else {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + data.price.valid_time_end + `</span>`)
+                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_end + `</span>`)
                     }
                 }
 
-                if (data.price.status) {
+                if (price_list_detail.status) {
                     let badge_type = '';
                     let text_type = '';
-                    if (data.price.status === 'Valid') {
+                    if (price_list_detail.status === 'Valid') {
                         badge_type = 'badge-green'
                         text_type = 'text-green'
-                    } else if (data.price.status === 'Invalid') {
+                    } else if (price_list_detail.status === 'Invalid') {
                         badge_type = 'badge-orange'
                         text_type = 'text-orange'
-                    } else if (data.price.status === 'Expired') {
+                    } else if (price_list_detail.status === 'Expired') {
                         badge_type = 'badge-red'
                         text_type = 'text-red'
                     } else {
@@ -284,39 +286,39 @@ $(document).ready(function () {
                         text_type = 'text-gray'
                     }
 
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + data.price.status + `</span>`)
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + price_list_detail.status + `</span>`)
                 }
 
-                $('#inp-source').val(data.price.price_list_mapped.id)
+                $('#inp-source').val(price_list_detail.price_list_mapped.id)
                 if (data.hasOwnProperty('price')) {
                     let dropdown = $('.dropdown-currency');
-                    data.price.currency.map(function (item) {
+                    price_list_detail.currency.map(function (item) {
                         let abbreviation = currency_dict[item].abbreviation
                         dropdown.append(`<div class="form-check form-check mt-2">
                             <input data-id="` + item + `" class="form-check-input display-currency" type="checkbox" id="check-` + abbreviation + `" value="option1" checked>
                             <label class="form-check-label">` + abbreviation + `</label>
                         </div>`)
                     })
-                    let product_mapped = getProductWithCurrency(data.price.products_mapped, data.price.currency)
+                    let product_mapped = getProductWithCurrency(price_list_detail.products_mapped, price_list_detail.currency)
                     config['data'] = product_mapped.sort(function (a, b) {
                         return a.code - b.code;
                     });
                     initDataTable(config, '#datatable-item-list');
 
-                    for (let i = 0; i < data.price.products_mapped.length; i++) {
-                        if (data.price.products_mapped[i].price === 0) {
-                            let ele1 = $('#datatable-item-list').find(`span[data-id='` + data.price.products_mapped[i].id + `']`).parent().parent()
-                            let ele2 = ele1.find(`span[data-id='` + data.price.products_mapped[i].uom.id + `']`).parent().parent().parent().parent().parent()
+                    for (let i = 0; i < price_list_detail.products_mapped.length; i++) {
+                        if (price_list_detail.products_mapped[i].price === 0) {
+                            let ele1 = $('#datatable-item-list').find(`span[data-id='` + price_list_detail.products_mapped[i].id + `']`).parent().parent()
+                            let ele2 = ele1.find(`span[data-id='` + price_list_detail.products_mapped[i].uom.id + `']`).parent().parent().parent().parent().parent()
                             ele2.css({
                                 'background-color': '#fffffa'
                             })
                         }
                     }
 
-                    loadCurrency(data.price.currency, currency_list);
+                    loadCurrency(price_list_detail.currency, currency_list);
 
                     // add column in table item list (Price Of currency and button Delete item)
-                    if (product_mapped.length != 0) {
+                    if (product_mapped.length !== 0) {
                         let index_th = 4
                         let table = $('#datatable-item-list')
                         let body_table = table.find('tbody tr')
@@ -374,11 +376,11 @@ $(document).ready(function () {
                         }
 
                         // create button del
-                        if (data.price.is_default !== true) {
+                        if (price_list_detail.is_default !== true) {
                             table.find('thead tr').append('<th class="w-5"></th>')
                             for (let i = 0; i < body_table.length; i++) {
                                 if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
-                                    if (data.price.can_delete === true) {
+                                    if (price_list_detail.can_delete === true) {
                                         body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
                                     } else {
                                         body_table[i].innerHTML += '<td></td>'
@@ -391,22 +393,22 @@ $(document).ready(function () {
                     }
 
                     // load data tab settings
-                    $('#select-box-type').val(data.price.price_list_type);
+                    $('#select-box-type').val(price_list_detail.price_list_type);
                     $('#select-box-type').prop('disabled', true);
                     $('#select-box-type').css({'border': 'None', 'color': 'black'});
-                    $('#inp-factor').val(data.price.factor);
-                    if (data.price.auto_update === true) {
+                    $('#inp-factor').val(price_list_detail.factor);
+                    if (price_list_detail.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
                         $('#select-product-category').prop('disabled', 'disabled');
                         $('#select-box-currency').prop('disabled', 'disabled');
                         $('#checkbox-can-delete').prop('disabled', false);
                         $('#btn-add-new-item').prop('disabled', true);
                     }
-                    if (data.price.can_delete === true) {
+                    if (price_list_detail.can_delete === true) {
                         $('#checkbox-can-delete').prop('checked', true);
                     }
-                    if (Object.keys(data.price.price_list_mapped).length !== 0) {
-                        loadSourcePriceList(data.price.price_list_mapped.id);
+                    if (Object.keys(price_list_detail.price_list_mapped).length !== 0) {
+                        loadSourcePriceList(price_list_detail.price_list_mapped.id);
                         $('#checkbox-update-auto').prop('disabled', false);
                     }
                     loadProDuctCategory();
@@ -435,7 +437,7 @@ $(document).ready(function () {
                     })
                 }
 
-                if (data.price.status !== 'Invalid' && data.price.status !== 'Valid') {
+                if (price_list_detail.status !== 'Invalid' && price_list_detail.status !== 'Valid') {
                     $('#btn-add-new-item').prop('disabled', true);
                     $('#datatable-item-list input').prop('readonly', true);
                     $('#datatable-item-list input').css({
@@ -444,7 +446,7 @@ $(document).ready(function () {
                         'background': 'None'
                     })
                     $('#datatable-item-list .del-button').remove();
-                    $('#notify').text(`* ` + data.price.status + ` price list does not allow configuration.`)
+                    $('#notify').text(`* ` + price_list_detail.status + ` price list does not allow configuration.`)
                     $('#inp-factor').prop('disabled', true);
                     $('#inp-factor').css({'border': 'None'});
                     $('#checkbox-update-auto').prop('disabled', true);
@@ -471,7 +473,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $('#select-box-currency').val(data.price.currency).trigger("change");
+                            $('#select-box-currency').val(price_list_detail.currency).trigger("change");
                         }
                     })
             }

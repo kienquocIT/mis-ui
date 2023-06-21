@@ -141,9 +141,6 @@ $(async function () {
     // init datetime picker
     loadDatePicker()
 
-    // load default warehouse
-    getWarehouse(pickupInit)
-
     // call data when page loaded
     $.fn.callAjax(
         $('#idxUrlPickingDetail').text(),
@@ -155,7 +152,7 @@ $(async function () {
             // load sale order
             pickupInit.setPicking = data.picking_detail
             data = data.picking_detail
-            $('#inputSaleOrder').val(data?.sale_order_data?.title);
+            $('#inputSaleOrder').val(data?.sale_order_data?.code);
             $('.title-code').text(data.code)
             // state
             let state = data?.state;
@@ -168,6 +165,7 @@ $(async function () {
                         break
                     case 1:
                         templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
+                        $('button[form="picking_form"]').attr('disabled', true)
                         break
                 }
                 $('#inputState').append(templateEle.format_by_idx(letStateChoices[state]));
@@ -188,7 +186,10 @@ $(async function () {
                         warehouse_data['id'],
                         warehouse_data['code'] + " - " + warehouse_data['title'],
                     )
-                )
+                ).attr('disabled', true)
+            }else{
+                // load default warehouse
+                getWarehouse(pickupInit)
             }
 
             // descriptions
@@ -365,12 +366,10 @@ $(async function () {
         const warehouseStock = pickupInit.getWarehouseList
         for (prod of pickupInit.getProdList) {
             const isKey = `${prod.product_data.id}.${prod.uom_data.id}`
-            if (warehouseStock.hasOwnProperty(isKey) &&
-                warehouseStock[isKey][pickingData['ware_house']]
-            ) {
-                if (prod.picked_quantity > 0) {
+            if (prod.picked_quantity > 0) {
+                if (warehouseStock.hasOwnProperty(isKey) && warehouseStock[isKey][pickingData['ware_house']]) {
                     let temp = {
-                        'product_id':prod.product_data.id,
+                        'product_id': prod.product_data.id,
                         'done': prod.picked_quantity,
                         'delivery_data': [{
                             'warehouse': _form.dataForm['warehouse_id'],
@@ -380,11 +379,11 @@ $(async function () {
                         'order': prod.order,
                     }
                     prodSub.push(temp)
+                } else {
+                    $.fn.notifyPopup(
+                        {description: prod.product_data.title + ' ' + $transElm.attr('data-prod-outstock')},
+                        'failure')
                 }
-            } else {
-                $.fn.notifyPopup(
-                    {description: prod.product_data.title + $transElm.attr('data-prod-outstock')},
-                    'failure')
             }
         }
         pickingData.products = prodSub
@@ -403,6 +402,11 @@ $(async function () {
                         $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                     }
                 },
+                (errs) => {
+                    if (errs.data.errors.hasOwnProperty('detail')) {
+                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    }
+                }
             )
             .catch((err) => {
                 console.log(err)

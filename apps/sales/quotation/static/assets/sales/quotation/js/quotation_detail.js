@@ -13,6 +13,8 @@ $(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    $.fn.compareStatusShowPageAction(data);
+
                     loadDataClass.loadDetailQuotation(data);
                     $('#datable-quotation-create-product').DataTable().destroy();
                     $('#datable-quotation-create-cost').DataTable().destroy();

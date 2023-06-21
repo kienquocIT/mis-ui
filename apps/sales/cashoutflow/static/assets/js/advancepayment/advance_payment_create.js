@@ -73,6 +73,238 @@ $(document).ready(function () {
         })
     });
 
+    // load Plan tab (for sale order)
+    function loadSaleOrderExpense(filter_sale_order) {
+        $('#tab_plan_datatable').remove();
+        $('#tab_plan_datatable_div').html(plan_db);
+        let dtb = $('#tab_plan_datatable');
+        let frm = new SetupFormSubmit(dtb);
+        frm.dataUrl = dtb.attr('data-url-sale-order');
+        dtb.DataTableDefault({
+            dom: '',
+            ajax: {
+                url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let data_detail = data.sale_order_expense_list;
+                        for (let i = 0; i < data_detail.length; i++) {
+                            let expense_id = data_detail[i].expense_id;
+                            let results = advance_payment_expense_items.filter(function(item) {
+                                return item.expense.id === expense_id;
+                            });
+                            let sum_AP_approved = results.reduce(function(s, item) {
+                                return s + item.after_tax_price;
+                            }, 0);
+                            let returned = results.reduce(function(s, item) {
+                                return s + item.returned_total;
+                            }, 0);
+                            let to_payment = results.reduce(function(s, item) {
+                                return s + item.to_payment_total;
+                            }, 0);
+                            data_detail[i].sum_AP_approved = sum_AP_approved;
+                            data_detail[i].returned = returned;
+                            data_detail[i].to_payment = to_payment;
+
+                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                                return item.expense_id === expense_id;
+                            });
+                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                                return s + item.real_value;
+                            }, 0);
+                            data_detail[i].others_payment = others_payment;
+
+                            data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
+                        }
+                        return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    data: 'expense_title',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
+                    }
+                },
+                {
+                    data: 'tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        if (row.tax.title) {
+                            return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    data: 'plan_after_tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'sum_AP_approved',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'returned',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'to_payment',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'others_payment',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'available',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                }
+            ],
+        });
+    }
+
+    // load Plan tab (for quotation)
+    function loadQuotationExpense(filter_quotation) {
+        $('#tab_plan_datatable').remove();
+        $('#tab_plan_datatable_div').html(plan_db);
+        let dtb = $('#tab_plan_datatable');
+        let frm = new SetupFormSubmit(dtb);
+        frm.dataUrl = dtb.attr('data-url-quotation');
+        dtb.DataTableDefault({
+            dom: '',
+            ajax: {
+                url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let data_detail = data.quotation_expense_list
+                        for (let i = 0; i < data_detail.length; i++) {
+                            let expense_id = data_detail[i].expense_id;
+                            let results = advance_payment_expense_items.filter(function(item) {
+                                return item.expense.id === expense_id;
+                            });
+                            let sum_AP_approved = results.reduce(function(s, item) {
+                                return s + item.after_tax_price;
+                            }, 0);
+                            let returned = results.reduce(function(s, item) {
+                                return s + item.returned_total;
+                            }, 0);
+                            let to_payment = results.reduce(function(s, item) {
+                                return s + item.to_payment_total;
+                            }, 0);
+                            data_detail[i].sum_AP_approved = sum_AP_approved;
+                            data_detail[i].returned = returned;
+                            data_detail[i].to_payment = to_payment;
+
+                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                                return item.expense_id === expense_id;
+                            });
+                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                                return s + item.real_value;
+                            }, 0);
+                            data_detail[i].others_payment = others_payment;
+
+                            data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
+                            if (data_detail[i].available < 0) {
+                                data_detail[i].available = 0;
+                            }
+                        }
+                        return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    data: 'expense_title',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
+                    }
+                },
+                {
+                    data: 'tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        if (row.tax.title) {
+                            return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    data: 'plan_after_tax',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'sum_AP_approved',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'returned',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'to_payment',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'others_payment',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                },
+                {
+                    data: 'available',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                    }
+                }
+            ],
+        });
+    }
+
     // (col-1) load Expense List SelectBox
     function loadExpenseList(row_id) {
         let ele = $('#' + row_id + ' .expense-select-box');
@@ -467,6 +699,7 @@ $(document).ready(function () {
         })
     }
 
+    // load Supplier (Account List)
     function loadSupplier() {
         let ele = $('#supplier-select-box');
         ele.html('');
@@ -478,6 +711,7 @@ $(document).ready(function () {
         })
     }
 
+    // load Country (is used for Bank Account Editting)
     function loadCountries(country_mapped) {
         let ele = $('#country-select-box-id');
         let url = ele.attr('data-url');
@@ -502,6 +736,7 @@ $(document).ready(function () {
         )
     }
 
+    // show collapse to edit bank account
     function ClickEditBankBtn() {
         loadCountries($(this).closest('.card').find('a.country-id-label').text());
         $('#bank-account-order').val($(this).closest('.card').attr('id'));
@@ -524,6 +759,7 @@ $(document).ready(function () {
         }
     }
 
+    // load bank account detail to edit
     function LoadBankAccount() {
         let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
         let bank_info = account_bank_accounts_information_dict[supplier_id];
@@ -594,6 +830,7 @@ $(document).ready(function () {
         }
     }
 
+    // change bank-accounts-data when submit edit bank account
     function ChangeBankInfor() {
         let supplier_id = $('#supplier-select-box').find('option:selected').attr('value');
         let bank_order = parseInt($('#bank-account-order').val().replace('bank-account-', ''));
@@ -663,6 +900,7 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY'),10)
     });
 
+    // reload Sale Code when change type (None-sale + Sale)
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
@@ -672,22 +910,23 @@ $(document).ready(function () {
             });
             $('#sale-code-select-box2-show').attr('disabled', false);
             $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
+            $('#beneficiary-select-box').prop('disabled', false);
             loadSaleCode($('#beneficiary-select-box').val());
-            // $('#beneficiary-select-box').prop('disabled', true);
         }
         if ($(this).val() === 'non-sale') {
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
+            $('#sale-code-select-box2-show').val('');
             $('#sale-code-select-box2-show').attr('style', '');
             $('#sale-code-select-box2-show').attr('disabled', true);
             $('#sale-code-select-box2-show').attr('placeholder', 'Can not select with Non-Sale');
             $('#beneficiary-select-box').prop('disabled', false);
             $('#notify-none-sale-code').prop('hidden', false);
             $('#tab_plan_datatable').prop('hidden', true);
-            $('#sale-code-select-box2-show').val('');
         }
     })
 
+    // Changing bank account information when changing supplier
     $('#supplier-select-box').on('change', function () {
         if ($(this).find('option:selected').attr('value')) {
             LoadBankAccount();
@@ -713,6 +952,7 @@ $(document).ready(function () {
         }
     })
 
+    // load Sale Code list which beneficiary person is their sale-person
     $('#beneficiary-select-box').on('change', function () {
         loadSaleCode($('#beneficiary-select-box').val());
         $('#beneficiary-detail-span').prop('hidden', false);
@@ -723,12 +963,14 @@ $(document).ready(function () {
         $('#btn-detail-beneficiary-tab').attr('href', url);
     })
 
+    // change views when finished edit bank account
     $('#save-changes-modal-bank-account').on('click', function () {
         ChangeBankInfor();
         LoadBankAccount();
         $('#btn-close-edit-bank-account').click();
     })
 
+    // if supplier is selected, undisabled Suppiler selectbox
     $('#type-select-box').on('change', function () {
         if ($(this).val() === '1') {
             $('#supplier-select-box').prop('disabled', false);
@@ -742,10 +984,24 @@ $(document).ready(function () {
         }
     })
 
+    // recalculate ap item's values
     $('#recalculate-price').on('click', function () {
         calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
     })
 
+    $('#input-file-now').dropify({
+        messages: {
+            'default': 'Drag and drop your file here.',
+        },
+        tpl: {
+            message: '<div class="dropify-message">' +
+                '<span class="file-icon"></span>' +
+                '<h5>{{ default }}</h5>' +
+                '</div>',
+        }
+    });
+
+    // SUBMIT FORM CREATE ADVANCE PAYMENT
     $('#form-create-advance').submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -872,246 +1128,4 @@ $(document).ready(function () {
                 }
             )
     })
-
-    function loadSaleOrderExpense(filter_sale_order) {
-        $('#tab_plan_datatable').remove();
-        $('#tab_plan_datatable_div').html(plan_db);
-        let dtb = $('#tab_plan_datatable');
-        let frm = new SetupFormSubmit(dtb);
-        frm.dataUrl = dtb.attr('data-url-sale-order');
-        dtb.DataTableDefault({
-            dom: '',
-            ajax: {
-                url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let data_detail = data.sale_order_expense_list;
-                        for (let i = 0; i < data_detail.length; i++) {
-                            let expense_id = data_detail[i].expense_id;
-                            let results = advance_payment_expense_items.filter(function(item) {
-                                return item.expense.id === expense_id;
-                            });
-                            let sum_AP_approved = results.reduce(function(s, item) {
-                                return s + item.after_tax_price;
-                            }, 0);
-                            let returned = results.reduce(function(s, item) {
-                                return s + item.returned_total;
-                            }, 0);
-                            let to_payment = results.reduce(function(s, item) {
-                                return s + item.to_payment_total;
-                            }, 0);
-                            data_detail[i].sum_AP_approved = sum_AP_approved;
-                            data_detail[i].returned = returned;
-                            data_detail[i].to_payment = to_payment;
-
-                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                                return item.expense_id === expense_id;
-                            });
-                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
-                                return s + item.real_value;
-                            }, 0);
-                            data_detail[i].others_payment = others_payment;
-
-                            data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
-                            if (data_detail[i].available < 0) {
-                                data_detail[i].available = 0;
-                            }
-                        }
-                        return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
-                    }
-                    return [];
-                },
-            },
-            columns: [
-                {
-                    data: 'expense_title',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
-                    }
-                },
-                {
-                    data: 'tax',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        if (row.tax.title) {
-                            return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
-                        }
-                        return ``
-                    }
-                },
-                {
-                    data: 'plan_after_tax',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'sum_AP_approved',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'returned',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'to_payment',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'others_payment',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'available',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                }
-            ],
-        });
-    }
-
-    function loadQuotationExpense(filter_quotation) {
-        $('#tab_plan_datatable').remove();
-        $('#tab_plan_datatable_div').html(plan_db);
-        let dtb = $('#tab_plan_datatable');
-        let frm = new SetupFormSubmit(dtb);
-        frm.dataUrl = dtb.attr('data-url-quotation');
-        dtb.DataTableDefault({
-            dom: '',
-            ajax: {
-                url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let data_detail = data.quotation_expense_list
-                        for (let i = 0; i < data_detail.length; i++) {
-                            let expense_id = data_detail[i].expense_id;
-                            let results = advance_payment_expense_items.filter(function(item) {
-                                return item.expense.id === expense_id;
-                            });
-                            let sum_AP_approved = results.reduce(function(s, item) {
-                                return s + item.after_tax_price;
-                            }, 0);
-                            let returned = results.reduce(function(s, item) {
-                                return s + item.returned_total;
-                            }, 0);
-                            let to_payment = results.reduce(function(s, item) {
-                                return s + item.to_payment_total;
-                            }, 0);
-                            data_detail[i].sum_AP_approved = sum_AP_approved;
-                            data_detail[i].returned = returned;
-                            data_detail[i].to_payment = to_payment;
-
-                            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                                return item.expense_id === expense_id;
-                            });
-                            let others_payment = payment_cost_items_list.reduce(function(s, item) {
-                                return s + item.real_value;
-                            }, 0);
-                            data_detail[i].others_payment = others_payment;
-
-                            data_detail[i].available = (data_detail[i].plan_after_tax - sum_AP_approved - others_payment + returned);
-                            if (data_detail[i].available < 0) {
-                                data_detail[i].available = 0;
-                            }
-                        }
-                        return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
-                    }
-                    return [];
-                },
-            },
-            columns: [
-                {
-                    data: 'expense_title',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
-                    }
-                },
-                {
-                    data: 'tax',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        if (row.tax.title) {
-                            return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
-                        }
-                        return ``
-                    }
-                },
-                {
-                    data: 'plan_after_tax',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'sum_AP_approved',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'returned',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'to_payment',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'others_payment',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                },
-                {
-                    data: 'available',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
-                    }
-                }
-            ],
-        });
-    }
-
-    $('#input-file-now').dropify({
-        messages: {
-            'default': 'Drag and drop your file here.',
-        },
-        tpl: {
-            message: '<div class="dropify-message">' +
-                '<span class="file-icon"></span>' +
-                '<h5>{{ default }}</h5>' +
-                '</div>',
-        }
-    });
 })

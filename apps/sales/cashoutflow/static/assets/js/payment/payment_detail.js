@@ -2,7 +2,6 @@ $(document).ready(function () {
     let advance_payment_expense_items = [];
     let payment_cost_items_filtered = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
-
     let url_detail = $('#form-update-payment').attr('data-url-detail').replace('0', $.fn.getPkDetail())
     $.fn.callAjax(url_detail, 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
@@ -367,9 +366,6 @@ $(document).ready(function () {
         });
     })
 
-    let plan_db = $('#tab_plan_datatable_div').html();
-    let load_default = 0;
-
     const account_list = JSON.parse($('#account_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
@@ -414,19 +410,10 @@ $(document).ready(function () {
                             ele.append(`<option data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
                         }
                     })
-                    if (load_default === 0) {
-                        $('#beneficiary-select-box').prop('disabled', true);
-                        loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
-                        $('#sale-code-select-box').prop('disabled', false);
-                        // $('#sale-code-select-box2-show').css({
-                        //     'background': 'none',
-                        // });
-                        // $('#sale-code-select-box2-show').attr('disabled', false);
-                        // $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
-                        // $('#sale-code-select-box2-show').val('');
-                        $('#sale-code-select-box2').prop('hidden', false);
-                        load_default = 1;
-                    }
+                    $('#beneficiary-select-box').prop('disabled', true);
+                    loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+                    $('#sale-code-select-box').prop('disabled', false);
+                    $('#sale-code-select-box2').prop('hidden', false);
                 }
             }
         }, (errs) => {

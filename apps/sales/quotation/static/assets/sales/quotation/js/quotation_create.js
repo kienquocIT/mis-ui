@@ -84,7 +84,9 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll()
+            loadDataClass.loadDataProductAll();
+            // ReCheck Config when change Opportunity
+            configClass.checkConfig(true);
         });
 
 // Action on click dropdown customer
@@ -973,7 +975,10 @@ $(function () {
                 }
             }
             // ReOrder STT
-            reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+            reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
+
+            // check disable
+            tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // SHIPPING

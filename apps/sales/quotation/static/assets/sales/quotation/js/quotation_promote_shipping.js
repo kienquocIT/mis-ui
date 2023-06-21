@@ -322,50 +322,55 @@ class promotionHandle {
         let self = this;
         // CHECK MAX USAGES
         let max_usages = conditionCheck.max_usages;
-        let check_max_usages = 0;
-        for (let idx = 0; idx < data_promotion.sale_order_used.length; idx++) {
-            let order_used = data_promotion.sale_order_used[idx];
-            if (order_used.customer_id === customer_id) {
-                check_max_usages++
+        if (max_usages > 0) {
+            let check_max_usages = 0;
+            for (let idx = 0; idx < data_promotion.sale_order_used.length; idx++) {
+                let order_used = data_promotion.sale_order_used[idx];
+                if (order_used.customer_id === customer_id) {
+                    check_max_usages++
+                }
             }
-        }
-        if (check_max_usages >= max_usages && max_usages > 0) {
-            return false
+            if (check_max_usages >= max_usages) {
+                return false
+            }
         }
         // CHECK USE COUNT
         let use_count = conditionCheck.use_count;
-        let times_condition = conditionCheck.times_condition;
-        let check_use_count = 0;
-        for (let i = 0; i < data_promotion.sale_order_used.length; i++) {
-            let order_used = data_promotion.sale_order_used[i];
-            if (order_used.customer_id === customer_id) {
-                if (times_condition === 1) { // IN VALID TIME
-                    let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
-                    let startDate = new Date(data_promotion.valid_date_start).getTime();
-                    let endDate = new Date(data_promotion.valid_date_end).getTime();
-                    if (dateToCheck >= startDate && dateToCheck <= endDate) {
-                        check_use_count++
-                    }
-                } else if (times_condition === 2) { // IN CURRENT WEEK
-                    let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-                    let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
-                    const weekNumber1 = self.getWeekNumber(dateToCheck);
-                    const weekNumber2 = self.getWeekNumber(dateCurrent);
-                    if (weekNumber1 === weekNumber2) {
-                        check_use_count++
-                    }
-                } else if (times_condition === 3) { // IN CURRENT MONTH
-                    let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-                    let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
-                    if (dateToCheck === dateCurrent) {
-                        check_use_count++
+        if (use_count > 0) {
+            let times_condition = conditionCheck.times_condition;
+            let check_use_count = 0;
+            for (let i = 0; i < data_promotion.sale_order_used.length; i++) {
+                let order_used = data_promotion.sale_order_used[i];
+                if (order_used.customer_id === customer_id) {
+                    if (times_condition === 1) { // IN VALID TIME
+                        let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
+                        let startDate = new Date(data_promotion.valid_date_start).getTime();
+                        let endDate = new Date(data_promotion.valid_date_end).getTime();
+                        if (dateToCheck >= startDate && dateToCheck <= endDate) {
+                            check_use_count++
+                        }
+                    } else if (times_condition === 2) { // IN CURRENT WEEK
+                        let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                        const weekNumber1 = self.getWeekNumber(dateToCheck);
+                        const weekNumber2 = self.getWeekNumber(dateCurrent);
+                        if (weekNumber1 === weekNumber2) {
+                            check_use_count++
+                        }
+                    } else if (times_condition === 3) { // IN CURRENT MONTH
+                        let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
+                        if (dateToCheck === dateCurrent) {
+                            check_use_count++
+                        }
                     }
                 }
             }
+            if (check_use_count >= use_count) {
+                return false
+            }
         }
-        if (check_use_count >= use_count && use_count > 0) {
-            return false
-        }
+    return true
     }
 
     getWeekNumber(date) {

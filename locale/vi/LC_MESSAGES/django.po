@@ -3314,3 +3314,15 @@ msgstr "Số tiền không được nhỏ hơn 0"
 #
 msgid "The closing date must not be later than the opening date"
 msgstr "Ngày đóng phải sau ngày mở"
+
+#
+msgid "Apply Promotion Fail."
+msgstr "Áp dụng khuyến mãi không thành công"
+
+#
+msgid "Document is unqualified for promotion applied. Remove promotion or select another available promotion."
+msgstr "Báo giá/ đơn hàng của bạn hiện chưa thỏa điều kiện áp dụng của khuyến mãi đã chọn. Nhấn bỏ khuyến mãi hoặc kiểm tra khuyến mãi khả dụng khác"
+
+#
+msgid "Remove Promotion."
+msgstr "Bỏ khuyến mãi"

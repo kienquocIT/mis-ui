@@ -956,6 +956,7 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(data)
                         if (resp.data['advance_payment_list']) {
                             let sale_order_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
                                 return sale_code_id.includes(item.sale_order_mapped);
@@ -979,7 +980,7 @@ $(document).ready(function () {
             columns: [
                 {
                     render: (data, type, row, meta) => {
-                        if (row.available_value <= 0) {
+                        if (row.remain_value <= 0) {
                             return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox" disabled>`
                         }
                         else {
@@ -1436,10 +1437,10 @@ $(document).ready(function () {
                                         tax_code = expense_item.tax.code
                                     }
                                     let disabled = 'disabled';
-                                    if (expense_item.available_total > 0) {
+                                    if (expense_item.remain_total > 0) {
                                         disabled = '';
                                     }
-                                    total_remain_value += expense_item.available_total;
+                                    total_remain_value += expense_item.remain_total;
                                     expense_table.append(`<tr>
                                         <td><input data-id="` + expense_item.id + `" class="expense-selected" type="checkbox" ` + disabled + `></td>
                                         <td>` + expense_item.expense.title + `</td>

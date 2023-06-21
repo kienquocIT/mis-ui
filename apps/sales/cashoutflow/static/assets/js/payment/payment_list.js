@@ -48,7 +48,7 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-success">Approved</span>`
+                            return `<span class="text-success">Approved&nbsp;<i class="bi bi-check2-circle"></i></span>`
                         }
                     }
                 ],

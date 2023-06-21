@@ -313,15 +313,6 @@ $(document).ready(function () {
 
                     $.fn.initMaskMoney2();
                 }
-
-                let sale_code_id = sale_code_id_list[0].id;
-                let sale_code_oppcode = sale_code_id_list[0].opportunity.code;
-                if (sale_code_oppcode === undefined) {
-                    sale_code_oppcode = sale_code_id_list[0].code;
-                }
-                if ($('#radio-non-sale').is(':checked') === false) {
-                    loadBeneficiary(payment_detail.beneficiary);
-                }
             }
 
             $('#supplier-detail-span').prop('hidden', false);
@@ -411,7 +402,6 @@ $(document).ready(function () {
                         }
                     })
                     $('#beneficiary-select-box').prop('disabled', true);
-                    loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
                     $('#sale-code-select-box').prop('disabled', false);
                     $('#sale-code-select-box2').prop('hidden', false);
                 }
@@ -491,7 +481,6 @@ $(document).ready(function () {
                         'ap_approved': ap_expense_item.after_tax_price,
                         'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total
                     }
                 )
             }
@@ -515,15 +504,21 @@ $(document).ready(function () {
                     let expense_get = ap_expense_list_mapped.find(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
+
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
                     let paid = 0;
                     if (expense_get !== undefined) {
-                        remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
-                        available = expense_get.available;
+                        if (expense_get.remain_ap >= 0) {
+                            remain_ap = expense_get.remain_ap;
+                        }
                         paid = expense_get.paid
+                        available = expense_item.plan_after_tax - remain_ap - paid
+                        if (available < 0) {
+                            available = 0;
+                        }
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -560,7 +555,6 @@ $(document).ready(function () {
                         'ap_approved': ap_expense_item.after_tax_price,
                         'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total
                     }
                 )
             }
@@ -582,15 +576,21 @@ $(document).ready(function () {
                     let expense_get = ap_expense_list_mapped.find(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
+
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
                     let paid = 0;
                     if (expense_get !== undefined) {
-                        remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
-                        available = expense_get.available;
+                        if (expense_get.remain_ap >= 0) {
+                            remain_ap = expense_get.remain_ap;
+                        }
                         paid = expense_get.paid
+                        available = expense_item.plan_after_tax - remain_ap - paid
+                        if (available < 0) {
+                            available = 0;
+                        }
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>

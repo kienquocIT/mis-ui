@@ -49,7 +49,6 @@ $(document).ready(function () {
                         'ap_approved': ap_expense_item.after_tax_price,
                         'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total
                     }
                 )
             }
@@ -73,15 +72,21 @@ $(document).ready(function () {
                     let expense_get = ap_expense_list_mapped.find(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
+
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
                     let paid = 0;
                     if (expense_get !== undefined) {
-                        remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
-                        available = expense_get.available;
+                        if (expense_get.remain_ap >= 0) {
+                            remain_ap = expense_get.remain_ap;
+                        }
                         paid = expense_get.paid
+                        available = expense_item.plan_after_tax - remain_ap - paid
+                        if (available < 0) {
+                            available = 0;
+                        }
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -118,7 +123,6 @@ $(document).ready(function () {
                         'ap_approved': ap_expense_item.after_tax_price,
                         'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total
                     }
                 )
             }
@@ -140,15 +144,21 @@ $(document).ready(function () {
                     let expense_get = ap_expense_list_mapped.find(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
+
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
                     let paid = 0;
                     if (expense_get !== undefined) {
-                        remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
-                        available = expense_get.available;
+                        if (expense_get.remain_ap >= 0) {
+                            remain_ap = expense_get.remain_ap;
+                        }
                         paid = expense_get.paid
+                        available = expense_item.plan_after_tax - remain_ap - paid
+                        if (available < 0) {
+                            available = 0;
+                        }
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -930,6 +940,8 @@ $(document).ready(function () {
         },)
     }
 
+    let AP_db = $('#advance_payment_list_datatable');
+
     function loadAPList(sale_code_id) {
         $('#advance_payment_list_datatable').DataTable().destroy();
         let AP_db = $('#advance_payment_list_datatable');
@@ -1008,13 +1020,6 @@ $(document).ready(function () {
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
                         return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
-                    }
-                },
-                {
-                    data: 'available_value',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.available_value + `"></span>`
                     }
                 },
             ],
@@ -1416,7 +1421,6 @@ $(document).ready(function () {
                                             <th class="w-15">Unit Price</th>
                                             <th class="w-10">Tax</th>
                                             <th class="w-15">Remain</th>
-                                            <th class="w-15">Available</th>
                                             <th class="w-15">Converted Value</th>
                                         </tr>
                                     </thead>
@@ -1444,22 +1448,21 @@ $(document).ready(function () {
                                         <td><span class="text-primary mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
                                         <td><span class="badge badge-soft-danger">` + tax_code + `</span></td>
                                         <td><span class="text-primary mask-money expense-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
-                                        <td><span class="text-primary mask-money expense-available-value" data-init-money="` + expense_item.available_total + `"></span></td>
                                         <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                     </tr>`)
                                 }
                                 expense_table.append(`<tr style="background-color: #ebf5f5">
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td></td><td></td><td></td><td></td><td></td>
                                     <td><span style="text-align: left"><b>Total:</b></span></td>
                                     <td><span class="mask-money total-available-value text-primary" data-init-money="` + total_remain_value + `"></span></td>
                                     <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)
 
                                 $('.converted-value-inp').on('change', function () {
-                                    let expense_available_value = $(this).closest('tr').find('.expense-available-value').attr('data-init-money');
+                                    let expense_remain_value = $(this).closest('tr').find('.expense-remain-value').attr('data-init-money');
                                     let converted_value = $(this).attr('value');
-                                    if (parseFloat(converted_value) > parseFloat(expense_available_value)) {
-                                        $(this).attr('value', parseFloat(expense_available_value));
+                                    if (parseFloat(converted_value) > parseFloat(expense_remain_value)) {
+                                        $(this).attr('value', parseFloat(expense_remain_value));
                                     }
 
                                     let new_total_converted_value = 0;
@@ -1651,6 +1654,7 @@ $(document).ready(function () {
             frm.dataForm['opportunity_selected_list'] = opportunity_selected_list;
         }
         else if (frm.dataForm['sale_code_type'] === 0) {  // sale
+            frm.dataForm['sale_code'] = $('#sale-code-select-box option:selected').attr('value');
             if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
                 frm.dataForm['sale_code_detail'] = 0;
             }

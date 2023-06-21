@@ -1288,12 +1288,14 @@ $(function () {
         }
 
         $('#btn-remove-promotion').on('click', function(e) {
+            $('#quotation-check-promotion').val("");
             // Delete Promotion Row & ReCalculate Total
             deletePromotionRows(tableProduct, true, false);
             calculateClass.updateTotal(tableProduct[0], true, false, false);
         });
 
         $('#btn-check-another-promotion').on('click', function(e) {
+            $('#quotation-check-promotion').val("");
             $('#btn-check-promotion').click();
         })
 

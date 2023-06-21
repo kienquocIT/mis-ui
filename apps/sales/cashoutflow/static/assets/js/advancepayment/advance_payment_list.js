@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    function loadAdvanceList() {
+    function loadAdvancePaymentList() {
         if (!$.fn.DataTable.isDataTable('#datatable_advance_list')) {
             let dtb = $('#datatable_advance_list');
             let frm = new SetupFormSubmit(dtb);
@@ -98,13 +98,20 @@ $(document).ready(function () {
                         data: '',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
+                            let sale_code_id = '';
+                            if (row.sale_order_mapped) {sale_code_id = row.sale_order_mapped;}
+                            if (row.quotation_mapped) {sale_code_id = row.quotation_mapped;}
+                            if (row.opportunity_mapped) {sale_code_id = row.opportunity_mapped;}
                             return `<div class="dropdown">
                                         <a type="button" data-bs-toggle="dropdown" class="badge badge-soft-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>
                                         <div class="dropdown-menu">
-                                             <a class="dropdown-item" href="{0}">Return Advance</a>
+                                             <a class="dropdown-item" href="{0}">Return</a>
+                                             <a class="dropdown-item" href="{1}">To Payment</a>
                                         </div>
-                                    </div>`.format_by_idx($('#datatable_advance_list').data('return-advance') + `?advance_payment_id={0}`.format_by_idx(row.id));
-
+                                    </div>`.format_by_idx(
+                                        $('#datatable_advance_list').data('return-advance') + `?advance_payment_id={0}`.format_by_idx(row.id),
+                                $('#datatable_advance_list').attr('data-payment') + `?sale_code_mapped={0}`.format_by_idx(sale_code_id)
+                            );
                         }
                     }
                 ],
@@ -112,6 +119,5 @@ $(document).ready(function () {
         }
     }
 
-    loadAdvanceList();
-
+    loadAdvancePaymentList();
 })

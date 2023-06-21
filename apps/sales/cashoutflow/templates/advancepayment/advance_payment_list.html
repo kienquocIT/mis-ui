@@ -32,6 +32,7 @@
                data-url="{% url 'AdvancePaymentListAPI' %}"
                data-url-detail="{% url 'AdvancePaymentDetail' '0' %}"
                data-return-advance="{% url 'ReturnAdvanceCreate' %}"
+               data-payment="{% url 'PaymentCreate' %}"
         >
             <thead>
             <th>{% trans "Code" %}</th>

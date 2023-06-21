@@ -3321,8 +3321,12 @@ msgstr "Áp dụng khuyến mãi không thành công"
 
 #
 msgid "Document is unqualified for promotion applied. Remove promotion or select another available promotion."
-msgstr "Báo giá/ đơn hàng của bạn hiện chưa thỏa điều kiện áp dụng của khuyến mãi đã chọn. Nhấn bỏ khuyến mãi hoặc kiểm tra khuyến mãi khả dụng khác"
+msgstr "Báo giá/ đơn hàng của bạn hiện chưa thỏa điều kiện áp dụng của khuyến mãi đã chọn. Nhấn bỏ khuyến mãi hoặc xem khuyến mãi khả dụng khác"
 
 #
 msgid "Remove Promotion."
 msgstr "Bỏ khuyến mãi"
+
+#
+msgid "See Promotion"
+msgstr "Xem khuyến mãi"

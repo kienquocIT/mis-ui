@@ -35,6 +35,7 @@ class PaymentCreate(View):
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
+        resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         return {'data':
             {
                 'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -44,7 +45,8 @@ class PaymentCreate(View):
                 'account_list': resp4.result,
                 'advance_payment_list': resp5.result,
                 'opportunity_list': resp6.result,
-                'employee_list': resp7.result
+                'employee_list': resp7.result,
+                'tax_list': resp8.result
             }
         }, status.HTTP_200_OK
 
@@ -96,6 +98,7 @@ class PaymentDetail(View):
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
+        resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         return {
             'data':
                 {
@@ -106,7 +109,8 @@ class PaymentDetail(View):
                     'account_list': resp4.result,
                     'advance_payment_list': resp5.result,
                     'opportunity_list': resp6.result,
-                    'employee_list': resp7.result
+                    'employee_list': resp7.result,
+                    'tax_list': resp8.result
                 }
         }, status.HTTP_200_OK
 

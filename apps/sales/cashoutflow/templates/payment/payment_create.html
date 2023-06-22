@@ -55,6 +55,7 @@
     {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
     {{ data.data.opportunity_list | json_script:"opportunity_list" }}
     {{ data.data.employee_list | json_script:"employee_list" }}
+    {{ data.data.tax_list | json_script:"tax_list" }}
     <form id="form-create-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
     >

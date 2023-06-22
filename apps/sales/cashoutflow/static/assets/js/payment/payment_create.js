@@ -3,6 +3,7 @@ $(document).ready(function () {
     const quotation_list = JSON.parse($('#quotation_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
     const employee_list = JSON.parse($('#employee_list').text());
+    const tax_list = JSON.parse($('#tax_list').text());
     const account_list = JSON.parse($('#account_list').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
@@ -782,18 +783,10 @@ $(document).ready(function () {
     function loadExpenseTaxList(row_id) {
         let ele = $('#' + row_id + ' .expense-tax-select-box');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-tax-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-rate="0" selected></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
+        ele.append(`<option data-rate="0" selected></option>`);
+        tax_list.map(function (item) {
+            ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+        })
     }
 
     function loadExpenseUomList(row_id, uom_group_id, uom_mapped_id) {

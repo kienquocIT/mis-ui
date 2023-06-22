@@ -3,6 +3,7 @@ $(document).ready(function () {
     let advance_payment_expense_items = [];
 
     const plan_db = $('#tab_plan_datatable_div').html();
+    const tax_list = JSON.parse($('#tax_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
     const account_list = JSON.parse($('#account_list').text());
     const employee_list = JSON.parse($('#employee_list').text());
@@ -449,18 +450,10 @@ $(document).ready(function () {
     function loadExpenseTaxList(row_id) {
         let ele = $('#' + row_id + ' .expense-tax-select-box');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-tax-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-rate="0" selected></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
+        ele.append(`<option data-rate="0" selected></option>`);
+        tax_list.map(function (item) {
+            ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+        })
     }
 
     // count how many row in table_body

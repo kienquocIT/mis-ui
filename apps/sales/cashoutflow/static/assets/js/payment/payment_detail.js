@@ -359,6 +359,7 @@ $(document).ready(function () {
 
     const account_list = JSON.parse($('#account_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
+    const tax_list = JSON.parse($('#tax_list').text());
     const employee_list = JSON.parse($('#employee_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
@@ -630,23 +631,15 @@ $(document).ready(function () {
     function loadExpenseTaxList(row_id, tax_id) {
         let ele = $('#' + row_id + ' .expense-tax-select-box');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-tax-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-rate="0" selected></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        if (item.id === tax_id) {
-                            ele.append(`<option selected data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
-                        }
-                        else {
-                            ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
-                        }
-                    })
-                }
+        ele.append(`<option data-rate="0" selected></option>`);
+        tax_list.map(function (item) {
+            if (item.id === tax_id) {
+                ele.append(`<option selected data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
             }
-        }, (errs) => {
-        },)
+            else {
+                ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+            }
+        })
     }
 
     function LoadBankAccount() {

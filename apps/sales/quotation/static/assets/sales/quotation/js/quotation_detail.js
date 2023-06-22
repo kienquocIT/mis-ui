@@ -4,6 +4,7 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
+        let eleDataDetail = $('#quotation-detail-data');
         let dataTableClass = new dataTableHandle();
         let loadDataClass = new loadDataHandle();
         let configClass = new checkConfigHandle();
@@ -13,6 +14,10 @@ $(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    $.fn.compareStatusShowPageAction(data);
+                    // store data detail
+                    eleDataDetail.val(JSON.stringify(data));
+
                     loadDataClass.loadDetailQuotation(data);
                     $('#datable-quotation-create-product').DataTable().destroy();
                     $('#datable-quotation-create-cost').DataTable().destroy();
@@ -75,6 +80,10 @@ $(function () {
             }
             // Check config when begin edit
             configClass.checkConfig(true);
+
+            // load again total products after check config
+            let data = JSON.parse(eleDataDetail.val());
+            loadDataClass.loadTotal(data, true, false, false);
         });
 
 

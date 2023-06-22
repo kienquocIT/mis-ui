@@ -51,8 +51,8 @@ $(async function () {
                                     item.picked = val.stock
                                 }
                         }
-                        else if (config.is_picking && !config.is_partial_ship && delivery){
-                            // config 3
+                        else if ((config.is_picking && !config.is_partial_ship) || (config.is_picking && config.is_partial_ship) && delivery){
+                            // config 3, 4
                                 item.product_amount = 0
                                 for (const val of delivery){
                                     if (val.warehouse === item.id
@@ -104,8 +104,10 @@ $(async function () {
                                 class: 'w-15 text-center',
                                 data: 'picked',
                                 render: (row, type, data, meta) => {
-                                    const disabled = data.product_amount <= 0 ? 'disabled' : '';
-                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                                    let disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    // if condition for config 3 purpose.
+                                    if (config.is_picking && !config.is_partial_ship) disabled = 'disabled'
+                                    return `<input class="form-control" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                                 }
                             },
                         ],
@@ -115,7 +117,12 @@ $(async function () {
                                 const val = parseInt(this.value)
                                 let current = data
                                 if (val > 0) {
-                                    current.picked = val
+                                    if (config.is_picking && config.is_partial_ship){
+                                        if (val <= data.product_amount) current.picked = val
+                                    }
+                                    else{
+                                        current.picked = val
+                                    }
                                     table.DataTable().row(index).data(current).draw();
                                 }
                             })
@@ -355,8 +362,8 @@ $(async function () {
                 $('#input-attachment').val(res.attachments)
                 if (res.remaining_quantity === res.ready_quantity && res.state < 2){
                     if($('#config-three-all').length) $('#config-three-all').attr('disabled', false)
-                    $('button[form="delivery_form"]').attr('disabled', false)
                 }
+                if (res.ready_quantity > 0 && res.state < 2) $('button[form="delivery_form"]').attr('disabled', false)
             })
     };
 
@@ -410,6 +417,11 @@ $(async function () {
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
+                    (errs) => {
+                        if (errs.data.errors.hasOwnProperty('detail')) {
+                            $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                        }
+                    }
                 )
                 .catch((err) => {
                     console.log(err)

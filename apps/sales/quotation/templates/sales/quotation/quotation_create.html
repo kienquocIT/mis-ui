@@ -27,7 +27,7 @@
                     <span class="nav-link-text"><i class="far fa-file-alt"></i></span>
                 </a>
             </li>
-            <li class="nav-item quotation-tab-item">
+            <li class="nav-item quotation-tab-item" id="tab-indicator">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
                     <span class="nav-link-text"><i class="far fa-chart-bar"></i></span>
                 </a>
@@ -50,7 +50,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
+                                    <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
                                     <input
                                             type="text" class="form-control"
                                             placeholder="input title"
@@ -549,7 +549,7 @@
                                 <div class="row logistics-body">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Shipping Address' %}
-                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"></i>
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address"></textarea>
                                     </div>
@@ -561,7 +561,7 @@
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content" id="quotation-create-modal-shipping-body">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Shipping address' %}</h5>
+                                                    <h5 class="modal-title">{% trans 'Shipping Address' %}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -583,7 +583,7 @@
 
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Billing Address' %}
-                                            <i class="far fa-edit ml-2" data-bs-toggle="modal" data-bs-target="#billingModalCenter"></i>
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address"></textarea>
                                     </div>
@@ -595,7 +595,7 @@
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content" id="quotation-create-modal-billing-body">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Billing address' %}</h5>
+                                                    <h5 class="modal-title">{% trans 'Billing Address' %}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -874,18 +874,72 @@
                                 data-url="{% url "QuotationConfigDetailAPI" %}"
                                 data-method="GET"
                         >
+                        <input
+                                type="hidden"
+                                id="quotation-check-promotion"
+                        >
                     </div>
                 </div>
+
+
+                <button type="button" class="btn btn-primary" id="btn-invalid-promotion" data-bs-toggle="modal" data-bs-target="#invalidPromotionModalCenter" hidden>
+                    Vertically centered modal
+                </button>
+                <div class="modal fade" id="invalidPromotionModalCenter" tabindex="-1" role="dialog" aria-labelledby="invalidPromotionModalCenter" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body modal-body-invalid-promotion mb-2">
+                                <h6>{% trans 'Apply Promotion Fail.' %}</h6>
+                                <p>{% trans 'Document is unqualified for promotion applied. Remove promotion or select another available promotion.' %}</p>
+                            </div>
+                            <div class="row modal-footer-invalid-promotion">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-link btn-remove-promotion" data-bs-dismiss="modal" id="btn-remove-promotion">{% trans 'Remove Promotion.' %}</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-link btn-see-promotion" data-bs-dismiss="modal" id="btn-check-another-promotion">{% trans 'See Promotion' %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             <div class="tab-pane fade" id="tab_block_2">
-                <table
-                        id="datable-quotation-create-indicator"
-                        data-url="{% url 'TenantPlanListAPI' %}"
-                        data-method="GET"
-                        style="width: 100%"
+                <div class="row">
+                    <div class="row mb-2">
+                        <div class="col-2">
+                            <button
+                                    type="button"
+                                    class="btn btn-soft-success"
+                                    id="btn-refresh-quotation-indicator"
+                            >{% trans 'Refresh Data' %}</button>
+                        </div>
+                        <div class="col-10"></div>
+                    </div>
+                    <table
+                            id="datable-quotation-create-indicator"
+                            class="table nowrap w-100 mb-5"
+                    >
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>{% trans 'Indicator name' %}</th>
+                            <th>{% trans 'Indicator Value' %}</th>
+                            <th>{% trans 'Indicator Rate' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <input
+                        type="hidden"
+                        id="quotation-indicator-data"
+                        data-url="{% url 'QuotationIndicatorListAPI' %}"
+                        data-method="get"
                 >
-                    <tbody></tbody>
-                </table>
             </div>
         </div>
     </form>
@@ -903,4 +957,5 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
+    <script src="{% static 'assets/sales/quotation/js/quotation_indicator.js' %}"></script>
 {% endblock %}

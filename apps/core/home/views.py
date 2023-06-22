@@ -30,12 +30,22 @@ class BookMarkListAPI(APIView):
 
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BOOKMARKS_LIST).post(request.data)
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        errors = {}
+        kind = request.data.get('kind', 0)
+        customize_url = request.data.get('customize_url', None)
+        if kind == '1' or kind == 1:
+            if 'http' in customize_url or 'https' in customize_url or '//' in customize_url:
+                errors['customize_url'] = ServerMsg.URL_INVALID
+            elif customize_url and not customize_url.startswith('/'):
+                errors['customize_url'] = ServerMsg.URL_INVALID
+        if not errors:
+            resp = ServerAPI(user=request.user, url=ApiURL.BOOKMARKS_LIST).post(request.data)
+            if resp.state:
+                return resp.result, status.HTTP_200_OK
+            elif resp.status == 401:
+                return {}, status.HTTP_401_UNAUTHORIZED
+            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return {'errors': errors}, status.HTTP_400_BAD_REQUEST
 
 
 class BookMarkDetailAPI(APIView):

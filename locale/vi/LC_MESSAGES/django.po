@@ -3369,3 +3369,7 @@ msgstr "Bỏ khuyến mãi"
 #
 msgid "See Promotion"
 msgstr "Xem khuyến mãi"
+
+#
+msgid "Url is invalid"
+msgstr "Đường dẫn không hợp lệ"

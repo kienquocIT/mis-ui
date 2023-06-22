@@ -554,6 +554,24 @@ function initEventElement() {
         }
     });
 
+    $('#newBookMarkCustomURL').on('change', function (event) {
+        let data = $(this).val();
+        let arr = data.split(location.host);
+
+        let urlCut = '';
+        if (arr.length === 1) urlCut = arr[0];
+        else if (arr.length === 2) urlCut = arr[1];
+
+        if (urlCut && !(urlCut.includes('http') || urlCut.includes('https') || urlCut.includes('//'))) {
+            if (!urlCut.startsWith('/')) urlCut = '/' + urlCut;
+            return $(this).val(urlCut);
+        }
+        $.fn.notifyB({
+            'description': $.fn.transEle.attr('data-url-invalid')
+        }, 'failure');
+        $(this).val("");
+    });
+
     let selectIcon = $('#selectIconNewBookMark');
     selectIcon.initSelect2({
         templateResult: function formatState(state) {

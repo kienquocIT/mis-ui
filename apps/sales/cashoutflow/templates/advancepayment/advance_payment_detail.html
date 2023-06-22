@@ -68,7 +68,7 @@
         {% csrf_token %}
         <div class="row mr-3">
             <div class="col-7 pr-5 mb-3 text-right">
-                <h5 id="advance-payment-code" class="text-primary"></h5>
+                <h4><span id="advance-payment-code" class="badge badge-soft-primary badge-outline text-primary"></span></h4>
             </div>
         </div>
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
@@ -259,7 +259,7 @@
                     <div class="row form-group mb-4">
                         <label class="col-3 col-form-label" id="supplier-label">Status</label>
                         <div class="col-9">
-                            <input class="form-control" value="Approved" readonly>
+                            <span class="badge badge-soft-success badge-outline">Approved&nbsp;<i class="bi bi-check2-circle"></i></span>
                         </div>
                     </div>
                 </div>

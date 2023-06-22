@@ -2,6 +2,9 @@ $(document).ready(function () {
     const sale_order_list = JSON.parse($('#sale_order_list').text());
     const quotation_list = JSON.parse($('#quotation_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
+    const employee_list = JSON.parse($('#employee_list').text());
+    const unit_of_measure = JSON.parse($('#unit_of_measure').text());
+    const tax_list = JSON.parse($('#tax_list').text());
     const account_list = JSON.parse($('#account_list').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
@@ -178,94 +181,81 @@ $(document).ready(function () {
     function loadCreator() {
         let ele = $('#creator-select-box');
         ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.employee_list.map(function (item) {
-                        if (item.id === $('#data-init-payment-create-request-employee-id').val()) {
-                            ele.append(`<option selected data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                            $('#creator-detail-span').prop('hidden', false);
-                            $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
-                            $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
-                            $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
-                            let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
-                            $('#btn-detail-creator-tab').attr('href', url);
-                        }
-                        else {
-                            ele.append(`<option data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                        }
-                    })
-                    loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
-                    $('#sale-code-select-box2-show').val('');
-                    $('#sale-code-select-box2-show').css({
-                        'background': 'none',
-                    });
-                    $('#sale-code-select-box2-show').attr('disabled', false);
-                    $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
+        employee_list.map(function (item) {
+            if (item.id === $('#data-init-payment-create-request-employee-id').val()) {
+                ele.append(`<option selected data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                $('#creator-detail-span').prop('hidden', false);
+                $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
+                $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
+                $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
+                let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
+                $('#btn-detail-creator-tab').attr('href', url);
+            }
+            else {
+                ele.append(`<option data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+            }
+        })
+        loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+        $('#sale-code-select-box2-show').val('');
+        $('#sale-code-select-box2-show').css({
+            'background': 'none',
+        });
+        $('#sale-code-select-box2-show').attr('disabled', false);
+        $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
 
-                    let beneficiary = $('#data-init-payment-create-request-employee-id').val()
-                    if (sale_code_default_obj.length > 0) {
-                        beneficiary = sale_code_default_obj[0].sale_person.id;
-                    }
-                    loadSaleCode(beneficiary, 1);
-                    if (sale_code_default_type === 0) {
-                        $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                    payment_cost_items_filtered = data.payment_cost_items_list;
-                                    loadSaleOrderPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
-                                }
-                            }
-                        })
-
-                        advance_payment_expense_items = [];
-                        for (let i = 0; i < ap_list.length; i++) {
-                            if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                            }
-                        }
-
-                        $('#notify-none-sale-code').prop('hidden', true);
-                        $('#tab_plan_datatable').prop('hidden', false);
-                    }
-                    if (sale_code_default_type === 1) {
-                        $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                    payment_cost_items_filtered = data.payment_cost_items_list;
-                                    loadQuotationPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
-                                }
-                            }
-                        })
-
-                        advance_payment_expense_items = [];
-                        for (let i = 0; i < ap_list.length; i++) {
-                            if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                            }
-                        }
-
-                        $('#notify-none-sale-code').prop('hidden', true);
-                        $('#tab_plan_datatable').prop('hidden', false);
+        let beneficiary = $('#data-init-payment-create-request-employee-id').val()
+        if (sale_code_default_obj.length > 0) {
+            beneficiary = sale_code_default_obj[0].sale_person.id;
+        }
+        loadSaleCode(beneficiary, 1);
+        if (sale_code_default_type === 0) {
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                        payment_cost_items_filtered = data.payment_cost_items_list;
+                        loadSaleOrderPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
                     }
                 }
+            })
+
+            advance_payment_expense_items = [];
+            for (let i = 0; i < ap_list.length; i++) {
+                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
             }
-        }, (errs) => {
-        },)
+
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
+        }
+        if (sale_code_default_type === 1) {
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                        payment_cost_items_filtered = data.payment_cost_items_list;
+                        loadQuotationPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
+                    }
+                }
+            })
+
+            advance_payment_expense_items = [];
+            for (let i = 0; i < ap_list.length; i++) {
+                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+            }
+
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
+        }
     }
 
     function loadBeneficiary(department_id, creator_id) {
         let ele = $('#beneficiary-select-box');
         ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    resp.data.employee_list.map(function (item) {
+        employee_list.map(function (item) {
                         if (item.group.id === department_id) {
                             if (item.id === creator_id) {
                                 ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
@@ -287,18 +277,13 @@ $(document).ready(function () {
                             }
                         }
                     })
+        if (sale_code_default_obj.length > 0) {
+            ele.find('option').each(function (index, element) {
+                if ($(this).attr('value') === sale_code_default_obj[0].sale_person.id) {
+                    $(this).attr('selected', true);
                 }
-            }
-
-            if (sale_code_default_obj.length > 0) {
-                ele.find('option').each(function (index, element) {
-                    if ($(this).attr('value') === sale_code_default_obj[0].sale_person.id) {
-                        $(this).attr('selected', true);
-                    }
-                })
-            }
-        }, (errs) => {
-        },)
+            })
+        }
     }
 
     function loadSaleCode(beneficiary, default_loading=0) {
@@ -799,41 +784,25 @@ $(document).ready(function () {
     function loadExpenseTaxList(row_id) {
         let ele = $('#' + row_id + ' .expense-tax-select-box');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-tax-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-rate="0" selected></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
+        ele.append(`<option data-rate="0" selected></option>`);
+        tax_list.map(function (item) {
+            ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+        })
     }
 
     function loadExpenseUomList(row_id, uom_group_id, uom_mapped_id) {
         let ele = $('#' + row_id + ' .expense-uom-select-box');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-uom-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.id === uom_group_id) {
-                            if (item.id === uom_mapped_id) {
-                                ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
-                            }
-                            else {
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
-                            }
-                        }
-                    })
+        unit_of_measure.map(function (item) {
+            if (item.group.id === uom_group_id) {
+                if (item.id === uom_mapped_id) {
+                    ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
+                }
+                else {
+                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                 }
             }
-        }, (errs) => {
-        },)
+        })
     }
 
     function loadUnitPriceList(row_id, expense_item_id) {

@@ -62,12 +62,12 @@
           data-url-detail="{% url "PaymentDetailAPI" '0' %}"
     >
         {% csrf_token %}
-        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
-            <div class="row">
-                <div class="col-7 pr-5 mb-4 text-right">
-                    <h5 id="payment-code" class="text-primary"></h5>
-                </div>
+        <div class="row mr-3">
+            <div class="col-7 pr-5 mb-3 text-right">
+                <h5 id="payment-code" class="text-primary"></h5>
             </div>
+        </div>
+        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-7 pr-5">
                     <div class="row form-group mb-4">

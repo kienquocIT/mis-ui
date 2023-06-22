@@ -51,6 +51,7 @@
                     <select id="chooseAdvancePayment" class="select2 form-control" data-method="GET"
                             data-url="{% url "AdvancePaymentListAPI" %}"
                             data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
+                            data-close-on-select="true"
                             name="advance_payment">'
                         <option></option>
                         {% for item in data.advance_payment %}
@@ -183,6 +184,7 @@
                         </span>
                     </span>
                     <select class="form-control select2" name="beneficiary" id="chooseBeneficiary"
+                            data-close-on-select="true"
                             data-method="GET"
                             data-url="{% url 'EmployeeListAPI' %}"></select>
                 </span>

@@ -96,7 +96,7 @@ function menu_handler() {
 }
 
 class UrlGatewayReverse {
-    static get_url(docID, docAppCode) {
+    static get_url(docID, docAppCode, params={}) {
         let arrAppCode = docAppCode.split(".");
         let urlData = '#';
         if (docID && arrAppCode.length === 2) {
@@ -106,7 +106,7 @@ class UrlGatewayReverse {
                 '_app_', arrAppCode[1]
             ).replaceAll(
                 '_pk_', docID
-            ) + "?redirect=true";
+            ) + "?" + $.param(params);
         }
         return urlData;
     }
@@ -268,7 +268,10 @@ class NotifyController {
                 if (data && data.hasOwnProperty('notify_data')) {
                     data['notify_data'].map((item) => {
                         let senderData = item?.['employee_sender_data']?.['full_name'];
-                        let urlData = UrlGatewayReverse.get_url(item['doc_id'], item['doc_app']);
+                        let urlData = UrlGatewayReverse.get_url(
+                            item['doc_id'], item['doc_app'],
+                            {'redirect': true, 'notify_id': item['id']},
+                        );
                         let tmp = `
                             <a 
                                 href="${urlData}" 

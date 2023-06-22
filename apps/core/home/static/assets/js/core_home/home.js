@@ -196,7 +196,11 @@ function loadTabTodo() {
                     width: "25%",
                     render: (data, type, row) => {
                         let stage__runtime = row['stage__runtime'];
-                        let urlData = UrlGatewayReverse.get_url(stage__runtime?.['doc_id'], stage__runtime?.['app_code']);
+                        let urlData = UrlGatewayReverse.get_url(
+                            stage__runtime?.['doc_id'],
+                            stage__runtime?.['app_code'],
+                            {'redirect': true},
+                        );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
                 }, {
@@ -269,7 +273,11 @@ function loadTabFollowing() {
                     className: 'wrap-text',
                     width: "25%",
                     render: (data, type, row) => {
-                        let urlData = UrlGatewayReverse.get_url(row?.['doc_id'], row?.['app_code']);
+                        let urlData = UrlGatewayReverse.get_url(
+                            row?.['doc_id'],
+                            row?.['app_code'],
+                            {'redirect': true},
+                        );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
                 }, {
@@ -344,7 +352,11 @@ function loadTabPined() {
                     data: 'title',
                     render: (data, type, row) => {
                         let runtime = row['runtime'];
-                        let urlData = UrlGatewayReverse.get_url(runtime?.['doc_id'], runtime?.['app_code']);
+                        let urlData = UrlGatewayReverse.get_url(
+                            runtime?.['doc_id'],
+                            runtime?.['app_code'],
+                            {'redirect': true},
+                        );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
                 }, {
@@ -472,10 +484,10 @@ function initEventElement() {
         let kind = bookmarkItem.attr('data-kind');
         let viewName = bookmarkItem.attr('data-view_name');
         let customizeUrl = bookmarkItem.attr('data-customize_url');
-        if (kind === '0' && viewName){
+        if (kind === '0' && viewName) {
             let urlData = $.fn.storageSystemData.attr('data-GatewayViewNameParseView').replaceAll('_view_name_', viewName);
             $.fn.eleHrefActive(urlData + "?redirect=true");
-        } else if (kind === '1' && customizeUrl){
+        } else if (kind === '1' && customizeUrl) {
             window.location.href = customizeUrl;
         }
     });

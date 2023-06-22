@@ -141,6 +141,7 @@ class GatewayMiddleListView(APIView):
 class GatewayMiddleDetailView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, plan, app, pk, **kwargs):
+        ReverseUrlCommon.update_done_notify(request.user, request.query_params.get('notify_id', None))
         is_redirect = TypeCheck.get_bool(
             request.query_params.get('redirect', False)
         )

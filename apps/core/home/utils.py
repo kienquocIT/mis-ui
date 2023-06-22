@@ -4,10 +4,21 @@ __all__ = [
 
 from django.urls import reverse, NoReverseMatch
 
-from apps.shared import TypeCheck
+from apps.shared import TypeCheck, ServerAPI, ApiURL
 
 
 class ReverseUrlCommon:
+    @classmethod
+    def update_done_notify(cls, user, notify_id):
+        if user and notify_id:
+            try:
+                resp = ServerAPI(user=user, url=ApiURL.LOG_MY_NOTIFY_DETAIL.fill_key(pk=notify_id)).put(
+                    data={'is_done': True}
+                )
+            except Exception as _err:
+                pass
+        return True
+
     @classmethod
     def get_link_by_name(cls, view_name):
         try:

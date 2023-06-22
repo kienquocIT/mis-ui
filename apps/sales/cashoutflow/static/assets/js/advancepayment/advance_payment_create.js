@@ -947,6 +947,7 @@ $(document).ready(function () {
         $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
         let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
         $('#btn-detail-beneficiary-tab').attr('href', url);
+        $('#sale-code-select-box2-show').val('');
     })
 
     // change views when finished edit bank account
@@ -1078,6 +1079,9 @@ $(document).ready(function () {
                 'type': $('#sale-code-select-box option:selected').attr('data-type')
             }
         }
+        else {
+            delete frm.dataForm['sale_code']
+        }
 
         frm.dataForm['account_bank_information_dict'] = account_bank_accounts_information_dict;
 
@@ -1088,25 +1092,8 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        let waittime = 1000;
-                        if (frm.dataForm['money_gave']) {
-                            setTimeout(
-                                Swal.fire({
-                                    html:
-                                    '<div class="d-flex align-items-center"><i class="bi bi-cash-coin me-2 fs-1 text-success"></i><h4 class="mb-0">Money has been sent.</h4></div>',
-                                    customClass: {
-                                        content: 'p-0',
-                                        actions: 'justify-content-start',
-                                    },
-                                    width: 400,
-                                    showConfirmButton:false,
-                                    buttonsStyling: false
-                                }), 3000
-                            );
-                            waittime = 3000;
-                        }
                         $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, waittime);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {

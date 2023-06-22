@@ -1,0 +1,29 @@
+{% load  static i18n %}
+<!-- Message translate usually -->
+<br
+        class="hidden" readonly disabled
+        id="storageSystemData"
+        data-msg-datatable-language-config="{% if base.language == 'vi' %}
+                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
+            {% elif base.language == 'en' %}
+                {% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}
+            {% else %}
+                <!-- Proud of Vietnamese products -->
+                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
+            {% endif %}
+        "
+        data-urlCompanyConfig="{% url 'CompanyConfigDetailAPI' %}"
+        data-urlCompanyConfigData=""
+        data-flagIsDebug="{{ is_debug }}"
+        data-flagNotifyKey="{{ is_notify_key }}"
+        data-idWFRuntime=""
+        data-idUrlTaskDetail="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"
+        data-idPKDetail="{{ pk }}"
+        data-idBtnIDLastSubmit=""
+        data-idFormID="{% if data.form_id %}{{ data.form_id }}{% endif %}"
+        data-GatewayMiddleListView="{% url 'GatewayMiddleListView' plan='_plan_' app='_app_' %}"
+        data-GatewayMiddleDetailView="{% url 'GatewayMiddleDetailView' plan='_plan_' app='_app_' pk='_pk_' %}"
+        data-GatewayViewNameListView="{% url 'GatewayViewNameListView' %}"
+        data-GatewayViewNameParseView="{% url 'GatewayViewNameParseView' view_name='_view_name_' %}"
+/>
+<!-- /Message translate usually -->

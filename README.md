@@ -316,4 +316,5 @@ $.fn.callAjax(url_loaded, 'GET').then(
         }
 );
 ```
-9. 
+9. Mọi z-index đều nhỏ hơn 9999
+10. 

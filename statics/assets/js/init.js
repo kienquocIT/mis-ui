@@ -1074,172 +1074,121 @@ function buildSelect2() {
     })
 }
 
-$(document).ready(function () {
-    // temp solution
-    $('#idxRealAction').removeClass('hidden');
-
-    // push count notify to bell-alert
-    let bellIdx = $('#idxNotifyBell');
-    let bellIdxIcon = $('#idxNotifyBellIcon');
-    let bellCount = $('#my-notify-count');
-    let notifyCountUrl = bellIdx.attr('data-url');
-
-    function checkNotifyCount() {
-        $.fn.callAjax(notifyCountUrl, 'GET',).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && data.hasOwnProperty('count') && data['count'] > 0) {
-                bellCount.text(data['count']);
-                bellIdxIcon.addClass('my-bell-ring');
+function change_space() {
+    function executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData) {
+        let baseMsg = $('#base-trans-factory');
+        Swal.fire({
+            title: $.fn.transEle.attr('data-msgLabelReloadPageIn') + `"${spaceName}"`,
+            html: $.fn.transEle.attr('data-msgReloadPageIn') + '<br>',
+            timer: 2000,
+            timerProgressBar: true,
+            showCancelButton: true,
+            cancelButtonText: baseMsg.attr('data-cancel'),
+            showConfirmButton: true,  // Hiển thị nút Confirm
+            confirmButtonText: baseMsg.attr('data-confirm'),
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
+                callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData);
             }
+        });
+    }
+
+    $('#btnTestAlert').click(function () {
+        executeTimeOutChangeSpace();
+    })
+
+    function callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData) {
+        $.fn.showLoading();
+        $.fn.callAjax(urlData, methodData, {'space_code': spaceCode}, true,).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && data['status'] === 200) {
+                $.fn.notifyB({
+                    'description': $('#base-trans-factory').attr('data-success')
+                }, 'success');
+                setTimeout(() => {
+                    window.location.href = urlRedirectData;
+                }, 1000,);
+            }
+            setTimeout(() => {
+                $.fn.hideLoading();
+            }, 1000);
+        }, (errs) => {
+            $.fn.hideLoading();
         })
     }
 
-    if (notifyCountUrl) checkNotifyCount();
-    $('#notifyDropdownData').on("show.bs.dropdown", function () {
-        let dataArea = $('#idxNotifyShowData').find('.simplebar-content');
-        dataArea.find(':not(.spinner-grow)').remove();
-        dataArea.find('.spinner-grow').removeClass('hidden');
-
-        let dataUrl = $(this).attr('data-url');
-        let dataMethod = $(this).attr('data-method');
-
-        $.fn.callAjax(dataUrl, dataMethod).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            let baseItemNotify = `
-                    <a href="javascript:void(0);" class="dropdown-item mb-1 border border-light {classBgLight}">
-                        <div class="media">
-                            <div class="media-head">
-                                <div class="avatar avatar-rounded avatar-sm">
-                                    <span class="initial-wrap">{avatarSender}</span>
-                                </div>
-                            </div>
-                            <div class="media-body">
-                                <div>
-                                    <div class="notifications-text">
-                                        <span class="text-primary title">{title}</span>
-                                    </div>
-                                    <div class="notifications-text mb-3">
-                                        <small class="text-muted">{msg}</small>
-                                    </div>
-                                    <div class="notifications-info">
-                                         <span class="badge badge-soft-success">{label}</span>
-                                         <div class="notifications-time">{date}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                `;
-
-            let arr_no_seen = [];
-            let arr_seen = [];
-            if (data && data.hasOwnProperty('notify_data')) {
-                data['notify_data'].map((item) => {
-                    let senderData = item?.['employee_sender_data']?.['full_name'];
-                    let tmp = baseItemNotify.replace("{avatarSender}", senderData ? $.fn.shortName(senderData) : `<i class="fa-solid fa-gear"></i>`).replace("{title}", item?.['title']).replace("{msg}", item?.['msg']).replace("{label}", item?.['doc_app']).replace("{date}", item?.['date_created']);
-                    if (item?.['is_done'] === true) {
-                        arr_seen.push(tmp.replace("{classBgLight}", ""));
-                    } else {
-                        arr_no_seen.push(tmp.replace("{classBgLight}", "bg-light"));
-                    }
-                })
-            }
-            if (arr_no_seen.length > 0 || arr_seen.length > 0) {
-                dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
-            } else {
-                dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
-            }
-            dataArea.find('.spinner-grow').addClass('hidden');
-        }, (errs) => {
-            dataArea.find('.spinner-grow').addClass('hidden');
-        })
-    });
-    $('#btnNotifySeenAll').click(function (event) {
+    $('.space-item').click(function (event) {
         event.preventDefault();
-        let dataUrl = $(this).attr('data-url');
-        let dataMethod = $(this).attr('data-method');
-        if (dataUrl && dataMethod) {
-            $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    bellIdxIcon.removeClass('my-bell-ring');
-                    bellCount.text("");
-                }
-
-            },)
+        let space_selected = $('#menu-tenant').attr('data-space-selected');
+        let urlData = $(this).closest('.dropdown-menu').attr('data-url');
+        let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
+        let methodData = $(this).closest('.dropdown-menu').attr('data-method');
+        let spaceCode = $(this).attr('data-space-code');
+        if (spaceCode !== space_selected) {
+            executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
         }
-    });
-    $('#btnNotifyClearAll').click(function (event) {
-        event.preventDefault();
-        let dataUrl = $(this).attr('data-url');
-        let dataMethod = $(this).attr('data-method');
-        if (dataUrl && dataMethod) {
-            $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data['status'] === 204) {
-                    checkNotifyCount();
-                }
-            },)
-        }
-    });
-    // -- push count notify to bell-alert
-
-    // Listen event select and select2-init-v1 for set previous selected data
-    $(document).on('focus', 'select', function () {
-        $(this).data('previousValue', $(this).val());
     })
-    $(document).on('click', '.select2-init-v1', function () {
-        if (!$(this).attr('data-ajax-loaded')) {
-            $(this).attr('data-ajax-loaded', true);
+}
 
-            let urlData = $(this).attr('data-url') + '?' + $(this).attr('data-params');
-            let keyResult = $(this).attr('data-result-key');
-            $(this).append(`<option class="x-item-loading" value="x-item-loading" disabled>` + $('#base-trans-factory').attr('data-loading') + '...' + `</option>`);
-            $.fn.callAjax(urlData, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
-                    let selectedVal = $(this).find(":selected").val();
-                    let dataList = data?.[keyResult];
-                    $.map(dataList, (item) => {
-                        if (!selectedVal || (selectedVal && item.id !== selectedVal)) $(this).append(`<option value="${item.id}">${item.title}</option>`);
-                    });
-                    if (!selectedVal) {
-                        $(this).find('option.x-item-loading').text("").attr('disable', 'disable').attr('selected', 'selected');
-                    } else {
-                        $(this).find('option.x-item-loading').attr('disable', 'disable').remove();
-                    }
-                }
-            },)
+function active_menu(item) {
+    if (item.length > 0) {
+        item.first().addClass('active')
+        let parent = item.first().parents('.nav-item');
+        if (parent.length > 0) {
+            parent.first().addClass('active');
+            active_menu(parent.first());
         }
-    });
-    // -- Listen event select and select2-init-v1 for set previous selected data
+    }
+    return null;
+}
 
-    // button event submit form (last click)
-    $(document).on('click', "[type='submit']", function (event) {
-        $.fn.setBtnIDLastSubmit($(this).attr('id'));
-    });
-
-    // clean notify child
-    new NotifyPopup().cleanChildNotifyBlock();
-    $('.btn-redirect').click(function () {
-        const url = $(this).attr('data-url');
-        if (url) {
-            location.href = url;
+function menu_handler() {
+    let nav_data = $('#get-menu-active');
+    let menu_id_active = nav_data.attr('data-nav-menu');
+    if (menu_id_active) {
+        let ele_menu = $('#' + menu_id_active);
+        if (ele_menu) {
+            active_menu(ele_menu);
         }
-    });
-    $.fn.formDetailToUpdateAction();
-    // -- clean notify child
+    }
+    let tenant_code_active = nav_data.attr('data-nav-tenant');
+    if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
+}
 
-    // Active drawer
-    $('.ntt-drawer-toggle-link').each(function () {
-        if ($(this).attr('data-drawer-active') === "true") {
-            $(this).trigger('click');
+class UrlGatewayReverse {
+    static get_url(docID, docAppCode) {
+        let arrAppCode = docAppCode.split(".");
+        let urlData = '#';
+        if (docID && arrAppCode.length === 2) {
+            urlData = $.fn.storageSystemData.attr('data-GatewayMiddleDetailView').replaceAll(
+                '_plan_', arrAppCode[0]
+            ).replaceAll(
+                '_app_', arrAppCode[1]
+            ).replaceAll(
+                '_pk_', docID
+            ) + "?redirect=true";
         }
-    });
-    // -- Active drawer
+        return urlData;
+    }
+}
 
-    // Action support Workflow in Doc Detail
-    function renderLogOfDoc(stagesData) {
+class LogController {
+    constructor() {
+        this.groupLogEle = $('#drawer_log_data');
+        this.tabLog = $('#tab_block_diagram');
+        this.logUrl = this.tabLog.attr('data-url');
+        this.blockDataRuntime = $('#idxDataRuntime');
+        this.tabActivityLog = $('#tab_block_activities');
+        this.activityUrl = this.tabActivityLog.attr('data-url');
+        this.blockDataActivities = $('#idxDataActivities');
+    }
+
+    setStyleBoxLog() {
+        let heightNavHeader = $('.blog-header').outerHeight();
+        $('.ntt-drawer').css('top', heightNavHeader).css('height', "calc(100vh - " + (heightNavHeader + "px") + ")");
+    }
+
+    parseLogOfDoc(stagesData) {
         let ulStages = [];
         if (stagesData.length > 0) {
             stagesData.map((item) => {
@@ -1278,17 +1227,12 @@ $(document).ready(function () {
                     logData: logGroupHTML,
                 }))
             })
-        } else {
-            // ulStages.push(
-            //     `Phiếu không có nhật ký của Quy trình làm việc.`
-            // )
         }
         return ulStages.join("");
     }
 
-    function renderLogActivities(tabActivityLog, log_data) {
-        tabActivityLog.empty();
-        log_data.map((item) => {
+    parseLogActivities(log_data) {
+        return log_data.map((item) => {
             let dateCreatedHTML = `<span class="badge badge-dark badge-outline mr-1">${$.fn.parseDateTime(item.date_created)}</span>`;
             let msgHTML = `<span class="badge badge-light badge-outline mr-1">${item.msg}</span>`;
             let isDataChangeHTML = Object.keys(item?.['data_change']).length > 0 ? `<button class="btn btn-icon btn-rounded bg-dark-hover btn-log-act-more mr-1"><span class="icon"><i class="fa-solid fa-info"></i></span></button>` : ``;
@@ -1299,79 +1243,452 @@ $(document).ready(function () {
             } else {
                 baseHTML = `<span class="badge badge-primary mr-1">${item?.['employee_data']?.['full_name']}</span>`;
             }
-            tabActivityLog.append(`<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`);
-        });
+            return `<p class="mb-1 mt-1"> ${baseHTML} ${dateCreatedHTML} ${msgHTML} ${isDataChangeHTML} </p> ${dataChangeHTML}` + `<hr class="bg-blue-dark-3" />`
+        }).join("");
     }
 
-    $(document).on('click', '.btn-log-act-more', function (event) {
-        event.preventDefault();
-        $(this).closest('p').next('.log-act-data-change').toggleClass('hidden');
-    })
-
-    $('.btn-action-wf').click(function (event) {
-        event.preventDefault();
-        return $.fn.callActionWF($(this))
-    });
-
-    $('#btnLogShow').click(function (event) {
-        event.preventDefault();
+    getDataLogAndActivities(pkID, runtimeID, forceLoad = null) {
+        // reset style
+        this.setStyleBoxLog();
 
         // log runtime
-        let groupLogEle = $('#drawer_log_data');
-        let baseUrl = groupLogEle.attr('data-url');
-        if (baseUrl && !groupLogEle.attr('data-log-loaded')) {
-            let runtimeID = $.fn.getWFRuntimeID();
+        if (this.logUrl && (!this.groupLogEle.attr('data-log-runtime-loaded') || forceLoad === true)) {
+            if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
             if (runtimeID) {
-                $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(baseUrl, runtimeID), 'GET',).then((resp) => {
-                    groupLogEle.attr('data-log-loaded', true);
+                this.blockDataRuntime.showLoadingWaitResponse();
+                this.blockDataRuntime.empty();
+                $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
+                    this.groupLogEle.attr('data-log-runtime-loaded', true);
                     let data = $.fn.switcherResp(resp);
                     if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
                         let diagram_data = data['diagram_data'];
                         let stages = diagram_data['stages'];
-
-                        $('#idxDataRuntimeLoading').addClass('hidden');
-                        $('#idxDataRuntime').html(renderLogOfDoc(stages)).removeClass('hidden');
+                        this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
                     }
                 })
             }
         }
 
         // log activities
-        let tabActivityLog = $('#tab_block_activities');
-        let activityUrl = tabActivityLog.attr('data-url');
-        $.fn.callAjax(activityUrl, 'GET', {}, true,).then((resp) => {
+        if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
+        if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
+            this.blockDataActivities.showLoadingWaitResponse();
+            this.blockDataActivities.empty();
+            $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
+                this.groupLogEle.attr('data-log-activity-loaded', true);
+                let data = $.fn.switcherResp(resp);
+                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                    this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
+                }
+            }, (errs) => {
+
+            })
+        }
+    }
+}
+
+class NotifyController {
+    constructor() {
+        this.bellIdx = $('#idxNotifyBell');
+        this.bellIdxIcon = $('#idxNotifyBellIcon');
+        this.bellCount = $('#my-notify-count');
+        this.notifyCountUrl = this.bellIdx.attr('data-url');
+        this.dropdownData = $('#notifyDropdownData');
+        this.btnSeenAll = $('#btnNotifySeenAll');
+        this.btnClearAll = $('#btnNotifyClearAll');
+    }
+
+    checkNotifyCount() {
+        $.fn.callAjax(this.notifyCountUrl, 'GET',).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
-                renderLogActivities(tabActivityLog, data['log_data']);
+            if (data && data.hasOwnProperty('count') && data['count'] > 0) {
+                this.bellCount.text(data['count']);
+                this.bellIdxIcon.addClass('my-bell-ring');
             }
-        }, (errs) => {
-
         })
-    });
-    // -- Action support Workflow in Doc Detail
+    }
 
-    // Edit in Zone at DocDetail Page
-    $('#btn-active-edit-zone-wf').click(function (event) {
-        event.preventDefault();
-        $(this).addClass('hidden');
-        $.fn.activeZoneInDoc();
-    })
+    // main
+    active() {
+        new NotifyPopup().cleanChildNotifyBlock();
+        let realThis = this;
+        if (realThis.notifyCountUrl) realThis.checkNotifyCount();
+        realThis.dropdownData.on("show.bs.dropdown", function () {
+            let dataArea = $('#idxNotifyShowData');
+            dataArea.showLoadingWaitResponse();
+            dataArea.empty();
 
-    // -- Edit in Zone at DocDetail Page
+            let dataUrl = $(this).attr('data-url');
+            let dataMethod = $(this).attr('data-method');
+
+            $.fn.callAjax(dataUrl, dataMethod).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                let arr_no_seen = [];
+                let arr_seen = [];
+                if (data && data.hasOwnProperty('notify_data')) {
+                    data['notify_data'].map((item) => {
+                        let senderData = item?.['employee_sender_data']?.['full_name'];
+                        let urlData = UrlGatewayReverse.get_url(item['doc_id'], item['doc_app']);
+                        let tmp = `
+                            <a 
+                                href="${urlData}" 
+                                class="dropdown-item mb-1 border border-light ${item?.['is_done'] === true ? '' : 'bg-light'}"
+                            >
+                                <div class="media">
+                                    <div class="media-head">
+                                        <div class="avatar avatar-rounded avatar-sm">
+                                            <span class="initial-wrap">${senderData ? $.fn.shortName(senderData) : '<i class="fa-solid fa-gear"></i>'}</span>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        <div>
+                                            <div class="notifications-text">
+                                                <span class="text-primary title">${item?.['title']}</span>
+                                            </div>
+                                            <div class="notifications-text mb-3">
+                                                <small class="text-muted">${item?.['msg']}</small>
+                                            </div>
+                                            <div class="notifications-info">
+                                                 <span class="badge badge-soft-success">${item?.['doc_app']}</span>
+                                                 <div class="notifications-time">${item?.['date_created']}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                        if (item?.['is_done'] === true) arr_seen.push(tmp);
+                        else arr_no_seen.push(tmp);
+                    })
+                }
+                if (arr_no_seen.length > 0 || arr_seen.length > 0) {
+                    dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
+                } else {
+                    dataArea.append(`<small class="text-muted">${$('#base-trans-factory').attr('data-no-data')}</small>`);
+                }
+                dataArea.hideLoadingWaitResponse();
+            }, (errs) => {
+                dataArea.hideLoadingWaitResponse();
+            })
+        });
+        realThis.btnSeenAll.click(function (event) {
+            event.preventDefault();
+            let dataUrl = $(this).attr('data-url');
+            let dataMethod = $(this).attr('data-method');
+            if (dataUrl && dataMethod) {
+                $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        realThis.bellIdxIcon.removeClass('my-bell-ring');
+                        realThis.bellCount.text("");
+                    }
+
+                },)
+            }
+        });
+        realThis.btnClearAll.click(function (event) {
+            event.preventDefault();
+            let dataUrl = $(this).attr('data-url');
+            let dataMethod = $(this).attr('data-method');
+            if (dataUrl && dataMethod) {
+                $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 204) {
+                        realThis.checkNotifyCount();
+                    }
+                },)
+            }
+        });
+    }
+}
+
+class ListeningEventController {
+    selectELe() {
+        // Listen event select and select2-init-v1 for set previous selected data
+        $(document).on('focus', 'select', function () {
+            $(this).data('previousValue', $(this).val());
+        })
+        $(document).on('click', '.select2-init-v1', function () {
+            if (!$(this).attr('data-ajax-loaded')) {
+                $(this).attr('data-ajax-loaded', true);
+
+                let urlData = $(this).attr('data-url') + '?' + $(this).attr('data-params');
+                let keyResult = $(this).attr('data-result-key');
+                $(this).append(`<option class="x-item-loading" value="x-item-loading" disabled>` + $('#base-trans-factory').attr('data-loading') + '...' + `</option>`);
+                $.fn.callAjax(urlData, 'GET').then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
+                        let selectedVal = $(this).find(":selected").val();
+                        let dataList = data?.[keyResult];
+                        $.map(dataList, (item) => {
+                            if (!selectedVal || (selectedVal && item.id !== selectedVal)) $(this).append(`<option value="${item.id}">${item.title}</option>`);
+                        });
+                        if (!selectedVal) {
+                            $(this).find('option.x-item-loading').text("").attr('disable', 'disable').attr('selected', 'selected');
+                        } else {
+                            $(this).find('option.x-item-loading').attr('disable', 'disable').remove();
+                        }
+                    }
+                },)
+            }
+        });
+        // -- Listen event select and select2-init-v1 for set previous selected data
+        $(".select2").each(function () {
+            $(this).initSelect2();
+        });
+    }
+
+    formSubmitEle() {
+        // button event submit form (last click)
+        $(document).on('click', "[type='submit']", function (event) {
+            $.fn.setBtnIDLastSubmit($(this).attr('id'));
+        });
+    }
+
+    formInputClickOpenEdit() {
+        $.fn.formDetailToUpdateAction();
+    }
+
+    nttDrawer() {
+        // Active drawer
+        $('.ntt-drawer-toggle-link').each(function () {
+            if ($(this).attr('data-drawer-active') === "true") {
+                $(this).trigger('click');
+            }
+        });
+        // -- Active drawer
+    }
+
+    actionWFInHeader() {
+        $('.btn-action-wf').click(function (event) {
+            event.preventDefault();
+            return $.fn.callActionWF($(this))
+        });
+        // Edit in Zone at DocDetail Page
+        $('#btn-active-edit-zone-wf').click(function (event) {
+            event.preventDefault();
+            $(this).addClass('hidden');
+            $.fn.activeZoneInDoc();
+        })
+        // -- Edit in Zone at DocDetail Page
+    }
+
+    log() {
+        // Action support Workflow in Doc Detail
+        $(document).on('click', '.btn-log-act-more', function (event) {
+            event.preventDefault();
+            $(this).closest('p').next('.log-act-data-change').toggleClass('hidden');
+        })
+        $('#btnLogShow').click(function (event) {
+            event.preventDefault();
+            new LogController().getDataLogAndActivities();
+        });
+        // -- Action support Workflow in Doc Detail
+    }
+
+    maskMoney() {
+        $(document).on('focus', 'input.mask-money', function () {
+            return MaskMoney2.focusInputMoney($(this));
+        });
+        $(document).on('blur', 'input.mask-money', function () {
+            return MaskMoney2.blurInputMoney($(this));
+        });
+        $(document).on('input', 'input.mask-money', function () {
+            return MaskMoney2.realtimeInputMoney($(this));
+        });
+        <!-- Init Mask Money -->
+        $.fn.initMaskMoney2();
+        <!-- ## Init Mask Money -->
+    }
+
+    ticket() {
+        <!-- Raise a ticket -->
+        $('#ticket-hash-tag').select2({
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
+        $('#modalRaiseTicket').on('shown.bs.modal', function () {
+            $('#ticket-email').val($('#email-request-owner').text());
+            $('#ticket-email-auto').val($('#email-request-owner').text());
+            $('#ticket-location-raise').val(window.location);
+            $('#ticket-location-raise-auto').val(window.location);
+        });
+
+        $("#ticket-attachments").change(function () {
+            let previewContainer = $("#ticket-attachment-preview");
+            previewContainer.empty();
+
+            if (this.files) {
+                let filesAmount = this.files.length;
+                for (let i = 0; i < filesAmount; i++) {
+                    let reader = new FileReader();
+                    reader.onload = function (event) {
+                        let imgElement = $("<img>");
+                        imgElement.attr("src", event.target.result);
+                        imgElement.css({
+                            "max-width": "100px",
+                            "max-height": "100px"
+                        });
+                        previewContainer.append(imgElement);
+                    };
+                    reader.readAsDataURL(this.files[i]);
+                }
+            }
+        });
+
+        let ticketFrm = $('#frm-send-a-ticket');
+        ticketFrm.submit(function (event) {
+            event.preventDefault();
+
+            let urlData = $(this).attr('data-url');
+            let methodData = $(this).attr('data-method');
+
+            let formData = new FormData(this);
+            formData.append("attachments", document.getElementById('ticket-attachments').files);
+
+            $.fn.showLoading();
+            $.ajax({
+                url: urlData, // point to server-side URL
+                dataType: 'json', // what to expect back from server
+                cache: false,
+                contentType: false,
+                processData: false, //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
+                data: formData,
+                type: methodData,
+                success: function (resp) { // display success response
+                    let data = $.fn.switcherResp(resp)
+                    ticketFrm.find('input').attr('readonly', 'readonly');
+                    ticketFrm.find('textarea').attr('readonly', 'readonly');
+                    $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
+                    $.fn.notifyB({
+                        'description': $('#base-trans-factory').attr('data-success')
+                    }, 'success')
+                    $.fn.hideLoading();
+                },
+                error: function (response) {
+                    $.fn.notifyB({
+                        'description': 'Try again!'
+                    }, 'failure');
+                    $.fn.hideLoading();
+                }
+            });
+        });
+        <!-- ## Raise a ticket -->
+    }
+
+    dataTable() {
+        <!-- Loading table ajax -->
+        $(document).find('table').each((idx, tbl) => {
+            if (!$(tbl).attr('load-data-hide-spinner')) {
+                $(tbl).on('preXhr.dt', (e, settings, data) => {
+                    // show loading full page
+                    // $.fn.showLoading();
+
+                    // show loading tbody table
+                    $(tbl).find('tbody').showLoadingWaitResponse();
+                });
+                $(tbl).on('draw.dt', () => {
+                    // hide loading full page
+                    // $.fn.hideLoading();
+
+                    // hide loading tbody table
+                    $(tbl).find('tbody').hideLoadingWaitResponse();
+                });
+            }
+        });
+        <!-- ## Loading table ajax -->
+    }
+
+    navAndMenu() {
+        <!-- Toggle Collapse -->
+        $('.hk-navbar-togglable').click(function (event) {
+            $(this).find('.icon').children().toggleClass('d-none');
+        });
+        <!-- ## Toggle Collapse -->
+
+        <!-- Space current -->
+        change_space();
+        <!-- ## Space current -->
 
 
-    // test sticky header
-    // $('#idxPageContent')
-    // -- test sticky header
+        <!-- Active menu -->
+        menu_handler();
+        <!-- ## Active menu -->
+    }
 
+    // main
+    active() {
+        this.selectELe();
+        this.formSubmitEle();
+        this.formInputClickOpenEdit();
+        this.nttDrawer();
+        this.actionWFInHeader();
+        this.log();
+        this.maskMoney();
+        this.ticket();
+        this.dataTable();
+        this.navAndMenu();
+    }
+}
+
+$(document).ready(function () {
+    // temp solution
+    $('#idxRealAction').removeClass('hidden');
+
+    // listen when document ready
+    new NotifyController().active();
+    new ListeningEventController().active()
+    // -- listen when document ready
 });
 
 // function extend to jQuery
 $.fn.extend({
+    // system
+    storageSystemData: $('#storageSystemData'),
+    isDebug: function () {
+        return $.fn.parseBoolean($.fn.storageSystemData.attr('data-flagIsDebug'), false)
+    },
+    eleHrefActive: function (url){
+        let link = document.createElement('a');
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+    },
+
+    // element
+    transEle: $('#base-trans-factory'),
+    alterClass: function (removals, additions) {
+        // https://stackoverflow.com/a/8680251/13048590
+        // https://gist.github.com/peteboere/1517285
+        let self = this;
+        if (removals.indexOf('*') === -1) {
+            // Use native jQuery methods if there is no wildcard matching
+            self.removeClass(removals);
+            return !additions ? self : self.addClass(additions);
+        }
+        let patt = new RegExp('\\s' + removals.replace(/\*/g, '[A-Za-z0-9-_]+').split(' ').join('\\s|\\s') + '\\s', 'g');
+        self.each(function (i, it) {
+            let cn = ' ' + it.className + ' ';
+            while (patt.test(cn)) {
+                cn = cn.replace(patt, ' ');
+            }
+            it.className = $.trim(cn);
+        });
+
+        return !additions ? self : self.addClass(additions);
+    },
+
     // utils
     parseJsonDefault: function (data, defaultReturn = {}) {
         try {
             return JSON.parse(data);
+        } catch (error) {
+            return defaultReturn;
+        }
+    },
+    dumpJsonDefault: function (data, defaultReturn = '{}') {
+        try {
+            return JSON.stringify(data);
         } catch (error) {
             return defaultReturn;
         }
@@ -1392,15 +1709,26 @@ $.fn.extend({
     arrayIncludesAll: function (a, b) {
         return b.every(value => a.includes(value));
     },
-    shortName: function (name, length = 2) {
-        let rs = name.split(" ").map((item) => {
-            return item ? item.charAt(0) : ""
-        }).join("");
-        if (rs.length > length) return rs.slice(0, length);
-        return rs;
+    shortName: function (name, defaultReturn = '', length = 2) {
+        if (name) {
+            let rs = name.split(" ").map((item) => {
+                return item ? item.charAt(0) : ""
+            }).join("");
+            if (rs.length > length) return rs.slice(0, length);
+            return rs;
+        }
+        return defaultReturn;
     },
     isBoolean(value) {
         return typeof value === 'boolean';
+    },
+    parseBoolean: function (value, no_value_is_false = false, defaultReturn = null) {
+        if (typeof value === 'boolean') return value;
+        if (value === 1 || value === '1' || value === 'true' || value === 'True') return true;
+        if (value === 0 || value === '0' || value === 'false' || value === 'False') return false;
+
+        if (!value && no_value_is_false === true) return false;
+        return null;
     },
     initElementInitSelect: function (opts, html_or_$ = 'html') {
         let configData = {
@@ -1479,7 +1807,7 @@ $.fn.extend({
         return false;
     },
     getPkDetail: function () {
-        return $('#idPKDetail').attr('data-pk');
+        return $.fn.storageSystemData.attr('data-idPKDetail');
     },
     getElePageContent: function () {
         return $('#idxPageContent');
@@ -1488,10 +1816,10 @@ $.fn.extend({
         return $("#idxPageAction");
     },
     setBtnIDLastSubmit: function (idx) {
-        $('#idBtnIDLastSubmit').attr('data-id', idx);
+        $.fn.storageSystemData.attr('data-idBtnIDLastSubmit', idx);
     },
     getBtnIDLastSubmit: function () {
-        return $('#idBtnIDLastSubmit').attr('data-id');
+        return $.fn.storageSystemData.attr('data-idBtnIDLastSubmit');
     },
 
     // default components
@@ -1584,7 +1912,7 @@ $.fn.extend({
             if (typeof errs === 'object') {
                 let errors_converted = jQuery.fn.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    let notify_data = $('#flagNotifyKey').attr('data-value') === '1' ? {
+                    let notify_data = $.fn.storageSystemData.attr('data-flagNotifyKey') === '1' ? {
                         'title': key,
                         'description': errors_converted[key]
                     } : {
@@ -1608,14 +1936,14 @@ $.fn.extend({
 
     // Config
     getCompanyConfig: async function () {
-        let dataText = $('#urlCompanyConfigData').text();
+        let dataText = $.fn.storageSystemData.attr('data-urlCompanyConfigData');
         if (!dataText || dataText === '') {
-            let companyConfigUrl = $('#urlCompanyConfig').attr('data-url');
+            let companyConfigUrl = $.fn.storageSystemData.attr('data-urlCompanyConfig');
             if (companyConfigUrl) {
                 return await $.fn.callAjax(companyConfigUrl, 'GET').then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     dataText = JSON.stringify(data);
-                    $('#urlCompanyConfigData').text(dataText);
+                    $.fn.storageSystemData.attr('data-urlCompanyConfigData', dataText);
                     return data;
                 }).then((rs) => {
                     return rs
@@ -1647,8 +1975,6 @@ $.fn.extend({
                     resolve(resp);
                     if (enableRedirect) if (frm.dataUrlRedirect) $.fn.redirectUrl(frm.dataUrlRedirect, frm.dataRedirectTimeout);
                 }, (err) => {
-                    console.log(err);
-                    console.log(err.detail);
                     if (notify.failure) $.fn.notifyB({description: err.detail}, 'failure');
                     if (reject) {
                         reject(err);
@@ -1731,7 +2057,7 @@ $.fn.extend({
                     return resp.data
                 case 204:
                     $.fn.notifyB({
-                        'description': $('#msgSuccess').text()
+                        'description': $.fn.transEle.attr('data-success'),
                     }, 'success')
                     return {'status': status}
                 case 400:
@@ -1797,17 +2123,7 @@ $.fn.extend({
             // False: return data input
             // True: convert body data with Zone Accept
             let pk = $.fn.getPkDetail();
-            if (
-                (
-                    $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' ||
-                    $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext'
-                ) &&
-                $.fn.getWFRuntimeID() &&
-                $.fn.getTaskWF() &&
-                pk &&
-                url.includes(pk) &&
-                (method === 'PUT' || method === 'put')
-            ) {
+            if (($.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' || $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') && $.fn.getWFRuntimeID() && $.fn.getTaskWF() && pk && url.includes(pk) && (method === 'PUT' || method === 'put')) {
                 let taskID = $.fn.getTaskWF();
                 let keyOk = $.fn.getZoneKeyData();
                 let newData = {};
@@ -1841,11 +2157,9 @@ $.fn.extend({
                                 if (eleActionDoneTask.length > 0) {
                                     $.fn.setBtnIDLastSubmit(null);
                                     $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                    $.fn.callActionWF($(eleActionDoneTask[0])).then(
-                                        () => {
-                                            resolve(rest);
-                                        }
-                                    )
+                                    $.fn.callActionWF($(eleActionDoneTask[0])).then(() => {
+                                        resolve(rest);
+                                    })
                                 } else {
                                     resolve(rest);
                                 }
@@ -1874,7 +2188,7 @@ $.fn.extend({
 
     // Table: loading
     _parseDomDtl: function (opts) {
-        let domDTL = "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
             // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
@@ -1948,12 +2262,19 @@ $.fn.extend({
 
         // ajax
         if (opts?.['ajax']) {
-            if (!opts['ajax']?.['error']) {
-                opts['ajax']['error'] = function (xhr, error, thrown) {
-                    $.fn.switcherResp(xhr?.['responseJSON']);
-                    if ($('#flagIsDebug').attr('data-is-debug') === "1") console.log(xhr, error, thrown);
+            if (opts['ajax']['url']) {
+                if (!opts['ajax']?.['error']) {
+                    opts['ajax']['error'] = function (xhr, error, thrown) {
+                        $.fn.switcherResp(xhr?.['responseJSON']);
+                        if ($.fn.isDebug() === true) console.log(xhr, error, thrown);
+                    }
                 }
+            } else {
+                if ($.fn.isDebug() === true) console.log('Ajax table cancels load data because config url Ajax is blank. Please config it, then try again!', {...opts});
+                delete opts['ajax'];
+                opts['data'] = [];
             }
+
         }
 
         // return data
@@ -1969,9 +2290,13 @@ $.fn.extend({
             pageLength: 10,
             dom: domDTL,
             language: {
-                url: $('#msg-datatable-language-config').text().trim(),
+                url: $.fn.storageSystemData.attr('data-msg-datatable-language-config').trim(),
             },
+            lengthMenu: [
+                [5, 10, 25, 50, -1], [5, 10, 25, 50, $('#base-trans-factory').attr('data-all')],
+            ],
             drawCallback: function () {
+                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
                 feather.replace();
                 if (reloadCurrency === true) {
                     // reload all currency
@@ -2047,13 +2372,31 @@ $.fn.extend({
 
     // select2
     initSelect2: function (opts) {
+        if (!opts) opts = {};
+
         let tokenSeparators = $.fn.parseJsonDefault($(this).attr('data-select2-tokenSeparators'), null);
+        let closeOnSelect = $.fn.parseBoolean($(this).attr('data-select2-closeOnSelect'));
+        let allowClear = $.fn.parseBoolean($(this).attr('data-select2-allowClear'));
+
+        // placeholder
+        if (!opts['placeholder']) {
+            let placeholder = $(this).attr('data-select2-placeholder')
+            if (placeholder) opts['placeholder'] = placeholder;
+        }
+        // -- placeholder
+
+        // fix select2 for bootstrap modal
+        if (!opts['dropdownParent']) {
+            let dropdownParent = $(this).closest('div.modal');
+            if (dropdownParent.length > 0) opts['dropdownParent'] = $(dropdownParent[0]);
+        }
+        // -- fix select2 for bootstrap modal
+
         $(this).select2({
             multiple: !!$(this).attr('multiple') || !!$(this).attr('data-select2-multiple'),
-            closeOnSelect: !!$(this).attr('data-select2-closeOnSelect'),
-            allowClear: !!$(this).attr('data-select2-allowClear'),
+            closeOnSelect: closeOnSelect === null ? true : closeOnSelect,
+            allowClear: allowClear === null ? false : allowClear,
             disabled: !!$(this).attr('data-select2-disabled'),
-            placeholder: !!$(this).attr('data-select2-placeholder'),
             tags: !!$(this).attr('data-select2-tags'),
             tokenSeparators: tokenSeparators ? tokenSeparators : [","], ...opts
         });
@@ -2124,45 +2467,48 @@ $.fn.extend({
     },
     activeZoneInDoc: function () {
         let zonesData = $.fn.getZoneData();
-        if (zonesData && Array.isArray(zonesData)) {
+        if (Array.isArray(zonesData)) {
             let pageEle = $.fn.getElePageContent();
             let input_mapping_properties = $.fn.getInputMappingProperties();
-            if (zonesData.length > 0) {
-                pageEle.find('.required').removeClass('required');
-                pageEle.find('input, select, textarea').each(function (event) {
-                    let inputMapProperties = input_mapping_properties[$(this).attr('name')];
-                    if (inputMapProperties && typeof inputMapProperties === 'object') {
-                        let arrTmpFind = [];
-                        inputMapProperties['name'].map((nameFind) => {
-                            arrTmpFind.push("[name=" + nameFind + "]");
-                        })
-                        inputMapProperties['id'].map((idFind) => {
-                            arrTmpFind.push("[id=" + idFind + "]");
-                        })
-                        inputMapProperties['id_border_zones'].map((item) => {
-                            arrTmpFind.push('#' + item)
-                        })
-                        inputMapProperties['cls_border_zones'].map((item) => {
-                            arrTmpFind.push('.' + item);
-                        })
-                        arrTmpFind.map((item) => {
-                            pageEle.find(item).each(function (event) {
-                                $(this).changePropertiesElementIsZone({
-                                    add_disable: true,
-                                    add_readonly: true,
-                                    remove_required: true,
-                                });
-                            });
-                        })
-                    } else {
-                        $(this).changePropertiesElementIsZone({
-                            add_disable: true,
-                            add_readonly: true,
-                            remove_required: true,
-                        });
-                    }
-                });
 
+            // disable + readonly field
+            pageEle.find('.required').removeClass('required');
+            pageEle.find('input, select, textarea').each(function (event) {
+                let inputMapProperties = input_mapping_properties[$(this).attr('name')];
+                if (inputMapProperties && typeof inputMapProperties === 'object') {
+                    let arrTmpFind = [];
+                    inputMapProperties['name'].map((nameFind) => {
+                        arrTmpFind.push("[name=" + nameFind + "]");
+                    })
+                    inputMapProperties['id'].map((idFind) => {
+                        arrTmpFind.push("[id=" + idFind + "]");
+                    })
+                    inputMapProperties['id_border_zones'].map((item) => {
+                        arrTmpFind.push('#' + item)
+                    })
+                    inputMapProperties['cls_border_zones'].map((item) => {
+                        arrTmpFind.push('.' + item);
+                    })
+                    arrTmpFind.map((item) => {
+                        pageEle.find(item).each(function (event) {
+                            $(this).changePropertiesElementIsZone({
+                                add_disable: true,
+                                add_readonly: true,
+                                remove_required: true,
+                            });
+                        });
+                    })
+                } else {
+                    $(this).changePropertiesElementIsZone({
+                        add_disable: true,
+                        add_readonly: true,
+                        remove_required: true,
+                    });
+                }
+            });
+
+            // apply zones config
+            if (zonesData.length > 0) {
                 // $('#select-box-emp').prop('readonly', true);
                 zonesData.map((item) => {
                     if (item.code) {
@@ -2199,7 +2545,6 @@ $.fn.extend({
                                 })
                             });
                             inputMapProperties['id_border_zones'].map((item) => {
-                                console.log('id_border_zones: ', item);
                                 pageEle.find('#' + item).changePropertiesElementIsZone({
                                     add_border: true,
                                     add_readonly: true,
@@ -2218,7 +2563,7 @@ $.fn.extend({
 
             // add button save at zones
             // idFormID
-            let idFormID = $('#idFormID').attr('data-form-id');
+            let idFormID = $.fn.storageSystemData.attr('data-idFormID');
             if (idFormID) {
                 $.fn.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                 $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
@@ -2231,14 +2576,7 @@ $.fn.extend({
                     actionBubble = 4;
                 }
                 if (actionBubble) {
-                    $('#idxSaveInZoneWFThenNext').attr(
-                        'form', idFormID
-                    ).attr(
-                        'data-wf-action',
-                        actionBubble
-                    ).attr(
-                        'data-actions-list', JSON.stringify($.fn.getActionsList())
-                    ).removeClass('hidden');
+                    $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify($.fn.getActionsList())).removeClass('hidden');
                 }
             }
         }
@@ -2342,7 +2680,7 @@ $.fn.extend({
                                     }
                                     liFound.removeClass('hidden');
                                 })
-                                if (!(priorityAdded === true && actions.length === 1)){
+                                if (!(priorityAdded === true && actions.length === 1)) {
                                     grouAction.closest('.dropdown').removeClass('hidden');
                                 }
                             }
@@ -2354,28 +2692,43 @@ $.fn.extend({
                 }
             })
         }
-        $('#idWFRuntime').attr('data-runtime-id', runtime_id);
+        $.fn.storageSystemData.attr('data-idWFRuntime', runtime_id);
     },
     getWFRuntimeID: function () {
-        return $('#idWFRuntime').attr('data-runtime-id');
+        return $.fn.storageSystemData.attr('data-idWFRuntime');
     }, // -- runtime
 
     // loading wait response data
-    showLoadingWaitResponse: function () {
-        $(this).addClass('hidden');
-        $(`<div class="spinner spinner-border text-secondary my-3" role="status"><span class="sr-only">Loading...</span></div>`).insertBefore($(this));
+    showLoadingWaitResponse: function (opts, addClass = '') {
+        return $(this).fadeOut({
+            'duration': 'fast', // 'start': function (){
+            //     $(`<div class="spinner spinner-border text-secondary my-3" role="status"><span class="sr-only">Loading...</span></div>`).insertBefore($(this));
+            // },
+            'done': function () {
+                $(`<div class="${addClass} spinner spinner-border text-secondary my-3" role="status"><span class="sr-only">Loading...</span></div>`).insertBefore($(this));
+                if (!$(this).hasClass('fade-in-active')) $(this).addClass('hidden');
+            }, ...opts
+        });
+
     },
-    hideLoadingWaitResponse: function () {
-        $(this).removeClass('hidden');
-        $(this).prev('.spinner').addClass('hidden');
-    },
-    // -- loading wait response data
+    hideLoadingWaitResponse: function (opts) {
+        return $(this).addClass('fade-in-active').fadeIn({
+            'duration': 'fast',
+            'start': function () {
+                $(this).prev('.spinner').addClass('hidden').remove();
+                $(this).removeClass("hidden")
+            }, // 'done': function (){
+            //     $(this).prev('.spinner').addClass('hidden').remove();
+            // },
+            ...opts
+        });
+    }, // -- loading wait response data
 
     // wf call action
     callActionWF: function (ele$) {
         let actionSelected = $(ele$).attr('data-value');
         let taskID = $('#idxGroupAction').attr('data-wf-task-id');
-        let urlBase = $('#idUrlTaskDetail').attr('data-url');
+        let urlBase = $.fn.storageSystemData.attr('data-idUrlTaskDetail');
         if (actionSelected !== undefined && taskID && urlBase) {
             let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
             $.fn.showLoading();
@@ -2385,9 +2738,7 @@ $.fn.extend({
                     $.fn.notifyB({
                         'description': $('#base-trans-factory').attr('data-action-wf') + ': ' + $('#base-trans-factory').attr('data-success'),
                     }, 'success');
-                    if (
-                        !($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)
-                    ) {
+                    if (!($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)) {
                         setTimeout(() => {
                             window.location.reload()
                         }, 1000)
@@ -2405,8 +2756,7 @@ $.fn.extend({
             return new Promise(function (resolve, reject) {
             });
         }
-    },
-    // -- wf call action
+    }, // -- wf call action
 })
 
 // support for Form Submit

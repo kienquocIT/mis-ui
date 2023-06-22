@@ -66,6 +66,7 @@ urlpatterns = [
     path('accounts', AccountList.as_view(), name='AccountList'),
     path('accounts/api', AccountListAPI.as_view(), name='AccountListAPI'),
     path('account/api/<str:pk>', AccountDetailAPI.as_view(), name='AccountDetailAPI'),
+    path('account/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
 
     path('account/create', AccountCreate.as_view(), name='AccountCreate'),
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
@@ -142,8 +143,6 @@ urlpatterns = [
         DeleteCurrencyFromPriceListAPI.as_view(),
         name='DeleteCurrencyFromPriceListAPI',
     )
-] + [
-    path('account/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
 ] + [
     path('expenses', ExpenseList.as_view(), name='ExpenseList'),
     path('expenses/api', ExpenseListAPI.as_view(), name='ExpenseListAPI'),

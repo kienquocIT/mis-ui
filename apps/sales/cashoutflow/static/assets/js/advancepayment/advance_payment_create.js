@@ -10,6 +10,7 @@ $(document).ready(function () {
     const ap_list = JSON.parse($('#advance_payment_list').text());
     const quotation_list = JSON.parse($('#quotation_list').text());
     const sale_order_list = JSON.parse($('#sale_order_list').text());
+    const unit_of_measure = JSON.parse($('#unit_of_measure').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
@@ -325,24 +326,16 @@ $(document).ready(function () {
     function loadExpenseUomList(row_id, uom_group_id, uom_mapped_id) {
         let ele = $('#' + row_id + ' .expense-uom-select-box');
         ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-uom-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.id === uom_group_id) {
-                            if (item.id === uom_mapped_id) {
-                                ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
-                            }
-                            else {
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
-                            }
-                        }
-                    })
+        unit_of_measure.map(function (item) {
+            if (item.group.id === uom_group_id) {
+                if (item.id === uom_mapped_id) {
+                    ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
+                }
+                else {
+                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                 }
             }
-        }, (errs) => {
-        },)
+        })
     }
 
     // (col-4) load Unit Price List for Expense Items or Enter

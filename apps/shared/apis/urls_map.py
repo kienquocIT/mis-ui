@@ -90,6 +90,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
+    INDICATOR_PARAM = StringUrl('base/indicator-params')
 
     TENANT = StringUrl('tenant/userlist')
 

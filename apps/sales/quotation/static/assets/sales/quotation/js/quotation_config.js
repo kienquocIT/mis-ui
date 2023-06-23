@@ -267,7 +267,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Formula</h5>
+                                                    <h5 class="modal-title">${$.fn.transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -278,7 +278,7 @@ $(function () {
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="form-group">
-                                                            <label class="form-label">Editor</label>
+                                                            <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
                                                             <textarea class="form-control indicator-editor" rows="2" cols="50" name=""></textarea>
                                                             <input type="hidden" class="data-editor-submit">
                                                         </div>
@@ -287,22 +287,22 @@ $(function () {
                                                         <ul class="nav nav-light">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
-                                                                <span class="nav-link-text">Indicator</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-indicator')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
-                                                                <span class="nav-link-text">Property</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-property')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabFunctionHref}">
-                                                                <span class="nav-link-text">Functions</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
-                                                                <span class="nav-link-text">Operators</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-operator')}</span>
                                                                 </a>
                                                             </li>
                                                         </ul>

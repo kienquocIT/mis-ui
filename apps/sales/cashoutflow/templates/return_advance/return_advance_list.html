@@ -30,9 +30,14 @@
     <table id="dtbReturnAdvance" class="table nowrap w-100 mb-5" data-method="GET"
            data-url="{% url "ReturnAdvanceListAPI" %}" data-url-detail="{% url "ReturnAdvanceDetail" pk=0 %}">
         <thead>
-        <th>#</th>
         <th>{% trans "Code" %}</th>
-        <th>{% trans "Name" %}</th>
+        <th>{% trans "Name" %}
+            <i class="fas fa-info-circle icon-info"
+               data-bs-toggle="tooltip"
+               data-bs-placement="bottom"
+               title="{% trans 'Press row here to open detail page.' %}">
+            </i>
+        </th>
         <th>{% trans "AP Code" %}</th>
         <th>{% trans "Created date" %}</th>
         <th>{% trans "Return value" %}</th>

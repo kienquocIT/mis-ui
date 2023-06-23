@@ -20,14 +20,14 @@ $(document).ready(function () {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span style="width: 100%;" class="badge badge-primary">` + row.code + `</span>`
+                            return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="` + $('#datatable_advance_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                            return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_advance_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                         }
                     },
                     {
@@ -38,7 +38,7 @@ $(document).ready(function () {
                                 return `<span class="badge badge-soft-danger">` + row.advance_payment_type + `</span>`
                             }
                             else if (row.advance_payment_type === 'To Supplier') {
-                                return `<span class="badge badge-soft-orange">` + row.advance_payment_type + `</span>`
+                                return `<span class="badge badge-soft-blue">` + row.advance_payment_type + `</span>`
                             }
                         }
                     },
@@ -60,28 +60,28 @@ $(document).ready(function () {
                         data: 'advance_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<p class="text-primary">` + row.advance_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                            return `<span class="mask-money text-primary" data-init-money="` + row.advance_value + `"></span>`
                         }
                     },
                     {
                         data: 'to_payment',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<p class="text-primary">` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                            return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
                         }
                     },
                     {
                         data: 'return_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<p class="text-primary">` + row.return_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                            return `<span class="mask-money text-primary" data-init-money="` + row.return_value + `"></span>`
                         }
                     },
                     {
                         data: 'remain_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<p class="text-primary">` + row.remain_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                            return `<span class="mask-money text-primary" data-init-money="` + row.remain_value + `"></span>`
                         }
                     },
                     {

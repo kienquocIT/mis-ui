@@ -20,14 +20,14 @@ $(document).ready(function () {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span style="width: 50%;" class="badge badge-primary">` + row.code + `</span>`
+                            return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="` + $('#datatable_payment_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                            return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_payment_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                         }
                     },
                     {
@@ -41,7 +41,7 @@ $(document).ready(function () {
                         data: 'payment_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<p class="text-primary">` + row.payment_value.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</p>`
+                            return `<span class="mask-money text-primary" data-init-money="` + row.payment_value + `"></span>`
                         }
                     },
                     {

@@ -1,6 +1,14 @@
 let submitClass = new submitHandle();
 let tableIndicator = $('#datable-quotation-create-indicator');
 
+function max(data_list) {
+  return Math.max(...data_list);
+}
+
+function min(data_list) {
+  return Math.min(...data_list);
+}
+
 function dataTableQuotationIndicator(data, table_id) {
     // init dataTable
     let listData = data ? data : [];
@@ -96,7 +104,13 @@ function calculateIndicator(indicator_list) {
                     }
                 } else if (item.hasOwnProperty('param_type')) {
                     if (item.param_type === 2) { // FUNCTION
-
+                        if (item.code === 'max' || item.code === 'min') {
+                            let functionData = functionClass.functionMaxMin(item, data_form, result_json);
+                            parse_formula += functionData;
+                        } else if (item.code === 'sumItemIf') {
+                            let functionData = functionClass.functionSumItemIf(item, data_form);
+                            parse_formula += functionData;
+                        }
                     }
                 }
             } else if (typeof item === 'string') {
@@ -134,6 +148,69 @@ function evaluateFormula(formulaText) {
         return null;
     }
 }
+
+// INDICATOR FUNCTIONS
+class indicatorFunctionHandle {
+    functionMaxMin(item, data_form, result_json) {
+        let functionBody = "[";
+        let idx = 0;
+        for (let function_child of item.function_data) {
+            idx++;
+            if (typeof function_child === 'object' && function_child !== null) {
+                if (function_child.hasOwnProperty('is_property')) {
+                    if (data_form.hasOwnProperty(function_child.code)) {
+                        functionBody += data_form[function_child.code];
+                        if (idx < item.function_data.length) {
+                            functionBody += ",";
+                        }
+                    }
+                } else if (function_child.hasOwnProperty('is_indicator')) {
+                    if (result_json.hasOwnProperty(function_child.order)) {
+                        functionBody += result_json[function_child.order].value;
+                        if (idx < item.function_data.length) {
+                            functionBody += ",";
+                        }
+                    }
+                }
+            } else if (typeof function_child === 'string') {
+                functionBody += function_child;
+                if (idx < item.function_data.length) {
+                    functionBody += ",";
+                }
+            }
+        }
+        return item.syntax + functionBody + "])";
+    }
+
+    functionSumItemIf(item, data_form) {
+        let syntax = "sum(";
+        let functionBody = "";
+        let leftValue = null;
+        let rightValue = null;
+        let operator_list = ['===', '!==', '<', '>', '<=', '>='];
+        let condition_operator = operator_list.filter((element) => item.function_data.includes(element))[0];
+        const operatorIndex = item.function_data.indexOf(condition_operator);
+        if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item.function_data.length - 1) {
+            leftValue = item.function_data[operatorIndex - 1];
+            rightValue = item.function_data[operatorIndex + 1];
+        }
+        let lastElement = item.function_data[item.function_data.length - 1];
+        for (let product_data of data_form.quotation_products_data) {
+            if (typeof leftValue === 'object' && leftValue !== null) {
+                if (product_data.hasOwnProperty(leftValue.code)) {
+                    let check = evaluateFormula(product_data[leftValue.code].replace(/\s/g, "") + condition_operator + rightValue);
+                    if (check === true) {
+                        functionBody += product_data[lastElement.code]
+                    }
+                }
+            }
+        }
+        return syntax + functionBody + ")";
+    }
+
+}
+
+let functionClass = new indicatorFunctionHandle();
 
 
 $(function () {

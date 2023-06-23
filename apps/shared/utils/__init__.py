@@ -214,6 +214,16 @@ class TypeCheck:
             )
         return False
 
+    @staticmethod
+    def get_bool(data: Union[str, int, bool]):
+        if isinstance(data, bool):
+            return data
+        if data in ['true', 'True', '1', 1]:
+            return True
+        if data in ['false', 'False', '0', 0]:
+            return False
+        raise ValueError("Data isn't boolean format.")
+
 
 class FORMATTING:
     DATETIME = settings.REST_FRAMEWORK['DATETIME_FORMAT']

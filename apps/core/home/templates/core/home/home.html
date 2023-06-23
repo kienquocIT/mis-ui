@@ -1,200 +1,439 @@
 {% extends 'base.html' %}
-{% load static i18n %}
-{% block cssHeader %}{% endblock %}
+{% load static i18n awesome_icon_free string_utils %}
+{% block cssHeader %}
+    <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
 {% block pageContent %}
-    {#    <div style="text-align: center;">#}
-    {#        <p>{% trans 'Page is being developed!' %}</p>#}
-    {#        <p>{% trans 'Coming soon' %} <i class="far fa-laugh-wink"></i></p>#}
-    {#    </div>#}
-
     <div class="row">
-        <div class="col-xxl-9 col-lg-8 col-md-7 mb-md-4 mb-3">
+        <div class="col-xxl-8 col-lg-12 mb-md-4 mb-3">
             <div class="card card-border mb-0 h-100">
                 <div class="card-header card-header-action">
-                    <h6>Overview</h6>
-                    <div class="card-action-wrap">
-                        <div class="btn-group d-lg-flex d-none" role="group" aria-label="Basic outlined example">
-                            <button type="button" class="btn btn-outline-light active">All</button>
-                            <button type="button" class="btn btn-outline-light">Sessions</button>
-                            <button type="button" class="btn btn-outline-light">Source</button>
-                            <button type="button" class="btn btn-outline-light">Referrals</button>
-                        </div>
-                        <select class="form-select d-lg-none d-flex">
-                            <option selected="" value="1">All</option>
-                            <option value="2">Sessions</option>
-                            <option value="3">Source</option>
-                            <option value="4">Referrals</option>
-                        </select>
-                    </div>
+                    <ul class="nav nav-line nav-tabs nav-light">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_my_task">
+                                <span class="nav-link-text">To do</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_my_owner">
+                                <span class="nav-link-text">Following</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_my_pined">
+                                <span class="nav-link-text">Pined</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_my_draft">
+                                <span class="nav-link-text">Draft</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="card-body">
-                    <div class="card-report-data">
-                        <div class="text-center">
-                            <div class="d-inline-block">
-													<span class="badge-status">
-														<span class="badge bg-primary badge-indicator badge-indicator-nobdr"></span>
-														<span class="badge-label">Direct</span>
-													</span>
-                            </div>
-                            <div class="d-inline-block ms-3">
-													<span class="badge-status">
-														<span class="badge bg-primary-light-2 badge-indicator badge-indicator-nobdr"></span>
-														<span class="badge-label">Organic search</span>
-													</span>
-                            </div>
-                            <div class="d-inline-block ms-3">
-													<span class="badge-status">
-														<span class="badge bg-primary-light-4 badge-indicator badge-indicator-nobdr"></span>
-														<span class="badge-label">Referral</span>
-													</span>
-                            </div>
-                        </div>
-                        <div id="column_chart_2"></div>
-                        <div class="separator-full mt-5"></div>
-                        <div class="flex-grow-1 ms-lg-3">
-                            <div class="row">
-                                <div class="col-xxl-3 col-sm-6 mb-xxl-0 mb-3">
-                                    <span class="d-block fw-medium fs-7">Users</span>
-                                    <div class="d-flex align-items-center">
-                                        <span class="d-block fs-4 fw-medium text-dark mb-0">8.8k</span>
-                                        <span class="badge badge-sm badge-soft-success ms-1">
-																<i class="bi bi-arrow-up"></i> 7.5%
-															</span>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-sm-6 mb-xxl-0 mb-3">
-                                    <span class="d-block fw-medium fs-7">Sessions</span>
-                                    <div class="d-flex align-items-center">
-                                        <span class="d-block fs-4 fw-medium text-dark mb-0">18.2k</span>
-                                        <span class="badge badge-sm badge-soft-success ms-1">
-																<i class="bi bi-arrow-up"></i> 7.2%
-															</span>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-sm-6 mb-xxl-0 mb-3">
-                                    <span class="d-block fw-medium fs-7">Bounce rate</span>
-                                    <div class="d-flex align-items-center">
-                                        <span class="d-block fs-4 fw-medium text-dark mb-0">46.2%</span>
-                                        <span class="badge badge-sm badge-soft-danger ms-1">
-																<i class="bi bi-arrow-down"></i> 0.2%
-															</span>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-sm-6">
-                                    <span class="d-block fw-medium fs-7">Session duration</span>
-                                    <div class="d-flex align-items-center">
-                                        <span class="d-block fs-4 fw-medium text-dark mb-0">4m 24s</span>
-                                        <span class="badge badge-sm badge-soft-success ms-1">
-																<i class="bi bi-arrow-up"></i> 10.8%
-															</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xxl-3 col-lg-4 col-md-5 mb-md-4 mb-3">
-            <div class="card card-border mb-0  h-100">
-                <div class="card-header card-header-action">
-                    <h6>Returning</h6>
-                    <div class="card-action-wrap">
-                        <a
-                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret"
-                                href="#" data-bs-toggle="dropdown"
-                        ><span class="icon"><span class="feather-icon"><i
-                                data-feather="more-vertical"
-                        ></i></span></span></a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body text-center">
-                    <div class="card-report-data">
-                        <div id="radial_chart_2"></div>
-                        <div class="d-inline-block mt-4">
-                            <div class="mb-4">
-													<span class="d-block badge-status lh-1">
-														<span class="badge bg-primary badge-indicator badge-indicator-nobdr d-inline-block"></span>
-														<span class="badge-label d-inline-block">Organic</span>
-													</span>
-                                <span class="d-block text-dark fs-5 fw-medium mb-0 mt-1">$243.50</span>
-                            </div>
-                            <div>
-													<span class="badge-status lh-1">
-														<span class="badge bg-primary-light-2 badge-indicator badge-indicator-nobdr"></span>
-														<span class="badge-label">Marketing</span>
-													</span>
-                                <span class="d-block text-dark fs-5 fw-medium mb-0 mt-1">$1469</span>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_block_my_task">
+                            <div class="container-fluid table-responsive">
+                                <table
+                                        class="table nowrap table-advance"
+                                        id="tbl_my_task"
+                                        data-url="{% url 'FlowRuntimeTaskListAPI' %}"
+                                        data-method="GET"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans 'Title' %}</th>
+                                        <th>{% trans 'Application' %}</th>
+                                        <th>{% trans 'Current node' %}</th>
+                                        <th>{% trans 'Assignee & date receive' %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            xxxxx
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-light">Primary</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-soft-warning">Warning</span>
+                                        </td>
+                                        <td>
+                                            <div class="media align-items-center">
+                                                <div class="media-head me-3">
+                                                    <div class="avatar avatar-xs avatar-primary avatar-rounded">
+                                                        <span class="initial-wrap">PR</span>
+                                                    </div>
+                                                </div>
+                                                <div class="media-body mnw-0">
+                                                    <a
+                                                            href="#"
+                                                            class="table-link-text text-high-em text-truncate mb-0"
+                                                    >
+                                                        Kim L. Gonzales
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-end">
+                                                <button
+                                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom"
+                                                        data-bs-original-title="{% trans 'View Diagram' %}"
+                                                >
+                                                        <span class="icon">
+                                                            <i class="fa-solid fa-clock-rotate-left"></i>
+                                                        </span>
+                                                </button>
+                                                <button
+                                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom"
+                                                        data-bs-original-title="{% trans 'Mute' %}"
+                                                >
+                                                        <span class="icon">
+                                                            <i class="fa-regular fa-bell-slash"></i>
+                                                        </span>
+                                                </button>
+                                                <button
+                                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom"
+                                                        data-bs-original-title="{% trans 'Pin' %}"
+                                                >
+                                                        <span class="icon">
+                                                            <i class="fa-solid fa-thumbtack"></i>
+                                                        </span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12 mb-md-4 mb-3">
-            <div class="card card-border mb-0 h-100">
-                <div class="card-header card-header-action">
-                    <h6>{% trans 'My Task List' %}
-                        <span class="badge badge-sm badge-light ms-1">240</span>
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="card-report-data">
-                        <div class="contact-list-view">
-                            <table id="datable_my_task_list" class="table nowrap w-100 mb-5">
-                                <thead>
-                                <tr>
-                                    <th>{% trans 'Title' %}</th>
-                                    <th>{% trans 'Application' %}</th>
-                                    <th>{% trans 'Current node' %}</th>
-                                    <th>{% trans 'State' %}</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="text-high-em">Phone Pay</div>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-soft-light">Sale Order</span>
-                                    </td>
-                                    <td><span class="badge badge-soft-success">Manager Approval</span></td>
-                                    <td>
+                        <div class="tab-pane fade" id="tab_block_my_owner">
+                            <div class="container-fluid table-responsive">
+                                <table
+                                        id="tbl_following_data"
+                                        class="table nowrap table-advance"
+                                        data-url="{% url 'FlowRuntimeMeListAPI' %}"
+                                        data-method="GET"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans 'Title' %}</th>
+                                        <th>{% trans 'Application' %}</th>
+                                        <th>{% trans 'Current node' %}</th>
+                                        <th>{% trans 'Collaborator' %}</th>
+                                        <th>{% trans 'Date Created' %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            xxxxx
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-light">Primary</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-soft-warning">Warning</span>
+                                        </td>
+                                        <td>
+                                            <div class="justify-content-start flex-wrap">
+                                                <div class="avatar avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1">
+                                                    <span class="initial-wrap">AB</span>
+                                                    <span class="badge badge-success badge-indicator badge-indicator-xl position-bottom-end-overflow-1">
+                                                                <i class="fa-solid fa-check"></i>
+                                                            </span>
+                                                </div>
+                                                <div class="avatar avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1">
+                                                    <span class="initial-wrap">AB</span>
+                                                    <span class="badge badge-danger badge-indicator badge-indicator-xl position-bottom-end-overflow-1">
+                                                                <i class="fa-solid fa-xmark"></i>
+                                                            </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-soft-warning">21-06-2023 10:05:00</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-end">
+                                                <button
+                                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom"
+                                                        data-bs-original-title="{% trans 'View Diagram' %}"
+                                                >
+                                                                <span class="icon">
+                                                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                                                </span>
+                                                </button>
+                                                <button
+                                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom"
+                                                        data-bs-original-title="{% trans 'Pin' %}"
+                                                >
+                                                                <span class="icon">
+                                                                    <i class="fa-solid fa-thumbtack"></i>
+                                                                </span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_block_my_pined">
+                            <div class="container-fluid table-responsive">
+                                <table
+                                        class="table nowrap table-advance"
+                                        id="tbl_block_doc_pined"
+                                        data-url="{% url 'DocPinedListAPI' %}"
+                                        data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}"
+                                        data-method="GET"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans 'Title' %}</th>
+                                        <th>{% trans 'Application' %}</th>
+                                        <th>{% trans 'Current node' %}</th>
+                                        <th>{% trans 'Collaborator' %}</th>
+                                        <th>{% trans 'Date Created' %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_block_my_draft">
+                            <div class="table-responsive">
+                                <table id="datable_my_draft_list" class="table table-advance nowrap w-100 mb-5">
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans 'Title' %}</th>
+                                        <th>{% trans 'Application' %}</th>
+                                        <th>{% trans 'Date Created' %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            Phone Pay
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-soft-light">Sale Order</span>
+                                        </td>
+                                        <td>
                                         <span class="badge-status">
-                                            <span class="badge-label">{% trans 'Wait' %}</span>
-                                            <span class="badge badge-primary badge-indicator"></span>
+                                            21-06-2023 11:20:00
                                         </span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center justify-content-end">
-                                            <button
-                                                    class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                    data-bs-toggle="tooltip"
-                                                    data-placement="bottom"
-                                                    data-bs-original-title="{% trans 'Go to detail page' %}"
-                                            >
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-end">
+                                                <button
+                                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                        data-bs-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        data-bs-original-title="{% trans 'Go to detail page' %}"
+                                                >
                                                 <span class="icon">
                                                     <i class="fa-solid fa-info"></i>
                                                 </span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-4 col-lg-12 mb-md-4 mb-3">
+            <div class="card card-border mb-0 h-100">
+                <div class="card-header card-header-action">
+                    <h6>{% trans 'Bookmarks' %}</h6>
+                </div>
+                <div class="card-body">
+                    <div
+                            id="boxBookmarkDisplay"
+                            data-url="{% url 'BookMarkListAPI' %}"
+                            data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}"
+                    >
+                        <div
+                                class="row d-flex justify-content-start flex-wrap"
+                                id="boxBookmarkDisplayData"
+                        >
+                            <div
+                                    id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal"
+                                    data-bs-target="#modalAddBookMark"
+                            >
+                                <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                                    <span class="mb-1">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+                class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog"
+                aria-labelledby="modalAddBookMark" aria-hidden="true"
+        >
+            <div class="modal-dialog mt-15" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        {% trans 'New Book Mark' as titleModalBM %}
+                        <h5 class="modal-title">{{ titleModalBM|title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="frmAddNewBookMark" data-url="{% url 'HomeView' %}" data-method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label
+                                                for="newBookMarkType" class="form-label required"
+                                        >{% trans 'Type' %}</label>
+                                        <select name="kind" id="newBookMarkType" class="form-control">
+                                            <option value="0" selected>{% trans 'Available URL' %}</option>
+                                            <option value="1">{% trans 'Customize URL' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label
+                                                for="newBookMarkApplication" class="form-label required"
+                                        >{% trans 'Application' %}</label>
+                                        <select
+                                                name="view_name" id="newBookMarkApplication" class="form-select"
+                                                required
+                                        ></select>
+                                        <small class="text-muted">{% trans 'Application of link' %}</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label
+                                                for="newBookMarkCustomURL" class="form-label required"
+                                        >{% trans 'URL' %}</label>
+                                        <input
+                                                type="text" name="customize_url" id="newBookMarkCustomURL"
+                                                class="form-control" required
+                                                disabled
+                                        />
+                                        <small class="text-muted">{% trans 'Link to page' %}</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label
+                                                for="newBookMarkTitle" class="form-label required"
+                                        >{% trans 'Title' %}</label>
+                                        <input
+                                                type="text" name="title" id="newBookMarkTitle" class="form-control"
+                                                maxlength="20"
+                                                required
+                                        />
+                                        <small class="text-muted">{% trans 'Application rename' %}, {% trans 'Maximum characters' %}:
+                                            20</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label
+                                                for="selectIconNewBookMark" class="form-label required"
+                                        >{% trans 'Icon' %}</label>
+                                        {% icon_choices as icon_list %}
+                                        <select
+                                                class="form-control" id="selectIconNewBookMark"
+                                                name="box_style__icon_cls"
+                                                required
+                                                data-select2-placeholder="{% trans 'Choose' %}..."
+                                                data-select2-allowClear="true"
+                                        >
+                                            <option></option>
+                                            {% for item in icon_list %}
+                                                <option value='{{ item.0 }}'>{{ item.1|title|replace_str:"-, " }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <small class="text-muted">{% trans 'Icon' %}</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="newBMSelectBG" class="form-label required">
+                                            {% trans 'Background Color' %}
+                                        </label>
+                                        <select name="box_style__bg_cls" id="newBMSelectBG" class="form-select">
+                                            {% bg_choices as bg_list %}
+                                            {% for item in bg_list %}
+                                                <option value="{{ item }}">{{ item|title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="newBMSelectTextColor" class="form-label required">
+                                            {% trans "Text Color" %}
+                                        </label>
+                                        <select
+                                                name="box_style__text_cls" id="newBMSelectTextColor" class="form-select"
+                                        >
+                                            {% text_color_choices as text_color_list %}
+                                            {% for item in text_color_list %}
+                                                <option value="{{ item }}">{{ item|title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Preview' %}</label>
+                                        <div
+                                                class="d-17 bg-light text-dark rounded-5 m-1 d-17 d-flex flex-column justify-content-center align-items-center overflow-hidden"
+                                                id="newBMBlockPreview"
+                                        >
+                                            <span class="text-center mb-1" id="previewBMTitle"></span>
+                                            <span class="mb-1" id="previewBMSelectIcon"></span>
+                                            <small class="text-center"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                                type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        >{% trans 'Close' %}</button>
+                        <button
+                                type="submit" form="frmAddNewBookMark" class="btn btn-primary"
+                        >{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
@@ -202,4 +441,6 @@
     </div>
 {% endblock %}
 
-{% block jsFooter %}{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core_home/home.js' %}"></script>
+{% endblock %}

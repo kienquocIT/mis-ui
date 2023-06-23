@@ -108,6 +108,10 @@ $(document).ready(function () {
         let ele = $('#select-box-customer');
         let ele_end_customer = $('#select-box-end-customer');
         let ele_competitor = $('.box-select-competitor');
+        if (end_customer_id === null || end_customer_id === id){
+            ele_end_customer.attr('disabled', true);
+        }
+
         let url = ele.data('url');
         let method = ele.data('method');
         $.fn.callAjax(url, method).then((resp) => {
@@ -474,6 +478,7 @@ $(document).ready(function () {
         let list_product = JSON.parse($('#data-product').val());
         $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').remove();
         $('#table-product').addClass('tag-change');
+        $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
 
         let list_product_remove = list_product.filter(function (item) {
             return item.general_information.product_category.id === removedOption.id;
@@ -488,6 +493,7 @@ $(document).ready(function () {
     ele_select_product_category.on('select2:select', function (e) {
         let addOption = e.params.data;
         let list_product = JSON.parse($('#data-product').val());
+        $(`.box-select-product-category`).append(`<option value="${addOption.id}">${addOption.text}</option>`)
         let list_product_add = list_product.filter(function (item) {
             return item.general_information.product_category.id === addOption.id;
         })
@@ -950,4 +956,10 @@ $(document).ready(function () {
             $(this).val(open_date);
         }
     })
+
+    $(document).on('focus', '#input-rate', function() {
+        if ($(this).val() === '0') {
+          $(this).val('');
+        }
+    });
 })

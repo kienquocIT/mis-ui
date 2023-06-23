@@ -68,32 +68,32 @@
 
                 <div class="form-group mt-3">
                     <div class="row">
-                        <label class="form-label col-7">{% trans "Customer" %}</label>
+                        <label class="form-label col-7 required">{% trans "Customer" %}</label>
                         <div class="form-group col-5">
                             <input class="form-check-input" type="checkbox" value="0" id="check-agency-role">
                             <label class="form-check-label" for="check-agency-role">{% trans "agency role" %}</label>
                         </div>
                     </div>
                     <select class="select2 form-control" id="select-box-customer" data-url="{% url 'AccountListAPI' %}"
-                            data-method="GET">
+                            data-method="GET" data-close-on-select="true">
                     </select>
                 </div>
                 <div class="form-group mt-2">
                     <label class="form-label">{% trans "End Customer" %}</label>
-                    <select class="select2 form-control" id="select-box-end-customer"
+                    <select class="select2 form-control" id="select-box-end-customer" data-close-on-select="true"
                             data-url="{% url 'AccountListAPI' %}" disabled
                             data-method="GET">
                     </select>
                 </div>
                 <div class="form-group mt-2">
-                    <label class="form-label">{% trans "Product Category" %}</label>
-                    <select class="select2 form-control" multiple id="select-box-product-category" data-method="GET"
+                    <label class="form-label required">{% trans "Product Category" %}</label>
+                    <select class="select2 form-control" multiple id="select-box-product-category" data-close-on-select="true" data-method="GET"
                             data-url="{% url 'ProductCategoryListAPI' %}">
                     </select>
                 </div>
                 <div class="form-group mt-2">
-                    <label class="form-label">{% trans "Sale Person" %}</label>
-                    <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
+                    <label class="form-label required">{% trans "Sale Person" %}</label>
+                    <select class="select2 form-control" id="select-box-sale-person" data-method="GET" data-close-on-select="true"
                             data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
                         <option></option>
                     </select>

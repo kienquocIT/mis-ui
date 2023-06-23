@@ -2738,12 +2738,12 @@ msgid "Loading"
 msgstr "Đang tải"
 
 #
-msgid "Diagram"
-msgstr "Biểu đồ"
+msgid "Diagram Workflow"
+msgstr "Biểu đồ quy trình"
 
 #
-msgid "Activities"
-msgstr "Hoạt động"
+msgid "Document Activities"
+msgstr "Lịch sử hoạt động"
 
 #
 msgid "The document approved because the feature config don't apply workflow"
@@ -3024,6 +3024,10 @@ msgid "Auto reload has been applied after the timeout!"
 msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"
 
 #
+msgid "Execute this action after auto reload has been applied after the timeout!"
+msgstr "Thực thi hành động này và tải lại trang khi hết thời gian chờ!"
+
+#
 msgid "Successful"
 msgstr "Thành công"
 
@@ -3274,6 +3278,41 @@ msgstr "Kho còn hàng"
 msgid "Action in Workflow"
 msgstr "Thao tác trên Quy trình"
 
+#
+msgid "Available URL"
+msgstr "Có sẵn"
+
+#
+msgid "Customize URL"
+msgstr "Tùy chọn"
+
+#
+msgid "Background Color"
+msgstr "Màu nền"
+
+#
+msgid "Text Color"
+msgstr "Màu chữ"
+
+#
+msgid "Maximum characters"
+msgstr "Số lượng ký tự tối đa"
+
+#
+msgid "Bookmarks"
+msgstr "Dấu trang"
+
+#
+msgid "New Book Mark"
+msgstr "Dấu trang mới"
+
+#
+msgid "My draft"
+msgstr "Phiếu nháp"
+
+#
+msgid "History"
+msgstr "Nhật ký"
 
 #
 msgid "Add Member"
@@ -3330,3 +3369,7 @@ msgstr "Bỏ khuyến mãi"
 #
 msgid "See Promotion"
 msgstr "Xem khuyến mãi"
+
+#
+msgid "Url is invalid"
+msgstr "Đường dẫn không hợp lệ"

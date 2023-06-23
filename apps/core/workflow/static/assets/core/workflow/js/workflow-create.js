@@ -105,7 +105,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 1000);
                         }
                     },
                     (errs) => {

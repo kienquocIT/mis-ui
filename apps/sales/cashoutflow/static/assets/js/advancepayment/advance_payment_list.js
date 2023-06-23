@@ -103,7 +103,7 @@ $(document).ready(function () {
                             if (row.quotation_mapped) {sale_code_id = row.quotation_mapped;}
                             if (row.opportunity_mapped) {sale_code_id = row.opportunity_mapped;}
                             return `<div class="dropdown">
-                                        <a type="button" data-bs-toggle="dropdown" class="badge badge-soft-primary btn-change-status" href="#"><i class="bi bi-grid-1x2"></i></a>
+                                        <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
                                         <div class="dropdown-menu">
                                              <a class="dropdown-item" href="{0}">Return</a>
                                              <a class="dropdown-item" href="{1}">To Payment</a>

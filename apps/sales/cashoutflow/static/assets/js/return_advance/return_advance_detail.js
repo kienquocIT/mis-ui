@@ -156,7 +156,7 @@ $(function () {
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                     }
                 )
         })

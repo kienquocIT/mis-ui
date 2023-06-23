@@ -106,7 +106,7 @@
                         let data = $.fn.switcherResp(resp);
                         if (data?.['status'] === 200) {
                             $.fn.notifyB({
-                                'description': $('#msgSuccess').text(),
+                                'description': $.fn.transEle.attr('data-success'),
                             }, 'success');
                             setTimeout(() => {
                                 window.location.reload();

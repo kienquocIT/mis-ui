@@ -13,7 +13,7 @@
     position: fixed;
     top: 0;
     transition: transform 0.3s ease-in-out;
-    z-index: 9999;
+    z-index: 1031!important;
     border: 1px solid #c0c0c0;
     background-color: var(--background-color);
 }

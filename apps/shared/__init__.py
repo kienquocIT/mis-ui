@@ -4,7 +4,6 @@ from .decorators import mask_view
 from .msg import AuthMsg, ServerMsg, HRMsg, WorkflowMsg, PermsMsg, MDConfigMsg, SaleMsg, PromotionMsg
 from .breadcrumb import BreadcrumbView
 from .caches import CacheController, CacheKeyCollect
-from .type_check import TypeCheck
 from .components import ConditionFormset
 from .utils import *
 from .constant import *

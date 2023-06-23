@@ -43,9 +43,18 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Logging
     LOG_ACTIVITIES = StringUrl('log/activities')
     LOG_MY_NOTIFY_DATA_ALL = StringUrl('log/notifies/me')
+    LOG_MY_NOTIFY_DETAIL = StringUrl('log/notify/{pk}')
     LOG_MY_NOTIFY_COUNT = StringUrl('log/notifies/me/count')
     LOG_MY_NOTIFY_SEEN_ALL = StringUrl('log/notifies/me/seen-all')
     LOG_MY_NOTIFY_CLEAN_ALL = StringUrl('log/notifies/me/clean-all')
+
+    # bookmarks
+    BOOKMARKS_LIST = StringUrl('log/bookmarks')
+    BOOKMARKS_DETAIL = StringUrl('log/bookmark/{pk}')
+
+    # pin doc
+    PIN_DOC_LIST = StringUrl('log/pin-docs')
+    PIN_DOC_DETAIL = StringUrl('log/pin-doc/{pk}')
 
     # state of task background
     TASK_BG = StringUrl('task-bg/{pk}')
@@ -105,9 +114,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # WORKFLOW RUNTIME
     RUNTIME_LIST = StringUrl('workflow/runtimes')
+    RUNTIME_LIST_ME = StringUrl('workflow/runtimes/me')
     RUNTIME_DETAIL = StringUrl('workflow/runtime/{pk}')
     RUNTIME_DIAGRAM = StringUrl('workflow/diagram')
     RUNTIME_DIAGRAM_DETAIL = StringUrl('workflow/diagram/{pk}')
+    RUNTIME_TASK_LIST = StringUrl('workflow/tasks')
     RUNTIME_TASK_DETAIL = StringUrl('workflow/task/{pk}')
 
     # crm/contact

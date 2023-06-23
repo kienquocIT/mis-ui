@@ -61,8 +61,6 @@ class MyNotifyNoDoneCountAPI(APIView):
 class MyNotifyAllAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        # import time
-        # time.sleep(1)
         resp = ServerAPI(url=ApiURL.LOG_MY_NOTIFY_DATA_ALL, user=request.user).get()
         if resp.state:
             return {'notify_data': resp.result}, status.HTTP_200_OK

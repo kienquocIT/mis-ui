@@ -210,7 +210,197 @@
 
     <!-- Init JS -->
     <script src="{% static 'assets/js/init.js' %}"></script>
+    <script>
+        // support for Form Submit
+        class SetupFormSubmit {
+            constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
+                this.formSelected = formSelected;
 
+                // URL call API
+                this.dataUrl = formSelected.attr('data-url');
+                if (!this.dataUrl) this.dataUrl = urlDefault ? urlDefault : window.location.pathname;
+
+                // METHOD call API
+                this.dataMethod = formSelected.attr('data-method');
+                if (!this.dataMethod) {
+                    if (dataMethodDefault) {
+                        this.dataMethod = dataMethodDefault
+                    } else {
+                        throw ('Data Method do not support! It is ' + this.dataMethod);
+                    }
+                }
+
+                // URL REDIRECT after success callback
+                this.dataUrlRedirect = formSelected.attr('data-url-redirect');
+                if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+
+                // REDIRECT TIMEOUT
+                this.dataRedirectTimeout = formSelected.attr('data-redirect-timeout');
+                if (!this.dataRedirectTimeout) this.dataRedirectTimeout = this.dataRedirectTimeout ? this.dataRedirectTimeout : 1000;
+
+                // Data body get from form input
+                this.dataForm = $.fn.serializerObject(formSelected);
+
+                // URL DETAIL
+                this.dataUrlDetail = formSelected.attr('data-url-detail');
+                if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+                if (this.dataUrlDetail) {
+                    this.dataUrlDetail = this.dataUrlDetail.split("/").slice(0, -1).join("/") + "/";
+                }
+            }
+
+            getCtxAjax() {
+                return {
+                    url: this.dataUrl,
+                    method: this.dataMethod,
+                    data: this.dataForm,
+                    redirect: this.dataUrlRedirect,
+                    redirectTimeout: this.dataRedirectTimeout
+                }
+            }
+
+            getUrlDetail(pk) {
+                if (this.dataUrlDetail && pk) {
+                    return this.dataUrlDetail + pk.toString();
+                }
+                return null;
+            }
+
+            getUrlDetailWithDataUrl(attrName, pk) {
+                let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
+                return data_url + pk.toString()
+            }
+
+            static getUrlDetailWithID(url, pk) {
+                url = url.split("/").slice(0, -1).join("/") + "/";
+                if (url && pk) {
+                    return url + pk.toString();
+                }
+                return null;
+            }
+
+            convertUrlDetail(url) {
+                return url.split("/").slice(0, -1).join("/") + "/";
+            }
+
+            appendFilter(url, filter) {
+                let params = '';
+                Object.keys(filter).map((key) => {
+                    params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
+                })
+                if (params) {
+                    return '{0}?{1}'.format_by_idx(url, params);
+                }
+                return url;
+            }
+        }
+
+        $.fn.extend({
+            redirectUrl: function (redirectPath, timeout = 0, params = '') {
+                setTimeout(() => {
+                    if (params && (params !== '' && params !== undefined)) {
+                        window.location.href = redirectPath + '?' + params;
+                    } else {
+                        window.location.href = redirectPath;
+                    }
+                }, timeout);
+            },
+            notifyB: function (option, typeAlert = null) {
+                setTimeout(function () {
+                    $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+                }, 100);
+                let msg = "";
+                if (option.title) {
+                    msg += option.title;
+                }
+                if (option.description) {
+                    let des_tmp = '';
+                    if (typeof option.description === 'string') {
+                        des_tmp = option.description;
+                    } else if (Array.isArray(option.description)) {
+                        des_tmp = option.description.join(", ");
+                    } else if (typeof option.description === 'object') {
+                        let des_tmp_arr = [];
+                        for (const [_key, value] of Object.entries(option.description)) {
+                            des_tmp_arr.push(value);
+                        }
+                        des_tmp = des_tmp_arr.join(", ");
+                    } else {
+                        des_tmp = option.description.toString();
+                    }
+                    if (msg) {
+                        msg += ": " + des_tmp;
+                    } else {
+                        msg = des_tmp;
+                    }
+                }
+                let alert_config = {
+                    animate: {
+                        enter: 'animated bounceInDown',
+                        exit: 'animated bounceOutUp'
+                    },
+                    type: "dismissible alert-primary",
+                    z_index: 2147483647, /* Maximum index */
+                }
+                switch (typeAlert) {
+                    case 'success':
+                        alert_config['type'] = "dismissible alert-success";
+                        break
+                    case 'failure':
+                        alert_config['type'] = "dismissible alert-danger";
+                        break
+                    case 'warning':
+                        alert_config['type'] = "dismissible alert-warning";
+                        break
+                    case 'info':
+                        alert_config['type'] = "dismissible alert-info";
+                        break
+                }
+                $.notify(msg, alert_config);
+            },
+            serializerObject: function (formSelected) {
+                return formSelected.serializeArray().reduce((o, kv) => ({
+                    ...o,
+                    [kv.name]: kv.value
+                }), {});
+            },
+            showLoading: function (timeout) {
+                $('#loadingContainer').removeClass('hidden');
+                if (timeout) {
+                    setTimeout($.fn.hideLoading, (timeout > 100 ? timeout : 1000));
+                }
+            },
+            hideLoading: function () {
+                setTimeout(() => {
+                    $('#loadingContainer').addClass('hidden');
+                }, 250,)
+            },
+            callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+                return new Promise(function (resolve, reject) {
+                    // Setup then Call Ajax
+                    let ctx = {
+                        url: url,
+                        type: method,
+                        dataType: 'json',
+                        contentType: content_type,
+                        data: content_type === "application/json" ? JSON.stringify(data) : data,
+                        headers: {
+                            "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
+                        },
+                        success: function (rest, textStatus, jqXHR) {
+                            resolve(rest);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            reject(jqXHR.responseJSON);
+                        },
+                    };
+                    if (method.toLowerCase() === 'get') ctx.data = data
+                    $.ajax(ctx);
+                });
+            },
+
+        })
+    </script>
 
     <!-- Custom JS -->
     <script>
@@ -222,7 +412,7 @@
                 if (frm.dataUrl && frm.dataMethod) {
                     $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
                         (resp) => {
-                            let data = $.fn.switcherResp(resp);
+                            let data = resp.data;
                             if (data.status === 200) {
                                 localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
                                 $.fn.notifyB({description: data.detail}, 'success');
@@ -257,7 +447,7 @@
                             tenant_element.attr('data-loaded', true);
                             tenant_element.children().remove();
                             resp.result.map((element) => {
-                                if (beforeTenantCode && element.code === beforeTenantCode){
+                                if (beforeTenantCode && element.code === beforeTenantCode) {
                                     tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
                                 } else {
                                     tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);

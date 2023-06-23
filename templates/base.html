@@ -37,17 +37,23 @@
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
-        <style>
-            @font-face {
-                font-family: "Roboto";
-                src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
-            }
-        </style>
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
-        {% block cssHeader %}
-        {% endblock %}
+        <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
+
+        <!-- Customize Style -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+                href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+                rel="stylesheet"
+        >
         <style>
+            :root {
+                --bs-body-font-family: 'Quicksand', sans-serif;
+                --bs-body-font-weight: 500;
+            }
+
             {#  Override css of select2 for select2 working in Bootstrap Modal  #}
             .select2-close-mask {
                 z-index: 2099;
@@ -88,7 +94,9 @@
 
             {#  -- bell ringing #}
         </style>
-        <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
+        <!-- // Customize Style -->
+        {% block cssHeader %}
+        {% endblock %}
     {% endcompress %}
     {% compress js %}
         {% block jsHeader %}{% endblock %}
@@ -154,8 +162,8 @@
                                         data-bs-placement="bottom"
                                         data-bs-original-title="{% trans 'Save in zone then call next station' %}"
                                 >
-{#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
-{#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
+                                    {#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
+                                    {#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
                                     <span class="icon">
                                         <i class="fa-solid fa-check-double text-success"></i>
                                     </span>
@@ -256,244 +264,46 @@
                                 {% endblock %}
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /Page Body -->
-</div>
-<!-- /Main Content -->
+                        <div class="blog-utility">
+                            <!-- spinner loading -->
+                            {% include "extends/utility/loading.html" %}
+                            <!-- /spinner loading -->
 
-<!-- spinner loading -->
-<div id="loadingContainer" class="loading-container hidden">
-    <div class="my-spinner">
-        <div class="my-circle my-circle-1"></div>
-        <div class="my-circle my-circle-2"></div>
-        <div class="my-circle my-circle-3"></div>
-        <div class="my-circle my-circle-4"></div>
-        <div class="my-circle my-circle-5"></div>
-    </div>
-</div>
-<!-- /spinner loading -->
-<!-- Message translate usually -->
-<div class="hidden">
-    <span id="msg-user-language">{{ base.language }}</span>
-    <span id="msg-datatable-language-config">
-            {% if base.language == 'vi' %}
-                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
-            {% elif base.language == 'en' %}
-                {% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}
-            {% else %}
-                <!-- Proud of Vietnamese products -->
-                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
-            {% endif %}
-        </span>
-    <span id="urlCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
-    <span id="urlCompanyConfigData"></span>
+                            <!-- Message translate usually -->
+                            {% include 'extends/utility/system_storage.html' %}
+                            <!-- /Message translate usually -->
 
-    <span id="urlCompanyConfig1" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
-    <span id="urlCompanyConfigData1"></span>
+                            <!-- /Message translate base -->
+                            {% include 'trans.html' %}
+                            <!-- /Message translate base -->
 
-    <span id="msgReloadPageIn">{% trans 'Auto reload has been applied after the timeout!' %}</span>
-    <span id="msgLabelReloadPageIn">{% trans 'Change Space to ' %}</span>
-    <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
-    <span id="msgSuccess">{% trans 'Successfully' %}</span>
-    <span id="flagIsDebug" data-is-debug={{ is_debug }}></span>
-    <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-    <span id="idWFRuntime" data-runtime-id=""></span>
-    <span id="idUrlTaskDetail" data-url="{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}"></span>
-    <span id="idPKDetail" data-pk="{{ pk }}"></span>
+                            <!-- Some data in single page | please override block in feature template-->
+                            <div class="hidden">
+                                <!-- Render Company Config and some json -->
+                                {% if data.input_mapping_properties %}
+                                    {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+                                {% endif %}
+                                {{ config|json_script:"idConfigValue" }}
+                                <!-- // Render Company Config and some json -->
 
-    {% if data.input_mapping_properties %}
-        {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
-    {% endif %}
-    {% if data.form_id %}
-        <span id="idFormID" data-form-id="{{ data.form_id }}"></span>
-    {% endif %}
-    <span id="idBtnIDLastSubmit" data-id></span>
-</div>
-<!-- /Message translate usually -->
-<!-- /Message translate base -->
-<input
-        type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
-        data-more-info="{% trans 'More Information' %}"
-        data-draft="{% trans 'Draft' %}"
-        data-created="{% trans 'Created' %}"
-        data-added="{% trans 'Added' %}"
-        data-finish="{% trans 'Finish' %}"
-        data-cancel="{% trans 'Cancel' %}"
-        data-confirm="{% trans 'Confirm' %}"
-        data-loading="{% trans 'Loading' %}"
-        data-success="{% trans 'Successfully' %}"
-        data-are-you-sure="{% trans 'Are you sure about this change?' %}"
-        data-no-data="{% trans 'No data available' %}"
-        data-title="{% trans 'Title' %}"
-        data-code="{% trans 'Code' %}"
-        data-action-wf="{% trans 'Action in Workflow' %}"
->
-<!-- /Message translate base -->
+                                {% block dataHiddenGroup %}{% endblock %}
+                            </div>
+                            <!-- // Some data in single page | please override block in feature template-->
 
-<!-- Render Company Config -->
-{{ config|json_script:"idConfigValue" }}
-<!-- // Render Company Config -->
+                            <!-- Drawer Log and Activity -->
+                            {% include "extends/utility/drawer_log.html" %}
+                            <!-- // Drawer Log and Activity -->
 
-<div class="hidden">
-    {% block dataHiddenGroup %}{% endblock %}
-</div>
-
-<!-- Drawer Log and Activity -->
-<div
-        data-simplebar
-        class="ntt-drawer ntt-drawer-right nicescroll-bar"
-        data-drawer-width="500"
-        data-drawer-push="true"
-        id="drawer_log_data"
-        data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"
->
-    <div class="ntt-drawer-header">
-        <div><span class="ntt-drawer-header-text"></span></div>
-        <button class="btn btn-icon btn-xs btn-rounded bg-dark-hover ntt-drawer-close">
-                <span class="icon">
-                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                </span>
-        </button>
-    </div>
-    <div class="ntt-drawer-body">
-        <div class="ntt-drawer-content-wrap">
-            <ul class="nav nav-light nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_diagram">
-                        <span class="nav-link-text">{% trans 'Diagram' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_activities">
-                        <span class="nav-link-text">{% trans 'Activities' %}</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="tab_block_diagram">
-                    <div class="spinner-grow" id="idxDataRuntimeLoading" role="status">
-                        <span class="sr-only">{% trans 'Loading' %}...</span>
-                    </div>
-                    <div class="hidden" id="idxDataRuntimeNotFound">
-                        <b>
-                            {% trans "The document approved because the feature config don't apply workflow" %}
-                        </b>
-                    </div>
-                    <div id="idxDataRuntime" class="hidden" style="width: calc(100% - 3px)">
-
-                    </div>
-                </div>
-                <div
-                        class="tab-pane fade" id="tab_block_activities"
-                        data-url="{% url 'ActivityLogListAPI' %}?doc_id={{ pk }}"
-                >
-                    <span id="elementTypingText"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- // Drawer Log and Activity -->
-
-<!-- Raise a ticket -->
-<div
-        class="modal fade" id="modalRaiseTicket" tabindex="-1" role="dialog" aria-labelledby="modalRaiseTicket"
-        aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <form
-                    id="frm-send-a-ticket" data-url="{% url 'TicketErrorCreateAPI' %}" data-method="POST"
-                    enctype="multipart/form-data"
-            >
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Raise a ticket' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- hidden input -->
-                    <div class="form-group hidden">
-                        <label for="ticket-email-auto" class="form-label">{% trans 'Email' %}</label>
-                        <input class="form-control" type="text" id="ticket-email-auto" name="email"/>
-                    </div>
-                    <div class="form-group hidden">
-                        <label
-                                for="ticket-location-raise-auto" class="form-label"
-                        >{% trans 'Location raise' %}</label>
-                        <input
-                                class="form-control" type="text" id="ticket-location-raise-auto"
-                                name="location_raise"
-                        />
-                    </div>
-                    <!-- hidden input -->
-                    <div class="form-group">
-                        <label for="ticket-email" class="form-label">{% trans 'Email' %}</label>
-                        <input class="form-control" type="text" id="ticket-email" name="email_input"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="ticket-location-raise" class="form-label">{% trans 'Location raise' %}</label>
-                        <input
-                                class="form-control" type="text" id="ticket-location-raise"
-                                name="location_raise_input"
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="ticket-title" class="form-label required">{% trans 'Title' %}</label>
-                        <input type="text" class="form-control" id="ticket-title" name="title"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="ticket-hash-tag" class="form-label required">{% trans 'Hash Tag' %}</label>
-                        <select
-                                name="hash_tags" id="ticket-hash-tag" class="form-control" multiple="multiple"
-                        >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                        <small class="text-muted">{% trans 'Allow input new tag' %}</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="ticket-remarks" class="form-label required">{% trans 'Descriptions' %}</label>
-                        <textarea class="form-control" id="ticket-remarks" name="remarks"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <div id="ticket-attachment-preview">
+                            <!-- Raise a ticket -->
+                            {% include "extends/utility/raise_ticket.html" %}
+                            <!-- // Raise a ticket -->
                         </div>
-                        <label
-                                for="ticket-attachments" class="form-label"
-                        >{% trans 'Attachments' %}</label>
-                        <input
-                                type="file" class="form-control" id="ticket-attachments" name="attachments" multiple
-                                accept="image/jpeg, image/png, image/gif"
-                        />
-                        <small class="text-muted">{% trans 'Accept type' %}: *.jpeg, *.png, *.gif</small>
-                    </div>
-                    <div class="form-group hidden">
-                        <label for="staticTicketResp" class="form-label">{% trans 'Code Ticket' %}</label>
-                        <input
-                                type="text" readonly class="form-control-plaintext text-danger"
-                                id="staticTicketResp"
-                        >
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button
-                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                    >{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary">{% trans 'Send a ticket' %}</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
-<!-- // Raise a ticket -->
+    <!-- /Main Content -->
 </div>
 <!-- /Wrapper -->
 
@@ -501,26 +311,40 @@
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+    <!-- // jQuery -->
 
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- // Bootstrap Core JS -->
 
     <!-- FeatherIcons JS -->
     <script src="{% static 'assets/js/feather.min.js' %}"></script>
+    <!-- // FeatherIcons JS -->
 
     <!-- Fancy Dropdown JS -->
     <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+    <!-- // Fancy Dropdown JS -->
 
     <!-- Simplebar JS -->
     <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+    <!-- // Simplebar JS -->
 
     <!-- Data Table JS -->
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <!-- // Data Table JS -->
 
     <!-- Select2 JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <!-- // Select2 JS -->
 
     <!-- Init JS -->
     <script src="{% static 'assets/js/notify.js' %}"></script>
@@ -528,272 +352,13 @@
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
-    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+    <!-- // Init JS -->
 
-    <!-- Typing text JS -->
-    <script src="{% static 'assets/js/plugins/typed.umd.js' %}"></script>
-    <script>
-        new Typed('#elementTypingText', {
-            strings: [
-                `Page is developing...`,
-            ],
-            typeSpeed: 50,
-        });
-    </script>
-    <!-- // Typing text JS -->
-
-    <script>
-        // test loading wait response area
-        let cardReportData = $('.card-report-data');
-        cardReportData.showLoadingWaitResponse();
-        setTimeout(
-            () => {
-                cardReportData.hideLoadingWaitResponse();
-            },
-            1500
-        )
-
-        // -- test loading wait response area
-
-
-        function change_space() {
-            function executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData) {
-                let baseMsg = $('#base-trans-factory');
-                Swal.fire({
-                    title: $('#msgLabelReloadPageIn').text() + `"${spaceName}"`,
-                    html: $('#msgReloadPageIn').text() + '<br>',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    showCancelButton: true,
-                    cancelButtonText: baseMsg.attr('data-cancel'),
-                    showConfirmButton: true,  // Hiển thị nút Confirm
-                    confirmButtonText: baseMsg.attr('data-confirm'),
-                }).then((result) => {
-                    if (result.value) {
-                        {#console.log('Người dùng đã xác nhận');#}
-                        callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData);
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        {#console.log('Người dùng đã hủy bỏ');#}
-                    } else if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed) {
-                        {#console.log('Timeout or confirmed!')#}
-                        callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData);
-                    }
-                });
-            }
-
-            $('#btnTestAlert').click(function () {
-                executeTimeOutChangeSpace();
-            })
-
-            function callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData) {
-                $.fn.showLoading();
-                $.fn.callAjax(
-                    urlData,
-                    methodData,
-                    {'space_code': spaceCode},
-                    true,
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && data['status'] === 200) {
-                            $.fn.notifyB({
-                                'description': $('#base-trans-factory').attr('data-success')
-                            }, 'success');
-                            setTimeout(
-                                () => {
-                                    window.location.href = urlRedirectData;
-                                }, 1000,
-                            );
-                        }
-                        setTimeout(
-                            () => {
-                                $.fn.hideLoading();
-                            },
-                            1000
-                        );
-                    },
-                    (errs) => {
-                        $.fn.hideLoading();
-                    }
-                )
-            }
-
-            $('.space-item').click(function (event) {
-                event.preventDefault();
-                let space_selected = $('#menu-tenant').attr('data-space-selected');
-                let urlData = $(this).closest('.dropdown-menu').attr('data-url');
-                let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
-                let methodData = $(this).closest('.dropdown-menu').attr('data-method');
-                let spaceCode = $(this).attr('data-space-code');
-                if (spaceCode !== space_selected) {
-                    executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
-                }
-            })
-        }
-
-        function active_menu(item) {
-            if (item.length > 0) {
-                item.first().addClass('active')
-                let parent = item.first().parents('.nav-item');
-                if (parent.length > 0) {
-                    parent.first().addClass('active');
-                    active_menu(parent.first());
-                }
-            }
-            return null;
-        }
-
-        function menu_handler() {
-            let nav_data = $('#get-menu-active');
-            let menu_id_active = nav_data.attr('data-nav-menu');
-            if (menu_id_active) {
-                let ele_menu = $('#' + menu_id_active);
-                if (ele_menu) {
-                    active_menu(ele_menu);
-                }
-            }
-            let tenant_code_active = nav_data.attr('data-nav-tenant');
-            if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
-        }
-
-        <!-- ## function utils -->
-
-        $(document).on('focus', 'input.mask-money', function () {
-            return MaskMoney2.focusInputMoney($(this));
-        });
-        $(document).on('blur', 'input.mask-money', function () {
-            return MaskMoney2.blurInputMoney($(this));
-        });
-        $(document).on('input', 'input.mask-money', function () {
-            return MaskMoney2.realtimeInputMoney($(this));
-        });
-
-        $(document).ready(function () {
-            <!-- Toggle Collapse -->
-            $('.hk-navbar-togglable').click(function (event) {
-                $(this).find('.icon').children().toggleClass('d-none');
-            });
-            <!-- ## Toggle Collapse -->
-
-            <!-- Space current -->
-            change_space();
-            <!-- ## Space current -->
-
-            <!-- Loading table ajax -->
-            $(document).find('table').each((idx, tbl) => {
-                if (!$(tbl).attr('load-data-hide-spinner')) {
-                    $(tbl).on('preXhr.dt', (e, settings, data) => {
-                        // show loading full page
-                        {#$.fn.showLoading();#}
-                        // show loading tbody table
-                        $(tbl).find('tbody').showLoadingWaitResponse();
-                    });
-                    $(tbl).on('draw.dt', () => {
-                        // hide loading full page
-                        {#$.fn.hideLoading();#}
-
-                        // hide loading tbody table
-                        $(tbl).find('tbody').hideLoadingWaitResponse();
-                    });
-                }
-            });
-            <!-- ## Loading table ajax -->
-
-            <!-- Active menu -->
-            menu_handler();
-            <!-- ## Active menu -->
-
-            <!-- Init Mask Money -->
-            $.fn.initMaskMoney2();
-            <!-- ## Init Mask Money -->
-
-            <!-- Init select2 -->
-            $(".select2").each(function () {
-                $(this).initSelect2();
-            });
-
-            <!-- ## Init select2 -->
-
-            <!-- Raise a ticket -->
-            $('#ticket-hash-tag').select2({
-                tags: true,
-                tokenSeparators: [',', ' ']
-            });
-            $('#modalRaiseTicket').on('shown.bs.modal', function () {
-                $('#ticket-email').val($('#email-request-owner').text());
-                $('#ticket-email-auto').val($('#email-request-owner').text());
-                $('#ticket-location-raise').val(window.location);
-                $('#ticket-location-raise-auto').val(window.location);
-            });
-
-            $("#ticket-attachments").change(function () {
-                let previewContainer = $("#ticket-attachment-preview");
-                previewContainer.empty();
-
-                if (this.files) {
-                    let filesAmount = this.files.length;
-                    for (let i = 0; i < filesAmount; i++) {
-                        let reader = new FileReader();
-                        reader.onload = function (event) {
-                            let imgElement = $("<img>");
-                            imgElement.attr("src", event.target.result);
-                            imgElement.css({
-                                "max-width": "100px",
-                                "max-height": "100px"
-                            });
-                            previewContainer.append(imgElement);
-                        };
-                        reader.readAsDataURL(this.files[i]);
-                    }
-                }
-            });
-
-            let ticketFrm = $('#frm-send-a-ticket');
-            ticketFrm.submit(function (event) {
-                event.preventDefault();
-
-                let urlData = $(this).attr('data-url');
-                let methodData = $(this).attr('data-method');
-
-                let formData = new FormData(this);
-                formData.append("attachments", document.getElementById('ticket-attachments').files);
-
-                $.fn.showLoading();
-                $.ajax({
-                    url: urlData, // point to server-side URL
-                    dataType: 'json', // what to expect back from server
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
-                    data: formData,
-                    type: methodData,
-                    success: function (resp) { // display success response
-                        let data = $.fn.switcherResp(resp)
-                        ticketFrm.find('input').attr('readonly', 'readonly');
-                        ticketFrm.find('textarea').attr('readonly', 'readonly');
-                        $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
-                        $.fn.notifyB({
-                            'description': $('#base-trans-factory').attr('data-success')
-                        }, 'success')
-                        $.fn.hideLoading();
-                    },
-                    error: function (response) {
-                        $.fn.notifyB({
-                            'description': 'Try again!'
-                        }, 'failure');
-                        $.fn.hideLoading();
-                    }
-                });
-            });
-            <!-- ## Raise a ticket -->
-
-        });
-    </script>
-    {% block jsFooter %}
-    {% endblock %}
+    <!-- Customize JS -->
+    {% block jsFooter %}{% endblock %}
+    <!-- // Customize JS -->
 {% endcompress %}
 </body>
 </html>

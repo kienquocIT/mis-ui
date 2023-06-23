@@ -83,16 +83,16 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-                                    // load Shipping & Billing by Customer
-                                    self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
-                                    // load Contact by Customer
-                                    if (item.id && item.owner) {
-                                        self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
-                                    }
-                                    // load Payment Term by Customer
-                                    self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
-                                    // Store Account Price List
-                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                // load Shipping & Billing by Customer
+                                self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                // load Contact by Customer
+                                if (item.id && item.owner) {
+                                    self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                }
+                                // load Payment Term by Customer
+                                self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
+                                // Store Account Price List
+                                document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                             }
                         })
                         if (dataMapOpp) { // if Opportunity has Customer
@@ -106,8 +106,6 @@ class loadDataHandle {
                             // Store Account Price List
                             document.getElementById('customer-price-list').value = "";
                         }
-                        // ReCheck Config
-                        configClass.checkConfig(true);
                         self.loadInformationSelectBox(ele);
                     }
                 }
@@ -795,7 +793,7 @@ class loadDataHandle {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }
         if (data.date_created) {
-            $('#quotation-create-date-created').val(moment(data.date_created).format('DD-MM-YYYY'))
+            $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
         }
         if (is_copy === true) {
             $('#select-box-quotation').append(`<option value="${data.id}" selected>${data.title}</option>`)
@@ -839,7 +837,7 @@ class loadDataHandle {
                     if (data) {
                         ele.val(JSON.stringify(data));
                         // check config first time
-                        configClass.checkConfig(true);
+                        configClass.checkConfig(true, null, true);
                     }
                 }
             )
@@ -2392,7 +2390,7 @@ let calculateClass = new calculateCaseHandle();
 
 // Config
 class checkConfigHandle {
-    checkConfig(is_change_opp = false, new_row = null) {
+    checkConfig(is_change_opp = false, new_row = null, is_first_time = false) {
         let self = this;
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -2403,12 +2401,14 @@ class checkConfigHandle {
             if (!opportunity || empty_list.includes(opportunity)) { // short sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
-                    if (!tableProduct.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                            let row = tableProduct.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, true, false);
-                            // Re Calculate all data of rows & total
-                            calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                    if (is_first_time === false) {
+                        if (!tableProduct.querySelector('.dataTables_empty')) {
+                            for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                                let row = tableProduct.tBodies[0].rows[i];
+                                self.reCheckTable(config, row, true, false);
+                                // Re Calculate all data of rows & total
+                                calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                            }
                         }
                     }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
@@ -2425,7 +2425,9 @@ class checkConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    calculateClass.updateTotal(tableProduct, true, false, false);
+                    if (is_first_time === false) {
+                        calculateClass.updateTotal(tableProduct, true, false, false);
+                    }
                 } else {
                     if (new_row) {
                         self.reCheckTable(config, new_row, true, false);
@@ -2440,12 +2442,14 @@ class checkConfigHandle {
             } else { // long sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
-                    if (!tableProduct.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                            let row = tableProduct.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, false, true);
-                            // Re Calculate all data of rows & total
-                            calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                    if (is_first_time === false) {
+                        if (!tableProduct.querySelector('.dataTables_empty')) {
+                            for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                                let row = tableProduct.tBodies[0].rows[i];
+                                self.reCheckTable(config, row, false, true);
+                                // Re Calculate all data of rows & total
+                                calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                            }
                         }
                     }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
@@ -2462,7 +2466,9 @@ class checkConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    calculateClass.updateTotal(tableProduct, true, false, false);
+                    if (is_first_time === false) {
+                        calculateClass.updateTotal(tableProduct, true, false, false);
+                    }
                 } else {
                     if (new_row) {
                         self.reCheckTable(config, new_row, false, true);

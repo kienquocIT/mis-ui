@@ -115,6 +115,7 @@ $(function () {
                 if (data) {
                     let return_advance_detail = data?.['return_advance'];
                     $.fn.compareStatusShowPageAction(return_advance_detail);
+                    $('.header-code').text(return_advance_detail.code);
                     $('[name="title"]').val(return_advance_detail.title);
                     choose_AP_ele.find(`option[value="${return_advance_detail.advance_payment}"]`).prop('selected', true);
                     loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, return_advance_detail.advance_payment));

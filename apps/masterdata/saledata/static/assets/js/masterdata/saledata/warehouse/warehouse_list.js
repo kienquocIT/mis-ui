@@ -3,14 +3,14 @@ $(document).ready(function () {
         if (bodyData.hasOwnProperty('title') && !bodyData['title']) {
             $.fn.notifyB({
                 'title': $('label[for=inputTextUpdateTitle]').text(),
-                'description': $('#msgFieldRequired').text()
+                'description': $.fn.transEle.attr('data-msgFieldRequired'),
             }, 'failure');
             return false;
         }
         if (bodyData.hasOwnProperty('code') && !bodyData['code']) {
             $.fn.notifyB({
                 'title': $('label[for=inputTextUpdateCode]').text(),
-                'description': $('#msgFieldRequired').text()
+                'description': $.fn.transEle.attr('data-msgFieldRequired'),
             }, 'failure');
             return false;
         }
@@ -79,7 +79,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data?.['status'] === 200) {
                 $.fn.notifyB({
-                    'description': $('#msgSuccess').text(),
+                    'description': $.fn.transEle.attr('data-success'),
                 }, 'success')
                 setTimeout(() => {
                     window.location.reload();
@@ -114,7 +114,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data?.['status'] === 201) {
                     $.fn.notifyB({
-                        'description': $('#msgSuccess').text(),
+                        'description': $.fn.transEle.attr('data-success'),
                     }, 'success')
                     setTimeout(() => {
                         window.location.reload();

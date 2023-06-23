@@ -874,8 +874,37 @@
                                 data-url="{% url "QuotationConfigDetailAPI" %}"
                                 data-method="GET"
                         >
+                        <input
+                                type="hidden"
+                                id="quotation-check-promotion"
+                        >
                     </div>
                 </div>
+
+
+                <button type="button" class="btn btn-primary" id="btn-invalid-promotion" data-bs-toggle="modal" data-bs-target="#invalidPromotionModalCenter" hidden>
+                    Vertically centered modal
+                </button>
+                <div class="modal fade" id="invalidPromotionModalCenter" tabindex="-1" role="dialog" aria-labelledby="invalidPromotionModalCenter" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body modal-body-invalid-promotion mb-2">
+                                <h6>{% trans 'Apply Promotion Fail.' %}</h6>
+                                <p>{% trans 'Document is unqualified for promotion applied. Remove promotion or select another available promotion.' %}</p>
+                            </div>
+                            <div class="row modal-footer-invalid-promotion">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-link btn-remove-promotion" data-bs-dismiss="modal" id="btn-remove-promotion">{% trans 'Remove Promotion.' %}</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-link btn-see-promotion" data-bs-dismiss="modal" id="btn-check-another-promotion">{% trans 'See Promotion' %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">

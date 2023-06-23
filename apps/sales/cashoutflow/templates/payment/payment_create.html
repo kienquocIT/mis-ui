@@ -24,28 +24,18 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-payment" type="submit" form="form-create-payment" style="background: none; border: none">
-        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-           data-bs-original-title="Save">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i data-feather="save"></i>
-                    </span>
-                </span>
-        </a>
-    </button>
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
-            <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="refresh-cw"></i>
-                </span>
+    <button class="btn btn-flush-primary flush-soft-hover"
+            type="submit" form="form-create-payment" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
             </span>
-    </a>
+            <span class="font-3 ml-1">
+                {% trans 'Save' %}
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.data.sale_order_list | json_script:"sale_order_list" }}
@@ -65,13 +55,13 @@
             <div class="row">
                 <div class="col-7 pr-5">
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">Name</label>
+                        <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
                             <input class="form-control" name="title">
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label">Sale/Purchase code</label>
+                        <label class="col-3 col-form-label">{% trans "Sale/Purchase code" %}</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Sale</button>
@@ -108,33 +98,33 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required" id="supplier-label">Supplier name</label>
+                        <label class="col-3 col-form-label required" id="supplier-label">{% trans "Supplier name" %}</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="supplier-detail-span" hidden>
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
                                         <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
                                             <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
-                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="row">
-                                            <span class="col-3" style="font-style: italic">Supplier</span>
+                                            <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
                                             <span class="col-9 text-primary" id="supplier-name"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-3" style="font-style: italic">Code</span>
+                                            <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
                                             <span class="col-9 text-primary" id="supplier-code"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-3" style="font-style: italic">Owner</span>
+                                            <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
                                             <span class="col-9 text-primary" id="supplier-owner"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-3" style="font-style: italic">Industry</span>
+                                            <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
                                             <span class="col-9 text-primary" id="supplier-industry"></span>
                                         </div>
                                     </span>
@@ -145,47 +135,47 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required" id="supplier-label">Method</label>
+                        <label class="col-3 col-form-label required" id="supplier-label">{% trans "Method" %}</label>
                         <div class="col-9">
                             <select class="form-select" name="method">
                                 <option selected></option>
-                                <option value="0">Cash</option>
-                                <option value="1">Bank transfer</option>
+                                <option value="0">{% trans "Cash" %}</option>
+                                <option value="1">{% trans "Bank transfer" %}</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="col-5">
                     <div class="row form-group">
-                        <label class="col-3 col-form-label" id="supplier-label">Created date</label>
+                        <label class="col-3 col-form-label" id="supplier-label">{% trans "Created date" %}</label>
                         <div class="col-9">
                             <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">Creator</label>
+                        <label class="col-3 col-form-label required">{% trans "Creator" %}</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="creator-detail-span" hidden>
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
                                             <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
-                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="row">
-                                            <span class="col-5" style="font-style: italic">Employee</span>
+                                            <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
                                             <span class="col-7 text-primary" id="creator-name"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-5" style="font-style: italic">Code</span>
+                                            <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
                                             <span class="col-7 text-primary" id="creator-code"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-5" style="font-style: italic">Department</span>
+                                            <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
                                             <span class="col-7 text-primary" id="creator-department"></span>
                                         </div>
                                     </span>
@@ -199,29 +189,29 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">Beneficiary</label>
+                        <label class="col-3 col-form-label required">{% trans "Beneficiary" %}</label>
                         <div class="col-9">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="beneficiary-detail-span" hidden>
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">More information</span>
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
                                             <a id="btn-detail-beneficiary-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
-                                                <span class="badge btn-outline-primary">More&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="row">
-                                            <span class="col-5" style="font-style: italic">Employee</span>
+                                            <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
                                             <span class="col-7 text-primary" id="beneficiary-name"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-5" style="font-style: italic">Code</span>
+                                            <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
                                             <span class="col-7 text-primary" id="beneficiary-code"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col-5" style="font-style: italic">Department</span>
+                                            <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
                                             <span class="col-7 text-primary" id="beneficiary-department"></span>
                                         </div>
                                     </span>
@@ -230,8 +220,8 @@
                                         data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
                         </div>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
         <div class="row collapse-arrow text-center">
@@ -294,7 +284,7 @@
                         </div>
                         <div class="offcanvas-body">
                             <div id="wizard">
-                                <h1>Select Advance Payment items</h1>
+                                <h1></h1>
                                 <div>
                                     <table id="advance_payment_list_datatable" class="table nowrap w-100"
                                            data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
@@ -306,7 +296,7 @@
                                                 <th class="w-15">{% trans 'Code' %}</th>
                                                 <th class="w-20">{% trans 'Name' %}</th>
                                                 <th class="w-15">{% trans 'To Payment' %}</th>
-                                                <th class="w-15">{% trans 'Returned' %}</th>
+                                                <th class="w-15">{% trans 'Return' %}</th>
                                                 <th class="w-15">{% trans 'Remain' %}</th>
                                             </tr>
                                         </thead>
@@ -314,7 +304,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <h1>Select Expense items</h1>
+                                <h1></h1>
                                 <div data-simplebar class="nicescroll-bar">
                                     <div data-simplebar class="expense-tables nicescroll-bar"></div>
                                 </div>
@@ -327,7 +317,7 @@
                         <button type="button" class="btn btn-link btn-animated" id="btn-add-row-line-detail">
                             <span><span class="icon">
                                 <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
-                                <span>Add new row</span>
+                                <span>{% trans "Add new row" %}</span>
                             </span>
                         </button>
                     </div>
@@ -358,7 +348,7 @@
                     <div class="col-12">
                         <div id="notify-none-sale-code" class="alert alert-warning" role="alert">
                             <span class="alert-icon-wrap"><i class="bi bi-exclamation-triangle-fill"></i></span>
-                            &nbsp;Sale Order/Quotation is not selected!
+                            &nbsp;{% trans "Sale Order/Quotation is not selected!" %}
                         </div>
                     </div>
                 </div>
@@ -370,7 +360,7 @@
                             <div class="col-12">
                                 <div id="notify-none-bank-account" class="alert alert-secondary" role="alert">
                                     <span class="alert-icon-wrap"></span>
-                                    &nbsp;No bank accounts information!
+                                    &nbsp;{% trans "No bank accounts information!" %}
                                 </div>
                             </div>
                         </div>

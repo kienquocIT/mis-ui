@@ -6,24 +6,21 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "AdvancePaymentCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Add">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href="{% url "AdvancePaymentCreate" %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Advance Payment' %}"
+       id="create_advance_payment_button"
+       data-bs-original-title="Add Advance Payment">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
             </span>
-        </span>
-    </a>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
     </a>
 {% endblock %}
 {% block pageContent %}

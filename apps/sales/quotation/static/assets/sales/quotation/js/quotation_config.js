@@ -25,6 +25,7 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
                 let item = data_list[i];
                 item['is_indicator'] = true;
                 item['syntax'] = "indicator(" + item.title + ")";
+                item['syntax_show'] = "indicator(" + item.title + ")";
                 let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                 indicator_list += `<div class="row param-item">
                                         <button type="button" class="btn btn-flush-light">
@@ -64,6 +65,7 @@ function loadInitPropertyList(property_id, eleShow) {
                         data.application_property_list.map(function (item) {
                             item['is_property'] = true;
                             item['syntax'] = "prop(" + item.title + ")";
+                            item['syntax_show'] = "prop(" + item.title + ")";
                             let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                             param_list += `<div class="row param-item">
                                                 <button type="button" class="btn btn-flush-light">
@@ -332,12 +334,12 @@ $(function () {
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
                                                     <button 
                                                         type="button" 
                                                         class="btn btn-primary btn-edit-indicator"
                                                         data-id="${row.id}"
-                                                    >Save</button>
+                                                    >${$.fn.transEle.attr('data-btn-save')}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -451,7 +453,7 @@ $(function () {
                                                 </div>
                                                 <div class="row mb-2">
                                                     <b>Syntax</b>
-                                                    <p class="ml-2">${dataShow.syntax}</p>
+                                                    <p class="ml-2">${dataShow.syntax_show}</p>
                                                 </div>
                                                 <div class="row">
                                                     <b>Example</b>
@@ -474,11 +476,8 @@ $(function () {
 
         function parseStringToArray(expression) {
             let data = expression.replace(/\s/g, "");
-            // Define the regex pattern to match the desired elements
-            const regex = /\w+\([^()]*\)|\w+|\d+|[-+*/()]/g;
-            // Execute the regex pattern on the expression string
-            // Return the array of matches
-            return data.match(regex);
+            const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+            return data.match(regex)
         }
 
         function parseFormulaRaw(formula_list_raw, row) {

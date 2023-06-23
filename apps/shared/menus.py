@@ -215,7 +215,7 @@ class MenusCRM:
             ),
             MenuCommon(
                 name='Return Advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
-                icon='<i class="bi bi-currency-exchange"></i>',
+                icon='<i class="bi bi-piggy-bank"></i>',
             ),
         ],
     )

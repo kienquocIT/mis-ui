@@ -139,8 +139,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery Detail'))
 
     # Return Advance
-    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
-    RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
+    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance list'), 'ReturnAdvanceList')
+    RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Return Advance create'), 'ReturnAdvanceCreate')
     RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Opportunity Detail

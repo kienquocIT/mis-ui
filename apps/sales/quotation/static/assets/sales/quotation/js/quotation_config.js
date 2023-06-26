@@ -216,10 +216,10 @@ $(function () {
                         "width": "40%",
                         "targets": 1
                     }, {
-                        "width": "10%",
+                        "width": "5%",
                         "targets": 2
                     }, {
-                        "width": "40%",
+                        "width": "45%",
                         "targets": 3
                     }, {
                         "width": "5%",
@@ -391,7 +391,7 @@ $(function () {
             let method = "put";
             let data_submit = {};
             data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
-            data_submit['description'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)
                 .then(
@@ -468,7 +468,7 @@ $(function () {
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
         let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
-        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|=|!=|>=|<=|>|</g;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|===|!==|>=|<=|>|</g;
 
         function setupFormula(data_submit, ele) {
             let row = ele[0].closest('tr');

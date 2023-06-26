@@ -1121,6 +1121,8 @@ $(function () {
                 'quotation_costs_data',
                 'quotation_expenses_data',
                 'is_customer_confirm',
+                // indicator tab
+                'quotation_indicators_data',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1158,7 +1160,7 @@ $(function () {
                 }
             }
             // validate none & blank
-            let check_none_blank_list = ['', "", null, "undefined"];
+            let check_blank_list = ['', "", "undefined"];
             let check_field_list = [
                 'opportunity',
                 'customer',
@@ -1167,10 +1169,10 @@ $(function () {
                 'payment_term',
                 'quotation'
             ]
-            for (let field = 0; field < check_field_list.length; field++) {
-                if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
-                    if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
-                        delete _form.dataForm[check_field_list[field]]
+            for (let field of check_field_list) {
+                if (_form.dataForm.hasOwnProperty(field)) {
+                    if (check_blank_list.includes(_form.dataForm[field])) {
+                        _form.dataForm[field] = null;
                     }
                 }
             }

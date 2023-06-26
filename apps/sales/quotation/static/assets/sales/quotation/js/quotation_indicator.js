@@ -15,12 +15,10 @@ function sum() {
   }, 0);
 }
 
-function dataTableQuotationIndicator(data, table_id) {
+function dataTableQuotationIndicator(data) {
     // init dataTable
     let listData = data ? data : [];
-    let jqueryId = '#' + table_id;
-    let $tables = $(jqueryId);
-    $tables.DataTable({
+    tableIndicator.DataTable({
         data: listData,
         searching: false,
         ordering: false,
@@ -43,19 +41,19 @@ function dataTableQuotationIndicator(data, table_id) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title" data-id="${row.id}">${row.title}</span>`
+                    return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
                 }
             },
             {
                 targets: 2,
                 render: (data, type, row) => {
-                    return `<span class="mask-money" data-init-money="${parseFloat(row.value)}"></span>`
+                    return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}"></span>`
                 }
             },
             {
                 targets: 3,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title">${row.rate} %</span>`
+                    return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
                 }
             }
         ],
@@ -105,7 +103,7 @@ function calculateIndicator(indicator_list) {
                 } else if (item.hasOwnProperty('is_indicator')) {
                     if (result_json.hasOwnProperty(item.order)) {
                         if (item.order < indicator.order) {
-                            parse_formula += result_json[item.order].value;
+                            parse_formula += result_json[item.order].indicator_value;
                         }
                     }
                 } else if (item.hasOwnProperty('param_type')) {
@@ -135,20 +133,22 @@ function calculateIndicator(indicator_list) {
             value = 0;
         }
         result_list.push({
-            'id': indicator.id,
+            'indicator': {
+                'id': indicator.id,
+                'title': indicator.title,
+            },
             'order': indicator.order,
-            'title': indicator.title,
-            'value': value,
-            'rate': 100
+            'indicator_value': value,
+            'indicator_rate': 100
         });
         result_json[indicator.order] = {
-            'value': value,
-            'rate': 100
+            'indicator_value': value,
+            'indicator_rate': 100
         }
     }
     //
     tableIndicator.DataTable().destroy();
-    dataTableQuotationIndicator(result_list, 'datable-quotation-create-indicator');
+    dataTableQuotationIndicator(result_list);
 }
 
 function evaluateFormula(formulaText) {
@@ -177,7 +177,7 @@ class indicatorFunctionHandle {
                     }
                 } else if (function_child.hasOwnProperty('is_indicator')) {
                     if (result_json.hasOwnProperty(function_child.order)) {
-                        functionBody += result_json[function_child.order].value;
+                        functionBody += result_json[function_child.order].indicator_value;
                         if (idx < item.function_data.length) {
                             functionBody += ",";
                         }
@@ -206,15 +206,17 @@ class indicatorFunctionHandle {
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
-        for (let product_data of data_form.quotation_products_data) {
-            if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-                if (product_data.hasOwnProperty(leftValueJSON.code)) {
-                    let leftValue = product_data[leftValueJSON.code].replace(/\s/g, "");
-                    let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
-                    let check = evaluateFormula( checkExpression);
-                    if (check === true) {
-                        functionBody += String(product_data[lastElement.code]);
-                        functionBody += ",";
+        if (data_form.quotation_products_data) {
+            for (let product_data of data_form.quotation_products_data) {
+                if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
+                    if (product_data.hasOwnProperty(leftValueJSON.code)) {
+                        let leftValue = product_data[leftValueJSON.code].replace(/\s/g, "");
+                        let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
+                        let check = evaluateFormula(checkExpression);
+                        if (check === true) {
+                            functionBody += String(product_data[lastElement.code]);
+                            functionBody += ",";
+                        }
                     }
                 }
             }
@@ -235,8 +237,23 @@ $(function () {
 
     $(document).ready(function () {
 
+        dataTableQuotationIndicator();
+
         $('#tab-indicator').on('click', function (e) {
-            loadQuotationIndicator('quotation-indicator-data');
+            let btnEdit = $('#btn-edit_quotation');
+            if (btnEdit.length) {
+                if (btnEdit.is(':hidden')) {
+                    loadQuotationIndicator('quotation-indicator-data');
+                } else {
+                    if (tableIndicator[0].querySelector('.dataTables_empty')) {
+                        let detailData = JSON.parse($('#quotation-detail-data').val());
+                        tableIndicator.DataTable().destroy();
+                        dataTableQuotationIndicator(detailData.quotation_indicators_data);
+                    }
+                }
+            } else {
+                loadQuotationIndicator('quotation-indicator-data');
+            }
         });
 
         $('#btn-refresh-quotation-indicator').on('click', function (e) {

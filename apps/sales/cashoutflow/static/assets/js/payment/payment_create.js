@@ -297,6 +297,7 @@ $(document).ready(function () {
     }
 
     function loadSaleCode(beneficiary, default_loading=0) {
+        $('#sale-code-select-box2-show').css({'height': '38px'})
         let quotation_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
@@ -466,6 +467,7 @@ $(document).ready(function () {
     }
 
     function loadSaleCodeMulti() {
+        $('#sale-code-select-box2-show').css({'height': 'auto'})
         let sale_order_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
@@ -518,7 +520,7 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                 <span class="text-blue col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + sale_person_id_list + `">` + item.title + `</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="2" id="` + item.id + `"></span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="2" id="` + item.id + `"></span>
                             </div>`)
             }
         })
@@ -534,7 +536,6 @@ $(document).ready(function () {
                     let sale_code_id = $(this).attr('id');
                     let sale_code_data_type = $(this).attr('data-type');
 
-
                     sale_code_selected_list.push(sale_code_id);
                     if (sale_code_data_type === '0') {
                         sale_order_selected_list.push(sale_code_id);
@@ -548,6 +549,15 @@ $(document).ready(function () {
                     }
                 }
             });
+
+            let sale_code_selected_show = [];
+            for (let i = 0; i < sale_code_selected_list.length; i++) {
+                sale_code_selected_show.push($('#' + sale_code_selected_list[i]).attr('data-sale-code'))
+            }
+
+            sale_code_selected_show = '(' + sale_code_selected_show.join(')  (') + ')';
+            $('#sale-code-select-box2-show').val(sale_code_selected_show);
+
             for (let i = 0; i < sale_order_selected_list.length; i++) {
                 $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_order_selected_list[i], 'GET').then((resp) => {
                     let data = $.fn.switcherResp(resp);

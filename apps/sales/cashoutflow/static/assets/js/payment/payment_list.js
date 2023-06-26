@@ -48,7 +48,8 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-success">Approved&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                            let approved_trans = $('#datatable_payment_list').attr('data-type-translate-approved')
+                            return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
                         }
                     }
                 ],

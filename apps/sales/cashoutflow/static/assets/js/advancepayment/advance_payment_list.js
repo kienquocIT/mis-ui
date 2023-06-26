@@ -34,11 +34,13 @@ $(document).ready(function () {
                         data: 'advance_payment_type',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
+                            let to_employee_trans = $('#datatable_advance_list').attr('data-type-translate-employee')
+                            let to_supplier_trans = $('#datatable_advance_list').attr('data-type-translate-supplier')
                             if (row.advance_payment_type === 'To Employee') {
-                                return `<span class="badge badge-soft-danger">` + row.advance_payment_type + `</span>`
+                                return `<span class="badge badge-soft-danger">` + to_employee_trans + `</span>`
                             }
                             else if (row.advance_payment_type === 'To Supplier') {
-                                return `<span class="badge badge-soft-blue">` + row.advance_payment_type + `</span>`
+                                return `<span class="badge badge-soft-blue">` + to_supplier_trans + `</span>`
                             }
                         }
                     },
@@ -88,10 +90,11 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
+                            let approved_trans = $('#datatable_advance_list').attr('data-type-translate-approved')
                             if (row.money_gave) {
-                                return `<span class="text-success">` + row.status + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                                return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
                             }
-                            return `<span class="text-success">` + row.status + `</span>`
+                            return `<span class="text-success">` + approved_trans + `</span>`
                         }
                     },
                     {

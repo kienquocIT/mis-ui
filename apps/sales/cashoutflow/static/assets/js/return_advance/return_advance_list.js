@@ -58,19 +58,26 @@ $(document).ready(function () {
                         data: 'money_received',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                data
-                            )
+                            let waiting_trans = $('#dtbReturnAdvance').attr('data-type-translate-waiting')
+                            let received_trans = $('#dtbReturnAdvance').attr('data-type-translate-received')
+                            if (row.money_received === 'Waiting') {
+                                return `<span>` + waiting_trans + `</span>`
+                            }
+                            else {
+                                return `<span>` + received_trans + `</span>`
+                            }
+
                         }
                     },
                     {
                         data: 'status',
                         render: (data, type, row) => {
+                            let approved_trans = $('#dtbReturnAdvance').attr('data-type-translate-approved')
                             if (row.money_received === 'Received') {
-                                return `<span class="text-success">Approved&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                                return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
                             }
                             if (row.money_received === 'Waiting') {
-                                return `<span class="text-success">Approved</span>`
+                                return `<span class="text-success">` + approved_trans + `</span>`
                             }
                         },
                     },

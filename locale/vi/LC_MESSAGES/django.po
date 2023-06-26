@@ -3449,3 +3449,7 @@ msgstr "Đã thanh toán"
 #
 msgid "Remain AP"
 msgstr "Tạm ứng còn lại"
+
+#
+msgid "Waiting"
+msgstr "Đang chờ"

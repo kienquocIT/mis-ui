@@ -326,7 +326,6 @@ $(document).ready(function () {
                             }
                         }
                     });
-
                     $.fn.initMaskMoney2();
                 }
             }

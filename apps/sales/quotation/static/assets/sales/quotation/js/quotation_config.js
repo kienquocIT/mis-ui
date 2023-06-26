@@ -25,8 +25,9 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
                 let item = data_list[i];
                 item['is_indicator'] = true;
                 item['syntax'] = "indicator(" + item.title + ")";
+                item['syntax_show'] = "indicator(" + item.title + ")";
                 let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                indicator_list += `<div class="row property-item">
+                indicator_list += `<div class="row param-item">
                                         <button type="button" class="btn btn-flush-light">
                                             <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
                                             <input type="hidden" class="data-show" value="${dataStr}">
@@ -64,8 +65,41 @@ function loadInitPropertyList(property_id, eleShow) {
                         data.application_property_list.map(function (item) {
                             item['is_property'] = true;
                             item['syntax'] = "prop(" + item.title + ")";
+                            item['syntax_show'] = "prop(" + item.title + ")";
                             let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            param_list += `<div class="row property-item">
+                            param_list += `<div class="row param-item">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                        })
+                        eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                    }
+                }
+            }
+        )
+    }
+}
+
+function loadInitParamList(param_id, eleShow) {
+    let jqueryId = '#' + param_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    let data_filter = {'param_type': 2};
+    if (eleShow.is(':empty')) {
+        $.fn.callAjax(url, method, data_filter).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
+                        let param_list = ``;
+                        data.indicator_param.map(function (item) {
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            param_list += `<div class="row param-item">
                                                 <button type="button" class="btn btn-flush-light">
                                                     <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
                                                     <input type="hidden" class="data-show" value="${dataStr}">
@@ -233,7 +267,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Formula</h5>
+                                                    <h5 class="modal-title">${$.fn.transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -244,7 +278,7 @@ $(function () {
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="form-group">
-                                                            <label class="form-label">Editor</label>
+                                                            <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
                                                             <textarea class="form-control indicator-editor" rows="2" cols="50" name=""></textarea>
                                                             <input type="hidden" class="data-editor-submit">
                                                         </div>
@@ -253,22 +287,22 @@ $(function () {
                                                         <ul class="nav nav-light">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
-                                                                <span class="nav-link-text">Indicator</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-indicator')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
-                                                                <span class="nav-link-text">Property</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-property')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabFunctionHref}">
-                                                                <span class="nav-link-text">Functions</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
-                                                                <span class="nav-link-text">Operators</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-operator')}</span>
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -287,8 +321,10 @@ $(function () {
                                                                 </div>
                                                             </div>
                                                             <div class="row tab-pane fade" id="${tabFunctionID}">
-                                                                <div class="col-6"></div>
-                                                                <div class="col-6"></div>
+                                                                <div class="row">
+                                                                    <div class="col-4 function-list"></div>
+                                                                    <div class="col-8 function-description"></div>
+                                                                </div>
                                                             </div>
                                                             <div class="row tab-pane fade" id="${tabOperatorID}">
                                                                 <div class="col-6"></div>
@@ -298,12 +334,12 @@ $(function () {
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
                                                     <button 
                                                         type="button" 
                                                         class="btn btn-primary btn-edit-indicator"
                                                         data-id="${row.id}"
-                                                    >Save</button>
+                                                    >${$.fn.transEle.attr('data-btn-save')}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -381,9 +417,11 @@ $(function () {
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
             loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+            let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
+            loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
         });
 
-        tableIndicator.on('click', '.property-item', function(e) {
+        tableIndicator.on('click', '.param-item', function(e) {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
@@ -393,7 +431,7 @@ $(function () {
             }
         });
 
-        tableIndicator.on('mouseenter', '.property-item', function(e) {
+        tableIndicator.on('mouseenter', '.param-item', function(e) {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
@@ -403,6 +441,8 @@ $(function () {
                     eleDescription = $(this)[0].closest('.tab-pane').querySelector('.property-description');
                 } else if ($(this)[0].closest('.tab-pane').querySelector('.indicator-description')) {
                     eleDescription = $(this)[0].closest('.tab-pane').querySelector('.indicator-description');
+                } else if ($(this)[0].closest('.tab-pane').querySelector('.function-description')) {
+                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.function-description');
                 }
                 if (eleDescription) {
                     eleDescription.innerHTML = "";
@@ -413,60 +453,86 @@ $(function () {
                                                 </div>
                                                 <div class="row mb-2">
                                                     <b>Syntax</b>
-                                                    <p>${dataShow.syntax}</p>
+                                                    <p class="ml-2">${dataShow.syntax_show}</p>
                                                 </div>
                                                 <div class="row">
                                                     <b>Example</b>
-                                                    <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
+                                                    <p class="ml-2">${dataShow.example}</p>
                                                 </div>
                                             </div>`)
                 }
             }
         });
 
+// BEGIN setup formula
         function setupFormula(data_submit, ele) {
-            // setup formula
-            let formula_data = [];
             let row = ele[0].closest('tr');
             let editor = row.querySelector('.indicator-editor');
-            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-*\/()]|(\d+)|'(\d+)'/g;
-            const formula_list_raw = editor.value.match(regex);
-            for (let item of formula_list_raw) {
-                if (item.includes("indicator")) {
-                    let indicatorValue = item.match(/\((.*?)\)/)[1];
-                    checkMatchParam(formula_data, indicatorValue, row, true, false);
-                } else if (item.includes("prop")) {
-                    let propertyValue = item.match(/\((.*?)\)/)[1];
-                    checkMatchParam(formula_data, propertyValue, row, false, true);
-                } else {
-                    formula_data.push(item)
-                }
-            }
-            data_submit['formula_data'] = formula_data;
+            let formula_list_raw = parseStringToArray(editor.value);
+            data_submit['formula_data'] = parseFormulaRaw(formula_list_raw, row);
             data_submit['formula_data_show'] = editor.value;
             return true
         }
 
-        function checkMatchParam(formula_data, check_value, row, is_indicator = false, is_property = false) {
-            let classCheck = '';
-            if (is_indicator === true) {
-                classCheck = '.indicator-list';
-            } else if (is_property === true) {
-                classCheck = '.property-list';
+        function parseStringToArray(expression) {
+            let data = expression.replace(/\s/g, "");
+            const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+            return data.match(regex)
+        }
+
+        function parseFormulaRaw(formula_list_raw, row) {
+            let formula_data = [];
+            let functionList = ['contains', 'empty', 'concat', 'min', 'max', 'sumItemIf'];
+            for (let item of formula_list_raw) {
+                if (item.includes("indicator")) { // INDICATOR
+                    let indicatorValue = item.match(/\((.*?)\)/)[1];
+                    formula_data.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
+                } else if (item.includes("prop")) { // PROPERTY
+                    let propertyValue = item.match(/\((.*?)\)/)[1];
+                    formula_data.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
+                } else if (functionList.some(value => item.includes(value))) { // FUNCTION
+                    let functionValue = functionList.some(value => item.includes(value));
+                    let functionJSON = checkMatchPropertyIndicator(functionValue, row, '.function-list');
+                    let functionBodyData = [];
+                    let functionBody = item.match(/\((.*?)\)/)[1];
+                    const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-*\/()]|(\d+)|'(\d+)'/g;
+                    let body_list_raw = functionBody.match(regex);
+                    for (let body_item of body_list_raw) {
+                        if (body_item.includes("indicator")) {
+                            let indicatorValue = body_item.match(/\((.*?)\)/)[1];
+                            functionBodyData.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
+                        } else if (body_item.includes("prop")) {
+                            let propertyValue = body_item.match(/\((.*?)\)/)[1];
+                            functionBodyData.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
+                        } else {
+                            functionBodyData.push(body_item);
+                        }
+                    }
+                    functionJSON['function_data'] = functionBodyData;
+                } else {
+                    formula_data.push(item)
+                }
             }
+            return formula_data
+        }
+
+        function checkMatchPropertyIndicator(check_value, row, classCheck) {
+            let result = "";
             let choiceList = row.querySelector(classCheck);
-            let allChoice = choiceList.querySelectorAll('.property-item');
+            let allChoice = choiceList.querySelectorAll('.param-item');
             for (let indi of allChoice) {
                 let dataShow = indi.querySelector('.data-show');
                 if (dataShow) {
                     let dataShowValue = JSON.parse(dataShow.value);
                     if (dataShowValue.title === check_value) {
-                        formula_data.push(dataShowValue);
+                        result = dataShowValue;
                         break
                     }
                 }
             }
+            return result
         }
+// END setup formula
 
         // submit create indicator
         btnCreateIndicator.on('click', function(e) {

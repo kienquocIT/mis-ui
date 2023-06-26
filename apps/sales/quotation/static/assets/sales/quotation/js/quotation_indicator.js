@@ -94,6 +94,10 @@ function calculateIndicator(indicator_list) {
                             parse_formula += result_json[item.order].value;
                         }
                     }
+                } else if (item.hasOwnProperty('param_type')) {
+                    if (item.param_type === 2) { // FUNCTION
+
+                    }
                 }
             } else if (typeof item === 'string') {
                 parse_formula += item;
@@ -135,7 +139,6 @@ function evaluateFormula(formulaText) {
 $(function () {
 
     $(document).ready(function () {
-        dataTableQuotationIndicator([], 'datable-quotation-create-indicator');
 
         $('#tab-indicator').on('click', function (e) {
             loadQuotationIndicator('quotation-indicator-data');

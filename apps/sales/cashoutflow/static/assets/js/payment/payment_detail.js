@@ -20,6 +20,8 @@ $(document).ready(function () {
             if (payment_detail.opportunity_mapped.length > 0) {sale_code_mapped = payment_detail.opportunity_mapped}
 
             if (payment_detail.sale_code_type === 3) {
+                $('#sale-code-select-box2-show').css({'height': 'auto'})
+
                 $('#radio-special').prop('checked', true);
                 $('#btn-change-sale-code-type').text('MULTI');
                 let ele = $('#sale-code-select-box2');
@@ -32,14 +34,14 @@ $(document).ready(function () {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span text-danger">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span">` + item.title +`</span>
-                                        <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                        <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.opportunity.code + `" data-type="0" id="` + item.id + `"></span>
                                     </div>`)
                     }
                     else {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                             <span class="col-4 code-span text-danger">&nbsp;&nbsp;` + item.code + `</span>
                                             <span class="col-7 title-span">` + item.title +`</span>
-                                            <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                            <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="0" id="` + item.id + `"></span>
                                         </div>`)
                     }
                 })
@@ -49,14 +51,14 @@ $(document).ready(function () {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `">
                                         <span class="col-4 code-span text-primary">&nbsp;&nbsp;` + item.code + `</span>
                                         <span class="col-7 title-span">` + item.title +`</span>
-                                        <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                        <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.opportunity.code + `" data-type="1" id="` + item.id + `"></span>
                                     </div>`)
                     }
                     else {
                         ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                             <span class="col-4 code-span text-primary">&nbsp;&nbsp;` + item.code + `</span>
                                             <span class="col-7 title-span">` + item.title +`</span>
-                                            <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                            <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="1" id="` + item.id + `"></span>
                                         </div>`)
                     }
                 })
@@ -65,11 +67,25 @@ $(document).ready(function () {
                     ele.append(`<div class="row mb-2">
                                     <span class="col-4 code-span text-blue">&nbsp;&nbsp;` + item.code + `</span>
                                     <span class="col-7 title-span">` + item.title +`</span>
-                                    <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-type="0" id="` + item.id + `"></span>
+                                    <span class="col-1"><input disabled checked type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="2" id="` + item.id + `"></span>
                                 </div>`)
                 })
+
+                let sale_code_selected_list = payment_detail.sale_order_mapped.concat(payment_detail.quotation_mapped).concat(payment_detail.opportunity_mapped)
+                sale_code_selected_list = $.map(sale_code_selected_list, function(obj) {
+                    return obj.id;
+                });
+                let sale_code_selected_show = [];
+                for (let i = 0; i < sale_code_selected_list.length; i++) {
+                    sale_code_selected_show.push($('#' + sale_code_selected_list[i]).attr('data-sale-code'))
+                }
+
+                sale_code_selected_show = '(' + sale_code_selected_show.join(')  (') + ')';
+                $('#sale-code-select-box2-show').val(sale_code_selected_show);
             }
             else if (payment_detail.sale_code_type === 0) {
+                $('#sale-code-select-box2-show').css({'height': '38px'})
+
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
                 if (Object.keys(sale_code_mapped[0].opportunity).length !== 0) {
@@ -504,16 +520,21 @@ $(document).ready(function () {
                             available = 0;
                         }
                     }
+                    else {
+                        available = expense_item.plan_after_tax;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`)
+
+                    $.fn.initMaskMoney2();
                 }
             }
         })
@@ -576,16 +597,21 @@ $(document).ready(function () {
                             available = 0;
                         }
                     }
+                    else {
+                        available = expense_item.plan_after_tax;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`)
+
+                    $.fn.initMaskMoney2();
                 }
             }
         })

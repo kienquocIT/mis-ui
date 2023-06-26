@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    const pk = window.location.pathname.split('/').pop();
+    const pk = $.fn.getPkDetail()
     const frmDetail = $('#frm-detail');
     const ele_select_product_category = $('#select-box-product-category');
     let employee_current_id = $('#emp-current-id').val();
@@ -505,6 +505,7 @@ $(document).ready(function () {
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
         if (Object.keys(dict_product).length === 0) {
+            console.log($('#data-product').val());
             dict_product = JSON.parse($('#data-product').val()).reduce((obj, item) => {
                 obj[item.id] = item;
                 return obj;

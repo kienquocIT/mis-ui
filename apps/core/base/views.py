@@ -167,6 +167,21 @@ class BaseItemUnitListAPI(APIView):
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
 
+class IndicatorParamListAPI(APIView):
+    @mask_view( # noqa
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(url=ApiURL.INDICATOR_PARAM, user=request.user).get(data)
+        if resp.state:
+            return {'indicator_param': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
 class ApplicationPropertyOpportunityListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -179,3 +194,4 @@ class ApplicationPropertyOpportunityListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+

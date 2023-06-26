@@ -290,7 +290,7 @@ $(document).ready(function () {
         })
     }
 
-    let pk = window.location.pathname.split('/').pop();
+    let pk = $.fn.getPkDetail()
     let url_detail = $('#form-update-product').attr('data-url').replace(0, pk)
 
     // get detail product

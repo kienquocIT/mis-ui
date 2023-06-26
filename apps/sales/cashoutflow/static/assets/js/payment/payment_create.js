@@ -85,22 +85,27 @@ $(document).ready(function () {
                         if (expense_get.remain_ap >= 0) {
                             remain_ap = expense_get.remain_ap;
                         }
-                        paid = expense_get.paid
-                        available = expense_item.plan_after_tax - remain_ap - paid
+                        paid = expense_get.paid;
+                        available = expense_item.plan_after_tax - remain_ap - paid;
                         if (available < 0) {
                             available = 0;
                         }
+                    }
+                    else {
+                        available = expense_item.plan_after_tax;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`)
+
+                    $.fn.initMaskMoney2();
                 }
             }
         })
@@ -163,16 +168,21 @@ $(document).ready(function () {
                             available = 0;
                         }
                     }
+                    else {
+                        available = expense_item.plan_after_tax;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`)
+
+                    $.fn.initMaskMoney2();
                 }
             }
         })
@@ -287,6 +297,7 @@ $(document).ready(function () {
     }
 
     function loadSaleCode(beneficiary, default_loading=0) {
+        $('#sale-code-select-box2-show').css({'height': '38px'})
         let quotation_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
@@ -456,6 +467,7 @@ $(document).ready(function () {
     }
 
     function loadSaleCodeMulti() {
+        $('#sale-code-select-box2-show').css({'height': 'auto'})
         let sale_order_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
@@ -508,7 +520,7 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                 <span class="text-blue col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + sale_person_id_list + `">` + item.title + `</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="2" id="` + item.id + `"></span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="2" id="` + item.id + `"></span>
                             </div>`)
             }
         })
@@ -524,7 +536,6 @@ $(document).ready(function () {
                     let sale_code_id = $(this).attr('id');
                     let sale_code_data_type = $(this).attr('data-type');
 
-
                     sale_code_selected_list.push(sale_code_id);
                     if (sale_code_data_type === '0') {
                         sale_order_selected_list.push(sale_code_id);
@@ -538,6 +549,15 @@ $(document).ready(function () {
                     }
                 }
             });
+
+            let sale_code_selected_show = [];
+            for (let i = 0; i < sale_code_selected_list.length; i++) {
+                sale_code_selected_show.push($('#' + sale_code_selected_list[i]).attr('data-sale-code'))
+            }
+
+            sale_code_selected_show = '(' + sale_code_selected_show.join(')  (') + ')';
+            $('#sale-code-select-box2-show').val(sale_code_selected_show);
+
             for (let i = 0; i < sale_order_selected_list.length; i++) {
                 $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_order_selected_list[i], 'GET').then((resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -915,10 +935,10 @@ $(document).ready(function () {
         $('#advance_payment_list_datatable').DataTable().destroy();
         let AP_db = $('#advance_payment_list_datatable');
         AP_db.DataTableDefault({
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12'tr>>",
-            scrollY: "75%",
-            scrollX: true,
-            paginate: false,
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3'f><'col-sm-12 col-md-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            visibleDisplayRowTotal: false,
+            pageLength: 5,
+            paginate: true,
             ajax: {
                 url: AP_db.attr('data-url'),
                 type: AP_db.attr('data-method'),
@@ -1325,6 +1345,9 @@ $(document).ready(function () {
 
             $.fn.initMaskMoney2();
         }
+        else {
+            $.fn.notifyPopup({description: "Warning: You have not selected Sale Code yet!"}, 'warning');
+        }
     });
 
     $("#wizard").steps({
@@ -1333,8 +1356,8 @@ $(document).ready(function () {
 
     $('#wizard-t-0').attr('hidden', true);
     $('#wizard-t-1').attr('hidden', true);
-    $('#wizard-t-0').closest('li').append(`<span id="tab-1-offCanvas" class="text-primary" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment Items</span>`);
-    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary" style="font-size: larger; font-weight: bolder">2. Select Expense Items</span>`);
+    $('#wizard-t-0').closest('li').append(`<span id="tab-1-offCanvas" class="text-primary mr-3" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment</span>`);
+    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary ml-3" style="font-size: larger; font-weight: bolder">2. Select Expense</span>`);
 
     $('.content').css({
         'background': 'none'
@@ -1532,10 +1555,10 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
+        let expense_valid_list = [];
         if ($('#tab_line_detail tbody').find('tr').length > 0) {
             let table_body = $('#tab_line_detail tbody');
             let row_count = table_body.find('.row-number').length;
-            let expense_valid_list = [];
             for (let i = 1; i <= row_count; i++) {
                 let expense_detail_value = 0;
 
@@ -1601,8 +1624,9 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value must be equal to sum Sale Code value.'}, 'failure');
                 }
             }
-            frm.dataForm['expense_valid_list'] = expense_valid_list;
         }
+
+        frm.dataForm['expense_valid_list'] = expense_valid_list;
 
         if ($('input[name="sale_code_type"]:checked').val() === 'non-sale') {
             frm.dataForm['sale_code_type'] = 2;
@@ -1672,7 +1696,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
         }

@@ -384,42 +384,42 @@ $(document).ready(function () {
                     data: 'plan_after_tax',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
                     }
                 },
                 {
                     data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
                     }
                 },
                 {
                     data: 'returned',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
                     }
                 },
                 {
                     data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
                     }
                 },
                 {
                     data: 'others_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
                     }
                 },
                 {
                     data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
                     }
                 }
             ],
@@ -499,42 +499,42 @@ $(document).ready(function () {
                     data: 'plan_after_tax',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
                     }
                 },
                 {
                     data: 'sum_AP_approved',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.sum_AP_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
                     }
                 },
                 {
                     data: 'returned',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.returned.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
                     }
                 },
                 {
                     data: 'to_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.to_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
                     }
                 },
                 {
                     data: 'others_payment',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.others_payment.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
                     }
                 },
                 {
                     data: 'available',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span>`
+                        return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
                     }
                 }
             ],
@@ -1299,7 +1299,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
     })

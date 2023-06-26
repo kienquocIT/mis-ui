@@ -2,7 +2,8 @@ from django.urls import path
 
 from apps.core.base.views import PlanListAPI, TenantApplicationListAPI, ApplicationPropertyListAPI, \
     ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI, \
-    CountryListAPI, CityListAPI, DistrictListAPI, WardListAPI, BaseCurrencyListAPI, BaseItemUnitListAPI
+    CountryListAPI, CityListAPI, DistrictListAPI, WardListAPI, BaseCurrencyListAPI, BaseItemUnitListAPI, \
+    IndicatorParamListAPI
 
 urlpatterns = [
     path('location/countries/api', CountryListAPI.as_view(), name='CountryListAPI'),
@@ -21,4 +22,5 @@ urlpatterns = [
     ),
     path('perm-per-app/api', ApplicationPermissionAPI.as_view(), name="ApplicationPermissionAPI"),
     path('item-units/api', BaseItemUnitListAPI.as_view(), name="BaseItemUnitListAPI"),
+    path('indicator-params/api', IndicatorParamListAPI.as_view(), name="IndicatorParamListAPI"),
 ]

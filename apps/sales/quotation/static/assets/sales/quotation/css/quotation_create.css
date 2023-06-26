@@ -69,7 +69,7 @@ a.dropdown-item.table-row-price-option:hover {
     position: relative;
     padding: 10px;
     text-align: center;
-    border-top: 1px solid grey;
+    border-top: 1px solid #c7c7c7;
 }
 
 .row.modal-footer-invalid-promotion::before {
@@ -80,7 +80,7 @@ a.dropdown-item.table-row-price-option:hover {
     transform: translateX(-50%);
     width: 1px;
     height: 100%;
-    background-color: grey;
+    background-color: #b5b5b5;
 }
 
 .btn-remove-promotion {

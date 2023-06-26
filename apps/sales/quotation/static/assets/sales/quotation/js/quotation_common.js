@@ -16,7 +16,11 @@ class loadDataHandle {
                     if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                         ele.append(`<option value=""></option>`);
                         data.opportunity_list.map(function (item) {
-                            if (item.is_quotation_used === false || valueToSelect === item.id) {
+                            let check_used = item.quotation_id;
+                            if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                               check_used = item.sale_order_id
+                            }
+                            if (check_used === null || valueToSelect === item.id) {
                                 let dataStr = JSON.stringify({
                                     'id': item.id,
                                     'title': item.title,

@@ -1329,6 +1329,9 @@ $(document).ready(function () {
 
             $.fn.initMaskMoney2();
         }
+        else {
+            $.fn.notifyPopup({description: "Warning: You have not selected Sale Code yet!"}, 'warning');
+        }
     });
 
     $("#wizard").steps({

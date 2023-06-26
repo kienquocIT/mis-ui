@@ -9,6 +9,12 @@ function min(data_list) {
   return Math.min(...data_list);
 }
 
+function sum() {
+  return Array.prototype.reduce.call(arguments, function(acc, val) {
+    return acc + val;
+  }, 0);
+}
+
 function dataTableQuotationIndicator(data, table_id) {
     // init dataTable
     let listData = data ? data : [];
@@ -37,7 +43,7 @@ function dataTableQuotationIndicator(data, table_id) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title">${row.title}</span>`
+                    return `<span class="table-row-title" data-id="${row.id}">${row.title}</span>`
                 }
             },
             {
@@ -119,20 +125,25 @@ function calculateIndicator(indicator_list) {
         }
         // calculate
         let value = evaluateFormula(parse_formula);
-        if (typeof value === 'number') {
-            if (value < 0) {
-                value = 0;
+        if (value !== null) {
+            if (typeof value === 'number') {
+                if (value < 0) {
+                    value = 0;
+                }
             }
-            result_list.push({
-                'order': indicator.order,
-                'title': indicator.title,
-                'value': value,
-                'rate': 100
-            });
-            result_json[indicator.order] = {
-                'value': value,
-                'rate': 100
-            }
+        } else {
+            value = 0;
+        }
+        result_list.push({
+            'id': indicator.id,
+            'order': indicator.order,
+            'title': indicator.title,
+            'value': value,
+            'rate': 100
+        });
+        result_json[indicator.order] = {
+            'value': value,
+            'rate': 100
         }
     }
     //
@@ -185,25 +196,32 @@ class indicatorFunctionHandle {
     functionSumItemIf(item, data_form) {
         let syntax = "sum(";
         let functionBody = "";
-        let leftValue = null;
+        let leftValueJSON = null;
         let rightValue = null;
         let operator_list = ['===', '!==', '<', '>', '<=', '>='];
         let condition_operator = operator_list.filter((element) => item.function_data.includes(element))[0];
         const operatorIndex = item.function_data.indexOf(condition_operator);
         if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item.function_data.length - 1) {
-            leftValue = item.function_data[operatorIndex - 1];
+            leftValueJSON = item.function_data[operatorIndex - 1];
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
         for (let product_data of data_form.quotation_products_data) {
-            if (typeof leftValue === 'object' && leftValue !== null) {
-                if (product_data.hasOwnProperty(leftValue.code)) {
-                    let check = evaluateFormula(product_data[leftValue.code].replace(/\s/g, "") + condition_operator + rightValue);
+            if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
+                if (product_data.hasOwnProperty(leftValueJSON.code)) {
+                    let leftValue = product_data[leftValueJSON.code].replace(/\s/g, "");
+                    let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
+                    let check = evaluateFormula( checkExpression);
                     if (check === true) {
-                        functionBody += product_data[lastElement.code]
+                        functionBody += String(product_data[lastElement.code]);
+                        functionBody += ",";
                     }
                 }
             }
+        }
+        if (functionBody[functionBody.length - 1] === ",") {
+            let functionBodySlice = functionBody.slice(0, -1);
+            return syntax + functionBodySlice + ")";
         }
         return syntax + functionBody + ")";
     }

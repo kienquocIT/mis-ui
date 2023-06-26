@@ -2009,7 +2009,7 @@ msgstr "Giá trị tạm ứng"
 
 #
 msgid "Return value"
-msgstr "Gía trị hoàn trả"
+msgstr "Giá trị hoàn ứng"
 
 #
 msgid "Remain value"
@@ -2017,7 +2017,7 @@ msgstr "Giá trị chưa thanh toán"
 
 #
 msgid "Confirm return"
-msgstr "Xác nhận hoàn trả"
+msgstr "Xác nhận hoàn ứng"
 
 #
 msgid "Advance Payment"
@@ -2078,7 +2078,7 @@ msgstr "Đã nhận tiền"
 
 #
 msgid "AP Code"
-msgstr "Mã tạm ứng"
+msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
@@ -2972,8 +2972,8 @@ msgid "Location raise"
 msgstr "Đường dẫn có xảy ra lỗi"
 
 #
-msgid "Document Number"
-msgstr "Số chứng từ."
+msgid "Document number"
+msgstr "Số chứng từ"
 
 #
 msgid "No bank accounts information!"
@@ -3409,3 +3409,43 @@ msgstr "Toán tử"
 #
 msgid "Returned"
 msgstr "Đã hoàn ứng"
+
+#
+msgid "To employee"
+msgstr "Cho nhân viên"
+
+#
+msgid "To supplier"
+msgstr "Cho nhà cung cấp"
+
+#
+msgid "Pretax price"
+msgstr "Tổng trước thuế"
+
+#
+msgid "Money gave/transferred"
+msgstr "Đã nhận tiền"
+
+#
+msgid "Supplier name"
+msgstr "Tên nhà cung cấp"
+
+#
+msgid "Add New Row"
+msgstr "Thêm hàng mới"
+
+#
+msgid "Payment value"
+msgstr "Giá trị phiếu thanh toán"
+
+#
+msgid "Advance Payment value"
+msgstr "Giá trị phiếu tạm ứng"
+
+#
+msgid "To payment value"
+msgstr "Đã thanh toán"
+
+#
+msgid "Remain AP"
+msgstr "Tạm ứng còn lại"

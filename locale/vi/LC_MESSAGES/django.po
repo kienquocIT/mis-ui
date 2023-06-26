@@ -3431,7 +3431,7 @@ msgid "Supplier name"
 msgstr "Tên nhà cung cấp"
 
 #
-msgid "Add New Row"
+msgid "Add new row"
 msgstr "Thêm hàng mới"
 
 #

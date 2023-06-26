@@ -504,6 +504,9 @@ $(document).ready(function () {
                             available = 0;
                         }
                     }
+                    else {
+                        available = expense_item.plan_after_tax;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
@@ -577,6 +580,9 @@ $(document).ready(function () {
                         if (available < 0) {
                             available = 0;
                         }
+                    }
+                    else {
+                        available = expense_item.plan_after_tax;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>

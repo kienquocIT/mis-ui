@@ -3373,3 +3373,39 @@ msgstr "Xem khuyến mãi"
 #
 msgid "Url is invalid"
 msgstr "Đường dẫn không hợp lệ"
+
+#
+msgid "Please complete nodes data"
+msgstr "Vui lòng hoàn thành dữ liệu các trạm"
+
+#
+msgid "Please select shipping address"
+msgstr "Vui lòng chọn địa chỉ giao hàng"
+
+#
+msgid "Edit formula"
+msgstr "Chỉnh sửa công thức"
+
+#
+msgid "Editor"
+msgstr "Trình soạn thảo"
+
+#
+msgid "Indicator"
+msgstr "Chỉ tiêu"
+
+#
+msgid "Property"
+msgstr "Thuộc tính"
+
+#
+msgid "Function indicator"
+msgstr "Hàm"
+
+#
+msgid "Operator indicator"
+msgstr "Toán tử"
+
+#
+msgid "Returned"
+msgstr "Đã hoàn ứng"

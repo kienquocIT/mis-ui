@@ -85,11 +85,14 @@ $(document).ready(function () {
                         if (expense_get.remain_ap >= 0) {
                             remain_ap = expense_get.remain_ap;
                         }
-                        paid = expense_get.paid
-                        available = expense_item.plan_after_tax - remain_ap - paid
+                        paid = expense_get.paid;
+                        available = expense_item.plan_after_tax - remain_ap - paid;
                         if (available < 0) {
                             available = 0;
                         }
+                    }
+                    else {
+                        available = expense_item.plan_after_tax;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -164,6 +167,9 @@ $(document).ready(function () {
                         if (available < 0) {
                             available = 0;
                         }
+                    }
+                    else {
+                        available = expense_item.plan_after_tax;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>

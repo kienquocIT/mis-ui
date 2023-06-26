@@ -80,7 +80,7 @@ $(document).ready(function () {
                     sale_code_selected_show.push($('#' + sale_code_selected_list[i]).attr('data-sale-code'))
                 }
 
-                sale_code_selected_show = '(' + sale_code_selected_show.join(')  (') + ')';
+                sale_code_selected_show = sale_code_selected_show.join('   ');
                 $('#sale-code-select-box2-show').val(sale_code_selected_show);
             }
             else if (payment_detail.sale_code_type === 0) {

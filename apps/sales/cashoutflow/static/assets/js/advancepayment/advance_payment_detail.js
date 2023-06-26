@@ -12,6 +12,7 @@ $(document).ready(function () {
             $('#advance-payment-code').text(advance_payment.code);
             $('#advance-payment-title').val(advance_payment.title);
             if (advance_payment.sale_code_type === 0) {
+                $('#sale-code-label-id').addClass('required');
                 $('#radio-sale').prop('checked', true);
                 $('#btn-change-sale-code-type').text('Sale');
                 $('#sale-code-select-box').prop('disabled', false);

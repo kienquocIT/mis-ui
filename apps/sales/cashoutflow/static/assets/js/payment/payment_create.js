@@ -33,37 +33,40 @@ $(document).ready(function () {
     if (opportunity.length > 0) {sale_code_default_obj = opportunity; sale_code_default_type = 2;}
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
-        let ap_item = ap_list.find(function(item) {
+        let ap_item = ap_list.filter(function(item) {
             return item.sale_order_mapped === filter_sale_order_id;
         });
+
         let ap_expense_list_mapped = []
-        if (ap_item !== undefined) {
-            for (let i = 0; i < ap_item.expense_items.length; i++) {
-                let ap_expense_item = ap_item.expense_items[i];
+        for (let i = 0; i < ap_item.length; i++) {
+            for (let j = 0; j < ap_item[i].expense_items.length; j++) {
+                let ap_expense_item = ap_item[i].expense_items[j];
                 let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
                     return item.expense_id === ap_expense_item.expense.id;
                 });
-                let others_payment = payment_cost_items_list.reduce(function(s, item) {
-                    return s + item.real_value;
+                let paid = payment_cost_items_list.reduce(function(s, item) {
+                    return s + item.sum_value;
                 }, 0);
                 ap_expense_list_mapped.push(
                     {
                         'expense_id': ap_expense_item.expense.id,
                         'ap_approved': ap_expense_item.after_tax_price,
-                        'paid': ap_expense_item.to_payment_total + others_payment,
+                        'returned': ap_expense_item.returned_total,
+                        'paid': paid,
                         'remain_ap': ap_expense_item.remain_total,
                     }
                 )
             }
         }
 
+        console.log(ap_expense_list_mapped)
         let url = $('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + filter_sale_order_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 $('#tab_plan_datatable tbody').append(`<tr>
                     <td colspan="3"><span class="badge badge-primary">` + filter_sale_order_code + `</span></td>
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                 </tr>`)
                 for (let i = 0; i < data.sale_order_expense_list.length; i++) {
                     let expense_item = data.sale_order_expense_list[i];
@@ -71,28 +74,35 @@ $(document).ready(function () {
                     if (expense_item.tax.title) {
                         tax_item = expense_item.tax.title;
                     }
-
-                    let expense_get = ap_expense_list_mapped.find(function(item) {
+                    let expense_get = ap_expense_list_mapped.filter(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
-
                     let remain_ap = 0;
+                    remain_ap = expense_get.reduce(function(s, item) {
+                        return s + item.remain_ap;
+                    }, 0);
                     let ap_approved = 0;
-                    let available = 0;
+                    ap_approved = expense_get.reduce(function(s, item) {
+                        return s + item.ap_approved;
+                    }, 0);
+                    let returned = 0;
+                    returned = expense_get.reduce(function(s, item) {
+                        return s + item.returned;
+                    }, 0);
                     let paid = 0;
-                    if (expense_get !== undefined) {
-                        ap_approved = expense_get.ap_approved;
-                        if (expense_get.remain_ap >= 0) {
-                            remain_ap = expense_get.remain_ap;
-                        }
-                        paid = expense_get.paid;
-                        available = expense_item.plan_after_tax - remain_ap - paid;
-                        if (available < 0) {
-                            available = 0;
-                        }
+                    paid = expense_get.reduce(function(s, item) {
+                        return s + item.paid;
+                    }, 0);
+                    if (expense_get.length > 0) {
+                        paid = parseFloat(paid/expense_get.length);
                     }
                     else {
-                        available = expense_item.plan_after_tax;
+                        paid = 0;
+                    }
+                    let available = 0;
+                    available = expense_item.plan_after_tax - remain_ap - paid;
+                    if (available < 0) {
+                        available = 0;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -100,6 +110,7 @@ $(document).ready(function () {
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + returned + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
@@ -112,35 +123,40 @@ $(document).ready(function () {
     }
 
     function loadQuotationPlan(filter_quotation_id, filter_quotation_code) {
-        let ap_item = ap_list.find(function(item) {
+        let ap_item = ap_list.filter(function(item) {
             return item.quotation_mapped === filter_quotation_id;
         });
+
         let ap_expense_list_mapped = []
-        if (ap_item !== undefined) {
-            for (let i = 0; i < ap_item.expense_items.length; i++) {
-                let ap_expense_item = ap_item.expense_items[i];
+        for (let i = 0; i < ap_item.length; i++) {
+            for (let j = 0; j < ap_item[i].expense_items.length; j++) {
+                let ap_expense_item = ap_item[i].expense_items[j];
                 let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
                     return item.expense_id === ap_expense_item.expense.id;
                 });
-                let others_payment = payment_cost_items_list.reduce(function(s, item) {
-                    return s + item.real_value;
+                let paid = payment_cost_items_list.reduce(function(s, item) {
+                    return s + item.sum_value;
                 }, 0);
                 ap_expense_list_mapped.push(
                     {
                         'expense_id': ap_expense_item.expense.id,
                         'ap_approved': ap_expense_item.after_tax_price,
-                        'paid': ap_expense_item.to_payment_total + others_payment,
+                        'returned': ap_expense_item.returned_total,
+                        'paid': paid,
                         'remain_ap': ap_expense_item.remain_total,
                     }
                 )
             }
         }
+
+        console.log(ap_expense_list_mapped)
         let url = $('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + filter_quotation_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 $('#tab_plan_datatable tbody').append(`<tr>
-                    <td colspan="3"><span class="badge badge-green">` + filter_quotation_code + `</span></td><td colspan="4"></td>
+                    <td colspan="3"><span class="badge badge-primary">` + filter_quotation_code + `</span></td>
+                    <td colspan="5"></td>
                 </tr>`)
                 for (let i = 0; i < data.quotation_expense_list.length; i++) {
                     let expense_item = data.quotation_expense_list[i];
@@ -148,28 +164,35 @@ $(document).ready(function () {
                     if (expense_item.tax.title) {
                         tax_item = expense_item.tax.title;
                     }
-
-                    let expense_get = ap_expense_list_mapped.find(function(item) {
+                    let expense_get = ap_expense_list_mapped.filter(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
-
                     let remain_ap = 0;
+                    remain_ap = expense_get.reduce(function(s, item) {
+                        return s + item.remain_ap;
+                    }, 0);
                     let ap_approved = 0;
-                    let available = 0;
+                    ap_approved = expense_get.reduce(function(s, item) {
+                        return s + item.ap_approved;
+                    }, 0);
+                    let returned = 0;
+                    returned = expense_get.reduce(function(s, item) {
+                        return s + item.returned;
+                    }, 0);
                     let paid = 0;
-                    if (expense_get !== undefined) {
-                        ap_approved = expense_get.ap_approved;
-                        if (expense_get.remain_ap >= 0) {
-                            remain_ap = expense_get.remain_ap;
-                        }
-                        paid = expense_get.paid
-                        available = expense_item.plan_after_tax - remain_ap - paid
-                        if (available < 0) {
-                            available = 0;
-                        }
+                    paid = expense_get.reduce(function(s, item) {
+                        return s + item.paid;
+                    }, 0);
+                    if (expense_get.length > 0) {
+                        paid = parseFloat(paid/expense_get.length);
                     }
                     else {
-                        available = expense_item.plan_after_tax;
+                        paid = 0;
+                    }
+                    let available = 0;
+                    available = expense_item.plan_after_tax - remain_ap - paid;
+                    if (available < 0) {
+                        available = 0;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
@@ -177,6 +200,7 @@ $(document).ready(function () {
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + returned + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
@@ -555,7 +579,7 @@ $(document).ready(function () {
                 sale_code_selected_show.push($('#' + sale_code_selected_list[i]).attr('data-sale-code'))
             }
 
-            sale_code_selected_show = '(' + sale_code_selected_show.join(')  (') + ')';
+            sale_code_selected_show = sale_code_selected_show.join('   ');
             $('#sale-code-select-box2-show').val(sale_code_selected_show);
 
             for (let i = 0; i < sale_order_selected_list.length; i++) {

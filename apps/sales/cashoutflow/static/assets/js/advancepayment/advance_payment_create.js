@@ -890,6 +890,7 @@ $(document).ready(function () {
     $('.sale_code_type').on('change', function () {
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
         if ($(this).val() === 'sale') {
+            $('#sale-code-label-id').addClass('required');
             $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
@@ -900,6 +901,7 @@ $(document).ready(function () {
             loadSaleCode($('#beneficiary-select-box').val());
         }
         if ($(this).val() === 'non-sale') {
+            $('#sale-code-label-id').removeClass('required');
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
             $('#sale-code-select-box2-show').val('');

@@ -613,7 +613,7 @@ class loadDataHandle {
                                                         <div class="col-5"></div>
                                                         <div class="col-4"></div>
                                                         <div class="col-3">
-                                                            <button class="btn btn-primary choose-shipping">Select This Address</button>
+                                                            <button class="btn btn-primary choose-shipping">${$.fn.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -635,7 +635,7 @@ class loadDataHandle {
                                                         <div class="col-5"></div>
                                                         <div class="col-4"></div>
                                                         <div class="col-3">
-                                                            <button class="btn btn-primary choose-billing">Select This Address</button>
+                                                            <button class="btn btn-primary choose-billing">${$.fn.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -777,7 +777,10 @@ class loadDataHandle {
     loadDetailQuotation(data, is_copy = false) {
         let self = this;
         if (data.title && is_copy === false) {
-            document.getElementById('quotation-create-title').value = data.title
+            document.getElementById('quotation-create-title').value = data.title;
+        }
+        if (data.code) {
+            document.getElementById('quotation-create-code').value = data.code;
         }
         if (data.opportunity) {
             self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);

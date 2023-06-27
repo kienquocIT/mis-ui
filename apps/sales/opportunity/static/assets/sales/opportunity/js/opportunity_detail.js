@@ -429,19 +429,24 @@ $(document).ready(function () {
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
                 $.fn.compareStatusShowPageAction(opportunity_detail);
-
+                loadStage(opportunity_detail.stage)
                 let ele_header = $('#header-title');
                 ele_header.text(opportunity_detail.title);
                 ele_header.append(`<span class="text-primary"> (${opportunity_detail.code})</span>`)
                 $('#rangeInput').val(opportunity_detail.win_rate);
                 $('#input-rate').val(opportunity_detail.win_rate);
-                if(config_is_input_rate){
-                     $('#check-input-rate').prop('disabled', false);
+                if (config_is_input_rate) {
+                    $('#check-input-rate').prop('disabled', false);
                 }
                 if (opportunity_detail.is_input_rate) {
                     $('#check-input-rate').prop('checked', true);
                 } else
                     $('#check-input-rate').prop('checked', false);
+
+                if (opportunity_detail.lost_by_other_reason) {
+                    $('#check-lost-reason').prop('checked', true);
+                } else
+                    $('#check-lost-reason').prop('checked', false);
                 loadCustomer(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_competitors_datas, opportunity_detail.sale_person.id);
                 loadProductCategory(opportunity_detail.product_category);
                 loadTax();
@@ -772,6 +777,8 @@ $(document).ready(function () {
         let ele_tr_contact_role = $('#table-contact-role.tag-change tbody tr:not(.hidden)');
         let ele_decision_factor = $('#box-select-factor.tag-change');
         let ele_sale_team_members = $('#card-member.tag-change .card');
+        let ele_stage = $('#div-stage');
+        let ele_lost_other_reason = $('#check-lost-reason');
 
         data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
@@ -866,6 +873,9 @@ $(document).ready(function () {
             data_form['opportunity_sale_team_datas'] = list_member
         }
 
+        // stage
+        data_form['stage'] = ele_stage.find('.stage-selected').last().data('id');
+        data_form['lost_by_other_reason'] = !!ele_lost_other_reason.is(':checked');
         return data_form
     }
 
@@ -985,4 +995,140 @@ $(document).ready(function () {
             $(this).val('');
         }
     });
+
+
+    // Stage
+
+    function sortStage(list_stage) {
+        let object_lost = null;
+        let delivery = null;
+        let object_close = null;
+        let list_result = []
+
+        for (let i = 0; i < list_stage.length; i++) {
+            if (list_stage[i].is_closed_lost) {
+                object_lost = list_stage[i];
+            } else if (list_stage[i].is_delivery) {
+                delivery = list_stage[i];
+            } else if (list_stage[i].is_deal_closed) {
+                object_close = list_stage[i];
+            } else {
+                list_result.push(list_stage[i]);
+            }
+        }
+
+        list_result.sort(function (a, b) {
+            return a.win_rate - b.win_rate;
+        });
+        list_result.push(object_lost);
+        list_result.push(delivery);
+        list_result.push(object_close);
+
+        return list_result
+    }
+
+    let list_stage = [];
+    let dict_stage = {};
+
+    function loadStage(id) {
+        let ele = $('#div-stage');
+        let method = ele.data('method');
+        let url = ele.data('url');
+
+        let html = $('#stage-hidden').html();
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_config_stage')) {
+                    list_stage = sortStage(data.opportunity_config_stage);
+                    dict_stage = list_stage.reduce((obj, item) => {
+                        obj[item.id] = item;
+                        return obj;
+                    }, {});
+
+                    list_stage.map(function (item) {
+                        ele.append(html);
+                        let ele_last_stage = ele.find('.sub-stage').last();
+                        ele_last_stage.attr('data-id', item.id);
+                        ele_last_stage.find('.stage-indicator').text(item.indicator);
+                        if (item.is_closed_lost) {
+                            ele_last_stage.find('.dropdown').remove();
+                            ele_last_stage.addClass('stage-lost')
+                        }
+                        if (item.is_deal_closed) {
+                            ele_last_stage.find('.dropdown-menu').empty();
+                            ele_last_stage.find('.dropdown-menu').append(
+                                `<div class="form-check form-switch mb-1">
+                                    <input type="checkbox" class="form-check-input" id="inputActive">
+                                    <label for="inputActive" class="form-label">Close Deal</label>
+                                </div>`
+                            )
+                        }
+                    })
+                }
+            }
+            if (id !== null) {
+                let ele_stage = ele.find(`.sub-stage[data-id=${id}]`);
+                if (ele_stage.hasClass('stage-lost')) {
+                    ele_stage.addClass('bg-red-light-5');
+                } else {
+                    let index = ele_stage.index();
+                    let ele_list_stage = $('#div-stage .sub-stage');
+                    $('.stage-lost').removeClass('bg-red-light-5');
+                    for (let i = 0; i <= ele_list_stage.length; i++) {
+                        if (i <= index) {
+                            if (!ele_list_stage.eq(i).hasClass('stage-lost'))
+                                ele_list_stage.eq(i).addClass('bg-primary-light-5');
+                        } else {
+                            ele_list_stage.eq(i).removeClass('bg-primary-light-5');
+                        }
+                    }
+                    $('#input-rate').val(dict_stage[ele_stage.data('id')].win_rate);
+                    $('#rangeInput').val(dict_stage[ele_stage.data('id')].win_rate);
+                }
+            }
+        })
+    }
+
+    $(document).on('click', '.btn-go-to-stage', function () {
+        if (config_is_select_stage) {
+            if ($('#check-lost-reason').is(':checked') || $('.input-win-deal:checked').length > 0) {
+                alert($('#deal-close-lost').text());
+            } else {
+                let stage = $(this).closest('.sub-stage');
+                let index = stage.index();
+                let ele_stage = $('#div-stage .sub-stage');
+                $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                for (let i = 0; i <= ele_stage.length; i++) {
+                    if (i <= index) {
+                        if (!ele_stage.eq(i).hasClass('stage-lost'))
+                            ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                    } else {
+                        ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                    }
+                }
+                $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
+                $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
+            }
+        } else {
+            alert($('#not-select-stage').text());
+        }
+    })
+
+    $(document).on('change', '#check-lost-reason', function () {
+        if ($(this).is(':checked')) {
+            let ele_stage_lost = $('.stage-lost')
+            $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            ele_stage_lost.addClass('bg-red-light-5 stage-selected');
+            $('#input-rate').val(dict_stage[ele_stage_lost.data('id')].win_rate);
+            $('#rangeInput').val(dict_stage[ele_stage_lost.data('id')].win_rate);
+        }
+    })
+
+    $(document).on('change', '.input-win-deal', function () {
+        if ($(this).is(':checked')) {
+            $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            $('.stage-lost').addClass('bg-red-light-5 stage-selected');
+        }
+    })
 })

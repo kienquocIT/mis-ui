@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label">{% trans "Sale/Purchase code" %}</label>
+                        <label id="sale-code-label-id" class="col-3 col-form-label">{% trans "Sale/Purchase code" %}</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Non-sale</button>
@@ -240,7 +240,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label" id="supplier-label">{% trans "Status" %}</label>
+                        <label class="col-3 col-form-label required" id="supplier-label">{% trans "Status" %}</label>
                         <div class="col-9">
                             <span class="badge badge-soft-success badge-outline">{% trans "Approved" %}</span>
                         </div>

@@ -23,6 +23,7 @@ $(async function () {
         contentModalHandle(idx, config, prod_data) {
             const _this = this
             let url = $('#url-factory').attr('data-warehouse-prod')
+
             $.fn.callAjax(url, 'get', {
                 'product_id': prod_data?.product_data?.id,
                 'uom_id': prod_data?.uom_data?.id
@@ -36,9 +37,9 @@ $(async function () {
                     temp[isKey] = isData
                     _this.setWarehouseList = temp
                     // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
-                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy
+                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
                     let delivery = prod_data?.delivery_data;
-                    let listConvert_config1 = []
+                    let newData = []
                     for (let [idx, item] of isData.entries()){
                         item.picked = 0
                         if (!config.is_picking && !config.is_partial_ship){
@@ -63,11 +64,10 @@ $(async function () {
                                     }
                                 }
                         }
-                        listConvert_config1.push(item)
+                        newData.push(item)
                     }
-                    isData = listConvert_config1
                     table.not('.dataTable').DataTable({
-                        data: isData,
+                        data: newData,
                         searching: false,
                         ordering: false,
                         paginate: false,
@@ -94,8 +94,10 @@ $(async function () {
                                 class: 'w-25 text-center',
                                 data: 'product_amount',
                                 render: (row, type, data) => {
-                                    if (data.picked_ready > 0)
-                                        return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
+                                    if (data.picked_ready > 0 && config.is_picking)
+                                        if (config.is_partial_ship)
+                                            return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
+                                        else return `<p>${row}`
                                     return `<p>${row}</p>`;
                                 }
                             },
@@ -157,7 +159,7 @@ $(async function () {
                     })
                     if (table.hasClass('dataTable')) {
                         table.DataTable().clear().draw();
-                        table.DataTable().rows.add(isData).draw();
+                        table.DataTable().rows.add(newData).draw();
                     }
                     $('#warehouseStockModal').modal('show');
                     $('#save-stock').off().on('click', function (e) {
@@ -313,7 +315,7 @@ $(async function () {
                 const $url = $('#url-factory');
                 const res = $.fn.switcherResp(req);
                 const $saleOrder = $('#inputSaleOrder');
-                $saleOrder.val(res.sale_order_data.title)
+                $saleOrder.val(res.sale_order_data.code)
                 $('.title-code').text(res.code)
                 if (res.estimated_delivery_date) {
                     const deliveryDate = moment(res.estimated_delivery_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')

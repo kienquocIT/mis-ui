@@ -95,6 +95,7 @@ $(function () {
                                         <a class="dropdown-item" href="${link}">Change</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#">Cancel</a>
+                                        <a class="dropdown-item" href="#">Cancel</a>
                                     </div>
                                 </div>`;
                         },

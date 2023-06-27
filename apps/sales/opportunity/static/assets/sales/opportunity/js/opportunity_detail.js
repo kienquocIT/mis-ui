@@ -2,6 +2,13 @@ $(document).ready(function () {
     const pk = $.fn.getPkDetail()
     const frmDetail = $('#frm-detail');
     const ele_select_product_category = $('#select-box-product-category');
+
+    const config = JSON.parse($('#id-config-data').text());
+
+    const config_is_select_stage = config.is_select_stage;
+    const config_is_AM_create = config.is_AM_create;
+    const config_is_input_rate = config.is_input_win_rate;
+
     let employee_current_id = $('#emp-current-id').val();
 
     let dict_product = {}
@@ -108,7 +115,7 @@ $(document).ready(function () {
         let ele = $('#select-box-customer');
         let ele_end_customer = $('#select-box-end-customer');
         let ele_competitor = $('.box-select-competitor');
-        if (end_customer_id === null || end_customer_id === id){
+        if (end_customer_id === null || end_customer_id === id) {
             ele_end_customer.attr('disabled', true);
         }
 
@@ -386,17 +393,29 @@ $(document).ready(function () {
                     $('#data-sale-person').val(JSON.stringify(data.employee_list));
                     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
                     ele_emp_current_group.val(emp_current.group.id);
-                    data.employee_list.map(function (employee) {
-                        if (list_manager.includes(employee_current_id)) {
-                            if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
+                    if (config_is_AM_create) {
+                        data.employee_list.map(function (employee) {
+                            if (list_manager.includes(employee_current_id)) {
+                                if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
+                                    if (employee.id === sale_person_id) {
+                                        ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                                    } else {
+                                        ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
+                                    }
+                                }
+                            }
+                        })
+                    } else {
+                        data.employee_list.map(function (employee) {
+                            if (employee.group.id === emp_current.group.id) {
                                 if (employee.id === sale_person_id) {
                                     ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
                                 } else {
                                     ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
                                 }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
             }
         }, (errs) => {
@@ -416,6 +435,9 @@ $(document).ready(function () {
                 ele_header.append(`<span class="text-primary"> (${opportunity_detail.code})</span>`)
                 $('#rangeInput').val(opportunity_detail.win_rate);
                 $('#input-rate').val(opportunity_detail.win_rate);
+                if(config_is_input_rate){
+                     $('#check-input-rate').prop('disabled', false);
+                }
                 if (opportunity_detail.is_input_rate) {
                     $('#check-input-rate').prop('checked', true);
                 } else
@@ -958,9 +980,9 @@ $(document).ready(function () {
         }
     })
 
-    $(document).on('focus', '#input-rate', function() {
+    $(document).on('focus', '#input-rate', function () {
         if ($(this).val() === '0') {
-          $(this).val('');
+            $(this).val('');
         }
     });
 })

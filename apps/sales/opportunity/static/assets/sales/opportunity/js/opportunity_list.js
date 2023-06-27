@@ -158,6 +158,7 @@ $(function () {
                 }
             }
             _form.dataForm['product_category'] = $('#select-box-product-category').val();
+            _form.dataForm['open_date'] = new Date();
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
                 .then(

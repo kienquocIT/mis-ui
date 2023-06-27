@@ -34,8 +34,8 @@ class OpportunityList(View):
                        'config': resp.result
                    }, status.HTTP_200_OK
         return {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-        }, status.HTTP_200_OK
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+               }, status.HTTP_200_OK
 
 
 class OpportunityListAPI(APIView):
@@ -90,6 +90,12 @@ class OpportunityDetail(View):
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        if resp.state:
+            return {
+                       'employee_current_id': request.user.employee_current_data.get('id', None),
+                       'config': resp.result
+                   }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
                }, status.HTTP_200_OK

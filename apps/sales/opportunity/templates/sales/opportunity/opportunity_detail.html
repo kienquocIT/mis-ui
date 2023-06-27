@@ -31,12 +31,15 @@
         <input id="data-sale-person" class="hidden">
         <input id="group_id_emp_login" class="hidden">
         <input id="data-product" class="hidden">
+        {{ data.config | json_script:"id-config-data" }}
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
         <span id="limit-quantity">{% trans "quantity must not be less than zero" %}</span>
         <span id="limit-money">{% trans "money must not be less than zero" %}</span>
         <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
+        <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
+        <span id="deal-close-lost">{% trans "Can not select stage because this opportunity is close lost" %}</span>
     </div>
     <div id="div-url" hidden>
         <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
@@ -53,7 +56,7 @@
                 <div class="row ml-2">
                     <div class="form-group col-6 mt-1">
                         <input class="form-check-input mt-1" type="checkbox" value="0" id="check-input-rate"
-                               name="is_input_rate">
+                               name="is_input_rate" disabled>
                         <label class="form-check-label" for="check-input-rate">{% trans "Manually input rate" %}</label>
                     </div>
                     <div class="col-6">
@@ -87,13 +90,15 @@
                 </div>
                 <div class="form-group mt-2">
                     <label class="form-label required">{% trans "Product Category" %}</label>
-                    <select class="select2 form-control" multiple id="select-box-product-category" data-close-on-select="true" data-method="GET"
+                    <select class="select2 form-control" multiple id="select-box-product-category"
+                            data-close-on-select="true" data-method="GET"
                             data-url="{% url 'ProductCategoryListAPI' %}">
                     </select>
                 </div>
                 <div class="form-group mt-2">
                     <label class="form-label required">{% trans "Sale Person" %}</label>
-                    <select class="select2 form-control" id="select-box-sale-person" data-method="GET" data-close-on-select="true"
+                    <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
+                            data-close-on-select="true"
                             data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
                         <option></option>
                     </select>
@@ -126,9 +131,11 @@
                 </div>
 
                 <!-- Status -->
-                <div class="row ml-2">
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2 badge badge-soft-primary">
-                        <p>Qualification</p>
+                <div class="row ml-2" id="div-stage" data-method="GET"
+                     data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
+                <div id="stage-hidden" class="hidden">
+                    <div class="col-2 border rounded text-lg-center mt-1 pr-2 sub-stage">
+                        <p class="stage-indicator"></p>
                         <div class="dropdown mt-2">
                             <a href="#" data-bs-toggle="dropdown">
                                 <span class="text-right">
@@ -136,100 +143,7 @@
                                 </span>
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2 wrap-text badge badge-soft-primary">
-                        <p>Needs Analysis</p>
-                        <div class="dropdown mt-2">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2">
-                        <p>Proposal</p>
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2">
-                        <p>Negotiation</p>
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2">
-                        <p>Opp Closed Won</p>
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2">
-                        <p>Opp Closed Lost</p>
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2">
-                        <p>Delivery</p>
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2">
-                        <p>Deal Closed</p>
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown">
-                                <span class="text-right">
-                                    <i class="bi bi-chevron-bar-right"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <div class="form-check form-switch mb-1 text-center">
-                                    <input type="checkbox" class="form-check-input">
-                                </div>
+                                <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
                             </div>
                         </div>
                     </div>
@@ -330,7 +244,7 @@
                     </table>
                 </div>
                 <div class="row mt-2">
-                    <ul class="nav nav-light nav-tabs" id="tab-select">
+                    <ul class="nav nav-light nav-tabs col-9" id="tab-select">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
                                 <span class="nav-link-text">{% trans 'Product' %}</span>
@@ -357,6 +271,12 @@
                             </a>
                         </li>
                     </ul>
+                    <div class="col-3 d-flex justify-content-end">
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="check-lost-reason">
+                            <label class="form-check-label" for="check-lost-reason">{% trans "Lost by other reason" %}</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-content ml-4 mr-4">
                     <div class="tab-pane fade show active mb-25" id="tab_product">
@@ -677,8 +597,10 @@
                                                     </span>
                                             </button>
                                             <div role="menu" class="dropdown-menu">
-                                                <a class="dropdown-item btn-detail-member" target="_blank" href="#">{% trans "View Detail" %}</a>
-                                                <a class="dropdown-item btn-remove-card" href="#">{% trans "Remove" %}</a>
+                                                <a class="dropdown-item btn-detail-member" target="_blank"
+                                                   href="#">{% trans "View Detail" %}</a>
+                                                <a class="dropdown-item btn-remove-card"
+                                                   href="#">{% trans "Remove" %}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -755,4 +677,5 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/config_stage.js' %}"></script>
 {% endblock %}

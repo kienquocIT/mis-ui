@@ -124,9 +124,13 @@ class MenusCoreConfigurations:
                 name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
                 icon='<i class="fas fa-file-invoice"></i>',
             ),
-			MenuCommon(
+            MenuCommon(
                 name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
-                icon='<i class="far fa-lightbulb"></i>',
+                icon='<i class="fa-solid fa-lightbulb"></i>',
+            ),
+            MenuCommon(
+                name='Task', code='menu_opportunity_task_config', view_name='OpportunityTaskConfig',
+                icon='<i class="fa-solid fa-clipboard-check"></i>',
             )
         ]
     )
@@ -219,6 +223,12 @@ class MenusCRM:
             ),
         ],
     )
+    TASK = MenuCommon(
+        name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
+        icon='<i class="fa-solid fa-list-check"></i>',
+        child=[
+        ],
+    )
 
 
 # Space Setup
@@ -277,6 +287,7 @@ class SpaceItem:
                 MenusCRM.INVENTORY,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
+                MenusCRM.TASK,
             ],
         ),
         'purchase': SpaceCommon(

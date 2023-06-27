@@ -251,3 +251,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
+
+    # Task
+    OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
+    OPPORTUNITY_TASK_LIST = StringUrl('task/list')

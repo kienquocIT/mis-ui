@@ -232,7 +232,8 @@
                             <div class="hk-sidebar-togglable active"></div>
                         </header>
                         <div class="blog-body">
-                            <div data-simplebar class="nicescroll-bar" id="idxPageContent">
+                            <div {% if not data.without_simplebar %}data-simplebar class="nicescroll-bar"
+                                 {% endif %} id="idxPageContent">
                                 {% block pageContent %}
                                 {% endblock %}
                             </div>

@@ -16,28 +16,33 @@ class loadDataHandle {
                     if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                         ele.append(`<option value=""></option>`);
                         data.opportunity_list.map(function (item) {
-                            let dataStr = JSON.stringify({
-                                'id': item.id,
-                                'title': item.title,
-                                'code': item.code,
-                                'customer': item.customer.title
-                            }).replace(/"/g, "&quot;");
-                            let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                            let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                            let option = `<option value="${item.id}">
-                                            <span class="opp-title">${data_show}</span>
-                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                            if (valueToSelect && valueToSelect === item.id) {
-                                option = `<option value="${item.id}" selected>
-                                            <span class="opp-title">${data_show}</span>
-                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                            let check_used = item.quotation_id;
+                            if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                               check_used = item.sale_order_id
                             }
-
-                            ele.append(option)
+                            if (check_used === null || valueToSelect === item.id) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'title': item.title,
+                                    'code': item.code,
+                                    'customer': item.customer.title
+                                }).replace(/"/g, "&quot;");
+                                let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                let data_show = `${item.code}` + ` - ` + `${item.title}`;
+                                let option = `<option value="${item.id}">
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                if (valueToSelect && valueToSelect === item.id) {
+                                    option = `<option value="${item.id}" selected>
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                }
+                                ele.append(option)
+                            }
                         })
                     }
                 }
@@ -58,7 +63,6 @@ class loadDataHandle {
                 if (data) {
                     ele.empty();
                     if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                        ele.append(`<option value=""></option>`);
                         let dataAppend = ``;
                         let dataMapOpp = ``;
                         data.account_sale_list.map(function (item) {
@@ -98,6 +102,7 @@ class loadDataHandle {
                         if (dataMapOpp) { // if Opportunity has Customer
                             ele.append(dataMapOpp);
                         } else { // if Opportunity doesn't have Customer
+                            ele.append(`<option value=""></option>`);
                             ele.append(dataAppend);
                             // load Contact no Customer
                             self.loadBoxQuotationContact('select-box-quotation-create-contact');
@@ -2986,17 +2991,39 @@ class submitHandle {
         }
     }
 
+    setupDataIndicator() {
+        let result = [];
+        let tableIndicator = document.getElementById('datable-quotation-create-indicator');
+        let tableEmpty = tableIndicator.querySelector('.dataTables_empty');
+        if (!tableEmpty) {
+            for (let i = 0; i < tableIndicator.tBodies[0].rows.length; i++) {
+                let row = tableIndicator.tBodies[0].rows[i];
+                let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
+                let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
+                let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
+                result.push({
+                    'indicator': indicator,
+                    'indicator_value': parseFloat(indicator_value),
+                    'indicator_rate': parseFloat(indicator_rate),
+                })
+            }
+        }
+        return result
+    }
+
     setupDataSubmit(_form, is_sale_order = false) {
         let self = this;
         let quotation_products_data = 'quotation_products_data';
         let quotation_costs_data = 'quotation_costs_data';
         let quotation_expenses_data = 'quotation_expenses_data';
         let quotation_logistic_data = 'quotation_logistic_data';
+        let quotation_indicators_data = 'quotation_indicators_data';
         if (is_sale_order === true) {
             quotation_products_data = 'sale_order_products_data';
             quotation_costs_data = 'sale_order_costs_data';
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
+            quotation_indicators_data = 'sale_order_indicators_data';
 
             let eleQuotation = $('#select-box-quotation');
             if (eleQuotation) {
@@ -3041,6 +3068,11 @@ class submitHandle {
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
+
+        let quotation_indicators_data_setup = self.setupDataIndicator();
+        if (quotation_indicators_data_setup.length > 0) {
+            _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup
+        }
     }
 }
 

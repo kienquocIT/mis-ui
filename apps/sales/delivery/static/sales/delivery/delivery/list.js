@@ -174,6 +174,8 @@ $(document).ready(function () {
         });
 
     });
+
+
     $('#call_delivery').off().on('click', function () {
         $.fn.showLoading();
         const row = $('input[type="checkbox"]:checked', $('#sale_order_approved'))

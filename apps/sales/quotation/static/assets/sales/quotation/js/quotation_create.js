@@ -12,6 +12,8 @@ $(function () {
         let shippingClass = new shippingHandle();
         let configClass = new checkConfigHandle();
 
+        let formSubmit = $('#frm_quotation_create');
+
         let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -1056,27 +1058,81 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        $('#frm_quotation_create').submit(function (e) {
+        formSubmit.submit(function (e) {
             e.preventDefault();
-
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
                 promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', boxCustomer.val());
+                // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
+                // Submit Form normal
+                submitForm($(this));
+            }
+        });
 
-                let is_sale_order = false;
-                if ($(this)[0].classList.contains('sale-order')) {
-                    is_sale_order = true;
+// function check again promotion before submit
+        function submitCheckPromotion() {
+            let valueCheck = $('#quotation-check-promotion').val();
+            if (valueCheck) {
+                if (valueCheck === 'true') {
+                    submitForm(formSubmit);
+                } else if (valueCheck === 'false') {
+                    $('#btn-invalid-promotion').click();
+                    return false
                 }
-                let _form = new SetupFormSubmit($(this));
-                submitClass.setupDataSubmit(_form, is_sale_order);
-                let submitFields = [
+            } else {
+                setTimeout(submitCheckPromotion, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+
+// Main Function Submit
+        function submitForm(formSubmit) {
+            let is_sale_order = false;
+            if (formSubmit[0].classList.contains('sale-order')) {
+                is_sale_order = true;
+            }
+            let _form = new SetupFormSubmit(formSubmit);
+            submitClass.setupDataSubmit(_form, is_sale_order);
+            let submitFields = [
+                'title',
+                'opportunity',
+                'customer',
+                'contact',
+                'sale_person',
+                'payment_term',
+                // total amount of products
+                'total_product_pretax_amount',
+                'total_product_discount_rate',
+                'total_product_discount',
+                'total_product_tax',
+                'total_product',
+                // total amount of costs
+                'total_cost_pretax_amount',
+                'total_cost_tax',
+                'total_cost',
+                // total amount of expenses
+                'total_expense_pretax_amount',
+                'total_expense_tax',
+                'total_expense',
+                // quotation tabs
+                'quotation_products_data',
+                'quotation_term_data',
+                'quotation_logistic_data',
+                'quotation_costs_data',
+                'quotation_expenses_data',
+                'is_customer_confirm',
+                // indicator tab
+                'quotation_indicators_data',
+            ]
+            if (is_sale_order === true) {
+                submitFields = [
                     'title',
                     'opportunity',
                     'customer',
                     'contact',
                     'sale_person',
                     'payment_term',
+                    'quotation',
                     // total amount of products
                     'total_product_pretax_amount',
                     'total_product_discount_rate',
@@ -1091,200 +1147,50 @@ $(function () {
                     'total_expense_pretax_amount',
                     'total_expense_tax',
                     'total_expense',
-                    // quotation tabs
-                    'quotation_products_data',
-                    'quotation_term_data',
-                    'quotation_logistic_data',
-                    'quotation_costs_data',
-                    'quotation_expenses_data',
-                    'is_customer_confirm',
+                    // sale order tabs
+                    'sale_order_products_data',
+                    'sale_order_logistic_data',
+                    'sale_order_costs_data',
+                    'sale_order_expenses_data',
                 ]
-                if (is_sale_order === true) {
-                    submitFields = [
-                        'title',
-                        'opportunity',
-                        'customer',
-                        'contact',
-                        'sale_person',
-                        'payment_term',
-                        'quotation',
-                        // total amount of products
-                        'total_product_pretax_amount',
-                        'total_product_discount_rate',
-                        'total_product_discount',
-                        'total_product_tax',
-                        'total_product',
-                        // total amount of costs
-                        'total_cost_pretax_amount',
-                        'total_cost_tax',
-                        'total_cost',
-                        // total amount of expenses
-                        'total_expense_pretax_amount',
-                        'total_expense_tax',
-                        'total_expense',
-                        // sale order tabs
-                        'sale_order_products_data',
-                        'sale_order_logistic_data',
-                        'sale_order_costs_data',
-                        'sale_order_expenses_data',
-                    ]
-                }
-                if (_form.dataForm) {
-                    for (let key in _form.dataForm) {
-                        if (!submitFields.includes(key)) delete _form.dataForm[key]
-                    }
-                }
-                // validate none & blank
-                let check_none_blank_list = ['', "", null, "undefined"];
-                let check_field_list = [
-                    'opportunity',
-                    'customer',
-                    'contact',
-                    'sale_person',
-                    'payment_term',
-                    'quotation'
-                ]
-                for (let field = 0; field < check_field_list.length; field++) {
-                    if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
-                        if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
-                            delete _form.dataForm[check_field_list[field]]
-                        }
-                    }
-                }
-
-                let csr = $("[name=csrfmiddlewaretoken]").val();
-                $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyPopup({description: data.message}, 'success')
-                                $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs)
-                        }
-                    )
             }
-        });
-
-// function check again promotion before submit
-        function submitCheckPromotion() {
-            let valueCheck = $('#quotation-check-promotion').val();
-
-            if (valueCheck) {
-                if (valueCheck === 'true') {
-                    let eleForm = $('#frm_quotation_create');
-                    let is_sale_order = false;
-                    if (eleForm[0].classList.contains('sale-order')) {
-                        is_sale_order = true;
-                    }
-                    let _form = new SetupFormSubmit(eleForm);
-                    submitClass.setupDataSubmit(_form, is_sale_order);
-                    let submitFields = [
-                        'title',
-                        'opportunity',
-                        'customer',
-                        'contact',
-                        'sale_person',
-                        'payment_term',
-                        // total amount of products
-                        'total_product_pretax_amount',
-                        'total_product_discount_rate',
-                        'total_product_discount',
-                        'total_product_tax',
-                        'total_product',
-                        // total amount of costs
-                        'total_cost_pretax_amount',
-                        'total_cost_tax',
-                        'total_cost',
-                        // total amount of expenses
-                        'total_expense_pretax_amount',
-                        'total_expense_tax',
-                        'total_expense',
-                        // quotation tabs
-                        'quotation_products_data',
-                        'quotation_term_data',
-                        'quotation_logistic_data',
-                        'quotation_costs_data',
-                        'quotation_expenses_data',
-                        'is_customer_confirm',
-                    ]
-                    if (is_sale_order === true) {
-                        submitFields = [
-                            'title',
-                            'opportunity',
-                            'customer',
-                            'contact',
-                            'sale_person',
-                            'payment_term',
-                            'quotation',
-                            // total amount of products
-                            'total_product_pretax_amount',
-                            'total_product_discount_rate',
-                            'total_product_discount',
-                            'total_product_tax',
-                            'total_product',
-                            // total amount of costs
-                            'total_cost_pretax_amount',
-                            'total_cost_tax',
-                            'total_cost',
-                            // total amount of expenses
-                            'total_expense_pretax_amount',
-                            'total_expense_tax',
-                            'total_expense',
-                            // sale order tabs
-                            'sale_order_products_data',
-                            'sale_order_logistic_data',
-                            'sale_order_costs_data',
-                            'sale_order_expenses_data',
-                        ]
-                    }
-                    if (_form.dataForm) {
-                        for (let key in _form.dataForm) {
-                            if (!submitFields.includes(key)) delete _form.dataForm[key]
-                        }
-                    }
-                    // validate none & blank
-                    let check_none_blank_list = ['', "", null, "undefined"];
-                    let check_field_list = [
-                        'opportunity',
-                        'customer',
-                        'contact',
-                        'sale_person',
-                        'payment_term',
-                        'quotation'
-                    ]
-                    for (let field = 0; field < check_field_list.length; field++) {
-                        if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
-                            if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
-                                delete _form.dataForm[check_field_list[field]]
-                            }
-                        }
-                    }
-
-                    let csr = $("[name=csrfmiddlewaretoken]").val();
-                    $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyPopup({description: data.message}, 'success')
-                                    $.fn.redirectUrl(eleForm.attr('data-url-redirect'), 3000);
-                                }
-                            },
-                            (errs) => {
-                                console.log(errs)
-                            }
-                        )
-                } else if (valueCheck === 'false') {
-                    $('#btn-invalid-promotion').click();
-                    return false
+            if (_form.dataForm) {
+                for (let key in _form.dataForm) {
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
-            } else {
-                setTimeout(submitCheckPromotion, 1000);  // call again after 1s if condition not pass yet
             }
+            // validate none & blank
+            let check_blank_list = ['', "", "undefined"];
+            let check_field_list = [
+                'opportunity',
+                'customer',
+                'contact',
+                'sale_person',
+                'payment_term',
+                'quotation'
+            ]
+            for (let field of check_field_list) {
+                if (_form.dataForm.hasOwnProperty(field)) {
+                    if (check_blank_list.includes(_form.dataForm[field])) {
+                        _form.dataForm[field] = null;
+                    }
+                }
+            }
+
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
         }
 
         $('#btn-remove-promotion').on('click', function(e) {

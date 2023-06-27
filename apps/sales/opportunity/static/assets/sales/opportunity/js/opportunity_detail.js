@@ -17,14 +17,14 @@ $(document).ready(function () {
             format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'), 10) + 100
+        maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
     });
     $('input[name="close_date"]').daterangepicker({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,
         drops: 'auto',
-        minYear: parseInt(moment().format('YYYY'), 10),
+        minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
         locale: {
             format: 'YYYY-MM-DD'
         },
@@ -299,6 +299,78 @@ $(document).ready(function () {
         })
     }
 
+    function loadMemberSaleTeam(employee_list) {
+        if (!$.fn.DataTable.isDataTable('#dtbMember')) {
+            let dtb = $('#dtbMember');
+            dtb.DataTableDefault({
+                scrollY: 200,
+                scrollCollapse: true,
+                paging: false,
+                columnDefs: [
+                    {
+                        "width": "10%",
+                        "targets": 0
+                    }, {
+                        "width": "30%",
+                        "targets": 1
+                    }, {
+                        "width": "50%",
+                        "targets": 2
+                    },
+                    {
+                        "width": "0%",
+                        "targers": 3
+                    },
+                    {
+                        "width": "10%",
+                        "targets": 4
+                    }
+                ],
+                data: employee_list,
+                columns: [
+                    {
+                        render: (data, type, row, meta) => {
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'code',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<span class="span-emp-code">{0}</span>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        data: 'full_name',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<span class="span-emp-name">{0}</span>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        data: 'email',
+                        className: 'wrap-text hidden',
+                        render: (data, type, row, meta) => {
+                            return `<span class="span-emp-email">{0}</span>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
     function loadSalePerson(list_manager, sale_person_id) {
         let ele = $('#select-box-sale-person');
         let ele_emp_current_group = $('#group_id_emp_login');
@@ -306,6 +378,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
+                    loadMemberSaleTeam(data.employee_list);
                     $('#data-sale-person').val(JSON.stringify(data.employee_list));
                     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
                     ele_emp_current_group.val(emp_current.group.id);
@@ -359,10 +432,9 @@ $(document).ready(function () {
                 }
                 loadProduct(opportunity_detail.product_category, opportunity_detail.opportunity_product_datas);
                 loadContact(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_contact_role_datas);
+                loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
                 loadDecisionFactor(opportunity_detail.customer_decision_factor);
                 $.fn.initMaskMoney2();
-
-                
             }
         })
     }
@@ -460,18 +532,23 @@ $(document).ready(function () {
     }
 
     $(document).on('change', '.input-unit-price', function () {
-        let quantity = $(this).valCurrency();
+        let price = $(this).valCurrency();
         let ele_parent = $(this).closest('tr');
-        let price = ele_parent.find('.input-quantity').val();
+        let quantity = ele_parent.find('.input-quantity').val();
         let subtotal = price * quantity;
         ele_parent.find('.input-subtotal').attr('value', subtotal);
         getTotalPrice();
     })
 
     $(document).on('change', '.input-quantity', function () {
-        let price = $(this).val();
+        let quantity = $(this).val();
+        if (quantity < 0) {
+            $.fn.notifyPopup({description: $('#limit-quantity').text()}, 'failure');
+            $(this).val(0);
+            quantity = 0;
+        }
         let ele_parent = $(this).closest('tr');
-        let quantity = ele_parent.find('.input-unit-price').valCurrency();
+        let price = ele_parent.find('.input-unit-price').valCurrency();
         let subtotal = price * quantity;
         ele_parent.find('.input-subtotal').attr('value', subtotal);
 
@@ -541,7 +618,9 @@ $(document).ready(function () {
     $(document).on('change', '#select-box-customer', function () {
         let contact_data = JSON.parse($('#input-data-contact').val());
         let table = $('#table-contact-role');
-        table.addClass('tag-change');
+        if (table.find('tbody tr.col-table-empty').length === 0) {
+            table.addClass('tag-change');
+        }
         let account_id = $(this).val();
 
         table.find('.box-select-type-customer option[value="0"]:selected').closest('tr').remove();
@@ -641,7 +720,13 @@ $(document).ready(function () {
     });
 
     $('#input-rate').on('change', function () {
-        $('#rangeInput').val($(this).val());
+        let value = $(this).val();
+        if (value < 0 || value > 100) {
+            $.fn.notifyPopup({description: $('#limit-rate').text()}, 'failure');
+            $(this).val(0);
+        } else {
+            $('#rangeInput').val($(this).val());
+        }
     })
 
     // get data form
@@ -657,6 +742,7 @@ $(document).ready(function () {
         let ele_tr_competitors = $('#table-competitors.tag-change tbody tr:not(.hidden)');
         let ele_tr_contact_role = $('#table-contact-role.tag-change tbody tr:not(.hidden)');
         let ele_decision_factor = $('#box-select-factor.tag-change');
+        let ele_sale_team_members = $('#card-member.tag-change .card');
 
         data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
@@ -743,6 +829,14 @@ $(document).ready(function () {
             data_form['opportunity_contact_role_datas'] = list_contact_role_data;
         }
 
+        let list_member = []
+        ele_sale_team_members.each(function () {
+            list_member.push({'member': $(this).data('id')});
+        })
+        if ($('#card-member').hasClass('tag-change')) {
+            data_form['opportunity_sale_team_datas'] = list_member
+        }
+
         return data_form
     }
 
@@ -784,6 +878,76 @@ $(document).ready(function () {
                     ele_decision_maker.addClass('tag-change');
                 }
         }
+    })
 
+    // tab add member for sale
+
+    $(document).on('click', '#btn-show-modal-add-member', function () {
+        let card_member = $('#card-member .card');
+        let table = $('#dtbMember');
+        table.find('tbody tr').removeClass('selected');
+        table.find('tbody tr .input-select-member').prop('checked', false);
+        card_member.map(function () {
+            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).prop('checked', true);
+            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).closest('tr').addClass('selected');
+        })
+    })
+
+    $(document).on('click', '#btn-add-member', function () {
+        let ele_tr = $('#dtbMember').find('tr.selected');
+        let card_member = $('#card-member');
+        card_member.html('');
+        ele_tr.each(function () {
+            card_member.append($('.card-member-hidden').html());
+            let card = card_member.find('.card').last();
+            let member_id = $(this).find('.input-select-member').attr('data-id');
+            card.find('.btn-detail-member').attr('href', $('#url-member').val().format_url_with_uuid(member_id));
+            card.find('.card-title').text($(this).find('.span-emp-name').text());
+            card.find('.card-text').text($(this).find('.span-emp-email').text());
+            card.attr('data-id', member_id);
+        })
+        $('#modalAddMember').modal('hide');
+        card_member.addClass('tag-change');
+    })
+
+    $(document).on('click', '#dtbMember .input-select-member', function () {
+        if ($(this).is(':checked')) {
+            $(this).closest('tr').addClass('tr-change selected');
+        } else {
+            $(this).closest('tr').removeClass('tr-change selected');
+        }
+    })
+
+    function loadSaleTeam(data) {
+        let card_member = $('#card-member');
+        data.map(function (item) {
+            card_member.append($('.card-member-hidden').html());
+            let card = card_member.find('.card').last();
+            card.find('.btn-detail-member').attr('href', $('#url-member').val().format_url_with_uuid(item.member.id));
+            card.find('.card-title').text(item.member.name);
+            card.find('.card-text').text(item.member.email);
+            card.attr('data-id', item.member.id);
+        })
+    }
+
+    $(document).on('click', '.btn-remove-card', function () {
+        $(this).closest('.card').remove();
+        $('#card-member').addClass('tag-change');
+    })
+
+    $(document).on('change', '.mask-money', function () {
+        if ($(this).valCurrency() < 0) {
+            $.fn.notifyPopup({description: $('#limit-money').text()}, 'failure');
+            $(this).attr('value', 0);
+            $.fn.initMaskMoney2();
+        }
+    })
+
+    $(document).on('change', '#input-close-date', function () {
+        let open_date = $('#input-open-date').val();
+        if ($(this).val() < open_date) {
+            $.fn.notifyPopup({description: $('#limit-close-date').text()}, 'failure');
+            $(this).val(open_date);
+        }
     })
 })

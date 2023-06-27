@@ -1,36 +1,10 @@
-.blog-body{
-display: flex;
-}
-#idxPageContent{
-    padding-left:1.2rem;
-    padding-top:1rem;
-    display: flex;
-    flex-flow: column;
-    width: 100%;
-}
-.tab-wrap {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    overflow: hidden;
-    -ms-flex: 1;
-    flex: 1;
-}
-.tab-column{
-        display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    flex-flow: column;
-    width: 100%;
-}
-
 .tasklist-scroll {
     display: -ms-flexbox;
     display: flex;
     overflow-x: auto;
     max-height: 100%;
     overflow-y: hidden;
-    margin-top: 2.25rem;
+    margin-top: 1rem;
     padding-bottom: 1.25rem;
     -webkit-transition: width 0.2s ease;
     -moz-transition: width 0.2s ease;
@@ -43,7 +17,6 @@ display: flex;
     -webkit-box-align: flex-start;
     -ms-flex-align: flex-start;
     align-items: flex-start;
-    padding: 0 1.25rem;
     float: left;
 }
 
@@ -55,4 +28,22 @@ display: flex;
     width: 1.25rem;
     height: 1.813rem;
     font-size: .8rem;
+}
+.wrap-child{
+    min-height: 180px;
+}
+.wrap-child > .card{
+    margin-top:0;
+}
+.wrap-child > .card + .card{
+    margin-top: 30px;
+}
+.sub_task_count{
+    padding: 0 4px;
+    min-width: 21px;
+    justify-content: center;
+    align-items: center;
+}
+.card-title:hover{
+    text-decoration: underline;
 }

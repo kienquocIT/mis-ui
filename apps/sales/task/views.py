@@ -55,12 +55,11 @@ class OpportunityTaskList(View):
         menu_active='menu_opportunity_task',
     )
     def get(self, request, *args, **kwargs):
-        no_wrap_scroll = True
         config = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
         task_config = {}
         if config.state:
             task_config = config.result
-        return {'without_simplebar': no_wrap_scroll, 'task_config': task_config}, status.HTTP_200_OK
+        return {'task_config': task_config}, status.HTTP_200_OK
 
 
 class OpportunityTaskListAPI(APIView):

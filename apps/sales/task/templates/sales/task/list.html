@@ -35,8 +35,8 @@
         </li>
     </ul>
     <!-- task kanban -->
-    <div class="tab-wrap">
-        <div class="tab-column">
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab_block_1">
             <div id="kb_scroll" class="tasklist-scroll position-relative">
                 <div id="tasklist_wrap" class="tasklist-wrap">
                 </div>
@@ -87,7 +87,10 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div><div class="card-priority d-inline-block"></div> <p class="card-title d-inline-block"></p></div>
+                    <div class="mb-2">
+                        <div class="card-priority d-inline-block"></div>
+                        <a href="#" class="card-title d-inline-block"></a>
+                    </div>
                     <div class="avatar avatar-rounded avatar-xs" data-toggle="tooltip" title="">
                         <span class="initial-wrap">
                             <img src="" alt="user"
@@ -104,7 +107,7 @@
                         </span>
                         <span class="task-discuss">
                             {% trans 'Sub' %}&nbsp;
-                            <span class="sub_task_count">24</span>
+                            <span class="sub_task_count circle bg-blue text-white">0</span>
                         </span>
                     </div>
                     <div>

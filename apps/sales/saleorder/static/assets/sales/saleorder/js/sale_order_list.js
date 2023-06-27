@@ -89,18 +89,48 @@ $(function () {
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row.id)
+                            const $elmTrans = $('#trans-factory')
+                            let isDelivery = ''
+                            if (!row.delivery_call)
+                                isDelivery = '<div class="dropdown-divider"></div>' +
+                                    `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">Change</a>
+                                        <a class="dropdown-item" href="${link}">${$elmTrans.attr('data-change')}</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Cancel</a>
-                                        <a class="dropdown-item" href="#">Cancel</a>
+                                        <a class="dropdown-item" href="#">${$('#base-trans-factory').attr('data-cancel')}</a>
+                                        ${isDelivery}
                                     </div>
                                 </div>`;
                         },
                     }
                 ],
+                rowCallback: (row, data) => {
+                    $('#create_delivery', row).off().on('click', function () {
+                        $.fn.showLoading();
+                        const url = $('#sale-order-link').attr('data-create-delivery').replace('1', data.id);
+                        $.fn.callAjax(
+                            url,
+                            'POST', {}, true
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data?.['status'] === 200) {
+                                    const config = data?.config
+                                    let url_redirect = config?.is_picking ? $('#sale-order-link').attr('data-picking') :
+                                        $('#sale-order-link').attr('data-delivery')
+                                    setTimeout(() => {
+                                        window.location.href = url_redirect
+                                    }, 1000);
+                                }
+                            },
+                            (errs) => {
+                                $.fn.hideLoading();
+                            }
+                        )
+                    })
+                },
             });
         }
 

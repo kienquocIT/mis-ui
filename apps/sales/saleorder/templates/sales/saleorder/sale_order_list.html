@@ -27,7 +27,10 @@
     <input type="hidden" id="sale-order-link"
            data-link-update="{% url 'SaleOrderDetail' 1 %}"
            data-link-list="{% url 'SaleOrderList' %}"
+           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
+           data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
     >
+    {% csrf_token %}
     <table
             id="table_sale_order_list"
             class="table nowrap w-100 mb-5"
@@ -50,7 +53,12 @@
         </tbody>
     </table>
 {% endblock %}
-
+{% block dataHiddenGroup %}
+    <input type="hidden" id="trans-factory"
+    data-change="{% trans 'Change' %}"
+    data-delivery="{% trans 'Delivery' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
 

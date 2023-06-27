@@ -61,17 +61,35 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
-                                <input
-                                        type="text" class="form-control disabled-but-edit"
-                                        placeholder="input title"
-                                        name="title"
-                                        id="quotation-create-title"
-                                        required
-                                        disabled
-                                >
-                                <span class="form-text text-muted">{% trans 'title of sale order' %}</span>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
+                                    <input
+                                            type="text" class="form-control disabled-but-edit"
+                                            placeholder="input title"
+                                            name="title"
+                                            id="quotation-create-title"
+                                            required
+                                            disabled
+                                    >
+                                    <span class="form-text text-muted">{% trans 'title of sale order' %}</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Code' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <input
+                                                    type="text" class="form-control disabled-custom-show"
+                                                    name="quotation_code"
+                                                    id="quotation-create-code"
+                                                    disabled
+                                            >
+                                        </span>
+                                    </div>
+                                    <span class="form-text text-muted">{% trans 'Code of sale order' %}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -1050,6 +1068,7 @@
             type="hidden"
             id="base-trans-factory"
             data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
+            data-select-address="{% trans 'Select this address' %}"
         >
     </form>
 {% endblock %}

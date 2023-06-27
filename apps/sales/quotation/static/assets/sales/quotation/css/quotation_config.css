@@ -1,3 +1,17 @@
 .disabled-but-edit:disabled ~ .disabled-label {
   color: #0c0c0c;
 }
+
+.modal-footer-edit-formula {
+  padding: 10px;
+  border-top: 1px solid #c7c7c7;
+}
+
+.modal-edit-formula-validate {
+  text-align: left;
+  color: #EB5757CC;
+}
+
+.modal-edit-formula-action {
+  text-align: right;
+}

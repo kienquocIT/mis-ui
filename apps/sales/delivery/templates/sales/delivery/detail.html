@@ -236,7 +236,7 @@
                         <th>{% trans 'Warehouse Code' %}</th>
                         <th>{% trans 'Warehouse Name' %}</th>
                         <th>
-                            {% if data.config.is_picking %}
+                            {% if data.config.is_picking and data.config.is_partial_ship %}
                                 <span class="mr-2">{% trans 'Picking Area' %}</span>
                                 <i class="fa-solid fa-circle-info text-blue font-3" data-toggle="popover"
                                    title="{% trans 'Notes' %}" data-bs-placement="bottom"

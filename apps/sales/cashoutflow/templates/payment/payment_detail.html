@@ -349,9 +349,28 @@
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>
-                            <th>{% trans 'Remain Adcance Payment' %}</th>
-                            <th>{% trans 'Paid' %}</th>
-                            <th>{% trans 'Available' %}</th>
+                            <th>{% trans 'Returned' %}</th>
+                            <th>{% trans 'Remain AP' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Remain AP' %} = {% trans 'AP Approved' %} - {% trans 'Returned' %} - {% trans 'To payment' %}">
+                                </i>
+                            </th>
+                            <th>{% trans 'Paid' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Paid' %} = {% trans 'To payment' %} + {% trans 'Other Payment' %}">
+                                </i>
+                            </th>
+                            <th>{% trans 'Available' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Available' %} = {% trans 'Plan After Tax' %} - {% trans 'Remain AP' %} - {% trans 'Paid' %}">
+                                </i>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>

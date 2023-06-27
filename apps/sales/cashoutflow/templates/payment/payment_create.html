@@ -335,9 +335,28 @@
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>
-                            <th>{% trans 'Remain AP' %}</th>
-                            <th>{% trans 'Paid' %}</th>
-                            <th>{% trans 'Available' %}</th>
+                            <th>{% trans 'Returned' %}</th>
+                            <th>{% trans 'Remain AP' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Remain AP' %} = {% trans 'AP Approved' %} - {% trans 'Returned' %} - {% trans 'To payment' %}">
+                                </i>
+                            </th>
+                            <th>{% trans 'Paid' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Paid' %} = {% trans 'To payment' %} + {% trans 'Other Payment' %}">
+                                </i>
+                            </th>
+                            <th>{% trans 'Available' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Available' %} = {% trans 'Plan After Tax' %} - {% trans 'Remain AP' %} - {% trans 'Paid' %}">
+                                </i>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -448,6 +467,18 @@
     </form>
 {% endblock %}
 {% block jsFooter %}
+{#    <script>#}
+{#        $(document).ready(function() {#}
+{#            $('#test').select2({#}
+{#                templateResult: function(data) {#}
+{#                    let ele = $('<span class="row col-10"></span>');#}
+{#                    ele.append('<span class="col-4">' + data.id + '</span>');#}
+{#                    ele.append('<span class="col-6">' + data.text + '</span>');#}
+{#                    return ele;#}
+{#                }#}
+{#            });#}
+{#        });#}
+{#    </script>#}
     <script src="{% static "assets/js/payment/payment_create.js" %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>

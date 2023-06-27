@@ -127,8 +127,8 @@ function initSelectBox(selectBoxElement = null) {
                 }
             },
             multiple: false,
-            tags:false
-
+            tags:false,
+            closeOnSelect: !!$(selectBoxElement).attr('data-select2-closeOnSelect'),
         }
         if ($this.attr('data-multiple') === 'true'){
             options['multiple'] = true

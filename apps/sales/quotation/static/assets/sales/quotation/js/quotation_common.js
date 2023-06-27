@@ -16,28 +16,33 @@ class loadDataHandle {
                     if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                         ele.append(`<option value=""></option>`);
                         data.opportunity_list.map(function (item) {
-                            let dataStr = JSON.stringify({
-                                'id': item.id,
-                                'title': item.title,
-                                'code': item.code,
-                                'customer': item.customer.title
-                            }).replace(/"/g, "&quot;");
-                            let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                            let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                            let option = `<option value="${item.id}">
-                                            <span class="opp-title">${data_show}</span>
-                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                            if (valueToSelect && valueToSelect === item.id) {
-                                option = `<option value="${item.id}" selected>
-                                            <span class="opp-title">${data_show}</span>
-                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                            let check_used = item.quotation_id;
+                            if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                               check_used = item.sale_order_id
                             }
-
-                            ele.append(option)
+                            if (check_used === null || valueToSelect === item.id) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'title': item.title,
+                                    'code': item.code,
+                                    'customer': item.customer.title
+                                }).replace(/"/g, "&quot;");
+                                let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                let data_show = `${item.code}` + ` - ` + `${item.title}`;
+                                let option = `<option value="${item.id}">
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                if (valueToSelect && valueToSelect === item.id) {
+                                    option = `<option value="${item.id}" selected>
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                }
+                                ele.append(option)
+                            }
                         })
                     }
                 }
@@ -58,7 +63,6 @@ class loadDataHandle {
                 if (data) {
                     ele.empty();
                     if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                        ele.append(`<option value=""></option>`);
                         let dataAppend = ``;
                         let dataMapOpp = ``;
                         data.account_sale_list.map(function (item) {
@@ -83,21 +87,22 @@ class loadDataHandle {
                                             <input type="hidden" class="data-default" value="${customer_data}">
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
-                                    // load Shipping & Billing by Customer
-                                    self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
-                                    // load Contact by Customer
-                                    if (item.id && item.owner) {
-                                        self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
-                                    }
-                                    // load Payment Term by Customer
-                                    self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
-                                    // Store Account Price List
-                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                // load Shipping & Billing by Customer
+                                self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                // load Contact by Customer
+                                if (item.id && item.owner) {
+                                    self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                }
+                                // load Payment Term by Customer
+                                self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
+                                // Store Account Price List
+                                document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                             }
                         })
                         if (dataMapOpp) { // if Opportunity has Customer
                             ele.append(dataMapOpp);
                         } else { // if Opportunity doesn't have Customer
+                            ele.append(`<option value=""></option>`);
                             ele.append(dataAppend);
                             // load Contact no Customer
                             self.loadBoxQuotationContact('select-box-quotation-create-contact');
@@ -106,8 +111,6 @@ class loadDataHandle {
                             // Store Account Price List
                             document.getElementById('customer-price-list').value = "";
                         }
-                        // ReCheck Config
-                        configClass.checkConfig(true);
                         self.loadInformationSelectBox(ele);
                     }
                 }
@@ -517,17 +520,19 @@ class loadDataHandle {
                 let valList = [];
                 let account_price_list = document.getElementById('customer-price-list').value;
                 $(priceList).empty();
-                for (let i = 0; i < data.price_list.length; i++) {
-                    if (data.price_list[i].id === account_price_list) {
-                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                    <div class="row">
-                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                        <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                    </div>
-                                </a>`;
-                        $(priceList).append(option);
+                if (data.price_list) {
+                    for (let i = 0; i < data.price_list.length; i++) {
+                        if (data.price_list[i].id === account_price_list) {
+                            valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
+                            let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                        <div class="row">
+                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                            <div class="col-2"></div>
+                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                        </div>
+                                    </a>`;
+                            $(priceList).append(option);
+                        }
                     }
                 }
                 // get Min Price to display
@@ -793,7 +798,7 @@ class loadDataHandle {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }
         if (data.date_created) {
-            $('#quotation-create-date-created').val(moment(data.date_created).format('DD-MM-YYYY'))
+            $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
         }
         if (is_copy === true) {
             $('#select-box-quotation').append(`<option value="${data.id}" selected>${data.title}</option>`)
@@ -837,7 +842,7 @@ class loadDataHandle {
                     if (data) {
                         ele.val(JSON.stringify(data));
                         // check config first time
-                        configClass.checkConfig(true);
+                        configClass.checkConfig(true, null, true);
                     }
                 }
             )
@@ -1175,7 +1180,7 @@ class dataTableHandle {
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
                         let taxID = "";
-                        let taxRate = "";
+                        let taxRate = "0";
                         if (row.tax) {
                             taxID = row.tax.id;
                             taxRate = row.tax.value;
@@ -1200,7 +1205,7 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
-                            } else {
+                            } else { // PROMOTION & SHIPPING
                                 return `<div class="row">
                                 <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
@@ -1266,8 +1271,13 @@ class dataTableHandle {
                     targets: 9,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        return `${bt3}`
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
+                        // return `${bt3}`
+                        if (is_load_detail === false) {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        } else {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row disabled-but-edit" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        }
                     }
                 },
             ],
@@ -1742,8 +1752,13 @@ class dataTableHandle {
                     targets: 7,
                     width: "1%",
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        return `${bt3}`
+                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
+                        // return `${bt3}`
+                        if (is_load_detail === false) {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        } else {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row disabled-but-edit" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        }
                     }
                 },
             ],
@@ -2081,7 +2096,7 @@ class dataTableHandle {
                             self.dataTableShipping(passList, 'datable-quotation-create-shipping');
                         } else {
                             self.dataTableShipping(passList, 'datable-quotation-create-shipping');
-                            $.fn.notifyPopup({description: 'Must select shipping address.'}, 'failure');
+                            $.fn.notifyPopup({description: $.fn.transEle.attr('data-check-if-shipping-address')}, 'failure');
                         }
                     }
                 }
@@ -2380,7 +2395,7 @@ let calculateClass = new calculateCaseHandle();
 
 // Config
 class checkConfigHandle {
-    checkConfig(is_change_opp = false, new_row = null) {
+    checkConfig(is_change_opp = false, new_row = null, is_first_time = false) {
         let self = this;
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -2391,12 +2406,14 @@ class checkConfigHandle {
             if (!opportunity || empty_list.includes(opportunity)) { // short sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
-                    if (!tableProduct.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                            let row = tableProduct.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, true, false);
-                            // Re Calculate all data of rows & total
-                            calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                    if (is_first_time === false) {
+                        if (!tableProduct.querySelector('.dataTables_empty')) {
+                            for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                                let row = tableProduct.tBodies[0].rows[i];
+                                self.reCheckTable(config, row, true, false);
+                                // Re Calculate all data of rows & total
+                                calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                            }
                         }
                     }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
@@ -2413,7 +2430,9 @@ class checkConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    calculateClass.updateTotal(tableProduct, true, false, false);
+                    if (is_first_time === false) {
+                        calculateClass.updateTotal(tableProduct, true, false, false);
+                    }
                 } else {
                     if (new_row) {
                         self.reCheckTable(config, new_row, true, false);
@@ -2428,12 +2447,14 @@ class checkConfigHandle {
             } else { // long sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
-                    if (!tableProduct.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                            let row = tableProduct.tBodies[0].rows[i];
-                            self.reCheckTable(config, row, false, true);
-                            // Re Calculate all data of rows & total
-                            calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                    if (is_first_time === false) {
+                        if (!tableProduct.querySelector('.dataTables_empty')) {
+                            for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+                                let row = tableProduct.tBodies[0].rows[i];
+                                self.reCheckTable(config, row, false, true);
+                                // Re Calculate all data of rows & total
+                                calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                            }
                         }
                     }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
@@ -2450,7 +2471,9 @@ class checkConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    calculateClass.updateTotal(tableProduct, true, false, false);
+                    if (is_first_time === false) {
+                        calculateClass.updateTotal(tableProduct, true, false, false);
+                    }
                 } else {
                     if (new_row) {
                         self.reCheckTable(config, new_row, false, true);
@@ -2646,9 +2669,10 @@ class submitHandle {
                 rowData['promotion'] = null;
                 rowData['shipping'] = null;
             } else if (elePromotion) { // PROMOTION
+                let check_none_blank_list = ['', "", null, "undefined"];
                 rowData['is_promotion'] = true;
                 rowData['product'] = null;
-                if (elePromotion.getAttribute('data-id-product')) {
+                if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
                    rowData['product'] = elePromotion.getAttribute('data-id-product');
                 }
                 rowData['promotion'] = elePromotion.getAttribute('data-id');
@@ -2967,17 +2991,39 @@ class submitHandle {
         }
     }
 
+    setupDataIndicator() {
+        let result = [];
+        let tableIndicator = document.getElementById('datable-quotation-create-indicator');
+        let tableEmpty = tableIndicator.querySelector('.dataTables_empty');
+        if (!tableEmpty) {
+            for (let i = 0; i < tableIndicator.tBodies[0].rows.length; i++) {
+                let row = tableIndicator.tBodies[0].rows[i];
+                let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
+                let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
+                let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
+                result.push({
+                    'indicator': indicator,
+                    'indicator_value': parseFloat(indicator_value),
+                    'indicator_rate': parseFloat(indicator_rate),
+                })
+            }
+        }
+        return result
+    }
+
     setupDataSubmit(_form, is_sale_order = false) {
         let self = this;
         let quotation_products_data = 'quotation_products_data';
         let quotation_costs_data = 'quotation_costs_data';
         let quotation_expenses_data = 'quotation_expenses_data';
         let quotation_logistic_data = 'quotation_logistic_data';
+        let quotation_indicators_data = 'quotation_indicators_data';
         if (is_sale_order === true) {
             quotation_products_data = 'sale_order_products_data';
             quotation_costs_data = 'sale_order_costs_data';
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
+            quotation_indicators_data = 'sale_order_indicators_data';
 
             let eleQuotation = $('#select-box-quotation');
             if (eleQuotation) {
@@ -3022,6 +3068,11 @@ class submitHandle {
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
+
+        let quotation_indicators_data_setup = self.setupDataIndicator();
+        if (quotation_indicators_data_setup.length > 0) {
+            _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup
+        }
     }
 }
 

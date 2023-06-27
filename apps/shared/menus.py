@@ -211,15 +211,15 @@ class MenusCRM:
         child=[
             MenuCommon(
                 name='Advance Payment', code='id_menu_advance_payment', view_name='AdvancePaymentList',
-                icon='<i class="bi bi-coin"></i>',
+                icon='<i class="bi bi-piggy-bank-fill"></i>',
             ),
             MenuCommon(
                 name='Payment', code='id_menu_payment', view_name='PaymentList',
-                icon='<i class="bi bi-coin"></i>',
+                icon='<i class="bi bi-credit-card-fill"></i>',
             ),
             MenuCommon(
                 name='Return Advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
-                icon='<i class="bi bi-coin"></i>',
+                icon='<i class="bi bi-piggy-bank"></i>',
             ),
         ],
     )

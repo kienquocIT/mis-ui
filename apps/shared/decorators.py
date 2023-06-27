@@ -217,7 +217,7 @@ def mask_view(**parent_kwargs):
                                 return HttpResponse(status=500)
                             case _:
                                 ctx['pk'] = pk
-                                ctx['is_debug'] = 1 if settings.DEBUG_JS else 0
+                                ctx['is_debug'] = settings.DEBUG_JS
                                 ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
                                 ctx['base_workflow'] = WORKFLOW_ACTION if pk else {}

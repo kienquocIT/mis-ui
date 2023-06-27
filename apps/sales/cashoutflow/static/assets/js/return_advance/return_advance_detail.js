@@ -95,11 +95,11 @@ $(function () {
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt + 1}</td>
-                                <td class="wrap-text col-expense" data-id="${item.id}"><span>${item.expense.title}</span></td>
+                                <td class="wrap-text col-expense" data-id="${item.id}"><span class="text-primary">${item.expense.title}</span></td>
                                 <td class="wrap-text"><span>${item.expense_type}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text">
-                                    <input class="mask-money form-control return-price" type="text" value="${item.return_price}" data-return-type="number" readonly> 
+                                    <input class="mask-money form-control return-price" disabled type="text" value="${item.return_price}" data-return-type="number" readonly> 
                                 </td>
                             </tr>`;
                 table.find('tbody').append(html);
@@ -115,6 +115,7 @@ $(function () {
                 if (data) {
                     let return_advance_detail = data?.['return_advance'];
                     $.fn.compareStatusShowPageAction(return_advance_detail);
+                    $('.header-code').text(return_advance_detail.code);
                     $('[name="title"]').val(return_advance_detail.title);
                     choose_AP_ele.find(`option[value="${return_advance_detail.advance_payment}"]`).prop('selected', true);
                     loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, return_advance_detail.advance_payment));
@@ -155,7 +156,7 @@ $(function () {
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                     }
                 )
         })

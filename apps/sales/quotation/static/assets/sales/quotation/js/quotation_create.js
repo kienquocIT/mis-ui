@@ -12,6 +12,8 @@ $(function () {
         let shippingClass = new shippingHandle();
         let configClass = new checkConfigHandle();
 
+        let formSubmit = $('#frm_quotation_create');
+
         let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -84,7 +86,9 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll()
+            loadDataClass.loadDataProductAll();
+            // ReCheck Config when change Opportunity
+            configClass.checkConfig(true);
         });
 
 // Action on click dropdown customer
@@ -884,7 +888,7 @@ $(function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
             // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            calculateClass.updateTotal(tableProduct[0], true, false, false);
             // get promotion condition to apply
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             let promotionResult = promotionClass.getPromotionResult(promotionCondition);
@@ -973,7 +977,10 @@ $(function () {
                 }
             }
             // ReOrder STT
-            reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+            reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
+
+            // check disable
+            tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // SHIPPING
@@ -1051,14 +1058,40 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        $('#frm_quotation_create').submit(function (e) {
-            e.preventDefault()
+        formSubmit.submit(function (e) {
+            e.preventDefault();
+            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
+                promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', boxCustomer.val());
+                // Check promotion then Submit Form
+                submitCheckPromotion();
+            } else { // NO PROMOTION => submit normal
+                // Submit Form normal
+                submitForm($(this));
+            }
+        });
+
+// function check again promotion before submit
+        function submitCheckPromotion() {
+            let valueCheck = $('#quotation-check-promotion').val();
+            if (valueCheck) {
+                if (valueCheck === 'true') {
+                    submitForm(formSubmit);
+                } else if (valueCheck === 'false') {
+                    $('#btn-invalid-promotion').click();
+                    return false
+                }
+            } else {
+                setTimeout(submitCheckPromotion, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+
+// Main Function Submit
+        function submitForm(formSubmit) {
             let is_sale_order = false;
-            let appNotify = "Quotation";
-            if ($(this)[0].classList.contains('sale-order')) {
+            if (formSubmit[0].classList.contains('sale-order')) {
                 is_sale_order = true;
             }
-            let _form = new SetupFormSubmit($(this));
+            let _form = new SetupFormSubmit(formSubmit);
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1088,6 +1121,8 @@ $(function () {
                 'quotation_costs_data',
                 'quotation_expenses_data',
                 'is_customer_confirm',
+                // indicator tab
+                'quotation_indicators_data',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1125,7 +1160,7 @@ $(function () {
                 }
             }
             // validate none & blank
-            let check_none_blank_list = ['', "", null, "undefined"];
+            let check_blank_list = ['', "", "undefined"];
             let check_field_list = [
                 'opportunity',
                 'customer',
@@ -1134,30 +1169,41 @@ $(function () {
                 'payment_term',
                 'quotation'
             ]
-            for (let field = 0; field < check_field_list.length; field++) {
-                if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
-                    if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
-                        delete _form.dataForm[check_field_list[field]]
+            for (let field of check_field_list) {
+                if (_form.dataForm.hasOwnProperty(field)) {
+                    if (check_blank_list.includes(_form.dataForm[field])) {
+                        _form.dataForm[field] = null;
                     }
                 }
             }
 
-            let csr = $("[name=csrfmiddlewaretoken]").val()
-
+            let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
                     }
                 )
+        }
+
+        $('#btn-remove-promotion').on('click', function(e) {
+            $('#quotation-check-promotion').val("");
+            // Delete Promotion Row & ReCalculate Total
+            deletePromotionRows(tableProduct, true, false);
+            calculateClass.updateTotal(tableProduct[0], true, false, false);
         });
+
+        $('#btn-check-another-promotion').on('click', function(e) {
+            $('#quotation-check-promotion').val("");
+            $('#btn-check-promotion').click();
+        })
 
 
 

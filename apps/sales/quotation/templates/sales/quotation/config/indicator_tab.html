@@ -2,7 +2,8 @@
 
 <!-- Config Indicator -->
 <br>
-<button type="button" class="btn btn-link btn-animated" id="btn-add-indicator">
+<button type="button" class="btn btn-link btn-animated" id="btn-add-indicator" data-bs-toggle="modal"
+        data-bs-target="#indicatorCreateModalCenter">
     <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Indicator' %}</span></span>
 </button>
 <br>
@@ -29,4 +30,73 @@
     <tbody>
     </tbody>
 </table>
+
+<div
+        class="modal fade" id="indicatorCreateModalCenter" tabindex="-1"
+        role="dialog" aria-labelledby="indicatorCreateModalCenter"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Add Indicator' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="indicator-create-title">{% trans 'Title' %}<span class="required"></span></label>
+                        <input
+                                type="text" class="form-control"
+                                placeholder="input title"
+                                id="indicator-create-title"
+                                required
+                        >
+                        <small class="form-text text-muted">{% trans 'Title of indicator' %}</small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="indicator-create-description">{% trans 'Description' %}<span class="required"></span></label>
+                        <input
+                                type="text" class="form-control"
+                                placeholder="input description"
+                                id="indicator-create-description"
+                                required
+                        >
+                        <small class="form-text text-muted">{% trans 'Description of indicator' %}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="btn-create-indicator"
+                        data-url="{% url 'QuotationIndicatorListAPI' %}"
+                        data-url-redirect="{% url 'QuotationConfigDetail' %}"
+                        data-url-update="{% url 'QuotationIndicatorDetailAPI' 1 %}"
+                        data-method="post"
+                >{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+
+
+    <input
+            type="hidden"
+            id="base-trans-factory"
+            data-btn-close="{% trans 'Close' %}"
+            data-btn-save="{% trans 'Save' %}"
+            data-edit-formula="{% trans 'Edit formula' %}"
+            data-editor="{% trans 'Editor' %}"
+            data-indicator="{% trans 'Indicator' %}"
+            data-property="{% trans 'Property' %}"
+            data-function="{% trans 'Function indicator' %}"
+            data-operator="{% trans 'Operator indicator' %}"
+    >
+</div>
 <!-- Config Indicator -->

@@ -1,23 +1,36 @@
 $(document).ready(function () {
-    let plan_db = $('#tab_plan_datatable_div').html();
     const sale_order_list = JSON.parse($('#sale_order_list').text());
     const quotation_list = JSON.parse($('#quotation_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
+    const employee_list = JSON.parse($('#employee_list').text());
+    const unit_of_measure = JSON.parse($('#unit_of_measure').text());
+    const tax_list = JSON.parse($('#tax_list').text());
     const account_list = JSON.parse($('#account_list').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
         return obj;
     }, {});
+
     let sale_code_selected_list = [];
     let sale_order_selected_list = [];
     let quotation_selected_list = [];
     let opportunity_selected_list = [];
-    let load_default = 0;
     let current_value_converted_from_ap = '';
     let payment_cost_items_filtered = [];
     let advance_payment_expense_items = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sale_code_mapped_parameter = urlParams.get('sale_code_mapped');
+    const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    let sale_code_default_obj = [];
+    let sale_code_default_type = -1;
+    if (sale_order.length > 0) {sale_code_default_obj = sale_order; sale_code_default_type = 0;}
+    if (quotation.length > 0) {sale_code_default_obj = quotation; sale_code_default_type = 1;}
+    if (opportunity.length > 0) {sale_code_default_obj = opportunity; sale_code_default_type = 2;}
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
         let ap_item = ap_list.find(function(item) {
@@ -39,7 +52,6 @@ $(document).ready(function () {
                         'ap_approved': ap_expense_item.after_tax_price,
                         'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total
                     }
                 )
             }
@@ -63,26 +75,37 @@ $(document).ready(function () {
                     let expense_get = ap_expense_list_mapped.find(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
+
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
                     let paid = 0;
                     if (expense_get !== undefined) {
-                        remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
-                        available = expense_get.available;
-                        paid = expense_get.paid
+                        if (expense_get.remain_ap >= 0) {
+                            remain_ap = expense_get.remain_ap;
+                        }
+                        paid = expense_get.paid;
+                        available = expense_item.plan_after_tax - remain_ap - paid;
+                        if (available < 0) {
+                            available = 0;
+                        }
+                    }
+                    else {
+                        available = expense_item.plan_after_tax;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`)
+
+                    $.fn.initMaskMoney2();
                 }
             }
         })
@@ -108,7 +131,6 @@ $(document).ready(function () {
                         'ap_approved': ap_expense_item.after_tax_price,
                         'paid': ap_expense_item.to_payment_total + others_payment,
                         'remain_ap': ap_expense_item.remain_total,
-                        'available': ap_expense_item.available_total
                     }
                 )
             }
@@ -130,26 +152,37 @@ $(document).ready(function () {
                     let expense_get = ap_expense_list_mapped.find(function(item) {
                         return item.expense_id === expense_item.expense_id;
                     });
+
                     let remain_ap = 0;
                     let ap_approved = 0;
                     let available = 0;
                     let paid = 0;
                     if (expense_get !== undefined) {
-                        remain_ap = expense_get.remain_ap;
                         ap_approved = expense_get.ap_approved;
-                        available = expense_get.available;
+                        if (expense_get.remain_ap >= 0) {
+                            remain_ap = expense_get.remain_ap;
+                        }
                         paid = expense_get.paid
+                        available = expense_item.plan_after_tax - remain_ap - paid
+                        if (available < 0) {
+                            available = 0;
+                        }
+                    }
+                    else {
+                        available = expense_item.plan_after_tax;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
                         <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span>` + expense_item.plan_after_tax.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + ap_approved.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + remain_ap.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + paid.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
-                        <td><span>` + available.toLocaleString('en-US').replace(/,/g, '.') + ` VNĐ</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`)
+
+                    $.fn.initMaskMoney2();
                 }
             }
         })
@@ -158,55 +191,83 @@ $(document).ready(function () {
     function loadCreator() {
         let ele = $('#creator-select-box');
         ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.employee_list.map(function (item) {
-                        if (item.id === $('#data-init-payment-create-request-employee-id').val()) {
-                            ele.append(`<option selected data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                            $('#creator-detail-span').prop('hidden', false);
-                            $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
-                            $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
-                            $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
-                            let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
-                            $('#btn-detail-creator-tab').attr('href', url);
-                        }
-                        else {
-                            ele.append(`<option data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                        }
-                    })
-                    if (load_default === 0) {
-                        // $('#beneficiary-select-box').prop('disabled', true);
-                        loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
-                        $('#sale-code-select-box').prop('disabled', false);
-                        $('#sale-code-select-box2-show').css({
-                            'background': 'none',
-                        });
-                        $('#sale-code-select-box2-show').attr('disabled', false);
-                        $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
-                        loadSaleCode($('#data-init-payment-create-request-employee-id').val());
-                        $('#sale-code-select-box2-show').val('');
-                        $('#sale-code-select-box2').prop('hidden', false);
-                        load_default = 1;
+        employee_list.map(function (item) {
+            if (item.id === $('#data-init-payment-create-request-employee-id').val()) {
+                ele.append(`<option selected data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                $('#creator-detail-span').prop('hidden', false);
+                $('#creator-name').text($('#creator-select-box option:selected').attr('data-name'));
+                $('#creator-code').text($('#creator-select-box option:selected').attr('data-code'));
+                $('#creator-department').text($('#creator-select-box option:selected').attr('data-department'));
+                let url = $('#btn-detail-creator-tab').attr('data-url').replace('0', $('#creator-select-box option:selected').attr('value'));
+                $('#btn-detail-creator-tab').attr('href', url);
+            }
+            else {
+                ele.append(`<option data-department-id="` + item.group.id + `" data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+            }
+        })
+        loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+        $('#sale-code-select-box2-show').val('');
+        $('#sale-code-select-box2-show').css({
+            'background': 'none',
+        });
+        $('#sale-code-select-box2-show').attr('disabled', false);
+        $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
+
+        let beneficiary = $('#data-init-payment-create-request-employee-id').val()
+        if (sale_code_default_obj.length > 0) {
+            beneficiary = sale_code_default_obj[0].sale_person.id;
+        }
+        loadSaleCode(beneficiary, 1);
+        if (sale_code_default_type === 0) {
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                        payment_cost_items_filtered = data.payment_cost_items_list;
+                        loadSaleOrderPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
                     }
                 }
+            })
+
+            advance_payment_expense_items = [];
+            for (let i = 0; i < ap_list.length; i++) {
+                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
             }
-        }, (errs) => {
-        },)
+
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
+        }
+        if (sale_code_default_type === 1) {
+            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                        payment_cost_items_filtered = data.payment_cost_items_list;
+                        loadQuotationPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
+                    }
+                }
+            })
+
+            advance_payment_expense_items = [];
+            for (let i = 0; i < ap_list.length; i++) {
+                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+            }
+
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
+        }
     }
 
-    function loadBeneficiary(sale_person_id, department_id, creator_id) {
+    function loadBeneficiary(department_id, creator_id) {
         let ele = $('#beneficiary-select-box');
         ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    if (sale_person_id) {
-                        resp.data.employee_list.map(function (item) {
-                            if (sale_person_id.includes(item.id)) {
+        employee_list.map(function (item) {
+                        if (item.group.id === department_id) {
+                            if (item.id === creator_id) {
                                 ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
                                 $('#beneficiary-detail-span').prop('hidden', false);
                                 $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
@@ -214,48 +275,39 @@ $(document).ready(function () {
                                 $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
                                 let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
                                 $('#btn-detail-beneficiary-tab').attr('href', url);
-                            }
-                        })
-                    }
-                    else {
-                        resp.data.employee_list.map(function (item) {
-                            if (item.group.id === department_id) {
-                                if (item.id === creator_id) {
-                                    ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                                    $('#beneficiary-detail-span').prop('hidden', false);
-                                    $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
-                                    $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
-                                    $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
-                                    let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
-                                    $('#btn-detail-beneficiary-tab').attr('href', url);
-                                } else {
-                                    ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                                    if ($('#radio-non-sale').is(':checked')) {
-                                        $('#beneficiary-detail-span').prop('hidden', true);
-                                        $('#beneficiary-name').text('');
-                                        $('#beneficiary-code').text('');
-                                        $('#beneficiary-department').text('');
-                                        $('#btn-detail-beneficiary-tab').attr('href', '#');
-                                    }
+                            } else {
+                                ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                                if ($('#radio-non-sale').is(':checked')) {
+                                    $('#beneficiary-detail-span').prop('hidden', true);
+                                    $('#beneficiary-name').text('');
+                                    $('#beneficiary-code').text('');
+                                    $('#beneficiary-department').text('');
+                                    $('#btn-detail-beneficiary-tab').attr('href', '#');
                                 }
                             }
-                        })
-                    }
+                        }
+                    })
+        if (sale_code_default_obj.length > 0) {
+            ele.find('option').each(function (index, element) {
+                if ($(this).attr('value') === sale_code_default_obj[0].sale_person.id) {
+                    $(this).attr('selected', true);
                 }
-            }
-        }, (errs) => {
-        },)
+            })
+        }
     }
 
-    function loadSaleCode(beneficiary) {
-        let sale_order_loaded = [];
+    function loadSaleCode(beneficiary, default_loading=0) {
+        $('#sale-code-select-box2-show').css({'height': '38px'})
+        let quotation_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
         ele.html('');
         ele.append(`<input class="form-control mb-2" type="text" id="search-sale-code-Input" placeholder="Search by sale code title">`)
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                sale_order_loaded.push(item.customer.id);
+                if (Object.keys(item.quotation).length !== 0) {
+                    quotation_loaded.push(item.quotation.id);
+                }
                 if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="text-danger code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
@@ -267,7 +319,7 @@ $(document).ready(function () {
         })
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                if (sale_order_loaded.includes(item.customer.id) === false) {
+                if (quotation_loaded.includes(item.id) === false) {
                     if (Object.keys(item.opportunity).length !== 0) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `"><div class="row"><span class="text-primary code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="0" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
@@ -279,13 +331,9 @@ $(document).ready(function () {
             }
         })
         opportunity_list.map(function (item) {
-            if (oppcode_loaded.includes(item.id) === false) {
-                let sale_person_id_list = [];
-                for (let i = 0; i < item.sale_person.length; i++) {
-                    sale_person_id_list.push(item.sale_person[i].id)
-                }
-                if (sale_person_id_list.includes(beneficiary)) {
-                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + sale_person_id_list + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
+            if (item.sale_person.id === beneficiary) {
+                if (oppcode_loaded.includes(item.id) === false) {
+                    ele.append(`<a data-value="` + item.id + `" class="dropdown-item" href="#"><div class="row"><span class="text-blue code-span col-4 text-left">` + item.code + `</span><span class="title-span col-8 text-left" data-type="2" data-sale-person-id="` + item.sale_person.id + `" data-value="` + item.id + `">` + item.title + `</span></div></a>`);
                 }
             }
         })
@@ -370,7 +418,9 @@ $(document).ready(function () {
         ele2.append(`<option></option>`);
         sale_order_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                sale_order_loaded.push(item.customer.id);
+                if (Object.keys(item.quotation).length !== 0) {
+                    quotation_loaded.push(item.quotation.id);
+                }
                 if (Object.keys(item.opportunity).length !== 0) {
                     oppcode_loaded.push(item.opportunity.id);
                     ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
@@ -382,7 +432,7 @@ $(document).ready(function () {
         })
         quotation_list.map(function (item) {
             if (item.sale_person.id === beneficiary) {
-                if (sale_order_loaded.includes(item.customer.id) === false) {
+                if (quotation_loaded.includes(item.id) === false) {
                     if (Object.keys(item.opportunity).length !== 0) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele2.append(`<option data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">` + item.title + `</option>`);
@@ -394,19 +444,30 @@ $(document).ready(function () {
             }
         })
         opportunity_list.map(function (item) {
-            if (oppcode_loaded.includes(item.id) === false) {
-                let sale_person_id_list = [];
-                for (let i = 0; i < item.sale_person.length; i++) {
-                    sale_person_id_list.push(item.sale_person[i].id)
-                }
-                if (sale_person_id_list.includes(beneficiary)) {
-                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-person-id="` + sale_person_id_list + `" value="` + item.id + `">(` + item.code + `) ` + item.title + `</option>`);
+            if (item.sale_person.id === beneficiary) {
+                if (oppcode_loaded.includes(item.id) === false) {
+                    ele2.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-person-id="` + item.sale_person.id + `" value="` + item.id + `">(` + item.code + `) ` + item.title + `</option>`);
                 }
             }
         })
+
+        if (sale_code_default_obj.length > 0 && default_loading === 1) {
+            ele.find('a').each(function (index, element) {
+                if ($(this).attr('data-value') === sale_code_default_obj[0].id) {
+                    let text = $(this).find('.title-span').text();
+                    $('#sale-code-select-box2-show').attr('placeholder', text);
+                }
+            })
+            ele2.find('option').each(function (index, element) {
+                if ($(this).attr('value') === sale_code_default_obj[0].id) {
+                    $(this).attr('selected', true);
+                }
+            })
+        }
     }
 
     function loadSaleCodeMulti() {
+        $('#sale-code-select-box2-show').css({'height': 'auto'})
         let sale_order_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box2');
@@ -459,7 +520,7 @@ $(document).ready(function () {
                 ele.append(`<div class="row mb-2" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code">
                                 <span class="text-blue col-4 code-span">&nbsp;&nbsp;` + item.code + `</span>
                                 <span class="col-7 title-span" data-sale-person-id="` + sale_person_id_list + `">` + item.title + `</span>
-                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-type="2" id="` + item.id + `"></span>
+                                <span class="col-1"><input type="checkbox" class="form-check-input multi-sale-code" data-sale-code="` + item.code + `" data-type="2" id="` + item.id + `"></span>
                             </div>`)
             }
         })
@@ -475,7 +536,6 @@ $(document).ready(function () {
                     let sale_code_id = $(this).attr('id');
                     let sale_code_data_type = $(this).attr('data-type');
 
-
                     sale_code_selected_list.push(sale_code_id);
                     if (sale_code_data_type === '0') {
                         sale_order_selected_list.push(sale_code_id);
@@ -489,6 +549,15 @@ $(document).ready(function () {
                     }
                 }
             });
+
+            let sale_code_selected_show = [];
+            for (let i = 0; i < sale_code_selected_list.length; i++) {
+                sale_code_selected_show.push($('#' + sale_code_selected_list[i]).attr('data-sale-code'))
+            }
+
+            sale_code_selected_show = '(' + sale_code_selected_show.join(')  (') + ')';
+            $('#sale-code-select-box2-show').val(sale_code_selected_show);
+
             for (let i = 0; i < sale_order_selected_list.length; i++) {
                 $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_order_selected_list[i], 'GET').then((resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -700,6 +769,274 @@ $(document).ready(function () {
         }
     }
 
+    function count_row(table_body, sale_code_length, option) {
+        let count = 0;
+        table_body.find('tr td.number').each(function() {
+            count = count + 1;
+            $(this).text(count);
+            $(this).closest('tr').attr('id', 'row-' + count.toString());
+            let detail_expense_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
+            detail_expense_element.each(function (index, element) {
+                $(this).attr('class', 'row-detail-expense-' + count.toString());
+            });
+        });
+        if (option === 1) {
+            loadExpenseList('row-' + count.toString());
+            loadExpenseTaxList('row-' + count.toString());
+        }
+        return count;
+    }
+
+    function loadExpenseList(row_id) {
+        let ele = $('#' + row_id + ' .expense-select-box');
+        ele.select2();
+        ele.html('');
+        ele.append(`<option></option>`);
+        expense_list.map(function (item) {
+            let tax_code_id = '';
+            if (item.general_information.tax_code) {
+                tax_code_id = item.general_information.tax_code.id;
+            }
+            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type_id="` + item.general_information.expense_type.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+        })
+    }
+
+    function loadExpenseTaxList(row_id) {
+        let ele = $('#' + row_id + ' .expense-tax-select-box');
+        ele.html('');
+        ele.append(`<option data-rate="0" selected></option>`);
+        tax_list.map(function (item) {
+            ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+        })
+    }
+
+    function loadExpenseUomList(row_id, uom_group_id, uom_mapped_id) {
+        let ele = $('#' + row_id + ' .expense-uom-select-box');
+        ele.html('');
+        unit_of_measure.map(function (item) {
+            if (item.group.id === uom_group_id) {
+                if (item.id === uom_mapped_id) {
+                    ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
+                }
+                else {
+                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                }
+            }
+        })
+    }
+
+    function loadUnitPriceList(row_id, expense_item_id) {
+        let ele = $('#' + row_id + ' .dropdown-menu');
+        ele.html('');
+        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + expense_item_id), ele.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
+                    let primary_currency = 'VND';
+                    resp.data.expense.general_information.price_list.map(function (item) {
+                        if (item.is_primary === true) {
+                            primary_currency = item.abbreviation;
+                            ele.append(`<a data-id="` + item.id + `" data-value="` + item.price_value + `" class="dropdown-item"><div class="row">
+                                        <div class="col-7 text-left"><span>` + item.title + `:</span></div>
+                                        <div class="col-5 text-right"><span class="mask-money" data-init-money="` + item.price_value + `"></span></div>
+                                        </div></a>`)
+                            $.fn.initMaskMoney2();
+                            $(`a[data-id=` + item.id + `]`).on('click', function () {
+                                let tr = $(this).closest('tr');
+                                let input_show = tr.find('.expense-unit-price-select-box');
+                                let subtotal_show = tr.find('.expense-subtotal-price');
+                                let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
+                                let quantity = tr.find('.expense-quantity');
+                                let tax = tr.find('.expense-tax-select-box option:selected');
+                                input_show.attr('value', $(this).attr('data-value'));
+                                $.fn.initMaskMoney2();
+                                if (input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
+                                    subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
+                                    let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                                    subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+                                }
+                                // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                            })
+                        }
+                    })
+                    ele.append(`<div class="dropdown-divider"></div>`)
+                    ele.append(`<a data-id="unit-price-a-` + expense_item_id + `" data-value=""><div class="row">
+                                <div class="col-7 text-left col-form-label"><span style="color: #007D88">Enter price in <b>` + primary_currency + `</b>:</span></div>
+                                <div class="col-5 text-right"><input type="text" id="unit-price-input-` + expense_item_id + `" class="form-control mask-money" data-return-type="number"></div>
+                                </div></a>`)
+
+                    $.fn.initMaskMoney2();
+
+                    $('#' + row_id + ' #unit-price-input-' + expense_item_id).on('change', function () {
+                        let tr = $(this).closest('tr');
+                        let input_show = tr.find('.expense-unit-price-select-box');
+                        let quantity = tr.find('.expense-quantity');
+                        let tax = tr.find('.expense-tax-select-box option:selected');
+                        let subtotal_show = tr.find('.expense-subtotal-price');
+                        let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
+                        input_show.attr('value', $(this).attr('value'));
+                        $(`a[data-id="unit-price-a-` + expense_item_id + `"]`).attr('data-value', $(this).attr('value'));
+                        $.fn.initMaskMoney2();
+                        if ($(this).attr('value') && input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
+                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
+                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                            subtotal_after_tax_show.attr('value',parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+                        }
+                        else {
+                            input_show.attr('value', '');
+                            subtotal_show.attr('value', '');
+                            subtotal_after_tax_show.attr('value', '');
+                        }
+                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                    })
+
+                    $('#' + row_id + ' .expense-quantity').on('change', function () {
+                        let tr = $(this).closest('tr');
+                        let input_show = tr.find('.expense-unit-price-select-box');
+                        let tax = tr.find('.expense-tax-select-box option:selected');
+                        let subtotal_show = tr.find('.expense-subtotal-price');
+                        let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
+                        $.fn.initMaskMoney2();
+                        if (input_show.attr('value') && $(this).attr('value') && tax.attr('data-rate')) {
+                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt($(this).val()));
+                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+                        }
+                        else {
+                            input_show.attr('value', '');
+                            subtotal_show.attr('value', '');
+                            subtotal_after_tax_show.attr('value', '');
+                        }
+                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                    })
+
+                    $('#' + row_id + ' .expense-tax-select-box').on('change', function () {
+                        let tr = $(this).closest('tr');
+                        let tax = $(this).find('option:selected');
+                        let quantity = tr.find('.expense-quantity');
+                        let subtotal_show = tr.find('.expense-subtotal-price');
+                        let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
+                        $.fn.initMaskMoney2();
+                        if (quantity.val() && tax.attr('data-rate')) {
+                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+                        }
+                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
+    let AP_db = $('#advance_payment_list_datatable');
+
+    function loadAPList(sale_code_id) {
+        $('#advance_payment_list_datatable').DataTable().destroy();
+        let AP_db = $('#advance_payment_list_datatable');
+        AP_db.DataTableDefault({
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3'f><'col-sm-12 col-md-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            visibleDisplayRowTotal: false,
+            pageLength: 5,
+            paginate: true,
+            ajax: {
+                url: AP_db.attr('data-url'),
+                type: AP_db.attr('data-method'),
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        console.log(data)
+                        if (resp.data['advance_payment_list']) {
+                            let sale_order_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
+                                return sale_code_id.includes(item.sale_order_mapped);
+                            });
+                            let quotation_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
+                                return sale_code_id.includes(item.quotation_mapped);
+                            });
+                            let opportunity_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
+                                return sale_code_id.includes(item.opportunity_mapped);
+                            });
+                            // console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
+                            return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
+                        }
+                        else {
+                            return [];
+                        }
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    render: (data, type, row, meta) => {
+                        if (row.remain_value <= 0) {
+                            return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox" disabled>`
+                        }
+                        else {
+                            return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                        }
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-outline badge-soft-danger">` + row.code + `</span>`;
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.title + `</span>`;
+                    }
+                },
+                {
+                    data: 'to_payment',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="text-primary mask-money" data-init-money="` + row.to_payment + `"></span>`
+                    }
+                },
+                {
+                    data: 'return_value',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="text-primary mask-money" data-init-money="` + row.return_value + `"></span>`
+                    }
+                },
+                {
+                    data: 'remain_value',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
+                    }
+                },
+            ],
+        });
+    }
+
+    function calculate_sum_ap_expense_items() {
+        let result_total_value = 0;
+        $('.expense-tables').find('.total-converted-value').each(function (index, element) {
+            result_total_value += parseFloat($(this).attr('data-init-money'));
+        })
+        return result_total_value;
+    }
+
+    function get_ap_expense_items() {
+        let ap_expense_items = [];
+        $('.expense-tables').find('.expense-selected').each(function (index, element) {
+            if ($(this).is(':checked')) {
+                let value = parseFloat($(this).closest('tr').find('.converted-value-inp').attr('value'));
+                if ($(this).attr('data-id') && value > 0) {
+                    ap_expense_items.push({'id': $(this).attr('data-id'), 'value': value});
+                }
+            }
+        })
+        return ap_expense_items;
+    }
+
     loadCreator();
     $('#beneficiary-select-box').select2();
     loadSupplier();
@@ -795,7 +1132,7 @@ $(document).ready(function () {
             loadSaleCodeMulti();
             sale_code_selected_list = [];
             $('#beneficiary-select-box').prop('disabled', true);
-            loadBeneficiary('', $('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
+            loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
             $('#sale-code-select-box').prop('disabled', false);
             $('#sale-code-select-box2-show').css({
                 'background': 'none',
@@ -970,6 +1307,7 @@ $(document).ready(function () {
             });
 
             $('.row-detail-expense-' + row_count.toString()).find(".btn-add-payment-value").on('click', function() {
+                $('.total-converted').attr('hidden', true);
                 $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
                 $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
                 current_value_converted_from_ap = $(this);
@@ -1007,290 +1345,30 @@ $(document).ready(function () {
 
             $.fn.initMaskMoney2();
         }
+        else {
+            $.fn.notifyPopup({description: "Warning: You have not selected Sale Code yet!"}, 'warning');
+        }
     });
 
-    function count_row(table_body, sale_code_length, option) {
-        let count = 0;
-        table_body.find('tr td.number').each(function() {
-            count = count + 1;
-            $(this).text(count);
-            $(this).closest('tr').attr('id', 'row-' + count.toString());
-            let detail_expense_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
-            detail_expense_element.each(function (index, element) {
-                $(this).attr('class', 'row-detail-expense-' + count.toString());
-            });
-        });
-        if (option === 1) {
-            loadExpenseList('row-' + count.toString());
-            loadExpenseTaxList('row-' + count.toString());
-        }
-        return count;
-    }
-
-    function loadExpenseList(row_id) {
-        let ele = $('#' + row_id + ' .expense-select-box');
-        ele.select2();
-        ele.html('');
-        ele.append(`<option></option>`);
-        expense_list.map(function (item) {
-            let tax_code_id = '';
-            if (item.general_information.tax_code) {
-                tax_code_id = item.general_information.tax_code.id;
-            }
-            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type_id="` + item.general_information.expense_type.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
-        })
-    }
-
-    function loadExpenseTaxList(row_id) {
-        let ele = $('#' + row_id + ' .expense-tax-select-box');
-        ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-tax-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-rate="0" selected></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    function loadExpenseUomList(row_id, uom_group_id, uom_mapped_id) {
-        let ele = $('#' + row_id + ' .expense-uom-select-box');
-        ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-uom-list'), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.id === uom_group_id) {
-                            if (item.id === uom_mapped_id) {
-                                ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
-                            }
-                            else {
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
-                            }
-                        }
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    function loadUnitPriceList(row_id, expense_item_id) {
-        let ele = $('#' + row_id + ' .dropdown-menu');
-        ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + expense_item_id), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
-                    let primary_currency = 'VND';
-                    resp.data.expense.general_information.price_list.map(function (item) {
-                        if (item.is_primary === true) {
-                            primary_currency = item.abbreviation;
-                            ele.append(`<a data-id="` + item.id + `" data-value="` + item.price_value + `" class="dropdown-item"><div class="row">
-                                        <div class="col-7 text-left"><span>` + item.title + `:</span></div>
-                                        <div class="col-5 text-right"><span class="mask-money" data-init-money="` + item.price_value + `"></span></div>
-                                        </div></a>`)
-                            $.fn.initMaskMoney2();
-                            $(`a[data-id=` + item.id + `]`).on('click', function () {
-                                let tr = $(this).closest('tr');
-                                let input_show = tr.find('.expense-unit-price-select-box');
-                                let subtotal_show = tr.find('.expense-subtotal-price');
-                                let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
-                                let quantity = tr.find('.expense-quantity');
-                                let tax = tr.find('.expense-tax-select-box option:selected');
-                                input_show.attr('value', $(this).attr('data-value'));
-                                $.fn.initMaskMoney2();
-                                if (input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
-                                    subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
-                                    let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                                    subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                                }
-                                // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                            })
-                        }
-                    })
-                    ele.append(`<div class="dropdown-divider"></div>`)
-                    ele.append(`<a data-id="unit-price-a-` + expense_item_id + `" data-value=""><div class="row">
-                                <div class="col-7 text-left col-form-label"><span style="color: #007D88">Enter price in <b>` + primary_currency + `</b>:</span></div>
-                                <div class="col-5 text-right"><input type="text" id="unit-price-input-` + expense_item_id + `" class="form-control mask-money" data-return-type="number"></div>
-                                </div></a>`)
-
-                    $.fn.initMaskMoney2();
-
-                    $('#' + row_id + ' #unit-price-input-' + expense_item_id).on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let input_show = tr.find('.expense-unit-price-select-box');
-                        let quantity = tr.find('.expense-quantity');
-                        let tax = tr.find('.expense-tax-select-box option:selected');
-                        let subtotal_show = tr.find('.expense-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
-                        input_show.attr('value', $(this).attr('value'));
-                        $(`a[data-id="unit-price-a-` + expense_item_id + `"]`).attr('data-value', $(this).attr('value'));
-                        $.fn.initMaskMoney2();
-                        if ($(this).attr('value') && input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
-                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value',parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        else {
-                            input_show.attr('value', '');
-                            subtotal_show.attr('value', '');
-                            subtotal_after_tax_show.attr('value', '');
-                        }
-                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-
-                    $('#' + row_id + ' .expense-quantity').on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let input_show = tr.find('.expense-unit-price-select-box');
-                        let tax = tr.find('.expense-tax-select-box option:selected');
-                        let subtotal_show = tr.find('.expense-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
-                        $.fn.initMaskMoney2();
-                        if (input_show.attr('value') && $(this).attr('value') && tax.attr('data-rate')) {
-                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt($(this).val()));
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        else {
-                            input_show.attr('value', '');
-                            subtotal_show.attr('value', '');
-                            subtotal_after_tax_show.attr('value', '');
-                        }
-                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-
-                    $('#' + row_id + ' .expense-tax-select-box').on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let tax = $(this).find('option:selected');
-                        let quantity = tr.find('.expense-quantity');
-                        let subtotal_show = tr.find('.expense-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.expense-subtotal-price-after-tax');
-                        $.fn.initMaskMoney2();
-                        if (quantity.val() && tax.attr('data-rate')) {
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    // Initialize wizard
     $("#wizard").steps({
         transitionEffect: 'slide',
     });
 
     $('#wizard-t-0').attr('hidden', true);
     $('#wizard-t-1').attr('hidden', true);
-    $('#wizard-t-0').closest('li').append(`<span id="tab-1-offCanvas" class="text-primary" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment Items</span>`);
-    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary" style="font-size: larger; font-weight: bolder">2. Select Expense Items</span>`);
+    $('#wizard-t-0').closest('li').append(`<span id="tab-1-offCanvas" class="text-primary mr-3" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment</span>`);
+    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary ml-3" style="font-size: larger; font-weight: bolder">2. Select Expense</span>`);
 
     $('.content').css({
         'background': 'none'
     })
-
-    let AP_db = $('#advance_payment_list_datatable');
-
-    function loadAPList(sale_code_id) {
-        $('#advance_payment_list_datatable').DataTable().destroy();
-        let AP_db = $('#advance_payment_list_datatable');
-        AP_db.DataTableDefault({
-            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12'tr>>",
-            scrollY: "75%",
-            scrollX: true,
-            paginate: false,
-            ajax: {
-                url: AP_db.attr('data-url'),
-                type: AP_db.attr('data-method'),
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.data['advance_payment_list']) {
-                            let sale_order_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
-                                return sale_code_id.includes(item.sale_order_mapped);
-                            });
-                            let quotation_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
-                                return sale_code_id.includes(item.quotation_mapped);
-                            });
-                            let opportunity_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
-                                return sale_code_id.includes(item.opportunity_mapped);
-                            });
-                            return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
-                        }
-                        else {
-                            return [];
-                        }
-                    }
-                    return [];
-                },
-            },
-            columns: [
-                {
-                    render: (data, type, row, meta) => {
-                        return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
-                    }
-                },
-                {
-                    data: 'code',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span class="badge badge-outline badge-soft-danger">` + row.code + `</span>`;
-                    }
-                },
-                {
-                    data: 'title',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span>` + row.title + `</span>`;
-                    }
-                },
-                {
-                    data: 'to_payment',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.to_payment + `"></span>`
-                    }
-                },
-                {
-                    data: 'return_value',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.return_value + `"></span>`
-                    }
-                },
-                {
-                    data: 'remain_value',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
-                    }
-                },
-                {
-                    data: 'available_value',
-                    className: 'wrap-text',
-                    render: (data, type, row, meta) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.available_value + `"></span>`
-                    }
-                },
-            ],
-        });
-    }
 
     $('.content').addClass('h-70');
     $('#wizard-p-0').addClass('w-100');
     $('#advance_payment_list_datatable_wrapper').addClass('h-80');
 
     $('.actions').find('a[href="#next"]').on('click', function () {
+        $('.total-converted').attr('hidden', false);
         $("#tab-2-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
         $("#tab-1-offCanvas").attr('style', "font-size: large; font-weight: bolder");
         let selected_ap_list = [];
@@ -1336,7 +1414,6 @@ $(document).ready(function () {
                                             <th class="w-15">Unit Price</th>
                                             <th class="w-10">Tax</th>
                                             <th class="w-15">Remain</th>
-                                            <th class="w-15">Available</th>
                                             <th class="w-15">Converted Value</th>
                                         </tr>
                                     </thead>
@@ -1352,10 +1429,10 @@ $(document).ready(function () {
                                         tax_code = expense_item.tax.code
                                     }
                                     let disabled = 'disabled';
-                                    if (expense_item.available_total > 0) {
+                                    if (expense_item.remain_total > 0) {
                                         disabled = '';
                                     }
-                                    total_remain_value += expense_item.available_total;
+                                    total_remain_value += expense_item.remain_total;
                                     expense_table.append(`<tr>
                                         <td><input data-id="` + expense_item.id + `" class="expense-selected" type="checkbox" ` + disabled + `></td>
                                         <td>` + expense_item.expense.title + `</td>
@@ -1364,22 +1441,21 @@ $(document).ready(function () {
                                         <td><span class="text-primary mask-money" data-init-money="` + expense_item.unit_price + `"></span></td>
                                         <td><span class="badge badge-soft-danger">` + tax_code + `</span></td>
                                         <td><span class="text-primary mask-money expense-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
-                                        <td><span class="text-primary mask-money expense-available-value" data-init-money="` + expense_item.available_total + `"></span></td>
                                         <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                     </tr>`)
                                 }
                                 expense_table.append(`<tr style="background-color: #ebf5f5">
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td></td><td></td><td></td><td></td><td></td>
                                     <td><span style="text-align: left"><b>Total:</b></span></td>
                                     <td><span class="mask-money total-available-value text-primary" data-init-money="` + total_remain_value + `"></span></td>
                                     <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)
 
                                 $('.converted-value-inp').on('change', function () {
-                                    let expense_available_value = $(this).closest('tr').find('.expense-available-value').attr('data-init-money');
+                                    let expense_remain_value = $(this).closest('tr').find('.expense-remain-value').attr('data-init-money');
                                     let converted_value = $(this).attr('value');
-                                    if (parseFloat(converted_value) > parseFloat(expense_available_value)) {
-                                        $(this).attr('value', parseFloat(expense_available_value));
+                                    if (parseFloat(converted_value) > parseFloat(expense_remain_value)) {
+                                        $(this).attr('value', parseFloat(expense_remain_value));
                                     }
 
                                     let new_total_converted_value = 0;
@@ -1427,16 +1503,20 @@ $(document).ready(function () {
     })
 
     $('.actions').find('a[href="#previous"]').on('click', function () {
+        $('.total-converted').attr('hidden', true);
         $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
         $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
     })
 
     $('.actions').find('a[href="#finish"]').on('click', function () {
+        $('.total-converted').attr('hidden', true);
         let result_total_value = calculate_sum_ap_expense_items();
         current_value_converted_from_ap.closest('div').find('.value-converted-from-ap-inp').attr('value', result_total_value);
 
         let value_input_ap = parseFloat(current_value_converted_from_ap.closest('tr').find('.value-inp').attr('value'));
-        if (isNaN(value_input_ap)) { value_input_ap = 0; }
+        if (isNaN(value_input_ap)) {
+            value_input_ap = 0;
+        }
         current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('data-init-money', result_total_value + value_input_ap);
         current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(get_ap_expense_items()));
 
@@ -1444,29 +1524,10 @@ $(document).ready(function () {
         $('#offcanvasSelectDetailAP').offcanvas('hide');
     })
 
-    function calculate_sum_ap_expense_items() {
-        let result_total_value = 0;
-        $('.expense-tables').find('.total-converted-value').each(function (index, element) {
-            result_total_value += parseFloat($(this).attr('data-init-money'));
-        })
-        return result_total_value;
-    }
-
-    function get_ap_expense_items() {
-        let ap_expense_items = [];
-        $('.expense-tables').find('.expense-selected').each(function (index, element) {
-            if ($(this).is(':checked')) {
-                let value = $(this).closest('tr').find('.converted-value-inp').attr('value');
-                ap_expense_items.push({'id': $(this).attr('data-id'), 'value': value});
-            }
-        })
-        return ap_expense_items;
-    }
-
-    $('.actions').find('ul').prepend(`<li aria-disabled="false">
+    $('.actions').find('ul').prepend(`<li aria-disabled="false" class="total-converted" hidden>
             <label class="col-form-label text-primary text-decoration-underline"><b>TOTAL</b></label>
         </li>
-        <li aria-disabled="false">
+        <li aria-disabled="false" class="total-converted" hidden>
             <div class="row form-group">
                 <div class="col-12 text-left">
                     <span style="font-size: x-large" class="mask-money total-expense-selected text-primary" data-init-money="0"></span>
@@ -1476,16 +1537,28 @@ $(document).ready(function () {
 
     $('#wizard-p-1').addClass('w-100');
 
+    $('#input-file-now').dropify({
+        messages: {
+            'default': 'Drag and drop your file here.',
+        },
+        tpl: {
+            message: '<div class="dropify-message">' +
+                '<span class="file-icon"></span>' +
+                '<h5>{{ default }}</h5>' +
+                '</div>',
+        }
+    });
+
     $('#form-create-payment').submit(function (event) {
         let can_submit = 1;
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
+        let expense_valid_list = [];
         if ($('#tab_line_detail tbody').find('tr').length > 0) {
             let table_body = $('#tab_line_detail tbody');
             let row_count = table_body.find('.row-number').length;
-            let expense_valid_list = [];
             for (let i = 1; i <= row_count; i++) {
                 let expense_detail_value = 0;
 
@@ -1514,7 +1587,7 @@ $(document).ready(function () {
                         real_value = $(this).find('.value-inp').attr('value');
                     }
                     let converted_value = $(this).find('.value-converted-from-ap-inp').attr('value');
-                    if (converted_value_detail[0]['id'] === null) {
+                    if (converted_value_detail.length <= 0) {
                         converted_value = 0;
                     }
                     let sum_value = 0;
@@ -1546,13 +1619,14 @@ $(document).ready(function () {
                     })
                 }
 
-                if (price_after_tax_value < expense_detail_value || expense_detail_value === 0) {
+                if (price_after_tax_value !== expense_detail_value) {
                     can_submit = 0;
-                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value declared < Sum SaleCode values (or Empty)'}, 'failure');
+                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': Expense value must be equal to sum Sale Code value.'}, 'failure');
                 }
             }
-            frm.dataForm['expense_valid_list'] = expense_valid_list;
         }
+
+        frm.dataForm['expense_valid_list'] = expense_valid_list;
 
         if ($('input[name="sale_code_type"]:checked').val() === 'non-sale') {
             frm.dataForm['sale_code_type'] = 2;
@@ -1574,6 +1648,7 @@ $(document).ready(function () {
             frm.dataForm['opportunity_selected_list'] = opportunity_selected_list;
         }
         else if (frm.dataForm['sale_code_type'] === 0) {  // sale
+            frm.dataForm['sale_code'] = $('#sale-code-select-box option:selected').attr('value');
             if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
                 frm.dataForm['sale_code_detail'] = 0;
             }
@@ -1621,21 +1696,9 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
         }
     })
-
-    $('#input-file-now').dropify({
-        messages: {
-            'default': 'Drag and drop your file here.',
-        },
-        tpl: {
-            message: '<div class="dropify-message">' +
-                '<span class="file-icon"></span>' +
-                '<h5>{{ default }}</h5>' +
-                '</div>',
-        }
-    });
 })

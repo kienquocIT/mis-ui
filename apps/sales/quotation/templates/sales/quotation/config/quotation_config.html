@@ -48,7 +48,7 @@
 {% block pageContent %}
     <div class="row">
         <ul class="nav nav-light nav-tabs">
-            <li class="nav-item">
+            <li class="nav-item" id="tab-config">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
                     <span class="nav-link-text">{% trans 'General' %}</span>
                 </a>
@@ -78,6 +78,27 @@
             </div>
         </div>
     </form>
+
+
+    <input
+            type="hidden"
+            id="init-indicator-list"
+            class="quotation-config"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-property-param"
+            class="quotation-config"
+            data-url="{% url "ApplicationPropertyListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-param-list"
+            class="quotation-config"
+            data-url="{% url "IndicatorParamListAPI" %}"
+            data-method="GET"
+    >
 {% endblock %}
 
 

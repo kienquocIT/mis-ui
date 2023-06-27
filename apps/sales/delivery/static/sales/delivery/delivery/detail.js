@@ -23,6 +23,7 @@ $(async function () {
         contentModalHandle(idx, config, prod_data) {
             const _this = this
             let url = $('#url-factory').attr('data-warehouse-prod')
+
             $.fn.callAjax(url, 'get', {
                 'product_id': prod_data?.product_data?.id,
                 'uom_id': prod_data?.uom_data?.id
@@ -36,9 +37,9 @@ $(async function () {
                     temp[isKey] = isData
                     _this.setWarehouseList = temp
                     // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
-                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy
+                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
                     let delivery = prod_data?.delivery_data;
-                    let listConvert_config1 = []
+                    let newData = []
                     for (let [idx, item] of isData.entries()){
                         item.picked = 0
                         if (!config.is_picking && !config.is_partial_ship){
@@ -51,8 +52,8 @@ $(async function () {
                                     item.picked = val.stock
                                 }
                         }
-                        else if (config.is_picking && !config.is_partial_ship && delivery){
-                            // config 3
+                        else if ((config.is_picking && !config.is_partial_ship) || (config.is_picking && config.is_partial_ship) && delivery){
+                            // config 3, 4
                                 item.product_amount = 0
                                 for (const val of delivery){
                                     if (val.warehouse === item.id
@@ -63,11 +64,10 @@ $(async function () {
                                     }
                                 }
                         }
-                        listConvert_config1.push(item)
+                        newData.push(item)
                     }
-                    isData = listConvert_config1
                     table.not('.dataTable').DataTable({
-                        data: isData,
+                        data: newData,
                         searching: false,
                         ordering: false,
                         paginate: false,
@@ -94,8 +94,10 @@ $(async function () {
                                 class: 'w-25 text-center',
                                 data: 'product_amount',
                                 render: (row, type, data) => {
-                                    if (data.picked_ready > 0)
-                                        return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
+                                    if (data.picked_ready > 0 && config.is_picking)
+                                        if (config.is_partial_ship)
+                                            return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
+                                        else return `<p>${row}`
                                     return `<p>${row}</p>`;
                                 }
                             },
@@ -104,8 +106,10 @@ $(async function () {
                                 class: 'w-15 text-center',
                                 data: 'picked',
                                 render: (row, type, data, meta) => {
-                                    const disabled = data.product_amount <= 0 ? 'disabled' : '';
-                                    return `<input class="form-control" ${config.is_picking? 'readonly': ''} type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                                    let disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    // if condition for config 3 purpose.
+                                    if (config.is_picking && !config.is_partial_ship) disabled = 'disabled'
+                                    return `<input class="form-control" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                                 }
                             },
                         ],
@@ -115,7 +119,12 @@ $(async function () {
                                 const val = parseInt(this.value)
                                 let current = data
                                 if (val > 0) {
-                                    current.picked = val
+                                    if (config.is_picking && config.is_partial_ship){
+                                        if (val <= data.product_amount) current.picked = val
+                                    }
+                                    else{
+                                        current.picked = val
+                                    }
                                     table.DataTable().row(index).data(current).draw();
                                 }
                             })
@@ -150,7 +159,7 @@ $(async function () {
                     })
                     if (table.hasClass('dataTable')) {
                         table.DataTable().clear().draw();
-                        table.DataTable().rows.add(isData).draw();
+                        table.DataTable().rows.add(newData).draw();
                     }
                     $('#warehouseStockModal').modal('show');
                     $('#save-stock').off().on('click', function (e) {
@@ -306,7 +315,7 @@ $(async function () {
                 const $url = $('#url-factory');
                 const res = $.fn.switcherResp(req);
                 const $saleOrder = $('#inputSaleOrder');
-                $saleOrder.val(res.sale_order_data.title)
+                $saleOrder.val(res.sale_order_data.code)
                 $('.title-code').text(res.code)
                 if (res.estimated_delivery_date) {
                     const deliveryDate = moment(res.estimated_delivery_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
@@ -355,8 +364,8 @@ $(async function () {
                 $('#input-attachment').val(res.attachments)
                 if (res.remaining_quantity === res.ready_quantity && res.state < 2){
                     if($('#config-three-all').length) $('#config-three-all').attr('disabled', false)
-                    $('button[form="delivery_form"]').attr('disabled', false)
                 }
+                if (res.ready_quantity > 0 && res.state < 2) $('button[form="delivery_form"]').attr('disabled', false)
             })
     };
 
@@ -410,6 +419,11 @@ $(async function () {
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
+                    (errs) => {
+                        if (errs.data.errors.hasOwnProperty('detail')) {
+                            $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                        }
+                    }
                 )
                 .catch((err) => {
                     console.log(err)

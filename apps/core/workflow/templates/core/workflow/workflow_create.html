@@ -331,6 +331,11 @@
     <input type="hidden" id="translate-factory"
            data-context_delete="{% trans 'Delete connection' %}"
     >
+    <input
+        type="hidden"
+        id="base-trans-factory"
+        data-check-complete-node="{% trans 'Please complete nodes data' %}"
+    >
     <!--- modal add and edit zone--->
     <div class="modal fade"
          id="add_zone"
@@ -377,6 +382,7 @@
                                 data-multiple="true"
                                 data-prefix="application_property_list"
                                 data-url="{% url 'ApplicationPropertyListAPI' %}"
+                                data-select2-closeOnSelect="true"
                         ></select>
                     </div>
                     <div class="modal-footer">

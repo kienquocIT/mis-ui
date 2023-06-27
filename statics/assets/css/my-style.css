@@ -185,3 +185,9 @@ div.inline {
 .bg-dark-hover:hover {
     background-color: #f2f5f6;
 }
+
+/* Update some header table */
+.table thead th, .table-advance thead th {
+    border-bottom: 0;
+}
+/* -- Update some header table */

@@ -775,7 +775,7 @@ msgstr "Chuyển"
 
 #
 msgid "Approved"
-msgstr "Duyệt"
+msgstr "Đã duyệt"
 
 #
 msgid "Reject"
@@ -788,7 +788,7 @@ msgstr "Trả về"
 
 #
 msgid "Received"
-msgstr "Tiếp nhận"
+msgstr "Đã tiếp nhận"
 
 #
 msgid "Đã nhận"
@@ -2009,7 +2009,7 @@ msgstr "Giá trị tạm ứng"
 
 #
 msgid "Return value"
-msgstr "Gía trị hoàn trả"
+msgstr "Giá trị hoàn ứng"
 
 #
 msgid "Remain value"
@@ -2017,7 +2017,7 @@ msgstr "Giá trị chưa thanh toán"
 
 #
 msgid "Confirm return"
-msgstr "Xác nhận hoàn trả"
+msgstr "Xác nhận hoàn ứng"
 
 #
 msgid "Advance Payment"
@@ -2078,7 +2078,7 @@ msgstr "Đã nhận tiền"
 
 #
 msgid "AP Code"
-msgstr "Mã tạm ứng"
+msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
@@ -2738,12 +2738,12 @@ msgid "Loading"
 msgstr "Đang tải"
 
 #
-msgid "Diagram"
-msgstr "Biểu đồ"
+msgid "Diagram Workflow"
+msgstr "Biểu đồ quy trình"
 
 #
-msgid "Activities"
-msgstr "Hoạt động"
+msgid "Document Activities"
+msgstr "Lịch sử hoạt động"
 
 #
 msgid "The document approved because the feature config don't apply workflow"
@@ -2972,8 +2972,8 @@ msgid "Location raise"
 msgstr "Đường dẫn có xảy ra lỗi"
 
 #
-msgid "Document Number"
-msgstr "Số chứng từ."
+msgid "Document number"
+msgstr "Số chứng từ"
 
 #
 msgid "No bank accounts information!"
@@ -3004,6 +3004,10 @@ msgid "Save in Zone"
 msgstr "Lưu cập nhật trên Phân Vùng Quy Trình"
 
 #
+msgid "Save in zone then call next station"
+msgstr "Lưu cập nhật trên phần vùng quy trình, sau đó gọi chuyển trạm"
+
+#
 msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
 
@@ -3018,6 +3022,10 @@ msgstr "Cập nhật Space thành "
 #
 msgid "Auto reload has been applied after the timeout!"
 msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"
+
+#
+msgid "Execute this action after auto reload has been applied after the timeout!"
+msgstr "Thực thi hành động này và tải lại trang khi hết thời gian chờ!"
 
 #
 msgid "Successful"
@@ -3265,3 +3273,183 @@ msgstr "Sản phẩm trong kho hết hàng"
 #
 msgid "Available in Store place"
 msgstr "Kho còn hàng"
+
+#
+msgid "Action in Workflow"
+msgstr "Thao tác trên Quy trình"
+
+#
+msgid "Available URL"
+msgstr "Có sẵn"
+
+#
+msgid "Customize URL"
+msgstr "Tùy chọn"
+
+#
+msgid "Background Color"
+msgstr "Màu nền"
+
+#
+msgid "Text Color"
+msgstr "Màu chữ"
+
+#
+msgid "Maximum characters"
+msgstr "Số lượng ký tự tối đa"
+
+#
+msgid "Bookmarks"
+msgstr "Dấu trang"
+
+#
+msgid "New Book Mark"
+msgstr "Dấu trang mới"
+
+#
+msgid "My draft"
+msgstr "Phiếu nháp"
+
+#
+msgid "History"
+msgstr "Nhật ký"
+
+#
+msgid "Add Member"
+msgstr "Thêm thành viên"
+
+#
+msgid "Member"
+msgstr "Thành viên"
+
+#
+msgid "View Detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "Employee Name"
+msgstr "Tên nhân viên"
+
+#
+msgid "Employee Code"
+msgstr "Mã nhân viên"
+
+#
+msgid "Add member to Sale team"
+msgstr "Thêm thành viên cho nhóm kinh doanh"
+
+#
+msgid "rate must not be less than 0 or greater than 100"
+msgstr "Tỷ lệ không được nhỏ hơn 0 hoặc lớn hơn 100"
+
+#
+msgid "quantity must not be less than zero"
+msgstr "Số lượng không được nhỏ hơn 0"
+
+#
+msgid "money must not be less than zero"
+msgstr "Số tiền không được nhỏ hơn 0"
+
+#
+msgid "The closing date must not be later than the opening date"
+msgstr "Ngày đóng phải sau ngày mở"
+
+#
+msgid "Apply Promotion Fail."
+msgstr "Áp dụng khuyến mãi không thành công"
+
+#
+msgid "Document is unqualified for promotion applied. Remove promotion or select another available promotion."
+msgstr "Báo giá/ đơn hàng của bạn hiện chưa thỏa điều kiện áp dụng của khuyến mãi đã chọn. Nhấn bỏ khuyến mãi hoặc xem khuyến mãi khả dụng khác"
+
+#
+msgid "Remove Promotion."
+msgstr "Bỏ khuyến mãi"
+
+#
+msgid "See Promotion"
+msgstr "Xem khuyến mãi"
+
+#
+msgid "Url is invalid"
+msgstr "Đường dẫn không hợp lệ"
+
+#
+msgid "Please complete nodes data"
+msgstr "Vui lòng hoàn thành dữ liệu các trạm"
+
+#
+msgid "Please select shipping address"
+msgstr "Vui lòng chọn địa chỉ giao hàng"
+
+#
+msgid "Edit formula"
+msgstr "Chỉnh sửa công thức"
+
+#
+msgid "Editor"
+msgstr "Trình soạn thảo"
+
+#
+msgid "Indicator"
+msgstr "Chỉ tiêu"
+
+#
+msgid "Property"
+msgstr "Thuộc tính"
+
+#
+msgid "Function indicator"
+msgstr "Hàm"
+
+#
+msgid "Operator indicator"
+msgstr "Toán tử"
+
+#
+msgid "Returned"
+msgstr "Đã hoàn ứng"
+
+#
+msgid "To employee"
+msgstr "Cho nhân viên"
+
+#
+msgid "To supplier"
+msgstr "Cho nhà cung cấp"
+
+#
+msgid "Pretax price"
+msgstr "Tổng trước thuế"
+
+#
+msgid "Money gave/transferred"
+msgstr "Đã nhận tiền"
+
+#
+msgid "Supplier name"
+msgstr "Tên nhà cung cấp"
+
+#
+msgid "Add new row"
+msgstr "Thêm hàng mới"
+
+#
+msgid "Payment value"
+msgstr "Giá trị phiếu thanh toán"
+
+#
+msgid "Advance Payment value"
+msgstr "Giá trị phiếu tạm ứng"
+
+#
+msgid "To payment value"
+msgstr "Đã thanh toán"
+
+#
+msgid "Remain AP"
+msgstr "Tạm ứng còn lại"
+
+#
+msgid "Waiting"
+msgstr "Đang chờ"

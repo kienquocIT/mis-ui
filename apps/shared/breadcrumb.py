@@ -139,8 +139,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery Detail'))
 
     # Return Advance
-    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
-    RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ReturnAdvanceCreate')
+    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance list'), 'ReturnAdvanceList')
+    RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Return Advance create'), 'ReturnAdvanceCreate')
     RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Opportunity Detail
@@ -155,6 +155,21 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
 class BreadcrumbView:
     """menu vertical item view"""
+
+    @staticmethod
+    def get_list_view():
+        arr = []
+        for att in dir(BreadcrumbItem()):
+            if not att.startswith('__'):
+                child = getattr(BreadcrumbItem, att)
+                if child.url:
+                    arr.append(
+                        {
+                            'view_name': child.url,
+                            'title': child.title,
+                        }
+                    )
+        return arr
 
     @staticmethod
     def check_view_name():
@@ -392,7 +407,7 @@ class BreadcrumbView:
         BreadcrumbItem.SALE_ORDER_CONFIG_PAGE
     ]
 
-	# Opportunity detail
+    # Opportunity detail
     OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.OPPORTUNITY_DETAIL_PAGE]
 
     # Opportunity Config

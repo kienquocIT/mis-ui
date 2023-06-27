@@ -17,4 +17,6 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     ADVANCE_PAYMENT_UPDATE = _('Advance payment update successfully')
     PAYMENT_CREATE = _('Payment create successfully')
     PAYMENT_UPDATE = _('Payment update successfully')
+    QUOTATION_INDICATOR_CREATE = _('Quotation indicator create successfully')
+    QUOTATION_INDICATOR_UPDATE = _('Quotation indicator update successfully')
     OPPORTUNITY_TASK_CONFIG_UPDATE = _('Opportunity task config update successfully')

@@ -6,33 +6,40 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "ReturnAdvanceCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Add">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href="{% url "ReturnAdvanceCreate" %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Return' %}"
+       id="create_return_button"
+       data-bs-original-title="Add Return">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
             </span>
-        </span>
-    </a>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
     </a>
 {% endblock %}
 {% block pageContent %}
     <table id="dtbReturnAdvance" class="table nowrap w-100 mb-5" data-method="GET"
-           data-url="{% url "ReturnAdvanceListAPI" %}" data-url-detail="{% url "ReturnAdvanceDetail" pk=0 %}">
+           data-url="{% url "ReturnAdvanceListAPI" %}"
+           data-url-detail="{% url "ReturnAdvanceDetail" pk=0 %}"
+           data-type-translate-approved="{% trans 'Approved' %}"
+           data-type-translate-waiting="{% trans 'Waiting' %}"
+           data-type-translate-received="{% trans 'Received' %}"
+    >
         <thead>
-        <th>#</th>
         <th>{% trans "Code" %}</th>
-        <th>{% trans "Name" %}</th>
+        <th>{% trans "Name" %}
+            <i class="fas fa-info-circle icon-info"
+               data-bs-toggle="tooltip"
+               data-bs-placement="bottom"
+               title="{% trans 'Press row here to open detail page.' %}">
+            </i>
+        </th>
         <th>{% trans "AP Code" %}</th>
         <th>{% trans "Created date" %}</th>
         <th>{% trans "Return value" %}</th>

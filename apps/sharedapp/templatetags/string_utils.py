@@ -6,6 +6,7 @@ from django import template
 register = template.Library()
 
 
+@register.filter
 def shorten_name(value, upper=False):
     """Nguyen Van A --> NVA"""
     result = "".join(
@@ -65,4 +66,20 @@ def class_name_animal():
     return f'{icon} {color}'
 
 
-register.filter('shorten_name', shorten_name)
+@register.filter
+def replace_str(data, from_str_commas_to_str):
+    arr = from_str_commas_to_str.split(",")
+    if len(arr) == 2:
+        return str(data).replace(arr[0], arr[1])
+    return data
+
+
+@register.filter
+def str_first_upper(data):
+    arr = []
+    for index, item in enumerate(data.split(" ")):
+        if index == 0:
+            arr.append(item.capitalize())
+        else:
+            arr.append(item.lower())
+    return " ".join(arr)

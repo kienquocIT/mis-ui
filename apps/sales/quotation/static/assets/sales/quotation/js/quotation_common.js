@@ -8,46 +8,52 @@ class loadDataHandle {
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.empty();
-                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                        ele.append(`<option value=""></option>`);
-                        data.opportunity_list.map(function (item) {
-                            let check_used = item.quotation_id;
-                            if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
-                               check_used = item.sale_order_id
-                            }
-                            if (check_used === null || valueToSelect === item.id) {
-                                let dataStr = JSON.stringify({
-                                    'id': item.id,
-                                    'title': item.title,
-                                    'code': item.code,
-                                    'customer': item.customer.title
-                                }).replace(/"/g, "&quot;");
-                                let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                                let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                                let option = `<option value="${item.id}">
-                                            <span class="opp-title">${data_show}</span>
-                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                if (valueToSelect && valueToSelect === item.id) {
-                                    option = `<option value="${item.id}" selected>
-                                            <span class="opp-title">${data_show}</span>
-                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+        let sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        if (sale_person) {
+            let data_filter = {'sale_person_id': sale_person};
+            ele.empty();
+            ele.append(`<option value=""></option>`);
+            $.fn.callAjax(url, method, data_filter).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            data.opportunity_list.map(function (item) {
+                                let check_used = item.quotation_id;
+                                if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                                   check_used = item.sale_order_id
                                 }
-                                ele.append(option)
-                            }
-                        })
+                                if (check_used === null || valueToSelect === item.id) {
+                                    let dataStr = JSON.stringify({
+                                        'id': item.id,
+                                        'title': item.title,
+                                        'code': item.code,
+                                        'customer': item.customer.title
+                                    }).replace(/"/g, "&quot;");
+                                    let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                    let data_show = `${item.code}` + ` - ` + `${item.title}`;
+                                    let option = `<option value="${item.id}">
+                                                <span class="opp-title">${data_show}</span>
+                                                <input type="hidden" class="data-default" value="${opportunity_data}">
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                    if (valueToSelect && valueToSelect === item.id) {
+                                        option = `<option value="${item.id}" selected>
+                                                <span class="opp-title">${data_show}</span>
+                                                <input type="hidden" class="data-default" value="${opportunity_data}">
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                    }
+                                    ele.append(option)
+                                }
+                            })
+                        }
                     }
                 }
-            }
-        )
+            )
+        } else {
+            ele.append(`<option value=""></option>`);
+        }
     }
 
     loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null) {
@@ -56,66 +62,72 @@ class loadDataHandle {
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        self.loadShippingBillingCustomer(modalShipping, modalBilling);
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.empty();
-                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                        let dataAppend = ``;
-                        let dataMapOpp = ``;
-                        data.account_sale_list.map(function (item) {
-                            let ownerName = "";
-                            if (item.owner) {
-                                ownerName = item.owner.fullname;
-                            }
-                            let dataStr = JSON.stringify({
-                                'id': item.id,
-                                'Name': item.name,
-                                'Owner name': ownerName,
-                            }).replace(/"/g, "&quot;");
-                            let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                            dataAppend += `<option value="${item.id}">
-                                            <span class="account-title">${item.name}</span>
-                                            <input type="hidden" class="data-default" value="${customer_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                            if (item.id === valueToSelect) {
-                                dataMapOpp = `<option value="${item.id}" selected>
-                                            <span class="account-title">${item.name}</span>
-                                            <input type="hidden" class="data-default" value="${customer_data}">
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                // load Shipping & Billing by Customer
-                                self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
-                                // load Contact by Customer
-                                if (item.id && item.owner) {
-                                    self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+        let sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        if (sale_person) {
+            let data_filter = {'employee__id': sale_person}
+            self.loadShippingBillingCustomer(modalShipping, modalBilling);
+            ele.empty();
+            ele.append(`<option value=""></option>`);
+            $.fn.callAjax(url, method, data_filter).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                            let dataAppend = ``;
+                            let dataMapOpp = ``;
+                            data.account_sale_list.map(function (item) {
+                                let ownerName = "";
+                                if (item.owner) {
+                                    ownerName = item.owner.fullname;
                                 }
-                                // load Payment Term by Customer
-                                self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'Name': item.name,
+                                    'Owner name': ownerName,
+                                }).replace(/"/g, "&quot;");
+                                let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                dataAppend += `<option value="${item.id}">
+                                                <span class="account-title">${item.name}</span>
+                                                <input type="hidden" class="data-default" value="${customer_data}">
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                if (item.id === valueToSelect) {
+                                    dataMapOpp = `<option value="${item.id}" selected>
+                                                <span class="account-title">${item.name}</span>
+                                                <input type="hidden" class="data-default" value="${customer_data}">
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                    // load Shipping & Billing by Customer
+                                    self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                    // load Contact by Customer
+                                    if (item.id && item.owner) {
+                                        self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                    }
+                                    // load Payment Term by Customer
+                                    self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
+                                    // Store Account Price List
+                                    document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                }
+                            })
+                            if (dataMapOpp) { // if Opportunity has Customer
+                                ele.append(dataMapOpp);
+                            } else { // if Opportunity doesn't have Customer
+                                ele.append(dataAppend);
+                                // load Contact no Customer
+                                self.loadBoxQuotationContact('select-box-quotation-create-contact');
+                                // load Payment Term no Customer
+                                self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term')
                                 // Store Account Price List
-                                document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                document.getElementById('customer-price-list').value = "";
                             }
-                        })
-                        if (dataMapOpp) { // if Opportunity has Customer
-                            ele.append(dataMapOpp);
-                        } else { // if Opportunity doesn't have Customer
-                            ele.append(`<option value=""></option>`);
-                            ele.append(dataAppend);
-                            // load Contact no Customer
-                            self.loadBoxQuotationContact('select-box-quotation-create-contact');
-                            // load Payment Term no Customer
-                            self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term')
-                            // Store Account Price List
-                            document.getElementById('customer-price-list').value = "";
+                            self.loadInformationSelectBox(ele);
                         }
-                        self.loadInformationSelectBox(ele);
                     }
                 }
-            }
-        )
+            )
+        } else {
+            ele.append(`<option value=""></option>`);
+        }
     }
 
     loadBoxQuotationContact(contact_id, valueToSelect = null, customerID = null) {
@@ -277,6 +289,7 @@ class loadDataHandle {
     }
 
     loadBoxQuotationProduct(product_id, box_id, valueToSelect = null) {
+        let self = this;
         let ele = document.getElementById(product_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -324,8 +337,10 @@ class loadDataHandle {
                                 <input type="hidden" class="data-info" value="${dataStr}">
                             </option>`
                 }
-                eleBox.append(option)
+                eleBox.append(option);
             }
+            // load data information
+            self.loadInformationSelectBox(eleBox);
         }
     }
 
@@ -446,6 +461,7 @@ class loadDataHandle {
     }
 
     loadBoxQuotationExpense(expense_id, box_id, valueToSelect = null) {
+        let self = this;
         let ele = document.getElementById(expense_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -457,12 +473,18 @@ class loadDataHandle {
             eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
                 let uom_title = "";
+                let expense_type_title = "";
+                let expense_type = {};
                 let default_uom = {};
                 let tax_code = {};
                 let price_list = [];
                 if (data[i].general_information) {
                     if (data[i].general_information.uom) {
                         uom_title = data[i].general_information.uom.title
+                    }
+                    if (data[i].general_information.expense_type) {
+                        expense_type = data[i].general_information.expense_type;
+                        expense_type_title = data[i].general_information.expense_type.title;
                     }
                     default_uom = data[i].general_information.uom;
                     tax_code = data[i].general_information.tax_code;
@@ -473,11 +495,13 @@ class loadDataHandle {
                     'title': data[i].title,
                     'code': data[i].code,
                     'unit of measure': uom_title,
+                    'expense type': expense_type_title,
                 }).replace(/"/g, "&quot;");
                 let expense_data = JSON.stringify({
                     'id': data[i].id,
                     'title': data[i].title,
                     'code': data[i].code,
+                    'expense_type': expense_type,
                     'unit_of_measure': default_uom,
                     'price_list': price_list,
                     'tax': tax_code,
@@ -494,8 +518,10 @@ class loadDataHandle {
                             <input type="hidden" class="data-info" value="${dataStr}">
                         </option>`
                 }
-                eleBox.append(option)
+                eleBox.append(option);
             }
+            // load data information
+            self.loadInformationSelectBox(eleBox);
         }
     }
 
@@ -2930,6 +2956,7 @@ class submitHandle {
                         rowData['expense'] = dataInfo.id;
                         rowData['expense_title'] = dataInfo.title;
                         rowData['expense_code'] = dataInfo.code;
+                        rowData['expense_type_title'] = dataInfo['expense type'];
                     }
                 }
             }

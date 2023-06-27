@@ -147,6 +147,12 @@ $(function () {
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadDataClass.loadInformationSelectBox($(this));
+            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
+            $('#select-box-quotation-create-customer').empty();
+            $('#select-box-quotation-create-opportunity').empty();
+            $('#select-box-quotation-create-contact').empty();
+            $('#select-box-quotation-create-payment-term').empty();
+            document.getElementById('customer-price-list').value = "";
         });
 
 // Action on click dropdown price list

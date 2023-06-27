@@ -334,7 +334,7 @@ $(function () {
                                                 </div>
                                                 <div class="row modal-footer-edit-formula">
                                                     <div class="col-6 modal-edit-formula-validate">
-                                                        <span class="valid-indicator-formula">")" expected</span>
+                                                        <span class="valid-indicator-formula ml-1"></span>
                                                     </div>
                                                     <div class="col-6 modal-edit-formula-action">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
@@ -468,6 +468,7 @@ $(function () {
             }
         });
 
+// Validate Indicator Formula Editor
         tableIndicator.on('change', '.indicator-editor', function (e) {
             let editorValue = $(this).val();
             let isValid = true;
@@ -479,10 +480,12 @@ $(function () {
                 if (btnSave.hasAttribute('disabled')) {
                     btnSave.removeAttribute('disabled')
                 }
+                row.querySelector('.valid-indicator-formula').innerHTML = "";
             } else {
                 if (!btnSave.hasAttribute('disabled')) {
-                    btnSave.setAttribute('disabled', 'true')
+                    btnSave.setAttribute('disabled', 'true');
                 }
+                row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
             }
         })
 
@@ -508,7 +511,7 @@ $(function () {
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
         let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
-        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|===|!==|>=|<=|>|</g;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
         function setupFormula(data_submit, ele) {
             let row = ele[0].closest('tr');
@@ -546,6 +549,7 @@ $(function () {
                             functionBodyData.push(body_item);
                         }
                     }
+                    validateItemInList(functionBodyData);
                     functionJSON['function_data'] = functionBodyData;
                     formula_data.push(functionJSON);
                 } else if (item.includes("indicator")) { // INDICATOR
@@ -576,6 +580,18 @@ $(function () {
                 }
             }
             return result
+        }
+
+        function validateItemInList(data_list) {
+            for (let i = 0; i < data_list.length; i++) {
+                let data = data_list[i];
+                if (data === "==") {
+                    data_list[i] = "===";
+                }
+                if (data === "!=") {
+                    data_list[i] = "!==";
+                }
+            }
         }
 // END setup formula
 

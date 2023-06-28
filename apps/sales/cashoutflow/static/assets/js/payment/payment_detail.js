@@ -8,6 +8,7 @@ $(document).ready(function () {
         if (data) {
             let opp_code_list = [];
             let payment_detail = data.payment_detail;
+            // console.log(payment_detail)
             $.fn.compareStatusShowPageAction(payment_detail);
             $('#payment-code').text(payment_detail.code);
             $('#payment-title').val(payment_detail.title);
@@ -113,22 +114,62 @@ $(document).ready(function () {
                 for (let i = 0; i < payment_detail.sale_order_mapped.length; i++) {
                     let sale_code_detail_show = sale_code_id_list[i].opportunity.code;
                     if (sale_code_detail_show === undefined) {sale_code_detail_show = sale_code_id_list[i].code}
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + payment_detail.sale_order_mapped[i].id, 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                payment_cost_items_filtered = data.payment_cost_items_list;
-                                loadSaleOrderPlan(payment_detail.sale_order_mapped[i].id, sale_code_detail_show);
-                            }
+                    // get ap expense items
+                    let so_id = payment_detail.sale_order_mapped[i].id;
+                    let so_filter = sale_order_list.filter(function(item) {
+                        return item.id === so_id;
+                    });
+                    let so_mapped = null;
+                    let quo_mapped = null;
+                    let opp_mapped = null;
+                    if (so_filter.length > 0) {
+                        so_mapped = so_filter[0];
+                    }
+                    if (so_mapped) {
+                        if (Object.keys(so_mapped.quotation).length !== 0) {
+                            quo_mapped = so_mapped.quotation;
                         }
-                    })
+                        if (Object.keys(so_mapped.opportunity).length !== 0) {
+                            opp_mapped = so_mapped.opportunity;
+                        }
+                    }
+                    let so_mapped_id = null;
+                    let quo_mapped_id = null;
+                    let opp_mapped_id = null;
+                    if (so_mapped) {so_mapped_id = so_mapped.id}
+                    if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+                    if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
                     advance_payment_expense_items = [];
                     for (let i = 0; i < ap_list.length; i++) {
-                        if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                        if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                        }
+                        if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                        }
+                        if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
                             advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                         }
                     }
+
+                    // get payment items
+                    payment_cost_items_filtered = [];
+                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                                for (let i = 0; i < data.payment_cost_items_list.length; i++) {
+                                    // console.log(data.payment_cost_items_list[i])
+                                    let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
+                                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                        payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
+                                    }
+                                }
+                                loadSaleOrderPlan(payment_detail.sale_order_mapped[i].id, sale_code_detail_show)
+                            }
+                        }
+                    })
                 }
                 $('#notify-none-sale-code').prop('hidden', true);
                 $('#tab_plan_datatable').prop('hidden', false);
@@ -138,22 +179,76 @@ $(document).ready(function () {
                 for (let i = 0; i < payment_detail.quotation_mapped.length; i++) {
                     let sale_code_detail_show = sale_code_id_list[i].opportunity.code;
                     if (sale_code_detail_show === undefined) {sale_code_detail_show = sale_code_id_list[i].code}
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + payment_detail.quotation_mapped[i].id, 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                payment_cost_items_filtered = data.payment_cost_items_list;
-                                loadQuotationPlan(payment_detail.quotation_mapped[i].id, sale_code_detail_show);
+                    // get ap expense items
+                    let quo_id = payment_detail.quotation_mapped[i].id;
+                    let so_filter = sale_order_list.filter(function(item) {
+                        if (Object.keys(item.quotation).length !== 0) {
+                            return item.quotation.id === quo_id;
+                        }
+                    });
+                    let so_mapped = null;
+                    let quo_mapped = null;
+                    let opp_mapped = null;
+                    if (so_filter.length > 0) {
+                        so_mapped = so_filter[0];
+                        if (so_mapped) {
+                            if (Object.keys(so_mapped.quotation).length !== 0) {
+                                quo_mapped = so_mapped.quotation;
+                            }
+                            if (Object.keys(so_mapped.opportunity).length !== 0) {
+                                opp_mapped = so_mapped.opportunity;
                             }
                         }
-                    })
+                    }
+                    else {
+                        let quo_filter = quotation_list.filter(function(item) {
+                            return item.id === quo_id;
+                        });
+                        quo_mapped = quo_filter[0];
+                        if (quo_mapped) {
+                            if (Object.keys(quo_mapped.opportunity).length !== 0) {
+                                opp_mapped = quo_mapped.opportunity;
+                            }
+                        }
+                    }
+
+                    let so_mapped_id = null;
+                    let quo_mapped_id = null;
+                    let opp_mapped_id = null;
+                    if (so_mapped) {so_mapped_id = so_mapped.id}
+                    if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+                    if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
                     advance_payment_expense_items = [];
                     for (let i = 0; i < ap_list.length; i++) {
-                        if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                        if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                        }
+                        if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                        }
+                        if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
                             advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                         }
                     }
+
+                    // get payment items
+                    payment_cost_items_filtered = [];
+                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
+                                for (let i = 0; i < data.payment_cost_items_list.length; i++) {
+                                    // console.log(data.payment_cost_items_list[i])
+                                    let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
+                                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                        payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
+                                    }
+                                }
+                                loadQuotationPlan(payment_detail.quotation_mapped[i].id, sale_code_detail_show)
+                            }
+                        }
+                    })
                 }
                 $('#notify-none-sale-code').prop('hidden', true);
                 $('#tab_plan_datatable').prop('hidden', false);
@@ -337,21 +432,6 @@ $(document).ready(function () {
             $('#supplier-industry').text($('#supplier-select-box option:selected').attr('data-industry'));
             let url = $('#btn-detail-supplier-tab').attr('data-url').replace('0', $('#supplier-select-box option:selected').attr('value'));
             $('#btn-detail-supplier-tab').attr('href', url);
-
-            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_mapped[0].id, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                        payment_cost_items_filtered = data.payment_cost_items_list;
-                    }
-                }
-            })
-
-            for (let i = 0; i < ap_list.length; i++) {
-                if (ap_list[i].sale_order_mapped === sale_code_mapped[0].id || ap_list[i].quotation_mapped === sale_code_mapped[0].id) {
-                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                }
-            }
         }
 
         $('.form-control').prop('disabled', true);
@@ -372,10 +452,14 @@ $(document).ready(function () {
         });
     })
 
-    const account_list = JSON.parse($('#account_list').text());
+    const sale_order_list = JSON.parse($('#sale_order_list').text());
+    const quotation_list = JSON.parse($('#quotation_list').text());
     const expense_list = JSON.parse($('#expense_list').text());
-    const tax_list = JSON.parse($('#tax_list').text());
     const employee_list = JSON.parse($('#employee_list').text());
+    const unit_of_measure = JSON.parse($('#unit_of_measure').text());
+    const tax_list = JSON.parse($('#tax_list').text());
+    const account_list = JSON.parse($('#account_list').text());
+    const opportunity_list = JSON.parse($('#opportunity_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
         return obj;
@@ -461,33 +545,26 @@ $(document).ready(function () {
     }
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
-        let ap_item = ap_list.filter(function(item) {
-            return item.sale_order_mapped === filter_sale_order_id;
-        });
-
         let ap_expense_list_mapped = []
-        for (let i = 0; i < ap_item.length; i++) {
-            for (let j = 0; j < ap_item[i].expense_items.length; j++) {
-                let ap_expense_item = ap_item[i].expense_items[j];
-                let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                    return item.expense_id === ap_expense_item.expense.id;
-                });
-                let paid = payment_cost_items_list.reduce(function(s, item) {
-                    return s + item.sum_value;
-                }, 0);
-                ap_expense_list_mapped.push(
-                    {
-                        'expense_id': ap_expense_item.expense.id,
-                        'ap_approved': ap_expense_item.after_tax_price,
-                        'returned': ap_expense_item.returned_total,
-                        'paid': paid,
-                        'remain_ap': ap_expense_item.remain_total,
-                    }
-                )
-            }
+        for (let i = 0; i < advance_payment_expense_items.length; i++) {
+            let ap_expense_item = advance_payment_expense_items[i];
+            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                return item.expense_id === ap_expense_item.expense.id;
+            });
+            let paid = payment_cost_items_list.reduce(function(s, item) {
+                return s + item.sum_value;
+            }, 0);
+            ap_expense_list_mapped.push(
+                {
+                    'expense_id': ap_expense_item.expense.id,
+                    'ap_approved': ap_expense_item.after_tax_price,
+                    'returned': ap_expense_item.returned_total,
+                    'paid': paid,
+                    'remain_ap': ap_expense_item.remain_total,
+                }
+            )
         }
 
-        console.log(ap_expense_list_mapped)
         let url = $('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + filter_sale_order_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -496,47 +573,46 @@ $(document).ready(function () {
                     <td colspan="3"><span class="badge badge-primary">` + filter_sale_order_code + `</span></td>
                     <td colspan="5"></td>
                 </tr>`)
-                for (let i = 0; i < data.sale_order_expense_list.length; i++) {
-                    let expense_item = data.sale_order_expense_list[i];
-                    let tax_item = '';
-                    if (expense_item.tax.title) {
-                        tax_item = expense_item.tax.title;
-                    }
-                    let expense_get = ap_expense_list_mapped.filter(function(item) {
-                        return item.expense_id === expense_item.expense_id;
+                let data_detail = data.sale_order_expense_list;
+                for (let i = 0; i < data_detail.length; i++) {
+                    let expense_id = data_detail[i].expense_id;
+                    let results = advance_payment_expense_items.filter(function(item) {
+                        return item.expense.id === expense_id;
                     });
-                    let remain_ap = 0;
-                    remain_ap = expense_get.reduce(function(s, item) {
-                        return s + item.remain_ap;
+                    let ap_approved = results.reduce(function(s, item) {
+                        return s + item.after_tax_price;
                     }, 0);
-                    let ap_approved = 0;
-                    ap_approved = expense_get.reduce(function(s, item) {
-                        return s + item.ap_approved;
+                    let returned = results.reduce(function(s, item) {
+                        return s + item.returned_total;
                     }, 0);
-                    let returned = 0;
-                    returned = expense_get.reduce(function(s, item) {
-                        return s + item.returned;
+                    let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                        return item.expense_id === expense_id;
+                    });
+                    let to_payment = payment_cost_items_list.reduce(function(s, item) {
+                        return s + item.converted_value;
                     }, 0);
-                    let paid = 0;
-                    paid = expense_get.reduce(function(s, item) {
-                        return s + item.paid;
+                    let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                        return s + item.real_value;
                     }, 0);
-                    if (expense_get.length > 0) {
-                        paid = parseFloat(paid/expense_get.length);
-                    }
-                    else {
-                        paid = 0;
-                    }
-                    let available = 0;
-                    available = expense_item.plan_after_tax - remain_ap - paid;
-                    if (available < 0) {
-                        available = 0;
+
+                    let plan_after_tax = 0;
+                    plan_after_tax = data_detail[i].plan_after_tax;
+                    let remain_ap = ap_approved - returned - to_payment;
+                    let paid = to_payment + others_payment;
+                    let available = plan_after_tax - remain_ap - paid;
+
+                    if (remain_ap < 0) {remain_ap = 0}
+                    if (available < 0) {available = 0}
+
+                    let tax_item = '';
+                    if (data_detail[i].tax.title) {
+                        tax_item = data_detail[i].tax.title;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
-                        <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + returned + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
@@ -577,7 +653,6 @@ $(document).ready(function () {
             }
         }
 
-        console.log(ap_expense_list_mapped)
         let url = $('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + filter_quotation_id;
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -586,47 +661,50 @@ $(document).ready(function () {
                     <td colspan="3"><span class="badge badge-primary">` + filter_quotation_code + `</span></td>
                     <td colspan="5"></td>
                 </tr>`)
-                for (let i = 0; i < data.quotation_expense_list.length; i++) {
-                    let expense_item = data.quotation_expense_list[i];
-                    let tax_item = '';
-                    if (expense_item.tax.title) {
-                        tax_item = expense_item.tax.title;
-                    }
-                    let expense_get = ap_expense_list_mapped.filter(function(item) {
-                        return item.expense_id === expense_item.expense_id;
+                let data_detail = data.quotation_expense_list;
+                for (let i = 0; i < data_detail.length; i++) {
+                    let expense_id = data_detail[i].expense_id;
+                    let results = advance_payment_expense_items.filter(function (item) {
+                        return item.expense.id === expense_id;
                     });
-                    let remain_ap = 0;
-                    remain_ap = expense_get.reduce(function(s, item) {
-                        return s + item.remain_ap;
+                    let ap_approved = results.reduce(function (s, item) {
+                        return s + item.after_tax_price;
                     }, 0);
-                    let ap_approved = 0;
-                    ap_approved = expense_get.reduce(function(s, item) {
-                        return s + item.ap_approved;
+                    let returned = results.reduce(function (s, item) {
+                        return s + item.returned_total;
                     }, 0);
-                    let returned = 0;
-                    returned = expense_get.reduce(function(s, item) {
-                        return s + item.returned;
+                    let payment_cost_items_list = payment_cost_items_filtered.filter(function (item) {
+                        return item.expense_id === expense_id;
+                    });
+                    let to_payment = payment_cost_items_list.reduce(function (s, item) {
+                        return s + item.converted_value;
                     }, 0);
-                    let paid = 0;
-                    paid = expense_get.reduce(function(s, item) {
-                        return s + item.paid;
+                    let others_payment = payment_cost_items_list.reduce(function (s, item) {
+                        return s + item.real_value;
                     }, 0);
-                    if (expense_get.length > 0) {
-                        paid = parseFloat(paid/expense_get.length);
+
+                    let plan_after_tax = 0;
+                    plan_after_tax = data_detail[i].plan_after_tax;
+                    let remain_ap = ap_approved - returned - to_payment;
+                    let paid = to_payment + others_payment;
+                    let available = plan_after_tax - remain_ap - paid;
+
+                    if (remain_ap < 0) {
+                        remain_ap = 0
                     }
-                    else {
-                        paid = 0;
-                    }
-                    let available = 0;
-                    available = expense_item.plan_after_tax - remain_ap - paid;
                     if (available < 0) {
-                        available = 0;
+                        available = 0
+                    }
+
+                    let tax_item = '';
+                    if (data_detail[i].tax.title) {
+                        tax_item = data_detail[i].tax.title;
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
-                        <td><a href="#"><span data-id="` + expense_item.expense_id + `">` + expense_item.expense_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
-                        <td><span class="mask-money text-primary" data-init-money="` + expense_item.plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + returned + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>

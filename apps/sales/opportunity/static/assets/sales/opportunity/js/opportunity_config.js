@@ -59,7 +59,7 @@ $(document).ready(function () {
                     $('#opportunity_config_id').attr('value', data.id);
                     $('#is-select-stage')[0].checked = data.is_select_stage;
                     $('#is-input-win-rate')[0].checked = data.is_input_win_rate;
-                    $('#is-AM-create')[0].checked = data.is_AM_create;
+                    $('#is-AM-create')[0].checked = data.is_account_manager_create;
                     loadFactorTable();
                 }
             }
@@ -76,7 +76,7 @@ $(document).ready(function () {
         $.fn.showLoading();
         frm.dataForm['is_select_stage'] = $('#is-select-stage')[0].checked;
         frm.dataForm['is_input_win_rate'] = $('#is-input-win-rate')[0].checked;
-        frm.dataForm['is_AM_create'] = $('#is-AM-create')[0].checked;
+        frm.dataForm['is_account_manager_create'] = $('#is-AM-create')[0].checked;
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {

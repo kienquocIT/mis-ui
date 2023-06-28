@@ -3501,3 +3501,15 @@ msgstr "Thêm chỉ tiêu"
 #
 msgid "Only the Account Manager of a Customer is allowed to create an Opportunity for that Customer"
 msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
+
+#
+msgid "Lost by other reason"
+msgstr "Thất bại bởi lý do khác"
+
+#
+msgid "Configuration does not allow selecting stage"
+msgstr "Cấu hình không cho phép lựa chọn giai đoạn"
+
+#
+msgid "Can not select stage because this opportunity is close lost"
+msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã thất bại"

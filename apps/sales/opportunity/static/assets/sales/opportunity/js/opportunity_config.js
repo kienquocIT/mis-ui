@@ -141,6 +141,8 @@ $(document).ready(function () {
         }
     })
 
+
+    // event stage
     function addRowCondition(text_logic) {
         let row = $('.row-condition-hidden').html();
         let ele_condition = $('.condition')
@@ -439,4 +441,32 @@ $(document).ready(function () {
             )
     })
 
+    $(document).on('click', '#btn-restore-default-stage', function () {
+        let method = $(this).data('method');
+        let url = $(this).data('url');
+        let csr = $("[name=csrfmiddlewaretoken]").val();
+        $.fn.callAjax(url, method, {}, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let modal = $('#modalRestoreDefault');
+                        modal.find('.modal-body h4').prop('hidden', true);
+                        modal.find('.modal-body .div-loading').prop('hidden', false);
+                        setTimeout(function (){
+                            let table = $('#table-opportunity-config-stage').DataTable();
+                            table.ajax.reload();
+                            modal.modal('hide');
+                            $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                            modal.find('.modal-body h4').prop('hidden', false);
+                            modal.find('.modal-body .div-loading').prop('hidden', true);
+                        }, 2000);
+
+                    }
+                },
+                (errs) => {
+                    console.log(errs)
+                }
+            )
+    })
 })

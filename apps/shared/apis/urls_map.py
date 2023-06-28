@@ -268,3 +268,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
     OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
     OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
+
+    # restore Opportunity Stage
+    RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')

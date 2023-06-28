@@ -314,9 +314,9 @@ $(document).ready(function () {
         if (!$.fn.DataTable.isDataTable('#dtbMember')) {
             let dtb = $('#dtbMember');
             dtb.DataTableDefault({
-                scrollY: 200,
-                scrollCollapse: true,
                 paging: false,
+                scrollY: '200px',
+                autoWidth: false,
                 columnDefs: [
                     {
                         "width": "10%",
@@ -1059,8 +1059,8 @@ $(document).ready(function () {
                             ele_last_stage.find('.dropdown-menu').empty();
                             ele_last_stage.find('.dropdown-menu').append(
                                 `<div class="form-check form-switch mb-1">
-                                    <input type="checkbox" class="form-check-input" id="inputActive">
-                                    <label for="inputActive" class="form-label">Close Deal</label>
+                                    <input type="checkbox" class="form-check-input" id="input-close-deal">
+                                    <label for="input-close-deal" class="form-label">Close Deal</label>
                                 </div>`
                             )
                         }
@@ -1083,8 +1083,6 @@ $(document).ready(function () {
                             ele_list_stage.eq(i).removeClass('bg-primary-light-5');
                         }
                     }
-                    $('#input-rate').val(dict_stage[ele_stage.data('id')].win_rate);
-                    $('#rangeInput').val(dict_stage[ele_stage.data('id')].win_rate);
                 }
             }
         })
@@ -1107,8 +1105,10 @@ $(document).ready(function () {
                         ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
                     }
                 }
-                $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
-                $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
+                if (!$('#check-input-rate').is(':checked')) {
+                    $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
+                    $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
+                }
             }
         } else {
             alert($('#not-select-stage').text());
@@ -1131,4 +1131,5 @@ $(document).ready(function () {
             $('.stage-lost').addClass('bg-red-light-5 stage-selected');
         }
     })
+
 })

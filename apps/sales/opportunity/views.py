@@ -297,3 +297,29 @@ class OpportunityConfigStageDetailAPI(APIView):
         if resp.state:
             return {}, status.HTTP_200_OK
         return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class RestoreDefaultStageAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        company_current_id = request.user.company_current_data.get('id', None)
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE.fill_key(pk=company_current_id)
+        ).put(  # noqa
+            request.data
+        )
+        if resp.state:
+            return resp.result, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

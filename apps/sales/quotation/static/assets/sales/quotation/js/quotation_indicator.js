@@ -229,12 +229,7 @@ class indicatorFunctionHandle {
                     let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
                     let check = evaluateFormula(checkExpression);
                     if (check === true) {
-                        if (lastElement.code === "expense_subtotal_price_after_tax") {
-                            let subtotal_after_tax = data['expense_subtotal_price'] - data['expense_tax_amount'];
-                            functionBody += String(subtotal_after_tax);
-                        } else {
-                            functionBody += String(data[lastElement.code]);
-                        }
+                        functionBody += String(data[lastElement.code]);
                         functionBody += ",";
                     }
                 }

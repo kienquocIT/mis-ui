@@ -3,12 +3,14 @@ let shippingClass = new shippingHandle();
 
 // Load data
 class loadDataHandle {
-    loadBoxQuotationOpportunity(opp_id, valueToSelect = null) {
+    loadBoxQuotationOpportunity(opp_id, valueToSelect = null, sale_person = null) {
         let jqueryId = '#' + opp_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        let sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        if (!sale_person) {
+            sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        }
         if (sale_person) {
             let data_filter = {'sale_person_id': sale_person};
             ele.empty();
@@ -56,13 +58,15 @@ class loadDataHandle {
         }
     }
 
-    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null) {
+    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, sale_person = null) {
         let self = this;
         let jqueryId = '#' + customer_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        let sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        if (!sale_person) {
+            sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        }
         if (sale_person) {
             let data_filter = {'employee__id': sale_person}
             self.loadShippingBillingCustomer(modalShipping, modalBilling);
@@ -107,6 +111,8 @@ class loadDataHandle {
                                     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
                                     // Store Account Price List
                                     document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+                                    // load again price of product by customer price list then Re Calculate
+                                    self.loadDataProductAll();
                                 }
                             })
                             if (dataMapOpp) { // if Opportunity has Customer
@@ -119,6 +125,8 @@ class loadDataHandle {
                                 self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term')
                                 // Store Account Price List
                                 document.getElementById('customer-price-list').value = "";
+                                // load again price of product by customer price list then Re Calculate
+                                self.loadDataProductAll();
                             }
                             self.loadInformationSelectBox(ele);
                         }
@@ -810,10 +818,18 @@ class loadDataHandle {
             }
         }
         if (data.opportunity) {
-            self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);
+            if (data.sale_person) {
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, data.sale_person.id);
+            } else {
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);
+            }
         }
         if (data.customer) {
-            self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'))
+            if (data.sale_person) {
+                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), data.sale_person.id);
+            } else {
+                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'));
+            }
         }
         if (data.contact) {
             self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
@@ -2692,6 +2708,9 @@ class submitHandle {
                 if (eleSubtotal) {
                     rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
                 }
+                if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
+                    rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
+                }
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
@@ -2881,6 +2900,9 @@ class submitHandle {
                 if (eleSubtotal) {
                     rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
                 }
+                if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
+                    rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
+                }
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
@@ -3003,6 +3025,9 @@ class submitHandle {
             let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
             if (eleSubtotal) {
                 rowData['expense_subtotal_price'] = parseFloat(eleSubtotal.value)
+            }
+            if (rowData.hasOwnProperty('expense_subtotal_price') && rowData.hasOwnProperty('expense_tax_amount')) {
+                rowData['expense_subtotal_price_after_tax'] = rowData['expense_subtotal_price'] + rowData['expense_tax_amount']
             }
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {

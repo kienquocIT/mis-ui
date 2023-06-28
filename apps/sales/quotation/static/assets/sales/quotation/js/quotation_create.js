@@ -49,8 +49,6 @@ $(function () {
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
 
-        $("#select-box-quotation-create-discount-list").select2();
-
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -779,6 +777,13 @@ $(function () {
                     // load expense
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
+                // Check again config after load data copy
+                if (Object.keys(dataCopy.opportunity).length !== 0) {
+                    configClass.checkConfig(true, null, false, true);
+                } else {
+                    configClass.checkConfig(true);
+                }
+
             } else if (type === 'copy-to') {
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -867,6 +872,12 @@ $(function () {
                         }
                     }
                 }
+            }
+            // Check again config after load data copy
+            if (Object.keys(dataCopy.opportunity).length !== 0) {
+                configClass.checkConfig(true, null, false, true);
+            } else {
+                configClass.checkConfig(true);
             }
         }
 

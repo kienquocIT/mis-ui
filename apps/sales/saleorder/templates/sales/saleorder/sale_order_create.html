@@ -668,7 +668,7 @@
                                                     <button
                                                             type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    >{% trans 'Close' %}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -702,7 +702,7 @@
                                                     <button
                                                             type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    >{% trans 'Close' %}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1054,6 +1054,7 @@
             data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
             data-select-address="{% trans 'Select this address' %}"
             data-view-detail-info="{% trans 'View detail' %}"
+            data-btn-close="{% trans 'Close' %}"
         >
     </form>
 {% endblock %}

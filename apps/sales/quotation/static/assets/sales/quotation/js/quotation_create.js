@@ -86,7 +86,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll();
+            // loadDataClass.loadDataProductAll();
             // ReCheck Config when change Opportunity
             configClass.checkConfig(true);
         });
@@ -147,6 +147,20 @@ $(function () {
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadDataClass.loadInformationSelectBox($(this));
+            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
+            $('#select-box-quotation-create-customer').empty();
+            $('#select-box-quotation-create-opportunity').empty();
+            $('#select-box-quotation-create-contact').empty();
+            $('#select-box-quotation-create-payment-term').empty();
+            document.getElementById('customer-price-list').value = "";
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
+            loadDataClass.loadDataProductAll();
+            // ReCheck Config when change Opportunity
+            configClass.checkConfig(true);
         });
 
 // Action on click dropdown price list

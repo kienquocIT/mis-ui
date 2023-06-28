@@ -2,7 +2,7 @@
 
 $(function () {
     $(document).ready(function () {
-        const id = window.location.pathname.split('/').pop();
+        const id = $.fn.getPkDetail()
         const frmDetail = $('#frmDetail');
         const choose_AP_ele = $('#chooseAdvancePayment');
 

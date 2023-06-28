@@ -2291,7 +2291,7 @@ msgstr "Danh sách báo giá"
 
 #
 msgid "Create Sale Order"
-msgstr "Tạo báo giá"
+msgstr "Tạo đơn hàng"
 
 #
 msgid "Home Page"
@@ -3457,3 +3457,59 @@ msgstr "Đang chờ"
 #
 msgid "Paid"
 msgstr "Đã thanh toán"
+
+#
+msgid "Quotation Value"
+msgstr "Giá Trị Báo Giá"
+
+#
+msgid "Order Value"
+msgstr "Giá Trị Đơn Hàng"
+
+#
+msgid "Select this address"
+msgstr "Chọn địa chỉ này"
+
+#
+msgid "Code of quotation"
+msgstr "Mã của báo giá"
+
+#
+msgid "Code of sale order"
+msgstr "Mã của đơn hàng"
+
+#
+msgid "Refresh data"
+msgstr "Làm mới dữ liệu"
+
+#
+msgid "Indicator name"
+msgstr "Tên chỉ tiêu"
+
+#
+msgid "Indicator value"
+msgstr "Giá trị chỉ tiêu"
+
+#
+msgid "Indicator rate"
+msgstr "Tỉ lệ chỉ tiêu"
+
+#
+msgid "Add indicator"
+msgstr "Thêm chỉ tiêu"
+
+#
+msgid "Only the Account Manager of a Customer is allowed to create an Opportunity for that Customer"
+msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
+
+#
+msgid "Lost by other reason"
+msgstr "Thất bại bởi lý do khác"
+
+#
+msgid "Configuration does not allow selecting stage"
+msgstr "Cấu hình không cho phép lựa chọn giai đoạn"
+
+#
+msgid "Can not select stage because this opportunity is close lost"
+msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã thất bại"

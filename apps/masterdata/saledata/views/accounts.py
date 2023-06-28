@@ -653,7 +653,8 @@ class AccountForSaleListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_SALE_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_SALE_LIST).get(data)
         if resp.state:
             return {'account_sale_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

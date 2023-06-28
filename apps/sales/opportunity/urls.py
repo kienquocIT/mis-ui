@@ -2,7 +2,8 @@ from django.urls import path
 
 from apps.sales.opportunity.views import OpportunityList, OpportunityListAPI, OpportunityExpenseListAPI, \
     OpportunityDetail, OpportunityDetailAPI, OpportunityCustomerDecisionFactorListAPI, OpportunityConfig, \
-    OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI
+    OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI, OpportunityConfigStageListAPI, \
+    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI
 
 urlpatterns = [
     path('config', OpportunityConfig.as_view(), name='OpportunityConfig'),
@@ -23,5 +24,20 @@ urlpatterns = [
         'config/decision-factor/api/<str:pk>',
         OpportunityCustomerDecisionFactorDetailAPI.as_view(),
         name='OpportunityCustomerDecisionFactorDetailAPI'
+    ),
+    path(
+        'config/stage/api',
+        OpportunityConfigStageListAPI.as_view(),
+        name='OpportunityConfigStageListAPI'
+    ),
+    path(
+        'config/stage/api/<str:pk>',
+        OpportunityConfigStageDetailAPI.as_view(),
+        name='OpportunityConfigStageDetailAPI'
+    ),
+    path(
+        'config/stage/restore-default/<str:pk>',
+        RestoreDefaultStageAPI.as_view(),
+        name='RestoreDefaultStageAPI'
     )
 ]

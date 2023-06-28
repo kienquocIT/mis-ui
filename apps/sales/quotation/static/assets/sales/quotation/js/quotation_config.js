@@ -181,7 +181,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
                         }
                     },
                     (errs) => {
@@ -332,14 +332,18 @@ $(function () {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-<!--                                                    <span class="valid-indicator-formula" style="padding-right: 440px; color: #EB5757">) expected</span>-->
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
-                                                    <button 
-                                                        type="button" 
-                                                        class="btn btn-primary btn-edit-indicator"
-                                                        data-id="${row.id}"
-                                                    >${$.fn.transEle.attr('data-btn-save')}</button>
+                                                <div class="row modal-footer-edit-formula">
+                                                    <div class="col-6 modal-edit-formula-validate">
+                                                        <span class="valid-indicator-formula ml-1"></span>
+                                                    </div>
+                                                    <div class="col-6 modal-edit-formula-action">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                        <button 
+                                                            type="button" 
+                                                            class="btn btn-primary btn-edit-indicator"
+                                                            data-id="${row.id}"
+                                                        >${$.fn.transEle.attr('data-btn-save')}</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -464,11 +468,50 @@ $(function () {
             }
         });
 
+// Validate Indicator Formula Editor
+        tableIndicator.on('change', '.indicator-editor', function (e) {
+            let editorValue = $(this).val();
+            let isValid = true;
+            let row = $(this)[0].closest('tr');
+            let btnSave = row.querySelector('.btn-edit-indicator')
+            // validate parenthesis "(", ")"
+            isValid = validateParentheses(editorValue);
+            if (isValid === true) {
+                if (btnSave.hasAttribute('disabled')) {
+                    btnSave.removeAttribute('disabled')
+                }
+                row.querySelector('.valid-indicator-formula').innerHTML = "";
+            } else {
+                if (!btnSave.hasAttribute('disabled')) {
+                    btnSave.setAttribute('disabled', 'true');
+                }
+                row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
+            }
+        })
+
+        function validateParentheses(strValue) {
+            let stack = [];
+            for (let i = 0; i < strValue.length; i++) {
+                let char = strValue[i];
+                if (char === "(") {
+                    // Push opening parenthesis to the stack
+                    stack.push(char);
+                } else if (char === ")") {
+                    // Check if there is a corresponding opening parenthesis
+                    if (stack.length === 0 || stack.pop() !== "(") {
+                        return false;
+                    }
+                }
+            }
+            // Check if there are any unclosed parentheses
+            return stack.length === 0;
+        }
+
 // BEGIN setup formula
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
         let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
-        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|===|!==|>=|<=|>|</g;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
         function setupFormula(data_submit, ele) {
             let row = ele[0].closest('tr');
@@ -506,6 +549,7 @@ $(function () {
                             functionBodyData.push(body_item);
                         }
                     }
+                    validateItemInList(functionBodyData);
                     functionJSON['function_data'] = functionBodyData;
                     formula_data.push(functionJSON);
                 } else if (item.includes("indicator")) { // INDICATOR
@@ -537,6 +581,18 @@ $(function () {
             }
             return result
         }
+
+        function validateItemInList(data_list) {
+            for (let i = 0; i < data_list.length; i++) {
+                let data = data_list[i];
+                if (data === "==") {
+                    data_list[i] = "===";
+                }
+                if (data === "!=") {
+                    data_list[i] = "!==";
+                }
+            }
+        }
 // END setup formula
 
         // submit create indicator
@@ -563,7 +619,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 3000);
+                            $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {
@@ -587,7 +643,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 3000);
+                            $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {

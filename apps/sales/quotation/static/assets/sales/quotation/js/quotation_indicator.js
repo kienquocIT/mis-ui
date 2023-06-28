@@ -194,6 +194,7 @@ class indicatorFunctionHandle {
     }
 
     functionSumItemIf(item, data_form) {
+        let self = this;
         let syntax = "sum(";
         let functionBody = "";
         let leftValueJSON = null;
@@ -206,26 +207,35 @@ class indicatorFunctionHandle {
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
-        if (data_form.quotation_products_data) {
-            for (let product_data of data_form.quotation_products_data) {
-                if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-                    if (product_data.hasOwnProperty(leftValueJSON.code)) {
-                        let leftValue = product_data[leftValueJSON.code].replace(/\s/g, "");
-                        let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
-                        let check = evaluateFormula(checkExpression);
-                        if (check === true) {
-                            functionBody += String(product_data[lastElement.code]);
-                            functionBody += ",";
-                        }
-                    }
-                }
-            }
+        // Tab Products
+        if (data_form.quotation_products_data) {}
+        // Tab Expense
+        if (data_form.quotation_expenses_data) {
+            functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
         }
         if (functionBody[functionBody.length - 1] === ",") {
             let functionBodySlice = functionBody.slice(0, -1);
             return syntax + functionBodySlice + ")";
         }
         return syntax + functionBody + ")";
+    }
+
+    extractDataToSum(data_list, leftValueJSON, condition_operator, rightValue, lastElement) {
+        let functionBody = "";
+        for (let data of data_list) {
+            if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
+                if (data.hasOwnProperty(leftValueJSON.code)) {
+                    let leftValue = data[leftValueJSON.code].replace(/\s/g, "");
+                    let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
+                    let check = evaluateFormula(checkExpression);
+                    if (check === true) {
+                        functionBody += String(data[lastElement.code]);
+                        functionBody += ",";
+                    }
+                }
+            }
+        }
+        return functionBody
     }
 
 }

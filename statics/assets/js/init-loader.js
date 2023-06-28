@@ -1313,7 +1313,6 @@ $.fn.extend({
                 }
             }
             $(this).closest('.dataTables_wrapper').find('.select2').select2();
-            $.fn.initMaskMoney2();
         });
         return tbl;
     },

@@ -9,6 +9,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
                         type: frm.dataMethod,
@@ -71,6 +72,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
                         type: frm.dataMethod,

@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#dtbExpense');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

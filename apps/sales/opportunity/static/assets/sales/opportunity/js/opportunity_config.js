@@ -11,6 +11,7 @@ $(document).ready(function () {
             let $table = $('#table-opportunity-customer-decision-factor')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -91,7 +92,6 @@ $(document).ready(function () {
                 }
             )
     })
-
 
     // Create + Delete Customer Decision Factor
     const frmCreateFactor = $('#frm-create-factor')
@@ -231,6 +231,7 @@ $(document).ready(function () {
             let $table = $('#table-opportunity-config-stage')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

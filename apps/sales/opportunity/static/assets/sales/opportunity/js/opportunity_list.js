@@ -10,7 +10,7 @@ $(function () {
         let employee_current_id = $('#employee_current_id').val();
         let config = JSON.parse($('#id-config-data').text());
 
-        let config_is_AM_create = config.is_AM_create;
+        let config_is_AM_create = config.is_account_manager_create;
 
         let _dataTable = $table.DataTable({
             searching: false,

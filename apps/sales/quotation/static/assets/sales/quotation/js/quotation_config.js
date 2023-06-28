@@ -27,12 +27,14 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
                 item['syntax'] = "indicator(" + item.title + ")";
                 item['syntax_show'] = "indicator(" + item.title + ")";
                 let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                indicator_list += `<div class="row param-item">
-                                        <button type="button" class="btn btn-flush-light">
-                                            <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
-                                            <input type="hidden" class="data-show" value="${dataStr}">
-                                        </button>
-                                    </div>`
+                if (item.id !== indicator_detail_id) { // check & not append this current indicator
+                    indicator_list += `<div class="row param-item">
+                                            <button type="button" class="btn btn-flush-light">
+                                                <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
+                                                <input type="hidden" class="data-show" value="${dataStr}">
+                                            </button>
+                                        </div>`
+                }
                 // load detail editor by ID indicator
                 if (indicator_detail_id) {
                     if (item.id === indicator_detail_id) {
@@ -334,7 +336,7 @@ $(function () {
                                                 </div>
                                                 <div class="row modal-footer-edit-formula">
                                                     <div class="col-6 modal-edit-formula-validate">
-                                                        <span class="valid-indicator-formula">")" expected</span>
+                                                        <span class="valid-indicator-formula ml-1"></span>
                                                     </div>
                                                     <div class="col-6 modal-edit-formula-action">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
@@ -451,7 +453,7 @@ $(function () {
                 if (eleDescription) {
                     eleDescription.innerHTML = "";
                     $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
-                                                <div class="row mb-2">
+                                                <div class="row mb-3">
                                                     <h5>${dataShow.title}</h5>
                                                     <p>${dataShow.remark}</p>
                                                 </div>
@@ -468,6 +470,7 @@ $(function () {
             }
         });
 
+// Validate Indicator Formula Editor
         tableIndicator.on('change', '.indicator-editor', function (e) {
             let editorValue = $(this).val();
             let isValid = true;
@@ -479,10 +482,12 @@ $(function () {
                 if (btnSave.hasAttribute('disabled')) {
                     btnSave.removeAttribute('disabled')
                 }
+                row.querySelector('.valid-indicator-formula').innerHTML = "";
             } else {
                 if (!btnSave.hasAttribute('disabled')) {
-                    btnSave.setAttribute('disabled', 'true')
+                    btnSave.setAttribute('disabled', 'true');
                 }
+                row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
             }
         })
 
@@ -505,15 +510,16 @@ $(function () {
         }
 
 // BEGIN setup formula
-        let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+        let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|%/g;
         let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
-        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|===|!==|>=|<=|>|</g;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
         function setupFormula(data_submit, ele) {
             let row = ele[0].closest('tr');
             let editor = row.querySelector('.indicator-editor');
             let formula_list_raw = parseStringToArray(editor.value);
+            formula_list_raw = validateItemInList(formula_list_raw);
             data_submit['formula_data'] = parseFormulaRaw(formula_list_raw, row);
             data_submit['formula_data_show'] = editor.value;
             return true
@@ -546,6 +552,7 @@ $(function () {
                             functionBodyData.push(body_item);
                         }
                     }
+                    functionBodyData = validateItemInList(functionBodyData);
                     functionJSON['function_data'] = functionBodyData;
                     formula_data.push(functionJSON);
                 } else if (item.includes("indicator")) { // INDICATOR
@@ -576,6 +583,28 @@ $(function () {
                 }
             }
             return result
+        }
+
+        function validateItemInList(data_list) {
+            // valid percent "==", "!="
+            for (let i = 0; i < data_list.length; i++) {
+                let data = data_list[i];
+                if (data === "==") {
+                    data_list[i] = "===";
+                }
+                if (data === "!=") {
+                    data_list[i] = "!==";
+                }
+            }
+            // valid percent %
+            data_list = data_list.map((item) => {
+                if (item === "%") {
+                    return ["/", "100"];
+                }
+                return item;
+            }).flat();
+
+            return data_list
         }
 // END setup formula
 

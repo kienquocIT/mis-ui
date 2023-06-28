@@ -49,8 +49,6 @@ $(function () {
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
 
-        $("#select-box-quotation-create-discount-list").select2();
-
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -86,7 +84,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll();
+            // loadDataClass.loadDataProductAll();
             // ReCheck Config when change Opportunity
             configClass.checkConfig(true);
         });
@@ -147,6 +145,20 @@ $(function () {
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadDataClass.loadInformationSelectBox($(this));
+            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
+            $('#select-box-quotation-create-customer').empty();
+            $('#select-box-quotation-create-opportunity').empty();
+            $('#select-box-quotation-create-contact').empty();
+            $('#select-box-quotation-create-payment-term').empty();
+            document.getElementById('customer-price-list').value = "";
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
+            loadDataClass.loadDataProductAll();
+            // ReCheck Config when change Opportunity
+            configClass.checkConfig(true);
         });
 
 // Action on click dropdown price list
@@ -765,6 +777,13 @@ $(function () {
                     // load expense
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
+                // Check again config after load data copy
+                if (Object.keys(dataCopy.opportunity).length !== 0) {
+                    configClass.checkConfig(true, null, false, true);
+                } else {
+                    configClass.checkConfig(true);
+                }
+
             } else if (type === 'copy-to') {
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -853,6 +872,12 @@ $(function () {
                         }
                     }
                 }
+            }
+            // Check again config after load data copy
+            if (Object.keys(dataCopy.opportunity).length !== 0) {
+                configClass.checkConfig(true, null, false, true);
+            } else {
+                configClass.checkConfig(true);
             }
         }
 

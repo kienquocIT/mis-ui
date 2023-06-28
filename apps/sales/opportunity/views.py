@@ -45,7 +45,8 @@ class OpportunityListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get(data)
         if resp.state:
             return {'opportunity_list': resp.result}, status.HTTP_200_OK
 

@@ -4,7 +4,8 @@ from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
 
-__all__ = ['OpportunityTaskConfig', 'OpportunityTaskConfigAPI', 'OpportunityTaskList', 'OpportunityTaskListAPI']
+__all__ = ['OpportunityTaskConfig', 'OpportunityTaskConfigAPI', 'OpportunityTaskList', 'OpportunityTaskListAPI',
+           'OpportunityTaskStatusAPI']
 
 
 class OpportunityTaskConfig(View):
@@ -42,6 +43,21 @@ class OpportunityTaskConfigAPI(APIView):
         if res.state:
             res.result['message'] = SaleMsg.OPPORTUNITY_TASK_CONFIG_UPDATE
             return res.result, status.HTTP_200_OK
+        elif res.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class OpportunityTaskStatusAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        res = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
+        if res.state:
+            return {'task_status': res.result}, status.HTTP_200_OK
         elif res.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST

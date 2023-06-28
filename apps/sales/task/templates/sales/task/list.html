@@ -4,17 +4,16 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        .hand-drag {
-            cursor: grab;
-        }
-    </style>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
     <button
-            class="btn btn-flush-dark btn-rounded flush-soft-hover"
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ntt-drawer-toggle-link"
+            data-drawer-target="#drawer_task_create"
+            data-drawer-active="false"
+            href="#"
             data-bs-toggle="tooltip"
             data-bs-placement="top"
             data-bs-original-title="{% trans 'Create' %}"
@@ -43,10 +42,7 @@
             </div>
         </div>
     </div>
-    <form data-url="{% url 'OpportunityTaskConfigAPI' %}" id="formOpportunityTaskConfig" method="post"
-          autocomplete="off">
-        {% csrf_token %}
-    </form>
+
     <div class="hidden">
         <div class="card-parent_template">
             <div class="card card-simple card-border tasklist">
@@ -133,10 +129,13 @@
         />
         {{ data.task_config|json_script:'task_config' }}
     </div>
+    {% include  'sales/task/extend/task-form.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
 {% endblock %}

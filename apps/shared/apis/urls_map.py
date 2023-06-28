@@ -101,6 +101,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PERMISSION = StringUrl('base/permissions')
     INDICATOR_PARAM = StringUrl('base/indicator-params')
 
+    APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
+
     TENANT = StringUrl('tenant/userlist')
 
     # HR
@@ -264,3 +266,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
+    OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
+    OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
+
+    # restore Opportunity Stage
+    RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')

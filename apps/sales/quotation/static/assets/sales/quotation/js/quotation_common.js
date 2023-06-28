@@ -586,12 +586,11 @@ class loadDataHandle {
                 info += `<div class="dropdown-divider"></div>
                     <div class="row">
                         <div class="col-4"></div>
-                        <div class="col-7">
+                        <div class="col-8">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
-                                <span><span>View Detail</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                                <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
                             </a>
                         </div>
-                        <div class="col-1"></div>
                     </div>`;
                 dropdownContent.innerHTML = info;
             }
@@ -780,7 +779,9 @@ class loadDataHandle {
             document.getElementById('quotation-create-title').value = data.title;
         }
         if (data.code) {
-            document.getElementById('quotation-create-code').value = data.code;
+            if ($('#quotation-create-code').length) {
+                document.getElementById('quotation-create-code').value = data.code;
+            }
         }
         if (data.opportunity) {
             self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);

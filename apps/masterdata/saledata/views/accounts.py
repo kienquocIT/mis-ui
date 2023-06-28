@@ -563,7 +563,7 @@ class AccountCreate(View):
 
     @mask_view(
         auth_require=True,
-        template='masterdata/saledata/accounts/contact_create.html',
+        template='masterdata/saledata/accounts/account_create.html',
         breadcrumb='ACCOUNT_CREATE_PAGE',
         menu_active='menu_account_list',
     )

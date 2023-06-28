@@ -216,10 +216,10 @@ $(function () {
                         "width": "40%",
                         "targets": 1
                     }, {
-                        "width": "10%",
+                        "width": "5%",
                         "targets": 2
                     }, {
-                        "width": "40%",
+                        "width": "45%",
                         "targets": 3
                     }, {
                         "width": "5%",
@@ -279,8 +279,7 @@ $(function () {
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
-                                                            <textarea class="form-control indicator-editor" rows="2" cols="50" name=""></textarea>
-                                                            <input type="hidden" class="data-editor-submit">
+                                                            <textarea class="form-control indicator-editor" rows="3" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -334,6 +333,7 @@ $(function () {
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
+<!--                                                    <span class="valid-indicator-formula" style="padding-right: 440px; color: #EB5757">) expected</span>-->
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
                                                     <button 
                                                         type="button" 
@@ -391,7 +391,7 @@ $(function () {
             let method = "put";
             let data_submit = {};
             data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
-            data_submit['description'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)
                 .then(
@@ -465,6 +465,11 @@ $(function () {
         });
 
 // BEGIN setup formula
+        let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+        let body_simple_regex = /\((.*?)\)/;
+        let body_nested_regex = /\((.*)\)/;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|===|!==|>=|<=|>|</g;
+
         function setupFormula(data_submit, ele) {
             let row = ele[0].closest('tr');
             let editor = row.querySelector('.indicator-editor');
@@ -477,38 +482,38 @@ $(function () {
         function parseStringToArray(expression) {
             let data = expression.replace(/\s/g, "");
             const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
-            return data.match(regex)
+            return data.match(main_regex)
         }
 
         function parseFormulaRaw(formula_list_raw, row) {
             let formula_data = [];
             let functionList = ['contains', 'empty', 'concat', 'min', 'max', 'sumItemIf'];
             for (let item of formula_list_raw) {
-                if (item.includes("indicator")) { // INDICATOR
-                    let indicatorValue = item.match(/\((.*?)\)/)[1];
-                    formula_data.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
-                } else if (item.includes("prop")) { // PROPERTY
-                    let propertyValue = item.match(/\((.*?)\)/)[1];
-                    formula_data.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
-                } else if (functionList.some(value => item.includes(value))) { // FUNCTION
-                    let functionValue = functionList.some(value => item.includes(value));
+                if (functionList.some(value => item.includes(value))) { // FUNCTION
+                    let functionValue = functionList.find(value => item.includes(value));
                     let functionJSON = checkMatchPropertyIndicator(functionValue, row, '.function-list');
                     let functionBodyData = [];
-                    let functionBody = item.match(/\((.*?)\)/)[1];
-                    const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-*\/()]|(\d+)|'(\d+)'/g;
-                    let body_list_raw = functionBody.match(regex);
+                    let functionBody = item.match(body_nested_regex)[1];
+                    let body_list_raw = functionBody.match(main_body_regex).map((match) => match.replace(/^"(.*)"$/, '$1'));
                     for (let body_item of body_list_raw) {
                         if (body_item.includes("indicator")) {
-                            let indicatorValue = body_item.match(/\((.*?)\)/)[1];
+                            let indicatorValue = body_item.match(body_nested_regex)[1];
                             functionBodyData.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
                         } else if (body_item.includes("prop")) {
-                            let propertyValue = body_item.match(/\((.*?)\)/)[1];
+                            let propertyValue = body_item.match(body_nested_regex)[1];
                             functionBodyData.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
                         } else {
                             functionBodyData.push(body_item);
                         }
                     }
                     functionJSON['function_data'] = functionBodyData;
+                    formula_data.push(functionJSON);
+                } else if (item.includes("indicator")) { // INDICATOR
+                    let indicatorValue = item.match(body_nested_regex)[1];
+                    formula_data.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
+                } else if (item.includes("prop")) { // PROPERTY
+                    let propertyValue = item.match(body_nested_regex)[1];
+                    formula_data.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
                 } else {
                     formula_data.push(item)
                 }
@@ -524,7 +529,7 @@ $(function () {
                 let dataShow = indi.querySelector('.data-show');
                 if (dataShow) {
                     let dataShowValue = JSON.parse(dataShow.value);
-                    if (dataShowValue.title === check_value) {
+                    if (dataShowValue.title.replace(/\s/g, "") === check_value) {
                         result = dataShowValue;
                         break
                     }

@@ -117,8 +117,10 @@ class loadDataHandle {
                             })
                             if (dataMapOpp) { // if Opportunity has Customer
                                 ele.append(dataMapOpp);
-                            } else { // if Opportunity doesn't have Customer
-                                ele.append(dataAppend);
+                            } else { // if Opportunity doesn't have Customer or Opportunity's customer does not map customer list
+                                if (!valueToSelect) {
+                                    ele.append(dataAppend);
+                                }
                                 // load Contact no Customer
                                 self.loadBoxQuotationContact('select-box-quotation-create-contact');
                                 // load Payment Term no Customer
@@ -127,6 +129,7 @@ class loadDataHandle {
                                 document.getElementById('customer-price-list').value = "";
                                 // load again price of product by customer price list then Re Calculate
                                 self.loadDataProductAll();
+
                             }
                             self.loadInformationSelectBox(ele);
                         }

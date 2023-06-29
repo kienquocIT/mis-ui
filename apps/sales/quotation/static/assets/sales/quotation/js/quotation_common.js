@@ -117,8 +117,10 @@ class loadDataHandle {
                             })
                             if (dataMapOpp) { // if Opportunity has Customer
                                 ele.append(dataMapOpp);
-                            } else { // if Opportunity doesn't have Customer
-                                ele.append(dataAppend);
+                            } else { // if Opportunity doesn't have Customer or Opportunity's customer does not map customer list
+                                if (!valueToSelect) {
+                                    ele.append(dataAppend);
+                                }
                                 // load Contact no Customer
                                 self.loadBoxQuotationContact('select-box-quotation-create-contact');
                                 // load Payment Term no Customer
@@ -127,6 +129,7 @@ class loadDataHandle {
                                 document.getElementById('customer-price-list').value = "";
                                 // load again price of product by customer price list then Re Calculate
                                 self.loadDataProductAll();
+
                             }
                             self.loadInformationSelectBox(ele);
                         }
@@ -2441,7 +2444,7 @@ let calculateClass = new calculateCaseHandle();
 
 // Config
 class checkConfigHandle {
-    checkConfig(is_change_opp = false, new_row = null, is_first_time = false) {
+    checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false) {
         let self = this;
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -2449,7 +2452,7 @@ class checkConfigHandle {
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
             let empty_list = ["", null]
-            if (!opportunity || empty_list.includes(opportunity)) { // short sale
+            if ((!opportunity || empty_list.includes(opportunity)) && is_has_opp_detail === false) { // short sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
                     if (is_first_time === false) {

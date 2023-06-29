@@ -6,7 +6,7 @@ $(document).ready(function () {
     const config = JSON.parse($('#id-config-data').text());
 
     const config_is_select_stage = config.is_select_stage;
-    const config_is_AM_create = config.is_AM_create;
+    const config_is_AM_create = config.is_account_manager_create;
     const config_is_input_rate = config.is_input_win_rate;
 
     let employee_current_id = $('#emp-current-id').val();
@@ -125,15 +125,14 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
-                    ele.append(`<option></option>`)
                     ele_end_customer.append('<option></option>')
                     data.account_list.map(function (item) {
                         if (item.id === id) {
-                            ele.append(`<option selected value="${item.id}">${item.name}</option>`);
+                            ele.append(`<option selected value="${item.id}" data-annual-revenue="${item.annual_revenue}">${item.name}</option>`);
                             loadSalePerson(item.manager.map(obj => obj.id), sale_person_id);
                         } else {
                             ele_competitor.append(`<option value="${item.id}">${item.name}</option>`);
-                            ele.append(`<option value="${item.id}">${item.name}</option>`);
+                            ele.append(`<option value="${item.id}" data-annual-revenue="${item.annual_revenue}">${item.name}</option>`);
                         }
 
                         if (item.id === end_customer_id) {
@@ -207,7 +206,7 @@ $(document).ready(function () {
         let table = $('#table-products');
         let col_empty = table.find('.col-table-empty');
         if (col_empty !== undefined) {
-            col_empty.remove();
+            col_empty.addClass('hidden');
         }
         let last_row;
         if (data.product !== null) {
@@ -222,7 +221,7 @@ $(document).ready(function () {
             last_row = table.find('tbody tr').last();
             last_row.find('.input-product-name').val(data.product_name);
         }
-        last_row.find('.num-product').text(table.find('tbody tr').length - 2);
+        last_row.find('.num-product').text(table.find('tbody tr').length - 3);
         last_row.find('.box-select-product-category').val(data.product_category.id);
         last_row.find('.box-select-uom').val(data.uom.id);
         last_row.find('.input-quantity').val(data.product_quantity);
@@ -237,7 +236,7 @@ $(document).ready(function () {
             let table = $('#table-competitors');
             let col_empty = table.find('.col-table-empty');
             if (col_empty !== undefined) {
-                col_empty.remove();
+                col_empty.addClass('hidden');
             }
             let col = $('.col-competitor').html().replace('hidden', '');
             data.map(function (item) {
@@ -272,7 +271,7 @@ $(document).ready(function () {
             let table = $('#table-contact-role');
             let col_empty = table.find('.col-table-empty');
             if (col_empty !== undefined) {
-                col_empty.remove();
+                col_empty.addClass('hidden');
             }
             let col = $('.col-contact').html().replace('hidden', '');
             data.map(function (item) {
@@ -475,29 +474,31 @@ $(document).ready(function () {
     // even in tab product
     $('#btn-add-select-product').on('click', function () {
         let table = $('#table-products');
+        table.addClass('tag-change');
         let col_empty = table.find('.col-table-empty');
         if (col_empty !== undefined) {
-            col_empty.remove();
+            col_empty.addClass('hidden');
         }
         let col = $('.col-select-product').html().replace('hidden', '');
         table.find('tbody').append(`<tr>${col}</tr>`);
 
         let last_row = table.find('tbody tr').last();
-        last_row.find('.num-product').text(table.find('tbody tr').length - 2);
+        last_row.find('.num-product').text(table.find('tbody tr').length - 3);
     })
 
     $('#btn-add-input-product').on('click', function () {
         let table = $('#table-products');
+        table.addClass('tag-change');
         let col_empty = table.find('.col-table-empty');
         if (col_empty !== undefined) {
-            col_empty.remove();
+            col_empty.addClass('hidden');
         }
 
         let col = $('.col-input-product').html().replace('hidden', '');
         table.find('tbody').append(`<tr>${col}</tr>`);
 
         let last_row = table.find('tbody tr').last();
-        last_row.find('.num-product').text(table.find('tbody tr').length - 2);
+        last_row.find('.num-product').text(table.find('tbody tr').length - 3);
     })
 
     ele_select_product_category.on('select2:unselect', function (e) {
@@ -532,7 +533,6 @@ $(document).ready(function () {
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
         if (Object.keys(dict_product).length === 0) {
-            console.log($('#data-product').val());
             dict_product = JSON.parse($('#data-product').val()).reduce((obj, item) => {
                 obj[item.id] = item;
                 return obj;
@@ -553,8 +553,10 @@ $(document).ready(function () {
         let tax_value = 0;
         let total_pretax = 0;
         ele_tr_products.each(function () {
+            let tax = 0;
+            if ($(this).find('.box-select-tax option:selected').data('value') !== undefined)
+                tax = parseFloat($(this).find('.box-select-tax option:selected').data('value')) / 100;
             let sub_total = $(this).find('.input-subtotal').valCurrency();
-            let tax = parseFloat($(this).find('.box-select-tax option:selected').data('value')) / 100;
             total_pretax += sub_total;
             tax_value += sub_total * tax;
         })
@@ -602,9 +604,10 @@ $(document).ready(function () {
     // event in tab competitor
     $('#btn-add-competitor').on('click', function () {
         let table = $('#table-competitors');
+        table.addClass('tag-change');
         let col_empty = table.find('.col-table-empty');
         if (col_empty !== undefined) {
-            col_empty.remove();
+            col_empty.addClass('hidden');
         }
         let col = $('.col-competitor').html().replace('hidden', '');
         table.find('tbody').append(`<tr>${col}</tr>`);
@@ -619,9 +622,10 @@ $(document).ready(function () {
     // event in tab contact role
     $('#btn-add-contact').on('click', function () {
         let table = $('#table-contact-role');
+        table.addClass('tag-change')
         let col_empty = table.find('.col-table-empty');
         if (col_empty !== undefined) {
-            col_empty.remove();
+            col_empty.addClass('hidden');
         }
         let col = $('.col-contact').html().replace('hidden', '');
         table.find('tbody').append(`<tr>${col}</tr>`);
@@ -823,7 +827,7 @@ $(document).ready(function () {
         data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
         data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
 
-        if ($('#table-products').hasClass('tag-change')) {
+        if ($('#table-products').hasClass('tag-change') && !ele_tr_products.hasClass('col-table-empty')) {
             data_form['opportunity_product_datas'] = list_product_data;
         }
 
@@ -845,7 +849,7 @@ $(document).ready(function () {
             list_competitor_data.push(data);
         })
 
-        if ($('#table-competitors').hasClass('tag-change')) {
+        if ($('#table-competitors').hasClass('tag-change') && !ele_tr_competitors.hasClass('col-table-empty')) {
             data_form['opportunity_competitors_datas'] = list_competitor_data;
         }
 
@@ -861,7 +865,7 @@ $(document).ready(function () {
             list_contact_role_data.push(data);
         })
 
-        if ($('#table-contact-role').hasClass('tag-change')) {
+        if ($('#table-contact-role').hasClass('tag-change') && !ele_tr_contact_role.hasClass('col-table-empty')) {
             data_form['opportunity_contact_role_datas'] = list_contact_role_data;
         }
 
@@ -903,8 +907,10 @@ $(document).ready(function () {
     $(document).on('click', '.btn-del-item', function () {
         let table = $(this).closest(`table`);
         table.addClass('tag-change');
-
         $(this).closest('tr').remove();
+        if (table.find('tbody tr:not(.hidden)').length === 0){
+            table.find('.col-table-empty').removeClass('hidden');
+        }
         switch (table.attr('id')) {
             case 'table-products':
                 getTotalPrice();
@@ -1132,4 +1138,217 @@ $(document).ready(function () {
         }
     })
 
+    // event auto select stage
+
+    function objectsMatch(objA, objB) {
+        return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
+    }
+    let list_stage_condition = []
+    $(document).on('click', '#btn-auto-update-stage', function () {
+        if (list_stage_condition.length === 0) {
+            list_stage.map(function (item) {
+                let list_condition = []
+                item.condition_datas.map(function (condition) {
+                    list_condition.push({
+                        'property': condition.condition_property.title,
+                        'comparison_operator': condition.comparison_operator,
+                        'compare_data': condition.compare_data,
+                    })
+                })
+                list_stage_condition.push({
+                    'id': item.id,
+                    'logical_operator': item.logical_operator,
+                    'condition_datas': list_condition
+                })
+            })
+        }
+        let list_property_config = []
+        let ele_customer = $('#select-box-customer option:selected');
+        if (ele_customer.length > 0) {
+            let compare_data = 0;
+            if (ele_customer.data('annual-revenue') !== null) {
+                compare_data = parseInt(ele_customer.data('annual-revenue'));
+            }
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '=',
+                'compare_data': compare_data,
+            })
+        }
+
+        let ele_product_category = $('#select-box-product-category option:selected');
+        if (ele_product_category.length > 0) {
+            list_property_config.push({
+                'property': 'Product Category',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Product Category',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_budget = $('#input-budget');
+        if (ele_budget.valCurrency() === 0) {
+            list_property_config.push({
+                'property': 'Budget',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Budget',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_open_date = $('#input-open-date');
+        if (ele_open_date.val() === '') {
+            list_property_config.push({
+                'property': 'Open Date',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Open Date',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_close_date = $('#input-close-date');
+        if (ele_close_date.val() === 0) {
+            list_property_config.push({
+                'property': 'Close Date',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Close Date',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_decision_maker = $('#input-decision-maker');
+        if (ele_decision_maker.attr('data-id') === '') {
+            list_property_config.push({
+                'property': 'Decision maker',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Decision maker',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_tr_product = $('#table-products tbody tr:not(.hidden)');
+        if (ele_tr_product.length === 0 || ele_tr_product.hasClass('col-table-empty')) {
+            list_property_config.push({
+                'property': 'Product.Line.Detail',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Product.Line.Detail',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_competitor_win = $('.input-win-deal:checked');
+        if (ele_competitor_win.length === 0) {
+            list_property_config.push({
+                'property': 'Competitor.Win',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Competitor.Win',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_check_lost = $('#check-lost-reason');
+        if (ele_check_lost.is(':checked')) {
+            list_property_config.push({
+                'property': 'Lost By Other Reason',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Lost By Other Reason',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_close_deal = $('#input-close-deal');
+        if (ele_close_deal.is(':checked')) {
+            list_property_config.push({
+                'property': 'Close Deal',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Close Deal',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        console.log(list_property_config)
+        let id_stage_current = '';
+        for (let i = list_stage_condition.length - 1; i >= 0; i--) {
+            if (list_stage_condition[i].logical_operator === 0) {
+                if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
+                    id_stage_current = list_stage_condition[i].id
+                    break;
+                }
+            } else {
+                if (list_stage_condition[i].condition_datas.some(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
+                    id_stage_current = list_stage_condition[i].id
+                    break;
+                }
+            }
+        }
+
+        let ele_stage = $(`.sub-stage`);
+        let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
+        let index = ele_stage_current.index();
+
+        if (ele_stage_current.hasClass('stage-lost')) {
+            ele_stage_current.addClass('bg-red-light-5 stage-selected');
+            ele_stage.removeClass('bg-primary-light-5 stage-selected');
+        } else {
+            for (let i = 0; i <= ele_stage.length; i++) {
+                if (i <= index) {
+                    if (!ele_stage.eq(i).hasClass('stage-lost'))
+                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                } else {
+                    ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
+                }
+            }
+        }
+    })
 })

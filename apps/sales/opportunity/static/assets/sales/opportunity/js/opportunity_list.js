@@ -12,6 +12,16 @@ $(function () {
 
         let config_is_AM_create = config.is_account_manager_create;
 
+        function getOppList(data){
+            let result = []
+            data.map(function (item){
+                let list_sale_team = item.opportunity_sale_team_datas.map(obj=>obj.member.id)
+                if (item.sale_person.id === employee_current_id || list_sale_team.includes(employee_current_id)){
+                    result.push(item)
+                }
+            })
+            return result
+        }
         let _dataTable = $table.DataTable({
             searching: false,
             language: {
@@ -29,7 +39,14 @@ $(function () {
             ajax: {
                 url: listURL,
                 type: "GET",
-                dataSrc: 'data.opportunity_list',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+
+                    if (data && resp.data.hasOwnProperty('opportunity_list')) {
+                        return resp.data['opportunity_list'] ? getOppList(resp.data['opportunity_list']) : [];
+                    }
+                    throw Error('Call data raise errors.')
+                },
                 data: function (params) {
                     let txtSearch = $('#search_input').val();
                     if (txtSearch.length > 0)

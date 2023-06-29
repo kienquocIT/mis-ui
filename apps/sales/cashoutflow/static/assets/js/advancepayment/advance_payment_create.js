@@ -83,6 +83,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(dtb);
         frm.dataUrl = dtb.attr('data-url-sale-order');
         dtb.DataTableDefault({
+            reloadCurrency: true,
             dom: '',
             ajax: {
                 url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
@@ -197,6 +198,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(dtb);
         frm.dataUrl = dtb.attr('data-url-quotation');
         dtb.DataTableDefault({
+            reloadCurrency: true,
             dom: '',
             ajax: {
                 url: frm.dataUrl + '?filter_quotation=' + filter_quotation,

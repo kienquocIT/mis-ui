@@ -750,6 +750,7 @@ $(document).ready(function () {
         $('#advance_payment_list_datatable').DataTable().destroy();
         let AP_db = $('#advance_payment_list_datatable');
         AP_db.DataTableDefault({
+            reloadCurrency: true,
             dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3'f><'col-sm-12 col-md-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
             visibleDisplayRowTotal: false,
             pageLength: 5,
@@ -958,8 +959,8 @@ $(document).ready(function () {
     })
 
     $('#sale-code-select-box').on('change', function () {
+        $('#tab_plan_datatable tbody').html(``);
         $('#sale-code-select-box option:selected').each(function (index, element) {
-            $('#tab_plan_datatable tbody').html(``);
             if ($(this).attr('data-type')) {
                 if ($(this).attr('data-type') === '0') {
                     // get ap expense items
@@ -1021,8 +1022,10 @@ $(document).ready(function () {
                     })
 
                     loadSaleOrderPlan($(this).attr('data-sale-code-id'), $(this).attr('data-sale-code'));
+                    $('#notify-none-sale-code').prop('hidden', true);
+                    $('#tab_plan_datatable').prop('hidden', false);
                 }
-                if ($(this).attr('data-type') === '1') {
+                else if ($(this).attr('data-type') === '1') {
                     // get ap expense items
                     let quo_id = $(this).attr('data-sale-code-id');
                     let so_filter = sale_order_list.filter(function(item) {
@@ -1096,13 +1099,15 @@ $(document).ready(function () {
                     })
 
                     loadQuotationPlan($(this).attr('data-sale-code-id'), $(this).attr('data-sale-code'));
+                    $('#notify-none-sale-code').prop('hidden', true);
+                    $('#tab_plan_datatable').prop('hidden', false);
                 }
-                if ($(this).attr('data-type') === '2') {
+                else if ($(this).attr('data-type') === '2') {
                     $('#sale-code-select-box').attr('data-placeholder', 'Select One');
                     $('#beneficiary-select-box').prop('disabled', true);
+                    $('#notify-none-sale-code').prop('hidden', false);
+                    $('#tab_plan_datatable').prop('hidden', true);
                 }
-                $('#notify-none-sale-code').prop('hidden', true);
-                $('#tab_plan_datatable').prop('hidden', false);
             }
         })
     })
@@ -1121,7 +1126,7 @@ $(document).ready(function () {
             if ($('#sale-code-select-box').val()) {
                 sale_code_length = 1;
                 opp_code_list.push($('#sale-code-select-box option:selected').attr('data-sale-code'));
-                sale_code_id_list.push($('#sale-code-select-box option:selected').attr('value'));
+                sale_code_id_list.push($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
             }
         }
         if ($('#radio-special').is(':checked')) {
@@ -1277,7 +1282,7 @@ $(document).ready(function () {
                 current_value_converted_from_ap = $(this);
                 sale_code_id_list = sale_code_selected_list;
                 if (sale_code_selected_list.length <= 0) {
-                    sale_code_id_list = $('#sale-code-select-box option:selected').val();
+                    sale_code_id_list = $('#sale-code-select-box option:selected').attr('data-sale-code-id');
                 }
                 $('.total-expense-selected').attr('data-init-money', 0);
                 $.fn.initMaskMoney2();
@@ -1612,7 +1617,7 @@ $(document).ready(function () {
             frm.dataForm['opportunity_selected_list'] = opportunity_selected_list;
         }
         else if (frm.dataForm['sale_code_type'] === 0) {  // sale
-            frm.dataForm['sale_code'] = $('#sale-code-select-box option:selected').attr('value');
+            frm.dataForm['sale_code'] = $('#sale-code-select-box option:selected').attr('data-sale-code-id');
             if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
                 frm.dataForm['sale_code_detail'] = 0;
             }
@@ -1648,7 +1653,7 @@ $(document).ready(function () {
             frm.dataForm['method'] = 2;
         }
 
-        // console.log(frm.dataForm)
+        console.log(frm.dataForm)
         if (can_submit) {
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

@@ -287,7 +287,7 @@ $(document).ready(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            if (row.is_default === true) {
+                            if (row.is_delete === true) {
                                 return `<a class="btn btn-icon btn-del-stage disabled" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                             } else {
                                 return `<a class="btn btn-icon btn-del-stage" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`

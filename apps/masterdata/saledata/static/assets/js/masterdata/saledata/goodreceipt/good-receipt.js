@@ -1,10 +1,11 @@
-
-class lineDetailUtil{
+class lineDetailUtil {
     datalist = [];
-    set setDatalist(data){
+
+    set setDatalist(data) {
         this.datalist = data
     };
-    get getDatalist(){
+
+    get getDatalist() {
         return this.datalist;
     }
 
@@ -12,22 +13,23 @@ class lineDetailUtil{
      * calculator subtotal table and total tab of table
      * @param row = Integer number index of row
      */
-    handleTotal(row=null){
+    handleTotal(row = null) {
         const $table = $('#line_detail_table')
         const dataList = $table.DataTable().data().toArray()
         let pretax = 0
         let taxes = 0
         let total = 0
         if (row != null)
-            if (dataList[row]?.quantity && dataList[row]?.unit_price){
-                dataList[row]['subtotal_price'] = dataList[row]?.quantity * dataList[row]?.unit_price
-                $table.DataTable().cell(row, 7).data(dataList[row]).draw(false)
+            if (dataList[row]?.quantity && dataList[row]?.unit_price) {
+                const subtotal = dataList[row].quantity * dataList[row].unit_price
+                dataList[row].subtotal_price = subtotal
+                $table.DataTable().cell(row, 7).data(dataList[row].subtotal_price).draw(false)
             }
         for (const data of dataList) {
             if (data?.quantity && data?.unit_price)
                 pretax += data.quantity * data.unit_price
             if (data.tax.rate > 0)
-                taxes += ((data.quantity * data.unit_price) * data.tax.rate)/100
+                taxes += ((data.quantity * data.unit_price) * data.tax.rate) / 100
         }
         total += pretax + taxes
         $('.pretax').attr('data-init-money', pretax)
@@ -41,19 +43,21 @@ class lineDetailUtil{
      * price tax or pretax amount
      * @param rowIdx
      */
-    columnFuncUtil(rowIdx){
+    columnFuncUtil(rowIdx, row) {
         const _this = this
         const $prodTable = $('#line_detail_table');
         // init product
-        $(`.product_row_${rowIdx}`).off().on('select2:select', function(e) {
+        $(`#product_row_${rowIdx}`, row).off().on('select2:select', function (e) {
             e.stopPropagation()
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['product'] = {id: data.id, 'title': data.title}
-            if (data?.sale_information?.default_uom) currentList[rowIdx]['uom'] = {
-                'id': data.sale_information.default_uom.id,
-                'title': data.sale_information.default_uom.title,
-                'uom_group': data?.general_information?.uom_group?.id
+            if (data?.sale_information?.default_uom){
+                currentList[rowIdx]['uom'] = {
+                    'id': data.sale_information.default_uom.id,
+                    'title': data.sale_information.default_uom.title,
+                    'uom_group': data?.general_information?.uom_group?.id
+                }
             }
             if (data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
                 'id': data.sale_information.tax_code.id,
@@ -66,7 +70,7 @@ class lineDetailUtil{
             _this.handleTotal(rowIdx)
         });
         // warehouse
-        $(`.warehouse_row_${rowIdx}`).off().on('select2:select', function(e){
+        $(`#warehouse_row_${rowIdx}`, row).off().on('select2:select', function (e) {
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['warehouse'] = {
@@ -77,7 +81,7 @@ class lineDetailUtil{
             $prodTable.DataTable().cell(rowIdx, 2).data(currentList[rowIdx]['warehouse']).draw(false);
         });
         // UoM
-        $(`.uom_row_${rowIdx}`).off().on('select2:select', function(e){
+        $(`#uom_row_${rowIdx}`, row).off().on('select2:select', function (e) {
             e.stopPropagation()
             let currentList = _this.getDatalist;
             const data = e.params.data
@@ -89,21 +93,21 @@ class lineDetailUtil{
             $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
         });
         // quantity
-        $(`.quantity_row_${rowIdx}`).off().on('change', function(){
+        $(`#quantity_row_${rowIdx}`, row).off().on('change', function () {
             let currentList = _this.getDatalist;
             currentList[rowIdx]['quantity'] = parseInt(this.value)
             _this.setDatalist = currentList
             _this.handleTotal(rowIdx)
         });
         // unit price
-        $(`.unit_price_row_${rowIdx}`).off().on('blur', function(){
+        $(`#unit_price_row_${rowIdx}`, row).off().on('blur', function () {
             let currentList = _this.getDatalist;
             currentList[rowIdx]['unit_price'] = $(this).valCurrency()
             _this.setDatalist = currentList
             _this.handleTotal(rowIdx)
         });
         // tax
-        $(`.tax_row_${rowIdx}`).off().on('select2:select', function(e){
+        $(`#tax_row_${rowIdx}`, row).off().on('select2:select', function (e) {
             let currentList = _this.getDatalist;
             const data = e.params.data
             currentList[rowIdx]['tax'] = {
@@ -112,12 +116,12 @@ class lineDetailUtil{
                 'rate': data.rate
             }
             _this.setDatalist = currentList
-            $prodTable.DataTable().cell(rowIdx, 6).data(currentList[rowIdx]['uom']).draw(false);
+            $prodTable.DataTable().cell(rowIdx, 6).data(currentList[rowIdx]['tax']).draw(false);
             _this.handleTotal(rowIdx)
         });
     }
 
-    initTable(){
+    initTable() {
         const $tableElm = $('#line_detail_table');
         let _this = this
         $tableElm.DataTable({
@@ -136,13 +140,14 @@ class lineDetailUtil{
                 },
                 {
                     targets: 1,
+                    data: 'product',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
                         let product = '';
-                        if (data?.product?.id){
+                        if (row?.id) {
                             let temp = JSON.stringify({
-                                'id': data.product.id,
-                                'title': data.product.title
+                                'id': row.id,
+                                'title': row.title
                             });
                             product = temp.replaceAll('"', "'")
                         }
@@ -157,8 +162,8 @@ class lineDetailUtil{
                                             </i>
                                             <div class="dropdown-menu w-210p mt-4"></div>
                                         </div>
-                                        <select class="form-select product_row_${idx}"
-                                        data-prefix="product_list"
+                                        <select class="form-select dropdown-select_two" id="product_row_${idx}"
+                                        data-prefix="product_list" data-select2-closeOnSelect="false"
                                         data-url="${urlSelect}"
                                         data-link-detail="${urlSelectDetail}"
                                         data-onload="${product ? product : ''}"
@@ -171,19 +176,20 @@ class lineDetailUtil{
                 },
                 {
                     targets: 2,
+                    data: 'warehouse',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
                         const urlSelect = $('#url-factory').attr('data-warehouse')
                         let warehouse = '';
-                        if (data?.warehouse?.id){
+                        if (row?.id) {
                             let temp = JSON.stringify({
-                                'id': data.warehouse.id,
-                                'title': data.warehouse.title
+                                'id': row.id,
+                                'title': row.title
                             });
                             warehouse = temp.replaceAll('"', "'")
                         }
-                        return `<select class="form-select warehouse_row_${idx}" ` +
-                            `data-prefix="warehouse_list" ` +
+                        return `<select class="form-select dropdown-select_two" id="warehouse_row_${idx}"` +
+                            `data-prefix="warehouse_list" data-select2-closeOnSelect="false" ` +
                             `data-url="${urlSelect}" ` +
                             `data-onload="${warehouse ? warehouse : ''}"` +
                             `></select>`;
@@ -191,24 +197,26 @@ class lineDetailUtil{
                 },
                 {
                     targets: 3,
+                    data: 'uom',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
                         const urlSelect = $('#url-factory').attr('data-uom')
+
                         let uom = '';
-                        if (data?.uom?.id){
+                        if (row?.id) {
                             let temp = JSON.stringify({
-                                'id': data.uom.id,
-                                'title': data.uom.title
+                                'id': row.id,
+                                'title': row.title
                             });
                             uom = temp.replaceAll('"', "'")
                         }
                         let params = ''
-                        if (data?.uom?.uom_group){
-                            let gTemp = JSON.stringify({'group': data.uom.uom_group})
+                        if (row?.uom_group) {
+                            let gTemp = JSON.stringify({'group': row.uom_group})
                             params = gTemp.replace(/"/g, "'")
                         }
-                        return `<select class="form-select uom_row_${idx}" 
-                                    data-prefix="unit_of_measure" 
+                        return `<select class="form-select dropdown-select_two" id="uom_row_${idx}"
+                                    data-prefix="unit_of_measure" data-select2-closeOnSelect="false"
                                     data-url="${urlSelect}"
                                     data-params="${params}"
                                     data-onload="${uom ? uom : ''}"></select>`;
@@ -216,55 +224,59 @@ class lineDetailUtil{
                 },
                 {
                     targets: 4,
+                    data: 'quantity',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
-                        return `<input class="form-control quantity_row_${idx}" type="text" placeholder="0" required 
-                                value="${data?.quantity ? data.quantity : 0}">`;
+                        return `<input class="form-control" id="quantity_row_${idx}" type="text" placeholder="0" required 
+                                value="${row ? row : 0}">`;
 
                     }
                 },
                 {
                     targets: 5,
+                    data: 'unit_price',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
-                        return `<input class="form-control unit_price_row_${idx} mask-money" data-return-type="number"
-                        type="text" placeholder="0" required value="${data?.unit_price ? data.unit_price : 0}">`;
+                        return `<input class="form-control mask-money" id="unit_price_row_${idx}" data-return-type="number"
+                        type="text" placeholder="0" required value="${row ? row : 0}">`;
                     }
                 },
                 {
                     targets: 6,
+                    data: 'tax',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
                         const urlSelect = $('#url-factory').attr('data-tax')
                         let tax = '';
-                        if (data?.tax?.id){
+                        if (row?.id){
                             let temp = JSON.stringify({
-                                'id': data.tax.id,
-                                'title': data.tax.title
+                                'id': row.id,
+                                'title': row.title
                             });
                             tax = temp.replaceAll('"', "'")
                         }
-                        return `<select class="form-select tax_row_${idx}" 
-                                    data-prefix="tax_list" 
+                        return `<select class="form-select dropdown-select_two w-10" id="tax_row_${idx}" 
+                                    data-prefix="tax_list" data-select2-closeOnSelect="false"
                                     data-url="${urlSelect}" 
                                     data-onload="${tax ? tax : ''}"></select>`;
                     }
                 },
                 {
                     targets: 7,
-                    render: (row, type, data, meta) => {
-                        return `<span class="mask-money"
-                        data-init-money="${data?.subtotal_price ? data.subtotal_price : 0}">`;
+                    data: 'subtotal_price',
+                    render: (row, type, data) => {
+                        return `<span class="mask-money" data-init-money="${row ? row : 0}">`;
                     }
                 },
                 {
                     targets: 8,
-                    render: (row, type, data, meta) => {
+                    data: 'product',
+                    render: (row, type, data) => {
                         return `<div class="actions-btn text-center">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
                                    title="Delete"
                                    href="#"
-                                   data-id="${data.id}"
+                                   data-id="${row?.id}"
                                    data-action="delete">
                                     <span class="btn-icon-wrap">
                                         <i class="bi bi-trash"></i>
@@ -274,22 +286,22 @@ class lineDetailUtil{
                     }
                 },
             ],
-            drawCallback: function(){
-                // init event on change for all select per row
-                this.api().rows().nodes().each(function (elm, i) {
-                    $(`.product_row_${i}, .warehouse_row_${i}, .uom_row_${i}, .tax_row_${i}`)
-                    _this.columnFuncUtil(i)
-
-                    initSelectBox($(`.product_row_${i}, .warehouse_row_${i}, .uom_row_${i}, .tax_row_${i}`))
-                })
-            },
-            rowCallback: function(row, data, index){
+            rowCallback: function (row, data, index) {
                 // auto generate order number
                 $('td:eq(0)', row).html(index + 1)
                 data['order'] = index + 1
+
                 // init currency
                 $.fn.initMaskMoney2()
-                $('.actions-btn a', row).off().on('click', function(e){
+
+                // init select 2
+                initSelectBox($('.dropdown-select_two', row))
+
+                // init event on change
+                _this.columnFuncUtil(index, row)
+
+                // action button delete
+                $('.actions-btn a', row).off().on('click', function (e) {
                     $(row).closest('.table').DataTable().rows(row).remove().draw(false);
                     let changeData = _this.getDatalist
                     changeData.splice(index, 1)
@@ -300,10 +312,10 @@ class lineDetailUtil{
         })
     }
 
-    addNewProduct(){
+    addNewProduct() {
         let $btnAdd = $('#btn-add-product');
         const _this = this
-        $btnAdd.off().on('click', function(e) {
+        $btnAdd.off().on('click', function (e) {
             if (e.detail === 2) return false // this code is stop double click event
             const $tableElm = $('#line_detail_table');
             const newData = {
@@ -342,9 +354,9 @@ class lineDetailUtil{
     };
 }
 
-function loadDetail(line){
+function loadDetail(line) {
     const $form = $('#good_receipt_form')
-    if ($form.attr('data-method') === 'put'){
+    if ($form.attr('data-method') === 'put') {
         $.fn.callAjax($form.attr('data-url'), 'get')
             .then(
                 (resp) => {
@@ -369,7 +381,7 @@ function loadDetail(line){
     }
 }
 
-$(function(){
+$(function () {
     // declare variable for all page
     const lineDetail = new lineDetailUtil();
     const $transFactory = $('#trans-factory')
@@ -406,20 +418,19 @@ $(function(){
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',
     })
-    $form.on('submit', function(e){
+    $form.on('submit', function (e) {
         $('.readonly [disabled]:not([hidden]):not(i)', $form).attr('disabled', false)
         e.preventDefault();
         let _form = new SetupFormSubmit($form);
         let csr = $("[name=csrfmiddlewaretoken]").val();
         const $tableElm = $('#line_detail_table')
         let lineDetail = $tableElm.DataTable().data().toArray()
-        if (!lineDetail){
+        if (!lineDetail) {
             $.fn.notifyPopup({description: $transFactory.attr('data-product')}, 'failure')
             return false
-        }
-        else{
+        } else {
             let temp = []
-            for (let [idx, val] of lineDetail.entries()){
+            for (let [idx, val] of lineDetail.entries()) {
                 if (!val?.quantity || !val?.unit_price || !val?.product?.id || !val?.warehouse?.id)
                     $.fn.notifyPopup({description: $transFactory.attr('data-row-error').replace('{}', idx)}, 'failure')
                 temp[idx] = {

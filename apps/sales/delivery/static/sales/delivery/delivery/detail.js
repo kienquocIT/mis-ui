@@ -52,8 +52,8 @@ $(async function () {
                                     item.picked = val.stock
                                 }
                         }
-                        else if ((config.is_picking && !config.is_partial_ship) || (config.is_picking && config.is_partial_ship) && delivery){
-                            // config 3, 4
+                        else if ((config.is_picking && !config.is_partial_ship) && delivery ) {
+                            // config 3
                                 item.product_amount = 0
                                 for (const val of delivery){
                                     if (val.warehouse === item.id
@@ -64,6 +64,23 @@ $(async function () {
                                     }
                                 }
                         }
+                        else if ((config.is_picking && config.is_partial_ship) && delivery){
+                            // config 4
+                            // nếu ready quantity > 0 => có hàng để giao
+                            // lấy delivery
+                            item.product_amount = 0
+                            if (prod_data.ready_quantity > 0){
+                                for (const val of delivery) {
+                                    if (val.warehouse === item.id
+                                        && val.uom === prod_data.uom_data.id
+                                    ) {
+                                        if (item.product_amount === prod_data.ready_quantity ) break;
+                                        item.product_amount += val.stock
+                                    }
+                                }
+                            }
+                        }
+
                         newData.push(item)
                     }
                     table.not('.dataTable').DataTable({
@@ -176,12 +193,15 @@ $(async function () {
                                 temp_picked += item.picked
                             }
                         }
-                        let tableTargetData = _this.getProdList
-                        tableTargetData[idx]['picked_quantity'] = temp_picked
-                        tableTargetData[idx]['delivery_data'] = sub_delivery_data
-                        _this.setProdList = tableTargetData
-                        let targetTable = $('#dtbPickingProductList')
-                        targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw()
+                        if (temp_picked > 0){
+                            // lấy hàng từ popup warehouse add vào danh sách product detail
+                            let tableTargetData = _this.getProdList
+                            tableTargetData[idx]['picked_quantity'] = temp_picked
+                            tableTargetData[idx]['delivery_data'] = sub_delivery_data
+                            _this.setProdList = tableTargetData
+                            let targetTable = $('#dtbPickingProductList')
+                            targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw()
+                        }
                         $('#warehouseStockModal').modal('hide');
                     })
                 })
@@ -419,11 +439,11 @@ $(async function () {
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
-                    (errs) => {
-                        if (errs.data.errors.hasOwnProperty('detail')) {
-                            $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
-                        }
-                    }
+                    // (errs) => {
+                    //     if (errs.data.errors.hasOwnProperty('detail')) {
+                    //         $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    //     }
+                    // }
                 )
                 .catch((err) => {
                     console.log(err)

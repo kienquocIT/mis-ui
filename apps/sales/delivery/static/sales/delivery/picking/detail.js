@@ -227,6 +227,14 @@ $(async function () {
             }
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName.join(', ')}</p></div>`;
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-stock')}</i></h6><p>${prodTotal}</p></div>`;
+            const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
+            htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+                            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                                <span>${$elmTrans.attr('data-view-detail')}</span>
+                                <span class="icon ml-1">
+                                    <i class="bi bi-arrow-right-circle-fill"></i>
+                                </span>
+                            </a></div>`;
             $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent)
         });
     }

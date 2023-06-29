@@ -557,7 +557,7 @@ class loadDataHandle {
                 let valList = [];
                 let account_price_list = document.getElementById('customer-price-list').value;
                 $(priceList).empty();
-                if (data.price_list) {
+                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
                         if (data.price_list[i].id === account_price_list) {
                             valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
@@ -577,6 +577,8 @@ class loadDataHandle {
                     if (valList.length > 0) {
                         let minVal = Math.min(...valList);
                         $(price).attr('value', String(minVal));
+                    } else { // Product doesn't have price list or not map with customer price list
+                        $(price).attr('value', String(0));
                     }
                 }
             }
@@ -3060,10 +3062,12 @@ class submitHandle {
                 let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
                 let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
                 let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
+                let order = row.querySelector('.table-row-order').getAttribute('data-value');
                 result.push({
                     'indicator': indicator,
                     'indicator_value': parseFloat(indicator_value),
                     'indicator_rate': parseFloat(indicator_rate),
+                    'order': parseInt(order),
                 })
             }
         }
@@ -3215,7 +3219,7 @@ function loadPriceProduct(eleProduct) {
                 if (valList.length > 0) {
                     let minVal = Math.min(...valList);
                     $(price).attr('value', String(minVal));
-                } else {
+                } else { // Product doesn't have price list or not map with customer price list
                     $(price).attr('value', String(0));
                 }
             }

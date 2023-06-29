@@ -35,7 +35,7 @@ function dataTableQuotationIndicator(data) {
             {
                 targets: 0,
                 render: (data, type, row, meta) => {
-                    return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                    return `<span class="table-row-order" data-value="${(meta.row + 1)}">${(meta.row + 1)}</span>`
                 }
             },
             {

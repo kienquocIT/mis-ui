@@ -239,7 +239,7 @@ $(function () {
                         targets: 1,
                         render: (data, type, row) => {
                             // return `<span>${row.title}</span>`
-                            return `<input type="text" class="form-control table-row-title" value="${row.title}">`
+                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`
                         }
                     },
                     {
@@ -398,6 +398,7 @@ $(function () {
             let data_submit = {};
             data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
             data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            data_submit['example'] = "indicator(" + data_submit['title'] + ")";
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)
                 .then(
@@ -614,8 +615,11 @@ $(function () {
             let url_redirect = $(this).attr('data-url-redirect');
             let method = $(this).attr('data-method');
             let data_submit = {};
-            data_submit['title'] = $('#indicator-create-title').val();
-            data_submit['remark'] = $('#indicator-create-description').val();
+            let eleTitle = $('#indicator-create-title');
+            let eleRemark = $('#indicator-create-description');
+            data_submit['title'] = eleTitle.val();
+            data_submit['remark'] = eleRemark.val();
+            data_submit['example'] = "indicator(" + data_submit['title'] + ")";
             let order = 1;
             let tableEmpty = tableIndicator[0].querySelector('.dataTables_empty');
             let tableLen = tableIndicator[0].tBodies[0].rows.length;

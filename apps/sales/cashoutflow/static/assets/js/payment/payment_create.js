@@ -7,15 +7,12 @@ $(document).ready(function () {
     const tax_list = JSON.parse($('#tax_list').text());
     const account_list = JSON.parse($('#account_list').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
+    const payment_cost_items_list = JSON.parse($('#payment_cost_items_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
         return obj;
     }, {});
 
-    let sale_code_selected_list = [];
-    let sale_order_selected_list = [];
-    let quotation_selected_list = [];
-    let opportunity_selected_list = [];
     let current_value_converted_from_ap = '';
     let payment_cost_items_filtered = [];
     let advance_payment_expense_items = [];
@@ -202,6 +199,178 @@ $(document).ready(function () {
 
                     $.fn.initMaskMoney2();
                 }
+            }
+        })
+    }
+
+    function loadSaleOrderPlanMULTI(filter_sale_order_id) {
+        let ap_expense_list_mapped = []
+        for (let i = 0; i < advance_payment_expense_items.length; i++) {
+            let ap_expense_item = advance_payment_expense_items[i];
+            let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                return item.expense_id === ap_expense_item.expense.id;
+            });
+            let paid = payment_cost_items_list.reduce(function(s, item) {
+                return s + item.sum_value;
+            }, 0);
+            ap_expense_list_mapped.push(
+                {
+                    'expense_id': ap_expense_item.expense.id,
+                    'ap_approved': ap_expense_item.after_tax_price,
+                    'returned': ap_expense_item.returned_total,
+                    'paid': paid,
+                    'remain_ap': ap_expense_item.remain_total,
+                }
+            )
+        }
+
+        let url = $('#tab_plan_datatable').attr('data-url-sale-order') + '?filter_sale_order=' + filter_sale_order_id;
+        $.fn.callAjax(url, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let found_line = $(`#tab_plan_datatable tbody tr td[data-sale-code-id="` + filter_sale_order_id + `"]`).closest('tr');
+                $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + filter_sale_order_id + `"`).remove();
+                let data_detail = data.sale_order_expense_list;
+                let new_line = ``;
+                for (let i = 0; i < data_detail.length; i++) {
+                    let expense_id = data_detail[i].expense_id;
+                    let results = advance_payment_expense_items.filter(function(item) {
+                        return item.expense.id === expense_id;
+                    });
+                    let ap_approved = results.reduce(function(s, item) {
+                        return s + item.after_tax_price;
+                    }, 0);
+                    let returned = results.reduce(function(s, item) {
+                        return s + item.returned_total;
+                    }, 0);
+                    let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                        return item.expense_id === expense_id;
+                    });
+                    let to_payment = payment_cost_items_list.reduce(function(s, item) {
+                        return s + item.converted_value;
+                    }, 0);
+                    let others_payment = payment_cost_items_list.reduce(function(s, item) {
+                        return s + item.real_value;
+                    }, 0);
+
+                    let plan_after_tax = 0;
+                    plan_after_tax = data_detail[i].plan_after_tax;
+                    let remain_ap = ap_approved - returned - to_payment;
+                    let paid = to_payment + others_payment;
+                    let available = plan_after_tax - remain_ap - paid;
+
+                    if (remain_ap < 0) {remain_ap = 0}
+                    if (available < 0) {available = 0}
+
+                    let tax_item = '';
+                    if (data_detail[i].tax.title) {
+                        tax_item = data_detail[i].tax.title;
+                    }
+
+                    new_line = new_line + `<tr class="detail-line-for-` + filter_sale_order_id + `">
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
+                        <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + returned + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
+                    </tr>`
+                }
+                found_line.after(new_line);
+                $.fn.initMaskMoney2();
+            }
+        })
+    }
+
+    function loadQuotationPlanMULTI(filter_quotation_id) {
+        let ap_item = ap_list.filter(function(item) {
+            return item.quotation_mapped === filter_quotation_id;
+        });
+
+        let ap_expense_list_mapped = []
+        for (let i = 0; i < ap_item.length; i++) {
+            for (let j = 0; j < ap_item[i].expense_items.length; j++) {
+                let ap_expense_item = ap_item[i].expense_items[j];
+                let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
+                    return item.expense_id === ap_expense_item.expense.id;
+                });
+                let paid = payment_cost_items_list.reduce(function(s, item) {
+                    return s + item.sum_value;
+                }, 0);
+                ap_expense_list_mapped.push(
+                    {
+                        'expense_id': ap_expense_item.expense.id,
+                        'ap_approved': ap_expense_item.after_tax_price,
+                        'returned': ap_expense_item.returned_total,
+                        'paid': paid,
+                        'remain_ap': ap_expense_item.remain_total,
+                    }
+                )
+            }
+        }
+
+        let url = $('#tab_plan_datatable').attr('data-url-quotation') + '?filter_quotation=' + filter_quotation_id;
+        $.fn.callAjax(url, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let found_line = $(`#tab_plan_datatable tbody tr td[data-sale-code-id="` + filter_quotation_id + `"]`).closest('tr');
+                $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + filter_quotation_id + `"`).remove();
+                let new_line = ``;
+                let data_detail = data.quotation_expense_list;
+                for (let i = 0; i < data_detail.length; i++) {
+                    let expense_id = data_detail[i].expense_id;
+                    let results = advance_payment_expense_items.filter(function (item) {
+                        return item.expense.id === expense_id;
+                    });
+                    let ap_approved = results.reduce(function (s, item) {
+                        return s + item.after_tax_price;
+                    }, 0);
+                    let returned = results.reduce(function (s, item) {
+                        return s + item.returned_total;
+                    }, 0);
+                    let payment_cost_items_list = payment_cost_items_filtered.filter(function (item) {
+                        return item.expense_id === expense_id;
+                    });
+                    let to_payment = payment_cost_items_list.reduce(function (s, item) {
+                        return s + item.converted_value;
+                    }, 0);
+                    let others_payment = payment_cost_items_list.reduce(function (s, item) {
+                        return s + item.real_value;
+                    }, 0);
+
+                    let plan_after_tax = 0;
+                    plan_after_tax = data_detail[i].plan_after_tax;
+                    let remain_ap = ap_approved - returned - to_payment;
+                    let paid = to_payment + others_payment;
+                    let available = plan_after_tax - remain_ap - paid;
+
+                    if (remain_ap < 0) {
+                        remain_ap = 0
+                    }
+                    if (available < 0) {
+                        available = 0
+                    }
+
+                    let tax_item = '';
+                    if (data_detail[i].tax.title) {
+                        tax_item = data_detail[i].tax.title;
+                    }
+
+                    new_line = new_line + `<tr class="detail-line-for-` + filter_quotation_id + `">
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
+                        <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + returned + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + remain_ap + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + paid + `"></span></td>
+                        <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
+                    </tr>`
+                }
+                found_line.after(new_line);
+                $.fn.initMaskMoney2();
             }
         })
     }
@@ -914,10 +1083,6 @@ $(document).ready(function () {
     })
 
     $('.sale_code_type').on('change', function (event) {
-        sale_code_selected_list = [];
-        sale_order_selected_list = [];
-        quotation_selected_list = [];
-        opportunity_selected_list = [];
         $('#tab_line_detail_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').html(``);
         $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val())
@@ -945,24 +1110,16 @@ $(document).ready(function () {
         }
         else if ($(this).val() === 'MULTI') {
             loadSaleCodeMulti();
-            sale_code_selected_list = [];
             $('#beneficiary-select-box').prop('disabled', true);
             loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
             $('#sale-code-select-box').prop('disabled', false);
-            $('#sale-code-select-box2-show').css({
-                'background': 'none',
-            });
-            $('#sale-code-select-box2-show').attr('disabled', false);
-            $('#sale-code-select-box2-show').attr('placeholder', 'Select multi Sale Code available');
-            $('#sale-code-select-box2-show').val('');
         }
     })
 
     $('#sale-code-select-box').on('change', function () {
-        $('#tab_plan_datatable tbody').html(``);
-        $('#sale-code-select-box option:selected').each(function (index, element) {
-            if ($(this).attr('data-type')) {
-                if ($(this).attr('data-type') === '0') {
+        if ($('input[name="sale_code_type"]:checked').val() === 'sale') {
+            $('#tab_plan_datatable tbody').html(``);
+            if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
                     // get ap expense items
                     let so_id = $(this).attr('data-sale-code-id');
                     let so_filter = sale_order_list.filter(function(item) {
@@ -1001,43 +1158,126 @@ $(document).ready(function () {
                             advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                         }
                     }
-                    // console.log(advance_payment_expense_items)
+                    // console.log(0, advance_payment_expense_items)
 
                     // get payment items
                     payment_cost_items_filtered = [];
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                    // console.log(data.payment_cost_items_list[i])
-                                    let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                        payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                    }
-                                }
-                                // console.log(payment_cost_items_filtered)
-                            }
+                    for (let i = 0; i < payment_cost_items_list.length; i++) {
+                        let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                            payment_cost_items_filtered.push(payment_cost_items_list[i]);
                         }
-                    })
-
-                    loadSaleOrderPlan($(this).attr('data-sale-code-id'), $(this).attr('data-sale-code'));
+                    }
+                    loadSaleOrderPlan($('#sale-code-select-box option:selected').attr('data-sale-code-id'), $('#sale-code-select-box option:selected').attr('data-sale-code'));
                     $('#notify-none-sale-code').prop('hidden', true);
                     $('#tab_plan_datatable').prop('hidden', false);
+                    // console.log(1, payment_cost_items_filtered)
                 }
-                else if ($(this).attr('data-type') === '1') {
-                    // get ap expense items
-                    let quo_id = $(this).attr('data-sale-code-id');
-                    let so_filter = sale_order_list.filter(function(item) {
-                        if (Object.keys(item.quotation).length !== 0) {
-                            return item.quotation.id === quo_id;
+            else if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
+                // get ap expense items
+                let quo_id = $(this).attr('data-sale-code-id');
+                let so_filter = sale_order_list.filter(function(item) {
+                    if (Object.keys(item.quotation).length !== 0) {
+                        return item.quotation.id === quo_id;
+                    }
+                });
+                let so_mapped = null;
+                let quo_mapped = null;
+                let opp_mapped = null;
+                if (so_filter.length > 0) {
+                    so_mapped = so_filter[0];
+                    if (so_mapped) {
+                        if (Object.keys(so_mapped.quotation).length !== 0) {
+                            quo_mapped = so_mapped.quotation;
                         }
+                        if (Object.keys(so_mapped.opportunity).length !== 0) {
+                            opp_mapped = so_mapped.opportunity;
+                        }
+                    }
+                }
+                else {
+                    let quo_filter = quotation_list.filter(function(item) {
+                        return item.id === quo_id;
                     });
-                    let so_mapped = null;
-                    let quo_mapped = null;
-                    let opp_mapped = null;
-                    if (so_filter.length > 0) {
-                        so_mapped = so_filter[0];
+                    quo_mapped = quo_filter[0];
+                    if (quo_mapped) {
+                        if (Object.keys(quo_mapped.opportunity).length !== 0) {
+                            opp_mapped = quo_mapped.opportunity;
+                        }
+                    }
+                }
+
+                let so_mapped_id = null;
+                let quo_mapped_id = null;
+                let opp_mapped_id = null;
+                if (so_mapped) {so_mapped_id = so_mapped.id}
+                if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+                if (opp_mapped) {opp_mapped_id = opp_mapped.id}
+
+                advance_payment_expense_items = [];
+                for (let i = 0; i < ap_list.length; i++) {
+                    if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                    if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                    if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                }
+                // console.log(advance_payment_expense_items)
+
+                // get payment items
+                payment_cost_items_filtered = [];
+                for (let i = 0; i < payment_cost_items_list.length; i++) {
+                    let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                        payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                    }
+                }
+                loadQuotationPlan($('#sale-code-select-box option:selected').attr('data-sale-code-id'), $('#sale-code-select-box option:selected').attr('data-sale-code'));
+                $('#notify-none-sale-code').prop('hidden', true);
+                $('#tab_plan_datatable').prop('hidden', false);
+            }
+            else if ($('#sale-code-select-box option:selected').attr('data-type') === '2') {
+                $('#sale-code-select-box').attr('data-placeholder', 'Select One');
+                $('#beneficiary-select-box').prop('disabled', true);
+                $('#notify-none-sale-code').prop('hidden', false);
+                $('#tab_plan_datatable').prop('hidden', true);
+            }
+        }
+        else if ($('input[name="sale_code_type"]:checked').val() === 'MULTI') {
+            $('#tab_plan_datatable tbody').html(``);
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
+            $('#sale-code-select-box option:selected').each(function (index, element) {
+                if ($(this).attr('data-type') !== '2') {
+                    $('#tab_plan_datatable tbody').append(`<tr>
+                            <td colspan="1" data-type="` + $(this).attr('data-type') + `" data-sale-code-id="` + $(this).attr('data-sale-code-id') + `" data-sale-code="` + $(this).attr('data-sale-code') + `">
+                            <span class="badge badge-primary w-100">` + $(this).attr('data-sale-code') + `</span>
+                            <a class="btn-load-detail-multi" data-detail-view="hide" href="#"><i class="bi bi-caret-down-square"></i></a>
+                            </td>
+                            <td colspan="7"></td>
+                        </tr>`)
+                }
+            })
+
+            $('.btn-load-detail-multi').on('click', function () {
+                if ($(this).attr('data-detail-view') === 'hide') {
+                    $(this).attr('data-detail-view', 'show');
+                    if ($(this).closest('td').attr('data-type') === '0') {
+                        // get ap expense items
+                        let so_id = $(this).closest('td').attr('data-sale-code-id');
+                        let so_filter = sale_order_list.filter(function(item) {
+                            return item.id === so_id;
+                        });
+                        let so_mapped = null;
+                        let quo_mapped = null;
+                        let opp_mapped = null;
+                        if (so_filter.length > 0) {
+                            so_mapped = so_filter[0];
+                        }
                         if (so_mapped) {
                             if (Object.keys(so_mapped.quotation).length !== 0) {
                                 quo_mapped = so_mapped.quotation;
@@ -1046,70 +1286,120 @@ $(document).ready(function () {
                                 opp_mapped = so_mapped.opportunity;
                             }
                         }
+                        let so_mapped_id = null;
+                        let quo_mapped_id = null;
+                        let opp_mapped_id = null;
+                        if (so_mapped) {so_mapped_id = so_mapped.id}
+                        if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+                        if (opp_mapped) {opp_mapped_id = opp_mapped.id}
+
+                        advance_payment_expense_items = [];
+                        for (let i = 0; i < ap_list.length; i++) {
+                            if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                            }
+                            if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                            }
+                            if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
+                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                            }
+                        }
+                        // console.log(0, advance_payment_expense_items)
+
+                        // get payment items
+                        payment_cost_items_filtered = [];
+                        for (let i = 0; i < payment_cost_items_list.length; i++) {
+                            let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                            if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                            }
+                        }
+                        loadSaleOrderPlanMULTI($(this).closest('td').attr('data-sale-code-id'));
+                        $('#notify-none-sale-code').prop('hidden', true);
+                        $('#tab_plan_datatable').prop('hidden', false);
+                        // console.log(1, payment_cost_items_filtered)
                     }
-                    else {
-                        let quo_filter = quotation_list.filter(function(item) {
-                            return item.id === quo_id;
+                    else if ($(this).closest('td').attr('data-type') === '1') {
+                        // get ap expense items
+                        let quo_id = $(this).closest('td').attr('data-sale-code-id');
+                        let so_filter = sale_order_list.filter(function(item) {
+                            if (Object.keys(item.quotation).length !== 0) {
+                                return item.quotation.id === quo_id;
+                            }
                         });
-                        quo_mapped = quo_filter[0];
-                        if (quo_mapped) {
-                            if (Object.keys(quo_mapped.opportunity).length !== 0) {
-                                opp_mapped = quo_mapped.opportunity;
-                            }
-                        }
-                    }
-
-                    let so_mapped_id = null;
-                    let quo_mapped_id = null;
-                    let opp_mapped_id = null;
-                    if (so_mapped) {so_mapped_id = so_mapped.id}
-                    if (quo_mapped) {quo_mapped_id = quo_mapped.id}
-                    if (opp_mapped) {opp_mapped_id = opp_mapped.id}
-
-                    advance_payment_expense_items = [];
-                    for (let i = 0; i < ap_list.length; i++) {
-                        if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                        if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                        if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                    }
-                    // console.log(advance_payment_expense_items)
-
-                    // get payment items
-                    payment_cost_items_filtered = [];
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                    // console.log(data.payment_cost_items_list[i])
-                                    let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                        payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                    }
+                        let so_mapped = null;
+                        let quo_mapped = null;
+                        let opp_mapped = null;
+                        if (so_filter.length > 0) {
+                            so_mapped = so_filter[0];
+                            if (so_mapped) {
+                                if (Object.keys(so_mapped.quotation).length !== 0) {
+                                    quo_mapped = so_mapped.quotation;
                                 }
-                                // console.log(payment_cost_items_filtered)
+                                if (Object.keys(so_mapped.opportunity).length !== 0) {
+                                    opp_mapped = so_mapped.opportunity;
+                                }
                             }
                         }
-                    })
+                        else {
+                            let quo_filter = quotation_list.filter(function(item) {
+                                return item.id === quo_id;
+                            });
+                            quo_mapped = quo_filter[0];
+                            if (quo_mapped) {
+                                if (Object.keys(quo_mapped.opportunity).length !== 0) {
+                                    opp_mapped = quo_mapped.opportunity;
+                                }
+                            }
+                        }
 
-                    loadQuotationPlan($(this).attr('data-sale-code-id'), $(this).attr('data-sale-code'));
-                    $('#notify-none-sale-code').prop('hidden', true);
-                    $('#tab_plan_datatable').prop('hidden', false);
+                        let so_mapped_id = null;
+                        let quo_mapped_id = null;
+                        let opp_mapped_id = null;
+                        if (so_mapped) {so_mapped_id = so_mapped.id}
+                        if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+                        if (opp_mapped) {opp_mapped_id = opp_mapped.id}
+
+                        advance_payment_expense_items = [];
+                        for (let i = 0; i < ap_list.length; i++) {
+                            if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                            }
+                            if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                            }
+                            if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
+                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                            }
+                        }
+                        // console.log(advance_payment_expense_items)
+
+                        // get payment items
+                        payment_cost_items_filtered = [];
+                        for (let i = 0; i < payment_cost_items_list.length; i++) {
+                            let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                            if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                            }
+                        }
+                        loadQuotationPlanMULTI($(this).closest('td').attr('data-sale-code-id'));
+                        $('#notify-none-sale-code').prop('hidden', true);
+                        $('#tab_plan_datatable').prop('hidden', false);
+                    }
+                    else if ($(this).closest('td').attr('data-type') === '2') {
+                        $('#sale-code-select-box').attr('data-placeholder', 'Select One');
+                        $('#beneficiary-select-box').prop('disabled', true);
+                        $('#notify-none-sale-code').prop('hidden', false);
+                        $('#tab_plan_datatable').prop('hidden', true);
+                    }
                 }
-                else if ($(this).attr('data-type') === '2') {
-                    $('#sale-code-select-box').attr('data-placeholder', 'Select One');
-                    $('#beneficiary-select-box').prop('disabled', true);
-                    $('#notify-none-sale-code').prop('hidden', false);
-                    $('#tab_plan_datatable').prop('hidden', true);
+                else if ($(this).attr('data-detail-view') === 'show') {
+                    $(this).attr('data-detail-view', 'hide');
+                    $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + $(this).closest('td').attr('data-sale-code-id') + `"`).remove();
                 }
-            }
-        })
+            })
+        }
     })
 
     $('#save-changes-modal-bank-account').on('click', function () {
@@ -1130,19 +1420,11 @@ $(document).ready(function () {
             }
         }
         if ($('#radio-special').is(':checked')) {
-            sale_code_length = sale_code_selected_list.length
-            $('#sale-code-select-box2 .multi-sale-code').each(function() {
-                if ($(this).is(':checked')) {
-                    let opp_code = $(this).closest('div').attr('title').split(': ')[0];
-                    if (opp_code !== 'No Opportunity Code') {
-                        opp_code_list.push(opp_code);
-                    }
-                    else {
-                        opp_code_list.push($(this).closest('div').find('.code-span').text().replace(' ', ''));
-                    }
-                }
+            sale_code_length = $('#sale-code-select-box option:selected').length;
+            $('#sale-code-select-box option:selected').each(function() {
+                opp_code_list.push($(this).attr('data-sale-code'));
+                sale_code_id_list.push($(this).attr('data-sale-code-id'));
             });
-            sale_code_id_list = sale_code_selected_list;
         }
 
         if (sale_code_length > 0) {
@@ -1280,10 +1562,6 @@ $(document).ready(function () {
                 $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
                 $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
                 current_value_converted_from_ap = $(this);
-                sale_code_id_list = sale_code_selected_list;
-                if (sale_code_selected_list.length <= 0) {
-                    sale_code_id_list = $('#sale-code-select-box option:selected').attr('data-sale-code-id');
-                }
                 $('.total-expense-selected').attr('data-init-money', 0);
                 $.fn.initMaskMoney2();
                 $('.expense-tables').html(``);
@@ -1543,7 +1821,7 @@ $(document).ready(function () {
                 let expense_ap_detail_list = [];
                 let sale_code_len = 1;
                 if (frm.dataForm['sale_code_type'] === 'MULTI') {
-                    sale_code_len = sale_code_selected_list.length;
+                    sale_code_len = $('#sale-code-select-box option:selected').length;
                 }
                 let sale_code_item = table_body.find(row_id).nextAll().slice(1, sale_code_len + 1);
                 sale_code_item.each(function() {
@@ -1606,12 +1884,27 @@ $(document).ready(function () {
         else if ($('input[name="sale_code_type"]:checked').val() === 'purchase') {
             frm.dataForm['sale_code_type'] = 1;
         }
-        else {
+        else if ($('input[name="sale_code_type"]:checked').val() === 'MULTI') {
             frm.dataForm['sale_code_type'] = 3;
         }
 
         if (frm.dataForm['sale_code_type'] === 3) { // multi
             delete frm.dataForm['sale_code']
+            let sale_order_selected_list = [];
+            let quotation_selected_list = [];
+            let opportunity_selected_list = [];
+            $('#sale-code-select-box option:selected').each(function (index, element) {
+                if ($(this).attr('data-type') === '0') {
+                    sale_order_selected_list.push($(this).attr('data-sale-code-id'))
+                }
+                else if ($(this).attr('data-type') === '1') {
+                    quotation_selected_list.push($(this).attr('data-sale-code-id'))
+                }
+                else if ($(this).attr('data-type') === '2') {
+                    opportunity_selected_list.push($(this).attr('data-sale-code-id'))
+                }
+            })
+
             frm.dataForm['sale_order_selected_list'] = sale_order_selected_list;
             frm.dataForm['quotation_selected_list'] = quotation_selected_list;
             frm.dataForm['opportunity_selected_list'] = opportunity_selected_list;

@@ -44,9 +44,9 @@ $(document).ready(function () {
                     if (quo_mapped) {quo_mapped_id = quo_mapped.id}
                     if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
-                    console.log(so_mapped_id)
-                    console.log(quo_mapped_id)
-                    console.log(opp_mapped_id)
+                    // console.log(so_mapped_id)
+                    // console.log(quo_mapped_id)
+                    // console.log(opp_mapped_id)
 
                     advance_payment_expense_items = [];
                     for (let i = 0; i < ap_list.length; i++) {

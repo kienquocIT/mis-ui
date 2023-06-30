@@ -1047,7 +1047,12 @@ $(document).ready(function () {
                         <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`
                 }
-                found_line.after(new_line);
+                if (new_line === '') {
+                    found_line.after(`<tr class="detail-line-for-` + filter_sale_order_id + `"><td colspan="8">No Plan Information</td></tr>`);
+                }
+                else {
+                    found_line.after(new_line);
+                }
                 $.fn.initMaskMoney2();
             }
         })
@@ -1138,7 +1143,12 @@ $(document).ready(function () {
                         <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`
                 }
-                found_line.after(new_line);
+                if (new_line === '') {
+                    found_line.after(`<tr class="detail-line-for-` + filter_quotation_id + `"><td colspan="8">No Plan Information</td></tr>`);
+                }
+                else {
+                    found_line.after(new_line);
+                }
                 $.fn.initMaskMoney2();
             }
         })

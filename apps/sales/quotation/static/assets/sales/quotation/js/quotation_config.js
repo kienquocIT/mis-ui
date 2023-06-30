@@ -478,8 +478,8 @@ $(function () {
             let row = $(this)[0].closest('tr');
             let btnSave = row.querySelector('.btn-edit-indicator')
             // validate parenthesis "(", ")"
-            isValid = validateParentheses(editorValue);
-            if (isValid === true) {
+            isValid = validateEditor(editorValue);
+            if (isValid.result === true) {
                 if (btnSave.hasAttribute('disabled')) {
                     btnSave.removeAttribute('disabled')
                 }
@@ -488,9 +488,34 @@ $(function () {
                 if (!btnSave.hasAttribute('disabled')) {
                     btnSave.setAttribute('disabled', 'true');
                 }
-                row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
+                if (isValid.remark === "parentheses") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
+                } else if (isValid.remark === "syntax") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "syntax error";
+                }
             }
         })
+
+        function validateEditor(strValue) {
+            let isValid = validateParentheses(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'parentheses'
+                }
+            }
+            isValid = hasNonMatchingValue(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'syntax'
+                }
+            }
+            return {
+                'result': true,
+                'remark': ''
+            }
+        }
 
         function validateParentheses(strValue) {
             let stack = [];
@@ -508,6 +533,19 @@ $(function () {
             }
             // Check if there are any unclosed parentheses
             return stack.length === 0;
+        }
+
+        function hasNonMatchingValue(strValue) {
+            let str_test = "";
+            let strValueNoSpace = strValue.replace(/\s/g, "");
+            let list_data = strValueNoSpace.match(main_regex);
+            if (list_data.length > 0) {
+                for (let item of list_data) {
+                    str_test += item
+                }
+            }
+            let str_test_no_space = str_test.replace(/\s/g, "");
+            return strValueNoSpace.length === str_test_no_space.length
         }
 
 // BEGIN setup formula

@@ -30,6 +30,7 @@ $(document).ready(function () {
     if (opportunity.length > 0) {sale_code_default_obj = opportunity; sale_code_default_type = 2;}
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
+        console.log(advance_payment_expense_items)
         let ap_expense_list_mapped = []
         for (let i = 0; i < advance_payment_expense_items.length; i++) {
             let ap_expense_item = advance_payment_expense_items[i];
@@ -931,16 +932,57 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.data['advance_payment_list']) {
-                            let sale_order_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
-                                return sale_code_id.includes(item.sale_order_mapped);
+                            // if sale_code_id is so_id
+                            let so_filter = sale_order_list.filter(function(item) {
+                                return item.id === sale_code_id[0];
                             });
-                            let quotation_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
-                                return sale_code_id.includes(item.quotation_mapped);
+                            // if sale_code_id is quo_id
+                            let quo_filter = quotation_list.filter(function(item) {
+                                return item.id === sale_code_id[0];
                             });
-                            let opportunity_mapped_ap = $.grep(resp.data['advance_payment_list'], function(item) {
-                                return sale_code_id.includes(item.opportunity_mapped);
+                            // find quotation mapped with this sale_order_id (if sale_order_id is opp_id)
+                            let opp_filter = opportunity_list.filter(function(item) {
+                                return item.id === sale_code_id[0];
                             });
-                            // console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
+
+                            let sale_order_mapped = null;
+                            let quotation_mapped = null;
+                            let opportunity_mapped = null;
+                            if (opp_filter.length > 0) {
+                                sale_order_mapped = opp_filter[0].sale_order_id;
+                                quotation_mapped = opp_filter[0].quotation_id;
+                                opportunity_mapped = opp_filter[0].id;
+                            }
+                            else if (quo_filter.length > 0) {
+                                quotation_mapped = opp_filter[0].id;
+                                if (Object.keys(opp_filter[0].opportunity).length !== 0) {
+                                    opportunity_mapped = opp_filter[0].opportunity.id;
+                                }
+                            }
+                            else if (so_filter.length > 0) {
+                                sale_order_mapped = opp_filter[0].id;
+                                if (Object.keys(opp_filter[0].quotation).length !== 0) {
+                                    quotation_mapped = opp_filter[0].quotation.id;
+                                }
+                                if (Object.keys(opp_filter[0].opportunity).length !== 0) {
+                                    opportunity_mapped = opp_filter[0].opportunity.id;
+                                }
+                            }
+
+                            // find ap mapped with this sale_order_mapped
+                            let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
+                                return item.sale_order_mapped === sale_order_mapped;
+                            });
+                            // find ap mapped with this quotation_mapped
+                            let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
+                                return item.quotation_mapped === quotation_mapped;
+                            });
+                            // find ap mapped with this opportunity_mapped
+                            let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
+                                return item.opportunity_mapped === opportunity_mapped;
+                            });
+
+                            console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
                             return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
                         }
                         else {
@@ -1063,6 +1105,7 @@ $(document).ready(function () {
     })
 
     $('#beneficiary-select-box').on('change', function () {
+        $('#tab_line_detail_datatable tbody').html(``);
         loadSaleCode($(this).val());
         $('#sale-code-select-box').find('option:selected').prop('selected', false);
         $('#sale-code-select-box2-show').val('');
@@ -1120,62 +1163,62 @@ $(document).ready(function () {
         if ($('input[name="sale_code_type"]:checked').val() === 'sale') {
             $('#tab_plan_datatable tbody').html(``);
             if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
-                    // get ap expense items
-                    let so_id = $(this).attr('data-sale-code-id');
-                    let so_filter = sale_order_list.filter(function(item) {
-                        return item.id === so_id;
-                    });
-                    let so_mapped = null;
-                    let quo_mapped = null;
-                    let opp_mapped = null;
-                    if (so_filter.length > 0) {
-                        so_mapped = so_filter[0];
-                    }
-                    if (so_mapped) {
-                        if (Object.keys(so_mapped.quotation).length !== 0) {
-                            quo_mapped = so_mapped.quotation;
-                        }
-                        if (Object.keys(so_mapped.opportunity).length !== 0) {
-                            opp_mapped = so_mapped.opportunity;
-                        }
-                    }
-                    let so_mapped_id = null;
-                    let quo_mapped_id = null;
-                    let opp_mapped_id = null;
-                    if (so_mapped) {so_mapped_id = so_mapped.id}
-                    if (quo_mapped) {quo_mapped_id = quo_mapped.id}
-                    if (opp_mapped) {opp_mapped_id = opp_mapped.id}
-
-                    advance_payment_expense_items = [];
-                    for (let i = 0; i < ap_list.length; i++) {
-                        if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                        if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                        if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                            advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
-                        }
-                    }
-                    // console.log(0, advance_payment_expense_items)
-
-                    // get payment items
-                    payment_cost_items_filtered = [];
-                    for (let i = 0; i < payment_cost_items_list.length; i++) {
-                        let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
-                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                            payment_cost_items_filtered.push(payment_cost_items_list[i]);
-                        }
-                    }
-                    loadSaleOrderPlan($('#sale-code-select-box option:selected').attr('data-sale-code-id'), $('#sale-code-select-box option:selected').attr('data-sale-code'));
-                    $('#notify-none-sale-code').prop('hidden', true);
-                    $('#tab_plan_datatable').prop('hidden', false);
-                    // console.log(1, payment_cost_items_filtered)
+                // get ap expense items
+                let so_id = $('#sale-code-select-box option:selected').attr('data-sale-code-id');
+                let so_filter = sale_order_list.filter(function(item) {
+                    return item.id === so_id;
+                });
+                let so_mapped = null;
+                let quo_mapped = null;
+                let opp_mapped = null;
+                if (so_filter.length > 0) {
+                    so_mapped = so_filter[0];
                 }
+                if (so_mapped) {
+                    if (Object.keys(so_mapped.quotation).length !== 0) {
+                        quo_mapped = so_mapped.quotation;
+                    }
+                    if (Object.keys(so_mapped.opportunity).length !== 0) {
+                        opp_mapped = so_mapped.opportunity;
+                    }
+                }
+                let so_mapped_id = null;
+                let quo_mapped_id = null;
+                let opp_mapped_id = null;
+                if (so_mapped) {so_mapped_id = so_mapped.id}
+                if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+                if (opp_mapped) {opp_mapped_id = opp_mapped.id}
+
+                advance_payment_expense_items = [];
+                for (let i = 0; i < ap_list.length; i++) {
+                    if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                    if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                    if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
+                        advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                    }
+                }
+                // console.log(0, advance_payment_expense_items)
+
+                // get payment items
+                payment_cost_items_filtered = [];
+                for (let i = 0; i < payment_cost_items_list.length; i++) {
+                    let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                        payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                    }
+                }
+                loadSaleOrderPlan($('#sale-code-select-box option:selected').attr('data-sale-code-id'), $('#sale-code-select-box option:selected').attr('data-sale-code'));
+                $('#notify-none-sale-code').prop('hidden', true);
+                $('#tab_plan_datatable').prop('hidden', false);
+                // console.log(1, payment_cost_items_filtered)
+            }
             else if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
                 // get ap expense items
-                let quo_id = $(this).attr('data-sale-code-id');
+                let quo_id = $('#sale-code-select-box option:selected').attr('data-sale-code-id');
                 let so_filter = sale_order_list.filter(function(item) {
                     if (Object.keys(item.quotation).length !== 0) {
                         return item.quotation.id === quo_id;

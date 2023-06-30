@@ -12,6 +12,7 @@ $(document).ready(function () {
     const sale_order_list = JSON.parse($('#sale_order_list').text());
     const unit_of_measure = JSON.parse($('#unit_of_measure').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
+    const payment_cost_items_list = JSON.parse($('#payment_cost_items_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
         return obj;
@@ -83,6 +84,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(dtb);
         frm.dataUrl = dtb.attr('data-url-sale-order');
         dtb.DataTableDefault({
+            reloadCurrency: true,
             dom: '',
             ajax: {
                 url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
@@ -197,6 +199,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(dtb);
         frm.dataUrl = dtb.attr('data-url-quotation');
         dtb.DataTableDefault({
+            reloadCurrency: true,
             dom: '',
             ajax: {
                 url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
@@ -899,21 +902,14 @@ $(document).ready(function () {
 
                     // get payment items
                     payment_cost_items_filtered = [];
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                    // console.log(data.payment_cost_items_list[i])
-                                    let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                        payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                    }
-                                }
-                                // console.log(payment_cost_items_filtered)
-                            }
+                    for (let i = 0; i < payment_cost_items_list.length; i++) {
+                        // console.log(payment_cost_items_list[i])
+                        let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                            payment_cost_items_filtered.push(payment_cost_items_list[i]);
                         }
-                    })
+                    }
+                    // console.log(payment_cost_items_filtered)
 
                     loadSaleOrderExpense($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
                 }
@@ -974,21 +970,14 @@ $(document).ready(function () {
 
                     // get payment items
                     payment_cost_items_filtered = [];
-                    $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                    // console.log(data.payment_cost_items_list[i])
-                                    let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                    if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                        payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                    }
-                                }
-                                // console.log(payment_cost_items_filtered)
-                            }
+                    for (let i = 0; i < payment_cost_items_list.length; i++) {
+                        // console.log(data.payment_cost_items_list[i])
+                        let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                            payment_cost_items_filtered.push(payment_cost_items_list[i]);
                         }
-                    })
+                    }
+                    // console.log(payment_cost_items_filtered)
 
                     loadQuotationExpense($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
                 }

@@ -47,6 +47,7 @@
     {{ data.data.employee_list | json_script:"employee_list" }}
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
+    {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
     <form id="form-update-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
           data-url-detail="{% url "PaymentDetailAPI" '0' %}"
@@ -95,12 +96,9 @@
                             </div>
                         </div>
                         <div class="col-7">
-                            <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url-quotation="{% url 'QuotationListAPI' %}" hidden
-                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
+                            <select name="sale_code" id="sale-code-select-box" class="select2"
+                                    data-placeholder="Select Sale Code">
                             </select>
-                            <textarea style="white-space: pre-wrap;" placeholder="{% trans "Click to see Sale Code selected" %}" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></textarea>
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group">

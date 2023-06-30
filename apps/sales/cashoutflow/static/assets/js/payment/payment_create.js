@@ -964,18 +964,18 @@ $(document).ready(function () {
                                 opportunity_mapped = opp_filter[0].id;
                             }
                             else if (quo_filter.length > 0) {
-                                quotation_mapped = opp_filter[0].id;
-                                if (Object.keys(opp_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = opp_filter[0].opportunity.id;
+                                quotation_mapped = quo_filter[0].id;
+                                if (Object.keys(quo_filter[0].opportunity).length !== 0) {
+                                    opportunity_mapped = quo_filter[0].opportunity.id;
                                 }
                             }
                             else if (so_filter.length > 0) {
-                                sale_order_mapped = opp_filter[0].id;
-                                if (Object.keys(opp_filter[0].quotation).length !== 0) {
-                                    quotation_mapped = opp_filter[0].quotation.id;
+                                sale_order_mapped = so_filter[0].id;
+                                if (Object.keys(so_filter[0].quotation).length !== 0) {
+                                    quotation_mapped = so_filter[0].quotation.id;
                                 }
-                                if (Object.keys(opp_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = opp_filter[0].opportunity.id;
+                                if (Object.keys(so_filter[0].opportunity).length !== 0) {
+                                    opportunity_mapped = so_filter[0].opportunity.id;
                                 }
                             }
 

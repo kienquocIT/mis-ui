@@ -72,7 +72,7 @@
                                             required
                                             disabled
                                     >
-                                    <span class="form-text text-muted">{% trans 'title of sale order' %}</span>
+                                    <small class="form-text text-muted">{% trans 'title of sale order' %}</small>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -88,7 +88,7 @@
                                             >
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Code of sale order' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Code of sale order' %}</small>
                                 </div>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Opportunity link to sale order' %}</small>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}<span class="required"></span></label>
@@ -153,7 +153,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Customer link to sale order' %}</small>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
@@ -184,7 +184,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Contact link to sale order' %}</small>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
@@ -214,7 +214,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Payment term of sale order' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Payment term of sale order' %}</small>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -231,7 +231,7 @@
                                             >
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Date create sale order' %}</small>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
@@ -246,7 +246,7 @@
                                             >
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Status of sale order' %}</small>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}<span class="required"></span></label>
@@ -277,7 +277,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Sale person of sale order' %}</small>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation">{% trans 'Select Quotation' %}</label>
@@ -307,7 +307,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Quotation link to sale order' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Quotation link to sale order' %}</small>
                                 </div>
                             </div>
                         </div>
@@ -354,10 +354,10 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-2">
-                                        <button type="button" class="btn btn-soft-primary">Print</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Print' %}</button>
                                     </div>
                                     <div class="col-4">
-                                        <button type="button" class="btn btn-soft-primary">Send Email</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
                                     </div>
                                     <div class="col-3">
                                         <button

@@ -307,34 +307,27 @@ $(document).ready(function () {
 
                         // get payment items
                         payment_cost_items_filtered = [];
-                        $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                    for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                        // console.log(data.payment_cost_items_list[i])
-                                        let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                            payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                        }
-                                    }
-                                    if (so_mapped_id) {
-                                        loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
-                                        $('#notify-none-sale-code').prop('hidden', true);
-                                        $('#tab_plan_datatable').prop('hidden', false);
-                                    }
-                                    else if (quo_mapped_id) {
-                                        loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
-                                        $('#notify-none-sale-code').prop('hidden', true);
-                                        $('#tab_plan_datatable').prop('hidden', false);
-                                    }
-                                    else {
-                                        $('#notify-none-sale-code').prop('hidden', false);
-                                        $('#tab_plan_datatable').prop('hidden', true);
-                                    }
-                                }
+                        for (let i = 0; i < payment_cost_items_list.length; i++) {
+                            // console.log(payment_cost_items_list[i])
+                            let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                            if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                payment_cost_items_filtered.push(payment_cost_items_list[i]);
                             }
-                        })
+                        }
+                        if (so_mapped_id) {
+                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            $('#notify-none-sale-code').prop('hidden', true);
+                            $('#tab_plan_datatable').prop('hidden', false);
+                        }
+                        else if (quo_mapped_id) {
+                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            $('#notify-none-sale-code').prop('hidden', true);
+                            $('#tab_plan_datatable').prop('hidden', false);
+                        }
+                        else {
+                            $('#notify-none-sale-code').prop('hidden', false);
+                            $('#tab_plan_datatable').prop('hidden', true);
+                        }
                     }
                 }
                 if (payment_detail.quotation_mapped.length > 0) {
@@ -399,34 +392,27 @@ $(document).ready(function () {
 
                         // get payment items
                         payment_cost_items_filtered = [];
-                        $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                    for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                        // console.log(data.payment_cost_items_list[i])
-                                        let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                            payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                        }
-                                    }
-                                    if (so_mapped_id) {
-                                        loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
-                                        $('#notify-none-sale-code').prop('hidden', true);
-                                        $('#tab_plan_datatable').prop('hidden', false);
-                                    }
-                                    else if (quo_mapped_id) {
-                                        loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
-                                        $('#notify-none-sale-code').prop('hidden', true);
-                                        $('#tab_plan_datatable').prop('hidden', false);
-                                    }
-                                    else {
-                                        $('#notify-none-sale-code').prop('hidden', false);
-                                        $('#tab_plan_datatable').prop('hidden', true);
-                                    }
-                                }
+                        for (let i = 0; i < payment_cost_items_list.length; i++) {
+                            // console.log(payment_cost_items_list[i])
+                            let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                            if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                payment_cost_items_filtered.push(payment_cost_items_list[i]);
                             }
-                        })
+                        }
+                        if (so_mapped_id) {
+                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            $('#notify-none-sale-code').prop('hidden', true);
+                            $('#tab_plan_datatable').prop('hidden', false);
+                        }
+                        else if (quo_mapped_id) {
+                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            $('#notify-none-sale-code').prop('hidden', true);
+                            $('#tab_plan_datatable').prop('hidden', false);
+                        }
+                        else {
+                            $('#notify-none-sale-code').prop('hidden', false);
+                            $('#tab_plan_datatable').prop('hidden', true);
+                        }
                     }
                 }
                 if (payment_detail.opportunity_mapped.length > 0) {
@@ -493,34 +479,27 @@ $(document).ready(function () {
 
                         // get payment items
                         payment_cost_items_filtered = [];
-                        $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items'), 'GET').then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                                    for (let i = 0; i < data.payment_cost_items_list.length; i++) {
-                                        // console.log(data.payment_cost_items_list[i])
-                                        let sale_code_mapped = data.payment_cost_items_list[i].sale_code_mapped;
-                                        if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
-                                            payment_cost_items_filtered.push(data.payment_cost_items_list[i]);
-                                        }
-                                    }
-                                    if (so_mapped_id) {
-                                        loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
-                                        $('#notify-none-sale-code').prop('hidden', true);
-                                        $('#tab_plan_datatable').prop('hidden', false);
-                                    }
-                                    else if (quo_mapped_id) {
-                                        loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
-                                        $('#notify-none-sale-code').prop('hidden', true);
-                                        $('#tab_plan_datatable').prop('hidden', false);
-                                    }
-                                    else {
-                                        $('#notify-none-sale-code').prop('hidden', false);
-                                        $('#tab_plan_datatable').prop('hidden', true);
-                                    }
-                                }
+                        for (let i = 0; i < payment_cost_items_list.length; i++) {
+                            // console.log(payment_cost_items_list[i])
+                            let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                            if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                                payment_cost_items_filtered.push(payment_cost_items_list[i]);
                             }
-                        })
+                        }
+                        if (so_mapped_id) {
+                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            $('#notify-none-sale-code').prop('hidden', true);
+                            $('#tab_plan_datatable').prop('hidden', false);
+                        }
+                        else if (quo_mapped_id) {
+                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            $('#notify-none-sale-code').prop('hidden', true);
+                            $('#tab_plan_datatable').prop('hidden', false);
+                        }
+                        else {
+                            $('#notify-none-sale-code').prop('hidden', false);
+                            $('#tab_plan_datatable').prop('hidden', true);
+                        }
                     }
                 }
             }
@@ -1068,7 +1047,12 @@ $(document).ready(function () {
                         <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`
                 }
-                found_line.after(new_line);
+                if (new_line === '') {
+                    found_line.after(`<tr class="detail-line-for-` + filter_sale_order_id + `"><td colspan="8">No Plan Information</td></tr>`);
+                }
+                else {
+                    found_line.after(new_line);
+                }
                 $.fn.initMaskMoney2();
             }
         })
@@ -1159,7 +1143,12 @@ $(document).ready(function () {
                         <td><span class="mask-money text-primary" data-init-money="` + available + `"></span></td>
                     </tr>`
                 }
-                found_line.after(new_line);
+                if (new_line === '') {
+                    found_line.after(`<tr class="detail-line-for-` + filter_quotation_id + `"><td colspan="8">No Plan Information</td></tr>`);
+                }
+                else {
+                    found_line.after(new_line);
+                }
                 $.fn.initMaskMoney2();
             }
         })

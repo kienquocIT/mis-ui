@@ -611,7 +611,7 @@ class loadDataHandle {
                 // end
                 let data = JSON.parse(eleData.value);
                 let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">More Information</h6>`;
+                info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
                 for (let key in data) {
                     if (key === 'id') {
                         let linkDetail = ele.data('link-detail');

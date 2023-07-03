@@ -3521,3 +3521,19 @@ msgstr "Tạo chỉ tiêu báo giá thành công"
 #
 msgid "Quotation indicator update successfully"
 msgstr "Cập nhật chỉ tiêu báo giá thành công"
+
+#
+msgid "Quotation indicator restore successfully"
+msgstr "Khôi phục chỉ tiêu báo giá thành công"
+
+#
+msgid "Restore"
+msgstr "Khôi phục"
+
+#
+msgid "This will restore indicator back to default data. All current data will be removed"
+msgstr "Hành động này sẽ khôi phục các chỉ tiêu về dữ liệu mặc định. Tất cả dữ liệu hiện tại sẽ bị mất"
+
+#
+msgid "Do you wish to continue?"
+msgstr "Bạn có muốn tiếp tục?"

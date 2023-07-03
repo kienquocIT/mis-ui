@@ -416,47 +416,261 @@ $(document).ready(function () {
             beneficiary = sale_code_default_obj[0].sale_person.id;
         }
         loadSaleCode(beneficiary);
+
         if (sale_code_default_type === 0) {
-            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                        payment_cost_items_filtered = data.payment_cost_items_list;
-                        loadSaleOrderPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
-                    }
+            // get ap expense items
+            let so_id = sale_code_default_obj[0].id;
+            let so_filter = sale_order_list.filter(function(item) {
+                return item.id === so_id;
+            });
+            let so_mapped = null;
+            let quo_mapped = null;
+            let opp_mapped = null;
+            if (so_filter.length > 0) {
+                so_mapped = so_filter[0];
+            }
+            if (so_mapped) {
+                if (Object.keys(so_mapped.quotation).length !== 0) {
+                    quo_mapped = so_mapped.quotation;
                 }
-            })
+                if (Object.keys(so_mapped.opportunity).length !== 0) {
+                    opp_mapped = so_mapped.opportunity;
+                }
+            }
+            let so_mapped_id = null;
+            let quo_mapped_id = null;
+            let opp_mapped_id = null;
+            if (so_mapped) {so_mapped_id = so_mapped.id}
+            if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+            if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
             advance_payment_expense_items = [];
             for (let i = 0; i < ap_list.length; i++) {
-                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
                     advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                 }
+                if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+                if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+            }
+            // console.log(0, advance_payment_expense_items)
+
+            // get payment items
+            payment_cost_items_filtered = [];
+            for (let i = 0; i < payment_cost_items_list.length; i++) {
+                let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                    payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                }
+            }
+
+            let sale_code_CODE_plan = so_mapped.code;
+            if (opp_mapped) {
+                sale_code_CODE_plan = opp_mapped.code;
+            }
+
+            $('#sale-code-select-box').val(so_mapped.code).trigger('change');
+
+            loadSaleOrderPlan(so_mapped_id, sale_code_CODE_plan);
+            $('#notify-none-sale-code').prop('hidden', true);
+            $('#tab_plan_datatable').prop('hidden', false);
+        }
+        else if (sale_code_default_type === 1) {
+            // get ap expense items
+            let quo_id = sale_code_default_obj[0].id;
+            let so_filter = sale_order_list.filter(function(item) {
+                if (Object.keys(item.quotation).length !== 0) {
+                    return item.quotation.id === quo_id;
+                }
+            });
+            let so_mapped = null;
+            let quo_mapped = null;
+            let opp_mapped = null;
+            if (so_filter.length > 0) {
+                so_mapped = so_filter[0];
+                if (so_mapped) {
+                    if (Object.keys(so_mapped.quotation).length !== 0) {
+                        quo_mapped = so_mapped.quotation;
+                    }
+                    if (Object.keys(so_mapped.opportunity).length !== 0) {
+                        opp_mapped = so_mapped.opportunity;
+                    }
+                }
+            }
+            else {
+                let quo_filter = quotation_list.filter(function(item) {
+                    return item.id === quo_id;
+                });
+                quo_mapped = quo_filter[0];
+                if (quo_mapped) {
+                    if (Object.keys(quo_mapped.opportunity).length !== 0) {
+                        opp_mapped = quo_mapped.opportunity;
+                    }
+                }
+            }
+
+            let so_mapped_id = null;
+            let quo_mapped_id = null;
+            let opp_mapped_id = null;
+            if (so_mapped) {so_mapped_id = so_mapped.id}
+            if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+            if (opp_mapped) {opp_mapped_id = opp_mapped.id}
+
+            advance_payment_expense_items = [];
+            for (let i = 0; i < ap_list.length; i++) {
+                if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+                if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+                if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+            }
+            // console.log(advance_payment_expense_items)
+
+            // get payment items
+            payment_cost_items_filtered = [];
+            for (let i = 0; i < payment_cost_items_list.length; i++) {
+                let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                    payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                }
+            }
+
+            if (so_mapped_id) {
+                let sale_code_CODE_plan = so_mapped.code;
+                if (opp_mapped) {
+                    sale_code_CODE_plan = opp_mapped.code;
+                }
+
+                $('#sale-code-select-box').val(so_mapped.code).trigger('change');
+
+                loadSaleOrderPlan(so_mapped_id, sale_code_CODE_plan);
+            }
+            else {
+                let sale_code_CODE_plan = quo_mapped.code;
+                if (opp_mapped) {
+                    sale_code_CODE_plan = opp_mapped.code;
+                }
+
+                $('#sale-code-select-box').val(quo_mapped.code).trigger('change');
+
+                loadQuotationPlan(quo_mapped_id, sale_code_CODE_plan);
             }
 
             $('#notify-none-sale-code').prop('hidden', true);
             $('#tab_plan_datatable').prop('hidden', false);
         }
-        if (sale_code_default_type === 1) {
-            $.fn.callAjax($('#tab_plan_datatable').attr('data-url-payment-cost-items') + '?filter_sale_code=' + sale_code_default_obj[0].id, 'GET').then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_cost_items_list')) {
-                        payment_cost_items_filtered = data.payment_cost_items_list;
-                        loadQuotationPlan(sale_code_default_obj[0].id, $('#sale-code-select-box option:selected').attr('data-sale-code'))
+        else if (sale_code_default_type === 2) {
+            // get ap expense items
+            let opp_id = sale_code_default_obj[0].id;
+            let so_filter = sale_order_list.filter(function(item) {
+                if (Object.keys(item.opportunity).length !== 0) {
+                    return item.opportunity.id === opp_id;
+                }
+            });
+            let so_mapped = null;
+            let quo_mapped = null;
+            let opp_mapped = null;
+            if (so_filter.length > 0) {
+                so_mapped = so_filter[0];
+                if (so_mapped) {
+                    if (Object.keys(so_mapped.quotation).length !== 0) {
+                        quo_mapped = so_mapped.quotation;
+                    }
+                    if (Object.keys(so_mapped.opportunity).length !== 0) {
+                        opp_mapped = so_mapped.opportunity;
                     }
                 }
-            })
+            }
+            else {
+                let quo_filter = quotation_list.filter(function(item) {
+                    if (Object.keys(item.opportunity).length !== 0) {
+                        return item.opportunity.id === opp_id;
+                    }
+                });
+                if (quo_filter.length > 0) {
+                    quo_mapped = quo_filter[0];
+                }
+                if (quo_mapped) {
+                    if (Object.keys(quo_mapped.opportunity).length !== 0) {
+                        opp_mapped = quo_mapped.opportunity;
+                    }
+                }
+            }
+
+            if (opp_mapped === null) {
+                let opp_filter = opportunity_list.filter(function(item) {
+                    return item.id === opp_id;
+                });
+                if (opp_filter.length > 0) {
+                    opp_mapped = opp_filter[0];
+                }
+            }
+
+
+            let so_mapped_id = null;
+            let quo_mapped_id = null;
+            let opp_mapped_id = null;
+            if (so_mapped) {so_mapped_id = so_mapped.id}
+            if (quo_mapped) {quo_mapped_id = quo_mapped.id}
+            if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
             advance_payment_expense_items = [];
             for (let i = 0; i < ap_list.length; i++) {
-                if (ap_list[i].sale_order_mapped === $(this).attr('data-value') || ap_list[i].quotation_mapped === $(this).attr('data-value')) {
+                if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+                if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
+                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                }
+                if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
                     advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
                 }
             }
 
-            $('#notify-none-sale-code').prop('hidden', true);
-            $('#tab_plan_datatable').prop('hidden', false);
+            // get payment items
+            payment_cost_items_filtered = [];
+            for (let i = 0; i < payment_cost_items_list.length; i++) {
+                // console.log(payment_cost_items_list[i])
+                let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
+                if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
+                    payment_cost_items_filtered.push(payment_cost_items_list[i]);
+                }
+            }
+            if (so_mapped_id) {
+                let sale_code_CODE_plan = so_mapped.code;
+                if (opp_mapped) {
+                    sale_code_CODE_plan = opp_mapped.code;
+                }
+
+                $('#sale-code-select-box').val(so_mapped.code).trigger('change');
+
+                loadSaleOrderPlan(so_mapped_id, sale_code_CODE_plan)
+                $('#notify-none-sale-code').prop('hidden', true);
+                $('#tab_plan_datatable').prop('hidden', false);
+            }
+            else if (quo_mapped_id) {
+                let sale_code_CODE_plan = quo_mapped.code;
+                if (opp_mapped) {
+                    sale_code_CODE_plan = opp_mapped.code;
+                }
+
+                $('#sale-code-select-box').val(quo_mapped.code).trigger('change');
+                loadQuotationPlan(quo_mapped_id, sale_code_CODE_plan)
+                $('#notify-none-sale-code').prop('hidden', true);
+                $('#tab_plan_datatable').prop('hidden', false);
+            }
+            else {
+                $('#sale-code-select-box').val(opp_mapped.code).trigger('change');
+                $('#notify-none-sale-code').prop('hidden', false);
+                $('#tab_plan_datatable').prop('hidden', true);
+            }
         }
     }
 
@@ -964,18 +1178,18 @@ $(document).ready(function () {
                                 opportunity_mapped = opp_filter[0].id;
                             }
                             else if (quo_filter.length > 0) {
-                                quotation_mapped = opp_filter[0].id;
-                                if (Object.keys(opp_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = opp_filter[0].opportunity.id;
+                                quotation_mapped = quo_filter[0].id;
+                                if (Object.keys(quo_filter[0].opportunity).length !== 0) {
+                                    opportunity_mapped = quo_filter[0].opportunity.id;
                                 }
                             }
                             else if (so_filter.length > 0) {
-                                sale_order_mapped = opp_filter[0].id;
-                                if (Object.keys(opp_filter[0].quotation).length !== 0) {
-                                    quotation_mapped = opp_filter[0].quotation.id;
+                                sale_order_mapped = so_filter[0].id;
+                                if (Object.keys(so_filter[0].quotation).length !== 0) {
+                                    quotation_mapped = so_filter[0].quotation.id;
                                 }
-                                if (Object.keys(opp_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = opp_filter[0].opportunity.id;
+                                if (Object.keys(so_filter[0].opportunity).length !== 0) {
+                                    opportunity_mapped = so_filter[0].opportunity.id;
                                 }
                             }
 
@@ -1295,7 +1509,6 @@ $(document).ready(function () {
             }
             else if ($('#sale-code-select-box option:selected').attr('data-type') === '2') {
                 $('#sale-code-select-box').attr('data-placeholder', 'Select One');
-                $('#beneficiary-select-box').prop('disabled', true);
                 $('#notify-none-sale-code').prop('hidden', false);
                 $('#tab_plan_datatable').prop('hidden', true);
             }
@@ -1439,12 +1652,6 @@ $(document).ready(function () {
                         loadQuotationPlanMULTI($(this).closest('td').attr('data-sale-code-id'));
                         $('#notify-none-sale-code').prop('hidden', true);
                         $('#tab_plan_datatable').prop('hidden', false);
-                    }
-                    else if ($(this).closest('td').attr('data-type') === '2') {
-                        $('#sale-code-select-box').attr('data-placeholder', 'Select One');
-                        $('#beneficiary-select-box').prop('disabled', true);
-                        $('#notify-none-sale-code').prop('hidden', false);
-                        $('#tab_plan_datatable').prop('hidden', true);
                     }
                 }
                 else if ($(this).attr('data-detail-view') === 'show') {

@@ -29,7 +29,7 @@
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-7 pr-5">
+                <div class="col-8 pr-5">
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
@@ -99,16 +99,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Created date" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Created date" %}</label>
+                        <div class="col-8">
                             <input type="text" class="form-control" name="date_created" required readonly>
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Creator" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Creator" %}</label>
+                        <div class="col-8">
                             <span class="input-affix-wrapper">
                         <span class="input-prefix" id="dropdownCreator">
                             <i class="fas fa-info-circle text-primary" aria-expanded="false"
@@ -145,42 +145,42 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Beneficiary" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Beneficiary" %}</label>
+                        <div class="col-8">
                             <span class="input-affix-wrapper">
-                        <span class="input-prefix" id="dropdownBeneficiary">
-                            <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                               data-bs-toggle="dropdown"></i>
-                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                                  style="width: 25rem;">
-                                <div class="row">
-                                    <span class="col-7">{% trans "More information" %}</span>
-                                    <a class="col-5 text-right"
-                                       href="{% url 'EmployeeDetail' '0' %}">
-                                        <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
-                                                class="bi bi-arrow-right"></i></span>
-                                    </a>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Employee" %}</span>
-                                    <span class="col-7 text-primary" name="beneficiary-name"></span>
-                                </div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Code" %}</span>
-                                    <span class="col-7 text-primary" name="beneficiary-code"></span>
-                                </div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Department" %}</span>
-                                    <span class="col-7 text-primary" name="beneficiary-department"></span>
-                                </div>
+                                <span class="input-prefix" id="dropdownBeneficiary">
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                                       data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                                          style="width: 25rem;">
+                                        <div class="row">
+                                            <span class="col-7">{% trans "More information" %}</span>
+                                            <a class="col-5 text-right"
+                                               href="{% url 'EmployeeDetail' '0' %}">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                                        class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row">
+                                            <span class="col-5">{% trans "Employee" %}</span>
+                                            <span class="col-7 text-primary" name="beneficiary-name"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5">{% trans "Code" %}</span>
+                                            <span class="col-7 text-primary" name="beneficiary-code"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5">{% trans "Department" %}</span>
+                                            <span class="col-7 text-primary" name="beneficiary-department"></span>
+                                        </div>
+                                    </span>
+                                </span>
+                                <select class="form-control select2" name="beneficiary" id="chooseBeneficiary"
+                                        data-close-on-select="true"
+                                        data-method="GET"
+                                        data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
-                        </span>
-                        <select class="form-control select2" name="beneficiary" id="chooseBeneficiary"
-                                data-close-on-select="true"
-                                data-method="GET"
-                                data-url="{% url 'EmployeeListAPI' %}"></select>
-                    </span>
                         </div>
                     </div>
                 </div>

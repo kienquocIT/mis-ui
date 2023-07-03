@@ -28,13 +28,13 @@
     >
         {% csrf_token %}
         <div class="row mr-3">
-            <div class="col-7 mb-1 pr-5 text-right">
+            <div class="col-8 mb-1 pr-5 text-right">
                 <h4><span class="badge badge-soft-primary badge-outline text-primary header-code"></span></h4>
             </div>
         </div>
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-7 pr-5">
+                <div class="col-8 pr-5">
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
@@ -103,16 +103,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Created date" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Created date" %}</label>
+                        <div class="col-8">
                             <input type="text" class="form-control" name="date_created" required readonly>
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Creator" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Creator" %}</label>
+                        <div class="col-8">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="dropdownCreator">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false"
@@ -149,8 +149,8 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Beneficiary" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Beneficiary" %}</label>
+                        <div class="col-8">
                             <span class="input-affix-wrapper">
                                 <span class="dropdown input-prefix" id="dropdownBeneficiary">
                                     <i class="fas fa-info-circle text-primary"
@@ -192,8 +192,8 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label form-label">{% trans "Status" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label form-label">{% trans "Status" %}</label>
+                        <div class="col-8">
                             <span class="badge badge-soft-success badge-outline">{% trans "Approved" %}</span>
                         </div>
                     </div>

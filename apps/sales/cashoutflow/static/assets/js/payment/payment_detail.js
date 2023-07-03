@@ -457,6 +457,15 @@ $(document).ready(function () {
                             }
                         }
 
+                        if (opp_mapped === null) {
+                            let opp_filter = opportunity_list.filter(function(item) {
+                                return item.id === opp_id;
+                            });
+                            if (opp_filter.length > 0) {
+                                opp_mapped = opp_filter[0];
+                            }
+                        }
+
                         let so_mapped_id = null;
                         let quo_mapped_id = null;
                         let opp_mapped_id = null;

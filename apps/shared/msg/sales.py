@@ -19,3 +19,4 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     PAYMENT_UPDATE = _('Payment update successfully')
     QUOTATION_INDICATOR_CREATE = _('Quotation indicator create successfully')
     QUOTATION_INDICATOR_UPDATE = _('Quotation indicator update successfully')
+    QUOTATION_INDICATOR_RESTORE = _('Quotation indicator restore successfully')

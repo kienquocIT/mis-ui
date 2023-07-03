@@ -15,3 +15,33 @@
 .modal-edit-formula-action {
   text-align: right;
 }
+
+.modal-body-restore-indicator {
+    text-align: center;
+}
+
+.row.modal-footer-restore-indicator {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #c7c7c7;
+}
+
+.row.modal-footer-restore-indicator::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background-color: #b5b5b5;
+}
+
+.btn-accept-restore {
+    color: #00D67F;
+}
+
+.btn-cancel-restore {
+    color: #6f6f6f;
+}

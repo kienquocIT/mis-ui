@@ -233,3 +233,18 @@ class QuotationIndicatorDetailAPI(APIView):
             pk=pk,
             msg=SaleMsg.QUOTATION_INDICATOR_UPDATE
         )
+
+
+class QuotationIndicatorRestoreAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_quotation(
+            request=request,
+            url=ApiURL.QUOTATION_INDICATOR_RESTORE,
+            pk=pk,
+            msg=SaleMsg.QUOTATION_INDICATOR_RESTORE
+        )

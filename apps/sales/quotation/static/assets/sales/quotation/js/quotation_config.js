@@ -362,7 +362,6 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            // return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`
                             let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
                             let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                             return btn_edit + btn_delete;
@@ -705,6 +704,39 @@ $(function () {
                         console.log(errs)
                     }
                 )
+        });
+
+        // submit restore indicator
+        $('#btn-accept-restore-indicator').on('click', function (e) {
+            if (!tableIndicator[0].querySelector('.dataTables_empty')) {
+                let dataID = null;
+                for (let i = 0; i < tableIndicator[0].tBodies[0].rows.length; i++) {
+                    let row = tableIndicator[0].tBodies[0].rows[i];
+                    dataID = row.querySelector('.table-row-save').getAttribute('data-id');
+                    break;
+                }
+                if (dataID) {
+                    let url_update = $(this).attr('data-url');
+                    let url = url_update.format_url_with_uuid(dataID);
+                    let url_redirect = $(this).attr('data-url-redirect');
+                    let method = $(this).attr('data-method');
+                    let data_submit = {};
+                    let csr = $("[name=csrfmiddlewaretoken]").val();
+                    $.fn.callAjax(url, method, data_submit, csr)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyPopup({description: data.message}, 'success')
+                                    $.fn.redirectUrl(url_redirect, 1000);
+                                }
+                            },
+                            (errs) => {
+                                console.log(errs)
+                            }
+                        )
+                }
+            }
         });
 
 

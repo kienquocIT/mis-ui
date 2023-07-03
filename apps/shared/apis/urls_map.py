@@ -211,6 +211,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
+    QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')

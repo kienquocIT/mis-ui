@@ -2,10 +2,28 @@
 
 <!-- Config Indicator -->
 <br>
-<button type="button" class="btn btn-link btn-animated" id="btn-add-indicator" data-bs-toggle="modal"
-        data-bs-target="#indicatorCreateModalCenter">
-    <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>
-</button>
+<div class="row">
+    <div class="col-6">
+        <div class="row float-left">
+            <button type="button" class="btn btn-link btn-animated" id="btn-add-indicator" data-bs-toggle="modal"
+                    data-bs-target="#indicatorCreateModalCenter">
+                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>
+            </button>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row float-right mr-2">
+            <button
+                    type="button"
+                    class="btn btn-soft-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#restoreIndicatorModalCenter"
+                    id="btn-add-shipping"
+            >{% trans 'Restore default indicator' %}</button>
+        </div>
+    </div>
+</div>
+
 <br>
 <input
         type="hidden" id="quotation-link"
@@ -84,19 +102,50 @@
             </div>
         </div>
     </div>
-
-
-    <input
-            type="hidden"
-            id="base-trans-factory"
-            data-btn-close="{% trans 'Close' %}"
-            data-btn-save="{% trans 'Save' %}"
-            data-edit-formula="{% trans 'Edit formula' %}"
-            data-editor="{% trans 'Editor' %}"
-            data-indicator="{% trans 'Indicator' %}"
-            data-property="{% trans 'Property' %}"
-            data-function="{% trans 'Function indicator' %}"
-            data-operator="{% trans 'Operator indicator' %}"
-    >
 </div>
+
+<div
+        class="modal fade" id="restoreIndicatorModalCenter" tabindex="-1"
+        role="dialog" aria-labelledby="restoreIndicatorModalCenter"
+        aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body modal-body-restore-indicator mb-2">
+                <h6 class="mb-3">{% trans 'Restore company indicator' %}</h6>
+                <p>{% trans 'This action will restore indicator back to default data. All current data will be removed. Do you wish to continue?' %}</p>
+            </div>
+            <div class="row modal-footer-restore-indicator">
+                <div class="col-6">
+                    <button
+                            type="button"
+                            class="btn btn-link btn-accept-restore"
+                            data-bs-dismiss="modal"
+                            id="btn-accept-restore-indicator"
+                            data-url="{% url 'QuotationIndicatorRestoreAPI' 1 %}"
+                            data-url-redirect="{% url 'QuotationConfigDetail' %}"
+                            data-method="put"
+                    >{% trans 'Restore' %}</button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-link btn-cancel-restore" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input
+        type="hidden"
+        id="base-trans-factory"
+        data-btn-close="{% trans 'Close' %}"
+        data-btn-save="{% trans 'Save' %}"
+        data-edit-formula="{% trans 'Edit formula' %}"
+        data-editor="{% trans 'Editor' %}"
+        data-indicator="{% trans 'Indicator' %}"
+        data-property="{% trans 'Property' %}"
+        data-function="{% trans 'Function indicator' %}"
+        data-operator="{% trans 'Operator indicator' %}"
+>
 <!-- Config Indicator -->

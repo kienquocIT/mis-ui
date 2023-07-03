@@ -2287,7 +2287,7 @@ msgstr "Sao chép báo giá"
 
 #
 msgid "Sale order list"
-msgstr "Danh sách báo giá"
+msgstr "Danh sách đơn hàng"
 
 #
 msgid "Create Sale Order"
@@ -3513,3 +3513,11 @@ msgstr "Cấu hình không cho phép lựa chọn giai đoạn"
 #
 msgid "Can not select stage because this opportunity is close lost"
 msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã thất bại"
+
+#
+msgid "Quotation indicator create successfully"
+msgstr "Tạo chỉ tiêu báo giá thành công"
+
+#
+msgid "Quotation indicator update successfully"
+msgstr "Cập nhật chỉ tiêu báo giá thành công"

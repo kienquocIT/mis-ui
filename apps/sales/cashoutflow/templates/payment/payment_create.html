@@ -36,6 +36,7 @@
     {{ data.data.employee_list | json_script:"employee_list" }}
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
+    {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
     <form id="form-create-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
     >
@@ -78,12 +79,9 @@
                             </div>
                         </div>
                         <div class="col-7">
-                            <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url-quotation="{% url 'QuotationListAPI' %}" hidden
-                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
+                            <select name="sale_code" id="sale-code-select-box" class="select2"
+                                    data-placeholder="Select Sale Code">
                             </select>
-                            <textarea placeholder="Select one" style="background-color: white; white-space: pre-wrap;" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></textarea>
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu" role="menu" style="width: 120%; max-height: 30em; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -315,7 +313,6 @@
             <div class="tab-pane fade mb-25" id="tab_plan">
                 <div class="row" id="tab_plan_datatable_div">
                     <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
-                           data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
                            data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
                            data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>

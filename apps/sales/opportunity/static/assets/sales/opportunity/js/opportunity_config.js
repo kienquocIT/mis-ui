@@ -220,7 +220,8 @@ $(document).ready(function () {
             return a.win_rate - b.win_rate;
         });
         list_result.push(object_lost);
-        list_result.push(delivery);
+        if(delivery !== null)
+            list_result.push(delivery);
         list_result.push(object_close);
 
         return list_result
@@ -287,7 +288,7 @@ $(document).ready(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            if (row.is_delete === true) {
+                            if (row.is_delete === false) {
                                 return `<a class="btn btn-icon btn-del-stage disabled" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                             } else {
                                 return `<a class="btn btn-icon btn-del-stage" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`

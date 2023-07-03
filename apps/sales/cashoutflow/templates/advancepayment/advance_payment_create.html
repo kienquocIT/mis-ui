@@ -45,6 +45,7 @@
     {{ data.data.employee_list | json_script:"employee_list" }}
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
+    {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
@@ -88,10 +89,8 @@
                             </div>
                         </div>
                         <div class="col-7">
-                            <select name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    class="select2" data-placeholder="Select Sale Code" disabled
-                                    data-url-quotation="{% url 'QuotationListAPI' %}"
-                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}">
+                            <select name="sale_code" id="sale-code-select-box"
+                                    class="select2" data-placeholder="Select Sale Code" disabled>
                             </select>
                         </div>
                     </div>
@@ -199,7 +198,7 @@
                         <label class="col-4 col-form-label required">{% trans "Beneficiary" %}</label>
                         <div class="col-8">
                             <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="beneficiary-detail-span" hidden>
+                                <span class="input-prefix" id="beneficiary-detail-span">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">

@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#datatable_advance_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

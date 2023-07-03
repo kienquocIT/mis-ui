@@ -44,6 +44,7 @@
     {{ data.data.employee_list | json_script:"employee_list" }}
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
+    {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
     <form id="form-update-advance" data-method="PUT" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url="{% url "AdvancePaymentDetailAPI" '0' %}"

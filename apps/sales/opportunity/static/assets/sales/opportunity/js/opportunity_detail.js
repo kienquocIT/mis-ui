@@ -13,6 +13,266 @@ $(document).ready(function () {
 
     let dict_product = {}
 
+    let condition_is_quotation_confirm = false;
+    let condition_sale_oder_approved = false;
+    let condition_sale_oder_delivery_status = false;
+
+    function autoLoadStage() {
+        if (list_stage_condition.length === 0) {
+            list_stage.map(function (item) {
+                let list_condition = []
+                item.condition_datas.map(function (condition) {
+                    list_condition.push({
+                        'property': condition.condition_property.title,
+                        'comparison_operator': condition.comparison_operator,
+                        'compare_data': condition.compare_data,
+                    })
+                })
+                list_stage_condition.push({
+                    'id': item.id,
+                    'logical_operator': item.logical_operator,
+                    'condition_datas': list_condition
+                })
+            })
+        }
+        let list_property_config = []
+        let ele_customer = $('#select-box-customer option:selected');
+        if (ele_customer.length > 0) {
+            let compare_data = 0;
+            if (ele_customer.data('annual-revenue') !== null) {
+                compare_data = parseInt(ele_customer.data('annual-revenue'));
+            }
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '=',
+                'compare_data': compare_data,
+            })
+        }
+
+        let ele_product_category = $('#select-box-product-category option:selected');
+        if (ele_product_category.length > 0) {
+            list_property_config.push({
+                'property': 'Product Category',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Product Category',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_budget = $('#input-budget');
+        if (ele_budget.valCurrency() === 0) {
+            list_property_config.push({
+                'property': 'Budget',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Budget',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_open_date = $('#input-open-date');
+        if (ele_open_date.val() === '') {
+            list_property_config.push({
+                'property': 'Open Date',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Open Date',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_close_date = $('#input-close-date');
+        if (ele_close_date.val() === 0) {
+            list_property_config.push({
+                'property': 'Close Date',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Close Date',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_decision_maker = $('#input-decision-maker');
+        if (ele_decision_maker.attr('data-id') === '') {
+            list_property_config.push({
+                'property': 'Decision maker',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Decision maker',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_tr_product = $('#table-products tbody tr:not(.hidden)');
+        if (ele_tr_product.length === 0 || ele_tr_product.hasClass('col-table-empty')) {
+            list_property_config.push({
+                'property': 'Product.Line.Detail',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Product.Line.Detail',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_competitor_win = $('.input-win-deal:checked');
+        if (ele_competitor_win.length === 0) {
+            list_property_config.push({
+                'property': 'Competitor.Win',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Competitor.Win',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_check_lost = $('#check-lost-reason');
+        if (ele_check_lost.is(':checked')) {
+            list_property_config.push({
+                'property': 'Lost By Other Reason',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Lost By Other Reason',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        let ele_close_deal = $('#input-close-deal');
+        if (ele_close_deal.is(':checked')) {
+            list_property_config.push({
+                'property': 'Close Deal',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Close Deal',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        if (condition_is_quotation_confirm) {
+            list_property_config.push({
+                'property': 'Quotation.confirm',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'Quotation.confirm',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+
+        if (condition_sale_oder_approved) {
+            list_property_config.push({
+                'property': 'SaleOrder.status',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'SaleOrder.status',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        }
+
+        if (condition_sale_oder_delivery_status) {
+            list_property_config.push({
+                'property': 'SaleOrder.Delivery.Status',
+                'comparison_operator': '≠',
+                'compare_data': 0,
+            })
+        } else {
+            list_property_config.push({
+                'property': 'SaleOrder.Delivery.Status',
+                'comparison_operator': '=',
+                'compare_data': 0,
+            })
+        }
+
+        let id_stage_current = '';
+        for (let i = 0; i < list_stage_condition.length; i++) {
+            if (list_stage_condition[i].logical_operator === 0) {
+                if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
+                    id_stage_current = list_stage_condition[i].id
+                    break;
+                }
+            } else {
+                if (list_stage_condition[i].condition_datas.some(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
+                    id_stage_current = list_stage_condition[i].id
+                    break;
+                }
+            }
+        }
+
+        let ele_stage = $(`.sub-stage`);
+        let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
+        let index = ele_stage_current.index();
+        if (ele_stage_current.hasClass('stage-lost')) {
+            ele_stage_current.addClass('bg-red-light-5 stage-selected');
+            ele_stage.removeClass('bg-primary-light-5 stage-selected');
+        } else {
+            for (let i = 0; i <= ele_stage.length; i++) {
+                if (i <= index) {
+                    if (!ele_stage.eq(i).hasClass('stage-lost'))
+                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                    else {
+                        ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
+                    }
+                } else {
+                    ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
+                }
+            }
+        }
+        if (!$('#check-input-rate').is(':checked')) {
+            $('#input-rate').val(dict_stage[ele_stage_current.data('id')].win_rate);
+            $('#rangeInput').val(dict_stage[ele_stage_current.data('id')].win_rate);
+        }
+    }
+
     // config input date
     $('input[name="open_date"]').daterangepicker({
         singleDatePicker: true,
@@ -111,7 +371,7 @@ $(document).ready(function () {
         })
     }
 
-    function loadCustomer(id, end_customer_id, data_competitor, sale_person_id) {
+    function loadCustomer(id, end_customer_id, data_competitor, sale_person) {
         let ele = $('#select-box-customer');
         let ele_end_customer = $('#select-box-end-customer');
         let ele_competitor = $('.box-select-competitor');
@@ -129,7 +389,7 @@ $(document).ready(function () {
                     data.account_list.map(function (item) {
                         if (item.id === id) {
                             ele.append(`<option selected value="${item.id}" data-annual-revenue="${item.annual_revenue}">${item.name}</option>`);
-                            loadSalePerson(item.manager.map(obj => obj.id), sale_person_id);
+                            loadSalePerson(item.manager.map(obj => obj.id), sale_person);
                         } else {
                             ele_competitor.append(`<option value="${item.id}">${item.name}</option>`);
                             ele.append(`<option value="${item.id}" data-annual-revenue="${item.annual_revenue}">${item.name}</option>`);
@@ -381,7 +641,7 @@ $(document).ready(function () {
         }
     }
 
-    function loadSalePerson(list_manager, sale_person_id) {
+    function loadSalePerson(list_manager, sale_person) {
         let ele = $('#select-box-sale-person');
         let ele_emp_current_group = $('#group_id_emp_login');
         $.fn.callAjax(ele.data('url'), ele.data('method')).then((resp) => {
@@ -396,11 +656,15 @@ $(document).ready(function () {
                         data.employee_list.map(function (employee) {
                             if (list_manager.includes(employee_current_id)) {
                                 if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
-                                    if (employee.id === sale_person_id) {
+                                    if (employee.id === sale_person.id) {
                                         ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
                                     } else {
                                         ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
                                     }
+                                }
+                            } else {
+                                if (employee.id === sale_person.id) {
+                                    ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
                                 }
                             }
                         })
@@ -446,7 +710,7 @@ $(document).ready(function () {
                     $('#check-lost-reason').prop('checked', true);
                 } else
                     $('#check-lost-reason').prop('checked', false);
-                loadCustomer(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_competitors_datas, opportunity_detail.sale_person.id);
+                loadCustomer(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_competitors_datas, opportunity_detail.sale_person);
                 loadProductCategory(opportunity_detail.product_category);
                 loadTax();
                 loadUoM();
@@ -464,6 +728,22 @@ $(document).ready(function () {
                 loadContact(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_contact_role_datas);
                 loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
                 loadDecisionFactor(opportunity_detail.customer_decision_factor);
+
+                if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
+                    if (opportunity_detail.sale_order.system_status === 0) {
+                        condition_sale_oder_approved = true;
+                        if ($.fn.hasOwnProperties(opportunity_detail.sale_order, ['delivery'])) {
+                            condition_sale_oder_delivery_status = true;
+                        }
+                    }
+                }
+
+                if ($.fn.hasOwnProperties(opportunity_detail, ['quotation'])) {
+                    if (opportunity_detail.quotation.is_customer_confirm === true) {
+                        condition_is_quotation_confirm = true;
+                    }
+                }
+
                 $.fn.initMaskMoney2();
             }
         })
@@ -908,7 +1188,7 @@ $(document).ready(function () {
         let table = $(this).closest(`table`);
         table.addClass('tag-change');
         $(this).closest('tr').remove();
-        if (table.find('tbody tr:not(.hidden)').length === 0){
+        if (table.find('tbody tr:not(.hidden)').length === 0) {
             table.find('.col-table-empty').removeClass('hidden');
         }
         switch (table.attr('id')) {
@@ -1027,7 +1307,8 @@ $(document).ready(function () {
             return a.win_rate - b.win_rate;
         });
         list_result.push(object_lost);
-        list_result.push(delivery);
+        if (delivery !== null)
+            list_result.push(delivery);
         list_result.push(object_close);
 
         return list_result
@@ -1052,18 +1333,18 @@ $(document).ready(function () {
                         return obj;
                     }, {});
 
-                    list_stage.map(function (item) {
-                        ele.append(html);
-                        let ele_last_stage = ele.find('.sub-stage').last();
-                        ele_last_stage.attr('data-id', item.id);
-                        ele_last_stage.find('.stage-indicator').text(item.indicator);
+                    list_stage.reverse().map(function (item) {
+                        ele.prepend(html);
+                        let ele_first_stage = ele.find('.sub-stage').first();
+                        ele_first_stage.attr('data-id', item.id);
+                        ele_first_stage.find('.stage-indicator').text(item.indicator);
                         if (item.is_closed_lost) {
-                            ele_last_stage.find('.dropdown').remove();
-                            ele_last_stage.addClass('stage-lost')
+                            ele_first_stage.find('.dropdown').remove();
+                            ele_first_stage.addClass('stage-lost')
                         }
                         if (item.is_deal_closed) {
-                            ele_last_stage.find('.dropdown-menu').empty();
-                            ele_last_stage.find('.dropdown-menu').append(
+                            ele_first_stage.find('.dropdown-menu').empty();
+                            ele_first_stage.find('.dropdown-menu').append(
                                 `<div class="form-check form-switch mb-1">
                                     <input type="checkbox" class="form-check-input" id="input-close-deal">
                                     <label for="input-close-deal" class="form-label">Close Deal</label>
@@ -1096,24 +1377,28 @@ $(document).ready(function () {
 
     $(document).on('click', '.btn-go-to-stage', function () {
         if (config_is_select_stage) {
-            if ($('#check-lost-reason').is(':checked') || $('.input-win-deal:checked').length > 0) {
-                alert($('#deal-close-lost').text());
+            if ($('#input-close-deal').is(':checked')) {
+                alert($('#deal-closed').text());
             } else {
-                let stage = $(this).closest('.sub-stage');
-                let index = stage.index();
-                let ele_stage = $('#div-stage .sub-stage');
-                $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
-                for (let i = 0; i <= ele_stage.length; i++) {
-                    if (i <= index) {
-                        if (!ele_stage.eq(i).hasClass('stage-lost'))
-                            ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-                    } else {
-                        ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                if ($('#check-lost-reason').is(':checked') || $('.input-win-deal:checked').length > 0) {
+                    alert($('#deal-close-lost').text());
+                } else {
+                    let stage = $(this).closest('.sub-stage');
+                    let index = stage.index();
+                    let ele_stage = $('#div-stage .sub-stage');
+                    $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                    for (let i = 0; i <= ele_stage.length; i++) {
+                        if (i <= index) {
+                            if (!ele_stage.eq(i).hasClass('stage-lost'))
+                                ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                        } else {
+                            ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                        }
                     }
-                }
-                if (!$('#check-input-rate').is(':checked')) {
-                    $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
-                    $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
+                    if (!$('#check-input-rate').is(':checked')) {
+                        $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
+                        $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
+                    }
                 }
             }
         } else {
@@ -1143,212 +1428,33 @@ $(document).ready(function () {
     function objectsMatch(objA, objB) {
         return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
     }
+
     let list_stage_condition = []
     $(document).on('click', '#btn-auto-update-stage', function () {
-        if (list_stage_condition.length === 0) {
-            list_stage.map(function (item) {
-                let list_condition = []
-                item.condition_datas.map(function (condition) {
-                    list_condition.push({
-                        'property': condition.condition_property.title,
-                        'comparison_operator': condition.comparison_operator,
-                        'compare_data': condition.compare_data,
-                    })
-                })
-                list_stage_condition.push({
-                    'id': item.id,
-                    'logical_operator': item.logical_operator,
-                    'condition_datas': list_condition
-                })
-            })
-        }
-        let list_property_config = []
-        let ele_customer = $('#select-box-customer option:selected');
-        if (ele_customer.length > 0) {
-            let compare_data = 0;
-            if (ele_customer.data('annual-revenue') !== null) {
-                compare_data = parseInt(ele_customer.data('annual-revenue'));
-            }
-            list_property_config.push({
-                'property': 'Customer',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
+        autoLoadStage();
+        $(this).tooltip('hide');
+    })
 
-            list_property_config.push({
-                'property': 'Customer',
-                'comparison_operator': '=',
-                'compare_data': compare_data,
-            })
-        }
-
-        let ele_product_category = $('#select-box-product-category option:selected');
-        if (ele_product_category.length > 0) {
-            list_property_config.push({
-                'property': 'Product Category',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Product Category',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_budget = $('#input-budget');
-        if (ele_budget.valCurrency() === 0) {
-            list_property_config.push({
-                'property': 'Budget',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Budget',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_open_date = $('#input-open-date');
-        if (ele_open_date.val() === '') {
-            list_property_config.push({
-                'property': 'Open Date',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Open Date',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_close_date = $('#input-close-date');
-        if (ele_close_date.val() === 0) {
-            list_property_config.push({
-                'property': 'Close Date',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Close Date',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_decision_maker = $('#input-decision-maker');
-        if (ele_decision_maker.attr('data-id') === '') {
-            list_property_config.push({
-                'property': 'Decision maker',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Decision maker',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_tr_product = $('#table-products tbody tr:not(.hidden)');
-        if (ele_tr_product.length === 0 || ele_tr_product.hasClass('col-table-empty')) {
-            list_property_config.push({
-                'property': 'Product.Line.Detail',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Product.Line.Detail',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_competitor_win = $('.input-win-deal:checked');
-        if (ele_competitor_win.length === 0) {
-            list_property_config.push({
-                'property': 'Competitor.Win',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Competitor.Win',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_check_lost = $('#check-lost-reason');
-        if (ele_check_lost.is(':checked')) {
-            list_property_config.push({
-                'property': 'Lost By Other Reason',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Lost By Other Reason',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        let ele_close_deal = $('#input-close-deal');
-        if (ele_close_deal.is(':checked')) {
-            list_property_config.push({
-                'property': 'Close Deal',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Close Deal',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
-        console.log(list_property_config)
-        let id_stage_current = '';
-        for (let i = list_stage_condition.length - 1; i >= 0; i--) {
-            if (list_stage_condition[i].logical_operator === 0) {
-                if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                    id_stage_current = list_stage_condition[i].id
-                    break;
-                }
-            } else {
-                if (list_stage_condition[i].condition_datas.some(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                    id_stage_current = list_stage_condition[i].id
-                    break;
-                }
-            }
-        }
-
-        let ele_stage = $(`.sub-stage`);
-        let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-        let index = ele_stage_current.index();
-
-        if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('bg-red-light-5 stage-selected');
-            ele_stage.removeClass('bg-primary-light-5 stage-selected');
-        } else {
+    $(document).on('change', '#input-close-deal', function () {
+        if ($(this).is(':checked')) {
+            let stage = $(this).closest('.sub-stage');
+            let ele_stage = $('#div-stage .sub-stage');
+            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
             for (let i = 0; i <= ele_stage.length; i++) {
-                if (i <= index) {
-                    if (!ele_stage.eq(i).hasClass('stage-lost'))
-                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-                } else {
-                    ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
-                }
+                if (!ele_stage.eq(i).hasClass('stage-lost'))
+                    ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
             }
+            if (!$('#check-input-rate').is(':checked')) {
+                $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
+                $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
+            }
+        } else {
+            autoLoadStage();
         }
     })
+    if (config_is_select_stage || config_is_input_rate) {
+        $('#btn-auto-update-stage').hide();
+    } else {
+        setTimeout(autoLoadStage, 1500);
+    }
 })

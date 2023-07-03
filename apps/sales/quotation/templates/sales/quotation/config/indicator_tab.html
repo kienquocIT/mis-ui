@@ -19,7 +19,9 @@
                     data-bs-toggle="modal"
                     data-bs-target="#restoreIndicatorModalCenter"
                     id="btn-add-shipping"
-            >{% trans 'Restore default' %}</button>
+            >
+            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrow-rotate-left"></i></span></span><span>{% trans 'Restore default' %}</span></span>
+            </button>
         </div>
     </div>
 </div>
@@ -112,6 +114,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body modal-body-restore-indicator mb-2">
+                <h5 class="mb-2">{% trans 'Restore default' %}</h5>
                 <p>{% trans 'This will restore indicator back to default data. All current data will be removed' %}</p>
                 <p>{% trans 'Do you wish to continue?' %}</p>
             </div>

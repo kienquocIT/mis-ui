@@ -181,7 +181,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null) {
+    loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null, is_load_init = false) {
         let jqueryId = '#' + sale_person_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -193,7 +193,7 @@ class loadDataHandle {
                     ele.empty();
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
                         let initEmployee = $('#data-init-quotation-create-request-employee-id');
-                        if (initEmployee.val()) {
+                        if (initEmployee.val() && is_load_init === true) {
                             valueToSelect = initEmployee.val();
                         }
                         ele.append(`<option value=""></option>`);

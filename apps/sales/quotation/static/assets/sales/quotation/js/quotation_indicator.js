@@ -86,7 +86,9 @@ function loadQuotationIndicator(indicator_id) {
 
 function calculateIndicator(indicator_list) {
     let result_list = [];
-    let result_json = {}
+    let result_json = {};
+    let revenueValue = 0;
+    let rateValue = 0;
     let is_sale_order = false;
     let _form = new SetupFormSubmit($('#frm_quotation_create'));
     submitClass.setupDataSubmit(_form, is_sale_order);
@@ -132,6 +134,13 @@ function calculateIndicator(indicator_list) {
         } else {
             value = 0;
         }
+        // append result
+        if (indicator.title === "Revenue") {
+            revenueValue = value
+        }
+        if (revenueValue !== 0) {
+           rateValue = ((value / revenueValue) * 100).toFixed(1);
+        }
         result_list.push({
             'indicator': {
                 'id': indicator.id,
@@ -139,11 +148,11 @@ function calculateIndicator(indicator_list) {
             },
             'order': indicator.order,
             'indicator_value': value,
-            'indicator_rate': 100
+            'indicator_rate': rateValue
         });
         result_json[indicator.order] = {
             'indicator_value': value,
-            'indicator_rate': 100
+            'indicator_rate': rateValue
         }
     }
     //

@@ -23,7 +23,7 @@ $(function () {
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
-        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', null, true);
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');

@@ -125,7 +125,7 @@ $(function () {
                             }
                         },
                         {
-                            data: 'To Contact',
+                            data: 'contact',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 return `<span class="text-primary">` + row.contact.fullname + `</span>`

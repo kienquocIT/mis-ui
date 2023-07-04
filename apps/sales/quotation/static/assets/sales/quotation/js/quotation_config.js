@@ -50,12 +50,15 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
     }
 }
 
-function loadInitPropertyList(property_id, eleShow) {
+function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
     let jqueryId = '#' + property_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
     let code_app = "quotation";
+    if (is_sale_order === true) {
+        code_app = "saleorder";
+    }
     let data_filter = {'application__code': code_app};
     if (eleShow.is(':empty')) {
         $.fn.callAjax(url, method, data_filter).then(
@@ -422,7 +425,11 @@ $(function () {
             let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
-            loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+            if (!$form.hasClass('sale-order')) {
+                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+            } else {
+                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow), true);
+            }
             let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
         });
@@ -664,7 +671,10 @@ $(function () {
                 order = (tableLen + 1);
             }
             data_submit['order'] = order;
-            let application_code = 'quotation'
+            let application_code = 'quotation';
+            if ($form.hasClass('sale-order')) {
+                application_code = 'saleorder';
+            }
             data_submit['application_code'] = application_code;
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)

@@ -219,7 +219,7 @@ class SaleOrderIndicatorListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = {'application_code': 'saleorder'}
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_LIST).get(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_INDICATOR_LIST).get(data)
         if resp.state:
             return {'quotation_indicator_list': resp.result}, status.HTTP_200_OK
 

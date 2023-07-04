@@ -33,14 +33,14 @@
 {% block pageContent %}
     <div class="row">
         <ul class="nav nav-light nav-tabs">
-            <li class="nav-item">
+            <li class="nav-item" id="tab-config">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
                     <span class="nav-link-text">{% trans 'General' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="tab-indicator">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                    <span class="nav-link-text"></span>
+                    <span class="nav-link-text">{% trans 'Indicator' %}</span>
                 </a>
             </li>
         </ul>
@@ -51,6 +51,7 @@
             data-url-redirect="{% url 'SaleOrderConfigDetail' %}"
             data-method="PUT"
             id="frm_quotation_config_create"
+            class="sale-order"
             method="post"
     >
         {% csrf_token %}

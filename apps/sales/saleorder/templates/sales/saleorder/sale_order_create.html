@@ -1021,20 +1021,22 @@
                                     type="button"
                                     class="btn btn-soft-success"
                                     id="btn-refresh-quotation-indicator"
-                            >{% trans 'Refresh Data' %}</button>
+                            >{% trans 'Refresh data' %}</button>
                         </div>
                         <div class="col-10"></div>
                     </div>
                     <table
                             id="datable-quotation-create-indicator"
-                            class="table nowrap w-100 mb-5"
+                            class="table nowrap w-100 mb-5 sale-order"
                     >
                         <thead>
                         <tr>
                             <th>STT</th>
                             <th>{% trans 'Indicator name' %}</th>
-                            <th>{% trans 'Indicator Value' %}</th>
-                            <th>{% trans 'Indicator Rate' %}</th>
+                            <th>{% trans 'Quotation indicator value' %}</th>
+                            <th>{% trans 'Indicator value' %}</th>
+                            <th>{% trans 'Difference value' %}</th>
+                            <th>{% trans 'Indicator rate' %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1044,7 +1046,7 @@
                 <input
                         type="hidden"
                         id="quotation-indicator-data"
-                        data-url="{% url 'QuotationIndicatorListAPI' %}"
+                        data-url="{% url 'SaleOrderIndicatorListAPI' %}"
                         data-method="get"
                 >
             </div>

@@ -699,7 +699,6 @@ $(document).ready(function () {
         $('.form-control').prop('disabled', true);
         $('.form-select').prop('disabled', true);
         $('#btn-change-sale-code-type').prop('disabled', true);
-        $('#sale-code-select-box2-show').prop('disabled', false);
         $('#btn-add-row-line-detail').addClass('disabled');
         $('.btn-del-line-detail').addClass('disabled');
 
@@ -762,7 +761,6 @@ $(document).ready(function () {
         })
         $('#beneficiary-select-box').prop('disabled', true);
         $('#sale-code-select-box').prop('disabled', false);
-        $('#sale-code-select-box2').prop('hidden', false);
     }
 
     function loadBeneficiary(sale_person_id, department_id, creator_id) {

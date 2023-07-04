@@ -404,12 +404,6 @@ $(document).ready(function () {
             }
         })
         loadBeneficiary($('#creator-select-box option:selected').attr('data-department-id'), $('#data-init-payment-create-request-employee-id').val());
-        $('#sale-code-select-box2-show').val('');
-        $('#sale-code-select-box2-show').css({
-            'background': 'none',
-        });
-        $('#sale-code-select-box2-show').attr('disabled', false);
-        $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
 
         let beneficiary = $('#data-init-payment-create-request-employee-id').val()
         if (sale_code_default_obj.length > 0) {
@@ -418,6 +412,9 @@ $(document).ready(function () {
         loadSaleCode(beneficiary);
 
         if (sale_code_default_type === 0) {
+            $('#sale-code-select-box').prop('disabled', true);
+            $('#beneficiary-select-box').prop('disabled', true);
+            $('#btn-change-sale-code-type').prop('disabled', true);
             // get ap expense items
             let so_id = sale_code_default_obj[0].id;
             let so_filter = sale_order_list.filter(function(item) {
@@ -479,6 +476,9 @@ $(document).ready(function () {
             $('#tab_plan_datatable').prop('hidden', false);
         }
         else if (sale_code_default_type === 1) {
+            $('#sale-code-select-box').prop('disabled', true);
+            $('#beneficiary-select-box').prop('disabled', true);
+            $('#btn-change-sale-code-type').prop('disabled', true);
             // get ap expense items
             let quo_id = sale_code_default_obj[0].id;
             let so_filter = sale_order_list.filter(function(item) {
@@ -567,6 +567,9 @@ $(document).ready(function () {
             $('#tab_plan_datatable').prop('hidden', false);
         }
         else if (sale_code_default_type === 2) {
+            $('#sale-code-select-box').prop('disabled', true);
+            $('#beneficiary-select-box').prop('disabled', true);
+            $('#btn-change-sale-code-type').prop('disabled', true);
             // get ap expense items
             let opp_id = sale_code_default_obj[0].id;
             let so_filter = sale_order_list.filter(function(item) {
@@ -678,27 +681,27 @@ $(document).ready(function () {
         let ele = $('#beneficiary-select-box');
         ele.html('');
         employee_list.map(function (item) {
-                        if (item.group.id === department_id) {
-                            if (item.id === creator_id) {
-                                ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                                $('#beneficiary-detail-span').prop('hidden', false);
-                                $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
-                                $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
-                                $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
-                                let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
-                                $('#btn-detail-beneficiary-tab').attr('href', url);
-                            } else {
-                                ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
-                                if ($('#radio-non-sale').is(':checked')) {
-                                    $('#beneficiary-detail-span').prop('hidden', true);
-                                    $('#beneficiary-name').text('');
-                                    $('#beneficiary-code').text('');
-                                    $('#beneficiary-department').text('');
-                                    $('#btn-detail-beneficiary-tab').attr('href', '#');
-                                }
-                            }
-                        }
-                    })
+            if (item.group.id === department_id) {
+                if (item.id === creator_id) {
+                    ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                    $('#beneficiary-detail-span').prop('hidden', false);
+                    $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+                    $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+                    $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
+                    let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
+                    $('#btn-detail-beneficiary-tab').attr('href', url);
+                } else {
+                    ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                    if ($('#radio-non-sale').is(':checked')) {
+                        $('#beneficiary-detail-span').prop('hidden', true);
+                        $('#beneficiary-name').text('');
+                        $('#beneficiary-code').text('');
+                        $('#beneficiary-department').text('');
+                        $('#btn-detail-beneficiary-tab').attr('href', '#');
+                    }
+                }
+            }
+        })
         if (sale_code_default_obj.length > 0) {
             ele.find('option').each(function (index, element) {
                 if ($(this).attr('value') === sale_code_default_obj[0].sale_person.id) {
@@ -1266,6 +1269,95 @@ $(document).ready(function () {
         });
     }
 
+    function loadAPOnly(sale_code_id) {
+        $('#advance_payment_list_datatable').DataTable().destroy();
+        let AP_db = $('#advance_payment_list_datatable');
+        AP_db.DataTableDefault({
+            reloadCurrency: true,
+            dom: "<'row mt-3 miner-group'<'col-sm-12 col-md-3'f><'col-sm-12 col-md-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            visibleDisplayRowTotal: false,
+            pageLength: 5,
+            paginate: true,
+            ajax: {
+                url: AP_db.attr('data-url'),
+                type: AP_db.attr('data-method'),
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.data['advance_payment_list']) {
+                            // find ap mapped with this sale_order_mapped
+                            let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
+                                return item.sale_order_mapped === sale_code_id;
+                            });
+                            // find ap mapped with this quotation_mapped
+                            let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
+                                return item.quotation_mapped === sale_code_id;
+                            });
+                            // find ap mapped with this opportunity_mapped
+                            let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
+                                return item.opportunity_mapped === sale_code_id;
+                            });
+
+                            console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
+                            return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
+                        }
+                        else {
+                            return [];
+                        }
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    render: (data, type, row, meta) => {
+                        if (row.remain_value <= 0) {
+                            return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox" disabled>`
+                        }
+                        else {
+                            return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                        }
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="badge badge-outline badge-soft-danger">` + row.code + `</span>`;
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span>` + row.title + `</span>`;
+                    }
+                },
+                {
+                    data: 'to_payment',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="text-primary mask-money" data-init-money="` + row.to_payment + `"></span>`
+                    }
+                },
+                {
+                    data: 'return_value',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="text-primary mask-money" data-init-money="` + row.return_value + `"></span>`
+                    }
+                },
+                {
+                    data: 'remain_value',
+                    className: 'wrap-text',
+                    render: (data, type, row, meta) => {
+                        return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
+                    }
+                },
+            ],
+        });
+    }
+
     function calculate_sum_ap_expense_items() {
         let result_total_value = 0;
         $('.expense-tables').find('.total-converted-value').each(function (index, element) {
@@ -1332,7 +1424,6 @@ $(document).ready(function () {
         $('#tab_line_detail_datatable tbody').html(``);
         loadSaleCode($(this).val());
         $('#sale-code-select-box').find('option:selected').prop('selected', false);
-        $('#sale-code-select-box2-show').val('');
         $('#beneficiary-detail-span').prop('hidden', false);
         $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
         $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
@@ -1341,11 +1432,6 @@ $(document).ready(function () {
         $('#btn-detail-beneficiary-tab').attr('href', url);
         if ($('#radio-non-sale').is(':checked')) {
             $('#sale-code-select-box').prop('disabled', false);
-            $('#sale-code-select-box2-show').css({
-                'background': 'none',
-            });
-            $('#sale-code-select-box2-show').attr('disabled', false);
-            $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
         }
     })
 
@@ -1356,24 +1442,12 @@ $(document).ready(function () {
         if ($(this).val() === 'sale') {
             $('#beneficiary-select-box').prop('disabled', false);
             $('#sale-code-select-box').prop('disabled', false);
-            $('#sale-code-select-box2-show').css({
-                'background': 'none',
-            });
-            $('#sale-code-select-box2-show').attr('disabled', false);
-            $('#sale-code-select-box2-show').attr('placeholder', 'Select one');
             loadSaleCode($('#data-init-payment-create-request-employee-id').val());
-            $('#sale-code-select-box2-show').val('');
-            $('#sale-code-select-box2').prop('hidden', false);
         }
         else if ($(this).val() === 'non-sale') {
             $('#beneficiary-select-box').prop('disabled', false);
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
-            $('#sale-code-select-box2-show').attr('style', '');
-            $('#sale-code-select-box2-show').attr('disabled', true);
-            $('#sale-code-select-box2-show').attr('placeholder', 'Select beneficiary first');
-            $('#sale-code-select-box2-show').val('');
-            $('#sale-code-select-box2').prop('hidden', false);
         }
         else if ($(this).val() === 'MULTI') {
             loadSaleCodeMulti();
@@ -1671,19 +1745,19 @@ $(document).ready(function () {
     $(document).on("click", '#btn-add-row-line-detail', function () {
         let sale_code_length = 0;
         let opp_code_list = [];
-        let sale_code_id_list = [];
+        let sale_code_id_clicked = [];
         if ($('#radio-non-sale').is(':checked') || $('#radio-sale').is(':checked')) {
             if ($('#sale-code-select-box').val()) {
                 sale_code_length = 1;
                 opp_code_list.push($('#sale-code-select-box option:selected').attr('data-sale-code'));
-                sale_code_id_list.push($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
+                sale_code_id_clicked.push($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
             }
         }
         if ($('#radio-special').is(':checked')) {
             sale_code_length = $('#sale-code-select-box option:selected').length;
             $('#sale-code-select-box option:selected').each(function() {
                 opp_code_list.push($(this).attr('data-sale-code'));
-                sale_code_id_list.push($(this).attr('data-sale-code-id'));
+                sale_code_id_clicked.push($(this).attr('data-sale-code-id'));
             });
         }
 
@@ -1734,7 +1808,7 @@ $(document).ready(function () {
                 table_body.append(`<tr class="" hidden>
                     <td colspan="1"></td>
                     <td colspan="1">
-                        <span class="sale_code_expense_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_list[i] + `"><b>` + opp_code_list[i] + `</b></span>
+                        <span class="sale_code_expense_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_clicked[i] + `"><b>` + opp_code_list[i] + `</b></span>
                     </td>
                     <td colspan="2">
                         <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money ">
@@ -1826,7 +1900,12 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
                 $('.expense-tables').html(``);
                 $('#wizard-t-0').click();
-                loadAPList(sale_code_id_list);
+                if (sale_code_default_type === -1) {
+                    loadAPList(sale_code_id_clicked);
+                }
+                else {
+                    loadAPOnly(sale_code_mapped_parameter);
+                }
             });
 
             $('#row-' + row_count + ' .expense-select-box').on('change', function () {

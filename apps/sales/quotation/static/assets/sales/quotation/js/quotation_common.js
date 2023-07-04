@@ -881,7 +881,7 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationConfig(config_id) {
+    loadInitQuotationConfig(config_id, page_method) {
         let jqueryId = '#' + config_id;
         let ele = $(jqueryId);
         if (ele.hasClass('quotation-config')) {
@@ -893,7 +893,9 @@ class loadDataHandle {
                     if (data) {
                         ele.val(JSON.stringify(data));
                         // check config first time
-                        configClass.checkConfig(true, null, true);
+                        if (page_method === "POST") {
+                            configClass.checkConfig(true, null, true);
+                        }
                     }
                 }
             )

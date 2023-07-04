@@ -3,7 +3,7 @@ from django.urls import path
 from apps.sales.opportunity.views import OpportunityList, OpportunityListAPI, OpportunityExpenseListAPI, \
     OpportunityDetail, OpportunityDetailAPI, OpportunityCustomerDecisionFactorListAPI, OpportunityConfig, \
     OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI, OpportunityConfigStageListAPI, \
-    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI
+    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI, OpportunityCallLogList, OpportunityCallLogListAPI
 
 urlpatterns = [
     path('config', OpportunityConfig.as_view(), name='OpportunityConfig'),
@@ -40,4 +40,8 @@ urlpatterns = [
         RestoreDefaultStageAPI.as_view(),
         name='RestoreDefaultStageAPI'
     )
+] + [
+    path('call-log/lists', OpportunityCallLogList.as_view(), name='OpportunityCallLogList'),
+    path('api/call-log/lists', OpportunityCallLogListAPI.as_view(), name='OpportunityCallLogListAPI'),
+    # path('call-log/<str:pk>', OpportunityCallLogDetail.as_view(), name='OpportunityCallLogDetail'),
 ]

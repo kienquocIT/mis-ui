@@ -1443,13 +1443,11 @@ $(document).ready(function () {
             $('#beneficiary-select-box').prop('disabled', false);
             $('#sale-code-select-box').prop('disabled', false);
             loadSaleCode($('#data-init-payment-create-request-employee-id').val());
-            $('#sale-code-select-box2').prop('hidden', false);
         }
         else if ($(this).val() === 'non-sale') {
             $('#beneficiary-select-box').prop('disabled', false);
             $('#sale-code-select-box').prop('disabled', true);
             $('#sale-code-select-box').val('');
-            $('#sale-code-select-box2').prop('hidden', false);
         }
         else if ($(this).val() === 'MULTI') {
             loadSaleCodeMulti();

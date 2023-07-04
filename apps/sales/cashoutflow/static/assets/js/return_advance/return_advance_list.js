@@ -34,7 +34,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span style="width: 100%;" class="badge badge-soft-danger">` + row.advance_payment.code + `</span>`
+                            return `<a class="link-danger underline_hover" target="_blank" href="` + $('#dtbReturnAdvance').attr('data-url-detail-ap').replace('0', row.advance_payment.id) + `">` + row.advance_payment.code + `</a>`
                         }
                     },
                     {
@@ -62,10 +62,10 @@ $(document).ready(function () {
                             let waiting_trans = $('#dtbReturnAdvance').attr('data-type-translate-waiting')
                             let received_trans = $('#dtbReturnAdvance').attr('data-type-translate-received')
                             if (row.money_received === 'Waiting') {
-                                return `<span>` + waiting_trans + `</span>`
+                                return `<span class="badge badge-soft-warning badge-outline w-50">` + waiting_trans + `</span>`
                             }
                             else {
-                                return `<span>` + received_trans + `</span>`
+                                return `<span class="badge badge-soft-blue badge-outline w-50">` + received_trans + `</span>`
                             }
 
                         }

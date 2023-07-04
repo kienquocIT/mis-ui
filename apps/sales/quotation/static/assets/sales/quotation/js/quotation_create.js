@@ -23,13 +23,13 @@ $(function () {
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
-        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', null, true);
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
-        loadDataClass.loadInitQuotationConfig('quotation-config-data');
+        loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
@@ -734,7 +734,7 @@ $(function () {
             } else { // if option copy is ALL product
                 dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
             }
-            if (type === 'copy-from') {
+            if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 loadDataClass.loadDetailQuotation(dataCopy, true);
                 if (dataCopyTo.option === "all") {
                     $('#datable-quotation-create-product').DataTable().destroy();
@@ -784,7 +784,7 @@ $(function () {
                     configClass.checkConfig(true);
                 }
 
-            } else if (type === 'copy-to') {
+            } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
                 let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
@@ -801,6 +801,7 @@ $(function () {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
                     loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                    checkElementValues();
                 }
             }
         }
@@ -895,7 +896,6 @@ $(function () {
                 setTimeout(checkElementValues, 1000);  // call again after 1s if condition not pass yet
             }
         }
-        checkElementValues();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)

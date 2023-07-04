@@ -54,7 +54,8 @@ $(function () {
                 loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, advance_payment_id));
             }
             choose_AP_ele.select2();
-
+            $('#chooseBeneficiary').prop('disabled', true);
+            $('#chooseAdvancePayment').prop('disabled', true);
         }
 
         loadPageWithParameter(advance_payment_id, choose_AP_ele);

@@ -181,7 +181,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null) {
+    loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null, is_load_init = false) {
         let jqueryId = '#' + sale_person_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -193,7 +193,7 @@ class loadDataHandle {
                     ele.empty();
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
                         let initEmployee = $('#data-init-quotation-create-request-employee-id');
-                        if (initEmployee.val()) {
+                        if (initEmployee.val() && is_load_init === true) {
                             valueToSelect = initEmployee.val();
                         }
                         ele.append(`<option value=""></option>`);
@@ -881,7 +881,7 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationConfig(config_id) {
+    loadInitQuotationConfig(config_id, page_method) {
         let jqueryId = '#' + config_id;
         let ele = $(jqueryId);
         if (ele.hasClass('quotation-config')) {
@@ -893,7 +893,9 @@ class loadDataHandle {
                     if (data) {
                         ele.val(JSON.stringify(data));
                         // check config first time
-                        configClass.checkConfig(true, null, true);
+                        if (page_method === "POST") {
+                            configClass.checkConfig(true, null, true);
+                        }
                     }
                 }
             )

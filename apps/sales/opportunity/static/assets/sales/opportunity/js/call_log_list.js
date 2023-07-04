@@ -135,7 +135,7 @@ $(function () {
                             data: 'opportunity',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<center><span class="badge badge-blue w-50">` + row.opportunity.title + `</span></center>`
+                                return `<center><span class="badge badge-soft-blue w-50">` + row.opportunity.code + `</span></center>`
                             }
                         },
                         {

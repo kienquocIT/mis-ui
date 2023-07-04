@@ -324,3 +324,48 @@ class RestoreDefaultStageAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class OpportunityCallLogList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/call_log_list.html',
+        menu_active='id_menu_log_a_call',
+        breadcrumb='CALL_LOG_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        if resp.state:
+            return {
+                       'employee_current_id': request.user.employee_current_data.get('id', None),
+                   }, status.HTTP_200_OK
+        return {
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+               }, status.HTTP_200_OK
+
+
+class OpportunityCallLogListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
+        print(resp.result)
+        if resp.state:
+            return {'call_log_list': resp.result}, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_update_opportunity(
+            request=request, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST, msg=SaleMsg.OPPORTUNITY_CALL_LOG_CREATE
+        )

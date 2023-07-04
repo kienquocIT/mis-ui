@@ -9,6 +9,8 @@ $(document).ready(function () {
     const config_is_AM_create = config.is_account_manager_create;
     const config_is_input_rate = config.is_input_win_rate;
 
+    let opp_stage_id;
+    let opp_is_closed = false;
     let employee_current_id = $('#emp-current-id').val();
 
     let dict_product = {}
@@ -17,7 +19,7 @@ $(document).ready(function () {
     let condition_sale_oder_approved = false;
     let condition_sale_oder_delivery_status = false;
 
-    function autoLoadStage() {
+    function autoLoadStage(is_load_rate = false, just_check = false) {
         if (list_stage_condition.length === 0) {
             list_stage.map(function (item) {
                 let list_condition = []
@@ -175,21 +177,6 @@ $(document).ready(function () {
             })
         }
 
-        let ele_close_deal = $('#input-close-deal');
-        if (ele_close_deal.is(':checked')) {
-            list_property_config.push({
-                'property': 'Close Deal',
-                'comparison_operator': '=',
-                'compare_data': 0,
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Close Deal',
-                'comparison_operator': '≠',
-                'compare_data': 0,
-            })
-        }
-
         if (condition_is_quotation_confirm) {
             list_property_config.push({
                 'property': 'Quotation.confirm',
@@ -248,29 +235,68 @@ $(document).ready(function () {
             }
         }
 
-        let ele_stage = $(`.sub-stage`);
-        let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-        let index = ele_stage_current.index();
-        if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('bg-red-light-5 stage-selected');
-            ele_stage.removeClass('bg-primary-light-5 stage-selected');
-        } else {
-            for (let i = 0; i <= ele_stage.length; i++) {
-                if (i <= index) {
-                    if (!ele_stage.eq(i).hasClass('stage-lost'))
-                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-                    else {
-                        ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
+        if (!just_check) {
+            let ele_stage = $(`.sub-stage`);
+
+            let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
+            let index = ele_stage_current.index();
+            if (ele_stage_current.hasClass('stage-lost')) {
+                ele_stage_current.addClass('bg-red-light-5 stage-selected');
+                ele_stage.removeClass('bg-primary-light-5 stage-selected');
+            } else {
+                for (let i = 0; i <= ele_stage.length; i++) {
+                    if (i <= index) {
+                        if (!ele_stage.eq(i).hasClass('stage-lost'))
+                            ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                        else {
+                            ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
+                        }
+                    } else {
+                        ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
                     }
-                } else {
-                    ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
+                }
+            }
+
+            let ele_close_deal = $('#input-close-deal');
+            if (ele_close_deal.is(':checked')) {
+                ele_stage_current = ele_close_deal.closest('.sub-stage');
+                ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
+                if (!config_is_input_rate) {
+                    $('#check-input-rate').prop('disabled', true);
+                    $('#input-rate').prop('disabled', true);
+                }
+            } else {
+                $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
+                ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                if (!config_is_input_rate) {
+                    $('#check-input-rate').prop('disabled', true);
+                    $('#input-rate').prop('disabled', true);
+                }
+                else{
+                    let ele_check_input_rate = $('#check-input-rate')
+                    ele_check_input_rate.prop('disabled', false);
+                    if(ele_check_input_rate.is(':checked')){
+                        $('#input-rate').prop('disabled', false);
+                    }else{
+                        $('#input-rate').prop('disabled', true);
+                    }
+
+                }
+                if (!$('#check-agency-role').is(':checked')) {
+                    $('#select-box-end-customer').prop('disabled', true);
+                }
+            }
+
+            if (!$('#check-input-rate').is(':checked')) {
+                console.log(ele_stage_current)
+                if (is_load_rate) {
+                    $('#input-rate').val(dict_stage[ele_stage_current.data('id')].win_rate);
+                    $('#rangeInput').val(dict_stage[ele_stage_current.data('id')].win_rate);
                 }
             }
         }
-        if (!$('#check-input-rate').is(':checked')) {
-            $('#input-rate').val(dict_stage[ele_stage_current.data('id')].win_rate);
-            $('#rangeInput').val(dict_stage[ele_stage_current.data('id')].win_rate);
-        }
+        return id_stage_current
     }
 
     // config input date
@@ -512,7 +538,7 @@ $(document).ready(function () {
         }
     }
 
-    function loadBoxContact(ele_row, type, status) {
+    function loadBoxContact(ele_row, type) {
         let list_contact = [];
         ele_row.find('.box-select-contact').each(function () {
             list_contact.push($(this).val());
@@ -542,7 +568,7 @@ $(document).ready(function () {
                 last_row.find('.input-job-title').val(item.job_title);
                 last_row.find('.box-select-role').val(item.role);
 
-                loadBoxContact(table.find('tbody tr'), item.type_customer, 'detail');
+                loadBoxContact(table.find('tbody tr'), item.type_customer);
 
             })
         }
@@ -692,19 +718,28 @@ $(document).ready(function () {
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
                 $.fn.compareStatusShowPageAction(opportunity_detail);
-                loadStage(opportunity_detail.stage)
+                opp_stage_id = opportunity_detail.stage;
+                opp_is_closed = opportunity_detail.is_close;
+                loadStage(opportunity_detail.stage, opportunity_detail.is_close);
                 let ele_header = $('#header-title');
                 ele_header.text(opportunity_detail.title);
-                ele_header.append(`<span class="text-primary"> (${opportunity_detail.code})</span>`)
+                $('#span-code').text(opportunity_detail.code);
                 $('#rangeInput').val(opportunity_detail.win_rate);
-                $('#input-rate').val(opportunity_detail.win_rate);
-                if (config_is_input_rate) {
-                    $('#check-input-rate').prop('disabled', false);
-                }
+                let ele_input_rate = $('#input-rate')
+                ele_input_rate.val(opportunity_detail.win_rate);
+
                 if (opportunity_detail.is_input_rate) {
                     $('#check-input-rate').prop('checked', true);
+                    ele_input_rate.prop('disabled', false);
                 } else
                     $('#check-input-rate').prop('checked', false);
+
+                if (config_is_input_rate) {
+                    let ele_check = $('#check-input-rate');
+                    ele_check.prop('checked', false);
+                    ele_check.prop('disabled', true);
+                    ele_input_rate.prop('readonly', true);
+                }
 
                 if (opportunity_detail.lost_by_other_reason) {
                     $('#check-lost-reason').prop('checked', true);
@@ -894,8 +929,24 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '.input-win-deal', function () {
+
         if ($(this).is(':checked')) {
-            $('.input-win-deal').not(this).prop('checked', false);
+            if (checkOppWonOrDelivery()) {
+                $(this).prop('checked', false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Opp has been Win Deal',
+                })
+            } else {
+                $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                $('.input-win-deal').not(this).prop('checked', false);
+                $('.stage-lost').addClass('bg-red-light-5 stage-selected');
+                let ele_check_close = $('#input-close-deal')
+                ele_check_close.prop('checked', true);
+                ele_check_close.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                $('.page-content input, .page-content select, .page-content .btn').not(ele_check_close).prop('disabled', true);
+            }
         }
     })
 
@@ -910,7 +961,7 @@ $(document).ready(function () {
         let col = $('.col-contact').html().replace('hidden', '');
         table.find('tbody').append(`<tr>${col}</tr>`);
 
-        loadBoxContact(table.find('tbody tr'), 0, 'add');
+        loadBoxContact(table.find('tbody tr'), 0);
     })
 
     $(document).on('change', '#select-box-end-customer', function () {
@@ -1160,6 +1211,7 @@ $(document).ready(function () {
         // stage
         data_form['stage'] = ele_stage.find('.stage-selected').last().data('id');
         data_form['lost_by_other_reason'] = !!ele_lost_other_reason.is(':checked');
+        data_form['is_close'] = !!$('#input-close-deal').is(':checked');
         return data_form
     }
 
@@ -1169,6 +1221,7 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         frm.dataForm = getDataForm(frm.dataForm);
+        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -1317,7 +1370,7 @@ $(document).ready(function () {
     let list_stage = [];
     let dict_stage = {};
 
-    function loadStage(id) {
+    function loadStage(id, system_status) {
         let ele = $('#div-stage');
         let method = ele.data('method');
         let url = ele.data('url');
@@ -1343,13 +1396,23 @@ $(document).ready(function () {
                             ele_first_stage.addClass('stage-lost')
                         }
                         if (item.is_deal_closed) {
+                            ele_first_stage.addClass('stage-close')
                             ele_first_stage.find('.dropdown-menu').empty();
-                            ele_first_stage.find('.dropdown-menu').append(
-                                `<div class="form-check form-switch mb-1">
+                            if (system_status === true) {
+                                ele_first_stage.find('.dropdown-menu').append(
+                                    `<div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
+                                    <label for="input-close-deal" class="form-label">Close Deal</label>
+                                </div>`
+                                )
+                            } else {
+                                ele_first_stage.find('.dropdown-menu').append(
+                                    `<div class="form-check form-switch">
                                     <input type="checkbox" class="form-check-input" id="input-close-deal">
                                     <label for="input-close-deal" class="form-label">Close Deal</label>
                                 </div>`
-                            )
+                                )
+                            }
                         }
                     })
                 }
@@ -1357,17 +1420,22 @@ $(document).ready(function () {
             if (id !== null) {
                 let ele_stage = ele.find(`.sub-stage[data-id=${id}]`);
                 if (ele_stage.hasClass('stage-lost')) {
-                    ele_stage.addClass('bg-red-light-5');
+                    ele_stage.addClass('bg-red-light-5 stage-selected');
                 } else {
                     let index = ele_stage.index();
                     let ele_list_stage = $('#div-stage .sub-stage');
-                    $('.stage-lost').removeClass('bg-red-light-5');
-                    for (let i = 0; i <= ele_list_stage.length; i++) {
-                        if (i <= index) {
-                            if (!ele_list_stage.eq(i).hasClass('stage-lost'))
-                                ele_list_stage.eq(i).addClass('bg-primary-light-5');
-                        } else {
-                            ele_list_stage.eq(i).removeClass('bg-primary-light-5');
+                    if ($('.input-win-deal:checked').length > 0 || $('#check-lost-reason').is(':checked')) {
+                        $('.stage-lost').addClass('bg-red-light-5 stage-selected');
+                        ele_stage.addClass('bg-primary-light-5 stage-selected');
+                    } else {
+                        $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                        for (let i = 0; i <= ele_list_stage.length; i++) {
+                            if (i <= index) {
+                                if (!ele_list_stage.eq(i).hasClass('stage-lost'))
+                                    ele_list_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                            } else {
+                                ele_list_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                            }
                         }
                     }
                 }
@@ -1407,21 +1475,29 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '#check-lost-reason', function () {
-        if ($(this).is(':checked')) {
-            let ele_stage_lost = $('.stage-lost')
-            $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
-            ele_stage_lost.addClass('bg-red-light-5 stage-selected');
-            $('#input-rate').val(dict_stage[ele_stage_lost.data('id')].win_rate);
-            $('#rangeInput').val(dict_stage[ele_stage_lost.data('id')].win_rate);
+        let ele_stage_lost = $('.stage-lost')
+        if (!$(this).is(':checked')) {
+            ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
+        } else {
+            if (checkOppWonOrDelivery()) {
+                $(this).prop('checked', false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Opp has been Win Deal',
+                })
+            } else {
+                $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                $('.input-win-deal').not(this).prop('checked', false);
+                ele_stage_lost.addClass('bg-red-light-5 stage-selected');
+                let ele_check_close = $('#input-close-deal')
+                ele_check_close.prop('checked', true);
+                ele_check_close.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                $('.page-content input, .page-content select, .page-content .btn').not(ele_check_close).prop('disabled', true);
+            }
         }
     })
 
-    $(document).on('change', '.input-win-deal', function () {
-        if ($(this).is(':checked')) {
-            $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
-            $('.stage-lost').addClass('bg-red-light-5 stage-selected');
-        }
-    })
 
     // event auto select stage
 
@@ -1431,30 +1507,32 @@ $(document).ready(function () {
 
     let list_stage_condition = []
     $(document).on('click', '#btn-auto-update-stage', function () {
-        autoLoadStage();
+        autoLoadStage(true);
         $(this).tooltip('hide');
     })
 
     $(document).on('change', '#input-close-deal', function () {
-        if ($(this).is(':checked')) {
-            let stage = $(this).closest('.sub-stage');
-            let ele_stage = $('#div-stage .sub-stage');
-            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
-            for (let i = 0; i <= ele_stage.length; i++) {
-                if (!ele_stage.eq(i).hasClass('stage-lost'))
-                    ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-            }
-            if (!$('#check-input-rate').is(':checked')) {
-                $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
-                $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
-            }
-        } else {
-            autoLoadStage();
-        }
+        autoLoadStage(true);
     })
-    if (config_is_select_stage || config_is_input_rate) {
+
+    if (config_is_select_stage) {
         $('#btn-auto-update-stage').hide();
     } else {
-        setTimeout(autoLoadStage, 1500);
+        if(!opp_is_closed){
+            setTimeout(function () {
+            autoLoadStage(true);
+        }, 1200);
+        }
     }
+
+    function checkOppWonOrDelivery() {
+        let check = false;
+        let stage_id = $('.stage-selected').last().data('id');
+        let indicator = dict_stage[stage_id].indicator;
+        if (indicator === 'Close Won' || indicator === 'Delivery') {
+            check = true;
+        }
+        return check;
+    }
+
 })

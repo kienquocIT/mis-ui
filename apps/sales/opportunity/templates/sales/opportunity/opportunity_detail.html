@@ -45,417 +45,428 @@
     <div id="div-url" hidden>
         <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
     </diV>
-    <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=0 %}"
-          data-url-redirect="{% url "OpportunityList" %}">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-3 border-right">
-                <div class="form-group">
-                    <label for="rangeInput">{% trans "Win Rate" %}</label>
-                    <input type="range" class="form-control-range" id="rangeInput" min="0" max="100" step="1">
-                </div>
-                <div class="row ml-2">
-                    <div class="form-group col-6 mt-1">
-                        <input class="form-check-input mt-1" type="checkbox" value="0" id="check-input-rate"
-                               name="is_input_rate" disabled>
-                        <label class="form-check-label" for="check-input-rate">{% trans "Manually input rate" %}</label>
+    <div class="page-content">
+        <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=0 %}"
+              data-url-redirect="{% url "OpportunityList" %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-3 border-right">
+                    <div class="form-group">
+                        <label for="rangeInput">{% trans "Win Rate" %}</label>
+                        <input type="range" class="form-control-range" id="rangeInput" min="0" max="100" step="1">
                     </div>
-                    <div class="col-6">
+                    <div class="row ml-2">
+                        <div class="form-group col-6 mt-1">
+                            <input class="form-check-input mt-1" type="checkbox" value="0" id="check-input-rate"
+                                   name="is_input_rate" disabled>
+                            <label class="form-check-label"
+                                   for="check-input-rate">{% trans "Manually input rate" %}</label>
+                        </div>
+                        <div class="col-6">
                         <span class="input-affix-wrapper affix-wth-text">
                             <input class="form-control" type="number" step="0.1" id="input-rate"
                                    name="win_rate" readonly>
                             <span class="input-suffix">%</span>
                         </span>
-
-                    </div>
-                </div>
-
-                <div class="form-group mt-3">
-                    <div class="row">
-                        <label class="form-label col-7 required">{% trans "Customer" %}</label>
-                        <div class="form-group col-5">
-                            <input class="form-check-input" type="checkbox" value="0" id="check-agency-role">
-                            <label class="form-check-label" for="check-agency-role">{% trans "agency role" %}</label>
                         </div>
                     </div>
-                    <select class="select2 form-control" id="select-box-customer" data-url="{% url 'AccountListAPI' %}"
-                            data-method="GET" data-close-on-select="true">
-                    </select>
-                </div>
-                <div class="form-group mt-2">
-                    <label class="form-label">{% trans "End Customer" %}</label>
-                    <select class="select2 form-control" id="select-box-end-customer" data-close-on-select="true"
-                            data-url="{% url 'AccountListAPI' %}" disabled
-                            data-method="GET">
-                    </select>
-                </div>
-                <div class="form-group mt-2">
-                    <label class="form-label required">{% trans "Product Category" %}</label>
-                    <select class="select2 form-control" multiple id="select-box-product-category"
-                            data-close-on-select="true" data-method="GET"
-                            data-url="{% url 'ProductCategoryListAPI' %}">
-                    </select>
-                </div>
-                <div class="form-group mt-2">
-                    <label class="form-label required">{% trans "Sale Person" %}</label>
-                    <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
-                            data-close-on-select="true"
-                            data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
-                        <option></option>
-                    </select>
-                </div>
-                <div class="form-group mt-2">
-                    <label class="form-label">{% trans "Budget" %}</label>
-                    <input class="form-control mask-money" type="text" data-return-type="number" id="input-budget"/>
-                </div>
-                <div class="form-group mt-2">
-                    <label class="form-label">{% trans "Open Date" %}</label>
-                    <input class="form-control" type="text" id="input-open-date" name="open_date"/>
-                </div>
-                <div>
-                    <label class="form-label">{% trans "Close Date" %}</label>
-                    <input class="form-control" type="text" id="input-close-date" name="close_date"/>
-                </div>
-                <div class="form-group mt-2 readonly">
-                    <label class="form-label">{% trans "Decision Maker" %}</label>
-                    <input class="form-control" type="text" id="input-decision-maker" readonly data-id=""/>
-                </div>
-            </div>
-            <div class="col-9">
-                <div class="form-group text-center">
-                    <h4 id="header-title">
-                        <span class="text-primary" id="span-code"></span>
-                    </h4>
-                </div>
-                <div class="row text-right">
-                    <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
-                </div>
-
-                <!-- Status -->
-                <div class="row ml-1" id="div-stage" data-method="GET"
-                     data-url="{% url "OpportunityConfigStageListAPI" %}">
-                    <div class="col-2">
-                        <button
-                                type="button"
-                                class="btn mt-3"
-                                id="btn-auto-update-stage"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                title="{% trans "Auto Update Stage" %}"
-                        >
-                            <i class="fa-solid fa-arrow-rotate-right"></i>
-                        </button>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Code" %}</label>
+                            <span class="text-primary" id="span-code"></span>
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <div class="row">
+                            <label class="form-label col-7 required">{% trans "Customer" %}</label>
+                            <div class="form-group col-5">
+                                <input class="form-check-input" type="checkbox" value="0" id="check-agency-role">
+                                <label class="form-check-label"
+                                       for="check-agency-role">{% trans "agency role" %}</label>
+                            </div>
+                        </div>
+                        <select class="select2 form-control" id="select-box-customer"
+                                data-url="{% url 'AccountListAPI' %}"
+                                data-method="GET" data-close-on-select="true">
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label class="form-label">{% trans "End Customer" %}</label>
+                        <select class="select2 form-control" id="select-box-end-customer" data-close-on-select="true"
+                                data-url="{% url 'AccountListAPI' %}" disabled
+                                data-method="GET">
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label class="form-label required">{% trans "Product Category" %}</label>
+                        <select class="select2 form-control" multiple id="select-box-product-category"
+                                data-close-on-select="true" data-method="GET"
+                                data-url="{% url 'ProductCategoryListAPI' %}">
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label class="form-label required">{% trans "Sale Person" %}</label>
+                        <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
+                                data-close-on-select="true"
+                                data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label class="form-label">{% trans "Budget" %}</label>
+                        <input class="form-control mask-money" type="text" data-return-type="number" id="input-budget"/>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label class="form-label">{% trans "Open Date" %}</label>
+                        <input class="form-control" type="text" id="input-open-date" name="open_date"/>
+                    </div>
+                    <div>
+                        <label class="form-label">{% trans "Close Date" %}</label>
+                        <input class="form-control" type="text" id="input-close-date" name="close_date"/>
+                    </div>
+                    <div class="form-group mt-2 readonly">
+                        <label class="form-label">{% trans "Decision Maker" %}</label>
+                        <input class="form-control" type="text" id="input-decision-maker" readonly data-id=""/>
                     </div>
                 </div>
-                <div id="stage-hidden" class="hidden">
-                    <div class="col-2 border rounded text-lg-center mt-1 pr-2 sub-stage">
-                        <p class="stage-indicator"></p>
-                        <div class="dropdown mt-2">
-                            <a href="#" data-bs-toggle="dropdown">
+                <div class="col-9">
+                    <div class="form-group">
+                        <h6 id="header-title">
+                        </h6>
+                    </div>
+                    <div class="row text-right">
+                        <div class="col-6 text-left">
+                            <a
+                                    class="btn"
+                                    id="btn-auto-update-stage"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="{% trans "Auto Update Stage" %}"
+                            >
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                            </a>
+                        </div>
+                        <div class="col-6 text-right">
+                            <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="ml-1 d-flex overflow-auto" id="div-stage" data-method="GET"
+                         data-url="{% url "OpportunityConfigStageListAPI" %}">
+                    </div>
+                    <div id="stage-hidden" class="hidden">
+                        <div class="col-2 border rounded text-lg-center mt-1 pr-2 sub-stage">
+                            <p class="stage-indicator"></p>
+                            <div class="dropdown dropup mt-2">
+                                <a href="#" data-bs-toggle="dropdown">
                                 <span class="text-right">
                                     <i class="bi bi-chevron-bar-right"></i>
                                 </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-3 row">
-                    <div class="col-7">
-                        <div class="div-action">
-                            <a href="#"><span>{% trans "Current action" %}</span></a>
-                            <a href="#"><span class="ml-3"><i class="bi bi-telephone"></i></span></a>
-                            <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                            <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                            <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
-                        </div>
-
-                        <div class="list-action hidden">
-                            <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                            <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                            <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
-                        </div>
-
-                    </div>
-                    <div class="col-5 text-right">
-                        <a href="#"><span class="ml-2 text-right"><i class="bi bi-pip"></i></span></a>
-                        <a href="#"><span class="ml-2"><i class="bi bi-list"></i></span></a>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="bg-light ml-2 h-100p">
-                        <div class="bg-blue-light-4 mt-1 mb-1 h-90">
-                            <div class="row">
-                                <div class="col-10">
-                                    <span class="text-black ml-1">Presentation Document</span>
-                                </div>
-                                <div class="col-2 text-right mt-1">
-                                    <a href="#" class="text-black ">
-                                        <span class="badge badge-primary h-50p mr-2">Do</span></a>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-10">
-                                </div>
-                                <div class="col-2 text-right">
-                                    <a href="#" class="text-black">
-                                        <span class="badge badge-orange mr-2">Skip</span></a>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="ml-2">
-                        <div class="row">
-                            <div class="col-6 bg-light h-100p pr-2 pl-4">
-                                <div class="bg-green-light-4 mt-1 mb-1 h-90 row">
+
+                    <div class="mt-3 row">
+                        <div class="col-7">
+                            <div class="div-action">
+                                <a href="#"><span>{% trans "Current action" %}</span></a>
+                                <a href="#"><span class="ml-3"><i class="bi bi-telephone"></i></span></a>
+                                <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
+                                <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
+                                <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
+                            </div>
+
+                            <div class="list-action hidden">
+                                <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
+                                <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
+                                <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
+                            </div>
+
+                        </div>
+                        <div class="col-5 text-right">
+                            <a href="#"><span class="ml-2 text-right"><i class="bi bi-pip"></i></span></a>
+                            <a href="#"><span class="ml-2"><i class="bi bi-list"></i></span></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="bg-light ml-2 h-100p">
+                            <div class="bg-blue-light-4 mt-1 mb-1 h-90">
+                                <div class="row">
                                     <div class="col-10">
-                                        <p class="text-black">Meetting with customer</p>
+                                        <span class="text-black ml-1">Presentation Document</span>
+                                    </div>
+                                    <div class="col-2 text-right mt-1">
+                                        <a href="#" class="text-black ">
+                                            <span class="badge badge-primary h-50p mr-2">Do</span></a>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-10">
                                     </div>
                                     <div class="col-2 text-right">
-                                        <a href="#" class="text-black"><span
-                                                class="badge badge-grey h-50p">Do</span></a>
+                                        <a href="#" class="text-black">
+                                            <span class="badge badge-orange mr-2">Skip</span></a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6 bg-light h-100p pl-3">
-                                <div class="bg-green-light-4 mt-1 mb-1 h-90">
-                                    <div class="row">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <span class="text-primary">{% trans 'Next Action' %}</span>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="ml-2">
+                            <div class="row">
+                                <div class="col-6 bg-light h-100p pr-2 pl-4">
+                                    <div class="bg-green-light-4 mt-1 mb-1 h-90 row">
                                         <div class="col-10">
-                                            <span class="text-black ml-1">Create Quotation and send customer</span>
+                                            <p class="text-black">Meetting with customer</p>
                                         </div>
-                                        <div class="col-2 text-right mt-1">
-                                            <a href="#" class="text-black ">
-                                                <span class="badge badge-grey h-50p mr-2">Do</span></a>
+                                        <div class="col-2 text-right">
+                                            <a href="#" class="text-black"><span
+                                                    class="badge badge-grey h-50p">Do</span></a>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-6 bg-light h-100p pl-3">
+                                    <div class="bg-green-light-4 mt-1 mb-1 h-90">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <span class="text-black ml-1">Create Quotation and send customer</span>
+                                            </div>
+                                            <div class="col-2 text-right mt-1">
+                                                <a href="#" class="text-black ">
+                                                    <span class="badge badge-grey h-50p mr-2">Do</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
-
                         </div>
                     </div>
-                </div>
-                <div class="mt-2 h-200p w-100 overflow-auto hidden">
-                    <table class="table nowrap ">
-                        <thead>
-                        <tr>
-                            <th class="wrap-text">{% trans "Activity" %}</th>
-                            <th class="wrap-text">{% trans 'Type' %}</th>
-                            <th class="wrap-text">{% trans 'Subject Name' %}</th>
-                            <th class="wrap-text">{% trans "Date" %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="odd text-center">
-                            <td colspan="10">{% trans 'No data available in table' %}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row mt-2">
-                    <ul class="nav nav-light nav-tabs col-9" id="tab-select">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
-                                <span class="nav-link-text">{% trans 'Product' %}</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_competitors">
-                                <span class="nav-link-text">{% trans 'Competitors' %}</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_contact_role">
-                                <span class="nav-link-text">{% trans 'Contact Role' %}</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_account_history">
-                                <span class="nav-link-text">{% trans 'Account History' %}</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_team">
-                                <span class="nav-link-text">{% trans 'Team' %}</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="col-3 d-flex justify-content-end">
-                        <div class="form-check mt-3">
-                            <input type="checkbox" class="form-check-input" id="check-lost-reason">
-                            <label class="form-check-label"
-                                   for="check-lost-reason">{% trans "Lost by other reason" %}</label>
+                    <div class="mt-2 h-200p w-100 overflow-auto hidden">
+                        <table class="table nowrap ">
+                            <thead>
+                            <tr>
+                                <th class="wrap-text">{% trans "Activity" %}</th>
+                                <th class="wrap-text">{% trans 'Type' %}</th>
+                                <th class="wrap-text">{% trans 'Subject Name' %}</th>
+                                <th class="wrap-text">{% trans "Date" %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="odd text-center">
+                                <td colspan="10">{% trans 'No data available in table' %}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-2">
+                        <ul class="nav nav-light nav-tabs col-9" id="tab-select">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
+                                    <span class="nav-link-text">{% trans 'Product' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_competitors">
+                                    <span class="nav-link-text">{% trans 'Competitors' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_contact_role">
+                                    <span class="nav-link-text">{% trans 'Contact Role' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_history">
+                                    <span class="nav-link-text">{% trans 'Account History' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_team">
+                                    <span class="nav-link-text">{% trans 'Team' %}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="col-3 d-flex justify-content-end">
+                            <div class="form-check mt-3">
+                                <input type="checkbox" class="form-check-input" id="check-lost-reason">
+                                <label class="form-check-label"
+                                       for="check-lost-reason">{% trans "Lost by other reason" %}</label>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-content ml-4 mr-4">
-                    <div class="tab-pane fade show active mb-25" id="tab_product">
-                        <input data-method="GET" data-url="{% url 'TaxListAPI' %}" hidden id="input-data-tax">
-                        <input data-method="GET" data-url="{% url 'UnitOfMeasureListAPI' %}" hidden id="input-data-uom">
-                        <div class="table-responsive overflow-auto">
-                            <table class="table nowrap" id="table-products">
-                                <thead>
-                                <tr>
-                                    <th class="">#</th>
-                                    <th class="wrap-text">{% trans "Product" %}</th>
-                                    <th class="wrap-text">{% trans 'Product Category' %}</th>
-                                    <th class="wrap-text">{% trans 'UoM' %}</th>
-                                    <th class="wrap-text">{% trans "Quantity" %}</th>
-                                    <th class="wrap-text">{% trans "Unit Price" %}</th>
-                                    <th class="wrap-text">{% trans "Tax" %}</th>
-                                    <th class="wrap-text">{% trans "Subtotal Price" %}</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="odd text-center col-table-empty">
-                                    <td colspan="10">{% trans 'No data available in table' %}</td>
-                                </tr>
-                                <tr class="col-select-product hidden">
-                                    <td class="wrap-text num-product">
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select select-box-product w-200p" data-method="GET"
-                                                data-url="{% url 'ProductListAPI' %}">
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select w-150p box-select-product-category">
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select w-100p box-select-uom"></select>
-                                    </td>
-                                    <td>
-                                        <input type="number" class="form-control w-100p input-quantity"/>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <input type="text" class="form-control mask-money w-200p input-unit-price"
-                                               data-return-type="number"/>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select w-100p box-select-tax">
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <div class="readonly">
-                                            <input class="form-control mask-money w-200p input-subtotal" type="text"
-                                                   data-return-type="number" readonly>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-icon btn-del-item">
+                    <div class="tab-content ml-4 mr-4">
+                        <div class="tab-pane fade show active mb-25" id="tab_product">
+                            <input data-method="GET" data-url="{% url 'TaxListAPI' %}" hidden id="input-data-tax">
+                            <input data-method="GET" data-url="{% url 'UnitOfMeasureListAPI' %}" hidden
+                                   id="input-data-uom">
+                            <div class="table-responsive overflow-auto">
+                                <table class="table nowrap" id="table-products">
+                                    <thead>
+                                    <tr>
+                                        <th class="">#</th>
+                                        <th class="wrap-text">{% trans "Product" %}</th>
+                                        <th class="wrap-text">{% trans 'Product Category' %}</th>
+                                        <th class="wrap-text">{% trans 'UoM' %}</th>
+                                        <th class="wrap-text">{% trans "Quantity" %}</th>
+                                        <th class="wrap-text">{% trans "Unit Price" %}</th>
+                                        <th class="wrap-text">{% trans "Tax" %}</th>
+                                        <th class="wrap-text">{% trans "Subtotal Price" %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="odd text-center col-table-empty">
+                                        <td colspan="10">{% trans 'No data available in table' %}</td>
+                                    </tr>
+                                    <tr class="col-select-product hidden">
+                                        <td class="wrap-text num-product">
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select select-box-product w-200p" data-method="GET"
+                                                    data-url="{% url 'ProductListAPI' %}">
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select w-150p box-select-product-category">
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select w-100p box-select-uom"></select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control w-100p input-quantity"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <input type="text" class="form-control mask-money w-200p input-unit-price"
+                                                   data-return-type="number"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select w-100p box-select-tax">
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <div class="readonly">
+                                                <input class="form-control mask-money w-200p input-subtotal" type="text"
+                                                       data-return-type="number" readonly>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-icon btn-del-item">
                                             <span class="btn-icon-wrap">
                                                 <span class="feather-icon"><i data-feather="trash-2"></i></span>
                                             </span>
-                                        </a>
-                                    </td>
-                                </tr>
+                                            </a>
+                                        </td>
+                                    </tr>
 
-                                <tr class="col-input-product hidden">
-                                    <td class="wrap-text num-product">
-                                    </td>
-                                    <td class="wrap-text">
-                                        <input class="form-control w-200p input-product-name" type="text"
-                                               placeholder="Personal Computer">
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select w-150p box-select-product-category">
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select w-100p box-select-uom"></select>
-                                    </td>
-                                    <td>
-                                        <input type="number" class="form-control w-100p input-quantity"/>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <input type="text" class="form-control mask-money w-200p input-unit-price"
-                                               data-return-type="number"/>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <select class="form-select w-100p box-select-tax">
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text">
-                                        <div class="readonly">
-                                            <input class="form-control mask-money w-200p input-subtotal" type="text"
-                                                   data-return-type="number" readonly>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-icon btn-del-item">
+                                    <tr class="col-input-product hidden">
+                                        <td class="wrap-text num-product">
+                                        </td>
+                                        <td class="wrap-text">
+                                            <input class="form-control w-200p input-product-name" type="text"
+                                                   placeholder="Personal Computer">
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select w-150p box-select-product-category">
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select w-100p box-select-uom"></select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control w-100p input-quantity"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <input type="text" class="form-control mask-money w-200p input-unit-price"
+                                                   data-return-type="number"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <select class="form-select w-100p box-select-tax">
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <div class="readonly">
+                                                <input class="form-control mask-money w-200p input-subtotal" type="text"
+                                                       data-return-type="number" readonly>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-icon btn-del-item">
                                             <span class="btn-icon-wrap">
                                                 <span class="feather-icon"><i data-feather="trash-2"></i></span>
                                             </span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-5 dropdown">
-                                <button type="button" data-bs-toggle="dropdown" class="btn btn-link btn-animated"
-                                >
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-5 dropdown">
+                                    <button type="button" data-bs-toggle="dropdown" class="btn btn-link btn-animated"
+                                    >
                                     <span><span class="icon"><span class="feather-icon"><i
                                             data-feather="plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#"
-                                       id="btn-add-select-product">{% trans 'Select Product' %}</a>
-                                    <a class="dropdown-item" href="#"
-                                       id="btn-add-input-product">{% trans 'Input Product' %}</a>
-                                </div>
-                            </div>
-                            <div class="col-7 mt-5">
-                                <div class="row mb-2">
-                                    <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-6 readonly">
-                                        <input
-                                                id="input-product-pretax-amount"
-                                                type="text"
-                                                class="form-control mask-money"
-                                                data-return-type="number"
-                                                readonly
-                                        >
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"
+                                           id="btn-add-select-product">{% trans 'Select Product' %}</a>
+                                        <a class="dropdown-item" href="#"
+                                           id="btn-add-input-product">{% trans 'Input Product' %}</a>
                                     </div>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-6 readonly">
-                                        <input
-                                                id="input-product-taxes"
-                                                type="text"
-                                                class="form-control mask-money"
-                                                data-return-type="number"
-                                                readonly
-                                        >
+                                <div class="col-7 mt-5">
+                                    <div class="row mb-2">
+                                        <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
+                                        <div class="col-6 readonly">
+                                            <input
+                                                    id="input-product-pretax-amount"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                            >
+                                        </div>
                                     </div>
-                                </div>
-                                <hr>
-                                <div class="row mb-2">
-                                    <div class="col-6"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-6 readonly">
-                                        <input
-                                                id="input-product-total"
-                                                type="text"
-                                                class="form-control mask-money"
-                                                data-return-type="number"
-                                                readonly
-                                        >
+                                    <div class="row mb-2">
+                                        <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
+                                        <div class="col-6 readonly">
+                                            <input
+                                                    id="input-product-taxes"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                            >
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><b>{% trans 'Total' %}</b></div>
+                                        <div class="col-6 readonly">
+                                            <input
+                                                    id="input-product-total"
+                                                    type="text"
+                                                    class="form-control mask-money"
+                                                    data-return-type="number"
+                                                    readonly
+                                            >
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade mb-25" id="tab_competitors">
-                        <button type="button" class="btn btn-link btn-animated" id="btn-add-competitor">
+                        <div class="tab-pane fade mb-25" id="tab_competitors">
+                            <button type="button" class="btn btn-link btn-animated" id="btn-add-competitor">
                             <span>
                                 <span class="icon">
                                     <span class="feather-icon">
@@ -464,54 +475,54 @@
                                 </span>
                                 <span>{% trans 'Add Competitor' %}</span>
                             </span>
-                        </button>
+                            </button>
 
-                        <div class="table-responsive">
-                            <table class="table nowrap" id="table-competitors">
-                                <thead>
-                                <tr>
-                                    <th class="wrap-text w-30">{% trans "Name" %}</th>
-                                    <th class="wrap-text w-30">{% trans 'Strength' %}</th>
-                                    <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
-                                    <th class="wrap-text w-10">{% trans "Win deal" %}</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="odd text-center col-table-empty">
-                                    <td colspan="10">{% trans 'No data available in table' %}</td>
-                                </tr>
-                                <tr class="col-competitor hidden">
-                                    <td class="wrap-text">
-                                        <select class="form-select box-select-competitor">
-                                            <option></option>
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text text-center">
-                                        <input type="text" class="form-control input-strength"/>
-                                    </td>
-                                    <td class="wrap-text text-center">
-                                        <input type="text" class="form-control input-weakness"/>
-                                    </td>
-                                    <td class="wrap-text text-center mb-5">
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input input-win-deal"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-icon btn-del-item">
+                            <div class="table-responsive">
+                                <table class="table nowrap" id="table-competitors">
+                                    <thead>
+                                    <tr>
+                                        <th class="wrap-text w-30">{% trans "Name" %}</th>
+                                        <th class="wrap-text w-30">{% trans 'Strength' %}</th>
+                                        <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
+                                        <th class="wrap-text w-10">{% trans "Win deal" %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="odd text-center col-table-empty">
+                                        <td colspan="10">{% trans 'No data available in table' %}</td>
+                                    </tr>
+                                    <tr class="col-competitor hidden">
+                                        <td class="wrap-text">
+                                            <select class="form-select box-select-competitor">
+                                                <option></option>
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text text-center">
+                                            <input type="text" class="form-control input-strength"/>
+                                        </td>
+                                        <td class="wrap-text text-center">
+                                            <input type="text" class="form-control input-weakness"/>
+                                        </td>
+                                        <td class="wrap-text text-center mb-5">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input input-win-deal"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-icon btn-del-item">
                                             <span class="btn-icon-wrap">
                                                 <span class="feather-icon"><i data-feather="trash-2"></i></span>
                                             </span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade mb-25" id="tab_contact_role">
-                        <button type="button" class="btn btn-link btn-animated" id="btn-add-contact">
+                        <div class="tab-pane fade mb-25" id="tab_contact_role">
+                            <button type="button" class="btn btn-link btn-animated" id="btn-add-contact">
                             <span>
                                 <span class="icon">
                                     <span class="feather-icon">
@@ -520,72 +531,74 @@
                                 </span>
                                 <span>{% trans 'Add Contact' %}</span>
                             </span>
-                        </button>
+                            </button>
 
-                        <div class="table-responsive">
-                            <input class="hidden" data-method="GET" data-url="{% url 'ContactListAPI' %}"
-                                   id="input-data-contact"/>
-                            <table class="table nowrap" id="table-contact-role">
-                                <thead>
-                                <tr>
-                                    <th class="wrap-text w-25">{% trans "Which Customer" %}</th>
-                                    <th class="wrap-text w-25">{% trans 'Name' %}</th>
-                                    <th class="wrap-text w-25">{% trans 'Job title' %}</th>
-                                    <th class="wrap-text w-25">{% trans "Role" %}</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="odd text-center col-table-empty">
-                                    <td colspan="10">{% trans 'No data available in table' %}</td>
-                                </tr>
-                                <tr class="col-contact hidden">
-                                    <td class="wrap-text">
-                                        <select class="form-select box-select-type-customer">
-                                            <option value="0">{% trans "Direct Customer" %}</option>
-                                            <option value="1" disabled>{% trans "End Customer" %}</option>
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text text-center">
-                                        <select class="form-select box-select-contact">
-                                            <option></option>
-                                        </select>
-                                    </td>
-                                    <td class="wrap-text readonly">
-                                        <input type="text" class="form-control input-job-title" readonly/>
-                                    </td>
-                                    <td class="wrap-text text-center">
-                                        <select class="form-select box-select-role">
-                                            <option></option>
-                                            <option value="0">{% trans "Decision Maker" %}</option>
-                                            <option value="1">{% trans "Influence" %}</option>
-                                            <option value="2">{% trans "Contact Involved" %}</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-icon btn-del-item">
+                            <div class="table-responsive">
+                                <input class="hidden" data-method="GET" data-url="{% url 'ContactListAPI' %}"
+                                       id="input-data-contact"/>
+                                <table class="table nowrap" id="table-contact-role">
+                                    <thead>
+                                    <tr>
+                                        <th class="wrap-text w-25">{% trans "Which Customer" %}</th>
+                                        <th class="wrap-text w-25">{% trans 'Name' %}</th>
+                                        <th class="wrap-text w-25">{% trans 'Job title' %}</th>
+                                        <th class="wrap-text w-25">{% trans "Role" %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="odd text-center col-table-empty">
+                                        <td colspan="10">{% trans 'No data available in table' %}</td>
+                                    </tr>
+                                    <tr class="col-contact hidden">
+                                        <td class="wrap-text">
+                                            <select class="form-select box-select-type-customer">
+                                                <option value="0">{% trans "Direct Customer" %}</option>
+                                                <option value="1" disabled>{% trans "End Customer" %}</option>
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text text-center">
+                                            <select class="form-select box-select-contact">
+                                                <option></option>
+                                            </select>
+                                        </td>
+                                        <td class="wrap-text readonly">
+                                            <input type="text" class="form-control input-job-title" readonly/>
+                                        </td>
+                                        <td class="wrap-text text-center">
+                                            <select class="form-select box-select-role">
+                                                <option></option>
+                                                <option value="0">{% trans "Decision Maker" %}</option>
+                                                <option value="1">{% trans "Influence" %}</option>
+                                                <option value="2">{% trans "Contact Involved" %}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-icon btn-del-item">
                                             <span class="btn-icon-wrap">
                                                 <span class="feather-icon"><i data-feather="trash-2"></i></span>
                                             </span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Select Reason why customer buy your product" %}</label>
-                            <select class="form-control select2" multiple id="box-select-factor" data-method="GET"
-                                    data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"></select>
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Select Reason why customer buy your product" %}</label>
+                                <select class="form-control select2" multiple id="box-select-factor" data-method="GET"
+                                        data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade mb-25" id="tab_account_history">
-                        <h5>Account History</h5>
-                    </div>
-                    <div class="tab-pane fade mb-25" id="tab_team">
-                        <button type="button" class="btn btn-link btn-animated" data-bs-toggle="modal"
-                                data-bs-target="#modalAddMember" id="btn-show-modal-add-member">
+                        <div class="tab-pane fade mb-25" id="tab_account_history">
+                            <div class="d-flex overflow-auto">
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade mb-25" id="tab_team">
+                            <button type="button" class="btn btn-link btn-animated" data-bs-toggle="modal"
+                                    data-bs-target="" id="btn-show-modal-add-member">
                             <span>
                                 <span class="icon">
                                     <span class="feather-icon">
@@ -594,15 +607,15 @@
                                 </span>
                                 <span>{% trans 'Add Member' %}</span>
                             </span>
-                        </button>
-                        <div class="card-member-hidden hidden">
-                            <div class="card col-6 col-xl-4">
-                                <div class="card-header card-header-action">
-                                    <h6>{% trans "Member" %}</h6>
-                                    <div class="card-action-wrap">
-                                        <div class="dropdown">
-                                            <button class="btn btn-outline-primary btn-animated btn-xs"
-                                                    data-bs-toggle="dropdown">
+                            </button>
+                            <div class="card-member-hidden hidden">
+                                <div class="card col-6 col-xl-4">
+                                    <div class="card-header card-header-action">
+                                        <h6>{% trans "Member" %}</h6>
+                                        <div class="card-action-wrap">
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-primary btn-animated btn-xs"
+                                                        data-bs-toggle="dropdown">
                                                     <span class="icon">
                                                         <span class="feather-icon">
                                                             <i
@@ -610,76 +623,78 @@
                                                             </i>
                                                         </span>
                                                     </span>
-                                            </button>
-                                            <div role="menu" class="dropdown-menu">
-                                                <a class="dropdown-item btn-detail-member" target="_blank"
-                                                   href="#">{% trans "View Detail" %}</a>
-                                                <a class="dropdown-item btn-remove-card"
-                                                   href="#">{% trans "Remove" %}</a>
+                                                </button>
+                                                <div role="menu" class="dropdown-menu">
+                                                    <a class="dropdown-item btn-detail-member" target="_blank"
+                                                       href="#">{% trans "View Detail" %}</a>
+                                                    <a class="dropdown-item btn-remove-card"
+                                                       href="#">{% trans "Remove" %}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body row g-0">
+                                        <div class="col-3 avatar avatar-rounded mt-3">
+                                            <img class="avatar-img"
+                                                 src="{% static "assets/images/avatar/avatar.jpg" %}"
+                                                 alt="Card image">
+                                        </div>
+                                        <div class="col-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title"></h5>
+                                                <p class="card-text text-primary"></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body row g-0">
-                                    <div class="col-3 avatar avatar-rounded mt-3">
-                                        <img class="avatar-img"
-                                             src="{% static "assets/images/avatar/avatar.jpg" %}"
-                                             alt="Card image">
-                                    </div>
-                                    <div class="col-9">
-                                        <div class="card-body">
-                                            <h5 class="card-title"></h5>
-                                            <p class="card-text text-primary"></p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
 
-                        <div class="row" id="card-member">
+                            <div class="row" id="card-member">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
 
-    <div class="modal fade" id="modalAddMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table nowrap w-lg-750p" id="dtbMember">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th>{% trans "Employee Code" %}</th>
-                                <th>{% trans "Employee Name" %}</th>
-                                <th class="hidden">{% trans "Email" %}</th>
-                                <th>
+        <div class="modal fade" id="modalAddMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table nowrap w-lg-750p" id="dtbMember">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans "Employee Code" %}</th>
+                                    <th>{% trans "Employee Name" %}</th>
+                                    <th class="hidden">{% trans "Email" %}</th>
+                                    <th>
                                 <span class="form-check">
                                     <input
                                             type="checkbox"
                                             class="form-check-input check-select-all"
                                     >
                                 </span>
-                                </th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                    <button type="button" class="btn btn-primary" id="btn-add-member">{% trans "Add" %}</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans "Close" %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-member">{% trans "Add" %}</button>
+                    </div>
                 </div>
             </div>
         </div>

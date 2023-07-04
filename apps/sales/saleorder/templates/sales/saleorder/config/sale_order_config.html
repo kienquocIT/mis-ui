@@ -59,9 +59,30 @@
                 {% include 'sales/quotation/config/general_tab.html' %}
             </div>
             <div class="tab-pane fade" id="tab_block_2">
+                {% include 'sales/saleorder/config/indicator_tab.html' %}
             </div>
         </div>
     </form>
+
+    <input
+            type="hidden"
+            id="init-indicator-list"
+            class="quotation-config"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-property-param"
+            class="quotation-config"
+            data-url="{% url "ApplicationPropertyListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-param-list"
+            class="quotation-config"
+            data-url="{% url "IndicatorParamListAPI" %}"
+            data-method="GET"
+    >
 {% endblock %}
 
 

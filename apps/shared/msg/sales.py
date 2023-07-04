@@ -20,3 +20,6 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     QUOTATION_INDICATOR_CREATE = _('Quotation indicator create successfully')
     QUOTATION_INDICATOR_UPDATE = _('Quotation indicator update successfully')
     QUOTATION_INDICATOR_RESTORE = _('Quotation indicator restore successfully')
+    SALE_ORDER_INDICATOR_CREATE = _('Sale order indicator create successfully')
+    SALE_ORDER_INDICATOR_UPDATE = _('Sale order indicator update successfully')
+    SALE_ORDER_INDICATOR_RESTORE = _('Sale order indicator restore successfully')

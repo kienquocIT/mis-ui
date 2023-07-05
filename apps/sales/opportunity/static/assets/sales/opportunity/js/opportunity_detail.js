@@ -42,12 +42,12 @@ $(document).ready(function () {
         if (ele_customer.length > 0) {
             let compare_data = 0;
             if (ele_customer.data('annual-revenue') !== null) {
-                compare_data = parseInt(ele_customer.data('annual-revenue'));
+                compare_data = ele_customer.data('annual-revenue');
             }
             list_property_config.push({
                 'property': 'Customer',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
 
             list_property_config.push({
@@ -62,13 +62,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Product Category',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Product Category',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -77,13 +77,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Budget',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Budget',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -92,13 +92,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Open Date',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Open Date',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -107,13 +107,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Close Date',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Close Date',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -122,13 +122,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Decision maker',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Decision maker',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -137,13 +137,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Product.Line.Detail',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Product.Line.Detail',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -152,13 +152,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Competitor.Win',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Competitor.Win',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -167,13 +167,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Lost By Other Reason',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Lost By Other Reason',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -181,13 +181,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'Quotation.confirm',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'Quotation.confirm',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -196,13 +196,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'SaleOrder.status',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'SaleOrder.status',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -210,13 +210,13 @@ $(document).ready(function () {
             list_property_config.push({
                 'property': 'SaleOrder.Delivery.Status',
                 'comparison_operator': '≠',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         } else {
             list_property_config.push({
                 'property': 'SaleOrder.Delivery.Status',
                 'comparison_operator': '=',
-                'compare_data': 0,
+                'compare_data': '0',
             })
         }
 
@@ -236,8 +236,10 @@ $(document).ready(function () {
         }
 
         if (!just_check) {
+            if ($('.stage-selected').last().data('id') !== id_stage_current) {
+                Swal.fire('Stage has been updated, Please Save!');
+            }
             let ele_stage = $(`.sub-stage`);
-
             let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
             let index = ele_stage_current.index();
             if (ele_stage_current.hasClass('stage-lost')) {
@@ -272,13 +274,12 @@ $(document).ready(function () {
                 if (!config_is_input_rate) {
                     $('#check-input-rate').prop('disabled', true);
                     $('#input-rate').prop('disabled', true);
-                }
-                else{
+                } else {
                     let ele_check_input_rate = $('#check-input-rate')
                     ele_check_input_rate.prop('disabled', false);
-                    if(ele_check_input_rate.is(':checked')){
+                    if (ele_check_input_rate.is(':checked')) {
                         $('#input-rate').prop('disabled', false);
-                    }else{
+                    } else {
                         $('#input-rate').prop('disabled', true);
                     }
 
@@ -289,7 +290,6 @@ $(document).ready(function () {
             }
 
             if (!$('#check-input-rate').is(':checked')) {
-                console.log(ele_stage_current)
                 if (is_load_rate) {
                     $('#input-rate').val(dict_stage[ele_stage_current.data('id')].win_rate);
                     $('#rangeInput').val(dict_stage[ele_stage_current.data('id')].win_rate);
@@ -736,9 +736,15 @@ $(document).ready(function () {
 
                 if (config_is_input_rate) {
                     let ele_check = $('#check-input-rate');
+                    ele_check.prop('disabled', false);
+                    if (ele_check.is(':checked')) {
+                        ele_input_rate.prop('readonly', false);
+                    }
+                    // ele_input_rate.prop('readonly', true);
+                } else {
+                    let ele_check = $('#check-input-rate');
                     ele_check.prop('checked', false);
                     ele_check.prop('disabled', true);
-                    ele_input_rate.prop('readonly', true);
                 }
 
                 if (opportunity_detail.lost_by_other_reason) {
@@ -939,14 +945,13 @@ $(document).ready(function () {
                     text: 'Opp has been Win Deal',
                 })
             } else {
-                $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
                 $('.input-win-deal').not(this).prop('checked', false);
                 $('.stage-lost').addClass('bg-red-light-5 stage-selected');
-                let ele_check_close = $('#input-close-deal')
-                ele_check_close.prop('checked', true);
-                ele_check_close.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
-                $('.page-content input, .page-content select, .page-content .btn').not(ele_check_close).prop('disabled', true);
+                loadWinRate();
             }
+        } else {
+            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+            loadWinRate();
         }
     })
 
@@ -1209,9 +1214,21 @@ $(document).ready(function () {
         }
 
         // stage
-        data_form['stage'] = ele_stage.find('.stage-selected').last().data('id');
+        let list_stage = []
+        ele_stage = $('.stage-selected');
+        ele_stage.not(':last').each(function () {
+            list_stage.push({
+                'stage': $(this).data('id'),
+                'is_current': false,
+            })
+        })
+        list_stage.push({
+            'stage': ele_stage.last().data('id'),
+            'is_current': true,
+        })
+
+        data_form['list_stage'] = list_stage;
         data_form['lost_by_other_reason'] = !!ele_lost_other_reason.is(':checked');
-        data_form['is_close'] = !!$('#input-close-deal').is(':checked');
         return data_form
     }
 
@@ -1221,7 +1238,6 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         frm.dataForm = getDataForm(frm.dataForm);
-        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -1335,7 +1351,6 @@ $(document).ready(function () {
         }
     });
 
-
     // Stage
 
     function sortStage(list_stage) {
@@ -1370,7 +1385,7 @@ $(document).ready(function () {
     let list_stage = [];
     let dict_stage = {};
 
-    function loadStage(id, system_status) {
+    function loadStage(stages, system_status) {
         let ele = $('#div-stage');
         let method = ele.data('method');
         let url = ele.data('url');
@@ -1417,28 +1432,20 @@ $(document).ready(function () {
                     })
                 }
             }
-            if (id !== null) {
-                let ele_stage = ele.find(`.sub-stage[data-id=${id}]`);
-                if (ele_stage.hasClass('stage-lost')) {
-                    ele_stage.addClass('bg-red-light-5 stage-selected');
-                } else {
-                    let index = ele_stage.index();
-                    let ele_list_stage = $('#div-stage .sub-stage');
-                    if ($('.input-win-deal:checked').length > 0 || $('#check-lost-reason').is(':checked')) {
-                        $('.stage-lost').addClass('bg-red-light-5 stage-selected');
+            if (stages.length !== 0) {
+                stages.map(function (item) {
+                    let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
+                    if (ele_stage.hasClass('stage-lost')) {
+                        ele_stage.addClass('bg-red-light-5 stage-selected');
+                    } else if (ele_stage.hasClass('stage-close')) {
+                        let el_close_deal = $('#input-close-deal');
+                        $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
                         ele_stage.addClass('bg-primary-light-5 stage-selected');
+                        el_close_deal.prop('checked', true);
                     } else {
-                        $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
-                        for (let i = 0; i <= ele_list_stage.length; i++) {
-                            if (i <= index) {
-                                if (!ele_list_stage.eq(i).hasClass('stage-lost'))
-                                    ele_list_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-                            } else {
-                                ele_list_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
-                            }
-                        }
+                        ele_stage.addClass('bg-primary-light-5 stage-selected');
                     }
-                }
+                })
             }
         })
     }
@@ -1446,10 +1453,18 @@ $(document).ready(function () {
     $(document).on('click', '.btn-go-to-stage', function () {
         if (config_is_select_stage) {
             if ($('#input-close-deal').is(':checked')) {
-                alert($('#deal-closed').text());
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: $('#deal-closed').text(),
+                })
             } else {
                 if ($('#check-lost-reason').is(':checked') || $('.input-win-deal:checked').length > 0) {
-                    alert($('#deal-close-lost').text());
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: $('#deal-close-lost').text(),
+                    })
                 } else {
                     let stage = $(this).closest('.sub-stage');
                     let index = stage.index();
@@ -1463,21 +1478,31 @@ $(document).ready(function () {
                             ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
                         }
                     }
-                    if (!$('#check-input-rate').is(':checked')) {
-                        $('#input-rate').val(dict_stage[stage.data('id')].win_rate);
-                        $('#rangeInput').val(dict_stage[stage.data('id')].win_rate);
-                    }
+                    loadWinRate();
                 }
             }
         } else {
-            alert($('#not-select-stage').text());
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: $('#not-select-stage').text(),
+            })
         }
     })
+
+    function loadWinRate() {
+        let win_rate = dict_stage[$('.stage-selected').last().data('id')].win_rate;
+        if (!$('#check-input-rate').is(':checked')) {
+            $('#input-rate').val(win_rate);
+            $('#rangeInput').val(win_rate);
+        }
+    }
 
     $(document).on('change', '#check-lost-reason', function () {
         let ele_stage_lost = $('.stage-lost')
         if (!$(this).is(':checked')) {
             ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
+            loadWinRate();
         } else {
             if (checkOppWonOrDelivery()) {
                 $(this).prop('checked', false);
@@ -1487,13 +1512,9 @@ $(document).ready(function () {
                     text: 'Opp has been Win Deal',
                 })
             } else {
-                $('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
                 $('.input-win-deal').not(this).prop('checked', false);
                 ele_stage_lost.addClass('bg-red-light-5 stage-selected');
-                let ele_check_close = $('#input-close-deal')
-                ele_check_close.prop('checked', true);
-                ele_check_close.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
-                $('.page-content input, .page-content select, .page-content .btn').not(ele_check_close).prop('disabled', true);
+                loadWinRate();
             }
         }
     })
@@ -1512,16 +1533,25 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '#input-close-deal', function () {
-        autoLoadStage(true);
+        if (!config_is_select_stage) {
+            autoLoadStage(true);
+        } else {
+            if ($(this).is(':checked')) {
+                $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+            } else {
+                $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            }
+            loadWinRate();
+        }
     })
 
     if (config_is_select_stage) {
         $('#btn-auto-update-stage').hide();
     } else {
-        if(!opp_is_closed){
+        if (!$('#input-close-deal').is(':checked')) {
             setTimeout(function () {
-            autoLoadStage(true);
-        }, 1200);
+                autoLoadStage(true);
+            }, 1200);
         }
     }
 
@@ -1534,5 +1564,4 @@ $(document).ready(function () {
         }
         return check;
     }
-
 })

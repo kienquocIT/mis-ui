@@ -119,7 +119,9 @@ $(function () {
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        return `<p>${row.stage}</p>`
+                        let stage_current = null;
+                        stage_current = row.stage.find(function(obj) {return obj.is_current === true;});
+                        return `<p>${stage_current.indicator}</p>`
                     }
                 },
                 {

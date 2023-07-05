@@ -284,7 +284,7 @@ $(function () {
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
-                                                            <textarea class="form-control indicator-editor" rows="3" cols="50" name=""></textarea>
+                                                            <textarea class="form-control indicator-editor" rows="4" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -415,6 +415,8 @@ $(function () {
                 // show editor
                 let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
                 editor.value = editor.value + dataShow.syntax;
+                // on blur editor to validate formula
+                $(editor).blur();
             }
         });
 
@@ -452,7 +454,7 @@ $(function () {
         });
 
 // Validate Indicator Formula Editor
-        tableIndicator.on('change', '.indicator-editor', function (e) {
+        tableIndicator.on('blur', '.indicator-editor', function (e) {
             let editorValue = $(this).val();
             let isValid = true;
             let row = $(this)[0].closest('tr');
@@ -474,6 +476,8 @@ $(function () {
                     row.querySelector('.valid-indicator-formula').innerHTML = "syntax error";
                 } else if (isValid.remark === "quote") {
                     row.querySelector('.valid-indicator-formula').innerHTML = "single quote (') not allowed";
+                } else if (isValid.remark === "unbalance") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "value or operator expected";
                 }
             }
         })
@@ -500,12 +504,20 @@ $(function () {
                     'remark': 'quote'
                 }
             }
+            isValid = notBalanceOperatorAndValue(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'unbalance'
+                }
+            }
             return {
                 'result': true,
                 'remark': ''
             }
         }
 
+        // BEGIN all functions validate
         function validateParentheses(strValue) {
             let stack = [];
             for (let i = 0; i < strValue.length; i++) {
@@ -539,6 +551,22 @@ $(function () {
 
         function hasSingleQuote(strValue) {
             return !strValue.includes("'")
+        }
+
+        function notBalanceOperatorAndValue(strValue) {
+            let list_data = parseStringToArray(strValue);
+            let valueCount = 0;
+            let operatorCount = 0;
+            for (let data of list_data) {
+                if (!["(", ")", "%"].includes(data)) {
+                    if (["+", "-", "*", "/"].includes(data)) {
+                        operatorCount++;
+                    } else {
+                        valueCount++
+                    }
+                }
+            }
+            return operatorCount === (valueCount - 1);
         }
 
 // BEGIN setup formula

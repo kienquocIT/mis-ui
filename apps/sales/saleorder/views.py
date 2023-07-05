@@ -235,7 +235,7 @@ class SaleOrderIndicatorListAPI(APIView):
         return create_sale_order(
             request=request,
             url=ApiURL.SALE_ORDER_INDICATOR_LIST,
-            msg=SaleMsg.QUOTATION_INDICATOR_CREATE
+            msg=SaleMsg.SALE_ORDER_INDICATOR_CREATE
         )
 
 
@@ -262,7 +262,7 @@ class SaleOrderIndicatorDetailAPI(APIView):
             request=request,
             url=ApiURL.SALE_ORDER_INDICATOR_DETAIL,
             pk=pk,
-            msg=SaleMsg.QUOTATION_INDICATOR_UPDATE
+            msg=SaleMsg.SALE_ORDER_INDICATOR_UPDATE
         )
 
 
@@ -277,5 +277,5 @@ class SaleOrderIndicatorRestoreAPI(APIView):
             request=request,
             url=ApiURL.SALE_ORDER_INDICATOR_RESTORE,
             pk=pk,
-            msg=SaleMsg.QUOTATION_INDICATOR_RESTORE
+            msg=SaleMsg.SALE_ORDER_INDICATOR_RESTORE
         )

@@ -35,7 +35,9 @@ $(function () {
                     if (!$form.hasClass('sale-order')) {
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
                     } else {
-                        loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', data.quotation.id);
+                        if (Object.keys(data.quotation).length > 0) {
+                            loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', data.quotation.id);
+                        }
                     }
 
                     // delivery button

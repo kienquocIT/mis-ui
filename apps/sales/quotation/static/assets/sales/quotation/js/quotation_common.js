@@ -1854,7 +1854,7 @@ class dataTableHandle {
                         if (row.is_pass === true) {
                             return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-promotion-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
-                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>${$.fn.transEle.attr('data-apply')}</button>`;
                         }
                     },
                 }

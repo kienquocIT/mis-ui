@@ -25,18 +25,6 @@
         </a>
     </button>
 
-    {#    <button id="save-account-draft" type="submit" form="form-create-account" style="background: none; border: none">#}
-    {#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
-    {#           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
-    {#           data-bs-original-title="Save Draft">#}
-    {#                <span class="icon">#}
-    {#                    <span class="feather-icon">#}
-    {#                        <i class="bi bi-save2"></i>#}
-    {#                    </span>#}
-    {#                </span>#}
-    {#        </a>#}
-    {#    </button>#}
-
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -98,7 +86,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <ul class="nav nav-light nav-tabs" id="tab-select-table">
                 <li class="nav-item">
@@ -258,19 +245,19 @@
                                 disabled name="valuation_method"></select>
                     </div>
                 </div>
-                <div class="row mt-5" hidden>
+                <div class="row mt-5 mb-20">
                     <div class="col-1"></div>
                     <div class="col-10">
-                        <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
-                               data-url="{% url "AccountListAPI" %}"
+                        <table id="datatable-warehouse-list" class="table nowrap w-100"
+                               data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
                             <th class="w-15">{% trans "Warehouse Code" %}</th>
-                            <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "Available" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
+                            <th class="w-25">{% trans "Warehouse Name" %}</th>
+                            <th class="w-15">{% trans "Stock" %}</th>
+                            <th class="w-15">{% trans "wait for delivery" %}</th>
+                            <th class="w-15">{% trans "wait for receipt" %}</th>
+                            <th class="w-15">{% trans "Available" %}</th>
                             </thead>
                         </table>
                     </div>

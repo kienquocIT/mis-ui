@@ -298,6 +298,10 @@ $(document).ready(function () {
         let data = $.fn.switcherResp(resp);
         if (data) {
             let product_detail = data?.['product'];
+
+            let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
+            loadWareHouseList(warehouse_stock_list);
+
             $.fn.compareStatusShowPageAction(product_detail);
             $('#product-code').val(product_detail.code);
             $('#product-title').val(product_detail.title);
@@ -367,7 +371,6 @@ $(document).ready(function () {
 
                         $('#inventory-level-max').val(product_detail.inventory_information.inventory_level_max);
                         $('#inventory-level-min').val(product_detail.inventory_information.inventory_level_min);
-
 
                         $('.inp-can-edit').focusin(function () {
                             $(this).find('input.form-control').prop('readonly', false);
@@ -623,6 +626,8 @@ $(document).ready(function () {
         obj[item.title] = item;
         return obj;
     }, {});
+    const warehouse_product_list = JSON.parse($('#warehouse_product_list').text());
+    const unit_of_measure_list = JSON.parse($('#unit_of_measure').text());
 
     function loadBaseItemUnit() {
         let eleVolume = $('#divVolume');
@@ -635,4 +640,137 @@ $(document).ready(function () {
     }
 
     loadBaseItemUnit()
+
+    function ConvertToUnitUoM(uom_id_src, uom_id_des) {
+        let get_uom_src_item = unit_of_measure_list.filter(function (item) {
+            return item.id === uom_id_src;
+        })
+        let get_uom_des_item = unit_of_measure_list.filter(function (item) {
+            return item.id === uom_id_des;
+        })
+        let ratio_src = get_uom_src_item[0].ratio;
+        let ratio_des = get_uom_des_item[0].ratio;
+        return ratio_src/ratio_des
+    }
+
+    function GetProductFromWareHouseStockList(product_id, uom_id_des) {
+        let product_get_from_wh_product_list = warehouse_product_list.filter(function (item) {
+            return item.product === product_id;
+        })
+        let warehouse_stock_list = [];
+        for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
+            let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des)
+            warehouse_stock_list.push(
+                {
+                    'warehouse_id': product_get_from_wh_product_list[i].warehouse,
+                    'stock': calculated_ratio*product_get_from_wh_product_list[i].stock_amount - calculated_ratio*product_get_from_wh_product_list[i].sold_amount,
+                    'wait_for_delivery': calculated_ratio*product_get_from_wh_product_list[i].picked_ready,
+                    'wait_for_receipt': 0,
+                }
+            );
+        }
+        return warehouse_stock_list;
+    }
+
+    function loadWareHouseList(warehouse_stock_list) {
+        if (!$.fn.DataTable.isDataTable('#datatable-warehouse-list')) {
+            let dtb = $('#datatable-warehouse-list');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
+                pageLength: 5,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.warehouse_list.length > 0) {
+                                return resp.data['warehouse_list']
+                            }
+                            else {
+                                return [];
+                            }
+                        }
+                        return [];
+                    },
+                },
+                columns: [
+                    {
+                        data: 'code',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<span class="text-secondary">` + row.code + `</span>`
+                        }
+                    },
+                    {
+                        data: 'title',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<span><b>` + row.title + `</b></span>`
+                        }
+                    },
+                    {
+                        data: 'stock_value',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            let stock_value_list = warehouse_stock_list.filter(function (item) {
+                                return item.warehouse_id === row.id;
+                            });
+                            let stock_value = 0;
+                            for (let i = 0; i < stock_value_list.length; i++) {
+                                stock_value = stock_value + stock_value_list[i].stock;
+                            }
+                            return `<span class="text-primary">` + stock_value + `</span>`
+                        }
+                    },
+                    {
+                        data: 'wait_for_delivery_value',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            let wait_for_delivery_value_list = warehouse_stock_list.filter(function (item) {
+                                return item.warehouse_id === row.id;
+                            });
+                            let wait_for_delivery_value = 0;
+                            for (let i = 0; i < wait_for_delivery_value_list.length; i++) {
+                                wait_for_delivery_value = wait_for_delivery_value + wait_for_delivery_value_list[i].wait_for_delivery;
+                            }
+                            return `<span class="text-primary">` + wait_for_delivery_value + `</span>`
+                        }
+                    },
+                    {
+                        data: 'wait_for_receipt_value',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            let wait_for_receipt_value_list = warehouse_stock_list.filter(function (item) {
+                                return item.warehouse_id === row.id;
+                            });
+                            let wait_for_receipt_value = 0;
+                            for (let i = 0; i < wait_for_receipt_value_list.length; i++) {
+                                wait_for_receipt_value = wait_for_receipt_value + wait_for_receipt_value_list[i].wait_for_receipt;
+                            }
+                            return `<span class="text-primary">` + wait_for_receipt_value + `</span>`
+                        }
+                    },{
+                        data: 'available_value',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            let value_list = warehouse_stock_list.filter(function (item) {
+                                return item.warehouse_id === row.id;
+                            });
+                            let stock_value = 0;
+                            let wait_for_delivery_value = 0;
+                            let wait_for_receipt_value = 0;
+                            for (let i = 0; i < value_list.length; i++) {
+                                stock_value = stock_value + value_list[i].stock;
+                                wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
+                                wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt
+                            }
+                            let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value
+                            return `<span class="text-primary">` + available_value + `</span>`
+                        }
+                    },
+                ],
+            });
+        }
+    }
 })

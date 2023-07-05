@@ -108,6 +108,24 @@ $(function () {
                 },
                 {
                     targets: 6,
+                    render: (data, type, row) => {
+                        let close_date = null;
+                        if (row.close_date !== null) {
+                            close_date = row.close_date.split(" ")[0]
+                        }
+                        return `<p>${close_date}</p>`
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        let stage_current = null;
+                        stage_current = row.stage.find(function(obj) {return obj.is_current === true;});
+                        return `<p>${stage_current.indicator}</p>`
+                    }
+                },
+                {
+                    targets: 8,
                     className: 'action-center',
                     render: (data, type, row) => {
                         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)

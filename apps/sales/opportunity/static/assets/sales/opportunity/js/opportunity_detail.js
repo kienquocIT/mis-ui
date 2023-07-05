@@ -237,7 +237,7 @@ $(document).ready(function () {
 
         if (!just_check) {
             if ($('.stage-selected').last().data('id') !== id_stage_current) {
-                Swal.fire('Stage has been updated, Please Save!');
+                Swal.fire($('#opp-updated').text());
             }
             let ele_stage = $(`.sub-stage`);
             let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);

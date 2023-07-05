@@ -685,6 +685,24 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.warehouse_list.length > 0) {
+                                for (let i = 0; i < data.warehouse_list.length; i++) {
+                                    let value_list = warehouse_stock_list.filter(function (item) {
+                                        return item.warehouse_id === data.warehouse_list[i].id;
+                                    });
+                                    let stock_value = 0;
+                                    let wait_for_delivery_value = 0;
+                                    let wait_for_receipt_value = 0;
+                                    for (let i = 0; i < value_list.length; i++) {
+                                        stock_value = stock_value + value_list[i].stock;
+                                        wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
+                                        wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt
+                                    }
+                                    let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value
+                                    resp.data['warehouse_list'][i].stock_value = stock_value;
+                                    resp.data['warehouse_list'][i].wait_for_delivery_value = wait_for_delivery_value;
+                                    resp.data['warehouse_list'][i].wait_for_receipt_value = wait_for_receipt_value;
+                                    resp.data['warehouse_list'][i].available_value = available_value;
+                                }
                                 return resp.data['warehouse_list']
                             }
                             else {
@@ -713,63 +731,63 @@ $(document).ready(function () {
                         data: 'stock_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            let stock_value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === row.id;
-                            });
-                            let stock_value = 0;
-                            for (let i = 0; i < stock_value_list.length; i++) {
-                                stock_value = stock_value + stock_value_list[i].stock;
-                            }
-                            return `<span class="text-primary">` + stock_value + `</span>`
+                            return row.stock_value
                         }
                     },
                     {
                         data: 'wait_for_delivery_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            let wait_for_delivery_value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === row.id;
-                            });
-                            let wait_for_delivery_value = 0;
-                            for (let i = 0; i < wait_for_delivery_value_list.length; i++) {
-                                wait_for_delivery_value = wait_for_delivery_value + wait_for_delivery_value_list[i].wait_for_delivery;
-                            }
-                            return `<span class="text-primary">` + wait_for_delivery_value + `</span>`
+                            return row.wait_for_delivery_value
                         }
                     },
                     {
                         data: 'wait_for_receipt_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            let wait_for_receipt_value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === row.id;
-                            });
-                            let wait_for_receipt_value = 0;
-                            for (let i = 0; i < wait_for_receipt_value_list.length; i++) {
-                                wait_for_receipt_value = wait_for_receipt_value + wait_for_receipt_value_list[i].wait_for_receipt;
-                            }
-                            return `<span class="text-primary">` + wait_for_receipt_value + `</span>`
+                            return row.wait_for_receipt_value
                         }
                     },{
                         data: 'available_value',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            let value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === row.id;
-                            });
-                            let stock_value = 0;
-                            let wait_for_delivery_value = 0;
-                            let wait_for_receipt_value = 0;
-                            for (let i = 0; i < value_list.length; i++) {
-                                stock_value = stock_value + value_list[i].stock;
-                                wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
-                                wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt
-                            }
-                            let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value
-                            return `<span class="text-primary">` + available_value + `</span>`
+                            return row.available_value
                         }
                     },
                 ],
+                footerCallback: function (tfoot, data, start, end, display) {
+                    let api = this.api();
+
+                    let sum2 = api
+                        .column(2, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+                    let sum3 = api
+                        .column(3, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+                    let sum4 = api
+                        .column(4, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+                    let sum5 = api
+                        .column(5, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+
+                    $(api.column(2).footer()).text(sum2);
+                    $(api.column(3).footer()).text(sum3);
+                    $(api.column(4).footer()).text(sum4);
+                    $(api.column(5).footer()).text(sum5);
+                }
             });
         }
     }

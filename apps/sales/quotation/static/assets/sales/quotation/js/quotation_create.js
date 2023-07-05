@@ -1177,6 +1177,8 @@ $(function () {
                     'sale_order_logistic_data',
                     'sale_order_costs_data',
                     'sale_order_expenses_data',
+                    // indicator tab
+                    'sale_order_indicators_data',
                 ]
             }
             if (_form.dataForm) {

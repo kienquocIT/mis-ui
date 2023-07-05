@@ -1854,7 +1854,7 @@ class dataTableHandle {
                         if (row.is_pass === true) {
                             return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-promotion-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
                         } else {
-                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>${$.fn.transEle.attr('data-apply')}</button>`;
                         }
                     },
                 }
@@ -3065,12 +3065,25 @@ class submitHandle {
                 let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
                 let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
                 let order = row.querySelector('.table-row-order').getAttribute('data-value');
-                result.push({
-                    'indicator': indicator,
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'order': parseInt(order),
-                })
+                if (!$(tableIndicator).hasClass('sale-order')) {
+                    result.push({
+                        'indicator': indicator,
+                        'indicator_value': parseFloat(indicator_value),
+                        'indicator_rate': parseFloat(indicator_rate),
+                        'order': parseInt(order),
+                    })
+                } else {
+                    let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
+                    let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
+                    result.push({
+                        'indicator': indicator,
+                        'indicator_value': parseFloat(indicator_value),
+                        'indicator_rate': parseFloat(indicator_rate),
+                        'quotation_indicator_value': parseFloat(quotation_indicator_value),
+                        'difference_indicator_value': parseFloat(difference_indicator_rate),
+                        'order': parseInt(order),
+                    })
+                }
             }
         }
         return result

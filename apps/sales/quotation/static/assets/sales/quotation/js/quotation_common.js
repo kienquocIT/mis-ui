@@ -3,7 +3,7 @@ let shippingClass = new shippingHandle();
 
 // Load data
 class loadDataHandle {
-    loadBoxQuotationOpportunity(opp_id, valueToSelect = null, sale_person = null) {
+    loadBoxQuotationOpportunity(opp_id, valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
         let jqueryId = '#' + opp_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -24,7 +24,7 @@ class loadDataHandle {
                                 let check_used = item.quotation_id;
                                 let check_close = false;
                                 if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
-                                   check_used = item.sale_order_id
+                                    check_used = item.sale_order_id
                                 }
                                 check_close = item.is_close;
                                 if ((check_used === null && check_close === false) || valueToSelect === item.id) {
@@ -53,14 +53,22 @@ class loadDataHandle {
                             })
                         }
                     }
+                    // ReCheck Config when change Opportunity (If not load detail or is copy)
+                    if (is_load_detail === false || is_copy === true) {
+                        configClass.checkConfig(true);
+                    }
                 }
             )
         } else {
             ele.append(`<option value=""></option>`);
+            // ReCheck Config when change Opportunity (If not load detail or is copy)
+            if (is_load_detail === false || is_copy === true) {
+                configClass.checkConfig(true);
+            }
         }
     }
 
-    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, sale_person = null) {
+    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, sale_person = null, is_load_detail = false) {
         let self = this;
         let jqueryId = '#' + customer_id;
         let ele = $(jqueryId);
@@ -114,7 +122,9 @@ class loadDataHandle {
                                     // Store Account Price List
                                     document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                                     // load again price of product by customer price list then Re Calculate
-                                    self.loadDataProductAll();
+                                    if (is_load_detail === false) {
+                                        self.loadDataProductAll();
+                                    }
                                 }
                             })
                             if (dataMapOpp) { // if Opportunity has Customer
@@ -826,16 +836,16 @@ class loadDataHandle {
         }
         if (data.opportunity) {
             if (data.sale_person) {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, data.sale_person.id);
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, data.sale_person.id, true, is_copy);
             } else {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id);
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, null, true, is_copy);
             }
         }
         if (data.customer) {
             if (data.sale_person) {
-                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), data.sale_person.id);
+                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), data.sale_person.id, true);
             } else {
-                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'));
+                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), null, true);
             }
         }
         if (data.contact) {
@@ -895,7 +905,7 @@ class loadDataHandle {
                     if (data) {
                         ele.val(JSON.stringify(data));
                         // check config first time
-                        if (page_method === "POST") {
+                        if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
                             configClass.checkConfig(true, null, true);
                         }
                     }
@@ -2457,7 +2467,8 @@ class checkConfigHandle {
             let opportunity = $('#select-box-quotation-create-opportunity').val();
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
-            let empty_list = ["", null]
+            let empty_list = ["", null];
+            let is_make_price_change = false;
             if ((!opportunity || empty_list.includes(opportunity)) && is_has_opp_detail === false) { // short sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
@@ -2465,7 +2476,7 @@ class checkConfigHandle {
                         if (!tableProduct.querySelector('.dataTables_empty')) {
                             for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
                                 let row = tableProduct.tBodies[0].rows[i];
-                                self.reCheckTable(config, row, true, false);
+                                is_make_price_change = self.reCheckTable(config, row, true, false, is_make_price_change);
                                 // Re Calculate all data of rows & total
                                 calculateClass.commonCalculate($(tableProduct), row, true, false, false);
                             }
@@ -2473,11 +2484,10 @@ class checkConfigHandle {
                     }
                     let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
                     if (config.short_sale_config.is_discount_on_total === false) {
-                        if (!eleDiscountTotal.hasAttribute('disabled')) {
-                            eleDiscountTotal.setAttribute('disabled', 'true');
-                            eleDiscountTotal.classList.add('disabled-custom-show');
-                            eleDiscountTotal.value = "0";
-                        }
+                        eleDiscountTotal.setAttribute('disabled', 'true');
+                        eleDiscountTotal.classList.add('disabled-custom-show');
+                        eleDiscountTotal.value = "0";
+                        is_make_price_change = true;
                     } else {
                         if (eleDiscountTotal.hasAttribute('disabled')) {
                             eleDiscountTotal.removeAttribute('disabled');
@@ -2490,14 +2500,20 @@ class checkConfigHandle {
                     }
                 } else {
                     if (new_row) {
-                        self.reCheckTable(config, new_row, true, false);
+                        is_make_price_change = self.reCheckTable(config, new_row, true, false, is_make_price_change);
                     }
                 }
                 $.fn.initMaskMoney2();
+                // check if config make price change then remove promotion & shipping
+                if (is_make_price_change === true) {
+                    deletePromotionRows($(tableProduct), true, false);
+                    deletePromotionRows($(tableProduct), false, true);
+                }
                 return {
                     'is_short_sale': true,
                     'is_long_sale': false,
                     'short_sale_config': config.short_sale_config,
+                    'is_make_price_change': is_make_price_change,
                 }
             } else { // long sale
                 if (is_change_opp === true) {
@@ -2506,7 +2522,7 @@ class checkConfigHandle {
                         if (!tableProduct.querySelector('.dataTables_empty')) {
                             for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
                                 let row = tableProduct.tBodies[0].rows[i];
-                                self.reCheckTable(config, row, false, true);
+                                is_make_price_change = self.reCheckTable(config, row, false, true, is_make_price_change);
                                 // Re Calculate all data of rows & total
                                 calculateClass.commonCalculate($(tableProduct), row, true, false, false);
                             }
@@ -2519,11 +2535,10 @@ class checkConfigHandle {
                             eleDiscountTotal.classList.remove('disabled-custom-show');
                         }
                     } else {
-                        if (!eleDiscountTotal.hasAttribute('disabled')) {
-                            eleDiscountTotal.setAttribute('disabled', 'true');
-                            eleDiscountTotal.classList.add('disabled-custom-show');
-                            eleDiscountTotal.value = "0";
-                        }
+                        eleDiscountTotal.setAttribute('disabled', 'true');
+                        eleDiscountTotal.classList.add('disabled-custom-show');
+                        eleDiscountTotal.value = "0";
+                        is_make_price_change = true;
                     }
                     // ReCalculate Total
                     if (is_first_time === false) {
@@ -2531,14 +2546,20 @@ class checkConfigHandle {
                     }
                 } else {
                     if (new_row) {
-                        self.reCheckTable(config, new_row, false, true);
+                        is_make_price_change = self.reCheckTable(config, new_row, false, true, is_make_price_change);
                     }
                 }
                 $.fn.initMaskMoney2();
+                // check if config make price change then remove promotion & shipping
+                if (is_make_price_change === true) {
+                    deletePromotionRows($(tableProduct), true, false);
+                    deletePromotionRows($(tableProduct), false, true);
+                }
                 return {
                     'is_short_sale': false,
                     'is_long_sale': true,
                     'short_sale_config': config.long_sale_config,
+                    'is_make_price_change': is_make_price_change,
                 }
             }
         }
@@ -2548,8 +2569,7 @@ class checkConfigHandle {
         }
     }
 
-    reCheckTable(config, row, is_short_sale = false, is_long_sale = false) {
-        let self = this;
+    reCheckTable(config, row, is_short_sale = false, is_long_sale = false, is_make_price_change = false) {
         if (row) {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) {
@@ -2568,12 +2588,9 @@ class checkConfigHandle {
                         }
                     }
                     if (config.short_sale_config.is_input_price === false) {
-                        if (!elePrice.hasAttribute('disabled')) {
-                            elePrice.setAttribute('disabled', 'true');
-                            elePrice.classList.add('disabled-custom-show');
-                            // $(elePrice).attr('value', String(0));
-                            loadPriceProduct(eleProduct);
-                        }
+                        elePrice.setAttribute('disabled', 'true');
+                        elePrice.classList.add('disabled-custom-show');
+                        loadPriceProduct(eleProduct);
                     } else {
                         if (elePrice.hasAttribute('disabled')) {
                             elePrice.removeAttribute('disabled');
@@ -2582,11 +2599,10 @@ class checkConfigHandle {
                     }
                     if (eleDiscount) {
                         if (config.short_sale_config.is_discount_on_product === false) {
-                            if (!eleDiscount.hasAttribute('disabled')) {
-                                eleDiscount.setAttribute('disabled', 'true');
-                                eleDiscount.classList.add('disabled-custom-show');
-                                eleDiscount.value = "0";
-                            }
+                            eleDiscount.setAttribute('disabled', 'true');
+                            eleDiscount.classList.add('disabled-custom-show');
+                            eleDiscount.value = "0";
+                            is_make_price_change = true;
                         } else {
                             if (eleDiscount.hasAttribute('disabled')) {
                                 eleDiscount.removeAttribute('disabled');
@@ -2604,11 +2620,9 @@ class checkConfigHandle {
                             elePrice.classList.remove('disabled-custom-show');
                         }
                     } else {
-                        if (!elePrice.hasAttribute('disabled')) {
-                            elePrice.setAttribute('disabled', 'true');
-                            elePrice.classList.add('disabled-custom-show');
-                            loadPriceProduct(eleProduct);
-                        }
+                        elePrice.setAttribute('disabled', 'true');
+                        elePrice.classList.add('disabled-custom-show');
+                        loadPriceProduct(eleProduct);
                     }
                     if (eleDiscount) {
                         if (config.long_sale_config.is_not_discount_on_product === false) {
@@ -2617,16 +2631,16 @@ class checkConfigHandle {
                                 eleDiscount.classList.remove('disabled-custom-show');
                             }
                         } else {
-                            if (!eleDiscount.hasAttribute('disabled')) {
-                                eleDiscount.setAttribute('disabled', 'true');
-                                eleDiscount.classList.add('disabled-custom-show');
-                                eleDiscount.value = "0";
-                            }
+                            eleDiscount.setAttribute('disabled', 'true');
+                            eleDiscount.classList.add('disabled-custom-show');
+                            eleDiscount.value = "0";
+                            is_make_price_change = true;
                         }
                     }
                 }
             }
         }
+        return is_make_price_change
     }
 
 }
@@ -3210,6 +3224,7 @@ function filterDataProductNotPromotion(data_products) {
 function loadPriceProduct(eleProduct) {
         let optionSelected = eleProduct.options[eleProduct.selectedIndex];
         let productData = optionSelected.querySelector('.data-default');
+        let is_change_price = false;
         if (productData) {
             let data = JSON.parse(productData.value);
             let price = eleProduct.closest('tr').querySelector('.table-row-price');
@@ -3235,13 +3250,25 @@ function loadPriceProduct(eleProduct) {
                 // get Min Price to display
                 if (valList.length > 0) {
                     let minVal = Math.min(...valList);
+                    if (price.getAttribute('value') !== String(minVal)) {
+                        is_change_price = true;
+                    }
                     $(price).attr('value', String(minVal));
                 } else { // Product doesn't have price list or not map with customer price list
+                    if (price.getAttribute('value') !== "0") {
+                        is_change_price = true;
+                    }
                     $(price).attr('value', String(0));
                 }
             }
         }
         $.fn.initMaskMoney2();
+        // If change price then remove promotion & shipping
+        if (is_change_price === true) {
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            deletePromotionRows($(tableProduct), true, false);
+            deletePromotionRows($(tableProduct), false, true);
+        }
     }
 
 function getDataByProductID(product_id) {

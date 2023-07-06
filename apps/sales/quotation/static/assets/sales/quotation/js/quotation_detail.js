@@ -85,11 +85,16 @@ $(function () {
                 }
             }
             // Check config when begin edit
-            configClass.checkConfig(true);
+            let check_config = configClass.checkConfig(true);
 
-            // load again total products after check config
-            let data = JSON.parse(eleDataDetail.val());
-            loadDataClass.loadTotal(data, true, false, false);
+            // load again total products if after check config the price change
+            if (check_config.hasOwnProperty('is_make_price_change')) {
+                if (check_config.is_make_price_change === false) {
+                    let data = JSON.parse(eleDataDetail.val());
+                    loadDataClass.loadTotal(data, true, false, false);
+                }
+            }
+
         });
 
 

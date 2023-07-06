@@ -83,8 +83,6 @@ $(function () {
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            // loadDataClass.loadDataProductAll();
             // ReCheck Config when change Opportunity
             configClass.checkConfig(true);
         });
@@ -778,11 +776,11 @@ $(function () {
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
                 // Check again config after load data copy
-                if (Object.keys(dataCopy.opportunity).length !== 0) {
-                    configClass.checkConfig(true, null, false, true);
-                } else {
-                    configClass.checkConfig(true);
-                }
+                // if (Object.keys(dataCopy.opportunity).length !== 0) {
+                //     configClass.checkConfig(true, null, false, true);
+                // } else {
+                //     configClass.checkConfig(true);
+                // }
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
@@ -875,11 +873,11 @@ $(function () {
                 }
             }
             // Check again config after load data copy
-            if (Object.keys(dataCopy.opportunity).length !== 0) {
-                configClass.checkConfig(true, null, false, true);
-            } else {
-                configClass.checkConfig(true);
-            }
+            // if (Object.keys(dataCopy.opportunity).length !== 0) {
+            //     configClass.checkConfig(true, null, false, true);
+            // } else {
+            //     configClass.checkConfig(true);
+            // }
         }
 
         function checkElementValues() {

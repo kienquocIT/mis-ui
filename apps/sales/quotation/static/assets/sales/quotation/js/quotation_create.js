@@ -12,6 +12,8 @@ $(function () {
         let shippingClass = new shippingHandle();
         let configClass = new checkConfigHandle();
 
+        let formSubmit = $('#frm_quotation_create');
+
         let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
@@ -21,13 +23,13 @@ $(function () {
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
-        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', null, true);
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
-        loadDataClass.loadInitQuotationConfig('quotation-config-data');
+        loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
@@ -46,8 +48,6 @@ $(function () {
 
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
-
-        $("#select-box-quotation-create-discount-list").select2();
 
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
@@ -84,7 +84,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll();
+            // loadDataClass.loadDataProductAll();
             // ReCheck Config when change Opportunity
             configClass.checkConfig(true);
         });
@@ -145,6 +145,20 @@ $(function () {
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadDataClass.loadInformationSelectBox($(this));
+            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
+            $('#select-box-quotation-create-customer').empty();
+            $('#select-box-quotation-create-opportunity').empty();
+            $('#select-box-quotation-create-contact').empty();
+            $('#select-box-quotation-create-payment-term').empty();
+            document.getElementById('customer-price-list').value = "";
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
+            loadDataClass.loadDataProductAll();
+            // ReCheck Config when change Opportunity
+            configClass.checkConfig(true);
         });
 
 // Action on click dropdown price list
@@ -720,7 +734,7 @@ $(function () {
             } else { // if option copy is ALL product
                 dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
             }
-            if (type === 'copy-from') {
+            if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 loadDataClass.loadDetailQuotation(dataCopy, true);
                 if (dataCopyTo.option === "all") {
                     $('#datable-quotation-create-product').DataTable().destroy();
@@ -763,7 +777,14 @@ $(function () {
                     // load expense
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
-            } else if (type === 'copy-to') {
+                // Check again config after load data copy
+                if (Object.keys(dataCopy.opportunity).length !== 0) {
+                    configClass.checkConfig(true, null, false, true);
+                } else {
+                    configClass.checkConfig(true);
+                }
+
+            } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
                 let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
@@ -780,6 +801,7 @@ $(function () {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
                     loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                    checkElementValues();
                 }
             }
         }
@@ -852,6 +874,12 @@ $(function () {
                     }
                 }
             }
+            // Check again config after load data copy
+            if (Object.keys(dataCopy.opportunity).length !== 0) {
+                configClass.checkConfig(true, null, false, true);
+            } else {
+                configClass.checkConfig(true);
+            }
         }
 
         function checkElementValues() {
@@ -868,7 +896,6 @@ $(function () {
                 setTimeout(checkElementValues, 1000);  // call again after 1s if condition not pass yet
             }
         }
-        checkElementValues();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
@@ -1056,27 +1083,81 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        $('#frm_quotation_create').submit(function (e) {
+        formSubmit.submit(function (e) {
             e.preventDefault();
-
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
                 promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', boxCustomer.val());
+                // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
+                // Submit Form normal
+                submitForm($(this));
+            }
+        });
 
-                let is_sale_order = false;
-                if ($(this)[0].classList.contains('sale-order')) {
-                    is_sale_order = true;
+// function check again promotion before submit
+        function submitCheckPromotion() {
+            let valueCheck = $('#quotation-check-promotion').val();
+            if (valueCheck) {
+                if (valueCheck === 'true') {
+                    submitForm(formSubmit);
+                } else if (valueCheck === 'false') {
+                    $('#btn-invalid-promotion').click();
+                    return false
                 }
-                let _form = new SetupFormSubmit($(this));
-                submitClass.setupDataSubmit(_form, is_sale_order);
-                let submitFields = [
+            } else {
+                setTimeout(submitCheckPromotion, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+
+// Main Function Submit
+        function submitForm(formSubmit) {
+            let is_sale_order = false;
+            if (formSubmit[0].classList.contains('sale-order')) {
+                is_sale_order = true;
+            }
+            let _form = new SetupFormSubmit(formSubmit);
+            submitClass.setupDataSubmit(_form, is_sale_order);
+            let submitFields = [
+                'title',
+                'opportunity',
+                'customer',
+                'contact',
+                'sale_person',
+                'payment_term',
+                // total amount of products
+                'total_product_pretax_amount',
+                'total_product_discount_rate',
+                'total_product_discount',
+                'total_product_tax',
+                'total_product',
+                // total amount of costs
+                'total_cost_pretax_amount',
+                'total_cost_tax',
+                'total_cost',
+                // total amount of expenses
+                'total_expense_pretax_amount',
+                'total_expense_tax',
+                'total_expense',
+                // quotation tabs
+                'quotation_products_data',
+                'quotation_term_data',
+                'quotation_logistic_data',
+                'quotation_costs_data',
+                'quotation_expenses_data',
+                'is_customer_confirm',
+                // indicator tab
+                'quotation_indicators_data',
+            ]
+            if (is_sale_order === true) {
+                submitFields = [
                     'title',
                     'opportunity',
                     'customer',
                     'contact',
                     'sale_person',
                     'payment_term',
+                    'quotation',
                     // total amount of products
                     'total_product_pretax_amount',
                     'total_product_discount_rate',
@@ -1091,200 +1172,52 @@ $(function () {
                     'total_expense_pretax_amount',
                     'total_expense_tax',
                     'total_expense',
-                    // quotation tabs
-                    'quotation_products_data',
-                    'quotation_term_data',
-                    'quotation_logistic_data',
-                    'quotation_costs_data',
-                    'quotation_expenses_data',
-                    'is_customer_confirm',
+                    // sale order tabs
+                    'sale_order_products_data',
+                    'sale_order_logistic_data',
+                    'sale_order_costs_data',
+                    'sale_order_expenses_data',
+                    // indicator tab
+                    'sale_order_indicators_data',
                 ]
-                if (is_sale_order === true) {
-                    submitFields = [
-                        'title',
-                        'opportunity',
-                        'customer',
-                        'contact',
-                        'sale_person',
-                        'payment_term',
-                        'quotation',
-                        // total amount of products
-                        'total_product_pretax_amount',
-                        'total_product_discount_rate',
-                        'total_product_discount',
-                        'total_product_tax',
-                        'total_product',
-                        // total amount of costs
-                        'total_cost_pretax_amount',
-                        'total_cost_tax',
-                        'total_cost',
-                        // total amount of expenses
-                        'total_expense_pretax_amount',
-                        'total_expense_tax',
-                        'total_expense',
-                        // sale order tabs
-                        'sale_order_products_data',
-                        'sale_order_logistic_data',
-                        'sale_order_costs_data',
-                        'sale_order_expenses_data',
-                    ]
-                }
-                if (_form.dataForm) {
-                    for (let key in _form.dataForm) {
-                        if (!submitFields.includes(key)) delete _form.dataForm[key]
-                    }
-                }
-                // validate none & blank
-                let check_none_blank_list = ['', "", null, "undefined"];
-                let check_field_list = [
-                    'opportunity',
-                    'customer',
-                    'contact',
-                    'sale_person',
-                    'payment_term',
-                    'quotation'
-                ]
-                for (let field = 0; field < check_field_list.length; field++) {
-                    if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
-                        if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
-                            delete _form.dataForm[check_field_list[field]]
-                        }
-                    }
-                }
-
-                let csr = $("[name=csrfmiddlewaretoken]").val();
-                $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyPopup({description: data.message}, 'success')
-                                $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs)
-                        }
-                    )
             }
-        });
-
-// function check again promotion before submit
-        function submitCheckPromotion() {
-            let valueCheck = $('#quotation-check-promotion').val();
-
-            if (valueCheck) {
-                if (valueCheck === 'true') {
-                    let eleForm = $('#frm_quotation_create');
-                    let is_sale_order = false;
-                    if (eleForm[0].classList.contains('sale-order')) {
-                        is_sale_order = true;
-                    }
-                    let _form = new SetupFormSubmit(eleForm);
-                    submitClass.setupDataSubmit(_form, is_sale_order);
-                    let submitFields = [
-                        'title',
-                        'opportunity',
-                        'customer',
-                        'contact',
-                        'sale_person',
-                        'payment_term',
-                        // total amount of products
-                        'total_product_pretax_amount',
-                        'total_product_discount_rate',
-                        'total_product_discount',
-                        'total_product_tax',
-                        'total_product',
-                        // total amount of costs
-                        'total_cost_pretax_amount',
-                        'total_cost_tax',
-                        'total_cost',
-                        // total amount of expenses
-                        'total_expense_pretax_amount',
-                        'total_expense_tax',
-                        'total_expense',
-                        // quotation tabs
-                        'quotation_products_data',
-                        'quotation_term_data',
-                        'quotation_logistic_data',
-                        'quotation_costs_data',
-                        'quotation_expenses_data',
-                        'is_customer_confirm',
-                    ]
-                    if (is_sale_order === true) {
-                        submitFields = [
-                            'title',
-                            'opportunity',
-                            'customer',
-                            'contact',
-                            'sale_person',
-                            'payment_term',
-                            'quotation',
-                            // total amount of products
-                            'total_product_pretax_amount',
-                            'total_product_discount_rate',
-                            'total_product_discount',
-                            'total_product_tax',
-                            'total_product',
-                            // total amount of costs
-                            'total_cost_pretax_amount',
-                            'total_cost_tax',
-                            'total_cost',
-                            // total amount of expenses
-                            'total_expense_pretax_amount',
-                            'total_expense_tax',
-                            'total_expense',
-                            // sale order tabs
-                            'sale_order_products_data',
-                            'sale_order_logistic_data',
-                            'sale_order_costs_data',
-                            'sale_order_expenses_data',
-                        ]
-                    }
-                    if (_form.dataForm) {
-                        for (let key in _form.dataForm) {
-                            if (!submitFields.includes(key)) delete _form.dataForm[key]
-                        }
-                    }
-                    // validate none & blank
-                    let check_none_blank_list = ['', "", null, "undefined"];
-                    let check_field_list = [
-                        'opportunity',
-                        'customer',
-                        'contact',
-                        'sale_person',
-                        'payment_term',
-                        'quotation'
-                    ]
-                    for (let field = 0; field < check_field_list.length; field++) {
-                        if (_form.dataForm.hasOwnProperty(check_field_list[field])) {
-                            if (check_none_blank_list.includes(_form.dataForm[check_field_list[field]])) {
-                                delete _form.dataForm[check_field_list[field]]
-                            }
-                        }
-                    }
-
-                    let csr = $("[name=csrfmiddlewaretoken]").val();
-                    $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyPopup({description: data.message}, 'success')
-                                    $.fn.redirectUrl(eleForm.attr('data-url-redirect'), 3000);
-                                }
-                            },
-                            (errs) => {
-                                console.log(errs)
-                            }
-                        )
-                } else if (valueCheck === 'false') {
-                    $('#btn-invalid-promotion').click();
-                    return false
+            if (_form.dataForm) {
+                for (let key in _form.dataForm) {
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
-            } else {
-                setTimeout(submitCheckPromotion, 1000);  // call again after 1s if condition not pass yet
             }
+            // validate none & blank
+            let check_blank_list = ['', "", "undefined"];
+            let check_field_list = [
+                'opportunity',
+                'customer',
+                'contact',
+                'sale_person',
+                'payment_term',
+                'quotation'
+            ]
+            for (let field of check_field_list) {
+                if (_form.dataForm.hasOwnProperty(field)) {
+                    if (check_blank_list.includes(_form.dataForm[field])) {
+                        _form.dataForm[field] = null;
+                    }
+                }
+            }
+
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
         }
 
         $('#btn-remove-promotion').on('click', function(e) {

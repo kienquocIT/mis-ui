@@ -3,12 +3,16 @@ from django.urls import path
 from apps.sales.saleorder.views import (
     SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
-    SaleOrderConfigDetailAPI
+    SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI
 )
 
 urlpatterns = [
     path('config', SaleOrderConfigDetail.as_view(), name='SaleOrderConfigDetail'),
     path('config/api', SaleOrderConfigDetailAPI.as_view(), name='SaleOrderConfigDetailAPI'),
+    path('indicators/api', SaleOrderIndicatorListAPI.as_view(), name='SaleOrderIndicatorListAPI'),
+    path('indicator-api/<str:pk>', SaleOrderIndicatorDetailAPI.as_view(), name='SaleOrderIndicatorDetailAPI'),
+    path('indicator-restore-api/<str:pk>', SaleOrderIndicatorRestoreAPI.as_view(), name='SaleOrderIndicatorRestoreAPI'),
+
     path('lists', SaleOrderList.as_view(), name='SaleOrderList'),
     path('api/lists', SaleOrderListAPI.as_view(), name='SaleOrderListAPI'),
     path('create', SaleOrderCreate.as_view(), name='SaleOrderCreate'),

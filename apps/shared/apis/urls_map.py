@@ -105,6 +105,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
+    INDICATOR_PARAM = StringUrl('base/indicator-params')
+
+    APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
 
     TENANT = StringUrl('tenant/userlist')
 
@@ -206,6 +209,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
     OPPORTUNITY_EXPENSE_LIST = StringUrl('opportunity/opportunity-expense-list/lists')
+    OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
@@ -214,6 +218,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
+    QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -237,10 +242,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
+    SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
+    SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
+    SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
+    WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
 
     # shipping unit
@@ -269,3 +278,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
+    OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
+    OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
+
+    # restore Opportunity Stage
+    RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')

@@ -25,13 +25,16 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
                 let item = data_list[i];
                 item['is_indicator'] = true;
                 item['syntax'] = "indicator(" + item.title + ")";
+                item['syntax_show'] = "indicator(" + item.title + ")";
                 let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                indicator_list += `<div class="row property-item">
-                                        <button type="button" class="btn btn-flush-light">
-                                            <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
-                                            <input type="hidden" class="data-show" value="${dataStr}">
-                                        </button>
-                                    </div>`
+                if (item.id !== indicator_detail_id) { // check & not append this current indicator
+                    indicator_list += `<div class="row param-item">
+                                            <button type="button" class="btn btn-flush-light">
+                                                <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
+                                                <input type="hidden" class="data-show" value="${dataStr}">
+                                            </button>
+                                        </div>`
+                }
                 // load detail editor by ID indicator
                 if (indicator_detail_id) {
                     if (item.id === indicator_detail_id) {
@@ -47,12 +50,15 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
     }
 }
 
-function loadInitPropertyList(property_id, eleShow) {
+function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
     let jqueryId = '#' + property_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
     let code_app = "quotation";
+    if (is_sale_order === true) {
+        code_app = "saleorder";
+    }
     let data_filter = {'application__code': code_app};
     if (eleShow.is(':empty')) {
         $.fn.callAjax(url, method, data_filter).then(
@@ -64,8 +70,41 @@ function loadInitPropertyList(property_id, eleShow) {
                         data.application_property_list.map(function (item) {
                             item['is_property'] = true;
                             item['syntax'] = "prop(" + item.title + ")";
+                            item['syntax_show'] = "prop(" + item.title + ")";
                             let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            param_list += `<div class="row property-item">
+                            param_list += `<div class="row param-item">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                        })
+                        eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                    }
+                }
+            }
+        )
+    }
+}
+
+function loadInitParamList(param_id, eleShow) {
+    let jqueryId = '#' + param_id;
+    let ele = $(jqueryId);
+    let url = ele.attr('data-url');
+    let method = ele.attr('data-method');
+    let data_filter = {'param_type': 2};
+    if (eleShow.is(':empty')) {
+        $.fn.callAjax(url, method, data_filter).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
+                        let param_list = ``;
+                        data.indicator_param.map(function (item) {
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            param_list += `<div class="row param-item">
                                                 <button type="button" class="btn btn-flush-light">
                                                     <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
                                                     <input type="hidden" class="data-show" value="${dataStr}">
@@ -147,7 +186,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 3000);
+                            $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
                         }
                     },
                     (errs) => {
@@ -182,10 +221,10 @@ $(function () {
                         "width": "40%",
                         "targets": 1
                     }, {
-                        "width": "10%",
+                        "width": "5%",
                         "targets": 2
                     }, {
-                        "width": "40%",
+                        "width": "45%",
                         "targets": 3
                     }, {
                         "width": "5%",
@@ -203,7 +242,7 @@ $(function () {
                         targets: 1,
                         render: (data, type, row) => {
                             // return `<span>${row.title}</span>`
-                            return `<input type="text" class="form-control table-row-title" value="${row.title}">`
+                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`
                         }
                     },
                     {
@@ -233,7 +272,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Formula</h5>
+                                                    <h5 class="modal-title">${$.fn.transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -244,31 +283,30 @@ $(function () {
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="form-group">
-                                                            <label class="form-label">Editor</label>
-                                                            <textarea class="form-control indicator-editor" rows="2" cols="50" name=""></textarea>
-                                                            <input type="hidden" class="data-editor-submit">
+                                                            <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
+                                                            <textarea class="form-control indicator-editor" rows="4" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <ul class="nav nav-light">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
-                                                                <span class="nav-link-text">Indicator</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-indicator')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
-                                                                <span class="nav-link-text">Property</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-property')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabFunctionHref}">
-                                                                <span class="nav-link-text">Functions</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
-                                                                <span class="nav-link-text">Operators</span>
+                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-operator')}</span>
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -287,8 +325,10 @@ $(function () {
                                                                 </div>
                                                             </div>
                                                             <div class="row tab-pane fade" id="${tabFunctionID}">
-                                                                <div class="col-6"></div>
-                                                                <div class="col-6"></div>
+                                                                <div class="row">
+                                                                    <div class="col-4 function-list"></div>
+                                                                    <div class="col-8 function-description"></div>
+                                                                </div>
                                                             </div>
                                                             <div class="row tab-pane fade" id="${tabOperatorID}">
                                                                 <div class="col-6"></div>
@@ -297,13 +337,19 @@ $(function () {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button 
-                                                        type="button" 
-                                                        class="btn btn-primary btn-edit-indicator"
-                                                        data-id="${row.id}"
-                                                    >Save</button>
+                                                <div class="row modal-footer-edit-formula">
+                                                    <div class="col-6 modal-edit-formula-validate">
+                                                        <span class="valid-indicator-formula ml-1"></span>
+                                                    </div>
+                                                    <div class="col-6 modal-edit-formula-action">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                        <button 
+                                                            type="button" 
+                                                            class="btn btn-primary btn-edit-indicator"
+                                                            data-id="${row.id}"
+                                                            data-bs-dismiss="modal"
+                                                        >${$.fn.transEle.attr('data-btn-save')}</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -320,7 +366,6 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            // return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`
                             let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
                             let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                             return btn_edit + btn_delete;
@@ -348,14 +393,305 @@ $(function () {
             $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
         });
 
-        tableIndicator.on('click', '.table-row-save', function(e) {
-            let url_update = btnCreateIndicator.attr('data-url-update');
-            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
-            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
-            let method = "put";
+        tableIndicator.on('click', '.modal-edit-formula', function(e) {
+            let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
+            let row = $(this)[0].closest('tr');
+            let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
+            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
+            let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
+            if (!$form.hasClass('sale-order')) {
+                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+            } else {
+                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow), true);
+            }
+            let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
+            loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
+        });
+
+        tableIndicator.on('click', '.param-item', function(e) {
+            let propertySelected = $(this)[0].querySelector('.data-show');
+            if (propertySelected) {
+                let dataShow = JSON.parse(propertySelected.value);
+                // show editor
+                let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
+                editor.value = editor.value + dataShow.syntax;
+                // on blur editor to validate formula
+                $(editor).blur();
+            }
+        });
+
+        tableIndicator.on('mouseenter', '.param-item', function(e) {
+            let propertySelected = $(this)[0].querySelector('.data-show');
+            if (propertySelected) {
+                let dataShow = JSON.parse(propertySelected.value);
+                // show description
+                let eleDescription = null;
+                if ($(this)[0].closest('.tab-pane').querySelector('.property-description')) {
+                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.property-description');
+                } else if ($(this)[0].closest('.tab-pane').querySelector('.indicator-description')) {
+                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.indicator-description');
+                } else if ($(this)[0].closest('.tab-pane').querySelector('.function-description')) {
+                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.function-description');
+                }
+                if (eleDescription) {
+                    eleDescription.innerHTML = "";
+                    $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
+                                                <div class="row mb-3">
+                                                    <h5>${dataShow.title}</h5>
+                                                    <p>${dataShow.remark}</p>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <b>Syntax</b>
+                                                    <p class="ml-2">${dataShow.syntax_show}</p>
+                                                </div>
+                                                <div class="row">
+                                                    <b>Example</b>
+                                                    <p class="ml-2">${dataShow.example}</p>
+                                                </div>
+                                            </div>`)
+                }
+            }
+        });
+
+// Validate Indicator Formula Editor
+        tableIndicator.on('blur', '.indicator-editor', function (e) {
+            let editorValue = $(this).val();
+            let isValid = true;
+            let row = $(this)[0].closest('tr');
+            let btnSave = row.querySelector('.btn-edit-indicator')
+            // validate parenthesis "(", ")"
+            isValid = validateEditor(editorValue);
+            if (isValid.result === true) {
+                if (btnSave.hasAttribute('disabled')) {
+                    btnSave.removeAttribute('disabled')
+                }
+                row.querySelector('.valid-indicator-formula').innerHTML = "";
+            } else {
+                if (!btnSave.hasAttribute('disabled')) {
+                    btnSave.setAttribute('disabled', 'true');
+                }
+                if (isValid.remark === "parentheses") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
+                } else if (isValid.remark === "syntax") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "syntax error";
+                } else if (isValid.remark === "quote") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "single quote (') not allowed";
+                } else if (isValid.remark === "unbalance") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "value or operator expected";
+                }
+            }
+        })
+
+        function validateEditor(strValue) {
+            let isValid = validateParentheses(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'parentheses'
+                }
+            }
+            isValid = hasNonMatchingValue(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'syntax'
+                }
+            }
+            isValid = hasSingleQuote(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'quote'
+                }
+            }
+            isValid = notBalanceOperatorAndValue(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'unbalance'
+                }
+            }
+            return {
+                'result': true,
+                'remark': ''
+            }
+        }
+
+        // BEGIN all functions validate
+        function validateParentheses(strValue) {
+            let stack = [];
+            for (let i = 0; i < strValue.length; i++) {
+                let char = strValue[i];
+                if (char === "(") {
+                    // Push opening parenthesis to the stack
+                    stack.push(char);
+                } else if (char === ")") {
+                    // Check if there is a corresponding opening parenthesis
+                    if (stack.length === 0 || stack.pop() !== "(") {
+                        return false;
+                    }
+                }
+            }
+            // Check if there are any unclosed parentheses
+            return stack.length === 0;
+        }
+
+        function hasNonMatchingValue(strValue) {
+            let str_test = "";
+            let strValueNoSpace = strValue.replace(/\s/g, "");
+            let list_data = strValueNoSpace.match(main_regex);
+            if (list_data.length > 0) {
+                for (let item of list_data) {
+                    str_test += item
+                }
+            }
+            let str_test_no_space = str_test.replace(/\s/g, "");
+            return strValueNoSpace.length === str_test_no_space.length
+        }
+
+        function hasSingleQuote(strValue) {
+            return !strValue.includes("'")
+        }
+
+        function notBalanceOperatorAndValue(strValue) {
+            let list_data = parseStringToArray(strValue);
+            let valueCount = 0;
+            let operatorCount = 0;
+            for (let data of list_data) {
+                if (!["(", ")", "%"].includes(data)) {
+                    if (["+", "-", "*", "/"].includes(data)) {
+                        operatorCount++;
+                    } else {
+                        valueCount++
+                    }
+                }
+            }
+            return operatorCount === (valueCount - 1);
+        }
+
+// BEGIN setup formula
+        let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
+        let body_simple_regex = /\((.*?)\)/;
+        let body_nested_regex = /\((.*)\)/;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
+
+        function setupFormula(data_submit, ele) {
+            let row = ele[0].closest('tr');
+            let editor = row.querySelector('.indicator-editor');
+            let formula_list_raw = parseStringToArray(editor.value);
+            formula_list_raw = validateItemInList(formula_list_raw);
+            data_submit['formula_data'] = parseFormulaRaw(formula_list_raw, row);
+            data_submit['formula_data_show'] = editor.value;
+            return true
+        }
+
+        function parseStringToArray(expression) {
+            let data = expression.replace(/\s/g, "");
+            const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+            return data.match(main_regex)
+        }
+
+        function parseFormulaRaw(formula_list_raw, row) {
+            let formula_data = [];
+            let functionList = ['contains', 'empty', 'concat', 'min', 'max', 'sumItemIf'];
+            for (let item of formula_list_raw) {
+                if (functionList.some(value => item.includes(value))) { // FUNCTION
+                    let functionValue = functionList.find(value => item.includes(value));
+                    let functionJSON = checkMatchPropertyIndicator(functionValue, row, '.function-list');
+                    let functionBodyData = [];
+                    let functionBody = item.match(body_nested_regex)[1];
+                    let body_list_raw = functionBody.match(main_body_regex).map((match) => match.replace(/^"(.*)"$/, '$1'));
+                    for (let body_item of body_list_raw) {
+                        if (body_item.includes("indicator")) {
+                            let indicatorValue = body_item.match(body_nested_regex)[1];
+                            functionBodyData.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
+                        } else if (body_item.includes("prop")) {
+                            let propertyValue = body_item.match(body_nested_regex)[1];
+                            functionBodyData.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
+                        } else {
+                            functionBodyData.push(body_item);
+                        }
+                    }
+                    functionBodyData = validateItemInList(functionBodyData);
+                    functionJSON['function_data'] = functionBodyData;
+                    formula_data.push(functionJSON);
+                } else if (item.includes("indicator")) { // INDICATOR
+                    let indicatorValue = item.match(body_nested_regex)[1];
+                    formula_data.push(checkMatchPropertyIndicator(indicatorValue, row, '.indicator-list'));
+                } else if (item.includes("prop")) { // PROPERTY
+                    let propertyValue = item.match(body_nested_regex)[1];
+                    formula_data.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
+                } else {
+                    formula_data.push(item)
+                }
+            }
+            return formula_data
+        }
+
+        function checkMatchPropertyIndicator(check_value, row, classCheck) {
+            let result = "";
+            let choiceList = row.querySelector(classCheck);
+            let allChoice = choiceList.querySelectorAll('.param-item');
+            for (let indi of allChoice) {
+                let dataShow = indi.querySelector('.data-show');
+                if (dataShow) {
+                    let dataShowValue = JSON.parse(dataShow.value);
+                    if (dataShowValue.title.replace(/\s/g, "") === check_value) {
+                        result = dataShowValue;
+                        break
+                    }
+                }
+            }
+            return result
+        }
+
+        function validateItemInList(data_list) {
+            // valid "==", "!="
+            for (let i = 0; i < data_list.length; i++) {
+                let data = data_list[i];
+                if (data === "==") {
+                    data_list[i] = "===";
+                }
+                if (data === "!=") {
+                    data_list[i] = "!==";
+                }
+            }
+            // valid percent %
+            data_list = data_list.map((item) => {
+                if (item === "%") {
+                    return ["/", "100"];
+                }
+                return item;
+            }).flat();
+
+            return data_list
+        }
+// END setup formula
+
+// BEGIN SUBMIT
+        // submit create indicator
+        btnCreateIndicator.on('click', function(e) {
+            let url = $(this).attr('data-url');
+            let url_redirect = $(this).attr('data-url-redirect');
+            let method = $(this).attr('data-method');
             let data_submit = {};
-            data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
-            data_submit['description'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            let eleTitle = $('#indicator-create-title');
+            let eleRemark = $('#indicator-create-description');
+            data_submit['title'] = eleTitle.val();
+            data_submit['remark'] = eleRemark.val();
+            data_submit['example'] = "indicator(" + data_submit['title'] + ")";
+            let order = 1;
+            let tableEmpty = tableIndicator[0].querySelector('.dataTables_empty');
+            let tableLen = tableIndicator[0].tBodies[0].rows.length;
+            if (tableLen !== 0 && !tableEmpty) {
+                order = (tableLen + 1);
+            }
+            data_submit['order'] = order;
+            let application_code = 'quotation';
+            if ($form.hasClass('sale-order')) {
+                application_code = 'saleorder';
+            }
+            data_submit['application_code'] = application_code;
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)
                 .then(
@@ -363,7 +699,33 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 3000);
+                            $.fn.redirectUrl(url_redirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+        });
+
+        // submit edit title & description on row
+        tableIndicator.on('click', '.table-row-save', function(e) {
+            let url_update = btnCreateIndicator.attr('data-url-update');
+            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
+            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
+            let method = "put";
+            let data_submit = {};
+            data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
+            data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            data_submit['example'] = "indicator(" + data_submit['title'] + ")";
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, data_submit, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            // $.fn.redirectUrl(url_redirect, 3000);
                         }
                     },
                     (errs) => {
@@ -374,134 +736,7 @@ $(function () {
             $(this)[0].setAttribute('disabled', true);
         });
 
-        tableIndicator.on('click', '.modal-edit-formula', function(e) {
-            let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
-            let row = $(this)[0].closest('tr');
-            let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
-            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
-            let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
-            loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
-        });
-
-        tableIndicator.on('click', '.property-item', function(e) {
-            let propertySelected = $(this)[0].querySelector('.data-show');
-            if (propertySelected) {
-                let dataShow = JSON.parse(propertySelected.value);
-                // show editor
-                let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
-                editor.value = editor.value + dataShow.syntax;
-            }
-        });
-
-        tableIndicator.on('mouseenter', '.property-item', function(e) {
-            let propertySelected = $(this)[0].querySelector('.data-show');
-            if (propertySelected) {
-                let dataShow = JSON.parse(propertySelected.value);
-                // show description
-                let eleDescription = null;
-                if ($(this)[0].closest('.tab-pane').querySelector('.property-description')) {
-                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.property-description');
-                } else if ($(this)[0].closest('.tab-pane').querySelector('.indicator-description')) {
-                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.indicator-description');
-                }
-                if (eleDescription) {
-                    eleDescription.innerHTML = "";
-                    $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
-                                                <div class="row mb-2">
-                                                    <h5>${dataShow.title}</h5>
-                                                    <p>${dataShow.remark}</p>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <b>Syntax</b>
-                                                    <p>${dataShow.syntax}</p>
-                                                </div>
-                                                <div class="row">
-                                                    <b>Example</b>
-                                                    <p>"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
-                                                </div>
-                                            </div>`)
-                }
-            }
-        });
-
-        function setupFormula(data_submit, ele) {
-            // setup formula
-            let formula_data = [];
-            let row = ele[0].closest('tr');
-            let editor = row.querySelector('.indicator-editor');
-            const regex = /indicator\([^)]*\)|prop\([^)]*\)|[+\-*\/()]|(\d+)|'(\d+)'/g;
-            const formula_list_raw = editor.value.match(regex);
-            for (let item of formula_list_raw) {
-                if (item.includes("indicator")) {
-                    let indicatorValue = item.match(/\((.*?)\)/)[1];
-                    checkMatchParam(formula_data, indicatorValue, row, true, false);
-                } else if (item.includes("prop")) {
-                    let propertyValue = item.match(/\((.*?)\)/)[1];
-                    checkMatchParam(formula_data, propertyValue, row, false, true);
-                } else {
-                    formula_data.push(item)
-                }
-            }
-            data_submit['formula_data'] = formula_data;
-            data_submit['formula_data_show'] = editor.value;
-            return true
-        }
-
-        function checkMatchParam(formula_data, check_value, row, is_indicator = false, is_property = false) {
-            let classCheck = '';
-            if (is_indicator === true) {
-                classCheck = '.indicator-list';
-            } else if (is_property === true) {
-                classCheck = '.property-list';
-            }
-            let choiceList = row.querySelector(classCheck);
-            let allChoice = choiceList.querySelectorAll('.property-item');
-            for (let indi of allChoice) {
-                let dataShow = indi.querySelector('.data-show');
-                if (dataShow) {
-                    let dataShowValue = JSON.parse(dataShow.value);
-                    if (dataShowValue.title === check_value) {
-                        formula_data.push(dataShowValue);
-                        break
-                    }
-                }
-            }
-        }
-
-        // submit create indicator
-        btnCreateIndicator.on('click', function(e) {
-            let url = $(this).attr('data-url');
-            let url_redirect = $(this).attr('data-url-redirect');
-            let method = $(this).attr('data-method');
-            let data_submit = {};
-            data_submit['title'] = $('#indicator-create-title').val();
-            data_submit['remark'] = $('#indicator-create-description').val();
-            let order = 1;
-            let tableEmpty = tableIndicator[0].querySelector('.dataTables_empty');
-            let tableLen = tableIndicator[0].tBodies[0].rows.length;
-            if (tableLen !== 0 && !tableEmpty) {
-                order = (tableLen + 1);
-            }
-            data_submit['order'] = order;
-            let application_code = 'quotation'
-            data_submit['application_code'] = application_code;
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(url, method, data_submit, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 3000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                    }
-                )
-        });
-
-        // submit update indicator
+        // submit update indicator formula
         tableIndicator.on('click', '.btn-edit-indicator', function (e) {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
@@ -516,13 +751,48 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 3000);
+                            // $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
                     }
                 )
+        });
+
+        // submit restore indicator
+        $('#btn-accept-restore-indicator').on('click', function (e) {
+            if (!tableIndicator[0].querySelector('.dataTables_empty')) {
+                let dataID = null;
+                for (let i = 0; i < tableIndicator[0].tBodies[0].rows.length; i++) {
+                    let row = tableIndicator[0].tBodies[0].rows[i];
+                    dataID = row.querySelector('.table-row-save').getAttribute('data-id');
+                    if (dataID) {
+                        break;
+                    }
+                }
+                if (dataID) {
+                    let url_update = $(this).attr('data-url');
+                    let url = url_update.format_url_with_uuid(dataID);
+                    let url_redirect = $(this).attr('data-url-redirect');
+                    let method = $(this).attr('data-method');
+                    let data_submit = {};
+                    let csr = $("[name=csrfmiddlewaretoken]").val();
+                    $.fn.callAjax(url, method, data_submit, csr)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyPopup({description: data.message}, 'success')
+                                    $.fn.redirectUrl(url_redirect, 1000);
+                                }
+                            },
+                            (errs) => {
+                                console.log(errs)
+                            }
+                        )
+                }
+            }
         });
 
 

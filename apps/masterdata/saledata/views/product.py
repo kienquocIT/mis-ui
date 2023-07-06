@@ -429,9 +429,15 @@ class ProductDetail(View):
     )
 
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp.state:
-            return {'unit': resp.result}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        if resp0.state and resp1.state and resp2.state:
+            return {
+                       'unit': resp0.result,
+                       'warehouse_product_list': resp1.result,
+                       'unit_of_measure': resp2.result,
+                   }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

@@ -23,6 +23,7 @@ $(async function () {
         contentModalHandle(idx, config, prod_data) {
             const _this = this
             let url = $('#url-factory').attr('data-warehouse-prod')
+
             $.fn.callAjax(url, 'get', {
                 'product_id': prod_data?.product_data?.id,
                 'uom_id': prod_data?.uom_data?.id
@@ -36,9 +37,9 @@ $(async function () {
                     temp[isKey] = isData
                     _this.setWarehouseList = temp
                     // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
-                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy
+                    // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
                     let delivery = prod_data?.delivery_data;
-                    let listConvert_config1 = []
+                    let newData = []
                     for (let [idx, item] of isData.entries()){
                         item.picked = 0
                         if (!config.is_picking && !config.is_partial_ship){
@@ -51,8 +52,8 @@ $(async function () {
                                     item.picked = val.stock
                                 }
                         }
-                        else if ((config.is_picking && !config.is_partial_ship) || (config.is_picking && config.is_partial_ship) && delivery){
-                            // config 3, 4
+                        else if ((config.is_picking && !config.is_partial_ship) && delivery ) {
+                            // config 3
                                 item.product_amount = 0
                                 for (const val of delivery){
                                     if (val.warehouse === item.id
@@ -63,11 +64,27 @@ $(async function () {
                                     }
                                 }
                         }
-                        listConvert_config1.push(item)
+                        else if ((config.is_picking && config.is_partial_ship) && delivery){
+                            // config 4
+                            // nếu ready quantity > 0 => có hàng để giao
+                            // lấy delivery
+                            item.product_amount = 0
+                            if (prod_data.ready_quantity > 0){
+                                for (const val of delivery) {
+                                    if (val.warehouse === item.id
+                                        && val.uom === prod_data.uom_data.id
+                                    ) {
+                                        if (item.product_amount === prod_data.ready_quantity ) break;
+                                        item.product_amount += val.stock
+                                    }
+                                }
+                            }
+                        }
+
+                        newData.push(item)
                     }
-                    isData = listConvert_config1
                     table.not('.dataTable').DataTable({
-                        data: isData,
+                        data: newData,
                         searching: false,
                         ordering: false,
                         paginate: false,
@@ -94,8 +111,10 @@ $(async function () {
                                 class: 'w-25 text-center',
                                 data: 'product_amount',
                                 render: (row, type, data) => {
-                                    if (data.picked_ready > 0)
-                                        return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
+                                    if (data.picked_ready > 0 && config.is_picking)
+                                        if (config.is_partial_ship)
+                                            return `<p>${row}&nbsp;&nbsp;&nbsp;(${data.picked_ready})`
+                                        else return `<p>${row}`
                                     return `<p>${row}</p>`;
                                 }
                             },
@@ -157,7 +176,7 @@ $(async function () {
                     })
                     if (table.hasClass('dataTable')) {
                         table.DataTable().clear().draw();
-                        table.DataTable().rows.add(isData).draw();
+                        table.DataTable().rows.add(newData).draw();
                     }
                     $('#warehouseStockModal').modal('show');
                     $('#save-stock').off().on('click', function (e) {
@@ -174,12 +193,15 @@ $(async function () {
                                 temp_picked += item.picked
                             }
                         }
-                        let tableTargetData = _this.getProdList
-                        tableTargetData[idx]['picked_quantity'] = temp_picked
-                        tableTargetData[idx]['delivery_data'] = sub_delivery_data
-                        _this.setProdList = tableTargetData
-                        let targetTable = $('#dtbPickingProductList')
-                        targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw()
+                        if (temp_picked > 0){
+                            // lấy hàng từ popup warehouse add vào danh sách product detail
+                            let tableTargetData = _this.getProdList
+                            tableTargetData[idx]['picked_quantity'] = temp_picked
+                            tableTargetData[idx]['delivery_data'] = sub_delivery_data
+                            _this.setProdList = tableTargetData
+                            let targetTable = $('#dtbPickingProductList')
+                            targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw()
+                        }
                         $('#warehouseStockModal').modal('hide');
                     })
                 })
@@ -313,7 +335,7 @@ $(async function () {
                 const $url = $('#url-factory');
                 const res = $.fn.switcherResp(req);
                 const $saleOrder = $('#inputSaleOrder');
-                $saleOrder.val(res.sale_order_data.title)
+                $saleOrder.val(res.sale_order_data.code)
                 $('.title-code').text(res.code)
                 if (res.estimated_delivery_date) {
                     const deliveryDate = moment(res.estimated_delivery_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
@@ -417,11 +439,11 @@ $(async function () {
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
-                    (errs) => {
-                        if (errs.data.errors.hasOwnProperty('detail')) {
-                            $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
-                        }
-                    }
+                    // (errs) => {
+                    //     if (errs.data.errors.hasOwnProperty('detail')) {
+                    //         $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    //     }
+                    // }
                 )
                 .catch((err) => {
                     console.log(err)

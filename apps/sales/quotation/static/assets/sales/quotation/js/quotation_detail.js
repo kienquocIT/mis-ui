@@ -32,7 +32,13 @@ $(function () {
                         dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense', true);
                     }
                     // prepare for copy quotation to sale order
-                    $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                    if (!$form.hasClass('sale-order')) {
+                        $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                    } else {
+                        if (Object.keys(data.quotation).length > 0) {
+                            loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', data.quotation.id);
+                        }
+                    }
 
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');

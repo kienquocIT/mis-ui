@@ -2,7 +2,7 @@
 
 $(function () {
     $(document).ready(function () {
-        const id = window.location.pathname.split('/').pop();
+        const id = $.fn.getPkDetail()
         const frmDetail = $('#frmDetail');
         const choose_AP_ele = $('#chooseAdvancePayment');
 
@@ -95,11 +95,11 @@ $(function () {
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt + 1}</td>
-                                <td class="wrap-text col-expense" data-id="${item.id}"><span>${item.expense.title}</span></td>
+                                <td class="wrap-text col-expense" data-id="${item.id}"><span class="text-primary">${item.expense.title}</span></td>
                                 <td class="wrap-text"><span>${item.expense_type}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text">
-                                    <input class="mask-money form-control return-price" type="text" value="${item.return_price}" data-return-type="number" readonly> 
+                                    <input class="mask-money form-control return-price" disabled type="text" value="${item.return_price}" data-return-type="number" readonly> 
                                 </td>
                             </tr>`;
                 table.find('tbody').append(html);
@@ -156,7 +156,7 @@ $(function () {
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                     }
                 )
         })

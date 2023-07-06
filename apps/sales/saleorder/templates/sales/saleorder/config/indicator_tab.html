@@ -35,7 +35,7 @@
 <table
         id="table_indicator_list"
         class="table nowrap w-100 mb-5"
-        data-url="{% url 'QuotationIndicatorListAPI' %}"
+        data-url="{% url 'SaleOrderIndicatorListAPI' %}"
         data-method="get"
 >
     <thead>
@@ -96,9 +96,9 @@
                         type="button"
                         class="btn btn-primary"
                         id="btn-create-indicator"
-                        data-url="{% url 'QuotationIndicatorListAPI' %}"
-                        data-url-redirect="{% url 'QuotationConfigDetail' %}"
-                        data-url-update="{% url 'QuotationIndicatorDetailAPI' 1 %}"
+                        data-url="{% url 'SaleOrderIndicatorListAPI' %}"
+                        data-url-redirect="{% url 'SaleOrderConfigDetail' %}"
+                        data-url-update="{% url 'SaleOrderIndicatorDetailAPI' 1 %}"
                         data-method="post"
                 >{% trans 'Save' %}</button>
             </div>
@@ -125,8 +125,8 @@
                             class="btn btn-link btn-accept-restore"
                             data-bs-dismiss="modal"
                             id="btn-accept-restore-indicator"
-                            data-url="{% url 'QuotationIndicatorRestoreAPI' 1 %}"
-                            data-url-redirect="{% url 'QuotationConfigDetail' %}"
+                            data-url="{% url 'SaleOrderIndicatorRestoreAPI' 1 %}"
+                            data-url-redirect="{% url 'SaleOrderConfigDetail' %}"
                             data-method="put"
                     >{% trans 'Restore' %}</button>
                 </div>

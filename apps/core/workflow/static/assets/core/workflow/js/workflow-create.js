@@ -38,7 +38,7 @@ $(function () {
             let nodeTableData = setupDataNode(true);
             // check status Node before submit
             if (nodeTableData === false) {
-                $.fn.notifyPopup({description: 'Please complete Nodes data'}, 'failure');
+                $.fn.notifyPopup({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
                 return false
             }
             // get exit node condition for node list

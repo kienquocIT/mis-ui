@@ -831,7 +831,7 @@ $(function () {
             let nodeTableData = setupDataNode(true);
             // check status Node before submit
             if (nodeTableData === false) {
-                $.fn.notifyPopup({description: 'Please complete Nodes data'}, 'failure');
+                $.fn.notifyPopup({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
                 return false
             }
             // add condition object for node list

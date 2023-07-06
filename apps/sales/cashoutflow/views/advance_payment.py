@@ -37,6 +37,7 @@ class AdvancePaymentCreate(View):
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
         return {'data':
             {
                 'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -48,7 +49,8 @@ class AdvancePaymentCreate(View):
                 'opportunity_list': resp6.result,
                 'employee_list': resp7.result,
                 'tax_list': resp8.result,
-                'unit_of_measure': resp9.result
+                'unit_of_measure': resp9.result,
+                'payment_cost_items_list': resp10.result
             }
         }, status.HTTP_200_OK
 
@@ -102,6 +104,7 @@ class AdvancePaymentDetail(View):
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
         return {'data':
             {
                 'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -113,7 +116,8 @@ class AdvancePaymentDetail(View):
                 'opportunity_list': resp6.result,
                 'employee_list': resp7.result,
                 'tax_list': resp8.result,
-                'unit_of_measure': resp9.result
+                'unit_of_measure': resp9.result,
+                'payment_cost_items_list': resp10.result
             }
         }, status.HTTP_200_OK
 

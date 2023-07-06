@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Opportunity list' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href=""
+       data-bs-toggle="modal"
+       data-bs-target="#create-new-call-log"
+       id="create-new-call-log-button"
+       data-bs-original-title="Add New Call Log">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i
+                            data-feather="plus">
+                    </i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+    <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5" data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
+        <thead>
+        <tr>
+            <th class="w-40">{% trans 'Subject' %}</th>
+            <th class="w-20">{% trans 'To Contact' %}</th>
+            <th class="text-center w-20">{% trans 'Sale Code' %}</th>
+            <th class="text-center w-20">{% trans 'Date' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create New Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form data-url="{% url 'OpportunityCallLogListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityCallLogList' %}"
+                          data-method="POST"
+                          id="form-create-new-call-log"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Subject' %}
+                            </label>
+                            <input id="subject-input" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Sale Code' %}
+                            </label>
+                            <select id="sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Customer' %}
+                            </label>
+                            <select id="account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label required">
+                                    {% trans 'Contact' %}
+                                </label>
+                                <select id="contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label required">
+                                    {% trans 'Date' %}
+                                </label>
+                                <input id="date-input" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {% trans 'Input Result' %}
+                            </label>
+                            <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3"
+                                id="btn-create-new-call-log">{% trans 'Save' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/call_log_list.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}

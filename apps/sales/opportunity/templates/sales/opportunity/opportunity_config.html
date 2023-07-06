@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+'{% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
 {% endblock %}
@@ -20,15 +20,22 @@
 {% endblock %}
 
 {% block pageContent %}
+    <div id="div_text" hidden>
+        <input id="input-text-and" value="{% trans "And" %}"/>
+        <input id="input-text-or" value="{% trans "Or" %}"/>
+    </div>
+    <div id="div-data" class="hidden">
+        {{ data.property_opportunity_list | json_script:"id-property-stage-condition" }}
+    </div>
     <div class="row">
         <ul class="nav nav-light nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
                     <span class="nav-link-text">{% trans 'General' %}</span>
                 </a>
             </li>
             <li class="nav-item" id="tab-indicator">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_stage">
                     <span class="nav-link-text">{% trans 'Stage' %}</span>
                 </a>
             </li>
@@ -37,14 +44,19 @@
     <form id="frm-detail-opportunity-config" data-method="PUT" data-url="{% url 'OpportunityConfigAPI' %}">
         {% csrf_token %}
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab_block_1">
+            <div class="tab-pane fade show active" id="tab_general">
+                <div class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input" id="is-AM-create">
+                    <label
+                            class="form-check-label disabled-label" for="is-AM-create"
+                    >{% trans 'Only the Account Manager of a Customer is allowed to create an Opportunity for that Customer' %}</label>
+                </div>
                 <div class="form-check mb-2">
                     <input type="checkbox" class="form-check-input" id="is-select-stage" name="is_select_stage">
                     <label
                             class="form-check-label disabled-label" for="is-select-stage"
                     >{% trans 'User choise stage of Opportunity' %}</label>
                 </div>
-
                 <div class="form-check mb-2">
                     <input type="checkbox" class="form-check-input" id="is-input-win-rate" name="is_input_win_rate">
                     <label
@@ -87,8 +99,40 @@
                 </div>
 
             </div>
-            <div class="tab-pane fade" id="tab_block_2">
-
+            <div class="tab-pane fade" id="tab_stage">
+                <button type="button" class="btn btn-link btn-animated mt-3" data-bs-toggle="modal"
+                        data-bs-target="#modalCreateStage">
+                    <span>
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i data-feather="plus"></i>
+                            </span>
+                        </span>
+                        <span>{% trans 'Add Stage' %}</span>
+                    </span>
+                </button>
+                <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalRestoreDefault"
+                        class="btn btn-primary btn-animated mt-3"
+                >{% trans "Restore Default" %}</button>
+                <div class="table-responsive">
+                    <table class="table nowrap w-100" id="table-opportunity-config-stage"
+                           data-url="{% url "OpportunityConfigStageListAPI" %}" data-method="GET"
+                           data-url-detail="{% url "OpportunityConfigStageDetailAPI" pk=0 %}">
+                        <thead>
+                        <tr>
+                            <th class="wrap- w-5">#</th>
+                            <th class="wrap-text w-25">{% trans 'Indicator' %}</th>
+                            <th class="wrap-text w-45">{% trans 'Description' %}</th>
+                            <th class="wrap-text w-15">{% trans 'Win rate' %}</th>
+                            <th class="wrap-text w-5">{% trans 'Stage Condition' %}</th>
+                            <th class="w-5"></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </form>
@@ -121,9 +165,178 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalDetailStage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+         aria-hidden="true" data-method="GET" data-url="{% url "OpportunityConfigStageDetailAPI" pk=0 %}">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Stage Condition" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm-edit-condition" data-method="PUT"
+                          data-url="{% url "OpportunityConfigStageDetailAPI" pk=0 %}">
+                        <h6 class="header-title text"></h6>
+                        <input id="input-id-stage" class="hidden"/>
+                        <div class="condition">
+                            <div class="row mt-3 sub-condition">
+                                <div class="col-2"></div>
+                                <div class="col-4 form-group">
+                                    <select class="form-select box-select-attr">
+                                        <option></option>
+                                        {% for item in data.property_opportunity_list %}
+                                            <option value="{{ item.id }}">{{ item.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-2 form-group">
+                                    <select class="form-select box-select-comparison-operator">
+                                    </select>
+                                </div>
+                                <div class="col-3 form-group">
+                                    <select class="form-select box-select-compare">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-condition-hidden" hidden>
+                            <div class="row mt-3 sub-condition">
+                                <div class="col-1"></div>
+                                <div class="col-1">
+                                    <span class="badge badge-soft-primary span-logic-operator"></span>
+                                </div>
+                                <div class="col-4 form-group">
+                                    <select class="form-select box-select-attr">
+                                        <option></option>
+                                        {% for item in data.property_opportunity_list %}
+                                            <option value="{{ item.id }}">{{ item.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-2 form-group">
+                                    <select class="form-select box-select-comparison-operator">
+                                    </select>
+                                </div>
+                                <div class="col-3 form-group">
+                                    <select class="form-select box-select-compare">
+                                    </select>
+                                </div>
+                                <div class="col-1">
+                                    <a
+                                            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-delete-condition"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="" data-bs-original-title="Delete"
+                                            href="#"
+                                    >
+                                        <span class="icon">
+                                            <span class="feather-icon">
+                                                <i data-feather="trash-2"></i>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2 form-group">
+                                <select class="form-select" id="box-select-logic-operator">
+                                    <option value="0">{% trans "And" %}</option>
+                                    <option value="1">{% trans "Or" %}</option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <button aria-expanded="false"
+                                        class="btn badge badge-primary badge-outline mt-2" id="btn-add-condition"
+                                        type="button">{% trans "Add" %}
+                                    <span class="caret"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="frm-edit-condition">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCreateStage" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans "Create New Stage" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm-create-stage" data-method="POST" data-url="{% url "OpportunityConfigStageListAPI" %}">
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Indicator" %}</label>
+                            <input class="form-control" name="indicator"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Description" %}</label>
+                            <textarea class="form-control" name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Win rate" %}</label>
+                            <div class="input-group mb-3">
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input type="number" step="0.1" class="form-control" name="win_rate"/>
+                                    <span class="input-suffix">%</span>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                    <button class="btn btn-primary" form="frm-create-stage">{% trans "Create" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalRestoreDefault" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans "Restore Default Stage" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center">{% trans "System will restore default setting" %}</h4>
+                    <div class="text-center div-loading" hidden>
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button class="btn btn-primary" id="btn-restore-default-stage" data-method="PUT"
+                            data-url="{% url "RestoreDefaultStageAPI" pk=0 %}">{% trans "Confirm" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 
 {% block jsFooter %}
     <script src="{% static 'assets/sales/opportunity/js/opportunity_config.js' %}"></script>
-{% endblock %}
+{% endblock %}'

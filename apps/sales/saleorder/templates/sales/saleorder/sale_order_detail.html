@@ -41,7 +41,7 @@
             </li>
             <li class="nav-item quotation-tab-item" id="tab-indicator">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                    <span class="nav-link-text"><i class="far fa-chart-bar"></i></span>
+                    <span class="nav-link-text"><i class="fa-solid fa-chart-line"></i></span>
                 </a>
             </li>
         </ul>
@@ -61,23 +61,41 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
-                                <input
-                                        type="text" class="form-control disabled-but-edit"
-                                        placeholder="input title"
-                                        name="title"
-                                        id="quotation-create-title"
-                                        required
-                                        disabled
-                                >
-                                <span class="form-text text-muted">{% trans 'title of sale order' %}</span>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
+                                    <input
+                                            type="text" class="form-control disabled-but-edit"
+                                            placeholder="input title"
+                                            name="title"
+                                            id="quotation-create-title"
+                                            required
+                                            disabled
+                                    >
+                                    <small class="form-text text-muted">{% trans 'title of sale order' %}</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="quotation-create-code">{% trans 'Code' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <input
+                                                    type="text" class="form-control disabled-custom-show"
+                                                    name="quotation_code"
+                                                    id="quotation-create-code"
+                                                    disabled
+                                            >
+                                        </span>
+                                    </div>
+                                    <small class="form-text text-muted">{% trans 'Code of sale order' %}</small>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Opportunity' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-opportunity">{% trans 'Select Opportunity' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -104,10 +122,10 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Opportunity link to sale order' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Customer' %}<span class="required"></span></label>
+                                    <label class="form-label" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -135,10 +153,10 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Customer link to sale order' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Contact' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -161,14 +179,15 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
+                                                required
                                                 disabled
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Contact link to sale order' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
+                                    <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -195,12 +214,12 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Payment term of sale order' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Payment term of sale order' %}</small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Date Created' %}</label>
+                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <input
@@ -212,10 +231,10 @@
                                             >
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Date create sale order' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Status' %}</label>
+                                    <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <input
@@ -227,10 +246,10 @@
                                             >
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Status of sale order' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Sale Person' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -253,14 +272,15 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="sale_person"
+                                                required
                                                 disabled
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Sale person of sale order' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Quotation' %}</label>
+                                    <label class="form-label" for="select-box-quotation">{% trans 'Select Quotation' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -287,7 +307,7 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Quotation link to sale order' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Quotation link to sale order' %}</small>
                                 </div>
                             </div>
                         </div>
@@ -334,10 +354,10 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-2">
-                                        <button type="button" class="btn btn-soft-primary">Print</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Print' %}</button>
                                     </div>
                                     <div class="col-4">
-                                        <button type="button" class="btn btn-soft-primary">Send Email</button>
+                                        <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
                                     </div>
                                     <div class="col-3">
                                         <button
@@ -656,7 +676,7 @@
                                                             <button
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
-                                                            >Close
+                                                            >{% trans 'Close' %}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -695,7 +715,7 @@
                                                     <button
                                                             type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    >{% trans 'Close' %}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -729,7 +749,7 @@
                                                     <button
                                                             type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    >{% trans 'Close' %}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1011,27 +1031,30 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-2">
+                    <div class="row mb-3">
                         <div class="col-2">
                             <button
                                     type="button"
                                     class="btn btn-soft-success disabled-but-edit"
                                     id="btn-refresh-quotation-indicator"
-                                    disabled
-                            >{% trans 'Refresh Data' %}</button>
+                            >
+                            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
+                            </button>
                         </div>
                         <div class="col-10"></div>
                     </div>
                     <table
                             id="datable-quotation-create-indicator"
-                            class="table nowrap w-100 mb-5"
+                            class="table nowrap w-100 mb-5 sale-order"
                     >
                         <thead>
                         <tr>
                             <th>STT</th>
                             <th>{% trans 'Indicator name' %}</th>
-                            <th>{% trans 'Indicator Value' %}</th>
-                            <th>{% trans 'Indicator Rate' %}</th>
+                            <th>{% trans 'Quotation indicator value' %}</th>
+                            <th>{% trans 'Sale order indicator value' %}</th>
+                            <th>{% trans 'Difference value' %}</th>
+                            <th>{% trans 'Indicator rate' %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1041,11 +1064,21 @@
                 <input
                         type="hidden"
                         id="quotation-indicator-data"
-                        data-url="{% url 'QuotationIndicatorListAPI' %}"
+                        data-url="{% url 'SaleOrderIndicatorListAPI' %}"
                         data-method="get"
                 >
             </div>
         </div>
+        <input
+            type="hidden"
+            id="base-trans-factory"
+            data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
+            data-select-address="{% trans 'Select this address' %}"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-btn-close="{% trans 'Close' %}"
+            data-more-information="{% trans 'More information' %}"
+            data-apply="{% trans 'Apply' %}"
+        >
     </form>
 {% endblock %}
 

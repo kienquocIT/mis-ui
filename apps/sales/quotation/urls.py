@@ -1,8 +1,8 @@
 from django.urls import path
 from apps.sales.quotation.views import (
     QuotationCreate, QuotationList, QuotationListAPI, QuotationDetail, QuotationConfigDetail,
-    QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI, PaymentCostItemsListAPI,
-    QuotationIndicatorListAPI, QuotationIndicatorDetailAPI
+    QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI,
+    QuotationIndicatorListAPI, QuotationIndicatorDetailAPI, QuotationIndicatorRestoreAPI
 )
 
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     path('config/api', QuotationConfigDetailAPI.as_view(), name='QuotationConfigDetailAPI'),
     path('indicators/api', QuotationIndicatorListAPI.as_view(), name='QuotationIndicatorListAPI'),
     path('indicator-api/<str:pk>', QuotationIndicatorDetailAPI.as_view(), name='QuotationIndicatorDetailAPI'),
+    path('indicator-restore-api/<str:pk>', QuotationIndicatorRestoreAPI.as_view(), name='QuotationIndicatorRestoreAPI'),
 
     path('lists', QuotationList.as_view(), name='QuotationList'),
     path('api/lists', QuotationListAPI.as_view(), name='QuotationListAPI'),
@@ -17,5 +18,4 @@ urlpatterns = [
     path('detail/<str:pk>', QuotationDetail.as_view(), name='QuotationDetail'),
     path('detail-api/<str:pk>', QuotationDetailAPI.as_view(), name='QuotationDetailAPI'),
     path('quotation-expense-list', QuotationExpenseListAPI.as_view(), name='QuotationExpenseListAPI'),
-    path('payment-cost-items-list', PaymentCostItemsListAPI.as_view(), name='PaymentCostItemsListAPI'),
 ]

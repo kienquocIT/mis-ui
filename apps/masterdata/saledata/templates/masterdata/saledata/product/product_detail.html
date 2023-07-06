@@ -262,20 +262,30 @@
                                 readonly="readonly" name="valuation_method"></select>
                     </div>
                 </div>
-                <div class="row mt-5" hidden>
+                <div class="row mt-5 mb-20">
                     <div class="col-1"></div>
                     <div class="col-10">
-                        <table id="datatable-warehouse-list" class="table nowrap w-100 mb-5"
-                               data-url="{% url "AccountListAPI" %}"
+                        <table id="datatable-warehouse-list" class="table nowrap w-100"
+                               data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
                             <th class="w-15">{% trans "Warehouse Code" %}</th>
-                            <th class="w-25" style="text-align: center">{% trans "Warehouse Name" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "Stock" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "Avalable" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "wait for delivery" %}</th>
-                            <th class="w-15" style="text-align: center">{% trans "wait for receipt" %}</th>
+                            <th class="w-25">{% trans "Warehouse Name" %}</th>
+                            <th class="w-15">{% trans "Stock" %}</th>
+                            <th class="w-15">{% trans "wait for delivery" %}</th>
+                            <th class="w-15">{% trans "wait for receipt" %}</th>
+                            <th class="w-15">{% trans "Available" %}</th>
                             </thead>
+                            <tfoot>
+                            <tr style="background-color: rgba(0, 125, 136, 0.15)">
+                                <th></th>
+                                <th class="text-primary"><b>Total</b></th>
+                                <th class="text-primary"></th>
+                                <th class="text-primary"></th>
+                                <th class="text-primary"></th>
+                                <th class="text-primary"></th>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="col-1"></div>
@@ -284,6 +294,8 @@
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}
+    {{ data.warehouse_product_list | json_script:"warehouse_product_list" }}
+    {{ data.unit_of_measure | json_script:"unit_of_measure" }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "assets/js/masterdata/saledata/product/product_detail.js" %}"></script>

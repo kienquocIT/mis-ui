@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#dtbReturnAdvance');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -17,34 +18,23 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        render: (data, type, row, meta) => {
-                            return '';
-                        }
-                    },
-                    {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
-                                frm.getUrlDetail(row.id), data
-                            )
+                            return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                data
-                            )
+                            return `<a class="link-primary underline_hover" target="_blank" href="` + $('#dtbReturnAdvance').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                         }
                     },
                     {
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                row.advance_payment.code
-                            )
+                            return `<a class="link-danger underline_hover" target="_blank" href="` + $('#dtbReturnAdvance').attr('data-url-detail-ap').replace('0', row.advance_payment.id) + `">` + row.advance_payment.code + `</a>`
                         }
                     },
                     {
@@ -60,7 +50,7 @@ $(document).ready(function () {
                         data: 'return_total',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="mask-money" data-init-money="{0}"></span>`.format_by_idx(
+                            return `<span class="mask-money text-primary" data-init-money="{0}"></span>`.format_by_idx(
                                 data
                             )
                         }
@@ -69,17 +59,27 @@ $(document).ready(function () {
                         data: 'money_received',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                data
-                            )
+                            let waiting_trans = $('#dtbReturnAdvance').attr('data-type-translate-waiting')
+                            let received_trans = $('#dtbReturnAdvance').attr('data-type-translate-received')
+                            if (row.money_received === 'Waiting') {
+                                return `<span class="badge badge-soft-warning badge-outline w-50">` + waiting_trans + `</span>`
+                            }
+                            else {
+                                return `<span class="badge badge-soft-blue badge-outline w-50">` + received_trans + `</span>`
+                            }
+
                         }
                     },
                     {
                         data: 'status',
                         render: (data, type, row) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                data
-                            )
+                            let approved_trans = $('#dtbReturnAdvance').attr('data-type-translate-approved')
+                            if (row.money_received === 'Received') {
+                                return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                            }
+                            if (row.money_received === 'Waiting') {
+                                return `<span class="text-success">` + approved_trans + `</span>`
+                            }
                         },
                     },
 

@@ -174,11 +174,13 @@ $(document).ready(function () {
         });
 
     });
+
+
     $('#call_delivery').off().on('click', function () {
-        $.fn.showLoading();
         const row = $('input[type="checkbox"]:checked', $('#sale_order_approved'))
         const isData = $Table.DataTable().row(row.closest('tr')).data();
         if (isData && isData.hasOwnProperty('id')){
+            $.fn.showLoading();
             const url = $('#url-factory').attr('data-create-delivery').replace('1', isData.id);
             $.fn.callAjax(
                 url,

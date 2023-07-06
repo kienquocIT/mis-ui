@@ -22,10 +22,12 @@ class loadDataHandle {
                         if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                             data.opportunity_list.map(function (item) {
                                 let check_used = item.quotation_id;
+                                let check_close = false;
                                 if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
                                    check_used = item.sale_order_id
                                 }
-                                if (check_used === null || valueToSelect === item.id) {
+                                check_close = item.is_close;
+                                if ((check_used === null && check_close === false) || valueToSelect === item.id) {
                                     let dataStr = JSON.stringify({
                                         'id': item.id,
                                         'title': item.title,
@@ -1852,9 +1854,9 @@ class dataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-promotion-id="${row.id}" data-bs-dismiss="modal">Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-promotion-id="${row.id}" data-bs-dismiss="modal">${$.fn.transEle.attr('data-apply')}</button>`;
                         } else {
-                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>Apply</button>`;
+                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>${$.fn.transEle.attr('data-apply')}</button>`;
                         }
                     },
                 }
@@ -3065,12 +3067,25 @@ class submitHandle {
                 let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
                 let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
                 let order = row.querySelector('.table-row-order').getAttribute('data-value');
-                result.push({
-                    'indicator': indicator,
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'order': parseInt(order),
-                })
+                if (!$(tableIndicator).hasClass('sale-order')) {
+                    result.push({
+                        'indicator': indicator,
+                        'indicator_value': parseFloat(indicator_value),
+                        'indicator_rate': parseFloat(indicator_rate),
+                        'order': parseInt(order),
+                    })
+                } else {
+                    let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
+                    let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
+                    result.push({
+                        'indicator': indicator,
+                        'indicator_value': parseFloat(indicator_value),
+                        'indicator_rate': parseFloat(indicator_rate),
+                        'quotation_indicator_value': parseFloat(quotation_indicator_value),
+                        'difference_indicator_value': parseFloat(difference_indicator_rate),
+                        'order': parseInt(order),
+                    })
+                }
             }
         }
         return result

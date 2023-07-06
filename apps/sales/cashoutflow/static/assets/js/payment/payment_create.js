@@ -30,7 +30,6 @@ $(document).ready(function () {
     if (opportunity.length > 0) {sale_code_default_obj = opportunity; sale_code_default_type = 2;}
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
-        console.log(advance_payment_expense_items)
         let ap_expense_list_mapped = []
         for (let i = 0; i < advance_payment_expense_items.length; i++) {
             let ap_expense_item = advance_payment_expense_items[i];
@@ -1198,15 +1197,21 @@ $(document).ready(function () {
 
                             // find ap mapped with this sale_order_mapped
                             let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                return item.sale_order_mapped === sale_order_mapped;
+                                if (item.sale_order_mapped) {
+                                    return item.sale_order_mapped === sale_order_mapped;
+                                }
                             });
                             // find ap mapped with this quotation_mapped
                             let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                return item.quotation_mapped === quotation_mapped;
+                                if (item.quotation_mapped) {
+                                    return item.quotation_mapped === quotation_mapped;
+                                }
                             });
                             // find ap mapped with this opportunity_mapped
                             let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                return item.opportunity_mapped === opportunity_mapped;
+                                if (item.opportunity_mapped) {
+                                    return item.opportunity_mapped === opportunity_mapped;
+                                }
                             });
 
                             // console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
@@ -1287,15 +1292,21 @@ $(document).ready(function () {
                         if (resp.data['advance_payment_list']) {
                             // find ap mapped with this sale_order_mapped
                             let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                return item.sale_order_mapped === sale_code_id;
+                                if (item.sale_order_mapped) {
+                                    return item.sale_order_mapped === sale_code_id;
+                                }
                             });
                             // find ap mapped with this quotation_mapped
                             let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                return item.quotation_mapped === sale_code_id;
+                                if (item.quotation_mapped) {
+                                    return item.quotation_mapped === sale_code_id;
+                                }
                             });
                             // find ap mapped with this opportunity_mapped
                             let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                return item.opportunity_mapped === sale_code_id;
+                                if (item.opportunity_mapped) {
+                                    return item.opportunity_mapped === sale_code_id;
+                                }
                             });
 
                             // console.log(sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap))
@@ -1458,8 +1469,9 @@ $(document).ready(function () {
     })
 
     $('#sale-code-select-box').on('change', function () {
+        $('#tab_line_detail_datatable tbody').html(``);
+        $('#tab_plan_datatable tbody').html(``);
         if ($('input[name="sale_code_type"]:checked').val() === 'sale') {
-            $('#tab_plan_datatable tbody').html(``);
             if ($('#sale-code-select-box option:selected').attr('data-type') === '0') {
                 // get ap expense items
                 let so_id = $('#sale-code-select-box option:selected').attr('data-sale-code-id');
@@ -1588,7 +1600,6 @@ $(document).ready(function () {
             }
         }
         else if ($('input[name="sale_code_type"]:checked').val() === 'MULTI') {
-            $('#tab_plan_datatable tbody').html(``);
             $('#notify-none-sale-code').prop('hidden', true);
             $('#tab_plan_datatable').prop('hidden', false);
             $('#sale-code-select-box option:selected').each(function (index, element) {

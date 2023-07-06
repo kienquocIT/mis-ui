@@ -637,7 +637,7 @@
                                                             <button
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
-                                                            >Close
+                                                            >{% trans 'Close' %}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -985,14 +985,15 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-2">
+                    <div class="row mb-3">
                         <div class="col-2">
                             <button
                                     type="button"
                                     class="btn btn-soft-success disabled-but-edit"
                                     id="btn-refresh-quotation-indicator"
-                                    disabled
-                            >{% trans 'Refresh data' %}</button>
+                            >
+                            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
+                            </button>
                         </div>
                         <div class="col-10"></div>
                     </div>
@@ -1028,6 +1029,7 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-btn-close="{% trans 'Close' %}"
             data-more-information="{% trans 'More information' %}"
+            data-apply="{% trans 'Apply' %}"
         >
     </form>
 {% endblock %}

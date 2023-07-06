@@ -3537,3 +3537,35 @@ msgstr "Hành động này sẽ khôi phục các chỉ tiêu về dữ liệu m
 #
 msgid "Do you wish to continue?"
 msgstr "Bạn có muốn tiếp tục?"
+
+#
+msgid "Quotation indicator value"
+msgstr "Giá trị chỉ tiêu báo giá"
+
+#
+msgid "Sale order indicator value"
+msgstr "Giá trị chỉ tiêu đơn hàng"
+
+#
+msgid "Difference value"
+msgstr "Giá trị chênh lệch"
+
+#
+msgid "Sale order indicator create successfully"
+msgstr "Tạo chỉ tiêu đơn hàng thành công"
+
+#
+msgid "Sale order indicator update successfully"
+msgstr "Cập nhật chỉ tiêu đơn hàng thành công"
+
+#
+msgid "Sale order indicator restore successfully"
+msgstr "Khôi phục chỉ tiêu đơn hàng thành công"
+
+#
+msgid "Can not select stage because this opportunity has been closed"
+msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã đóng"
+
+#
+msgid "Stage has been updated, Please Save!"
+msgstr "Gia đoạn đã được cập nhật, Vui lòng lưu!"

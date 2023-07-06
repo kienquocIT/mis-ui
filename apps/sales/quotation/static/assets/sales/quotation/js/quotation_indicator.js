@@ -60,6 +60,63 @@ function dataTableQuotationIndicator(data) {
     });
 }
 
+function dataTableSaleOrderIndicator(data) {
+    // init dataTable
+    let listData = data ? data : [];
+    tableIndicator.DataTable({
+        data: listData,
+        searching: false,
+        ordering: false,
+        paginate: false,
+        info: false,
+        drawCallback: function (row, data) {
+            // render icon after table callback
+            feather.replace();
+            $.fn.initMaskMoney2();
+        },
+        rowCallback: function (row, data) {
+        },
+        columns: [
+            {
+                targets: 0,
+                render: (data, type, row, meta) => {
+                    return `<span class="table-row-order" data-value="${(meta.row + 1)}">${(meta.row + 1)}</span>`
+                }
+            },
+            {
+                targets: 1,
+                render: (data, type, row) => {
+                    return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                }
+            },
+            {
+                targets: 2,
+                render: (data, type, row) => {
+                    return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}"></span>`
+                }
+            },
+            {
+                targets: 3,
+                render: (data, type, row) => {
+                    return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}"></span>`
+                }
+            },
+            {
+                targets: 4,
+                render: (data, type, row) => {
+                    return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}"></span>`
+                }
+            },
+            {
+                targets: 5,
+                render: (data, type, row) => {
+                    return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
+                }
+            }
+        ],
+    });
+}
+
 function loadQuotationIndicator(indicator_id) {
     let jqueryId = '#' + indicator_id;
     let ele = $(jqueryId);
@@ -124,6 +181,7 @@ function calculateIndicator(indicator_list) {
             }
         }
         // calculate
+        // value
         let value = evaluateFormula(parse_formula);
         if (value !== null) {
             if (typeof value === 'number') {
@@ -134,13 +192,30 @@ function calculateIndicator(indicator_list) {
         } else {
             value = 0;
         }
-        // append result
+        // rate value
         if (indicator.title === "Revenue") {
             revenueValue = value
         }
         if (revenueValue !== 0) {
            rateValue = ((value / revenueValue) * 100).toFixed(1);
         }
+        // quotation value
+        let quotationValue = 0;
+        let differenceValue = 0;
+        // check if sale order then get quotation value
+        let eleDetailQuotation = $('#data-copy-quotation-detail');
+        if (eleDetailQuotation.length) {
+            if (eleDetailQuotation.val()) {
+                let dataDetail = JSON.parse(eleDetailQuotation.val());
+                for (let quotation_indicator of dataDetail.quotation_indicators_data) {
+                    if (indicator.title === quotation_indicator.indicator.title) {
+                        quotationValue = quotation_indicator.indicator_value;
+                        differenceValue = (value - quotation_indicator.indicator_value);
+                    }
+                }
+            }
+        }
+        // append result
         result_list.push({
             'indicator': {
                 'id': indicator.id,
@@ -148,7 +223,9 @@ function calculateIndicator(indicator_list) {
             },
             'order': indicator.order,
             'indicator_value': value,
-            'indicator_rate': rateValue
+            'indicator_rate': rateValue,
+            'quotation_indicator_value': quotationValue,
+            'difference_indicator_value': differenceValue,
         });
         result_json[indicator.order] = {
             'indicator_value': value,
@@ -157,7 +234,11 @@ function calculateIndicator(indicator_list) {
     }
     //
     tableIndicator.DataTable().destroy();
-    dataTableQuotationIndicator(result_list);
+    if (!tableIndicator.hasClass('sale-order')) {
+        dataTableQuotationIndicator(result_list);
+    } else {
+        dataTableSaleOrderIndicator(result_list)
+    }
 }
 
 function evaluateFormula(formulaText) {
@@ -256,7 +337,14 @@ $(function () {
 
     $(document).ready(function () {
 
-        dataTableQuotationIndicator();
+        function initDataTableIndicator() {
+            if (!tableIndicator.hasClass('sale-order')) {
+                dataTableQuotationIndicator();
+            } else {
+                dataTableSaleOrderIndicator();
+            }
+        }
+        initDataTableIndicator();
 
         $('#tab-indicator').on('click', function (e) {
             let btnEdit = $('#btn-edit_quotation');
@@ -267,7 +355,11 @@ $(function () {
                     if (tableIndicator[0].querySelector('.dataTables_empty')) {
                         let detailData = JSON.parse($('#quotation-detail-data').val());
                         tableIndicator.DataTable().destroy();
-                        dataTableQuotationIndicator(detailData.quotation_indicators_data);
+                        if (!tableIndicator.hasClass('sale-order')) {
+                            dataTableQuotationIndicator(detailData.quotation_indicators_data);
+                        } else {
+                            dataTableSaleOrderIndicator(detailData.sale_order_indicators_data);
+                        }
                     }
                 }
             } else {

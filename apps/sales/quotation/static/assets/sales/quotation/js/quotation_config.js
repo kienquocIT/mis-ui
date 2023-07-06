@@ -50,12 +50,15 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
     }
 }
 
-function loadInitPropertyList(property_id, eleShow) {
+function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
     let jqueryId = '#' + property_id;
     let ele = $(jqueryId);
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
     let code_app = "quotation";
+    if (is_sale_order === true) {
+        code_app = "saleorder";
+    }
     let data_filter = {'application__code': code_app};
     if (eleShow.is(':empty')) {
         $.fn.callAjax(url, method, data_filter).then(
@@ -281,7 +284,7 @@ $(function () {
                                                     <div class="row">
                                                         <div class="form-group">
                                                             <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
-                                                            <textarea class="form-control indicator-editor" rows="3" cols="50" name=""></textarea>
+                                                            <textarea class="form-control indicator-editor" rows="4" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -344,6 +347,7 @@ $(function () {
                                                             type="button" 
                                                             class="btn btn-primary btn-edit-indicator"
                                                             data-id="${row.id}"
+                                                            data-bs-dismiss="modal"
                                                         >${$.fn.transEle.attr('data-btn-save')}</button>
                                                     </div>
                                                 </div>
@@ -389,40 +393,17 @@ $(function () {
             $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
         });
 
-        tableIndicator.on('click', '.table-row-save', function(e) {
-            let url_update = btnCreateIndicator.attr('data-url-update');
-            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
-            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
-            let method = "put";
-            let data_submit = {};
-            data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
-            data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
-            data_submit['example'] = "indicator(" + data_submit['title'] + ")";
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(url, method, data_submit, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 3000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                    }
-                )
-            // disable save btn
-            $(this)[0].setAttribute('disabled', true);
-        });
-
         tableIndicator.on('click', '.modal-edit-formula', function(e) {
             let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
             let row = $(this)[0].closest('tr');
             let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
-            loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+            if (!$form.hasClass('sale-order')) {
+                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
+            } else {
+                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow), true);
+            }
             let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
         });
@@ -434,6 +415,8 @@ $(function () {
                 // show editor
                 let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
                 editor.value = editor.value + dataShow.syntax;
+                // on blur editor to validate formula
+                $(editor).blur();
             }
         });
 
@@ -471,7 +454,7 @@ $(function () {
         });
 
 // Validate Indicator Formula Editor
-        tableIndicator.on('change', '.indicator-editor', function (e) {
+        tableIndicator.on('blur', '.indicator-editor', function (e) {
             let editorValue = $(this).val();
             let isValid = true;
             let row = $(this)[0].closest('tr');
@@ -491,6 +474,10 @@ $(function () {
                     row.querySelector('.valid-indicator-formula').innerHTML = ") expected";
                 } else if (isValid.remark === "syntax") {
                     row.querySelector('.valid-indicator-formula').innerHTML = "syntax error";
+                } else if (isValid.remark === "quote") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "single quote (') not allowed";
+                } else if (isValid.remark === "unbalance") {
+                    row.querySelector('.valid-indicator-formula').innerHTML = "value or operator expected";
                 }
             }
         })
@@ -510,12 +497,27 @@ $(function () {
                     'remark': 'syntax'
                 }
             }
+            isValid = hasSingleQuote(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'quote'
+                }
+            }
+            isValid = notBalanceOperatorAndValue(strValue);
+            if (isValid === false) {
+                return {
+                    'result': false,
+                    'remark': 'unbalance'
+                }
+            }
             return {
                 'result': true,
                 'remark': ''
             }
         }
 
+        // BEGIN all functions validate
         function validateParentheses(strValue) {
             let stack = [];
             for (let i = 0; i < strValue.length; i++) {
@@ -547,11 +549,31 @@ $(function () {
             return strValueNoSpace.length === str_test_no_space.length
         }
 
+        function hasSingleQuote(strValue) {
+            return !strValue.includes("'")
+        }
+
+        function notBalanceOperatorAndValue(strValue) {
+            let list_data = parseStringToArray(strValue);
+            let valueCount = 0;
+            let operatorCount = 0;
+            for (let data of list_data) {
+                if (!["(", ")", "%"].includes(data)) {
+                    if (["+", "-", "*", "/"].includes(data)) {
+                        operatorCount++;
+                    } else {
+                        valueCount++
+                    }
+                }
+            }
+            return operatorCount === (valueCount - 1);
+        }
+
 // BEGIN setup formula
-        let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|%/g;
+        let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
         let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
-        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+|".*?"|==|!=|>=|<=|>|</g;
+        let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
         function setupFormula(data_submit, ele) {
             let row = ele[0].closest('tr');
@@ -624,7 +646,7 @@ $(function () {
         }
 
         function validateItemInList(data_list) {
-            // valid percent "==", "!="
+            // valid "==", "!="
             for (let i = 0; i < data_list.length; i++) {
                 let data = data_list[i];
                 if (data === "==") {
@@ -646,6 +668,7 @@ $(function () {
         }
 // END setup formula
 
+// BEGIN SUBMIT
         // submit create indicator
         btnCreateIndicator.on('click', function(e) {
             let url = $(this).attr('data-url');
@@ -664,7 +687,10 @@ $(function () {
                 order = (tableLen + 1);
             }
             data_submit['order'] = order;
-            let application_code = 'quotation'
+            let application_code = 'quotation';
+            if ($form.hasClass('sale-order')) {
+                application_code = 'saleorder';
+            }
             data_submit['application_code'] = application_code;
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)
@@ -682,7 +708,35 @@ $(function () {
                 )
         });
 
-        // submit update indicator
+        // submit edit title & description on row
+        tableIndicator.on('click', '.table-row-save', function(e) {
+            let url_update = btnCreateIndicator.attr('data-url-update');
+            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
+            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
+            let method = "put";
+            let data_submit = {};
+            data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
+            data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
+            data_submit['example'] = "indicator(" + data_submit['title'] + ")";
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, data_submit, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            // $.fn.redirectUrl(url_redirect, 3000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+            // disable save btn
+            $(this)[0].setAttribute('disabled', true);
+        });
+
+        // submit update indicator formula
         tableIndicator.on('click', '.btn-edit-indicator', function (e) {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
@@ -697,7 +751,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 1000);
+                            // $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {
@@ -713,7 +767,9 @@ $(function () {
                 for (let i = 0; i < tableIndicator[0].tBodies[0].rows.length; i++) {
                     let row = tableIndicator[0].tBodies[0].rows[i];
                     dataID = row.querySelector('.table-row-save').getAttribute('data-id');
-                    break;
+                    if (dataID) {
+                        break;
+                    }
                 }
                 if (dataID) {
                     let url_update = $(this).attr('data-url');

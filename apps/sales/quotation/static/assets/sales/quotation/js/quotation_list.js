@@ -100,6 +100,10 @@ $(function () {
                         },
                     }
                 ],
+                drawCallback: function (row, data) {
+                    // mask money
+                    $.fn.initMaskMoney2();
+                },
             });
         }
 

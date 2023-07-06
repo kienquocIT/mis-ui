@@ -252,21 +252,29 @@
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
-                            <th class="w-15">{% trans "Warehouse Code" %}</th>
-                            <th class="w-25">{% trans "Warehouse Name" %}</th>
-                            <th class="w-15">{% trans "Stock" %}</th>
-                            <th class="w-15">{% trans "wait for delivery" %}</th>
-                            <th class="w-15">{% trans "wait for receipt" %}</th>
-                            <th class="w-15">{% trans "Available" %}</th>
+                            <th>{% trans "Warehouse Code" %}</th>
+                            <th>{% trans "Warehouse Name" %}</th>
+                            <th>{% trans "Stock" %}</th>
+                            <th>{% trans "wait for delivery" %}</th>
+                            <th>{% trans "wait for receipt" %}</th>
+                            <th>{% trans "Available" %}</th>
                             </thead>
                             <tfoot>
-                            <tr style="background-color: rgba(0, 125, 136, 0.15)">
+                            <tr>
                                 <th></th>
-                                <th class="text-primary"><b>Total</b></th>
-                                <th class="text-primary">0</th>
-                                <th class="text-primary">0</th>
-                                <th class="text-primary">0</th>
-                                <th class="text-primary">0</th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">TOTAL</th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
+                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
+                                </th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
+                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
+                                </th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
+                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
+                                </th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
+                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
+                                </th>
                             </tr>
                             </tfoot>
                         </table>

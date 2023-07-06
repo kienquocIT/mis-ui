@@ -760,6 +760,9 @@ $(document).ready(function () {
                     $('#input-open-date').val(opportunity_detail.open_date.split(' ')[0]);
                 if (opportunity_detail.close_date !== null)
                     $('#input-close-date').val(opportunity_detail.close_date.split(' ')[0]);
+                else{
+                    $('#input-close-date').val('');
+                }
                 if (opportunity_detail.decision_maker !== null) {
                     let ele_decision_maker = $('#input-decision-maker');
                     ele_decision_maker.val(opportunity_detail.decision_maker.name);

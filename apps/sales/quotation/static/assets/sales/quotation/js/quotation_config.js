@@ -646,7 +646,7 @@ $(function () {
         }
 
         function validateItemInList(data_list) {
-            // valid percent "==", "!="
+            // valid "==", "!="
             for (let i = 0; i < data_list.length; i++) {
                 let data = data_list[i];
                 if (data === "==") {
@@ -767,7 +767,9 @@ $(function () {
                 for (let i = 0; i < tableIndicator[0].tBodies[0].rows.length; i++) {
                     let row = tableIndicator[0].tBodies[0].rows[i];
                     dataID = row.querySelector('.table-row-save').getAttribute('data-id');
-                    break;
+                    if (dataID) {
+                        break;
+                    }
                 }
                 if (dataID) {
                     let url_update = $(this).attr('data-url');

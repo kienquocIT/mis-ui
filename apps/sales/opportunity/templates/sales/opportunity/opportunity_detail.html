@@ -51,7 +51,7 @@
               data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-3 border-right">
+                <div class="col-3 border-right overflow-y-scroll" style="height: 80vh;">
                     <div class="form-group">
                         <label for="rangeInput">{% trans "Win Rate" %}</label>
                         <input type="range" class="form-control-range" id="rangeInput" min="0" max="100" step="1">
@@ -130,7 +130,7 @@
                         <input class="form-control" type="text" id="input-decision-maker" readonly data-id=""/>
                     </div>
                 </div>
-                <div class="col-9">
+                <div class="col-9 overflow-auto" style="height: 80vh;">
                     <div class="form-group text-center">
                         <h4 id="header-title" class="text-primary">
                         </h4>

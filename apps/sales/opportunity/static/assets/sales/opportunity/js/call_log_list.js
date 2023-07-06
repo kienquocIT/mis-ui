@@ -145,6 +145,18 @@ $(function () {
                                 return `<center><span>` + row.call_date + `</span></center>`
                             }
                         },
+                        {
+                            data: 'repeat',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                if (row.repeat) {
+                                    return `<center><span class="text-danger"><i class="bi bi-check-lg"></i></span></center>`
+                                }
+                                else {
+                                    return ``
+                                }
+                            }
+                        },
                     ],
                 });
             }

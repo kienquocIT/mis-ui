@@ -4,14 +4,14 @@ services:
   ui-dev:
     build:
       context: ../../
-      dockerfile: builder/dev-site/Dockerfile
+      dockerfile: builder/Dockerfile
     container_name: ui-dev
-    command: sh ./builder/dev-site/docker_entry_point.sh
+    command: sh ./builder/docker_entry_point.sh
     restart: unless-stopped
     volumes:
       - ../../:/code
     ports:
-      - "${RUNNING_PORT}:${CONTAINER_PORT}"
+      - "${RUNNING_PORT}:8000"
     env_file:
       - ../../.env
     networks:

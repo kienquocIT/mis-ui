@@ -192,10 +192,11 @@
                                 aria-expanded="false"
                         >
                             <div class="avatar avatar-rounded avatar-xs">
-                                <img
-                                        src="{% static 'assets/images/avatar/avatar.jpg' %}" alt="user"
-                                        class="avatar-img"
-                                >
+                                {% if base.avatar %}
+                                    <img src="{{ base.avatar|safe }}" alt="user" class="avatar-img">
+                                {% else %}
+                                    <span class="initial-wrap">{{ base.fullname|shorten_name:True }}</span>
+                                {% endif %}
                             </div>
                         </a>
                         <div
@@ -267,8 +268,15 @@
                             <div class="p-2">
                                 <div class="media">
                                     <div class="media-head me-2">
-                                        <div class="avatar avatar-primary avatar-sm avatar-rounded">
-                                            <span class="initial-wrap">{{ base.fullname|shorten_name:True }}</span>
+                                        <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
+                                            {% if base.avatar %}
+                                                <img src="{{ base.avatar|safe }}" alt="user" class="avatar-img">
+                                            {% else %}
+                                                <span class="initial-wrap">{{ base.fullname|shorten_name:True }}</span>
+                                            {% endif %}
+                                            <div class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none">
+                                                <i class="fa-solid fa-camera text-white"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="media-body">

@@ -40,6 +40,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
 
+    # attachment
+    MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
+    MEDIA_UPLOAD_FILE = StringUrl('f/files')
+    API_FORWARD_ACCESS_TOKEN_MEDIA = StringUrl('auth/media/sign-in-valid')
+
     # Logging
     LOG_ACTIVITIES = StringUrl('log/activities')
     LOG_MY_NOTIFY_DATA_ALL = StringUrl('log/notifies/me')
@@ -69,6 +74,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
+    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')

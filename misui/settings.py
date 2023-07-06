@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import json
 import os
+from colorama import Fore
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -96,7 +98,12 @@ WSGI_APPLICATION = 'misui.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -188,7 +195,15 @@ API_URL_PREFIX = 'api'
 protocol = "https" if API_USE_SSL else "http"
 domain = f'{API_IP_OR_ADDR}{f":{API_PORT}" if API_PORT else ""}'
 prefix = f"{API_URL_PREFIX}/" if API_URL_PREFIX else ""
-API_DOMAIN = None
+API_DOMAIN = f'{protocol}://{domain}/{prefix}'
+
+# Media key and data private
+MEDIA_KEY_FLAG = os.environ.get('MEDIA_KEY_FLAG', 'MEDIA-APIRequest')
+MEDIA_KEY_SECRET_TOKEN_UI = os.environ.get('MEDIA_KEY_SECRET_TOKEN_UI', 'UI-SECRET-KEY-APIRequest')
+MEDIA_SECRET_TOKEN_UI = os.environ.get('MEDIA_SECRET_TOKEN_UI', 'Yk4pfMCqAgzZK3cO')
+# media server
+MEDIA_DOMAIN = os.environ.get('MEDIA_DOMAIN', 'http://127.0.0.1:8881/api/')
+MEDIA_PUBLIC_DOMAIN = os.environ.get('MEDIA_PUBLIC_DOMAIN', MEDIA_DOMAIN)
 
 # Key return resp after call API
 API_KEY_AUTH = 'Authorization'
@@ -215,39 +230,6 @@ UI_RESP_KEY_PAGE_PREVIOUS = 'page_previous'
 # DEBUG CODE enable: allow raise errors if it is enabled else return default value (value is correct type)
 RAISE_EXCEPTION_DEBUG = True
 
-# LOGGING
-
-LOG_DIR = os.path.join(BASE_DIR, "logs")
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            "datefmt": "%d/%b/%Y-%H:%M:%S",
-        },
-    },
-    "handlers": {
-        "file": {
-            "level": "INFO",
-            "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": os.path.join(LOG_DIR, "api.log"),
-            "when": "D",
-            "interval": 1,
-            "backupCount": 10,
-            "formatter": "verbose",
-        },
-    },
-    "loggers": {
-        "": {
-            "handlers": ["file"],
-            "level": "INFO",
-        },
-    },
-}
-
 # memcache
 # CACHES = {
 #     'default': {
@@ -267,20 +249,6 @@ CACHES = {
     }
 }
 
-# LOGIN
-LOGIN_URL = 'auth/login'
-
-# option database
-USE_DATABASE_CONFIG_OPTION = 0  # choices: 0=None,1=dev,2=online_site
-
-# Tracing
-JAEGER_TRACING_HOST = os.environ.get('JAEGER_TRACING_HOST', '127.0.0.1')
-JAEGER_TRACING_PORT = os.environ.get('JAEGER_TRACING_PORT', 6831)
-JAEGER_TRACING_PROJECT_NAME = os.environ.get('JAEGER_TRACING_PROJECT_NAME', 'MiS UI')
-JAEGER_TRACING_ENABLE = os.environ.get('JAEGER_TRACING_ENABLE', False)
-JAEGER_TRACING_ENABLE = True if JAEGER_TRACING_ENABLE in ['True', 'true', '1'] else False
-JAEGER_TRACING_EXCLUDE_LOG_PATH = '/__'
-
 # another import
 
 try:
@@ -288,67 +256,78 @@ try:
 except ImportError:
     pass
 
-# Replace API DOMAIN
-if not API_DOMAIN:
-    API_DOMAIN = f'{protocol}://{domain}/{prefix}'
+# Logging
+if os.environ.get('ENABLE_LOGGING', False) in [1, '1']:
+    LOG_DIR = os.path.join(BASE_DIR, "logs")
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "verbose": {
+                "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+                "datefmt": "%d/%b/%Y-%H:%M:%S",
+            },
+        },
+        "handlers": {
+            "file": {
+                "level": "INFO",
+                "class": "logging.handlers.TimedRotatingFileHandler",
+                "filename": os.path.join(LOG_DIR, "ui.log"),
+                "when": "D",
+                "interval": 1,
+                "backupCount": 10,
+                "formatter": "verbose",
+            },
+        },
+        "loggers": {
+            "": {
+                "handlers": ["file"],
+                "level": "INFO",
+            },
+        },
+    }
+# -- Logging
 
-# Database configurations
-if not DATABASES or (isinstance(DATABASES, dict) and 'default' not in DATABASES):
-    match USE_DATABASE_CONFIG_OPTION:
-        case 1:
-            DATABASES.update(
-                {
-                    'default': {
-                        'ENGINE': 'django.db.backends.mysql',
-                        'NAME': 'my_db_ui',
-                        'USER': 'my_user',
-                        'PASSWORD': 'my_password',
-                        'HOST': '127.0.0.1',
-                        'PORT': '3307',
-                    }
-                }
-            )
-        case 2:
-            DATABASES.update(
-                {
-                    'default': {
-                        'ENGINE': 'django.db.backends.mysql',
-                        'NAME': os.environ.get('DB_NAME'),
-                        'USER': os.environ.get('DB_USER'),
-                        'PASSWORD': os.environ.get('DB_PASSWORD'),
-                        'HOST': os.environ.get('DB_HOST'),
-                        'PORT': os.environ.get('DB_PORT'),
-                    }
-                }
-            )
-            API_DOMAIN_ENV = os.environ.get('API_DOMAIN')
-            if API_DOMAIN_ENV:
-                API_DOMAIN = f'{API_DOMAIN_ENV}/{prefix}'
-        case _:
-            DATABASES['default'] = {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
+# Tracing
+JAEGER_TRACING_ENABLE = os.environ.get('ENABLE_TRACING', False)
+if JAEGER_TRACING_ENABLE in [1, '1']:
+    JAEGER_TRACING_ENABLE = True
+    JAEGER_TRACING_HOST = os.environ.get('JAEGER_TRACING_HOST', 'jaeger_global')
+    JAEGER_TRACING_PORT = os.environ.get('JAEGER_TRACING_PORT', 6831)
+    JAEGER_TRACING_PROJECT_NAME = os.environ.get('JAEGER_TRACING_PROJECT_NAME', 'MiS UI')
+    JAEGER_TRACING_EXCLUDE_LOG_PATH = '/__'
+# -- Tracing
+
+# PROD configurations
+if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
+    # allow host
+    OS_ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '[]')
+    ALLOWED_HOSTS = json.loads(OS_ALLOWED_HOSTS)
+
+    # setup database default
+    DATABASES.update(
+        {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.environ.get('DB_NAME'),
+                'USER': os.environ.get('DB_USER'),
+                'PASSWORD': os.environ.get('DB_PASSWORD'),
+                'HOST': os.environ.get('DB_HOST'),
+                'PORT': os.environ.get('DB_PORT'),
             }
+        }
+    )
+    # Replace API DOMAIN
+    API_DOMAIN = os.environ.get('API_DOMAIN', None)
+# -- PROD configurations
 
-if DEBUG is True:
-    from colorama import Fore
-
-    db_option = 'DOCKER-DEV' if USE_DATABASE_CONFIG_OPTION == 1 else 'DOCKER-PROD' if USE_DATABASE_CONFIG_OPTION == 2 else 'DB SERVICE'
+OS_DEBUG = os.environ.get('DEBUG', DEBUG)
+if OS_DEBUG is True or OS_DEBUG in [1, '1']:
+    DEBUG = True
     print(Fore.CYAN, '### SETTINGS CONFIG VERBOSE ----------------------------------------------------#', '\033[0m')
-    match USE_DATABASE_CONFIG_OPTION:
-        case 1:
-            print(Fore.BLUE, '#  1. DATABASES:          [DOCKER-DEV]:          ', DATABASES, '\033[0m')
-        case 2:
-            print(Fore.BLUE, '#  1. DATABASES:          [DOCKER-PROD]:         ', DATABASES, '\033[0m')
-        case _:
-            print(Fore.BLUE, '#  1. DATABASES:          [LOCAL]:               ', DATABASES, '\033[0m')
-    print(Fore.YELLOW, '#  2. API_DOMAIN:                                ', API_DOMAIN, '\033[0m')
-    if JAEGER_TRACING_ENABLE is True:
-        print(
-            Fore.LIGHTBLUE_EX,
-            '#  3. TRACING [JAEGER]:                          ',
-            f"{JAEGER_TRACING_HOST}:{JAEGER_TRACING_PORT} / {JAEGER_TRACING_PROJECT_NAME} \033[0m",
-        )
-    else:
-        print(Fore.LIGHTBLUE_EX, '#  3. TRACING [JAEGER]:                           Disable \033[0m')
+    print(Fore.BLUE, f'#  1. DATABASES: {str(DATABASES)} \033[0m')
+    print(Fore.YELLOW, f'#  2. API_DOMAIN: {str(API_DOMAIN)} \033[0m')
+    print(Fore.LIGHTBLUE_EX, f'#  3. TRACING [JAEGER]: {JAEGER_TRACING_ENABLE}')
     print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')

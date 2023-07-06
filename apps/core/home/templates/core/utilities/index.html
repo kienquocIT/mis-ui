@@ -3,6 +3,39 @@
 {% block cssHeader %}{% endblock %}
 
 {% block pageContent %}
+    <div class="row mb-3">
+        <form id="frmTest" data-url="xxxx" data-method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="inputTest1" class="form-label">Upload File 1</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-success btn-file-upload"
+                                data-f-input-name="inputTest1"
+                                data-f-input-required="true"
+                        >Click me!
+                        </button>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="inputTest2" class="form-label">Upload File 2</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-danger btn-file-upload"
+                                data-f-input-name="inputTest2"
+                                data-f-input-required="true"
+                                data-f-name-ele-id="#fileNameTestDisplay"
+                        >Click me!
+                        </button>
+                        <p id="fileNameTestDisplay"></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingOne">
@@ -83,9 +116,12 @@
             >
                 <div class="accordion-body">
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary" type="button" id="btnClearInputVal"><i class="fa-solid fa-xmark"></i></button>
+                        <button class="btn btn-outline-secondary" type="button" id="btnClearInputVal"><i
+                                class="fa-solid fa-xmark"
+                        ></i></button>
                         <input
-                                type="text" class="form-control" placeholder="UUID-4 paste here, Commas with multiple UUID"
+                                type="text" class="form-control"
+                                placeholder="UUID-4 paste here, Commas with multiple UUID"
                                 aria-label="" aria-describedby="button-addon2"
                                 id="inputConvertMinimalUUID"
                         >
@@ -187,11 +223,11 @@
 
         function replaceUUIDToMinimal() {
             let data = minimalUUIDInput.val();
-            if (data){
+            if (data) {
                 let arr = data.split(",");
                 let result = [];
                 arr.map(
-                    (item)=>{
+                    (item) => {
                         result.push(
                             item.replaceAll("-", "").replaceAll(" ", "")
                         )
@@ -200,7 +236,9 @@
                 minimalUUIDResult.html(
                     `<ol>` +
                     result.map(
-                        (item)=>{return `<li>${item}</li>`}
+                        (item) => {
+                            return `<li>${item}</li>`
+                        }
                     ).join("") +
                     `</ol>`
                 );
@@ -209,7 +247,7 @@
             }
         }
 
-        $('#btnClearInputVal').click(function (event){
+        $('#btnClearInputVal').click(function (event) {
             minimalUUIDInput.val("");
         })
         $('#btnConvertMinimalUUID').click(function (event) {

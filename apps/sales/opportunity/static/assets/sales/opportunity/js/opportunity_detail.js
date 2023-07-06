@@ -717,6 +717,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
+                console.log(opportunity_detail)
                 $.fn.compareStatusShowPageAction(opportunity_detail);
                 opp_stage_id = opportunity_detail.stage;
                 opp_is_closed = opportunity_detail.is_close;
@@ -784,7 +785,6 @@ $(document).ready(function () {
                         condition_is_quotation_confirm = true;
                     }
                 }
-
                 $.fn.initMaskMoney2();
             }
         })
@@ -1129,6 +1129,8 @@ $(document).ready(function () {
         ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
         ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
 
+        data_form['is_close'] = false;
+
         if (data_form['end_customer'] === '') {
             data_form['end_customer'] = null;
         }
@@ -1173,6 +1175,7 @@ $(document).ready(function () {
             let win_deal = false;
             if ($(this).find('.input-win-deal').is(':checked')) {
                 win_deal = true;
+                data_form['is_close'] = true;
             }
 
             let data = {
@@ -1227,8 +1230,19 @@ $(document).ready(function () {
             'is_current': true,
         })
 
+
+        if ($('#input-close-deal').is(':checked')) {
+            data_form['is_close'] = true;
+        }
+
         data_form['list_stage'] = list_stage;
-        data_form['lost_by_other_reason'] = !!ele_lost_other_reason.is(':checked');
+
+        data_form['lost_by_other_reason'] = false;
+
+        if(ele_lost_other_reason.is(':checked')){
+            data_form['lost_by_other_reason'] = true;
+            data_form['is_close'] = true;
+        }
         return data_form
     }
 

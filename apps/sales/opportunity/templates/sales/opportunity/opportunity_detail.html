@@ -72,9 +72,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Code" %}</label>
-                            <span class="text-primary" id="span-code"></span>
+                        <div class="form-group-lg row">
+                            <label class="form-label col-2">{% trans "Code" %}</label>
+                            <h4 class="text-primary text-lg-start col-8" id="span-code"></h4>
                         </div>
                     </div>
                     <div class="form-group mt-2">
@@ -131,9 +131,9 @@
                     </div>
                 </div>
                 <div class="col-9">
-                    <div class="form-group">
-                        <h6 id="header-title">
-                        </h6>
+                    <div class="form-group text-center">
+                        <h4 id="header-title" class="text-primary">
+                        </h4>
                     </div>
                     <div class="row text-right">
                         <div class="col-6 text-left">
@@ -182,7 +182,7 @@
                                 <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                             </div>
 
-                            <div class="list-action hidden">
+                            <div class="div-activity hidden">
                                 <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
                                 <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
                                 <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
@@ -190,68 +190,70 @@
 
                         </div>
                         <div class="col-5 text-right">
-                            <a href="#"><span class="ml-2 text-right"><i class="bi bi-pip"></i></span></a>
-                            <a href="#"><span class="ml-2"><i class="bi bi-list"></i></span></a>
+                            <a href="#" id="btn-show-action"><span class="ml-2 text-right"><i class="bi bi-pip"></i></span></a>
+                            <a href="#" id="btn-show-activity"><span class="ml-2"><i class="bi bi-list"></i></span></a>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="bg-light ml-2 h-100p">
-                            <div class="bg-blue-light-4 mt-1 mb-1 h-90">
-                                <div class="row">
-                                    <div class="col-10">
-                                        <span class="text-black ml-1">Presentation Document</span>
-                                    </div>
-                                    <div class="col-2 text-right mt-1">
-                                        <a href="#" class="text-black ">
-                                            <span class="badge badge-primary h-50p mr-2">Do</span></a>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-10">
-                                    </div>
-                                    <div class="col-2 text-right">
-                                        <a href="#" class="text-black">
-                                            <span class="badge badge-orange mr-2">Skip</span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <span class="text-primary">{% trans 'Next Action' %}</span>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="ml-2">
-                            <div class="row">
-                                <div class="col-6 bg-light h-100p pr-2 pl-4">
-                                    <div class="bg-green-light-4 mt-1 mb-1 h-90 row">
+                    <div class="div-action">
+                        <div class="row">
+                            <div class="bg-light ml-2 h-100p">
+                                <div class="bg-blue-light-4 mt-1 mb-1 h-90">
+                                    <div class="row">
                                         <div class="col-10">
-                                            <p class="text-black">Meetting with customer</p>
+                                            <span class="text-black ml-1">Presentation Document</span>
+                                        </div>
+                                        <div class="col-2 text-right mt-1">
+                                            <a href="#" class="text-black ">
+                                                <span class="badge badge-primary h-50p mr-2">Do</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-10">
                                         </div>
                                         <div class="col-2 text-right">
-                                            <a href="#" class="text-black"><span
-                                                    class="badge badge-grey h-50p">Do</span></a>
+                                            <a href="#" class="text-black">
+                                                <span class="badge badge-orange mr-2">Skip</span></a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6 bg-light h-100p pl-3">
-                                    <div class="bg-green-light-4 mt-1 mb-1 h-90">
-                                        <div class="row">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <span class="text-primary">{% trans 'Next Action' %}</span>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="ml-2">
+                                <div class="row">
+                                    <div class="col-6 bg-light h-100p pr-2 pl-4">
+                                        <div class="bg-green-light-4 mt-1 mb-1 h-90 row">
                                             <div class="col-10">
-                                                <span class="text-black ml-1">Create Quotation and send customer</span>
+                                                <p class="text-black">Meetting with customer</p>
                                             </div>
-                                            <div class="col-2 text-right mt-1">
-                                                <a href="#" class="text-black ">
-                                                    <span class="badge badge-grey h-50p mr-2">Do</span></a>
+                                            <div class="col-2 text-right">
+                                                <a href="#" class="text-black"><span
+                                                        class="badge badge-grey h-50p">Do</span></a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="col-6 bg-light h-100p pl-3">
+                                        <div class="bg-green-light-4 mt-1 mb-1 h-90">
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <span class="text-black ml-1">Create Quotation and send customer</span>
+                                                </div>
+                                                <div class="col-2 text-right mt-1">
+                                                    <a href="#" class="text-black ">
+                                                        <span class="badge badge-grey h-50p mr-2">Do</span></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-2 h-200p w-100 overflow-auto hidden">
+                    <div class="mt-2 h-200p w-100 overflow-auto hidden div-activity">
                         <table class="table nowrap ">
                             <thead>
                             <tr>

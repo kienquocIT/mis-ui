@@ -717,7 +717,6 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
-                console.log(opportunity_detail)
                 $.fn.compareStatusShowPageAction(opportunity_detail);
                 opp_stage_id = opportunity_detail.stage;
                 opp_is_closed = opportunity_detail.is_close;
@@ -1578,4 +1577,15 @@ $(document).ready(function () {
         }
         return check;
     }
+
+    // toggle action and activity
+    $(document).on('click', '#btn-show-activity', function (){
+        $('.div-activity').removeClass('hidden');
+        $('.div-action').addClass('hidden');
+    })
+
+    $(document).on('click', '#btn-show-action', function (){
+        $('.div-activity').addClass('hidden');
+        $('.div-action').removeClass('hidden');
+    })
 })

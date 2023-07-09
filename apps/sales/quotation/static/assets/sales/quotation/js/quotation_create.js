@@ -775,12 +775,6 @@ $(function () {
                     // load expense
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
-                // Check again config after load data copy
-                // if (Object.keys(dataCopy.opportunity).length !== 0) {
-                //     configClass.checkConfig(true, null, false, true);
-                // } else {
-                //     configClass.checkConfig(true);
-                // }
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
@@ -872,12 +866,6 @@ $(function () {
                     }
                 }
             }
-            // Check again config after load data copy
-            // if (Object.keys(dataCopy.opportunity).length !== 0) {
-            //     configClass.checkConfig(true, null, false, true);
-            // } else {
-            //     configClass.checkConfig(true);
-            // }
         }
 
         function checkElementValues() {

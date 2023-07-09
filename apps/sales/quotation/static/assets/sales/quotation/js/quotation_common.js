@@ -194,6 +194,7 @@ class loadDataHandle {
     }
 
     loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null, is_load_init = false) {
+        let self = this;
         let jqueryId = '#' + sale_person_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -231,7 +232,8 @@ class loadDataHandle {
                                         </option>`
                             }
                             ele.append(option)
-                        })
+                        });
+                        self.loadInformationSelectBox(ele);
                     }
                 }
             }
@@ -239,6 +241,7 @@ class loadDataHandle {
     }
 
     loadBoxQuotationPaymentTerm(term_id, valueToSelect = null) {
+        let self = this;
         let jqueryId = '#' + term_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -263,7 +266,8 @@ class loadDataHandle {
                                         </option>`
                             }
                             ele.append(option)
-                        })
+                        });
+                        self.loadInformationSelectBox(ele);
                     }
                 }
             }
@@ -696,6 +700,7 @@ class loadDataHandle {
     }
 
     loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
+        let self = this;
         let jqueryId = '#' + quotation_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -716,7 +721,11 @@ class loadDataHandle {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                             ele.append(`<option value=""></option>`);
                             data.quotation_list.map(function (item) {
-                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'title': item.title,
+                                    'code': item.code,
+                                }).replace(/"/g, "&quot;");
                                 let option = `<option value="${item.id}">
                                             <span class="quotation-title">${item.title}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
@@ -728,7 +737,8 @@ class loadDataHandle {
                                         </option>`
                                 }
                                 ele.append(option)
-                            })
+                            });
+                            self.loadInformationSelectBox(ele);
                         }
                     }
                 }
@@ -864,8 +874,17 @@ class loadDataHandle {
             $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
         }
         if (is_copy === true) {
-            $('#select-box-quotation').append(`<option value="${data.id}" selected>${data.title}</option>`)
-            // self.loadBoxSaleOrderQuotation('select-box-quotation', data.id)
+            let boxQuotation = $('#select-box-quotation');
+            let dataStr = JSON.stringify({
+                'id': data.id,
+                'title': data.title,
+                'code': data.code,
+            }).replace(/"/g, "&quot;");
+            boxQuotation.append(`<option value="${data.id}" selected>
+                                    <span class="quotation-title">${data.title}</span>
+                                    <input type="hidden" class="data-info" value="${dataStr}">
+                                </option>`)
+            self.loadInformationSelectBox(boxQuotation);
         }
         if (data.quotation_logistic_data) {
             document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;

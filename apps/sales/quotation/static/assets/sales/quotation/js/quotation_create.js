@@ -129,16 +129,16 @@ $(function () {
         });
 
 // Action on click dropdown contact
-        boxContact.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
-            }
-        });
+//         boxContact.on('click', function(e) {
+//             if (!$(this)[0].innerHTML) {
+//                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
+//             }
+//         });
 
 // Action on change dropdown contact
-        boxContact.on('change', function (e) {
-            loadDataClass.loadInformationSelectBox($(this));
-        });
+//         boxContact.on('change', function (e) {
+//             loadDataClass.loadInformationSelectBox($(this));
+//         });
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {

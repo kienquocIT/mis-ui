@@ -174,17 +174,18 @@ class loadDataHandle {
                                 'Mobile': item.mobile,
                                 'Email': item.email
                             }).replace(/"/g, "&quot;");
-                            let dataAppend = `<option value="${item.id}">
-                                            <span class="contact-title">${item.fullname}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                            // let dataAppend = `<option value="${item.id}">
+                            //                 <span class="contact-title">${item.fullname}</span>
+                            //                 <input type="hidden" class="data-info" value="${dataStr}">
+                            //             </option>`
                             if (item.id === valueToSelect) {
-                                dataAppend = `<option value="${item.id}" selected>
+                                let dataAppend = `<option value="${item.id}" selected>
                                             <span class="contact-title">${item.fullname}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                                        </option>`;
+                                ele.append(dataAppend)
                             }
-                            ele.append(dataAppend)
+                            // ele.append(dataAppend)
                         })
                         self.loadInformationSelectBox(ele);
                     }
@@ -859,15 +860,15 @@ class loadDataHandle {
                 self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), null, true);
             }
         }
-        if (data.contact) {
-            self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
-        }
+        // if (data.contact) {
+        //     self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
+        // }
         if (data.sale_person) {
             self.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', data.sale_person.id)
         }
-        if (data.payment_term) {
-            self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term.id)
-        }
+        // if (data.payment_term) {
+        //     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term.id)
+        // }
         if (data.quotation && data.sale_person) {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }

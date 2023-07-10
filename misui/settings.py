@@ -343,3 +343,5 @@ if OS_DEBUG is True or OS_DEBUG in [1, '1']:
     print(Fore.YELLOW, f'#  2. API_DOMAIN: {str(API_DOMAIN)} \033[0m')
     print(Fore.LIGHTBLUE_EX, f'#  3. TRACING [JAEGER]: {JAEGER_TRACING_ENABLE}')
     print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')
+else:
+    DEBUG = False

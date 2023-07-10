@@ -159,39 +159,40 @@ class loadDataHandle {
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.empty();
-                    if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
-                        ele.append(`<option value=""></option>`);
-                        data.contact_list.map(function (item) {
-                            let dataStr = JSON.stringify({
-                                'id': item.id,
-                                'Name': item.fullname,
-                                'Job title': item.job_title,
-                                'Mobile': item.mobile,
-                                'Email': item.email
-                            }).replace(/"/g, "&quot;");
-                            // let dataAppend = `<option value="${item.id}">
-                            //                 <span class="contact-title">${item.fullname}</span>
-                            //                 <input type="hidden" class="data-info" value="${dataStr}">
-                            //             </option>`
-                            if (item.id === valueToSelect) {
-                                let dataAppend = `<option value="${item.id}" selected>
-                                            <span class="contact-title">${item.fullname}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`;
-                                ele.append(dataAppend)
-                            }
-                            // ele.append(dataAppend)
-                        })
-                        self.loadInformationSelectBox(ele);
+        if (customerID) {
+            $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        ele.empty();
+                        if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
+                            ele.append(`<option value=""></option>`);
+                            data.contact_list.map(function (item) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'Name': item.fullname,
+                                    'Job title': item.job_title,
+                                    'Mobile': item.mobile,
+                                    'Email': item.email
+                                }).replace(/"/g, "&quot;");
+                                let dataAppend = `<option value="${item.id}">
+                                                <span class="contact-title">${item.fullname}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                if (item.id === valueToSelect) {
+                                    dataAppend = `<option value="${item.id}" selected>
+                                                <span class="contact-title">${item.fullname}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`;
+                                }
+                                ele.append(dataAppend);
+                            })
+                            self.loadInformationSelectBox(ele);
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 
     loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null, is_load_init = false) {

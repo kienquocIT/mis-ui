@@ -38,7 +38,8 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     resp.data.unit_of_measure_group.map(function (item) {
                         if(item.title === 'Nhân công'){
-                            chooseUoMGroup.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+                            chooseUoMGroup.val(item.title);
+                            chooseUoMGroup.attr('data-id', item.id);
                             loadUoM(item.id);
                         }
                     })
@@ -76,6 +77,7 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
+        frm.dataForm['uom_group'] = $('#chooseUoMGroup').data('id');
         let price_list = []
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';

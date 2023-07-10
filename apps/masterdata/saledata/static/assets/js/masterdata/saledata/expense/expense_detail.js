@@ -43,7 +43,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     resp.data.unit_of_measure_group.map(function (item) {
                         if (item.id === id )
-                            chooseUoMGroup.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+                            chooseUoMGroup.val(item.title);
                     })
                 }
             }

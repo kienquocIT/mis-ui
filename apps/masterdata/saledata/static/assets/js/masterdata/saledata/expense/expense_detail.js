@@ -302,9 +302,6 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        if (frm.dataForm['tax_code'] === "") {
-            frm.dataForm['tax_code'] = null;
-        }
         let price_list_add = []
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
@@ -333,7 +330,6 @@ $(document).ready(function () {
         })
         frm.dataForm['data_price_list'] = price_list_add;
         frm.dataForm['currency_using'] = currency_primary.id;
-
 
         $.fn.callAjax(frm.dataUrl.replace('1', pk), frm.dataMethod, frm.dataForm, csr)
             .then(

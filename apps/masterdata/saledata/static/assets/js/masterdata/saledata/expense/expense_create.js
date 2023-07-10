@@ -262,11 +262,7 @@ $(document).ready(function () {
         for (let i = 0; i < element.length; i++) {
             let ele_id = element[i].getAttribute('data-id')
             if (price_dict[ele_id] !== undefined && price_dict[ele_id].price_list_mapped !== null) {
-                if (document.querySelector(`input[type="checkbox"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).checked && price_dict[ele_id].status !== 'Expired') {
-                    element[i].checked = true;
-                } else {
-                    element[i].checked = false;
-                }
+                element[i].checked = document.querySelector(`input[type="checkbox"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).checked && price_dict[ele_id].status !== 'Expired';
             }
         }
     }

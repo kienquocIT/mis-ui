@@ -41,6 +41,9 @@
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
 
+        <!-- Tour -->
+        <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
+
         <!-- Customize Style -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +96,10 @@
             }
 
             {#  -- bell ringing #}
+
+            .my-avatar:hover .my-upload-avatar {
+                display: flex !important;
+            }
         </style>
         <!-- // Customize Style -->
         {% block cssHeader %}
@@ -355,6 +362,28 @@
     <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
     <!-- // Init JS -->
+
+    <!-- Tour -->
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
+
+    <script>
+        $(window).on("load", function () {
+            if (!$('#menu-tenant').attr('data-space-selected')) {
+                hopscotch.startTour({
+                    id: "hopscotch-light",
+                    steps: [
+                        {
+                            target: "menu-tenant",
+                            placement: 'bottom',
+                            title: $.fn.storageSystemData.attr('data-msg-choose-space'),
+                            content: $.fn.storageSystemData.attr('data-msg-choose-space-instru'),
+                        },
+                    ],
+                    showPrevButton: true,
+                });
+            }
+        })
+    </script>
 
     <!-- Customize JS -->
     {% block jsFooter %}{% endblock %}

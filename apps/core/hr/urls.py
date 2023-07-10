@@ -1,13 +1,18 @@
 from django.urls import path
 
-from apps.core.hr.views import EmployeeList, EmployeeCreate, EmployeeListAPI, GroupDetailAPI, GroupLevelList, \
-    GroupLevelListAPI, GroupList, GroupListAPI, GroupCreate, GroupUpdate, GroupDetail, GroupParentListAPI, \
-    EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI
-from apps.core.hr.views import RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI
+from apps.core.hr.views import (
+    EmployeeList, EmployeeCreate, EmployeeListAPI, GroupDetailAPI, GroupLevelList,
+    GroupLevelListAPI, GroupList, GroupListAPI, GroupCreate, GroupUpdate, GroupDetail, GroupParentListAPI,
+    EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI, EmployeeUploadAvatarAPI,
+)
+from apps.core.hr.views import (
+    RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI,
+)
 
 urlpatterns = [
     path('employee', EmployeeList.as_view(), name='EmployeeList'),
     path('employee/api', EmployeeListAPI.as_view(), name='EmployeeListAPI'),
+    path('employee/upload-avatar/api', EmployeeUploadAvatarAPI.as_view(), name='EmployeeUploadAvatarAPI'),
     path('employee/create', EmployeeCreate.as_view(), name='EmployeeCreate'),
     path('employee/<str:pk>', EmployeeDetailAPI.as_view(), name='EmployeeDetailAPI'),
     path('employee/detail/<str:pk>', EmployeeDetail.as_view(), name='EmployeeDetail'),

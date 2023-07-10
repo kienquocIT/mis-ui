@@ -15,6 +15,7 @@ pymemcache==4.0.0
 pytz==2022.6
 rcssmin==1.1.0
 requests==2.28.1
+requests-toolbelt==1.0.0
 rjsmin==1.2.0
 six==1.16.0
 sqlparse==0.4.3

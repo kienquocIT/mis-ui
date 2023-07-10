@@ -367,8 +367,11 @@ $(function () {
             }
         });
 
+        // Clear data indicator store then call API to get new
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
+            document.getElementById('quotation-indicator-data').value = "";
             loadQuotationIndicator('quotation-indicator-data');
+            $.fn.notifyPopup({description: "Data is refreshed"}, 'success');
         });
 
     });

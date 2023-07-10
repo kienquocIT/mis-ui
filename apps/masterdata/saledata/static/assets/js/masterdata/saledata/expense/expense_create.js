@@ -10,23 +10,6 @@ $(document).ready(function () {
 
     $(".select2").select2();
 
-    function loadTaxCode() {
-        let chooseTaxCode = $('#chooseTaxCode');
-        let frm = new SetupFormSubmit(chooseTaxCode);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    chooseTaxCode.append(`<option></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        chooseTaxCode.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
     function loadUoM(group_id) {
         let chooseUom = $('#chooseUom');
         chooseUom.html('');
@@ -35,7 +18,6 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    chooseUom.append(`<option></option>`);
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.id === group_id) {
                             chooseUom.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -54,9 +36,11 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                    chooseUoMGroup.append(`<option></option>`);
                     resp.data.unit_of_measure_group.map(function (item) {
-                        chooseUoMGroup.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                        if(item.title === 'Nhân công'){
+                            chooseUoMGroup.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+                            loadUoM(item.id);
+                        }
                     })
                 }
             }
@@ -83,12 +67,7 @@ $(document).ready(function () {
 
     loadExpenseType();
     loadUoMGroup();
-    loadTaxCode();
 
-    // onchange select box UoM Group for choose UoM
-    $('#chooseUoMGroup').on('change', function () {
-        loadUoM($(this).val());
-    })
 
     // submit form create expense
     let frmCreate = $('#frmCreateExpense')
@@ -96,15 +75,6 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        if (frm.dataForm['tax_code'] === "") {
-            frm.dataForm['tax_code'] = null;
-        }
-        frm.dataForm['general_information'] = {
-            'expense_type': frm.dataForm['expense_type'],
-            'uom_group': frm.dataForm['uom_group'],
-            'uom': frm.dataForm['uom'],
-            'tax_code': frm.dataForm['tax_code'],
-        }
 
         let price_list = []
         $('.ul-price-list .value-price-list').each(function () {
@@ -134,11 +104,9 @@ $(document).ready(function () {
         })
 
         if (price_list.length > 0) {
-            frm.dataForm['general_information']['price_list'] = price_list;
-            frm.dataForm['general_information']['currency_using'] = currency_primary.id;
+            frm.dataForm['data_price_list'] = price_list;
+            frm.dataForm['currency_using'] = currency_primary.id;
         }
-
-        console.log(frm.dataForm);
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

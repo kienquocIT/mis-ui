@@ -12,26 +12,6 @@ $(document).ready(function () {
 
     $(".select2").select2();
 
-    function loadTaxCode(id) {
-        let chooseTaxCode = $('#chooseTaxCode');
-        let frm = new SetupFormSubmit(chooseTaxCode);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    chooseTaxCode.append(`<option></option>`);
-                    resp.data.tax_list.map(function (item) {
-                        if (item.id === id)
-                            chooseTaxCode.append(`<option value="` + item.id + `" selected>` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
-                        else
-                            chooseTaxCode.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
     function loadUoM(group_id, id) {
         let chooseUom = $('#chooseUom');
         chooseUom.html('');
@@ -40,7 +20,6 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    chooseUom.append(`<option></option>`);
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.id === group_id) {
                             if (item.id === id)
@@ -62,12 +41,9 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                    chooseUoMGroup.append(`<option></option>`);
                     resp.data.unit_of_measure_group.map(function (item) {
-                        if (item.id === id)
+                        if (item.id === id )
                             chooseUoMGroup.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                        else
-                            chooseUoMGroup.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
@@ -95,10 +71,6 @@ $(document).ready(function () {
         },)
     }
 
-    // onchange select box UoM Group for choose UoM
-    $('#chooseUoMGroup').on('change', function () {
-        loadUoM($(this).val(), null);
-    })
 
     // load Price List
     function getTreePriceList(dataTree, parent_id, child) {
@@ -106,9 +78,7 @@ $(document).ready(function () {
             if (dataTree[i].item.id === parent_id) {
                 dataTree[i].child.push({'item': child, 'child': []})
             } else {
-                if (dataTree[i].child.length === 0)
-                    continue;
-                else {
+                if (dataTree[i].child.length !== 0){
                     getTreePriceList(dataTree[i].child, parent_id, child)
                 }
             }
@@ -201,8 +171,6 @@ $(document).ready(function () {
             count += 1
             if (dataTree[i].child.length !== 0) {
                 count = appendHtmlForPriceList(dataTree[i].child, ele, currency, count)
-            } else {
-                continue;
             }
         }
         return count
@@ -304,15 +272,10 @@ $(document).ready(function () {
                     $.fn.compareStatusShowPageAction(expense_detail);
                     $('#expenseCode').val(expense_detail.code);
                     $('#expenseTitle').val(expense_detail.title);
-                    loadExpenseType(expense_detail.general_information.expense_type.id);
-                    loadUoMGroup(expense_detail.general_information.uom_group.id);
-                    loadUoM(expense_detail.general_information.uom_group.id, expense_detail.general_information.uom.id);
-                    if (expense_detail.general_information.tax_code !== null)
-                        loadTaxCode(expense_detail.general_information.tax_code.id);
-                    else
-                        loadTaxCode(null);
-
-                    let price_list_expense = expense_detail.general_information.price_list;
+                    loadExpenseType(expense_detail.expense_type);
+                    loadUoMGroup(expense_detail.uom_group);
+                    loadUoM(expense_detail.uom_group, expense_detail.uom);
+                    let price_list_expense = expense_detail.price_list;
                     price_list_expense.map(function (item) {
                         if (price_dict[item.id].auto_update === false) {
                             document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).disabled = false;
@@ -323,7 +286,7 @@ $(document).ready(function () {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             });
-                        ;
+
                     })
                     autoSelectPriceListCopyFromSource(price_dict)
                 }
@@ -342,13 +305,6 @@ $(document).ready(function () {
         if (frm.dataForm['tax_code'] === "") {
             frm.dataForm['tax_code'] = null;
         }
-        frm.dataForm['general_information'] = {
-            'expense_type': frm.dataForm['expense_type'],
-            'uom_group': frm.dataForm['uom_group'],
-            'uom': frm.dataForm['uom'],
-            'tax_code': frm.dataForm['tax_code'],
-        }
-
         let price_list_add = []
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
@@ -375,8 +331,8 @@ $(document).ready(function () {
                 }
             }
         })
-        frm.dataForm['general_information']['price_list'] = price_list_add;
-        frm.dataForm['general_information']['currency_using'] = currency_primary.id;
+        frm.dataForm['data_price_list'] = price_list_add;
+        frm.dataForm['currency_using'] = currency_primary.id;
 
 
         $.fn.callAjax(frm.dataUrl.replace('1', pk), frm.dataMethod, frm.dataForm, csr)

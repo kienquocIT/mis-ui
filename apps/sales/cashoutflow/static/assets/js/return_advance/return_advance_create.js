@@ -50,12 +50,12 @@ $(function () {
 
         function loadPageWithParameter(advance_payment_id, choose_AP_ele) {
             if (advance_payment_id !== null) {
+                $('#chooseAdvancePayment').prop('disabled', true);
+                $('#chooseBeneficiary').prop('disabled', true);
                 choose_AP_ele.find(`option[value="${advance_payment_id}"]`).prop('selected', true);
                 loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, advance_payment_id));
             }
             choose_AP_ele.select2();
-            $('#chooseBeneficiary').prop('disabled', true);
-            $('#chooseAdvancePayment').prop('disabled', true);
         }
 
         loadPageWithParameter(advance_payment_id, choose_AP_ele);

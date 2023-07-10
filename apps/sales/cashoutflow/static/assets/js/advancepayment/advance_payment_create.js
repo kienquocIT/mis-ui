@@ -786,8 +786,9 @@ $(document).ready(function () {
             format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY')) + 100
+        maxYear: parseInt(moment().format('YYYY')) + 100,
     });
+    $('#return_date_id').val('')
 
     $('#created_date_id').dateRangePickerDefault({
         singleDatePicker: true,
@@ -1122,7 +1123,7 @@ $(document).ready(function () {
 
         frm.dataForm['account_bank_information_dict'] = account_bank_accounts_information_dict;
 
-        // console.log(frm.dataForm)
+        console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

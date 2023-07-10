@@ -58,7 +58,7 @@ $(function () {
             singleDatePicker: true,
             timePicker: true,
             showDropdowns: true,
-            drops: 'auto',
+            drops: 'up',
             minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
             locale: {
                 format: 'YYYY-MM-DD'

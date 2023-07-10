@@ -353,10 +353,28 @@ class FileUtils {
     static keyInputFileID = 'data-f-input-file-id';
     static keyInputTextName = 'data-f-input-name';
     static keyInputTextRequired = 'data-f-input-required';
+    static keyInputTextDisabled = 'data-f-input-disabled';
     static keyEleFileNameID = 'data-f-name-ele-id';
     static clsNameInputFile = 'input-file-upload';
 
-    static createInputText(mainEle, name, required) {
+    static parseFileSize(file_size, fixRound=2) {
+        // file_size: is bytes size
+        const KiB = 1024;
+        const MiB = KiB * 1024;
+        const GiB = MiB * 1024;
+
+        if (file_size >= GiB) {
+            return (file_size / GiB).toFixed(fixRound) + " GB";
+        } else if (file_size >= MiB) {
+            return (file_size / MiB).toFixed(fixRound) + " MB";
+        } else if (file_size >= KiB) {
+            return (file_size / KiB).toFixed(fixRound) + " KB";
+        } else {
+            return file_size + " B";
+        }
+    }
+
+    static createInputText(mainEle, name, required, disabled) {
         let idRandom = $.fn.generateRandomString(32);
         $(mainEle).attr(FileUtils.keyInputTextID, '#' + idRandom);
         let ele = $(
@@ -365,12 +383,18 @@ class FileUtils {
                 class="hidden" 
                 name="${name}" 
                 ${required === true ? "required" : ""}
+                ${disabled === true ? "disabled" : ""}
                 id="${idRandom}"
             />`
         );
         ele.val("");
         ele.insertAfter(mainEle);
         return ele;
+    }
+
+    static updateInputText(inputText, required, disabled) {
+        $(inputText).prop('required', required);
+        $(inputText).prop('disabled', disabled);
     }
 
     static createInputFile(mainEle) {
@@ -384,27 +408,70 @@ class FileUtils {
         return ele;
     }
 
-    static init(eleSelect$ = null) {
+    static updateInputFile(inputFile, required, disabled) {
+        $(inputFile).prop('required', required);
+        $(inputFile).prop('disabled', disabled);
+    }
+
+    static enableButtonFakeUpload(btnFakeEle, disabled) {
+        $(btnFakeEle).prop('disabled', disabled);
+    }
+
+    static init(eleSelect$ = null, dataDetail = {}) {
         if (eleSelect$) {
             let idInputText = $(eleSelect$).attr(FileUtils.keyInputTextID);
             let idInputFile = $(eleSelect$).attr(FileUtils.keyInputFileID);
             let idInputTextName = $(eleSelect$).attr(FileUtils.keyInputTextName);
             let idInputTextRequired = $(eleSelect$).attr(FileUtils.keyInputTextRequired);
+            let idInputTextDisabled = $(eleSelect$).attr(FileUtils.keyInputTextDisabled);
 
-            if (idInputFile && idInputFile) {
+            if (idInputText && idInputFile) {
                 let eleInputText = $(idInputText);
                 let eleInputFile = $(idInputFile);
                 if (!(eleInputText.length > 0 && eleInputFile.length > 0)) {
                     FileUtils.createInputText(
                         $(eleSelect$),
                         idInputTextName,
-                        $.fn.parseBoolean(idInputTextRequired, false) === true,
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
                     );
                     FileUtils.createInputFile($(eleSelect$));
+                } else {
+                    FileUtils.updateInputText(
+                        $(eleInputText[0]),
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    )
+                    FileUtils.updateInputFile(
+                        $(eleInputFile[0]),
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    )
                 }
             } else {
-                FileUtils.createInputText($(eleSelect$), idInputTextName, idInputTextRequired);
+                FileUtils.createInputText(
+                    $(eleSelect$),
+                    idInputTextName,
+                    $.fn.parseBoolean(idInputTextRequired, false) === true,
+                    $.fn.parseBoolean(idInputTextDisabled, false) === true,
+                );
                 FileUtils.createInputFile($(eleSelect$));
+            }
+
+            FileUtils.enableButtonFakeUpload(
+                $(eleSelect$),
+                $.fn.parseBoolean(idInputTextDisabled, true) === true,
+            )
+
+            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['media_file_id', 'file_name'])) {
+                let media_file_id = dataDetail?.['media_file_id'];
+                let file_name = dataDetail?.['file_name'];
+                let file_size = dataDetail?.['file_size'];
+                if (media_file_id && file_name) {
+                    let f_utils = new FileUtils(eleSelect$);
+                    f_utils.setIdFile(media_file_id);
+                    f_utils.setFileNameUploaded(file_name, file_size || null);
+                }
             }
         } else {
             $('.btn-file-upload').each(function () {
@@ -445,18 +512,19 @@ class FileUtils {
         if ($.fn.isDebug() === true) throw Error('Input must be required before upload file!');
     }
 
-    setFileNameUploaded(fName) {
+    setFileNameUploaded(fName, fSize = null) {
+        let textDisplay = `${fName} - ${FileUtils.parseFileSize(fSize, 2)}`
         if (this.idEleFileName) {
             let ele = $(this.idEleFileName);
             if (ele.length > 0) {
-                ele.text(fName);
+                ele.text(textDisplay);
             }
         } else {
             let getEleFName = this.btnUploadFileEle$.next('.display-file-name-uploaded');
             if (getEleFName.length > 0) {
-                getEleFName.text(fName);
+                getEleFName.text(textDisplay);
             } else {
-                $(`<small class="form-text text-muted display-file-name-uploaded">${fName}</small>`).insertAfter(
+                $(`<small class="form-text text-muted display-file-name-uploaded">${textDisplay}</small>`).insertAfter(
                     this.btnUploadFileEle$
                 );
             }
@@ -482,7 +550,7 @@ class FileUtils {
             (resp) => {
                 let detailFile = resp?.data?.detail;
                 this.setIdFile(detailFile?.['id']);
-                this.setFileNameUploaded(detailFile?.['name']);
+                this.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
             },
             (errs) => {
                 console.log('errs: ', errs);
@@ -527,7 +595,7 @@ class FileUtils {
                                     (resp) => {
                                         let detailNewFile = resp?.data?.detail;
                                         clsThis.setIdFile(detailNewFile?.['id']);
-                                        clsThis.setFileNameUploaded(detailNewFile?.['name']);
+                                        clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
                                         return true;
                                     },
                                     (errs) => {
@@ -550,9 +618,10 @@ class FileUtils {
                             // Swal.fire('Saved!', '', 'success');
                         } else if (result.isDenied) {
                             // use file exist
+                            console.log('existData: ', existData);
                             clsThis.resetValeInputFile();
                             clsThis.setIdFile(existData['id']);
-                            clsThis.setFileNameUploaded(existData['name']);
+                            clsThis.setFileNameUploaded(existData['file_name'], existData['file_size']);
                         } else {
                             // cancel
                             clsThis.resetValeInputFile();
@@ -928,7 +997,7 @@ class ListeningEventController {
                         timer: 2000,
                         timerProgressBar: true,
                     }).then(
-                        ()=>{
+                        () => {
                             window.location.reload();
                         }
                     )

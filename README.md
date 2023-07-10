@@ -443,3 +443,38 @@ MEDIA_DOMAIN=http://127.0.0.1:8881/api
 MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
 ```
 ---
+
+#### Media cloud init input upload
+
+```html
+<div class="col-4">
+    <div class="form-group">
+        <label for="inputTest2" class="form-label">Upload File 2</label>
+        <button
+            type="button"
+            class="form-control btn btn-danger btn-file-upload"
+            data-f-input-name="inputTest2"
+            data-f-input-required="true"
+            data-f-input-disabled="false"
+            data-f-name-ele-id="#fileNameTestDisplay"
+        >Click me!</button>
+        <p id="fileNameTestDisplay"></p>
+    </div>
+</div>
+```
+
+##### Default: auto init .btn-file-upload with attribute config
+
+#### Manual || Detail Load: 
+```javascript
+let btnInputFile = $('#{btnID}');
+// or
+let btnInputFile = $('.btn-file-upload[data-f-input-name={name_input_init}]')[0];
+
+let dataDetail = {}; 
+// detail of file, sample: {'id': ..., 'media_file_id': '', 'file_name': '', 'file_size': 1024, ...}
+
+FileUtils.init(btnInputFile, dataDetail || {})
+```
+### Sample in apps\core\home\templates\core\utilities\index.html
+---

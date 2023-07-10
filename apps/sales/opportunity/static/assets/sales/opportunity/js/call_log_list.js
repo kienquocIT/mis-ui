@@ -58,10 +58,10 @@ $(function () {
             singleDatePicker: true,
             timePicker: true,
             showDropdowns: true,
-            drops: 'auto',
+            drops: 'up',
             minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
             locale: {
-                format: 'YYYY-MM-DD hh:mm:ss'
+                format: 'YYYY-MM-DD'
             },
             "cancelClass": "btn-secondary",
             maxYear: parseInt(moment().format('YYYY'), 10) + 100
@@ -128,32 +128,32 @@ $(function () {
                             data: 'contact',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<span class="text-primary">` + row.contact.fullname + `</span>`
+                                return `<a target="_blank" href="` + $('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row.contact.id) + `"><span class="text-primary link-primary underline_hover"><b>` + row.contact.fullname + `</b></span></a>`
                             }
                         },
                         {
                             data: 'opportunity',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<center><span class="badge badge-soft-blue w-50">` + row.opportunity.code + `</span></center>`
+                                return `<center><span class="text-secondary">` + row.opportunity.code + `</span></center>`
                             }
                         },
                         {
                             data: 'call_date',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<center><span>` + row.call_date + `</span></center>`
+                                return `<center><span>` + row.call_date.split(' ')[0] + `</span></center>`
                             }
                         },
                         {
                             data: 'repeat',
-                            className: 'wrap-text',
+                            className: 'wrap-text text-center',
                             render: (data, type, row, meta) => {
                                 if (row.repeat) {
-                                    return `<center><span class="text-danger"><i class="bi bi-check-lg"></i></span></center>`
+                                    return `Yes`
                                 }
                                 else {
-                                    return ``
+                                    return `No`
                                 }
                             }
                         },

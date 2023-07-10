@@ -659,12 +659,16 @@ $(document).ready(function () {
         })
         let warehouse_stock_list = [];
         for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
-            let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des)
+            // console.log(product_get_from_wh_product_list[i])
+            let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
+            let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i].stock_amount;
+            let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i].sold_amount;
+
             warehouse_stock_list.push(
                 {
                     'warehouse_id': product_get_from_wh_product_list[i].warehouse,
-                    'stock': calculated_ratio * product_get_from_wh_product_list[i].stock_amount,
-                    'wait_for_delivery': calculated_ratio * product_get_from_wh_product_list[i].picked_ready,
+                    'stock': raw_stock_quantity - delivered_quantity,
+                    'wait_for_delivery': 0,
                     'wait_for_receipt': 0,
                 }
             );

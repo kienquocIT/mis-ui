@@ -461,6 +461,11 @@ MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
         <p id="fileNameTestDisplay"></p>
     </div>
 </div>
+# class: btn-file-upload
+# data-f-input-name: Giá trị attribute name của element input text được khởi tạo
+# data-f-input-required: (true/false) attribute "required" của thẻ input text được khởi tạo
+# data-f-input-disabled: (true/false) attribute "disabled" của thẻ input text được khởi tạo
+# data-f-name-ele-id: ID name thẻ hiển thị tên file và dung lượng (không có sẽ tạo <small>)
 ```
 
 ##### Default: auto init .btn-file-upload with attribute config

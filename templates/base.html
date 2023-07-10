@@ -118,7 +118,9 @@
 
             gtag('js', new Date());
 
-            gtag('config', 'G-4GDQQTC98X');
+            gtag('config', 'G-4GDQQTC98X', {
+                'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
+            });
         </script>
         <!-- // GA -->
 

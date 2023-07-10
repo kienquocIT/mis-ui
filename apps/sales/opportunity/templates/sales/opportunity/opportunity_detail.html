@@ -172,15 +172,18 @@
                         </div>
                     </div>
 
-                    <div class="mt-3 row">
-                        <div class="col-7">
-                            <div class="div-action">
-                                <a href="#"><span>{% trans "Current action" %}</span></a>
-                                <a href="#"><span class="ml-3"><i class="bi bi-telephone"></i></span></a>
-                                <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                                <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
-                            </div>
+                <div class="mt-3 row">
+                    <div class="col-7">
+                        <div class="div-action">
+                            <a href="#"><span>{% trans "Current action" %}</span></a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#create-new-call-log"
+                               id="create-new-call-log-button">
+                                <span class="ml-3"><i class="bi bi-telephone"></i></span>
+                            </a>
+                            <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
+                            <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
+                            <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
+                        </div>
 
                             <div class="div-activity hidden">
                                 <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
@@ -698,6 +701,75 @@
                                 data-bs-dismiss="modal">{% trans "Close" %}</button>
                         <button type="button" class="btn btn-primary" id="btn-add-member">{% trans "Add" %}</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create New Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form data-url="{% url 'OpportunityCallLogListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityCallLogList' %}"
+                          data-method="POST"
+                          id="form-create-new-call-log"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Subject' %}
+                            </label>
+                            <input id="subject-input" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Sale Code' %}
+                            </label>
+                            <select id="sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Customer' %}
+                            </label>
+                            <select id="account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label required">
+                                    {% trans 'Contact' %}
+                                </label>
+                                <select id="contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label required">
+                                    {% trans 'Date' %}
+                                </label>
+                                <input id="date-input" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {% trans 'Input Result' %}
+                            </label>
+                            <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3"
+                                id="btn-create-new-call-log">{% trans 'Save' %}</button>
+                    </form>
                 </div>
             </div>
         </div>

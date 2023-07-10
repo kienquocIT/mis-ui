@@ -518,43 +518,43 @@ $(document).ready(function () {
                 columns: [
                     {
                         data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data, type, row, meta) => {
                             return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-25',
                         render: (data, type, row, meta) => {
-                            return `<span><b>` + row.title + `</b></span>`
+                            return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
                         }
                     },
                     {
                         data: 'stock_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-primary">0</span>`
+                            return `<center><span>0</span></center>`
                         }
                     },
                     {
                         data: 'wait_for_delivery_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-primary">0</span>`
+                            return `<center><span>0</span></center>`
                         }
                     },
                     {
                         data: 'wait_for_receipt_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-primary">0</span>`
+                            return `<center><span>0</span></center>`
                         }
                     },{
                         data: 'available_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-primary">0</span>`
+                            return `<center><span>0</span></center>`
                         }
                     },
                 ],

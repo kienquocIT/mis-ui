@@ -663,8 +663,8 @@ $(document).ready(function () {
             warehouse_stock_list.push(
                 {
                     'warehouse_id': product_get_from_wh_product_list[i].warehouse,
-                    'stock': calculated_ratio*product_get_from_wh_product_list[i].stock_amount - calculated_ratio*product_get_from_wh_product_list[i].sold_amount,
-                    'wait_for_delivery': calculated_ratio*product_get_from_wh_product_list[i].picked_ready,
+                    'stock': calculated_ratio * product_get_from_wh_product_list[i].stock_amount,
+                    'wait_for_delivery': calculated_ratio * product_get_from_wh_product_list[i].picked_ready,
                     'wait_for_receipt': 0,
                 }
             );
@@ -695,15 +695,15 @@ $(document).ready(function () {
                                     for (let i = 0; i < value_list.length; i++) {
                                         stock_value = stock_value + value_list[i].stock;
                                         wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
-                                        wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt
+                                        wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
                                     }
-                                    let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value
+                                    let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
                                     resp.data['warehouse_list'][i].stock_value = stock_value;
                                     resp.data['warehouse_list'][i].wait_for_delivery_value = wait_for_delivery_value;
                                     resp.data['warehouse_list'][i].wait_for_receipt_value = wait_for_receipt_value;
                                     resp.data['warehouse_list'][i].available_value = available_value;
                                 }
-                                return resp.data['warehouse_list']
+                                return resp.data['warehouse_list'];
                             }
                             else {
                                 return [];
@@ -715,43 +715,43 @@ $(document).ready(function () {
                 columns: [
                     {
                         data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data, type, row, meta) => {
                             return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-25',
                         render: (data, type, row, meta) => {
-                            return `<span><b>` + row.title + `</b></span>`
+                            return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
                         }
                     },
                     {
                         data: 'stock_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return row.stock_value
+                            return `<center><span>` + row.stock_value + `</span></center>`
                         }
                     },
                     {
                         data: 'wait_for_delivery_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return row.wait_for_delivery_value
+                            return `<center><span>` + row.wait_for_delivery_value + `</span></center>`
                         }
                     },
                     {
                         data: 'wait_for_receipt_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return row.wait_for_receipt_value
+                            return `<center><span>` + row.wait_for_receipt_value + `</span></center>`
                         }
                     },{
                         data: 'available_value',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return row.available_value
+                            return `<center><span>` + row.available_value + `</span></center>`
                         }
                     },
                 ],
@@ -783,10 +783,10 @@ $(document).ready(function () {
                             return parseFloat(a) + parseFloat(b);
                         }, 0);
 
-                    $(api.column(2).footer()).text(sum2);
-                    $(api.column(3).footer()).text(sum3);
-                    $(api.column(4).footer()).text(sum4);
-                    $(api.column(5).footer()).text(sum5);
+                    $(api.column(2).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum2 + `</span>`);
+                    $(api.column(3).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum3 + `</span>`);
+                    $(api.column(4).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum4 + `</span>`);
+                    $(api.column(5).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum5 + `</span>`);
                 }
             });
         }

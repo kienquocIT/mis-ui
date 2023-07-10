@@ -53,6 +53,7 @@ $(function () {
             $(this)[0].setAttribute('hidden', true)
             $('#btn-create_quotation')[0].removeAttribute('hidden');
             $form.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+            $form.find('#quotation-customer-confirm').removeAttr('disabled');
             $('#datable-quotation-create-product').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $('#datable-quotation-create-cost').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $('#datable-quotation-create-expense').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');

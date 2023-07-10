@@ -1,6 +1,8 @@
 from django.urls import reverse
 from django.views import View
+from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -57,6 +59,28 @@ class EmployeeListAPI(APIView):
             url=ApiURL.EMPLOYEE_LIST,
             msg=HRMsg.EMPLOYEE_CREATE
         )
+
+
+class EmployeeUploadAvatarAPI(APIView):
+    parser_classes = [MultiPartParser]
+
+    @mask_view(auth_require=True, login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        uploaded_file = request.FILES.get('file')
+        m = MultipartEncoder(fields={'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_UPLOAD_AVATAR,
+            cus_headers={
+                'content-type': m.content_type,
+            },
+        ).post(data=m)
+        if resp.state:
+            request.user.update_avatar_hash(resp.result.get('media_path_hash', None))
+            return {'detail': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class EmployeeCreate(View):

@@ -3561,3 +3561,38 @@ msgstr "Cập nhật chỉ tiêu đơn hàng thành công"
 #
 msgid "Sale order indicator restore successfully"
 msgstr "Khôi phục chỉ tiêu đơn hàng thành công"
+
+#
+msgid "Can not select stage because this opportunity has been closed"
+msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã đóng"
+
+#
+msgid "Stage has been updated, Please Save!"
+msgstr "Gia đoạn đã được cập nhật, Vui lòng lưu!"
+#
+msgid "Upload"
+msgstr "Tải lên"
+
+#
+msgid "This change will take effect after the next login."
+msgstr "Thay đổi này sẽ có hiệu lực sau lần đăng nhập tiếp theo."
+
+#
+msgid "The username or password is incorrect"
+msgstr "Tên người dùng hoặc mật khẩu không chính xác"
+
+#
+msgid "Choose a image"
+msgstr "Chọn 1 hình ảnh"
+
+#
+msgid "Allow type {0} and file size less than equal 5MiB"
+msgstr "Cho phép loại tệp {0} và kích thước tập tin tối đa 5MiB"
+
+#
+msgid "Choose a space menus"
+msgstr "Chọn một Space Menus"
+
+#
+msgid "Each Space has different menus."
+msgstr "Mỗi Space có các Menus khác nhau."

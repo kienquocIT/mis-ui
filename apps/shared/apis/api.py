@@ -1,10 +1,11 @@
 """share all popular class function for use together purpose"""
-from typing import Callable, TypedDict
+from typing import Callable, TypedDict, Union
 import requests
 
 from django.db.models import Model
 from django.conf import settings
 from django.http import response
+from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 
 from .urls_map import ApiURL
@@ -360,7 +361,12 @@ class APIUtil:
                     resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
         return self.get_data_from_resp(resp)
 
-    def call_post(self, safe_url: str, headers: dict, data: dict) -> RespData:
+    def call_post(
+            self,
+            safe_url: str,
+            headers: dict,
+            data: Union[dict, MultipartEncoder],
+    ) -> RespData:
         """
         Support ServerAPI call to server with POST method.
         (refresh token after recall if token is expires)
@@ -374,12 +380,32 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.post(
-            url=safe_url,
-            headers=headers,
-            json=data,
-            timeout=REQUEST_TIMEOUT
-        )
+        if 'content-type' in headers:
+            content_type = headers.get('content-type', None)
+        elif 'Content-Type' in headers:
+            content_type = headers.get('Content-Type', None)
+        else:
+            content_type = None
+
+        config = {
+            'url': safe_url,
+            'headers': headers,
+            'timeout': REQUEST_TIMEOUT,
+        }
+
+        if content_type:
+            match content_type.split(":")[0]:
+                case 'multipart/form-data':
+                    config['files'] = data
+                case 'application/json':
+                    config['json'] = data
+                case _:
+                    config['data'] = data
+        else:
+            headers['content-type'] = 'application/json'
+            config['data'] = data
+
+        resp = requests.post(**config)
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
@@ -459,13 +485,16 @@ class ServerAPI:
     """
 
     def __init__(self, url, **kwargs):
+        self.cus_headers = kwargs.get('cus_headers', None)
+        api_domain = kwargs.get('api_domain', settings.API_DOMAIN)
         self.user = kwargs.get('user', None)
         if url.startswith('\\'):
-            self.url = settings.API_DOMAIN + url[1:]
+            self.url = api_domain + url[1:]
         else:
-            self.url = settings.API_DOMAIN + url
+            self.url = api_domain + url
 
         self.is_minimal = kwargs.get('is_minimal', False)
+        self.is_secret_ui = kwargs.get('is_secret_ui', False)
 
     @property
     def headers(self) -> dict:
@@ -483,6 +512,20 @@ class ServerAPI:
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
         if self.is_minimal is True:
             data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
+
+        if self.is_secret_ui:
+            data.update(
+                {
+                    settings.MEDIA_KEY_FLAG: 'true',
+                    settings.MEDIA_KEY_SECRET_TOKEN_UI: settings.MEDIA_SECRET_TOKEN_UI,
+                }
+            )
+
+        if self.cus_headers:
+            return {
+                **data,
+                **self.cus_headers
+            }
         return data
 
     def get(self, data=None):
@@ -507,13 +550,13 @@ class ServerAPI:
 
         Returns: APIUtil --> call_post()
         """
-        if isinstance(data, dict):
+        if isinstance(data, (dict, MultipartEncoder)):
             return APIUtil(user_obj=self.user).call_post(
                 safe_url=self.url,
                 headers=self.headers,
                 data=data
             )
-        raise ValueError('Body data for POST request must be dictionary')
+        raise ValueError('Body data for POST request must be dictionary or MultipartEncoder')
 
     def put(self, data) -> RespData:
         """

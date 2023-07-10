@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
-__all__ = ['WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI', 'WarehouseProductAPI']
+__all__ = ['WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI', 'WarehouseProductAPI', 'WarehouseStockListAPI']
 
 
 class WareHouseList(View):
@@ -103,6 +103,20 @@ class WarehouseProductAPI(APIView):
         ).get(params)
         if resp.state:
             return {'warehouse_stock': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class WarehouseStockListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_STOCK_LIST).get()
+        if resp.state:
+            return {'warehouse_stock_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

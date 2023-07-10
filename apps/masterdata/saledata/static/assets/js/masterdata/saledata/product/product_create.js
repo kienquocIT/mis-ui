@@ -496,5 +496,71 @@ $(document).ready(function () {
         eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
     }
 
-    loadBaseItemUnit()
+    loadBaseItemUnit();
+
+    function loadWareHouseList() {
+        if (!$.fn.DataTable.isDataTable('#datatable-warehouse-list')) {
+            let dtb = $('#datatable-warehouse-list');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
+                pageLength: 5,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['warehouse_list'] ? resp.data['warehouse_list'] : [];
+                        }
+                        return [];
+                    },
+                },
+                columns: [
+                    {
+                        data: 'code',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row, meta) => {
+                            return `<span class="text-secondary">` + row.code + `</span>`
+                        }
+                    },
+                    {
+                        data: 'title',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
+                        }
+                    },
+                    {
+                        data: 'stock_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>0</span></center>`
+                        }
+                    },
+                    {
+                        data: 'wait_for_delivery_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>0</span></center>`
+                        }
+                    },
+                    {
+                        data: 'wait_for_receipt_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>0</span></center>`
+                        }
+                    },{
+                        data: 'available_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>0</span></center>`
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
+    loadWareHouseList();
 })

@@ -93,6 +93,15 @@ class User(AuthUser):
     companies_data = models.JSONField(default=list, help_text='[{...company detail...},]')
     is_admin_tenant = models.BooleanField(default=False)
 
+    def update_avatar_hash(self, media_path_hash):
+        if media_path_hash:
+            self.avatar = media_path_hash
+            self.save()
+
+    @property
+    def avatar_url(self):
+        return f'{settings.MEDIA_PUBLIC_DOMAIN}p/f/avatar/{self.avatar}' if self.avatar else None
+
     class Meta:
         verbose_name = 'Account User'
         verbose_name_plural = 'Account User'
@@ -127,7 +136,7 @@ class User(AuthUser):
                     dob=api_result.get('dob', None),
                     gender=api_result.get('gender', None),
                     language=api_result.get('language', settings.LANGUAGE_CODE),
-                    avatar=api_result.get('avatar', None),
+                    avatar=api_result.get('media_avatar_hash', None),
                     is_admin_tenant=api_result.get('is_admin_tenant', False),
                 )
             except Exception as err:
@@ -143,12 +152,12 @@ class User(AuthUser):
             user.dob = api_result.get('dob', None)
             user.gender = api_result.get('gender', None)
             user.language = api_result.get('language', settings.LANGUAGE_CODE)
-            user.avatar = api_result.get('avatar', None)
             user.is_admin_tenant = api_result.get('is_admin_tenant', False)
             user.tenant_current_data = api_result.get('tenant_current', {})
             user.company_current_data = api_result.get('company_current', {})
             user.space_current_data = api_result.get('space_current', {})
             user.employee_current_data = api_result.get('employee_current', {})
+            user.avatar = user.employee_current_data.get('media_avatar_hash', None)
             user.companies_data = api_result.get('companies', [])
             user.access_token = api_result['token']['access_token']
             user.refresh_token = api_result['token']['refresh_token']

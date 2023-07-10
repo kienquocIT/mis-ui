@@ -32,6 +32,7 @@
         <input id="group_id_emp_login" class="hidden">
         <input id="data-product" class="hidden">
         {{ data.config | json_script:"id-config-data" }}
+        {{ data.account_list | json_script:"account_list" }}
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
@@ -756,7 +757,7 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">
+                            <label class="form-label required">
                                 {% trans 'Input Result' %}
                             </label>
                             <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>

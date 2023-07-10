@@ -1597,6 +1597,8 @@ $(document).ready(function () {
 
 
     // for calllog
+    const account_list = JSON.parse($('#account_list').text());
+
     function LoadSaleCodeList(default_sale_code_id) {
         let $sale_code_sb = $('#sale-code-select-box');
         $.fn.callAjax($sale_code_sb.attr('data-url'), $sale_code_sb.attr('data-method')).then((resp) => {
@@ -1639,7 +1641,7 @@ $(document).ready(function () {
 
         $account_sb.select2();
     }
-    function LoadContactList() {
+    function LoadContactList(contact_list_id) {
         let $contact_sb = $('#contact-select-box');
         $.fn.callAjax($contact_sb.attr('data-url'), $contact_sb.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -1647,21 +1649,26 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
                     $contact_sb.append(`<option></option>`)
                     data.contact_list.map(function (item) {
-                        $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                        if (contact_list_id.includes(item.id)) {
+                            $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                        }
                     })
                 }
             }
         })
 
-        $contact_sb.select2();
+        $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
     }
-    LoadContactList();
 
     $('#create-new-call-log-button').on('click', function () {
         $('#sale-code-select-box').prop('disabled', true);
         $('#account-select-box').prop('disabled', true);
         LoadSaleCodeList(pk);
         LoadCustomerList($('#select-box-customer option:selected').attr('value'));
+        let contact_list_id = account_list.filter(function(item) {
+            return item.id === $('#select-box-customer option:selected').attr('value');
+        })[0].contact_mapped;
+        LoadContactList(contact_list_id);
     })
 
     $('#date-input').daterangepicker({

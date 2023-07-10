@@ -2,23 +2,26 @@
 $(function () {
     $(document).ready(function () {
         let employee_current_id = $('#employee_current_id').val();
+        const account_list = JSON.parse($('#account_list').text());
+
         function LoadSaleCodeList() {
             let $sale_code_sb = $('#sale-code-select-box');
             $.fn.callAjax($sale_code_sb.attr('data-url'), $sale_code_sb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    console.log(data)
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
                         $sale_code_sb.append(`<option></option>`)
                         data.opportunity_list.map(function (item) {
-                            $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                            $sale_code_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
                         })
                     }
                 }
             })
 
-            $sale_code_sb.select2();
+            $sale_code_sb.select2({dropdownParent: $("#create-new-call-log")});
         }
-        function LoadCustomerList() {
+        function LoadCustomerList(customer_id) {
             let $account_sb = $('#account-select-box');
             $.fn.callAjax($account_sb.attr('data-url'), $account_sb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -26,15 +29,20 @@ $(function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
                         $account_sb.append(`<option></option>`)
                         data.account_list.map(function (item) {
-                            $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
+                            if (customer_id === item.id) {
+                                $account_sb.append(`<option selected value="${item.id}">${item.name}</option>`);
+                            }
+                            else {
+                                $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
+                            }
                         })
                     }
                 }
             })
 
-            $account_sb.select2();
+            $account_sb.select2({dropdownParent: $("#create-new-call-log")});
         }
-        function LoadContactList() {
+        function LoadContactList(contact_list_id) {
             let $contact_sb = $('#contact-select-box');
             $.fn.callAjax($contact_sb.attr('data-url'), $contact_sb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -42,17 +50,17 @@ $(function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
                         $contact_sb.append(`<option></option>`)
                         data.contact_list.map(function (item) {
-                            $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                            if (contact_list_id.includes(item.id)) {
+                                $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                            }
                         })
                     }
                 }
             })
 
-            $contact_sb.select2();
+            $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
         }
         LoadSaleCodeList();
-        LoadCustomerList();
-        LoadContactList();
 
         $('#date-input').daterangepicker({
             singleDatePicker: true,
@@ -67,6 +75,15 @@ $(function () {
             maxYear: parseInt(moment().format('YYYY'), 10) + 100
         });
 
+        $('#sale-code-select-box').on('change', function () {
+            let customer_id = $('#sale-code-select-box option:selected').attr('data-customer-id');
+            LoadCustomerList(customer_id);
+            let contact_list_id = account_list.filter(function(item) {
+                return item.id === customer_id;
+            })[0].contact_mapped;
+            LoadContactList(contact_list_id);
+        })
+
         $('#form-create-new-call-log').submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -77,13 +94,15 @@ $(function () {
             frm.dataForm['customer'] = $('#account-select-box').val();
             frm.dataForm['contact'] = $('#contact-select-box').val();
             frm.dataForm['call_date'] = $('#date-input').val();
-            frm.dataForm['result'] = $('#result-text-area').val();
+            frm.dataForm['input_result'] = $('#result-text-area').val();
             if ($('#repeat-activity').is(':checked')) {
                 frm.dataForm['repeat'] = 1;
             }
             else {
                 frm.dataForm['repeat'] = 0;
             }
+
+            // console.log(frm.dataForm)
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(

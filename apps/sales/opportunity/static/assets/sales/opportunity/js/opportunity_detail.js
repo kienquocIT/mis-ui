@@ -1656,7 +1656,7 @@ $(document).ready(function () {
         drops: 'auto',
         minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
         locale: {
-            format: 'YYYY-MM-DD hh:mm:ss'
+            format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY'), 10) + 100

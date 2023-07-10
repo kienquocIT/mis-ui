@@ -1597,7 +1597,7 @@ $(document).ready(function () {
 
 
     // for calllog
-    function LoadSaleCodeList() {
+    function LoadSaleCodeList(default_sale_code_id) {
         let $sale_code_sb = $('#sale-code-select-box');
         $.fn.callAjax($sale_code_sb.attr('data-url'), $sale_code_sb.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -1605,7 +1605,12 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
                     $sale_code_sb.append(`<option></option>`)
                     data.opportunity_list.map(function (item) {
-                        $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                        if (default_sale_code_id === item.id) {
+                            $sale_code_sb.append(`<option selected value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                        }
+                        else {
+                            $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                        }
                     })
                 }
             }
@@ -1613,7 +1618,7 @@ $(document).ready(function () {
 
         $sale_code_sb.select2();
     }
-    function LoadCustomerList() {
+    function LoadCustomerList(default_customer_id) {
         let $account_sb = $('#account-select-box');
         $.fn.callAjax($account_sb.attr('data-url'), $account_sb.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -1621,7 +1626,12 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
                     $account_sb.append(`<option></option>`)
                     data.account_list.map(function (item) {
-                        $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
+                        if (default_customer_id === item.id) {
+                            $account_sb.append(`<option selected value="${item.id}">${item.name}</option>`);
+                        }
+                        else {
+                            $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
+                        }
                     })
                 }
             }
@@ -1645,18 +1655,23 @@ $(document).ready(function () {
 
         $contact_sb.select2();
     }
-    LoadSaleCodeList();
-    LoadCustomerList();
     LoadContactList();
+
+    $('#create-new-call-log-button').on('click', function () {
+        $('#sale-code-select-box').prop('disabled', true);
+        $('#account-select-box').prop('disabled', true);
+        LoadSaleCodeList(pk);
+        LoadCustomerList($('#select-box-customer option:selected').attr('value'));
+    })
 
     $('#date-input').daterangepicker({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,
-        drops: 'auto',
+        drops: 'up',
         minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
         locale: {
-            format: 'YYYY-MM-DD hh:mm:ss'
+            format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY'), 10) + 100

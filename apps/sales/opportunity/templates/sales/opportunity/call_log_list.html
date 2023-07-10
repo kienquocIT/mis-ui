@@ -25,11 +25,19 @@
 {% endblock %}
 {% block pageContent %}
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
-    <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5" data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
+    <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
+           data-url-contact-detail="{% url 'ContactDetail' '0' %}"
+           data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
         <thead>
         <tr>
             <th class="w-30">{% trans 'Subject' %}</th>
-            <th class="w-20">{% trans 'To Contact' %}</th>
+            <th class="w-20">{% trans 'To Contact' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}">
+                </i>
+            </th>
             <th class="text-center w-20">{% trans 'Sale Code' %}</th>
             <th class="text-center w-20">{% trans 'Date' %}</th>
             <th class="text-center w-10">{% trans 'Need repeat' %}</th>

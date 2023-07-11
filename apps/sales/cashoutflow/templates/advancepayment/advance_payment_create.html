@@ -36,14 +36,13 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    c
+    {{ data.data.sale_order_list | json_script:"sale_order_list" }}
     {{ data.data.quotation_list | json_script:"quotation_list" }}
     {{ data.data.expense_list | json_script:"expense_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
     {{ data.data.opportunity_list | json_script:"opportunity_list" }}
     {{ data.data.employee_list | json_script:"employee_list" }}
-    {{ data.data.sale_order_list | json_script:"sale_order_list" }}
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
     {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}

@@ -40,6 +40,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
 
+    # attachment
+    MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
+    MEDIA_UPLOAD_FILE = StringUrl('f/files')
+    API_FORWARD_ACCESS_TOKEN_MEDIA = StringUrl('auth/media/sign-in-valid')
+
     # Logging
     LOG_ACTIVITIES = StringUrl('log/activities')
     LOG_MY_NOTIFY_DATA_ALL = StringUrl('log/notifies/me')
@@ -69,6 +74,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
+    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
@@ -100,6 +106,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
     INDICATOR_PARAM = StringUrl('base/indicator-params')
+
+    APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
 
     TENANT = StringUrl('tenant/userlist')
 
@@ -162,6 +170,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
+    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
 
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
@@ -201,6 +210,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
     OPPORTUNITY_EXPENSE_LIST = StringUrl('opportunity/opportunity-expense-list/lists')
+    OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
@@ -209,6 +219,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
+    QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -232,10 +243,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
+    SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
+    SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
+    SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
+    WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
 
     # shipping unit
@@ -264,6 +279,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
+    OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
+    OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
+
+    # restore Opportunity Stage
+    RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')
 
     # Task
     OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')

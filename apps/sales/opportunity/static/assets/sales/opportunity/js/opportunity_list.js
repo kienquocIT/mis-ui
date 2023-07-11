@@ -8,7 +8,20 @@ $(function () {
         let listURL = $table.attr('data-url');
 
         let employee_current_id = $('#employee_current_id').val();
+        let config = JSON.parse($('#id-config-data').text());
 
+        let config_is_AM_create = config.is_account_manager_create;
+
+        function getOppList(data){
+            let result = []
+            data.map(function (item){
+                let list_sale_team = item.opportunity_sale_team_datas.map(obj=>obj.member.id)
+                if (item.sale_person.id === employee_current_id || list_sale_team.includes(employee_current_id)){
+                    result.push(item)
+                }
+            })
+            return result
+        }
         let _dataTable = $table.DataTable({
             searching: false,
             language: {
@@ -26,7 +39,14 @@ $(function () {
             ajax: {
                 url: listURL,
                 type: "GET",
-                dataSrc: 'data.opportunity_list',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+
+                    if (data && resp.data.hasOwnProperty('opportunity_list')) {
+                        return resp.data['opportunity_list'] ? getOppList(resp.data['opportunity_list']) : [];
+                    }
+                    throw Error('Call data raise errors.')
+                },
                 data: function (params) {
                     let txtSearch = $('#search_input').val();
                     if (txtSearch.length > 0)
@@ -88,6 +108,24 @@ $(function () {
                 },
                 {
                     targets: 6,
+                    render: (data, type, row) => {
+                        let close_date = null;
+                        if (row.close_date !== null) {
+                            close_date = row.close_date.split(" ")[0]
+                        }
+                        return `<p>${close_date}</p>`
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        let stage_current = null;
+                        stage_current = row.stage.find(function(obj) {return obj.is_current === true;});
+                        return `<p>${stage_current.indicator}</p>`
+                    }
+                },
+                {
+                    targets: 8,
                     className: 'action-center',
                     render: (data, type, row) => {
                         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
@@ -119,8 +157,14 @@ $(function () {
                                 boxCustomer.append(`<option value=""></option>`);
                                 $('#data-customer').attr('value', JSON.stringify(data.account_list));
                                 data.account_list.map(function (item) {
-                                    let list_manager = item.manager.map(obj => obj.id)
-                                    if (list_manager.includes(employee_current_id)) {
+                                    if (config_is_AM_create) {
+                                        let list_manager = item.manager.map(obj => obj.id)
+                                        if (list_manager.includes(employee_current_id)) {
+                                            boxCustomer.append(`<option value="${item.id}">
+                                                            <span class="account-title">${item.name}</span>
+                                                        </option>`)
+                                        }
+                                    } else {
                                         boxCustomer.append(`<option value="${item.id}">
                                                             <span class="account-title">${item.name}</span>
                                                         </option>`)
@@ -149,6 +193,7 @@ $(function () {
                 }
             }
             _form.dataForm['product_category'] = $('#select-box-product-category').val();
+            _form.dataForm['open_date'] = new Date();
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
                 .then(
@@ -195,12 +240,27 @@ $(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
                         $('#data-sale-person').val(JSON.stringify(data.employee_list));
-                        data.employee_list.map(function (employee) {
-                            if (employee.id === employee_current_id) {
-                                ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
-                                $('#group_id_emp_login').val(employee.group.id);
-                            }
-                        })
+                        if (config_is_AM_create) {
+                            data.employee_list.map(function (employee) {
+                                if (employee.id === employee_current_id) {
+                                    ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
+                                    $('#group_id_emp_login').val(employee.group.id);
+                                }
+                            })
+                        } else {
+                            let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
+                            let group_id = emp_current.group.id
+                            $('#group_id_emp_login').val(group_id);
+                            data.employee_list.map(function (employee) {
+                                if (employee.group.id === group_id) {
+                                    if (employee.id === employee_current_id)
+                                        ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                                    else {
+                                        ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
+                                    }
+                                }
+                            })
+                        }
                     }
                 }
             }, (errs) => {
@@ -211,35 +271,38 @@ $(function () {
 
         let dict_customer = {}
         let dict_sale_person = {}
+
         boxCustomer.on('change', function () {
-            if (Object.keys(dict_customer).length === 0) {
-                dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
-                    obj[item.id] = item;
-                    return obj;
-                }, {});
-            }
-
-            if(Object.keys(dict_sale_person).length === 0){
-                dict_sale_person = JSON.parse($('#data-sale-person').val()).reduce((obj, item) => {
-                    obj[item.id] = item;
-                    return obj;
-                }, {});
-            }
-
-            let customer = dict_customer[$(this).val()];
-            let group_id = $('#group_id_emp_login').val();
-            let select_box_sale_person = $("#select-box-sale-person");
-            select_box_sale_person.html('');
-            if(group_id === ''){
-                let emp_current = dict_sale_person[employee_current_id];
-                select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
-            }
-            customer.manager.map(function (item){
-                if (dict_sale_person[item.id].group.id === group_id){
-                    select_box_sale_person.append(`<option value="${item.id}" selected">${item.fullname}</option>`)
+            if (config_is_AM_create) {
+                if (Object.keys(dict_customer).length === 0) {
+                    dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
+                        obj[item.id] = item;
+                        return obj;
+                    }, {});
                 }
-            })
-            select_box_sale_person.val(employee_current_id).trigger('change');
+
+                if (Object.keys(dict_sale_person).length === 0) {
+                    dict_sale_person = JSON.parse($('#data-sale-person').val()).reduce((obj, item) => {
+                        obj[item.id] = item;
+                        return obj;
+                    }, {});
+                }
+
+                let customer = dict_customer[$(this).val()];
+                let group_id = $('#group_id_emp_login').val();
+                let select_box_sale_person = $("#select-box-sale-person");
+                select_box_sale_person.html('');
+                if (group_id === '') {
+                    let emp_current = dict_sale_person[employee_current_id];
+                    select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
+                }
+                customer.manager.map(function (item) {
+                    if (dict_sale_person[item.id].group.id === group_id) {
+                        select_box_sale_person.append(`<option value="${item.id}" selected">${item.fullname}</option>`)
+                    }
+                })
+                select_box_sale_person.val(employee_current_id).trigger('change');
+            }
         })
     });
 });

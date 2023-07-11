@@ -41,7 +41,7 @@
             </li>
             <li class="nav-item quotation-tab-item" id="tab-indicator">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                    <span class="nav-link-text"><i class="far fa-chart-bar"></i></span>
+                    <span class="nav-link-text"><i class="fa-solid fa-chart-line"></i></span>
                 </a>
             </li>
         </ul>
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Title' %}<span class="required"></span></label>
+                                    <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
                                     <input
                                             type="text"
                                             class="form-control disabled-but-edit"
@@ -72,10 +72,10 @@
                                             required
                                             disabled
                                     >
-                                    <span class="form-text text-muted">{% trans 'title of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'title of quotation' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Opportunity' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-opportunity">{% trans 'Select Opportunity' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -96,16 +96,16 @@
                                                 id="select-box-quotation-create-opportunity"
                                                 data-url="{% url "OpportunityListAPI" %}"
                                                 data-method="GET"
-                                                data-link-detail="{% url "OpportunityList" %}"
+                                                data-link-detail="{% url "OpportunityDetail" 1 %}"
                                                 name="opportunity"
                                                 disabled
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Customer' %}<span class="required"></span></label>
+                                    <label class="form-label" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -133,10 +133,10 @@
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Customer link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Customer link to quotation' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Contact' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -159,46 +159,67 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
+                                                required
                                                 disabled
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Contact link to quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Contact link to quotation' %}</small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Date Created' %}</label>
+                                    <label class="form-label" for="quotation-create-code">{% trans 'Code' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                placeholder="dd/mm/yyyy"
-                                                name="date_created"
-                                                id="quotation-create-date-created"
-                                                disabled
+                                                    type="text" class="form-control disabled-custom-show"
+                                                    name="quotation_code"
+                                                    id="quotation-create-code"
+                                                    disabled
                                             >
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Code of quotation' %}</small>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Status' %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                value="Open"
-                                                name="status"
-                                                id="quotation-create-status"
-                                                disabled
-                                            >
-                                        </span>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                            <div class="input-group">
+                                                <span class="input-affix-wrapper">
+                                                    <input
+                                                        type="text" class="form-control disabled-custom-show"
+                                                        placeholder="dd/mm/yyyy"
+                                                        name="date_created"
+                                                        id="quotation-create-date-created"
+                                                        disabled
+                                                    >
+                                                </span>
+                                            </div>
+                                            <small class="form-text text-muted">{% trans 'Date create quotation' %}</small>
+                                        </div>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Status of quotation' %}</span>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
+                                            <div class="input-group">
+                                                <span class="input-affix-wrapper">
+                                                    <input
+                                                        type="text" class="form-control disabled-custom-show"
+                                                        value="Open"
+                                                        name="status"
+                                                        id="quotation-create-status"
+                                                        disabled
+                                                    >
+                                                </span>
+                                            </div>
+                                            <small class="form-text text-muted">{% trans 'Status of quotation' %}</small>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Sale Person' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -221,14 +242,15 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="sale_person"
+                                                required
                                                 disabled
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Sale person of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Sale person of quotation' %}</small>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select Payment Terms' %}</label>
+                                    <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
@@ -251,11 +273,12 @@
                                                     data-link-detail=""
                                                     data-method="GET"
                                                     name="payment_term"
+                                                    required
                                                     disabled
                                             ></select>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'Payment term of quotation' %}</span>
+                                    <small class="form-text text-muted">{% trans 'Payment term of quotation' %}</small>
                                 </div>
                             </div>
                         </div>
@@ -310,8 +333,9 @@
                                     <div class="col-4">
                                         <div class="form-check mt-2">
                                             <input
-                                                    type="checkbox" class="form-check-input disabled-but-edit"
+                                                    type="checkbox" class="form-check-input"
                                                     id="quotation-customer-confirm"
+                                                    disabled
                                             >
                                             <label
                                                     class="form-check-label disabled-label"
@@ -614,7 +638,7 @@
                                                             <button
                                                                     type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal"
-                                                            >Close
+                                                            >{% trans 'Close' %}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -653,7 +677,7 @@
                                                     <button
                                                             type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    >{% trans 'Close' %}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -687,7 +711,7 @@
                                                     <button
                                                             type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"
-                                                    >Close</button>
+                                                    >{% trans 'Close' %}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -891,7 +915,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-product"
-                                data-url="{% url "ProductListAPI" %}"
+                                data-url="{% url "ProductForSaleListAPI" %}"
                                 data-link-detail="{% url "ProductDetail" 1 %}"
                                 data-method="GET"
                         >
@@ -962,14 +986,16 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-2">
+                    <div class="row mb-1">
                         <div class="col-2">
                             <button
                                     type="button"
                                     class="btn btn-soft-success disabled-but-edit"
                                     id="btn-refresh-quotation-indicator"
                                     disabled
-                            >{% trans 'Refresh Data' %}</button>
+                            >
+                            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
+                            </button>
                         </div>
                         <div class="col-10"></div>
                     </div>
@@ -981,8 +1007,8 @@
                         <tr>
                             <th>STT</th>
                             <th>{% trans 'Indicator name' %}</th>
-                            <th>{% trans 'Indicator Value' %}</th>
-                            <th>{% trans 'Indicator Rate' %}</th>
+                            <th>{% trans 'Indicator value' %}</th>
+                            <th>{% trans 'Indicator rate' %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1001,6 +1027,11 @@
             type="hidden"
             id="base-trans-factory"
             data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
+            data-select-address="{% trans 'Select this address' %}"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-btn-close="{% trans 'Close' %}"
+            data-more-information="{% trans 'More information' %}"
+            data-apply="{% trans 'Apply' %}"
         >
     </form>
 {% endblock %}

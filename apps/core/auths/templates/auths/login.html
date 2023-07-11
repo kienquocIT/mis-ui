@@ -6,11 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Minh Tam Solution</title>
-    <meta
-            name="description"
-            content="Minh Tam Solution"
-    />
+    <title>{% trans 'Login' %} &#8901; Minh Tâm Solution</title>
+    <meta name="description" content="Minh Tam Solution"/>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
@@ -184,6 +181,7 @@
     <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
+        <span id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"></span>
     </div>
 </div>
 <!-- /Wrapper -->
@@ -212,7 +210,7 @@
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script>
         // support for Form Submit
-        class SetupFormSubmit {
+        class SetupFormSubmitLogin {
             constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
                 this.formSelected = formSelected;
 
@@ -239,7 +237,7 @@
                 if (!this.dataRedirectTimeout) this.dataRedirectTimeout = this.dataRedirectTimeout ? this.dataRedirectTimeout : 1000;
 
                 // Data body get from form input
-                this.dataForm = $.fn.serializerObject(formSelected);
+                this.dataForm = $.fn.serializerObjectLogin(formSelected);
 
                 // URL DETAIL
                 this.dataUrlDetail = formSelected.attr('data-url-detail');
@@ -296,7 +294,7 @@
         }
 
         $.fn.extend({
-            redirectUrl: function (redirectPath, timeout = 0, params = '') {
+            redirectUrlLogin: function (redirectPath, timeout = 0, params = '') {
                 setTimeout(() => {
                     if (params && (params !== '' && params !== undefined)) {
                         window.location.href = redirectPath + '?' + params;
@@ -305,7 +303,7 @@
                     }
                 }, timeout);
             },
-            notifyB: function (option, typeAlert = null) {
+            notifyBLogin: function (option, typeAlert = null) {
                 setTimeout(function () {
                     $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
                 }, 100);
@@ -358,24 +356,24 @@
                 }
                 $.notify(msg, alert_config);
             },
-            serializerObject: function (formSelected) {
+            serializerObjectLogin: function (formSelected) {
                 return formSelected.serializeArray().reduce((o, kv) => ({
                     ...o,
                     [kv.name]: kv.value
                 }), {});
             },
-            showLoading: function (timeout) {
+            showLoadingLogin: function (timeout) {
                 $('#loadingContainer').removeClass('hidden');
                 if (timeout) {
-                    setTimeout($.fn.hideLoading, (timeout > 100 ? timeout : 1000));
+                    setTimeout($.fn.hideLoadingLogin, (timeout > 100 ? timeout : 1000));
                 }
             },
-            hideLoading: function () {
+            hideLoadingLogin: function () {
                 setTimeout(() => {
                     $('#loadingContainer').addClass('hidden');
                 }, 250,)
             },
-            callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+            callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
                 return new Promise(function (resolve, reject) {
                     // Setup then Call Ajax
                     let ctx = {
@@ -407,40 +405,42 @@
         $(document).ready(function () {
             $('#form-login').submit(function (event) {
                 event.preventDefault();
-                $.fn.showLoading();
-                let frm = new SetupFormSubmit($(this));
+                $.fn.showLoadingLogin();
+                let frm = new SetupFormSubmitLogin($(this));
                 if (frm.dataUrl && frm.dataMethod) {
-                    $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
+                    $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
                         (resp) => {
                             let data = resp.data;
                             if (data.status === 200) {
                                 localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                $.fn.notifyB({description: data.detail}, 'success');
+                                $.fn.notifyBLogin({description: data.detail}, 'success');
                                 let path_redirect = "/";
                                 const params = Object.fromEntries(new URLSearchParams(location.search));
                                 if (params.next) {
                                     path_redirect = params.next;
                                 }
-                                $.fn.redirectUrl(path_redirect, 800);
+                                $.fn.redirectUrlLogin(path_redirect, 800);
                             }
                             setTimeout(
                                 () => {
-                                    $.fn.hideLoading();
+                                    $.fn.hideLoadingLogin();
                                 }, 2000
                             )
                         },
                         (err) => {
-                            $.fn.hideLoading();
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-value')
+                            }, 'failure')
+                            $.fn.hideLoadingLogin();
                         }
                     )
                 } else throw 'Setup call raise exception with URL or method is incorrect.!';
             });
 
-            //
             function loadTenantList() {
                 let tenant_element = $('#tenant-select');
                 if (tenant_element.attr('data-loaded') !== true) {
-                    $.fn.callAjax(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
+                    $.fn.callAjaxLogin(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
                         (resp) => {
                             let beforeTenantCode = localStorage.getItem('tenant_code');
                             let code_list = [];

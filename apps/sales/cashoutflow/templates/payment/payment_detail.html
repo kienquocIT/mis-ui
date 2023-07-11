@@ -47,19 +47,20 @@
     {{ data.data.employee_list | json_script:"employee_list" }}
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
+    {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
     <form id="form-update-payment" data-method="POST" data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
           data-url-detail="{% url "PaymentDetailAPI" '0' %}"
     >
         {% csrf_token %}
         <div class="row mr-3">
-            <div class="col-7 pr-5 mb-1 text-right">
+            <div class="col-8 pr-5 mb-1 text-right">
                 <h4><span id="payment-code" class="badge badge-soft-primary badge-outline text-primary"></span></h4>
             </div>
         </div>
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-7 pr-5">
+                <div class="col-8 pr-5">
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
@@ -67,7 +68,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label">{% trans "Sale/Purchase code" %}</label>
+                        <label class="col-3 col-form-label required">{% trans "Sale/Purchase code" %}</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Sale</button>
@@ -95,12 +96,9 @@
                             </div>
                         </div>
                         <div class="col-7">
-                            <select class="form-select" name="sale_code" data-method="GET" id="sale-code-select-box"
-                                    data-url-quotation="{% url 'QuotationListAPI' %}" hidden
-                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}" disabled>
+                            <select name="sale_code" id="sale-code-select-box" class="select2"
+                                    data-placeholder="Select Sale Code">
                             </select>
-                            <textarea style="white-space: pre-wrap;" placeholder="{% trans "Click to see Sale Code selected" %}" readonly id="sale-code-select-box2-show" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></textarea>
-                            <div class="dropdown-menu dropdown-bordered scrollable-menu h-400p" role="menu" style="width: 150%; overflow-x: hidden;" id="sale-code-select-box2"></div>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -151,16 +149,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                     <div class="row form-group">
-                        <label class="col-3 col-form-label" id="supplier-label">{% trans "Created date" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required" id="supplier-label">{% trans "Created date" %}</label>
+                        <div class="col-8">
                             <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Creator" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Creator" %}</label>
+                        <div class="col-8">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="creator-detail-span" hidden>
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
@@ -195,8 +193,8 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Beneficiary" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required">{% trans "Beneficiary" %}</label>
+                        <div class="col-8">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="beneficiary-detail-span" hidden>
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
@@ -228,8 +226,8 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label" id="supplier-label">{% trans "Status" %}</label>
-                        <div class="col-9">
+                        <label class="col-4 col-form-label required" id="supplier-label">{% trans "Status" %}</label>
+                        <div class="col-8">
                             <span class="badge badge-soft-success badge-outline">{% trans "Approved" %}</span>
                         </div>
                     </div>
@@ -349,9 +347,28 @@
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>
-                            <th>{% trans 'Remain Adcance Payment' %}</th>
-                            <th>{% trans 'Paid' %}</th>
-                            <th>{% trans 'Available' %}</th>
+                            <th>{% trans 'Returned' %}</th>
+                            <th>{% trans 'Remain AP' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Remain AP' %} = {% trans 'AP Approved' %} - {% trans 'Returned' %} - {% trans 'To payment' %}">
+                                </i>
+                            </th>
+                            <th>{% trans 'Paid' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Paid' %} = {% trans 'To payment' %} + {% trans 'Other Payment' %}">
+                                </i>
+                            </th>
+                            <th>{% trans 'Available' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Available' %} = {% trans 'Plan After Tax' %} - {% trans 'Remain AP' %} - {% trans 'Paid' %}">
+                                </i>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>

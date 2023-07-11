@@ -32,7 +32,13 @@ $(function () {
                         dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense', true);
                     }
                     // prepare for copy quotation to sale order
-                    $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                    if (!$form.hasClass('sale-order')) {
+                        $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                    } else {
+                        if (Object.keys(data.quotation).length > 0) {
+                            loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', data.quotation.id);
+                        }
+                    }
 
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');
@@ -47,6 +53,7 @@ $(function () {
             $(this)[0].setAttribute('hidden', true)
             $('#btn-create_quotation')[0].removeAttribute('hidden');
             $form.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+            $form.find('#quotation-customer-confirm').removeAttr('disabled');
             $('#datable-quotation-create-product').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $('#datable-quotation-create-cost').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $('#datable-quotation-create-expense').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
@@ -79,11 +86,16 @@ $(function () {
                 }
             }
             // Check config when begin edit
-            configClass.checkConfig(true);
+            let check_config = configClass.checkConfig(true);
 
-            // load again total products after check config
-            let data = JSON.parse(eleDataDetail.val());
-            loadDataClass.loadTotal(data, true, false, false);
+            // load again total products if after check config the price change
+            if (check_config.hasOwnProperty('is_make_price_change')) {
+                if (check_config.is_make_price_change === false) {
+                    let data = JSON.parse(eleDataDetail.val());
+                    loadDataClass.loadTotal(data, true, false, false);
+                }
+            }
+
         });
 
 

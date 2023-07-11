@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
+from django.utils.translation import gettext_lazy as _
 
 
 class PaymentList(View):
@@ -37,6 +38,7 @@ class PaymentCreate(View):
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
         return {'data':
             {
                 'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -48,7 +50,8 @@ class PaymentCreate(View):
                 'opportunity_list': resp6.result,
                 'employee_list': resp7.result,
                 'tax_list': resp8.result,
-                'unit_of_measure': resp9.result
+                'unit_of_measure': resp9.result,
+                'payment_cost_items_list': resp10.result
             }
         }, status.HTTP_200_OK
 
@@ -102,6 +105,7 @@ class PaymentDetail(View):
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
         return {
             'data':
                 {
@@ -114,7 +118,8 @@ class PaymentDetail(View):
                     'opportunity_list': resp6.result,
                     'employee_list': resp7.result,
                     'tax_list': resp8.result,
-                    'unit_of_measure': resp9.result
+                    'unit_of_measure': resp9.result,
+                    'payment_cost_items_list': resp10.result
                 }
         }, status.HTTP_200_OK
 
@@ -152,3 +157,18 @@ class PaymentDetailAPI(APIView):
     #             return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
     #         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
     #     return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class PaymentCostItemsListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get(data)
+        if resp.state:
+            return {'payment_cost_items_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

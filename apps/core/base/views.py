@@ -180,3 +180,18 @@ class IndicatorParamListAPI(APIView):
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+
+class ApplicationPropertyOpportunityListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
+        if resp.state:
+            return {'property_opportunity_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+

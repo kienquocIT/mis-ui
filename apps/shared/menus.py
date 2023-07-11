@@ -190,7 +190,7 @@ class MenusCRM:
         ],
     )
     PRICING = MenuCommon(
-        name='Pricing', code='menu_pricing', view_name='', icon='<i class="bi bi-currency-exchange"></i>',
+        name='Pricing', code='menu_pricing', view_name='', icon='<i class="bi bi-tags-fill"></i>',
         child=[
             MenuCommon(
                 name='Price List', code='id_menu_pricing_list', view_name='PriceList',
@@ -207,7 +207,7 @@ class MenusCRM:
         ]
     )
     CASH_OUTFLOW = MenuCommon(
-        name='Cash Outflow', code='menu_cash_outflow', view_name='', icon='<i class="bi bi-arrow-left-right"></i>',
+        name='Cash Outflow', code='menu_cash_outflow', view_name='', icon='<i class="bi bi-currency-exchange"></i>',
         child=[
             MenuCommon(
                 name='Advance Payment', code='id_menu_advance_payment', view_name='AdvancePaymentList',
@@ -223,6 +223,16 @@ class MenusCRM:
             ),
         ],
     )
+    SALE_ACTIVITIES = MenuCommon(
+        name='Sale Activities', code='menu_sale_activities', view_name='', icon='<i class="bi bi-graph-up-arrow"></i>',
+        child=[
+            MenuCommon(
+                name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
+                icon='<i class="bi bi-telephone-plus-fill"></i>',
+            ),
+        ],
+    )
+
     TASK = MenuCommon(
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
         icon='<i class="fa-solid fa-list-check"></i>',
@@ -287,6 +297,7 @@ class SpaceItem:
                 MenusCRM.INVENTORY,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
+                MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
         ),

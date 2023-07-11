@@ -23,13 +23,13 @@ $(function () {
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
-        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person');
+        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', null, true);
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
-        loadDataClass.loadInitQuotationConfig('quotation-config-data');
+        loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
@@ -48,8 +48,6 @@ $(function () {
 
         let modalShipping = $('#quotation-create-modal-shipping-body');
         let modalBilling = $('#quotation-create-modal-billing-body');
-
-        $("#select-box-quotation-create-discount-list").select2();
 
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
@@ -85,8 +83,6 @@ $(function () {
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll();
             // ReCheck Config when change Opportunity
             configClass.checkConfig(true);
         });
@@ -133,20 +129,34 @@ $(function () {
         });
 
 // Action on click dropdown contact
-        boxContact.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
-            }
-        });
+//         boxContact.on('click', function(e) {
+//             if (!$(this)[0].innerHTML) {
+//                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
+//             }
+//         });
 
 // Action on change dropdown contact
-        boxContact.on('change', function (e) {
-            loadDataClass.loadInformationSelectBox($(this));
-        });
+//         boxContact.on('change', function (e) {
+//             loadDataClass.loadInformationSelectBox($(this));
+//         });
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
             loadDataClass.loadInformationSelectBox($(this));
+            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
+            $('#select-box-quotation-create-customer').empty();
+            $('#select-box-quotation-create-opportunity').empty();
+            $('#select-box-quotation-create-contact').empty();
+            $('#select-box-quotation-create-payment-term').empty();
+            document.getElementById('customer-price-list').value = "";
+            // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
+            loadDataClass.loadDataProductAll();
+            // ReCheck Config when change Opportunity
+            configClass.checkConfig(true);
         });
 
 // Action on click dropdown price list
@@ -157,16 +167,16 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        boxPaymentTerm.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
-            }
-        });
+//         boxPaymentTerm.on('click', function(e) {
+//             if (!$(this)[0].innerHTML) {
+//                 loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+//             }
+//         });
 
 // Action on change dropdown payment term
-        boxPaymentTerm.on('change', function(e) {
-            loadDataClass.loadInformationSelectBox($(this));
-        });
+//         boxPaymentTerm.on('change', function(e) {
+//             loadDataClass.loadInformationSelectBox($(this));
+//         });
 
 // Action on click dropdown contact
         boxQuotation.on('click', function(e) {
@@ -266,14 +276,22 @@ $(function () {
 
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function (e) {
-            let priceValRaw = $(this)[0].getAttribute('data-value');
-            if (priceValRaw) {
-                let row = $(this)[0].closest('tr');
-                let elePrice = row.querySelector('.table-row-price');
-                if (elePrice) {
-                    $(elePrice).attr('value', String(priceValRaw));
-                    $.fn.initMaskMoney2();
-                    calculateClass.commonCalculate(tableProduct, row, true, false, false);
+            if (!$(this)[0].querySelector('.expired-price')) { // Check if price not expired
+                let priceValRaw = $(this)[0].getAttribute('data-value');
+                if (priceValRaw) {
+                    let row = $(this)[0].closest('tr');
+                    let elePrice = row.querySelector('.table-row-price');
+                    if (elePrice) {
+                        $(elePrice).attr('value', String(priceValRaw));
+                        $.fn.initMaskMoney2();
+                        calculateClass.commonCalculate(tableProduct, row, true, false, false);
+                    }
+                    // make a tag checked
+                    let allOption = $(row).find('.table-row-price-option');
+                    if (allOption) {
+                        allOption.removeClass('option-btn-checked');
+                    }
+                    $(this).addClass('option-btn-checked');
                 }
             }
         });
@@ -572,9 +590,6 @@ $(function () {
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
             let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-item')) {
-                // loadDataProductSelect($(this));
-            }
             calculateClass.commonCalculate(tableCost, row, false, true, false);
         });
 
@@ -722,7 +737,7 @@ $(function () {
             } else { // if option copy is ALL product
                 dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
             }
-            if (type === 'copy-from') {
+            if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 loadDataClass.loadDetailQuotation(dataCopy, true);
                 if (dataCopyTo.option === "all") {
                     $('#datable-quotation-create-product').DataTable().destroy();
@@ -765,7 +780,8 @@ $(function () {
                     // load expense
                     calculateClass.loadProductCopy(dataCopy, tableExpense, false, true);
                 }
-            } else if (type === 'copy-to') {
+
+            } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
                 let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
@@ -782,6 +798,7 @@ $(function () {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
                     loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                    checkElementValues();
                 }
             }
         }
@@ -870,7 +887,6 @@ $(function () {
                 setTimeout(checkElementValues, 1000);  // call again after 1s if condition not pass yet
             }
         }
-        checkElementValues();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
@@ -1152,6 +1168,8 @@ $(function () {
                     'sale_order_logistic_data',
                     'sale_order_costs_data',
                     'sale_order_expenses_data',
+                    // indicator tab
+                    'sale_order_indicators_data',
                 ]
             }
             if (_form.dataForm) {

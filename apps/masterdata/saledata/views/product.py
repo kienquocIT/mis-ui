@@ -429,9 +429,15 @@ class ProductDetail(View):
     )
 
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp.state:
-            return {'unit': resp.result}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        if resp0.state and resp1.state and resp2.state:
+            return {
+                       'unit': resp0.result,
+                       'warehouse_product_list': resp1.result,
+                       'unit_of_measure': resp2.result,
+                   }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -468,3 +474,20 @@ class ProductDetailAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+# Product List use for Sale Apps
+class ProductForSaleListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get()
+        if resp.state:
+            return {'product_sale_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

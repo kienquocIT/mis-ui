@@ -50,11 +50,12 @@ $(function () {
 
         function loadPageWithParameter(advance_payment_id, choose_AP_ele) {
             if (advance_payment_id !== null) {
+                $('#chooseAdvancePayment').prop('disabled', true);
+                $('#chooseBeneficiary').prop('disabled', true);
                 choose_AP_ele.find(`option[value="${advance_payment_id}"]`).prop('selected', true);
                 loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, advance_payment_id));
             }
             choose_AP_ele.select2();
-
         }
 
         loadPageWithParameter(advance_payment_id, choose_AP_ele);
@@ -169,6 +170,9 @@ $(function () {
             })
             frm.dataForm['cost'] = cost_list;
             frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
+
+            frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
+            frm.dataForm['beneficiary'] = $('#chooseBeneficiary').val();
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(

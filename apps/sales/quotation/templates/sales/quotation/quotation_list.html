@@ -28,6 +28,12 @@
            data-link-update="{% url 'QuotationDetail' 1 %}"
            data-link-list="{% url 'QuotationList' %}"
     >
+    <input
+        type="hidden"
+        id="base-trans-factory"
+        data-change="{% trans 'Change' %}"
+        data-cancel="{% trans 'Cancel' %}"
+    >
     <table
             id="table_quotation_list"
             class="table nowrap w-100 mb-5"

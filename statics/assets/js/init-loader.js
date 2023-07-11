@@ -96,7 +96,7 @@ function menu_handler() {
 }
 
 class UrlGatewayReverse {
-    static get_url(docID, docAppCode, params={}) {
+    static get_url(docID, docAppCode, params = {}) {
         let arrAppCode = docAppCode.split(".");
         let urlData = '#';
         if (docID && arrAppCode.length === 2) {
@@ -270,7 +270,10 @@ class NotifyController {
                         let senderData = item?.['employee_sender_data']?.['full_name'];
                         let urlData = UrlGatewayReverse.get_url(
                             item['doc_id'], item['doc_app'],
-                            {'redirect': true, 'notify_id': item['id']},
+                            {
+                                'redirect': true,
+                                'notify_id': item['id']
+                            },
                         );
                         let tmp = `
                             <a 
@@ -342,6 +345,304 @@ class NotifyController {
                 },)
             }
         });
+    }
+}
+
+class FileUtils {
+    static keyInputTextID = 'data-f-input-id';
+    static keyInputFileID = 'data-f-input-file-id';
+    static keyInputTextName = 'data-f-input-name';
+    static keyInputTextRequired = 'data-f-input-required';
+    static keyInputTextDisabled = 'data-f-input-disabled';
+    static keyEleFileNameID = 'data-f-name-ele-id';
+    static clsNameInputFile = 'input-file-upload';
+
+    static parseFileSize(file_size, fixRound=2) {
+        // file_size: is bytes size
+        const KiB = 1024;
+        const MiB = KiB * 1024;
+        const GiB = MiB * 1024;
+
+        if (file_size >= GiB) {
+            return (file_size / GiB).toFixed(fixRound) + " GB";
+        } else if (file_size >= MiB) {
+            return (file_size / MiB).toFixed(fixRound) + " MB";
+        } else if (file_size >= KiB) {
+            return (file_size / KiB).toFixed(fixRound) + " KB";
+        } else {
+            return file_size + " B";
+        }
+    }
+
+    static createInputText(mainEle, name, required, disabled) {
+        let idRandom = $.fn.generateRandomString(32);
+        $(mainEle).attr(FileUtils.keyInputTextID, '#' + idRandom);
+        let ele = $(
+            `<input 
+                type="text" 
+                class="hidden" 
+                name="${name}" 
+                ${required === true ? "required" : ""}
+                ${disabled === true ? "disabled" : ""}
+                id="${idRandom}"
+            />`
+        );
+        ele.val("");
+        ele.insertAfter(mainEle);
+        return ele;
+    }
+
+    static updateInputText(inputText, required, disabled) {
+        $(inputText).prop('required', required);
+        $(inputText).prop('disabled', disabled);
+    }
+
+    static createInputFile(mainEle) {
+        let idRandom = $.fn.generateRandomString(32);
+        $(mainEle).attr(FileUtils.keyInputFileID, '#' + idRandom);
+        let ele = $(
+            `<input type="file" class="hidden ${FileUtils.clsNameInputFile}" id="${idRandom}"/>`
+        );
+        ele.val("");
+        ele.insertAfter(mainEle);
+        return ele;
+    }
+
+    static updateInputFile(inputFile, required, disabled) {
+        $(inputFile).prop('required', required);
+        $(inputFile).prop('disabled', disabled);
+    }
+
+    static enableButtonFakeUpload(btnFakeEle, disabled) {
+        $(btnFakeEle).prop('disabled', disabled);
+    }
+
+    static init(eleSelect$ = null, dataDetail = {}) {
+        if (eleSelect$) {
+            let idInputText = $(eleSelect$).attr(FileUtils.keyInputTextID);
+            let idInputFile = $(eleSelect$).attr(FileUtils.keyInputFileID);
+            let idInputTextName = $(eleSelect$).attr(FileUtils.keyInputTextName);
+            let idInputTextRequired = $(eleSelect$).attr(FileUtils.keyInputTextRequired);
+            let idInputTextDisabled = $(eleSelect$).attr(FileUtils.keyInputTextDisabled);
+
+            if (idInputText && idInputFile) {
+                let eleInputText = $(idInputText);
+                let eleInputFile = $(idInputFile);
+                if (!(eleInputText.length > 0 && eleInputFile.length > 0)) {
+                    FileUtils.createInputText(
+                        $(eleSelect$),
+                        idInputTextName,
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    );
+                    FileUtils.createInputFile($(eleSelect$));
+                } else {
+                    FileUtils.updateInputText(
+                        $(eleInputText[0]),
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    )
+                    FileUtils.updateInputFile(
+                        $(eleInputFile[0]),
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    )
+                }
+            } else {
+                FileUtils.createInputText(
+                    $(eleSelect$),
+                    idInputTextName,
+                    $.fn.parseBoolean(idInputTextRequired, false) === true,
+                    $.fn.parseBoolean(idInputTextDisabled, false) === true,
+                );
+                FileUtils.createInputFile($(eleSelect$));
+            }
+
+            FileUtils.enableButtonFakeUpload(
+                $(eleSelect$),
+                $.fn.parseBoolean(idInputTextDisabled, true) === true,
+            )
+
+            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['media_file_id', 'file_name'])) {
+                let media_file_id = dataDetail?.['media_file_id'];
+                let file_name = dataDetail?.['file_name'];
+                let file_size = dataDetail?.['file_size'];
+                if (media_file_id && file_name) {
+                    let f_utils = new FileUtils(eleSelect$);
+                    f_utils.setIdFile(media_file_id);
+                    f_utils.setFileNameUploaded(file_name, file_size || null);
+                }
+            }
+        } else {
+            $('.btn-file-upload').each(function () {
+                FileUtils.init($(this));
+            });
+        }
+    }
+
+    constructor(btnUploadFileEle$) {
+        if (btnUploadFileEle$) {
+            this.btnUploadFileEle$ = btnUploadFileEle$;
+
+            this.idInputText = btnUploadFileEle$.attr(FileUtils.keyInputTextID);
+            if (this.idInputText) this.eleInputText = $(this.idInputText);
+
+            this.idInputFile = btnUploadFileEle$.attr(FileUtils.keyInputFileID);
+            if (this.idInputFile) this.eleInputFile = $(this.idInputFile);
+
+            this.idEleFileName = btnUploadFileEle$.attr(FileUtils.keyEleFileNameID);
+        } else if ($.fn.isDebug() === true) throw Error('Required button upload when init new FileUtils');
+    }
+
+    resetValeInputFile() {
+        this.eleInputFile.val(null);
+    }
+
+    setIdFile(fileID) {
+        let eleInputText = $(this.idInputText);
+        if (eleInputText.length > 0) {
+            return eleInputText.val(fileID);
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Upload process went wrong!',
+            footer: '<a href="#" class="show-raise-ticket">Raise a ticket?</a>'
+        })
+        if ($.fn.isDebug() === true) throw Error('Input must be required before upload file!');
+    }
+
+    setFileNameUploaded(fName, fSize = null) {
+        let textDisplay = `${fName} - ${FileUtils.parseFileSize(fSize, 2)}`
+        if (this.idEleFileName) {
+            let ele = $(this.idEleFileName);
+            if (ele.length > 0) {
+                ele.text(textDisplay);
+            }
+        } else {
+            let getEleFName = this.btnUploadFileEle$.next('.display-file-name-uploaded');
+            if (getEleFName.length > 0) {
+                getEleFName.text(textDisplay);
+            } else {
+                $(`<small class="form-text text-muted display-file-name-uploaded">${textDisplay}</small>`).insertAfter(
+                    this.btnUploadFileEle$
+                );
+            }
+        }
+    }
+
+    callUploadFile(file) {
+        let clsThis = this;
+        let dataUrl = $.fn.storageSystemData.attr('data-url-AttachmentUpload');
+
+        let formData = new FormData();
+        formData.append('file', file);
+
+        $.fn.callAjax(
+            dataUrl,
+            'POST',
+            formData,
+            true,
+            {},
+            'multipart/form-data',
+            {'isNotify': false},
+        ).then(
+            (resp) => {
+                let detailFile = resp?.data?.detail;
+                this.setIdFile(detailFile?.['id']);
+                this.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
+            },
+            (errs) => {
+                console.log('errs: ', errs);
+                let existData = errs?.data?.['errors']?.['exist'];
+                let nameFile = existData['name'].split(".")[0];
+                let extFile = existData['name'].split(".").pop();
+                if (existData) {
+                    let newFileNameIDRandom = 'newFileName_' + $.fn.generateRandomString(12);
+                    Swal.fire({
+                        title: `<h5 class="text-danger"><i class="fa-solid fa-file"></i> ${nameFile}.${extFile}</h5> <p>What would you like to new upload with the file name to?</p>`,
+                        confirmButtonText: 'New',
+                        showCancelButton: true,
+                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                        showDenyButton: true,
+                        denyButtonText: `Use it`,
+                        denyButtonColor: '#1d9e7d',
+                        html: `<div class="input-group mb-3">
+                                    <input type="text" autocapitalize="off" class="form-control" placeholder="New file name" id="${newFileNameIDRandom}">
+                                    <span class="input-group-text" id="newFileExt" data-file-ext="${extFile}">.${extFile}</span>
+                                </div>`,
+                        showLoaderOnConfirm: true,
+                        preConfirm: () => {
+                            let newFileNewEle = $('#' + newFileNameIDRandom);
+                            console.log('newFileNewEle: ', newFileNewEle);
+                            let fileNewNameExcludeExt = newFileNewEle.val();
+                            if (fileNewNameExcludeExt) {
+                                let nameNewFile = newFileNewEle.val() + "." + extFile;
+                                let newFile = new File([file], nameNewFile, {
+                                    type: file.type,
+                                });
+                                let formDataNewName = new FormData();
+                                formDataNewName.append('file', newFile);
+                                return $.fn.callAjax(
+                                    dataUrl,
+                                    'POST',
+                                    formDataNewName,
+                                    true,
+                                    {},
+                                    'multipart/form-data',
+                                    {'isNotify': false},
+                                ).then(
+                                    (resp) => {
+                                        let detailNewFile = resp?.data?.detail;
+                                        clsThis.setIdFile(detailNewFile?.['id']);
+                                        clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
+                                        return true;
+                                    },
+                                    (errs) => {
+                                        if ($.fn.isDebug() === true) console.log(errs);
+                                        clsThis.showErrsUploadFile(newFileNewEle);
+                                        return false;
+                                    }
+                                )
+                            } else {
+                                clsThis.showErrsUploadFile(newFileNewEle);
+                                return false;
+                            }
+
+                        },
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // change name
+                            // data update to element at preConfirm
+                            // Swal.fire('Saved!', '', 'success');
+                        } else if (result.isDenied) {
+                            // use file exist
+                            console.log('existData: ', existData);
+                            clsThis.resetValeInputFile();
+                            clsThis.setIdFile(existData['id']);
+                            clsThis.setFileNameUploaded(existData['file_name'], existData['file_size']);
+                        } else {
+                            // cancel
+                            clsThis.resetValeInputFile();
+                        }
+                    })
+                } else {
+                    if ($.fn.isDebug() === true) console.log(errs);
+                    this.resetValeInputFile();
+                }
+            },
+        )
+    }
+
+    showErrsUploadFile(inputNewFileName$) {
+        $(inputNewFileName$).addClass('is-invalid');
+        let groupNewFileEle = $(inputNewFileName$).closest('.input-group').parent();
+        let textErrs = groupNewFileEle.find('.file-errs');
+        if (textErrs.length > 0) textErrs.text(`File name is exist`);
+        else groupNewFileEle.append(
+            `<small class="file-errs form-text text-danger">File name is exist</small>`
+        );
     }
 }
 
@@ -466,13 +767,10 @@ class ListeningEventController {
         $(document).on('input', 'input.mask-money', function () {
             return MaskMoney2.realtimeInputMoney($(this));
         });
-        <!-- Init Mask Money -->
         $.fn.initMaskMoney2();
-        <!-- ## Init Mask Money -->
     }
 
     ticket() {
-        <!-- Raise a ticket -->
         $('#ticket-hash-tag').select2({
             tags: true,
             tokenSeparators: [',', ' ']
@@ -543,11 +841,9 @@ class ListeningEventController {
                 }
             });
         });
-        <!-- ## Raise a ticket -->
     }
 
     dataTable() {
-        <!-- Loading table ajax -->
         $(document).find('table').each((idx, tbl) => {
             if (!$(tbl).attr('load-data-hide-spinner')) {
                 $(tbl).on('preXhr.dt', (e, settings, data) => {
@@ -566,24 +862,135 @@ class ListeningEventController {
                 });
             }
         });
-        <!-- ## Loading table ajax -->
     }
 
     navAndMenu() {
-        <!-- Toggle Collapse -->
         $('.hk-navbar-togglable').click(function (event) {
             $(this).find('.icon').children().toggleClass('d-none');
         });
-        <!-- ## Toggle Collapse -->
 
-        <!-- Space current -->
         change_space();
-        <!-- ## Space current -->
 
-
-        <!-- Active menu -->
         menu_handler();
-        <!-- ## Active menu -->
+    }
+
+    activeFileUpload() {
+        $(document).on('click', '.show-raise-ticket', function () {
+            Swal.close();
+            let idBtnRaiseTicket = 'btnRaiseTicketInSWALFire';
+            let eleBtnRaiseTicket = $('#' + idBtnRaiseTicket);
+            if (eleBtnRaiseTicket.length > 0) {
+                eleBtnRaiseTicket.click();
+            } else {
+                let btn = $(`<button data-bs-toggle="modal" data-bs-target="#modalRaiseTicket" id="${idBtnRaiseTicket}"></button>`);
+                $.fn.getElePageContent().append(btn);
+                btn.click();
+            }
+        });
+
+        $(document).on('click', '.btn-file-upload', function (event) {
+            let idInputText = $(this).attr(FileUtils.keyInputTextID);
+            let idInputFile = $(this).attr(FileUtils.keyInputFileID);
+
+            if (idInputFile && idInputFile) {
+                let eleInputText = $(idInputText);
+                let eleInputFile = $(idInputFile);
+
+                if (eleInputText.length > 0 && eleInputFile.length > 0) return eleInputFile.click();
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'File upload went wrong!',
+                    footer: '<a href="#" class="show-raise-ticket">Raise a ticket?</a>'
+                })
+                if ($.fn.isDebug() === true) throw Error('Upload file must be required setup attribute');
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'File upload went wrong!',
+                footer: '<a href="#" class="show-raise-ticket">Raise a ticket?</a>'
+            })
+            if ($.fn.isDebug() === true) throw Error('Upload file must be required setup attribute');
+        });
+
+        $(document).on('change', `.${FileUtils.clsNameInputFile}`, function (event) {
+            let file = event.target.files[0];
+            let query = `[${FileUtils.keyInputFileID}="#${$(this).attr('id')}"]`;
+            let mainEle = $(query);
+            if (mainEle.length > 0) {
+                new FileUtils(mainEle).callUploadFile(file);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Not found main element include file went wrong!',
+                    footer: '<a href="#" class="show-raise-ticket">Raise a ticket?</a>'
+                });
+                if ($.fn.isDebug() === true) throw Error('Not found main element include file went wrong!');
+            }
+        });
+
+        FileUtils.init();
+    }
+
+    avatarUpload() {
+        $('.my-upload-avatar').click(function () {
+            Swal.fire({
+                html: `
+                    <h4>${$.fn.transEle.attr('data-choose-avatar-image')}</h4>
+                    <small class="text-warning">${$.fn.transEle.attr('data-allow-file-properties').format_by_idx(
+                    '*.jpg *.jpeg *.png *.gif'
+                )}</small>
+                `,
+                input: 'file',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    name: 'file',
+                },
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                confirmButtonText: $.fn.transEle.attr('data-upload'),
+                showLoaderOnConfirm: true,
+                preConfirm: (file) => {
+                    let formData = new FormData();
+                    formData.append('file', file);
+                    return $.fn.callAjax(
+                        $.fn.storageSystemData.attr('data-url-avatar-upload'),
+                        'POST',
+                        formData,
+                        true,
+                        {},
+                        'multipart/form-data',
+                        {'isNotify': false},
+                    ).then(
+                        (resp) => {
+                            $.fn.switcherResp(resp);
+                            return true;
+                        },
+                        (errs) => {
+                            return false;
+                        }
+                    )
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: $.fn.transEle.attr('data-success'),
+                        timer: 2000,
+                        timerProgressBar: true,
+                    }).then(
+                        () => {
+                            window.location.reload();
+                        }
+                    )
+                }
+            })
+        });
     }
 
     // main
@@ -599,6 +1006,8 @@ class ListeningEventController {
         this.ticket();
         this.dataTable();
         this.navAndMenu();
+        this.activeFileUpload();
+        this.avatarUpload();
     }
 }
 
@@ -637,6 +1046,28 @@ $.fn.extend({
         });
 
         return !additions ? self : self.addClass(additions);
+    },
+
+    // person utils
+    shortNameGlobe: function (personData) {
+        if (typeof personData === 'object') {
+            if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
+                let last_name = personData['last_name'];
+                let first_name = personData['first_name'];
+                return `${last_name.length > 0 ? last_name[0] : ''}${first_name.length > 0 ? first_name[0] : ''}`;
+            }
+        }
+        return '';
+    },
+    renderAvatar: function (personData, clsName = "") {
+        let avatar = personData?.['avatar'];
+        let shortName = $.fn.shortNameGlobe(personData);
+        if (avatar) return `<div class="avatar"><img src="${avatar}" alt="${shortName}" class="avatar-img"></div>`;
+        return `
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}">
+                <span class="initial-wrap">${shortName}</span>
+            </div>
+        `;
     },
 
     // utils
@@ -733,7 +1164,7 @@ $.fn.extend({
             case "html":
                 return selData.prop('outerHTML');
             default:
-                throw Error('Init Select must be return type choice in: [html, object $]')
+                if ($.fn.isDebug() === true) throw Error('Init Select must be return type choice in: [html, object $]')
         }
     },
     sumArray: (array) => {
@@ -741,13 +1172,13 @@ $.fn.extend({
             return acc + currentValue;
         }, 0);
     },
-    getValueOrEmpty: function (objData, key) {
+    getValueOrEmpty: function (objData, key, defaultData = '') {
         if (typeof objData === 'object' && typeof key === 'string') {
             if (objData.hasOwnProperty(key) && objData[key]) {
                 return objData[key];
             }
         }
-        return '';
+        return defaultData;
     },
     parseDateTime: (dateStrUTC, microSecondLength = 0) => {
         let dateNew = new Date(Date.parse(dateStrUTC));
@@ -1017,7 +1448,7 @@ $.fn.extend({
     },
 
     // HTTP response, redirect, Ajax
-    switcherResp: function (resp) {
+    switcherResp: function (resp, isNotify = true) {
         if (typeof resp === 'object') {
             let status = 500;
             if (resp.hasOwnProperty('status')) {
@@ -1029,21 +1460,21 @@ $.fn.extend({
                 case 201:
                     return resp.data
                 case 204:
-                    $.fn.notifyB({
+                    if (isNotify === true) $.fn.notifyB({
                         'description': $.fn.transEle.attr('data-success'),
-                    }, 'success')
+                    }, 'success');
                     return {'status': status}
                 case 400:
                     let mess = resp.data;
                     if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
-                    $.fn.notifyErrors(mess);
+                    if (isNotify === true) $.fn.notifyErrors(mess);
                     return {};
                 case 401:
-                    $.fn.notifyB({'description': resp.data}, 'failure');
-                    return jQuery.fn.redirectLogin(1000);
+                    if (isNotify === true) $.fn.notifyB({'description': resp.data}, 'failure');
+                    return $.fn.redirectLogin(1000);
                 // return {}
                 case 403:
-                    jQuery.fn.notifyB({'description': resp.data.errors}, 'failure');
+                    if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
                     return {};
                 case 500:
                     return {};
@@ -1088,7 +1519,9 @@ $.fn.extend({
             }
         }, timeout);
     },
-    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+    callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json", opts = {}) {
+        let isNotify = opts['isNotify'];
+        if (!$.fn.isBoolean(isNotify)) isNotify = true;
         return new Promise(function (resolve, reject) {
             // handle body data before send
             // if BtnIdLastSubmit = 'idxSaveInZoneWF' => is update data in zones
@@ -1113,14 +1546,15 @@ $.fn.extend({
             let ctx = {
                 url: url,
                 type: method,
-                dataType: 'json',
-                contentType: content_type,
+                // dataType: 'json',
+                contentType: content_type === "multipart/form-data" ? false : content_type,
+                processData: content_type !== "multipart/form-data",
                 data: content_type === "application/json" ? JSON.stringify(data) : data,
                 headers: {
                     "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
                 },
                 success: function (rest, textStatus, jqXHR) {
-                    let data = $.fn.switcherResp(rest);
+                    let data = $.fn.switcherResp(rest, isNotify);
                     if (data) {
                         if ($.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
                             let btnSubmit = $('#idxSaveInZoneWFThenNext');
@@ -1149,7 +1583,7 @@ $.fn.extend({
                 error: function (jqXHR, textStatus, errorThrown) {
                     let resp_data = jqXHR.responseJSON;
                     if (resp_data && typeof resp_data === 'object') {
-                        $.fn.switcherResp(resp_data);
+                        $.fn.switcherResp(resp_data, isNotify);
                         reject(resp_data);
                     } else if (jqXHR.status === 204) reject({'status': 204});
                 },
@@ -1157,6 +1591,9 @@ $.fn.extend({
             if (method.toLowerCase() === 'get') ctx.data = data
             $.ajax(ctx);
         });
+    },
+    callAjax2: function (opts = {}) {
+
     },
 
     // Table: loading
@@ -1313,7 +1750,6 @@ $.fn.extend({
                 }
             }
             $(this).closest('.dataTables_wrapper').find('.select2').select2();
-            $.fn.initMaskMoney2();
         });
         return tbl;
     },
@@ -1732,7 +2168,6 @@ $.fn.extend({
     }, // -- wf call action
 })
 
-
 $(document).ready(function () {
     // temp solution
     $('#idxRealAction').removeClass('hidden');
@@ -1742,7 +2177,6 @@ $(document).ready(function () {
     new ListeningEventController().active()
     // -- listen when document ready
 });
-
 
 // support for Form Submit
 class SetupFormSubmit {
@@ -1828,7 +2262,6 @@ class SetupFormSubmit {
     }
 }
 
-
 // CURRENCY CLASS UTILS
 class MaskMoney2 {
     static _beforeParseFloatAndLimit(strData) {
@@ -1900,7 +2333,7 @@ class MaskMoney2 {
                 $($ele).text(this.applyConfig($($ele).attr('data-init-money')));
                 break
             default:
-                throw Error('strData must be required!')
+                if ($.fn.isDebug() === true) throw Error('strData must be required!')
         }
     }
 }

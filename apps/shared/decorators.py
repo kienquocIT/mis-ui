@@ -69,7 +69,12 @@ class ArgumentDecorator:
         if isinstance(user, get_user_model()):
             space_list, space_current_detail, space_menus = cls.parse_spaces(user.ui_space_selected)
             return {
+                'id': str(user.id),
+                'user_id': str(user.user_id),
+                'first_name': str(user.first_name),
+                'last_name': str(user.last_name),
                 'fullname': user.get_full_name(),
+                'username_auth': user.username_auth,
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,
                 'tenant_current_data': user.tenant_current_data,
@@ -82,6 +87,7 @@ class ArgumentDecorator:
                 'space_list': space_list,
                 'space_current_detail': space_current_detail,
                 'menus': space_menus,
+                'avatar': user.avatar_url
             }
         return {}
 
@@ -221,6 +227,7 @@ def mask_view(**parent_kwargs):
                                 ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
                                 ctx['base_workflow'] = WORKFLOW_ACTION if pk else {}
+                                ctx['domain'] = {'media': settings.MEDIA_DOMAIN}
                                 ctx['data'] = data
                                 ctx['breadcrumb'] = cls_check.parse_breadcrumb()
                                 ctx['url_pattern'] = cls_check.parse_url_pattern(url_pattern_keys, kwargs)

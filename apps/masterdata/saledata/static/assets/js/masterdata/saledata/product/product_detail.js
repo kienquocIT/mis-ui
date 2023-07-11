@@ -290,7 +290,7 @@ $(document).ready(function () {
         })
     }
 
-    let pk = window.location.pathname.split('/').pop();
+    let pk = $.fn.getPkDetail()
     let url_detail = $('#form-update-product').attr('data-url').replace(0, pk)
 
     // get detail product
@@ -298,6 +298,10 @@ $(document).ready(function () {
         let data = $.fn.switcherResp(resp);
         if (data) {
             let product_detail = data?.['product'];
+
+            let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
+            loadWareHouseList(warehouse_stock_list);
+
             $.fn.compareStatusShowPageAction(product_detail);
             $('#product-code').val(product_detail.code);
             $('#product-title').val(product_detail.title);
@@ -367,7 +371,6 @@ $(document).ready(function () {
 
                         $('#inventory-level-max').val(product_detail.inventory_information.inventory_level_max);
                         $('#inventory-level-min').val(product_detail.inventory_information.inventory_level_min);
-
 
                         $('.inp-can-edit').focusin(function () {
                             $(this).find('input.form-control').prop('readonly', false);
@@ -623,6 +626,8 @@ $(document).ready(function () {
         obj[item.title] = item;
         return obj;
     }, {});
+    const warehouse_product_list = JSON.parse($('#warehouse_product_list').text());
+    const unit_of_measure_list = JSON.parse($('#unit_of_measure').text());
 
     function loadBaseItemUnit() {
         let eleVolume = $('#divVolume');
@@ -635,4 +640,159 @@ $(document).ready(function () {
     }
 
     loadBaseItemUnit()
+
+    function ConvertToUnitUoM(uom_id_src, uom_id_des) {
+        let get_uom_src_item = unit_of_measure_list.filter(function (item) {
+            return item.id === uom_id_src;
+        })
+        let get_uom_des_item = unit_of_measure_list.filter(function (item) {
+            return item.id === uom_id_des;
+        })
+        let ratio_src = get_uom_src_item[0].ratio;
+        let ratio_des = get_uom_des_item[0].ratio;
+        return ratio_src/ratio_des
+    }
+
+    function GetProductFromWareHouseStockList(product_id, uom_id_des) {
+        let product_get_from_wh_product_list = warehouse_product_list.filter(function (item) {
+            return item.product === product_id;
+        })
+        let warehouse_stock_list = [];
+        for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
+            // console.log(product_get_from_wh_product_list[i])
+            let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
+            let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i].stock_amount;
+            let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i].sold_amount;
+
+            warehouse_stock_list.push(
+                {
+                    'warehouse_id': product_get_from_wh_product_list[i].warehouse,
+                    'stock': raw_stock_quantity - delivered_quantity,
+                    'wait_for_delivery': 0,
+                    'wait_for_receipt': 0,
+                }
+            );
+        }
+        return warehouse_stock_list;
+    }
+
+    function loadWareHouseList(warehouse_stock_list) {
+        if (!$.fn.DataTable.isDataTable('#datatable-warehouse-list')) {
+            let dtb = $('#datatable-warehouse-list');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
+                pageLength: 5,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.warehouse_list.length > 0) {
+                                for (let i = 0; i < data.warehouse_list.length; i++) {
+                                    let value_list = warehouse_stock_list.filter(function (item) {
+                                        return item.warehouse_id === data.warehouse_list[i].id;
+                                    });
+                                    let stock_value = 0;
+                                    let wait_for_delivery_value = 0;
+                                    let wait_for_receipt_value = 0;
+                                    for (let i = 0; i < value_list.length; i++) {
+                                        stock_value = stock_value + value_list[i].stock;
+                                        wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
+                                        wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
+                                    }
+                                    let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
+                                    resp.data['warehouse_list'][i].stock_value = stock_value;
+                                    resp.data['warehouse_list'][i].wait_for_delivery_value = wait_for_delivery_value;
+                                    resp.data['warehouse_list'][i].wait_for_receipt_value = wait_for_receipt_value;
+                                    resp.data['warehouse_list'][i].available_value = available_value;
+                                }
+                                return resp.data['warehouse_list'];
+                            }
+                            else {
+                                return [];
+                            }
+                        }
+                        return [];
+                    },
+                },
+                columns: [
+                    {
+                        data: 'code',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row, meta) => {
+                            return `<span class="text-secondary">` + row.code + `</span>`
+                        }
+                    },
+                    {
+                        data: 'title',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
+                        }
+                    },
+                    {
+                        data: 'stock_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>` + row.stock_value + `</span></center>`
+                        }
+                    },
+                    {
+                        data: 'wait_for_delivery_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>` + row.wait_for_delivery_value + `</span></center>`
+                        }
+                    },
+                    {
+                        data: 'wait_for_receipt_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>` + row.wait_for_receipt_value + `</span></center>`
+                        }
+                    },{
+                        data: 'available_value',
+                        className: 'wrap-text text-center w-15',
+                        render: (data, type, row, meta) => {
+                            return `<center><span>` + row.available_value + `</span></center>`
+                        }
+                    },
+                ],
+                footerCallback: function (tfoot, data, start, end, display) {
+                    let api = this.api();
+
+                    let sum2 = api
+                        .column(2, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+                    let sum3 = api
+                        .column(3, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+                    let sum4 = api
+                        .column(4, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+                    let sum5 = api
+                        .column(5, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+
+                    $(api.column(2).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum2 + `</span>`);
+                    $(api.column(3).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum3 + `</span>`);
+                    $(api.column(4).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum4 + `</span>`);
+                    $(api.column(5).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum5 + `</span>`);
+                }
+            });
+        }
+    }
 })

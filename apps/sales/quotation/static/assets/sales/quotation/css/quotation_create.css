@@ -6,7 +6,7 @@
     font-size: larger;
 }
 
-.fa-chart-bar {
+.fa-chart-line {
     font-size: larger;
 }
 
@@ -89,4 +89,12 @@ a.dropdown-item.table-row-price-option:hover {
 
 .btn-see-promotion {
     color: #00D67F;
+}
+
+.option-btn-checked {
+    background-color: #f7f7f7;
+}
+
+.expired-price {
+    color: #EB5757CC;
 }

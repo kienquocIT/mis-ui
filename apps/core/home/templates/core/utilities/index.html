@@ -3,6 +3,58 @@
 {% block cssHeader %}{% endblock %}
 
 {% block pageContent %}
+    <!-- Files Upload -->
+    <div class="row mb-3">
+        <form id="frmTest" data-url="xxxx" data-method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="inputTest1" class="form-label">Upload File 1</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-success btn-file-upload"
+                                data-f-input-name="inputTest1"
+                                data-f-input-required="true"
+                        >Click me 1!
+                        </button>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="inputTest2" class="form-label">Upload File 2</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-danger btn-file-upload"
+                                data-f-input-name="inputTest2"
+                                data-f-input-required="true"
+                                data-f-name-ele-id="#fileNameTestDisplay"
+                        >Click me 2!
+                        </button>
+                        <p id="fileNameTestDisplay"></p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="inputTest3" class="form-label">Upload File 3</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-danger btn-file-upload"
+                                data-f-input-name="inputTest3"
+                                data-f-input-required="true"
+                                data-f-input-disabled="true"
+                                data-f-name-ele-id="#fileNameTestDisplay3"
+                        >Click me 3!
+                        </button>
+                        <p id="fileNameTestDisplay3"></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- // Files Upload -->
+
+    <!-- Utils -->
     <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingOne">
@@ -83,9 +135,12 @@
             >
                 <div class="accordion-body">
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary" type="button" id="btnClearInputVal"><i class="fa-solid fa-xmark"></i></button>
+                        <button class="btn btn-outline-secondary" type="button" id="btnClearInputVal"><i
+                                class="fa-solid fa-xmark"
+                        ></i></button>
                         <input
-                                type="text" class="form-control" placeholder="UUID-4 paste here, Commas with multiple UUID"
+                                type="text" class="form-control"
+                                placeholder="UUID-4 paste here, Commas with multiple UUID"
                                 aria-label="" aria-describedby="button-addon2"
                                 id="inputConvertMinimalUUID"
                         >
@@ -97,6 +152,7 @@
             </div>
         </div>
     </div>
+    <!-- // Utils -->
 {% endblock %}
 
 {% block jsFooter %}
@@ -187,11 +243,11 @@
 
         function replaceUUIDToMinimal() {
             let data = minimalUUIDInput.val();
-            if (data){
+            if (data) {
                 let arr = data.split(",");
                 let result = [];
                 arr.map(
-                    (item)=>{
+                    (item) => {
                         result.push(
                             item.replaceAll("-", "").replaceAll(" ", "")
                         )
@@ -200,7 +256,9 @@
                 minimalUUIDResult.html(
                     `<ol>` +
                     result.map(
-                        (item)=>{return `<li>${item}</li>`}
+                        (item) => {
+                            return `<li>${item}</li>`
+                        }
                     ).join("") +
                     `</ol>`
                 );
@@ -209,7 +267,7 @@
             }
         }
 
-        $('#btnClearInputVal').click(function (event){
+        $('#btnClearInputVal').click(function (event) {
             minimalUUIDInput.val("");
         })
         $('#btnConvertMinimalUUID').click(function (event) {
@@ -221,5 +279,20 @@
             }
         });
     </script>
-
+    <script>
+        $(document).ready(function () {
+            let dataDetail = {
+                "id": "777bf550-b408-47cf-9712-4070a5f0b9f6",
+                "relate_app_id": "4e48c863-861b-475a-aa5e-97a4ed26f294",
+                "relate_app_code": "account",
+                "relate_doc_id": "3bc606ab-a8a5-4aaa-b224-ee9d6a794b8a",
+                "media_file_id": "eefbf700-763e-49c3-bbb7-d7bb250dbc69",
+                "file_name": "avt.gif",
+                "file_size": 930108,
+                "file_type": "gif"
+            };
+            let ele = $('.btn-file-upload[data-f-input-name=inputTest3]')[0];
+            if (ele) FileUtils.init($(ele), dataDetail);
+        })
+    </script>
 {% endblock %}

@@ -92,11 +92,13 @@ class OpportunityDetail(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         if resp.state:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'config': resp.result
-                   }, status.HTTP_200_OK
+                       'config': resp.result,
+                       'account_list': resp1.result
+            }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
                }, status.HTTP_200_OK
@@ -336,10 +338,12 @@ class OpportunityCallLogList(View):
         breadcrumb='CALL_LOG_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        if resp.state:
+        resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
+        if resp0.state and resp1.state:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
+                       'account_list': resp1.result,
                    }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -353,7 +357,6 @@ class OpportunityCallLogListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
-        print(resp.result)
         if resp.state:
             return {'call_log_list': resp.result}, status.HTTP_200_OK
 

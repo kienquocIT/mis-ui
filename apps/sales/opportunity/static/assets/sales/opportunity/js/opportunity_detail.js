@@ -1597,6 +1597,8 @@ $(document).ready(function () {
 
 
     // for calllog
+    const account_list = JSON.parse($('#account_list').text());
+
     function LoadSaleCodeList(default_sale_code_id) {
         let $sale_code_sb = $('#sale-code-select-box');
         $.fn.callAjax($sale_code_sb.attr('data-url'), $sale_code_sb.attr('data-method')).then((resp) => {
@@ -1639,29 +1641,42 @@ $(document).ready(function () {
 
         $account_sb.select2();
     }
-    function LoadContactList() {
+    function LoadContactList(contact_list_id) {
         let $contact_sb = $('#contact-select-box');
+        $contact_sb.html(``);
         $.fn.callAjax($contact_sb.attr('data-url'), $contact_sb.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
                     $contact_sb.append(`<option></option>`)
                     data.contact_list.map(function (item) {
-                        $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                        if (contact_list_id.includes(item.id)) {
+                            $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                        }
                     })
                 }
             }
         })
 
-        $contact_sb.select2();
+        $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
     }
-    LoadContactList();
 
-    $('#create-new-call-log-button').on('click', function () {
+    let loaded_modal_call_log = false;
+    $('.create-new-call-log-button').on('click', function () {
         $('#sale-code-select-box').prop('disabled', true);
         $('#account-select-box').prop('disabled', true);
-        LoadSaleCodeList(pk);
-        LoadCustomerList($('#select-box-customer option:selected').attr('value'));
+        $('#subject-input').val('');
+        $('#result-text-area').val('');
+        $('#repeat-activity').prop('checked', false);
+        let contact_list_id = account_list.filter(function(item) {
+                return item.id === $('#select-box-customer option:selected').attr('value');
+            })[0].contact_mapped;
+        LoadContactList(contact_list_id);
+        if (loaded_modal_call_log === false) {
+            LoadSaleCodeList(pk);
+            LoadCustomerList($('#select-box-customer option:selected').attr('value'));
+            loaded_modal_call_log = true;
+        }
     })
 
     $('#date-input').daterangepicker({
@@ -1677,6 +1692,25 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
 
+    let data_activities = [];
+    $.fn.callAjax($('#table-activities').attr('data-url-call-log'), $('#table-activities').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                data.call_log_list.map(function (item) {
+                    data_activities.push({
+                        'id': item.id,
+                        'type': 0,
+                        'subject': item.subject,
+                        'call_date': item.call_date.split(' ')[0],
+                        'repeat': item.repeat
+                    })
+                })
+            }
+            loadOpportunityCallLogList();
+        }
+    })
+
     $('#form-create-new-call-log').submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -1687,13 +1721,15 @@ $(document).ready(function () {
         frm.dataForm['customer'] = $('#account-select-box').val();
         frm.dataForm['contact'] = $('#contact-select-box').val();
         frm.dataForm['call_date'] = $('#date-input').val();
-        frm.dataForm['result'] = $('#result-text-area').val();
+        frm.dataForm['input_result'] = $('#result-text-area').val();
         if ($('#repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
         }
         else {
             frm.dataForm['repeat'] = 0;
         }
+
+        // console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
         .then(
@@ -1702,9 +1738,6 @@ $(document).ready(function () {
                 if (data) {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#create-new-call-log').hide();
-                    $('#subject-input').val('');
-                    $('#result-text-area').val('');
-                    $('#repeat-activity').prop('checked', false);
                 }
             },
             (errs) => {
@@ -1712,4 +1745,59 @@ $(document).ready(function () {
             }
         )
     })
+
+    function loadOpportunityCallLogList() {
+        if (!$.fn.DataTable.isDataTable('#table-activities')) {
+            let dtb = $('#table-activities');
+            dtb.DataTableDefault({
+                pageLength: 5,
+                dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+                data: data_activities,
+                columns: [
+                    {
+                        data: 'activity',
+                        className: 'wrap-text w-25',
+                        render: (data, type, row, meta) => {
+                            if (row.type === 0) {
+                                return `Call customer`
+                            }
+                        }
+                    },
+                    {
+                        data: 'type',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row, meta) => {
+                            return `<i class="bi bi-telephone-fill text-primary"></i>`
+                        }
+                    },
+                    {
+                        data: 'subject',
+                        className: 'wrap-text w-35',
+                        render: (data, type, row, meta) => {
+                            return row.subject
+                        }
+                    },
+                    {
+                        data: 'call_date',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row, meta) => {
+                            return row.call_date
+                        }
+                    },
+                    {
+                        data: 'repeat',
+                        className: 'wrap-text w-10 text-center',
+                        render: (data, type, row, meta) => {
+                            if (row.repeat) {
+                                return `<i class="bi bi-check-circle-fill text-success"></i>`
+                            }
+                            else {
+                                return ``
+                            }
+                        }
+                    },
+                ],
+            });
+        }
+    }
 })

@@ -767,13 +767,10 @@ class ListeningEventController {
         $(document).on('input', 'input.mask-money', function () {
             return MaskMoney2.realtimeInputMoney($(this));
         });
-        <!-- Init Mask Money -->
         $.fn.initMaskMoney2();
-        <!-- ## Init Mask Money -->
     }
 
     ticket() {
-        <!-- Raise a ticket -->
         $('#ticket-hash-tag').select2({
             tags: true,
             tokenSeparators: [',', ' ']
@@ -844,11 +841,9 @@ class ListeningEventController {
                 }
             });
         });
-        <!-- ## Raise a ticket -->
     }
 
     dataTable() {
-        <!-- Loading table ajax -->
         $(document).find('table').each((idx, tbl) => {
             if (!$(tbl).attr('load-data-hide-spinner')) {
                 $(tbl).on('preXhr.dt', (e, settings, data) => {
@@ -867,24 +862,16 @@ class ListeningEventController {
                 });
             }
         });
-        <!-- ## Loading table ajax -->
     }
 
     navAndMenu() {
-        <!-- Toggle Collapse -->
         $('.hk-navbar-togglable').click(function (event) {
             $(this).find('.icon').children().toggleClass('d-none');
         });
-        <!-- ## Toggle Collapse -->
 
-        <!-- Space current -->
         change_space();
-        <!-- ## Space current -->
 
-
-        <!-- Active menu -->
         menu_handler();
-        <!-- ## Active menu -->
     }
 
     activeFileUpload() {

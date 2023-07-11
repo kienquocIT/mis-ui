@@ -4,6 +4,7 @@ let shippingClass = new shippingHandle();
 // Load data
 class loadDataHandle {
     loadBoxQuotationOpportunity(opp_id, valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
+        let self = this;
         let jqueryId = '#' + opp_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -51,6 +52,7 @@ class loadDataHandle {
                                     ele.append(option)
                                 }
                             })
+                            self.loadInformationSelectBox(ele);
                         }
                     }
                     // ReCheck Config when change Opportunity (If not load detail or is copy)

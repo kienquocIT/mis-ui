@@ -484,8 +484,8 @@ class loadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('expense_list') && Array.isArray(data.expense_list)) {
-                        ele.val(JSON.stringify(data.expense_list))
+                    if (data.hasOwnProperty('expense_sale_list') && Array.isArray(data.expense_sale_list)) {
+                        ele.val(JSON.stringify(data.expense_sale_list))
                     }
                 }
             }
@@ -510,18 +510,16 @@ class loadDataHandle {
                 let default_uom = {};
                 let tax_code = {};
                 let price_list = [];
-                if (data[i].general_information) {
-                    if (data[i].general_information.uom) {
-                        uom_title = data[i].general_information.uom.title
-                    }
-                    if (data[i].general_information.expense_type) {
-                        expense_type = data[i].general_information.expense_type;
-                        expense_type_title = data[i].general_information.expense_type.title;
-                    }
-                    default_uom = data[i].general_information.uom;
-                    tax_code = data[i].general_information.tax_code;
-                    price_list = data[i].general_information.price_list;
+                if (Object.keys(data[i].uom).length !== 0) {
+                    uom_title = data[i].uom.title
                 }
+                if (Object.keys(data[i].expense_type).length !== 0) {
+                    expense_type = data[i].expense_type;
+                    expense_type_title = data[i].expense_type.title;
+                }
+                default_uom = data[i].uom;
+                tax_code = data[i].tax_code;
+                price_list = data[i].price_list;
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
                     'title': data[i].title,

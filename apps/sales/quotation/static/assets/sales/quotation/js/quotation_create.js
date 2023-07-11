@@ -289,9 +289,9 @@ $(function () {
                     // make a tag checked
                     let allOption = $(row).find('.table-row-price-option');
                     if (allOption) {
-                        allOption.removeClass('a-tag-checked');
+                        allOption.removeClass('option-btn-checked');
                     }
-                    $(this).addClass('a-tag-checked');
+                    $(this).addClass('option-btn-checked');
                 }
             }
         });

@@ -146,8 +146,12 @@ function calculateIndicator(indicator_list) {
     let result_json = {};
     let revenueValue = 0;
     let rateValue = 0;
+    let formSubmit = $('#frm_quotation_create');
     let is_sale_order = false;
-    let _form = new SetupFormSubmit($('#frm_quotation_create'));
+    let _form = new SetupFormSubmit(formSubmit);
+    if (formSubmit[0].classList.contains('sale-order')) {
+        is_sale_order = true;
+    }
     submitClass.setupDataSubmit(_form, is_sale_order);
     let data_form = _form.dataForm;
     for (let indicator of indicator_list) {

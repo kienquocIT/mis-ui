@@ -3245,32 +3245,32 @@ function loadPriceProduct(eleProduct, is_change_item = true) {
                         if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
                             general_price_id = data.price_list[i].id;
                             general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                            $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                                         <div class="col-2"><span></span></div>
                                                     </div>
-                                                </a>`);
+                                                </button>`);
                         }
                         if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
                             if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) {
                                 customer_price = parseFloat(data.price_list[i].value);
-                                $(priceList).append(`<a class="dropdown-item table-row-price-option a-tag-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                                             <div class="col-2"><span></span></div>
                                                         </div>
-                                                    </a>`);
+                                                    </button>`);
                             } else {
-                                $(priceList).append(`<a class="dropdown-item table-row-price-option a-tag-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                                             <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
                                                         </div>
-                                                    </a>`);
+                                                    </button>`);
                             }
                         }
                     }

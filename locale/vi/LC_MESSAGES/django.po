@@ -3568,7 +3568,7 @@ msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã đóng"
 
 #
 msgid "Stage has been updated, Please Save!"
-msgstr "Gia đoạn đã được cập nhật, Vui lòng lưu!"
+msgstr "Giai đoạn đã được cập nhật, vui lòng lưu!"
 #
 msgid "Upload"
 msgstr "Tải lên"

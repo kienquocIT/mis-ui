@@ -1,19 +1,12 @@
-{% load static i18n compress %}
+{% load static i18n compress string_utils %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% if base.tenant_current_data %}
-            {{ base.tenant_current_data.code|upper }} - {{ base.tenant_current_data.title }}
-        {% else %}
-            MIS - Management Information System
-        {% endif %}
-        {% block title %}{% endblock %}
-    </title>
-    <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
+    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %} &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
+    <meta name="description" content="Management Information System"/>
 
     <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
     <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">

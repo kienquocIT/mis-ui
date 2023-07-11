@@ -7,6 +7,13 @@ register = template.Library()
 
 
 @register.filter
+def parsed_title_page(value):
+    if value and isinstance(value, dict):
+        return f'{value["title"]}'  # [{value["code"].upper()}] &#8901;
+    return 'MIS - Management Information System'
+
+
+@register.filter
 def shorten_name(value, upper=False):
     """Nguyen Van A --> NVA"""
     result = "".join(

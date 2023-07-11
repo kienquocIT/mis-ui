@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n awesome_icon_free string_utils %}
+{% block title %}
+    {% trans 'Home Page' %}
+{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}

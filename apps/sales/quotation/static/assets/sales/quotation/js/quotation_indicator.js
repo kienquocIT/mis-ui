@@ -175,7 +175,7 @@ function calculateIndicator(indicator_list) {
                             let functionData = functionClass.functionMaxMin(item, data_form, result_json);
                             parse_formula += functionData;
                         } else if (item.code === 'sumItemIf') {
-                            let functionData = functionClass.functionSumItemIf(item, data_form);
+                            let functionData = functionClass.functionSumItemIf(item, data_form, is_sale_order);
                             parse_formula += functionData;
                         }
                     }
@@ -287,7 +287,7 @@ class indicatorFunctionHandle {
         return item.syntax + functionBody + "])";
     }
 
-    functionSumItemIf(item, data_form) {
+    functionSumItemIf(item, data_form, is_sale_order) {
         let self = this;
         let syntax = "sum(";
         let functionBody = "";
@@ -304,8 +304,14 @@ class indicatorFunctionHandle {
         // Tab Products
         if (data_form.quotation_products_data) {}
         // Tab Expense
-        if (data_form.quotation_expenses_data) {
-            functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+        if (is_sale_order === false) {
+            if (data_form.quotation_expenses_data) {
+                functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            }
+        } else {
+            if (data_form.sale_order_expenses_data) {
+                functionBody = self.extractDataToSum(data_form.sale_order_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            }
         }
         if (functionBody[functionBody.length - 1] === ",") {
             let functionBodySlice = functionBody.slice(0, -1);

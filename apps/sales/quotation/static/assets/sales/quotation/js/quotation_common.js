@@ -3236,7 +3236,7 @@ function loadPriceProduct(eleProduct, is_change_item = true) {
             if (price && priceList) {
                 let account_price_id = document.getElementById('customer-price-list').value;
                 let general_price_id = null;
-                let general_price = null;
+                let general_price = 0;
                 let customer_price = null;
                 let current_price_checked = price.getAttribute('value');
                 $(priceList).empty();

@@ -190,7 +190,14 @@
                                             <i class="bi bi-telephone"></i>
                                         </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
+                                        <span class="ml-3"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'Send Email' %}">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+                                    </a>
                                     <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
                                     <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                 </div>
@@ -728,7 +735,6 @@
                                 </thead>
                             </table>
                         </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
@@ -803,6 +809,70 @@
                         </div>
                         <button type="submit" class="btn btn-primary mt-3"
                                 id="btn-create-new-call-log">{% trans 'Save' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Send Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form data-url="{% url 'OpportunityCallLogListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityCallLogList' %}"
+                          data-method="POST"
+                          id="form-create-new-call-log"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="row form-group mb-3">
+                            <div class="col-2"></div>
+                            <div class="col-10">
+                                <span id="email-sale-code-span" class="badge badge-primary badge-outline" style="font-size: larger">OPP.CODE.XXX</span>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'To' %}</label>
+                            <div class="col-10">
+                                <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
+                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">to input</a>
+                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>to select</a>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'Cc' %}</label>
+                            <div class="col-10">
+                                <select id="email-cc-select-box" multiple class=" elect2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
+
+                                <a class="text-primary form-text text-muted text-right" href="#">
+                                    <span id="email-cc-add" hidden class="badge badge-primary">Add</span>
+                                    <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle-fill"></i></span>
+                                </a>
+                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">input email</a>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'Subject' %}</label>
+                            <div class="col-10">
+                                <input id="email-subject-input" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'Content' %}</label>
+                            <div class="col-10">
+                                <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3"
+                                id="btn-send-email">{% trans 'Send' %}</button>
                     </form>
                 </div>
             </div>

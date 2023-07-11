@@ -1596,7 +1596,8 @@ $(document).ready(function () {
 
 
 
-    // for calllog
+    // for call log
+
     const account_list = JSON.parse($('#account_list').text());
 
     function LoadSaleCodeList(default_sale_code_id) {
@@ -1669,8 +1670,8 @@ $(document).ready(function () {
         $('#result-text-area').val('');
         $('#repeat-activity').prop('checked', false);
         let contact_list_id = account_list.filter(function(item) {
-                return item.id === $('#select-box-customer option:selected').attr('value');
-            })[0].contact_mapped;
+            return item.id === $('#select-box-customer option:selected').attr('value');
+        })[0].contact_mapped;
         LoadContactList(contact_list_id);
         if (loaded_modal_call_log === false) {
             LoadSaleCodeList(pk);
@@ -1698,16 +1699,18 @@ $(document).ready(function () {
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
                 data.call_log_list.map(function (item) {
-                    data_activities.push({
-                        'id': item.id,
-                        'type': 0,
-                        'subject': item.subject,
-                        'call_date': item.call_date.split(' ')[0],
-                        'repeat': item.repeat
-                    })
+                    if (item.opportunity.id === pk) {
+                        data_activities.push({
+                            'id': item.id,
+                            'type': 0,
+                            'subject': item.subject,
+                            'call_date': item.call_date.split(' ')[0],
+                            'repeat': item.repeat
+                        })
+                    }
                 })
             }
-            loadOpportunityCallLogList();
+            loadOpportunityCallLogList(data_activities);
         }
     })
 
@@ -1738,6 +1741,27 @@ $(document).ready(function () {
                 if (data) {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#create-new-call-log').hide();
+
+                    let data_activities_reload = [];
+                    $.fn.callAjax($('#table-activities').attr('data-url-call-log'), $('#table-activities').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                                data.call_log_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        data_activities_reload.push({
+                                            'id': item.id,
+                                            'type': 0,
+                                            'subject': item.subject,
+                                            'call_date': item.call_date.split(' ')[0],
+                                            'repeat': item.repeat
+                                        })
+                                    }
+                                })
+                            }
+                            loadOpportunityCallLogList(data_activities_reload);
+                        }
+                    })
                 }
             },
             (errs) => {
@@ -1746,58 +1770,157 @@ $(document).ready(function () {
         )
     })
 
-    function loadOpportunityCallLogList() {
-        if (!$.fn.DataTable.isDataTable('#table-activities')) {
-            let dtb = $('#table-activities');
-            dtb.DataTableDefault({
-                pageLength: 5,
-                dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
-                data: data_activities,
-                columns: [
-                    {
-                        data: 'activity',
-                        className: 'wrap-text w-25',
-                        render: (data, type, row, meta) => {
-                            if (row.type === 0) {
-                                return `Call customer`
-                            }
+    function loadOpportunityCallLogList(data_activities_list) {
+        $('#table-activities').DataTable().destroy();
+        let dtb = $('#table-activities');
+        dtb.DataTableDefault({
+            pageLength: 5,
+            dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            data: data_activities_list,
+            columns: [
+                {
+                    data: 'activity',
+                    className: 'wrap-text w-25',
+                    render: (data, type, row, meta) => {
+                        if (row.type === 0) {
+                            return `Call customer`
                         }
-                    },
-                    {
-                        data: 'type',
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return `<i class="bi bi-telephone-fill text-primary"></i>`
+                    }
+                },
+                {
+                    data: 'type',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row, meta) => {
+                        return `<i class="bi bi-telephone-fill text-primary"></i>`
+                    }
+                },
+                {
+                    data: 'subject',
+                    className: 'wrap-text w-35',
+                    render: (data, type, row, meta) => {
+                        return row.subject
+                    }
+                },
+                {
+                    data: 'call_date',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row, meta) => {
+                        return row.call_date
+                    }
+                },
+                {
+                    data: 'repeat',
+                    className: 'wrap-text w-10 text-center',
+                    render: (data, type, row, meta) => {
+                        if (row.repeat) {
+                            return `<i class="bi bi-check-circle-fill text-success"></i>`
                         }
-                    },
-                    {
-                        data: 'subject',
-                        className: 'wrap-text w-35',
-                        render: (data, type, row, meta) => {
-                            return row.subject
+                        else {
+                            return ``
                         }
-                    },
-                    {
-                        data: 'call_date',
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return row.call_date
-                        }
-                    },
-                    {
-                        data: 'repeat',
-                        className: 'wrap-text w-10 text-center',
-                        render: (data, type, row, meta) => {
-                            if (row.repeat) {
-                                return `<i class="bi bi-check-circle-fill text-success"></i>`
-                            }
-                            else {
-                                return ``
-                            }
-                        }
-                    },
-                ],
-            });
-        }
+                    }
+                },
+            ],
+        });
     }
+
+    // for send email
+
+    function LoadEmailToList(contact_list_id) {
+        let $to_sb = $('#email-to-select-box');
+        $to_sb.html(``);
+        $.fn.callAjax($to_sb.attr('data-url'), $to_sb.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
+                    $to_sb.append(`<option></option>`)
+                    data.contact_list.map(function (item) {
+                        if (contact_list_id.includes(item.id)) {
+                            if (item.email === null) {
+                                $to_sb.append(`<option disabled>${item.fullname}</option>`);
+                            } else {
+                                $to_sb.append(`<option data-email="${item.email}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                            }
+                        }
+                    });
+                }
+            }
+        })
+
+        $to_sb.select2({dropdownParent: $("#send-email")});
+    }
+
+    function LoadEmailCcList(contact_list_id) {
+        let $cc_sb = $('#email-cc-select-box');
+        $cc_sb.html(``);
+        $.fn.callAjax($cc_sb.attr('data-url'), $cc_sb.attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
+                    $cc_sb.append(`<option></option>`)
+                    data.contact_list.map(function (item) {
+                        if (contact_list_id.includes(item.id)) {
+                            if (item.email === null) {
+                                $cc_sb.append(`<option disabled">${item.fullname}</option>`);
+                            } else {
+                                $cc_sb.append(`<option data-email="${item.email}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                            }
+                        }
+                    });
+                }
+            }
+        })
+
+        $cc_sb.select2({dropdownParent: $("#send-email")});
+    }
+
+    let loaded_modal_send_email = false;
+
+    $('.send-email-button').on('click', function () {
+        $('#email-subject-input').val('');
+        $('#email-content-area').val('');
+        let contact_list_id = account_list.filter(function(item) {
+            return item.id === $('#select-box-customer option:selected').attr('value');
+        })[0].contact_mapped;
+        if (loaded_modal_send_email === false) {
+            LoadEmailToList(contact_list_id);
+            LoadEmailCcList(contact_list_id);
+            loaded_modal_send_email = true;
+        }
+    })
+
+    $('#email-to-input-btn').on('click', function() {
+        $('#email-to-select-box').prop('hidden', true);
+        $('#email-to-select-box').next(1).prop('hidden', true);
+        $('#inputEmailTo').prop('hidden', false);
+        $('#email-to-select-btn').prop('hidden', false);
+        $('#email-to-input-btn').prop('hidden', true);
+    })
+    $('#email-to-select-btn').on('click', function() {
+        $('#email-to-select-box').prop('hidden', false);
+        $('#email-to-select-box').next(1).prop('hidden', false);
+        $('#inputEmailTo').prop('hidden', true);
+        $('#email-to-select-btn').prop('hidden', true);
+        $('#email-to-input-btn').prop('hidden', false);
+    })
+
+    $('#email-cc-input-btn').on('click', function() {
+        $('#inputEmailCc').prop('hidden', false);
+        $('#email-cc-add').prop('hidden', false);
+        $('#email-cc-remove').prop('hidden', false);
+        $(this).prop('hidden', true);
+    })
+    $('#email-cc-remove').on('click', function() {
+        $('#email-cc-input-btn').prop('hidden', false);
+        $('#inputEmailCc').prop('hidden', true);
+        $('#email-cc-add').prop('hidden', true);
+        $(this).prop('hidden', true);
+    })
+    $('#email-cc-add').on('click', function() {
+        if ($('#inputEmailCc').val()) {
+            let data_email = $('#inputEmailCc').val();
+            $('#email-cc-select-box').append(`<option selected value="` + data_email + `">` + data_email + `</option>`);
+            $('#inputEmailCc').val('');
+        }
+    })
 })

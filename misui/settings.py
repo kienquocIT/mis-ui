@@ -330,9 +330,9 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     API_DOMAIN = os.environ.get('API_DOMAIN', None)
 
 # compressor config
-COMPRESS_OFFLINE = False
-COMPRESS_ROOT_PARENT = os.path.join(STATIC_ROOT, 'compressor')
-COMPRESS_ROOT = os.path.join(COMPRESS_ROOT_PARENT, RELEASE_VERSION)
+# COMPRESS_OFFLINE = False
+# COMPRESS_ROOT_PARENT = os.path.join(STATIC_ROOT, 'compressor')
+# COMPRESS_ROOT = os.path.join(COMPRESS_ROOT_PARENT, RELEASE_VERSION)
 if os.environ.get('COMPRESS_ENABLED', '0') in [1, '1']:
     COMPRESS_ENABLED = True
 else:

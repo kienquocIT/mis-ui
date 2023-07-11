@@ -96,7 +96,7 @@
                                                 id="select-box-quotation-create-opportunity"
                                                 data-url="{% url "OpportunityListAPI" %}"
                                                 data-method="GET"
-                                                data-link-detail="{% url "OpportunityList" %}"
+                                                data-link-detail="{% url "OpportunityDetail" 1 %}"
                                                 name="opportunity"
                                                 disabled
                                             ></select>
@@ -915,7 +915,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-product"
-                                data-url="{% url "ProductListAPI" %}"
+                                data-url="{% url "ProductForSaleListAPI" %}"
                                 data-link-detail="{% url "ProductDetail" 1 %}"
                                 data-method="GET"
                         >
@@ -986,7 +986,7 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-3">
+                    <div class="row mb-1">
                         <div class="col-2">
                             <button
                                     type="button"

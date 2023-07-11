@@ -8,10 +8,12 @@ from django.conf import settings
 
 class Command(BaseMakeMessagesCommand):
     def handle(self, *args, **options):
+        cache_path = os.path.join(settings.STATIC_ROOT, 'CACHE')
+        if os.path.exists(cache_path):
+            sys.stdout.writelines(
+                'Clean CACHE compressor: ' + str(os.listdir(settings.STATIC_ROOT)) + '\n'
+            )
+            shutil.rmtree(cache_path)
         sys.stdout.writelines(
-            'Before clean COMPRESS with MEDIA ROOT dir: ' + str(os.listdir(settings.STATIC_ROOT)) + '\n'
-        )
-        shutil.rmtree(settings.COMPRESS_ROOT_PARENT)
-        sys.stdout.writelines(
-            'After clean COMPRESS is success with MEDIA ROOT dir: ' + str(os.listdir(settings.STATIC_ROOT)) + '\n'
+            'Done clear CACHE compressor command: ' + str(os.listdir(settings.STATIC_ROOT)) + '\n'
         )

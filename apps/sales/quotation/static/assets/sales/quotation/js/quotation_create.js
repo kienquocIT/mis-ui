@@ -276,14 +276,22 @@ $(function () {
 
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function (e) {
-            let priceValRaw = $(this)[0].getAttribute('data-value');
-            if (priceValRaw) {
-                let row = $(this)[0].closest('tr');
-                let elePrice = row.querySelector('.table-row-price');
-                if (elePrice) {
-                    $(elePrice).attr('value', String(priceValRaw));
-                    $.fn.initMaskMoney2();
-                    calculateClass.commonCalculate(tableProduct, row, true, false, false);
+            if (!$(this)[0].querySelector('.expired-price')) { // Check if price not expired
+                let priceValRaw = $(this)[0].getAttribute('data-value');
+                if (priceValRaw) {
+                    let row = $(this)[0].closest('tr');
+                    let elePrice = row.querySelector('.table-row-price');
+                    if (elePrice) {
+                        $(elePrice).attr('value', String(priceValRaw));
+                        $.fn.initMaskMoney2();
+                        calculateClass.commonCalculate(tableProduct, row, true, false, false);
+                    }
+                    // make a tag checked
+                    let allOption = $(row).find('.table-row-price-option');
+                    if (allOption) {
+                        allOption.removeClass('option-btn-checked');
+                    }
+                    $(this).addClass('option-btn-checked');
                 }
             }
         });
@@ -582,9 +590,6 @@ $(function () {
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
             let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-item')) {
-                // loadDataProductSelect($(this));
-            }
             calculateClass.commonCalculate(tableCost, row, false, true, false);
         });
 

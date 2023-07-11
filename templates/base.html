@@ -1,59 +1,51 @@
-{% load static i18n compress %}
+{% load static i18n compress string_utils %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta Tags -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if base.tenant_current_data %}
-        <title>{{ base.tenant_current_data.code|upper }} - {{ base.tenant_current_data.title }}</title>
-    {% else %}
-        <title>MIS - {% block title %}Management Information System{% endblock %}</title>
-    {% endif %}
-    <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
+    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %} &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
+    <meta name="description" content="Management Information System"/>
 
-    <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
     <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
             href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
     >
-    <!-- // Google Fonts -->
-
-    <!-- Data Table CSS -->
-    <link
-            href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
-            type="text/css"
-    />
-    <link
-            href="{% static 'vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
-            rel="stylesheet" type="text/css"
-    />
-    <link
-            href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"
-            rel="stylesheet" type="text/css"
-    />
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
-
-    <!-- Tour -->
-    <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
 
     {% compress css %}
-        <!-- CSS -->
+        <!-- Data Table CSS -->
+        <link
+                href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
+                type="text/css"
+        />
+        <link
+                href="{% static 'vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
+                rel="stylesheet" type="text/css"
+        />
+        <link
+                href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"
+                rel="stylesheet" type="text/css"
+        />
+        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
+
+        <!-- Tour -->
+        <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
+    {% endcompress %}
+
+    {% compress css %}
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
 
-        <!-- Customize Style -->
         <style>
             :root {
                 --bs-body-font-family: 'Quicksand', sans-serif;
@@ -104,29 +96,26 @@
                 display: flex !important;
             }
         </style>
-        <!-- // Customize Style -->
+
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
-    <!-- GA -->
-    <!-- Google tag (gtag.js) -->
-    <script type="text/javascript">
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
-        gtag('js', new Date());
-
-        gtag('config', 'G-4GDQQTC98X', {
-            'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
-        });
-    </script>
-    <!-- // GA -->
     {% compress js %}
+        <script type="text/javascript">
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'G-4GDQQTC98X', {
+                'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
+            });
+        </script>
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
 </head>
@@ -335,51 +324,54 @@
 </div>
 <!-- /Wrapper -->
 
-<!-- jQuery -->
-<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
-<!-- // jQuery -->
-
-<!-- Bootstrap Core JS -->
-<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-<!-- // Bootstrap Core JS -->
-
-<!-- FeatherIcons JS -->
-<script src="{% static 'assets/js/feather.min.js' %}"></script>
-<!-- // FeatherIcons JS -->
-
-<!-- Fancy Dropdown JS -->
-<script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
-<!-- // Fancy Dropdown JS -->
-
-<!-- Simplebar JS -->
-<script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
-<!-- // Simplebar JS -->
-
-<!-- Data Table JS -->
-<script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendors/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
-<!-- // Data Table JS -->
-
-<!-- Select2 JS -->
-<script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-<!-- // Select2 JS -->
-
-<!-- Sweet Alert 2 -->
-<script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
-
-<!-- Tour -->
-<script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
 
 {% compress js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+    <!-- // jQuery -->
+
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- // Bootstrap Core JS -->
+
+    <!-- FeatherIcons JS -->
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+    <!-- // FeatherIcons JS -->
+
+    <!-- Fancy Dropdown JS -->
+    <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+    <!-- // Fancy Dropdown JS -->
+
+    <!-- Simplebar JS -->
+    <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+    <!-- // Simplebar JS -->
+
+    <!-- Data Table JS -->
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <!-- // Data Table JS -->
+
+    <!-- Select2 JS -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <!-- // Select2 JS -->
+
+    <!-- Sweet Alert 2 -->
+    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+
+    <!-- Tour -->
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
+
+
+
     <!-- Init JS -->
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>

@@ -39,7 +39,7 @@ $(document).ready(function () {
                     {
                         data: 'expense_type', className: 'wrap-text', render: (data, type, row, meta) => {
                             return `<span>{0}</span></a>`.format_by_idx(
-                                row.general_information.expense_type.title
+                                row.expense_type.title,
                             )
                         }
                     }

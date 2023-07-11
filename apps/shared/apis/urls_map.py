@@ -206,6 +206,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # expense
     EXPENSE_LIST = StringUrl('saledata/expenses')
     EXPENSE_DETAIL = StringUrl('saledata/expense/{expense_id}')
+    EXPENSE_SALE_LIST = StringUrl('saledata/expenses-sale')
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')

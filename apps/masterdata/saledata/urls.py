@@ -11,7 +11,7 @@ from apps.masterdata.saledata.views.accounts import (
 )
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
-    ExpenseDetailAPI
+    ExpenseDetailAPI, ExpenseForSaleListAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail
 from apps.masterdata.saledata.views.product import (
@@ -150,6 +150,7 @@ urlpatterns = [
     path('expenses/create', ExpenseCreate.as_view(), name='ExpenseCreate'),
     path('expense/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
     path('expense/api/<str:pk>', ExpenseDetailAPI.as_view(), name='ExpenseDetailAPI'),
+    path('expenses-sale/api', ExpenseForSaleListAPI.as_view(), name='ExpenseForSaleListAPI'),
 ] + [
     path('shippings', ShippingList.as_view(), name='ShippingList'),
     path('shippings/create', ShippingCreate.as_view(), name='ShippingCreate'),

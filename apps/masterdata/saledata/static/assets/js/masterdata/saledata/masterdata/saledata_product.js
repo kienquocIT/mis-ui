@@ -203,17 +203,24 @@ $(document).ready(function () {
                             data: 'title',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
+                                if (row.is_default) {
+                                    return `<span><b>` + row.title + `</b></span>`
+                                }
+                                else {
+                                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
                                         data-bs-target="#modal-detail-unit-measure-group" data-id="{0}">
                                             <span><b>{1}</b></span>
                                         </a>`.format_by_idx(row.id, data)
+                                }
                             }
                         }, {
                             render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
-                                    row.id
-                                );
-
+                                if (row.is_default) {
+                                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                                }
+                                else {
+                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(row.id);
+                                }
                             }
                         }
                     ],

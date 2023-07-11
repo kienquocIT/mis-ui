@@ -24,6 +24,8 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {{ data.account_list | json_script:"account_list" }}
+
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
            data-url-contact-detail="{% url 'ContactDetail' '0' %}"
@@ -80,7 +82,7 @@
                             <label class="form-label required">
                                 {% trans 'Customer' %}
                             </label>
-                            <select id="account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                            <select disabled id="account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
@@ -97,7 +99,7 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">
+                            <label class="form-label required">
                                 {% trans 'Input Result' %}
                             </label>
                             <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>

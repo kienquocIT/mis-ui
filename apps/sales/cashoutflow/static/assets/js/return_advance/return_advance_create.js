@@ -171,6 +171,9 @@ $(function () {
             frm.dataForm['cost'] = cost_list;
             frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
 
+            frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
+            frm.dataForm['beneficiary'] = $('#chooseBeneficiary').val();
+
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {

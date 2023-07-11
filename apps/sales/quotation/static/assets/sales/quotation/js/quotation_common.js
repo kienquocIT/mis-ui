@@ -174,17 +174,18 @@ class loadDataHandle {
                                 'Mobile': item.mobile,
                                 'Email': item.email
                             }).replace(/"/g, "&quot;");
-                            let dataAppend = `<option value="${item.id}">
-                                            <span class="contact-title">${item.fullname}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                            // let dataAppend = `<option value="${item.id}">
+                            //                 <span class="contact-title">${item.fullname}</span>
+                            //                 <input type="hidden" class="data-info" value="${dataStr}">
+                            //             </option>`
                             if (item.id === valueToSelect) {
-                                dataAppend = `<option value="${item.id}" selected>
+                                let dataAppend = `<option value="${item.id}" selected>
                                             <span class="contact-title">${item.fullname}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                                        </option>`;
+                                ele.append(dataAppend)
                             }
-                            ele.append(dataAppend)
+                            // ele.append(dataAppend)
                         })
                         self.loadInformationSelectBox(ele);
                     }
@@ -255,17 +256,18 @@ class loadDataHandle {
                         ele.append(`<option value=""></option>`);
                         data.payment_terms_list.map(function (item) {
                             let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            let option = `<option value="${item.id}">
-                                            <span class="opp-title">${item.title}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                            // let option = `<option value="${item.id}">
+                            //                 <span class="opp-title">${item.title}</span>
+                            //                 <input type="hidden" class="data-info" value="${dataStr}">
+                            //             </option>`
                             if (valueToSelect && valueToSelect === item.id) {
-                                option = `<option value="${item.id}" selected>
+                                let option = `<option value="${item.id}" selected>
                                             <span class="opp-title">${item.title}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
+                                        </option>`;
+                                ele.append(option);
                             }
-                            ele.append(option)
+                            // ele.append(option)
                         });
                         self.loadInformationSelectBox(ele);
                     }
@@ -858,20 +860,23 @@ class loadDataHandle {
                 self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), null, true);
             }
         }
-        if (data.contact) {
-            self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
-        }
+        // if (data.contact) {
+        //     self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
+        // }
         if (data.sale_person) {
             self.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', data.sale_person.id)
         }
-        if (data.payment_term) {
-            self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term.id)
-        }
+        // if (data.payment_term) {
+        //     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term.id)
+        // }
         if (data.quotation && data.sale_person) {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }
         if (data.date_created) {
             $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
+        }
+        if (data.is_customer_confirm && is_copy === false) {
+            $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
         }
         if (is_copy === true) {
             let boxQuotation = $('#select-box-quotation');
@@ -3166,6 +3171,10 @@ class submitHandle {
         _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
         _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
         _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
+
+        if (is_sale_order === false) {
+            _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
+        }
 
         let quotation_products_data_setup = self.setupDataProduct();
         if (quotation_products_data_setup.length > 0) {

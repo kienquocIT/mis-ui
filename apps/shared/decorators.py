@@ -69,7 +69,10 @@ class ArgumentDecorator:
         if isinstance(user, get_user_model()):
             space_list, space_current_detail, space_menus = cls.parse_spaces(user.ui_space_selected)
             return {
+                'id': str(user.id),
+                'user_id': str(user.user_id),
                 'fullname': user.get_full_name(),
+                'username_auth': user.username_auth,
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,
                 'tenant_current_data': user.tenant_current_data,

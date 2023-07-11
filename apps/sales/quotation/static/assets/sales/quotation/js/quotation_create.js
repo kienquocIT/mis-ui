@@ -129,16 +129,16 @@ $(function () {
         });
 
 // Action on click dropdown contact
-        boxContact.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
-            }
-        });
+//         boxContact.on('click', function(e) {
+//             if (!$(this)[0].innerHTML) {
+//                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
+//             }
+//         });
 
 // Action on change dropdown contact
-        boxContact.on('change', function (e) {
-            loadDataClass.loadInformationSelectBox($(this));
-        });
+//         boxContact.on('change', function (e) {
+//             loadDataClass.loadInformationSelectBox($(this));
+//         });
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function (e) {
@@ -167,16 +167,16 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        boxPaymentTerm.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
-            }
-        });
+//         boxPaymentTerm.on('click', function(e) {
+//             if (!$(this)[0].innerHTML) {
+//                 loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+//             }
+//         });
 
 // Action on change dropdown payment term
-        boxPaymentTerm.on('change', function(e) {
-            loadDataClass.loadInformationSelectBox($(this));
-        });
+//         boxPaymentTerm.on('change', function(e) {
+//             loadDataClass.loadInformationSelectBox($(this));
+//         });
 
 // Action on click dropdown contact
         boxQuotation.on('click', function(e) {

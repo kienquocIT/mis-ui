@@ -333,6 +333,9 @@ if os.environ.get('COMPRESS_ENABLED', '0') in [1, '1']:
     COMPRESS_OFFLINE = False
     COMPRESS_ROOT_PARENT = os.path.join(STATIC_ROOT, 'compressor')
     COMPRESS_ROOT = os.path.join(COMPRESS_ROOT_PARENT, RELEASE_VERSION)
+else:
+    COMPRESS_ENABLED = False
+
 # -- PROD configurations
 
 OS_DEBUG = os.environ.get('DEBUG', DEBUG)

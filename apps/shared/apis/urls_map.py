@@ -170,6 +170,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
+    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
 
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')

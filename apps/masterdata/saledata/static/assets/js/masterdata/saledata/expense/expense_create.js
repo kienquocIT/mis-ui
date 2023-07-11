@@ -37,7 +37,7 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     resp.data.unit_of_measure_group.map(function (item) {
-                        if(item.title === 'Nhân công'){
+                        if (item.title === 'Nhân công') {
                             chooseUoMGroup.val(item.title);
                             chooseUoMGroup.attr('data-id', item.id);
                             loadUoM(item.id);
@@ -110,6 +110,8 @@ $(document).ready(function () {
             frm.dataForm['currency_using'] = currency_primary.id;
         }
 
+        frm.dataForm['role'] = $('#chooseRole').val();
+
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -133,9 +135,7 @@ $(document).ready(function () {
                     'child': []
                 })
             } else {
-                if (dataTree[i].child.length === 0)
-                    continue;
-                else {
+                if (dataTree[i].child.length !== 0){
                     getTreePriceList(dataTree[i].child, parent_id, child)
                 }
             }
@@ -300,4 +300,24 @@ $(document).ready(function () {
             }
         }
     })
+
+
+    function loadRole() {
+        let chooseRole = $('#chooseRole');
+        chooseRole.html('');
+        let frm = new SetupFormSubmit(chooseRole);
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('role_list')) {
+                    resp.data.role_list.map(function (item) {
+                        chooseRole.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
+
+    loadRole();
 })

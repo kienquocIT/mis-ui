@@ -275,6 +275,7 @@ $(document).ready(function () {
                     loadExpenseType(expense_detail.expense_type);
                     loadUoMGroup(expense_detail.uom_group);
                     loadUoM(expense_detail.uom_group, expense_detail.uom);
+                    loadRole(expense_detail.role)
                     let price_list_expense = expense_detail.price_list;
                     price_list_expense.map(function (item) {
                         if (price_dict[item.id].auto_update === false) {
@@ -302,6 +303,7 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
+        frm.dataForm['role'] = $('#chooseRole').val();
         let price_list_add = []
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
@@ -345,4 +347,24 @@ $(document).ready(function () {
                 }
             )
     })
+
+    function loadRole(list_id) {
+        let chooseRole = $('#chooseRole');
+        chooseRole.html('');
+        let frm = new SetupFormSubmit(chooseRole);
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('role_list')) {
+                    resp.data.role_list.map(function (item) {
+                        if(list_id.includes(item.id)){
+                            chooseRole.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+                        }
+                        chooseRole.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                    })
+                }
+            }
+        }, (errs) => {
+        },)
+    }
 })

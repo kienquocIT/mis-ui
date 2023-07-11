@@ -42,7 +42,7 @@ $(document).ready(function () {
         if (ele_customer.length > 0) {
             let compare_data = 0;
             if (ele_customer.data('annual-revenue') !== null) {
-                compare_data = ele_customer.data('annual-revenue');
+                compare_data = ele_customer.data('annual-revenue').toString();
             }
             list_property_config.push({
                 'property': 'Customer',
@@ -234,7 +234,6 @@ $(document).ready(function () {
                 }
             }
         }
-
         if (!just_check) {
             let ele_close_deal = $('#input-close-deal');
             if ($('.stage-selected').not(ele_close_deal.closest('.sub-stage')).last().data('id') !== id_stage_current) {
@@ -681,33 +680,38 @@ $(document).ready(function () {
                     $('#data-sale-person').val(JSON.stringify(data.employee_list));
                     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
                     ele_emp_current_group.val(emp_current.group.id);
-                    if (config_is_AM_create) {
-                        data.employee_list.map(function (employee) {
-                            if (list_manager.includes(employee_current_id)) {
-                                if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
-                                    if (employee.id === sale_person.id) {
-                                        ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                                    } else {
-                                        ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
-                                    }
-                                }
-                            } else {
-                                if (employee.id === sale_person.id) {
-                                    ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                                }
-                            }
-                        })
-                    } else {
-                        data.employee_list.map(function (employee) {
-                            if (employee.group.id === emp_current.group.id) {
-                                if (employee.id === sale_person_id) {
-                                    ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                                } else {
-                                    ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
-                                }
-                            }
-                        })
-                    }
+                    data.employee_list.map(function (employee) {
+                        if (employee.id === employee_current_id) {
+                            ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                        }
+                    })
+                    // if (config_is_AM_create) {
+                    //     data.employee_list.map(function (employee) {
+                    //         if (list_manager.includes(employee_current_id)) {
+                    //             if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
+                    //                 if (employee.id === sale_person.id) {
+                    //                     ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                    //                 } else {
+                    //                     ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
+                    //                 }
+                    //             }
+                    //         } else {
+                    //             if (employee.id === sale_person.id) {
+                    //                 ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                    //             }
+                    //         }
+                    //     })
+                    // } else {
+                    //     data.employee_list.map(function (employee) {
+                    //         if (employee.group.id === emp_current.group.id) {
+                    //             if (employee.id === sale_person.id) {
+                    //                 ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                    //             } else {
+                    //                 ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
+                    //             }
+                    //         }
+                    //     })
+                    // }
                 }
             }
         }, (errs) => {
@@ -1565,9 +1569,12 @@ $(document).ready(function () {
         $('#btn-auto-update-stage').hide();
     } else {
         if (!$('#input-close-deal').is(':checked')) {
-            setTimeout(function () {
-                autoLoadStage(true);
-            }, 1500);
+            window.addEventListener('load', function () {
+                setTimeout(function () {
+                    autoLoadStage(true);
+                }, 1500);
+            });
+
         }
     }
 
@@ -1637,6 +1644,7 @@ $(document).ready(function () {
 
         $account_sb.select2();
     }
+
     function LoadContactList(contact_list_id) {
         let $contact_sb = $('#contact-select-box');
         $contact_sb.html(``);
@@ -1664,9 +1672,9 @@ $(document).ready(function () {
         $('#subject-input').val('');
         $('#result-text-area').val('');
         $('#repeat-activity').prop('checked', false);
-        let contact_list_id = account_list.filter(function(item) {
-                return item.id === $('#select-box-customer option:selected').attr('value');
-            })[0].contact_mapped;
+        let contact_list_id = account_list.filter(function (item) {
+            return item.id === $('#select-box-customer option:selected').attr('value');
+        })[0].contact_mapped;
         LoadContactList(contact_list_id);
         if (loaded_modal_call_log === false) {
             LoadSaleCodeList(pk);
@@ -1727,14 +1735,14 @@ $(document).ready(function () {
         // console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
-                    $('#create-new-call-log').hide();
-                }
-            )
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $('#create-new-call-log').hide();
+                    }
+                })
     })
 
     function loadOpportunityCallLogList() {
@@ -1781,8 +1789,7 @@ $(document).ready(function () {
                         render: (data, type, row, meta) => {
                             if (row.repeat) {
                                 return `<i class="bi bi-check-circle-fill text-success"></i>`
-                            }
-                            else {
+                            } else {
                                 return ``
                             }
                         }

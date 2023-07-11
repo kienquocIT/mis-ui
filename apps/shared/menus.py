@@ -124,7 +124,7 @@ class MenusCoreConfigurations:
                 name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
                 icon='<i class="fas fa-file-invoice"></i>',
             ),
-			MenuCommon(
+            MenuCommon(
                 name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
                 icon='<i class="far fa-lightbulb"></i>',
             )
@@ -162,7 +162,7 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
     EXPENSE = MenuCommon(
-        name='Expense', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
+        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
         name='Inventory', code='menu_inventory', view_name='#', icon='<i class="fas fa-clipboard-list"></i>',

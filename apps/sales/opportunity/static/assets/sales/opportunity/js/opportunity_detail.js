@@ -236,7 +236,8 @@ $(document).ready(function () {
         }
 
         if (!just_check) {
-            if ($('.stage-selected').last().data('id') !== id_stage_current) {
+            let ele_close_deal = $('#input-close-deal');
+            if ($('.stage-selected').not(ele_close_deal.closest('.sub-stage')).last().data('id') !== id_stage_current) {
                 Swal.fire($('#opp-updated').text());
             }
             let ele_stage = $(`.sub-stage`);
@@ -259,7 +260,6 @@ $(document).ready(function () {
                 }
             }
 
-            let ele_close_deal = $('#input-close-deal');
             if (ele_close_deal.is(':checked')) {
                 ele_stage_current = ele_close_deal.closest('.sub-stage');
                 ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
@@ -291,8 +291,12 @@ $(document).ready(function () {
 
             if (!$('#check-input-rate').is(':checked')) {
                 if (is_load_rate) {
-                    $('#input-rate').val(dict_stage[ele_stage_current.data('id')].win_rate);
-                    $('#rangeInput').val(dict_stage[ele_stage_current.data('id')].win_rate);
+                    let obj_stage = dict_stage[ele_stage_current.data('id')]
+                    if(ele_stage_current.hasClass('stage-close'))
+                        obj_stage = dict_stage[$('.stage-selected').not(ele_stage_current).last().data('id')];
+
+                    $('#input-rate').val(obj_stage.win_rate);
+                    $('#rangeInput').val(obj_stage.win_rate);
                 }
             }
         }
@@ -760,7 +764,7 @@ $(document).ready(function () {
                     $('#input-open-date').val(opportunity_detail.open_date.split(' ')[0]);
                 if (opportunity_detail.close_date !== null)
                     $('#input-close-date').val(opportunity_detail.close_date.split(' ')[0]);
-                else{
+                else {
                     $('#input-close-date').val('');
                 }
                 if (opportunity_detail.decision_maker !== null) {
@@ -1119,9 +1123,9 @@ $(document).ready(function () {
         let ele_tr_contact_role = $('#table-contact-role.tag-change tbody tr:not(.hidden)');
         let ele_decision_factor = $('#box-select-factor.tag-change');
         let ele_sale_team_members = $('#card-member.tag-change .card');
-        let ele_stage = $('#div-stage');
         let ele_lost_other_reason = $('#check-lost-reason');
 
+        data_form['win_rate'] = parseFloat($('#input-rate').val());
         data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
         ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
@@ -1241,7 +1245,7 @@ $(document).ready(function () {
 
         data_form['lost_by_other_reason'] = false;
 
-        if(ele_lost_other_reason.is(':checked')){
+        if (ele_lost_other_reason.is(':checked')) {
             data_form['lost_by_other_reason'] = true;
             data_form['is_close'] = true;
         }
@@ -1507,7 +1511,8 @@ $(document).ready(function () {
     })
 
     function loadWinRate() {
-        let win_rate = dict_stage[$('.stage-selected').last().data('id')].win_rate;
+        let ele_deal_close = $('.stage-close');
+        let win_rate = dict_stage[$('.stage-selected').not(ele_deal_close).last().data('id')].win_rate;
         if (!$('#check-input-rate').is(':checked')) {
             $('#input-rate').val(win_rate);
             $('#rangeInput').val(win_rate);
@@ -1549,16 +1554,12 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '#input-close-deal', function () {
-        if (!config_is_select_stage) {
-            autoLoadStage(true);
+        if ($(this).is(':checked')) {
+            $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
         } else {
-            if ($(this).is(':checked')) {
-                $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
-            } else {
-                $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
-            }
-            loadWinRate();
+            $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
         }
+        loadWinRate();
     })
 
     if (config_is_select_stage) {
@@ -1582,18 +1583,15 @@ $(document).ready(function () {
     }
 
     // toggle action and activity
-    $(document).on('click', '#btn-show-activity', function (){
+    $(document).on('click', '#btn-show-activity', function () {
         $('.div-activity').removeClass('hidden');
         $('.div-action').addClass('hidden');
     })
 
-    $(document).on('click', '#btn-show-action', function (){
+    $(document).on('click', '#btn-show-action', function () {
         $('.div-activity').addClass('hidden');
         $('.div-action').removeClass('hidden');
     })
-
-
-
 
 
     // for calllog
@@ -1607,8 +1605,7 @@ $(document).ready(function () {
                     data.opportunity_list.map(function (item) {
                         if (default_sale_code_id === item.id) {
                             $sale_code_sb.append(`<option selected value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                        }
-                        else {
+                        } else {
                             $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
                         }
                     })
@@ -1618,6 +1615,7 @@ $(document).ready(function () {
 
         $sale_code_sb.select2();
     }
+
     function LoadCustomerList(default_customer_id) {
         let $account_sb = $('#account-select-box');
         $.fn.callAjax($account_sb.attr('data-url'), $account_sb.attr('data-method')).then((resp) => {
@@ -1628,8 +1626,7 @@ $(document).ready(function () {
                     data.account_list.map(function (item) {
                         if (default_customer_id === item.id) {
                             $account_sb.append(`<option selected value="${item.id}">${item.name}</option>`);
-                        }
-                        else {
+                        } else {
                             $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
                         }
                     })
@@ -1639,6 +1636,7 @@ $(document).ready(function () {
 
         $account_sb.select2();
     }
+
     function LoadContactList() {
         let $contact_sb = $('#contact-select-box');
         $.fn.callAjax($contact_sb.attr('data-url'), $contact_sb.attr('data-method')).then((resp) => {
@@ -1655,6 +1653,7 @@ $(document).ready(function () {
 
         $contact_sb.select2();
     }
+
     LoadContactList();
 
     $('#create-new-call-log-button').on('click', function () {
@@ -1690,26 +1689,25 @@ $(document).ready(function () {
         frm.dataForm['result'] = $('#result-text-area').val();
         if ($('#repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
-        }
-        else {
+        } else {
             frm.dataForm['repeat'] = 0;
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
-                    $('#create-new-call-log').hide();
-                    $('#subject-input').val('');
-                    $('#result-text-area').val('');
-                    $('#repeat-activity').prop('checked', false);
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $('#create-new-call-log').hide();
+                        $('#subject-input').val('');
+                        $('#result-text-area').val('');
+                        $('#repeat-activity').prop('checked', false);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
-            },
-            (errs) => {
-                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-            }
-        )
+            )
     })
 })

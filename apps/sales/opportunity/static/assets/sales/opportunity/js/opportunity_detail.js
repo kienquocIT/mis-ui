@@ -103,7 +103,7 @@ $(document).ready(function () {
         }
 
         let ele_close_date = $('#input-close-date');
-        if (ele_close_date.val() === 0) {
+        if (ele_close_date.val() === '') {
             list_property_config.push({
                 'property': 'Close Date',
                 'comparison_operator': '=',
@@ -292,9 +292,8 @@ $(document).ready(function () {
             if (!$('#check-input-rate').is(':checked')) {
                 if (is_load_rate) {
                     let obj_stage = dict_stage[ele_stage_current.data('id')]
-                    if(ele_stage_current.hasClass('stage-close'))
+                    if (ele_stage_current.hasClass('stage-close'))
                         obj_stage = dict_stage[$('.stage-selected').not(ele_stage_current).last().data('id')];
-
                     $('#input-rate').val(obj_stage.win_rate);
                     $('#rangeInput').val(obj_stage.win_rate);
                 }
@@ -1224,7 +1223,7 @@ $(document).ready(function () {
 
         // stage
         let list_stage = []
-        ele_stage = $('.stage-selected');
+        let ele_stage = $('.stage-selected');
         ele_stage.not(':last').each(function () {
             list_stage.push({
                 'stage': $(this).data('id'),
@@ -1568,7 +1567,7 @@ $(document).ready(function () {
         if (!$('#input-close-deal').is(':checked')) {
             setTimeout(function () {
                 autoLoadStage(true);
-            }, 1200);
+            }, 1500);
         }
     }
 

@@ -267,4 +267,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Task
     OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
+    OPPORTUNITY_TASK_STT_LIST = StringUrl('task/status')
     OPPORTUNITY_TASK_LIST = StringUrl('task/list')
+    OPPORTUNITY_TASK_DETAIL = StringUrl('task/detail')
+    OPPORTUNITY_TASK_LOG_WORK = StringUrl('task/log-work')
+    OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')

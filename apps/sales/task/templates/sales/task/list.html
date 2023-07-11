@@ -5,6 +5,7 @@
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
@@ -40,6 +41,11 @@
                 <div id="tasklist_wrap" class="tasklist-wrap">
                 </div>
             </div>
+            <div id="kb_sub_scroll" class="sub-tasklist-scroll position-relative">
+                <div id="sub-tasklist_wrap" class="sub-tasklist-wrap">
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -49,8 +55,8 @@
                 <div class="card-header card-header-action">
                     <div class="tasklist-handle">
                         <h6 class="text-uppercase fw-bold d-flex align-items-center mb-0">
-                            <span class="tasklist-name">All Modules</span><span
-                                class="badge badge-pill badge-soft-violet ms-2 task-count">19</span></h6>
+                            <span class="tasklist-name"></span><span
+                                class="task-count"></span></h6>
                         <div class="card-action-wrap">
                             <button class="btn btn-flush-primary btn-animated btn-add-newtask">
                                 <i class="fa-solid fa-plus"></i>
@@ -67,32 +73,31 @@
         <div class="card-child_template">
             <div class="card card-border card-simple tasklist-card">
                 <div class="card-header card-header-action">
-                    <h6 class="fw-bold card-code">Application Pages</h6>
+                    <h6 class="fw-bold card-code"></h6>
                     <div class="card-action-wrap">
                         <a class="btn btn-flush-dark flush-soft-hover dropdown-toggle no-caret"
                            href="#" data-bs-toggle="dropdown">
-                                            <span class="icon"><span class="feather-icon">
-                                                <i data-feather="more-vertical"></i></span></span>
+                            <span class="icon">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                               data-bs-target="#task_detail"><span>Edit</span></a>
-                            <a class="dropdown-item" href="#"><span>Assign to</span></a>
-                            <a class="dropdown-item" href="#"><span>Attach files</span></a>
+                            <a class="dropdown-item del-task-act" href="#"><span>{% trans 'Delete' %}</span></a>
+                            <a class="dropdown-item log-task-act" href="#logWorkModal">
+                                <span>{% trans 'Log time' %}</span></a>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="mb-2">
-                        <div class="card-priority d-inline-block"></div>
-                        <a href="#" class="card-title d-inline-block"></a>
+                    <div class="mb-2 d-flex">
+                        <div class="card-priority d-inline-block mr-2"></div>
+                        <a href="#" class="card-title" title></a>
                     </div>
                     <div class="avatar avatar-rounded avatar-xs" data-toggle="tooltip" title="">
                         <span class="initial-wrap">
                             <img src="" alt="user"
                              class="avatar-img">
                         </span>
-
                     </div>
                 </div>
                 <div class="card-footer text-muted justify-content-between">
@@ -126,16 +131,22 @@
             </div>
         </div>
         <input type="text" id="url-factory" data-task-list="{% url 'OpportunityTaskListAPI' %}"
+               data-task-detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
+               data-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
+               data-change-stt="{% url 'OpportunityTaskStatusAPI' %}"
         />
         {{ data.task_config|json_script:'task_config' }}
     </div>
-    {% include  'sales/task/extend/task-form.html' %}
+    {% include 'sales/task/extend/task-form.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/ckeditor/cdn.ckeditor.5_38.1.0_classic_ckeditor.js' %}"></script>
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
 {% endblock %}

@@ -20,3 +20,7 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     QUOTATION_INDICATOR_CREATE = _('Quotation indicator create successfully')
     QUOTATION_INDICATOR_UPDATE = _('Quotation indicator update successfully')
     OPPORTUNITY_TASK_CONFIG_UPDATE = _('Opportunity task config update successfully')
+    OPPORTUNITY_TASK_CREATE = _('Task create successfully')
+    OPPORTUNITY_TASK_UPDATE = _('Task update successfully')
+    OPPORTUNITY_TASK_DELETE = _('Task delete successfully')
+    OPPORTUNITY_TASK_LOG = _('Log time successfully')

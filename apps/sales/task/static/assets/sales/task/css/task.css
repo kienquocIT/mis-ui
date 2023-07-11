@@ -9,20 +9,31 @@
     max-height: 100%;
     overflow-y: hidden;
     margin-top: 1rem;
-    padding-bottom: 1.25rem;
+    padding-bottom: 0;
+    -webkit-transition: width 0.2s ease;
+    -moz-transition: width 0.2s ease;
+    transition: width 0.2s ease;
+}
+.sub-tasklist-scroll {
+    overflow-x: auto;
+    max-height: 100%;
+    overflow-y: hidden;
+    margin-top: 2rem;
+    padding-bottom: 0;
     -webkit-transition: width 0.2s ease;
     -moz-transition: width 0.2s ease;
     transition: width 0.2s ease;
 }
 
-.tasklist-wrap {
+.tasklist-wrap, .sub-tasklist-wrap {
     display: -ms-flexbox;
     display: flex;
     align-items: flex-start;
     float: left;
 }
 
-.tasklist-wrap .tasklist {
+.tasklist-wrap .tasklist,
+.sub-tasklist-wrap .tasklist {
     max-height: 100%;
     margin: 0 0.875rem;
 }
@@ -34,7 +45,12 @@
 }
 
 .wrap-child {
-    min-height: 180px;
+    min-height: 216px;
+}
+
+.card{
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 .wrap-child > .card {
@@ -73,4 +89,47 @@
 .label-mark.dropdown-toggle:after{
     content: '';
     right:0;
+}
+.txt-create,
+.task_edit .txt-update{
+    display: block;
+}
+.task_edit .txt-create,
+.txt-update
+{
+    display: none;
+}
+
+.task-count{
+    background: #eee4ff;
+    color: #7429F8;
+    height:27px;
+    width: 27px;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: .3rem;
+}
+
+.card-title{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 48px;
+}
+.task-discuss{
+    cursor: pointer;
+}
+.isOpened #kb_scroll{
+    height:320px;
+}
+#kb_sub_scroll{
+    display:none
+}
+.isOpened #kb_sub_scroll{
+    display: block;
 }

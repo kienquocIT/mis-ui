@@ -72,11 +72,19 @@ function initSelectBox(selectBoxElement = null) {
                 if (Array.isArray(default_data)){
                     let htmlTemp = ''
                     for (let item of default_data){
-                        htmlTemp += `<option value="${item.id}" selected>${item.title}</option>`
+                        let name = item?.title
+                        if (item?.fist_name && item?.last_name)
+                            name = `${item.last_name}. ${item.fist_name}`
+                        htmlTemp += `<option value="${item.id}" selected>${name}</option>`
                     }
                     $this.html(htmlTemp)
                 }
-                else $this.html(`<option value="${default_data.id}" selected>${default_data.title}</option>`)
+                else{
+                    let name = default_data.title;
+                    if (default_data.first_name && default_data.last_name)
+                        name = `${default_data.last_name}. ${default_data.first_name}`
+                    $this.html(`<option value="${default_data.id}" selected>${name}</option>`)
+                }
             }
         }
         let $thisURL = $this.attr('data-url')
@@ -128,7 +136,7 @@ function initSelectBox(selectBoxElement = null) {
             },
             multiple: false,
             tags:false,
-            closeOnSelect: !!$(selectBoxElement).attr('data-select2-closeOnSelect'),
+            closeOnSelect: !!$this.attr('data-select2-closeOnSelect'),
         }
         if ($this.attr('data-multiple') === 'true'){
             options['multiple'] = true

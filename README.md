@@ -481,5 +481,32 @@ let dataDetail = {};
 
 FileUtils.init(btnInputFile, dataDetail || {})
 ```
-### Sample in apps\core\home\templates\core\utilities\index.html
+#### Sample in apps\core\home\templates\core\utilities\index.html
+
+---
+
+#### Generate avatar circle
+
+```text
+// data là context chứa {'first_name': '', 'last_name': '', 'avatar': ''}
+let data = {'first_name': '', 'last_name': '', 'avatar': ''}
+```
+1. Render
+```html
+{% load person_utils %}
+<!-- full frame -->
+{{ data|render_avatar:"some class name is size, color of avatar..."|safe }}
+<!-- result: <div class="avatar avatar-rounded {exist_class_name if exist_class_name else 'avatar-xs avatar-primary'}">...</div> -->
+```
+```html
+{% load person_utils %}
+<!-- tag children in avatar -->
+{{ data|render_avatar_tag|safe }}
+```
+2. JS
+```js
+$.fn.renderAvatar(data, clsName="some class name is size, color of avatar...")
+// result: <div class="avatar avatar-rounded {clsName if clsName else 'avatar-xs avatar-primary'}">...</div>
+```
+
 ---

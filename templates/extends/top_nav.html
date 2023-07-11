@@ -1,4 +1,4 @@
-{% load static i18n string_utils %}
+{% load static i18n string_utils person_utils %}
 <!-- Top Navbar -->
 <nav class="hk-navbar navbar navbar-expand-xl navbar-light fixed-top">
     <div class="container-fluid">
@@ -191,13 +191,7 @@
                                 data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside"
                                 aria-expanded="false"
                         >
-                            <div class="avatar avatar-rounded avatar-xs">
-                                {% if base.avatar %}
-                                    <img src="{{ base.avatar|safe }}" alt="user" class="avatar-img">
-                                {% else %}
-                                    <span class="initial-wrap">{{ base.fullname|shorten_name:True }}</span>
-                                {% endif %}
-                            </div>
+                            {{ base|render_avatar|safe }}
                         </a>
                         <div
                                 class="modal fade" id="switchMyCompany" tabindex="-1" role="dialog"
@@ -269,11 +263,7 @@
                                 <div class="media">
                                     <div class="media-head me-2">
                                         <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
-                                            {% if base.avatar %}
-                                                <img src="{{ base.avatar|safe }}" alt="user" class="avatar-img">
-                                            {% else %}
-                                                <span class="initial-wrap">{{ base.fullname|shorten_name:True }}</span>
-                                            {% endif %}
+                                            {{ base|render_avatar_tag|safe }}
                                             <div class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none">
                                                 <i class="fa-solid fa-camera text-white"></i>
                                             </div>

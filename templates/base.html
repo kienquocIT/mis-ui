@@ -46,14 +46,12 @@
     <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
 
     {% compress css %}
-        <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
 
-        <!-- Customize Style -->
         <style>
             :root {
                 --bs-body-font-family: 'Quicksand', sans-serif;
@@ -104,29 +102,28 @@
                 display: flex !important;
             }
         </style>
-        <!-- // Customize Style -->
+
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
     <!-- GA -->
-    <!-- Google tag (gtag.js) -->
-    <script type="text/javascript">
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
-        gtag('js', new Date());
-
-        gtag('config', 'G-4GDQQTC98X', {
-            'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
-        });
-    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
     <!-- // GA -->
     {% compress js %}
+        <script type="text/javascript">
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'G-4GDQQTC98X', {
+                'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
+            });
+        </script>
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
 </head>

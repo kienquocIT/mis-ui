@@ -209,6 +209,7 @@ function calculateIndicator(indicator_list) {
                     if (indicator.title === quotation_indicator.indicator.title) {
                         quotationValue = quotation_indicator.indicator_value;
                         differenceValue = (value - quotation_indicator.indicator_value);
+                        break;
                     }
                 }
             }

@@ -166,7 +166,7 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
     EXPENSE = MenuCommon(
-        name='Expense', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
+        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
         name='Inventory', code='menu_inventory', view_name='#', icon='<i class="fas fa-clipboard-list"></i>',

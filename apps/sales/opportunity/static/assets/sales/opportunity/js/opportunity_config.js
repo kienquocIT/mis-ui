@@ -478,10 +478,12 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '.input-win-rate', function () {
+        let ele_base_tran = $('#base-trans-factory')
         Swal.fire({
-            title: 'Do you want update win rate ?',
+            title: ele_base_tran.data('are-you-sure'),
             showCancelButton: true,
-            confirmButtonText: 'Save',
+            confirmButtonText: ele_base_tran.data('confirm'),
+            cancelButtonText: ele_base_tran.data('cancel'),
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
@@ -494,7 +496,7 @@ $(document).ready(function () {
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                Swal.fire('Saved!', '', 'success');
+                                Swal.fire(ele_base_tran.data('success'), '', 'success');
                             }
                         },
                         (errs) => {

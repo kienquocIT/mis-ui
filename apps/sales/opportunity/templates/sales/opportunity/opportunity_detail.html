@@ -8,15 +8,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block jsHeader %}
-    <script>
-        window.addEventListener("load", function () {
-            let screenHeight = window.screen.height * 0.7;
-            $('.scroll-div').css({
-                'overflow': 'auto',
-                'height': screenHeight.toString() + 'px',
-            })
-        });
-    </script>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary btn-animated btn-xs"
@@ -62,7 +53,7 @@
               data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-3 scroll-div">
+                <div class="col-3" style="height: 83vh; overflow: auto">
                     <div class="col-12" style="padding-right: 6%">
                         <div class="form-group mb-4">
                             <span class="badge badge-primary w-100" style="font-size: large" id="span-code"></span>
@@ -142,7 +133,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-9 scroll-div">
+                <div class="col-9" style="height: 83vh; overflow: auto; overflow-x: hidden">
                     <div class="col-12" style="padding-right: 2%">
                         <div class="form-group text-center">
                             <h4 id="header-title" class="text-primary" style="font-weight: bolder"></h4>

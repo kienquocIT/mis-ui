@@ -3596,3 +3596,7 @@ msgstr "Chọn một Space Menus"
 #
 msgid "Each Space has different menus."
 msgstr "Mỗi Space có các Menus khác nhau."
+
+#
+msgid "Data is refreshed"
+msgstr "Dữ liệu đã được làm mới"

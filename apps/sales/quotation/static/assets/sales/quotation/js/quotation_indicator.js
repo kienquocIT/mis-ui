@@ -376,7 +376,7 @@ $(function () {
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
             document.getElementById('quotation-indicator-data').value = "";
             loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyPopup({description: "Data is refreshed"}, 'success');
+            $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
         });
 
     });

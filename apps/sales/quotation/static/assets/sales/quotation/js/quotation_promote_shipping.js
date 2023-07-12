@@ -650,6 +650,7 @@ class promotionHandle {
         let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
         let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
         let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount) + taxAmountTotal);
+        document.getElementById('quotation-final-revenue-before-tax').value = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount));
         if (is_before_tax === false) {
             totalFinal = (parseFloat(eleTotalRaw.value) - promotion_amount);
         }
@@ -816,6 +817,7 @@ class shippingHandle {
         // Re calculate pretax, discount, total
         let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
         let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
+        document.getElementById('quotation-final-revenue-before-tax').value = (pretaxNew - parseFloat(eleDiscountAmountRaw.value));
 
         // Apply new pretax, total
         $(elePretaxAmount).attr('value', String(pretaxNew));

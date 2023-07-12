@@ -511,6 +511,10 @@
                                                     value="0"
                                                     hidden
                                                 >
+                                                <input
+                                                    type="hidden"
+                                                    id="quotation-final-revenue-before-tax"
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -914,7 +918,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-expense"
-                                data-url="{% url "ExpenseListAPI" %}"
+                                data-url="{% url "ExpenseForSaleListAPI" %}"
                                 data-link-detail="{% url "ExpenseDetail" 1 %}"
                                 data-method="GET"
                         >
@@ -1062,6 +1066,7 @@
             data-btn-close="{% trans 'Close' %}"
             data-more-information="{% trans 'More information' %}"
             data-apply="{% trans 'Apply' %}"
+            data-refreshed="{% trans 'Data is refreshed' %}"
         >
     </form>
 {% endblock %}

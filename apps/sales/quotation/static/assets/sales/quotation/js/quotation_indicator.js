@@ -187,13 +187,7 @@ function calculateIndicator(indicator_list) {
         // calculate
         // value
         let value = evaluateFormula(parse_formula);
-        if (value !== null) {
-            if (typeof value === 'number') {
-                if (value < 0) {
-                    value = 0;
-                }
-            }
-        } else {
+        if (value === null) {
             value = 0;
         }
         // rate value
@@ -215,6 +209,7 @@ function calculateIndicator(indicator_list) {
                     if (indicator.title === quotation_indicator.indicator.title) {
                         quotationValue = quotation_indicator.indicator_value;
                         differenceValue = (value - quotation_indicator.indicator_value);
+                        break;
                     }
                 }
             }
@@ -381,7 +376,7 @@ $(function () {
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
             document.getElementById('quotation-indicator-data').value = "";
             loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyPopup({description: "Data is refreshed"}, 'success');
+            $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
         });
 
     });

@@ -760,16 +760,16 @@ $(document).ready(function () {
         ele.append(`<option></option>`);
         expense_list.map(function (item) {
             let tax_code_id = '';
-            if (item.general_information.tax_code) {
-                tax_code_id = item.general_information.tax_code.id;
-            }
+            // if (item.general_information.tax_code) {
+            //     tax_code_id = item.general_information.tax_code.id;
+            // }
             if (item.id === expense_id) {
-                ele.append(`<option selected data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
-                $('#' + row_id + ' .expense-type').val(item.general_information.expense_type.title);
-                loadExpenseUomList(row_id, item.general_information.uom_group.id, uom_id);
+                ele.append(`<option selected data-uom-group-id="` + item.uom_group + `" data-type="` + item.expense_type.title + `" data-uom-id="` + item.uom + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                $('#' + row_id + ' .expense-type').val(item.expense_type.title);
+                loadExpenseUomList(row_id, item.uom_group, uom_id);
             }
             else {
-                ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                ele.append(`<option data-uom-group-id="` + item.uom_group + `" data-type="` + item.expense_type.title + `" data-uom-id="` + item.uom + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
             }
         })
     }
@@ -812,7 +812,7 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
                     let primary_currency = 'VND';
-                    resp.data.expense.general_information.price_list.map(function (item) {
+                    resp.data.expense.price_list.map(function (item) {
                         if (item.is_primary === true) {
                             primary_currency = item.abbreviation;
                             ele.append(`<a data-id="` + item.id + `" data-value="` + item.price_value + `" class="dropdown-item"><div class="row">

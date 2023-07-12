@@ -1,5 +1,6 @@
 let promotionClass = new promotionHandle();
 let shippingClass = new shippingHandle();
+let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
 // Load data
 class loadDataHandle {
@@ -484,8 +485,8 @@ class loadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('expense_list') && Array.isArray(data.expense_list)) {
-                        ele.val(JSON.stringify(data.expense_list))
+                    if (data.hasOwnProperty('expense_sale_list') && Array.isArray(data.expense_sale_list)) {
+                        ele.val(JSON.stringify(data.expense_sale_list))
                     }
                 }
             }
@@ -510,18 +511,16 @@ class loadDataHandle {
                 let default_uom = {};
                 let tax_code = {};
                 let price_list = [];
-                if (data[i].general_information) {
-                    if (data[i].general_information.uom) {
-                        uom_title = data[i].general_information.uom.title
-                    }
-                    if (data[i].general_information.expense_type) {
-                        expense_type = data[i].general_information.expense_type;
-                        expense_type_title = data[i].general_information.expense_type.title;
-                    }
-                    default_uom = data[i].general_information.uom;
-                    tax_code = data[i].general_information.tax_code;
-                    price_list = data[i].general_information.price_list;
+                if (Object.keys(data[i].uom).length !== 0) {
+                    uom_title = data[i].uom.title
                 }
+                if (Object.keys(data[i].expense_type).length !== 0) {
+                    expense_type = data[i].expense_type;
+                    expense_type_title = data[i].expense_type.title;
+                }
+                default_uom = data[i].uom;
+                tax_code = data[i].tax_code;
+                price_list = data[i].price_list;
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
                     'title': data[i].title,
@@ -810,6 +809,8 @@ class loadDataHandle {
                 $(total).attr('value', String(data.total_expense));
                 totalRaw.value = data.total_expense
             }
+            // load total revenue before tax for tab product
+            finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
         }
     }
 
@@ -2265,9 +2266,13 @@ class calculateCaseHandle {
 
             $(elePretaxAmount).attr('value', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
+            if (is_product === true) {
+                finalRevenueBeforeTax.value = pretaxAmount;
+            }
             if (eleDiscount) {
                 $(eleDiscount).attr('value', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
+                finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
             }
             $(eleTaxes).attr('value', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
@@ -3142,6 +3147,7 @@ class submitHandle {
         _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
         _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
         _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
         _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
         _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());

@@ -220,7 +220,7 @@ $(document).ready(function () {
             return a.win_rate - b.win_rate;
         });
         list_result.push(object_lost);
-        if(delivery !== null)
+        if (delivery !== null)
             list_result.push(delivery);
         list_result.push(object_close);
 
@@ -272,10 +272,11 @@ $(document).ready(function () {
                         className: 'text-center',
                         render: (data, type, row) => {
                             return `<div class="input-group mb-3">
-                                        <span class="input-affix-wrapper affix-wth-text">
-                                            <input type="number" step="0.1" class="form-control" value="${row.win_rate}">
+                                        <div class="input-affix-wrapper affix-wth-text">
+                                            <input type="number" step="0.1" class="form-control input-win-rate" data-id="${row.id}" value="${row.win_rate}">
                                             <span class="input-suffix">%</span>
-                                        </span>
+                                        </div>
+                                        <span></span>
                                     </div>`
                         }
                     },
@@ -303,6 +304,9 @@ $(document).ready(function () {
     $(document).on('click', '.nav-link', function () {
         if ($(this).attr('href') === '#tab_stage') {
             loadStage();
+            $('.btn-save-config').hide();
+        } else {
+            $('.btn-save-config').show();
         }
     })
 
@@ -427,6 +431,7 @@ $(document).ready(function () {
                 }
             )
         })
+        frm.dataForm['logical_operator'] = $('#box-select-logic-operator').val();
         frm.dataForm['condition_datas'] = condition_list;
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
             .then(
@@ -455,7 +460,7 @@ $(document).ready(function () {
                         let modal = $('#modalRestoreDefault');
                         modal.find('.modal-body h4').prop('hidden', true);
                         modal.find('.modal-body .div-loading').prop('hidden', false);
-                        setTimeout(function (){
+                        setTimeout(function () {
                             let table = $('#table-opportunity-config-stage').DataTable();
                             table.ajax.reload();
                             modal.modal('hide');
@@ -470,5 +475,35 @@ $(document).ready(function () {
                     console.log(errs)
                 }
             )
+    })
+
+    $(document).on('change', '.input-win-rate', function () {
+        let ele_base_tran = $('#base-trans-factory')
+        Swal.fire({
+            title: ele_base_tran.data('are-you-sure'),
+            showCancelButton: true,
+            confirmButtonText: ele_base_tran.data('confirm'),
+            cancelButtonText: ele_base_tran.data('cancel'),
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                let csr = $("[name=csrfmiddlewaretoken]").val();
+                let frm = new SetupFormSubmit(frmUpdateStageCondition);
+                let pk = $(this).data('id');
+                frm.dataForm['win_rate'] = $(this).val();
+                $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                Swal.fire(ele_base_tran.data('success'), '', 'success');
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs)
+                        }
+                    )
+            }
+        })
     })
 })

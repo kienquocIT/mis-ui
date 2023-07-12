@@ -206,6 +206,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # expense
     EXPENSE_LIST = StringUrl('saledata/expenses')
     EXPENSE_DETAIL = StringUrl('saledata/expense/{expense_id}')
+    EXPENSE_SALE_LIST = StringUrl('saledata/expenses-sale')
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
@@ -284,3 +285,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # restore Opportunity Stage
     RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')
+
+    # Task
+    OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
+    OPPORTUNITY_TASK_STT_LIST = StringUrl('task/status')
+    OPPORTUNITY_TASK_LIST = StringUrl('task/list')
+    OPPORTUNITY_TASK_DETAIL = StringUrl('task/detail')
+    OPPORTUNITY_TASK_LOG_WORK = StringUrl('task/log-work')
+    OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')

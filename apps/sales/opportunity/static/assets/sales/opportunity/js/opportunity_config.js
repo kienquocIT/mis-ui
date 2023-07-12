@@ -431,6 +431,7 @@ $(document).ready(function () {
                 }
             )
         })
+        frm.dataForm['logical_operator'] = $('#box-select-logic-operator').val();
         frm.dataForm['condition_datas'] = condition_list;
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
             .then(

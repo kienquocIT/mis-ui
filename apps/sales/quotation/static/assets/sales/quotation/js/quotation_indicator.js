@@ -187,13 +187,7 @@ function calculateIndicator(indicator_list) {
         // calculate
         // value
         let value = evaluateFormula(parse_formula);
-        if (value !== null) {
-            if (typeof value === 'number') {
-                if (value < 0) {
-                    value = 0;
-                }
-            }
-        } else {
+        if (value === null) {
             value = 0;
         }
         // rate value

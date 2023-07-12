@@ -1,5 +1,6 @@
 let promotionClass = new promotionHandle();
 let shippingClass = new shippingHandle();
+let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
 // Load data
 class loadDataHandle {
@@ -808,6 +809,8 @@ class loadDataHandle {
                 $(total).attr('value', String(data.total_expense));
                 totalRaw.value = data.total_expense
             }
+            // load total revenue before tax for tab product
+            finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
         }
     }
 
@@ -2263,9 +2266,13 @@ class calculateCaseHandle {
 
             $(elePretaxAmount).attr('value', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
+            if (is_product === true) {
+                finalRevenueBeforeTax.value = pretaxAmount;
+            }
             if (eleDiscount) {
                 $(eleDiscount).attr('value', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
+                finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
             }
             $(eleTaxes).attr('value', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
@@ -3140,6 +3147,7 @@ class submitHandle {
         _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
         _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
         _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
         _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
         _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());

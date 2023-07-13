@@ -4,7 +4,7 @@ $(function () {
         let employee_current_id = $('#employee_current_id').val();
         const account_list = JSON.parse($('#account_list').text());
 
-        function LoadSaleCodeList() {
+        function LoadSaleCodeList(employee_current_id) {
             let $sale_code_sb = $('#sale-code-select-box');
             $.fn.callAjax($sale_code_sb.attr('data-url'), $sale_code_sb.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -13,14 +13,29 @@ $(function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
                         $sale_code_sb.append(`<option></option>`)
                         data.opportunity_list.map(function (item) {
-                            $sale_code_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                        })
+                            let added = false;
+                            if (Object.keys(item.sale_person).length !== 0) {
+                                if (item.sale_person.id === employee_current_id) {
+                                    $sale_code_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                                    added = true;
+                                }
+                            }
+                            if (item.opportunity_sale_team_datas.length > 0 && added === false) {
+                                $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
+                                    if (member_obj.member.id === employee_current_id) {
+                                        $sale_code_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                                        return;
+                                    }
+                                });
+                            }
+                        });
                     }
                 }
             })
 
             $sale_code_sb.select2({dropdownParent: $("#create-new-call-log")});
         }
+        LoadSaleCodeList(employee_current_id);
         function LoadCustomerList(customer_id) {
             let $account_sb = $('#account-select-box');
             $.fn.callAjax($account_sb.attr('data-url'), $account_sb.attr('data-method')).then((resp) => {
@@ -60,7 +75,6 @@ $(function () {
 
             $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
         }
-        LoadSaleCodeList();
 
         $('#date-input').daterangepicker({
             singleDatePicker: true,
@@ -137,36 +151,36 @@ $(function () {
                     },
                     columns: [
                         {
-                            data: 'subject',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                return `<span><b>` + row.subject + `</b></span>`
-                            }
-                        },
-                        {
                             data: 'contact',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-20',
                             render: (data, type, row, meta) => {
                                 return `<a target="_blank" href="` + $('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row.contact.id) + `"><span class="text-primary link-primary underline_hover"><b>` + row.contact.fullname + `</b></span></a>`
                             }
                         },
                         {
+                            data: 'subject',
+                            className: 'wrap-text w-30',
+                            render: (data, type, row, meta) => {
+                                return `<span><b>` + row.subject + `</b></span>`
+                            }
+                        },
+                        {
                             data: 'opportunity',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-20 text-center',
                             render: (data, type, row, meta) => {
                                 return `<center><span class="text-secondary">` + row.opportunity.code + `</span></center>`
                             }
                         },
                         {
                             data: 'call_date',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-20 text-center',
                             render: (data, type, row, meta) => {
                                 return `<center><span>` + row.call_date.split(' ')[0] + `</span></center>`
                             }
                         },
                         {
                             data: 'repeat',
-                            className: 'wrap-text text-center',
+                            className: 'wrap-text w-10 text-center',
                             render: (data, type, row, meta) => {
                                 if (row.repeat) {
                                     return `Yes`

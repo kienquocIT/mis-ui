@@ -1693,24 +1693,24 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
 
-    let data_activities = [];
-    $.fn.callAjax($('#table-activities').attr('data-url-call-log'), $('#table-activities').attr('data-method')).then((resp) => {
+    $.fn.callAjax($('#table-call-log').attr('data-url-call-log'), $('#table-call-log').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
+            let data_call_log = [];
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
                 data.call_log_list.map(function (item) {
                     if (item.opportunity.id === pk) {
-                        data_activities.push({
+                        data_call_log.push({
                             'id': item.id,
                             'type': 0,
+                            'contact': item.contact,
                             'subject': item.subject,
-                            'call_date': item.call_date.split(' ')[0],
-                            'repeat': item.repeat
+                            'date': item.call_date.split(' ')[0],
                         })
                     }
                 })
             }
-            loadOpportunityCallLogList(data_activities);
+            loadOpportunityCallLogList(data_call_log);
         }
     })
 
@@ -1743,7 +1743,7 @@ $(document).ready(function () {
                     $('#create-new-call-log').hide();
 
                     let data_activities_reload = [];
-                    $.fn.callAjax($('#table-activities').attr('data-url-call-log'), $('#table-activities').attr('data-method')).then((resp) => {
+                    $.fn.callAjax($('#table-call-log').attr('data-url-call-log'), $('#table-call-log').attr('data-method')).then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
@@ -1753,8 +1753,7 @@ $(document).ready(function () {
                                             'id': item.id,
                                             'type': 0,
                                             'subject': item.subject,
-                                            'call_date': item.call_date.split(' ')[0],
-                                            'repeat': item.repeat
+                                            'date': item.call_date.split(' ')[0],
                                         })
                                     }
                                 })
@@ -1770,54 +1769,40 @@ $(document).ready(function () {
         )
     })
 
-    function loadOpportunityCallLogList(data_activities_list) {
-        $('#table-activities').DataTable().destroy();
-        let dtb = $('#table-activities');
+    function loadOpportunityCallLogList(data_call_log_list) {
+        $('#table-call-log').DataTable().destroy();
+        let dtb = $('#table-call-log');
         dtb.DataTableDefault({
             pageLength: 5,
             dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
-            data: data_activities_list,
+            data: data_call_log_list,
             columns: [
                 {
                     data: 'activity',
-                    className: 'wrap-text w-25',
+                    className: 'wrap-text w-15',
                     render: (data, type, row, meta) => {
-                        if (row.type === 0) {
-                            return `Call customer`
-                        }
+                        return `Call customer`
                     }
                 },
                 {
-                    data: 'type',
-                    className: 'wrap-text w-15',
+                    data: 'contact',
+                    className: 'wrap-text w-25',
                     render: (data, type, row, meta) => {
-                        return `<i class="bi bi-telephone-fill text-primary"></i>`
+                        return `<a target="_blank" href="` + $('#table-call-log').attr('data-url-contact-detail').replace('0', row.contact.id) + `"><span class="text-primary link-primary underline_hover"><b>` + row.contact.fullname + `</b></span></a>`;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-35',
+                    className: 'wrap-text w-45',
                     render: (data, type, row, meta) => {
                         return row.subject
                     }
                 },
                 {
-                    data: 'call_date',
+                    data: 'date',
                     className: 'wrap-text w-15',
                     render: (data, type, row, meta) => {
-                        return row.call_date
-                    }
-                },
-                {
-                    data: 'repeat',
-                    className: 'wrap-text w-10 text-center',
-                    render: (data, type, row, meta) => {
-                        if (row.repeat) {
-                            return `<i class="bi bi-check-circle-fill text-success"></i>`
-                        }
-                        else {
-                            return ``
-                        }
+                        return row.date
                     }
                 },
             ],
@@ -1839,7 +1824,7 @@ $(document).ready(function () {
                             if (item.email === null) {
                                 $to_sb.append(`<option disabled>${item.fullname}</option>`);
                             } else {
-                                $to_sb.append(`<option data-email="${item.email}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                                $to_sb.append(`<option data-email-to-contact="${item.id}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
                             }
                         }
                     });
@@ -1861,9 +1846,9 @@ $(document).ready(function () {
                     data.contact_list.map(function (item) {
                         if (contact_list_id.includes(item.id)) {
                             if (item.email === null) {
-                                $cc_sb.append(`<option disabled">${item.fullname}</option>`);
+                                $cc_sb.append(`<option disabled>${item.fullname}</option>`);
                             } else {
-                                $cc_sb.append(`<option data-email="${item.email}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                                $cc_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
                             }
                         }
                     });
@@ -1874,19 +1859,15 @@ $(document).ready(function () {
         $cc_sb.select2({dropdownParent: $("#send-email")});
     }
 
-    let loaded_modal_send_email = false;
-
     $('.send-email-button').on('click', function () {
+        $('#email-sale-code-span').text($('#span-code').text())
         $('#email-subject-input').val('');
         $('#email-content-area').val('');
         let contact_list_id = account_list.filter(function(item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
         })[0].contact_mapped;
-        if (loaded_modal_send_email === false) {
-            LoadEmailToList(contact_list_id);
-            LoadEmailCcList(contact_list_id);
-            loaded_modal_send_email = true;
-        }
+        LoadEmailToList(contact_list_id);
+        LoadEmailCcList(contact_list_id);
     })
 
     $('#email-to-input-btn').on('click', function() {
@@ -1923,4 +1904,127 @@ $(document).ready(function () {
             $('#inputEmailCc').val('');
         }
     })
+
+    $.fn.callAjax($('#table-email').attr('data-url-email'), $('#table-email').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let data_email = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                data.email_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        data_email.push({
+                            'id': item.id,
+                            'type': 1,
+                            'email_to_contact': item.email_to_contact,
+                            'email_to': item.email_to,
+                            'subject': item.subject,
+                            'date': item.date_created.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            loadOpportunityEmailList(data_email);
+        }
+    })
+
+    $('#form-new-email').submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+
+        frm.dataForm['subject'] = $('#email-subject-input').val();
+        if ($('#inputEmailTo').attr('hidden') !== 'hidden') {
+            frm.dataForm['email_to'] = $('#inputEmailTo').val();
+        }
+        if ($('#email-to-select-box').attr('hidden') !== 'hidden') {
+            frm.dataForm['email_to'] = $('#email-to-select-box option:selected').attr('value');
+        }
+        frm.dataForm['email_to_contact'] = $('#email-to-select-box option:selected').attr('data-email-to-contact');
+        frm.dataForm['opportunity'] = pk;
+        frm.dataForm['email_cc_list'] = $('#email-cc-select-box').val();
+        frm.dataForm['content'] = $('#email-content-area').val();
+
+        console.log(frm.dataForm)
+
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        .then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $('#send-email').hide();
+
+                    $.fn.callAjax($('#table-email').attr('data-url-email'), $('#table-email').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let data_email = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                                data.email_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        data_email.push({
+                                            'id': item.id,
+                                            'type': 1,
+                                            'email_to_contact': item.email_to_contact,
+                                            'email_to': item.email_to,
+                                            'subject': item.subject,
+                                            'date': item.date_created.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            loadOpportunityEmailList(data_email);
+                        }
+                    })
+                }
+            },
+            (errs) => {
+                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+            }
+        )
+    })
+
+    function loadOpportunityEmailList(data_email_list) {
+        $('#table-email').DataTable().destroy();
+        let dtb = $('#table-email');
+        dtb.DataTableDefault({
+            pageLength: 5,
+            dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            data: data_email_list,
+            columns: [
+                {
+                    data: 'activity',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row, meta) => {
+                        return `Send email`
+                    }
+                },
+                {
+                    data: 'email_to',
+                    className: 'wrap-text w-25',
+                    render: (data, type, row, meta) => {
+                        if (Object.keys(row.email_to_contact).length !== 0) {
+                            return `<a target="_blank" href="` + $('#table-email').attr('data-url-contact-detail').replace('0', row.email_to_contact.id) + `"><span class="text-primary link-primary underline_hover"><b>` + row.email_to_contact.fullname + `</b></span></a>`
+                        }
+                        else {
+                            return `<span class="text-primary">` + row.email_to + `</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'subject',
+                    className: 'wrap-text w-45',
+                    render: (data, type, row, meta) => {
+                        return row.subject
+                    }
+                },
+                {
+                    data: 'date',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row, meta) => {
+                        return row.date
+                    }
+                },
+            ],
+        });
+    }
 })

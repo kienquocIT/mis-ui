@@ -226,6 +226,10 @@ class MenusCRM:
                 name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
                 icon='<i class="bi bi-telephone-plus-fill"></i>',
             ),
+            MenuCommon(
+                name='Email', code='id_menu_email', view_name='OpportunityEmailList',
+                icon='<i class="bi bi-envelope-check-fill"></i>',
+            ),
         ],
     )
 

@@ -1,9 +1,12 @@
 from django.urls import path
 
-from apps.sales.opportunity.views import OpportunityList, OpportunityListAPI, OpportunityExpenseListAPI, \
-    OpportunityDetail, OpportunityDetailAPI, OpportunityCustomerDecisionFactorListAPI, OpportunityConfig, \
-    OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI, OpportunityConfigStageListAPI, \
-    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI, OpportunityCallLogList, OpportunityCallLogListAPI
+from apps.sales.opportunity.views import (
+    OpportunityList, OpportunityListAPI, OpportunityExpenseListAPI,
+    OpportunityDetail, OpportunityDetailAPI, OpportunityCustomerDecisionFactorListAPI, OpportunityConfig,
+    OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI, OpportunityConfigStageListAPI,
+    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI, OpportunityCallLogList, OpportunityCallLogListAPI,
+    OpportunityEmailList, OpportunityEmailListAPI
+)
 
 urlpatterns = [
     path('config', OpportunityConfig.as_view(), name='OpportunityConfig'),
@@ -44,4 +47,7 @@ urlpatterns = [
     path('call-log/lists', OpportunityCallLogList.as_view(), name='OpportunityCallLogList'),
     path('api/call-log/lists', OpportunityCallLogListAPI.as_view(), name='OpportunityCallLogListAPI'),
     # path('call-log/<str:pk>', OpportunityCallLogDetail.as_view(), name='OpportunityCallLogDetail'),
+    path('send-email/lists', OpportunityEmailList.as_view(), name='OpportunityEmailList'),
+    path('api/send-email/lists', OpportunityEmailListAPI.as_view(), name='OpportunityEmailListAPI'),
+    # path('send-email/<str:pk>', OpportunityEmailDetail.as_view(), name='OpportunityEmailDetail'),
 ]

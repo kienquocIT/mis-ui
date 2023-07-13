@@ -32,17 +32,17 @@
            data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
         <thead>
         <tr>
-            <th class="w-30">{% trans 'Subject' %}</th>
-            <th class="w-20">{% trans 'To Contact' %}
+            <th>{% trans 'To Contact' %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"
                    data-bs-placement="bottom"
                    title="{% trans 'Press row here to open detail page.' %}">
                 </i>
             </th>
-            <th class="text-center w-20">{% trans 'Sale Code' %}</th>
-            <th class="text-center w-20">{% trans 'Date' %}</th>
-            <th class="text-center w-10">{% trans 'Need repeat' %}</th>
+            <th>{% trans 'Subject' %}</th>
+            <th class="text-center">{% trans 'Sale Code' %}</th>
+            <th class="text-center">{% trans 'Date' %}</th>
+            <th class="text-center">{% trans 'Need repeat' %}</th>
         </tr>
         </thead>
         <tbody>

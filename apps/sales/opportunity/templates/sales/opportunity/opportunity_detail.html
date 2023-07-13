@@ -208,11 +208,22 @@
                                     <a href="#"><span>{% trans "Activity logs" %}</span></a>
                                 </div>
                                 <div class="col-9">
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-new-call-log"
-                                       class="create-new-call-log-button">
-                                        <span class="ml-3"><i class="bi bi-telephone"></i></span>
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
+                                        <span class="ml-3"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'New call log' %}">
+                                            <i class="bi bi-telephone"></i>
+                                        </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
+                                        <span class="ml-3"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'Send Email' %}">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+                                    </a>
                                     <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
                                     <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                 </div>
@@ -298,21 +309,72 @@
                             </div>
                         </div>
                         <div class="mt-2 h-450p w-100 hidden div-activity">
-                            <table class="table nowrap w-100" id="table-activities"
-                                   data-method="GET"
-                                   data-url-call-log="{% url 'OpportunityCallLogListAPI' %}">
-                                <thead>
-                                <tr>
-                                    <th class="wrap-text">{% trans "Activity" %}</th>
-                                    <th class="wrap-text">{% trans 'Type' %}</th>
-                                    <th class="wrap-text">{% trans 'Subject Name' %}</th>
-                                    <th class="wrap-text">{% trans "Date" %}</th>
-                                    <th class="wrap-text">{% trans "Repeat" %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div class="row">
+                                <div class="col-1">
+                                    <ul class="nav flex-column nav-light nav-pills nav-vertical">
+                                        <li class="nav-item"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="left"
+                                            data-bs-original-title="{% trans 'Call log history' %}">
+                                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_call_log">
+                                                <center>
+                                                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-telephone-plus-fill"></i></span></span>
+                                                </center>
+{#                                                <span class="nav-link-text">Call logs</span>#}
+                                            </a>
+                                        </li>
+                                        <li class="nav-item"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="left"
+                                            data-bs-original-title="{% trans 'Email history' %}">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_email">
+                                                <center>
+                                                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-envelope-check-fill"></i></span></span>
+                                                </center>
+{#                                                <span class="nav-link-text">Emails</span>#}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-11">
+                                    <div class="tab-content mt-0">
+                                        <div class="tab-pane fade show active" id="tab_block_call_log">
+                                            <table class="table nowrap w-100" id="table-call-log"
+                                                   data-method="GET"
+                                                   data-url-contact-detail="{% url 'ContactDetail' '0' %}"
+                                                   data-url-call-log="{% url 'OpportunityCallLogListAPI' %}">
+                                                <thead>
+                                                <tr>
+                                                    <th class="wrap-text">{% trans "Activity" %}</th>
+                                                    <th class="wrap-text">{% trans "To Contact" %}</th>
+                                                    <th class="wrap-text">{% trans 'Subject' %}</th>
+                                                    <th class="wrap-text">{% trans "Call Date" %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_block_email">
+                                            <table class="table nowrap w-100" id="table-email"
+                                                   data-method="GET"
+                                                   data-url-contact-detail="{% url 'ContactDetail' '0' %}"
+                                                   data-url-email="{% url 'OpportunityEmailListAPI' %}">
+                                                <thead>
+                                                <tr>
+                                                    <th class="wrap-text">{% trans "Activity" %}</th>
+                                                    <th class="wrap-text">{% trans "To Contact/Email" %}</th>
+                                                    <th class="wrap-text">{% trans 'Subject' %}</th>
+                                                    <th class="wrap-text">{% trans "Date" %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="row mt-2">
                             <ul class="nav nav-light nav-tabs col-9" id="tab-select">
@@ -825,10 +887,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form data-url="{% url 'OpportunityCallLogListAPI' %}"
-                          data-url-redirect="{% url 'OpportunityCallLogList' %}"
+                    <form data-url="{% url 'OpportunityEmailListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityEmailList' %}"
                           data-method="POST"
-                          id="form-create-new-call-log"
+                          id="form-new-email"
                           method="post">
                         {% csrf_token %}
                         <div class="row form-group mb-3">
@@ -847,9 +909,9 @@
                             </div>
                         </div>
                         <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label required">{% trans 'Cc' %}</label>
+                            <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
                             <div class="col-10">
-                                <select id="email-cc-select-box" multiple class=" elect2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                <select id="email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                                 <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
 
                                 <a class="text-primary form-text text-muted text-right" href="#">
@@ -866,7 +928,7 @@
                             </div>
                         </div>
                         <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label required">{% trans 'Content' %}</label>
+                            <label class="col-2 col-form-label">{% trans 'Content' %}</label>
                             <div class="col-10">
                                 <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
                             </div>

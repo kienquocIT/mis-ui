@@ -149,6 +149,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Opportunity Config
     OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfig')
 
+    # Sale Activities
+    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log list'), 'OpportunityCallLogList')
+    EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email list'), 'OpportunityEmailList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -409,3 +413,11 @@ class BreadcrumbView:
 
     # Opportunity Config
     OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
+
+    # Sale Activities
+    CALL_LOG_LIST_PAGE = [
+        BreadcrumbItem.CALL_LOG_LIST_PAGE
+    ]
+    EMAIL_LIST_PAGE = [
+        BreadcrumbItem.EMAIL_LIST_PAGE
+    ]

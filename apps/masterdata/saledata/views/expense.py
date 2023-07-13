@@ -108,3 +108,18 @@ class ExpenseDetailAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+# Expense List use for Sale Apps
+class ExpenseForSaleListAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_SALE_LIST).get() # noqa
+        if resp.state:
+            return {'expense_sale_list': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

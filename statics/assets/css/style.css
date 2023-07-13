@@ -87398,7 +87398,6 @@ Project:	Jampack
   -webkit-justify-content: space-between;
   -ms-flex-pack: space-between;
   width: 100%;
-  margin-bottom: 1rem;
 }
 .tasklist .tasklist-handle {
   cursor: grab;

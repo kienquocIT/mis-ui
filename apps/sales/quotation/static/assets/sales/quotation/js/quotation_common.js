@@ -1,9 +1,11 @@
 let promotionClass = new promotionHandle();
 let shippingClass = new shippingHandle();
+let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
 // Load data
 class loadDataHandle {
     loadBoxQuotationOpportunity(opp_id, valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
+        let self = this;
         let jqueryId = '#' + opp_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -51,6 +53,7 @@ class loadDataHandle {
                                     ele.append(option)
                                 }
                             })
+                            self.loadInformationSelectBox(ele);
                         }
                     }
                     // ReCheck Config when change Opportunity (If not load detail or is copy)
@@ -159,39 +162,40 @@ class loadDataHandle {
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.empty();
-                    if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
-                        ele.append(`<option value=""></option>`);
-                        data.contact_list.map(function (item) {
-                            let dataStr = JSON.stringify({
-                                'id': item.id,
-                                'Name': item.fullname,
-                                'Job title': item.job_title,
-                                'Mobile': item.mobile,
-                                'Email': item.email
-                            }).replace(/"/g, "&quot;");
-                            // let dataAppend = `<option value="${item.id}">
-                            //                 <span class="contact-title">${item.fullname}</span>
-                            //                 <input type="hidden" class="data-info" value="${dataStr}">
-                            //             </option>`
-                            if (item.id === valueToSelect) {
-                                let dataAppend = `<option value="${item.id}" selected>
-                                            <span class="contact-title">${item.fullname}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`;
-                                ele.append(dataAppend)
-                            }
-                            // ele.append(dataAppend)
-                        })
-                        self.loadInformationSelectBox(ele);
+        if (customerID) {
+            $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        ele.empty();
+                        if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
+                            ele.append(`<option value=""></option>`);
+                            data.contact_list.map(function (item) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'Name': item.fullname,
+                                    'Job title': item.job_title,
+                                    'Mobile': item.mobile,
+                                    'Email': item.email
+                                }).replace(/"/g, "&quot;");
+                                let dataAppend = `<option value="${item.id}">
+                                                <span class="contact-title">${item.fullname}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                if (item.id === valueToSelect) {
+                                    dataAppend = `<option value="${item.id}" selected>
+                                                <span class="contact-title">${item.fullname}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`;
+                                }
+                                ele.append(dataAppend);
+                            })
+                            self.loadInformationSelectBox(ele);
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 
     loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null, is_load_init = false) {
@@ -309,8 +313,8 @@ class loadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('product_list') && Array.isArray(data.product_list)) {
-                        ele.val(JSON.stringify(data.product_list))
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        ele.val(JSON.stringify(data.product_sale_list))
                     }
                 }
             }
@@ -481,8 +485,8 @@ class loadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('expense_list') && Array.isArray(data.expense_list)) {
-                        ele.val(JSON.stringify(data.expense_list))
+                    if (data.hasOwnProperty('expense_sale_list') && Array.isArray(data.expense_sale_list)) {
+                        ele.val(JSON.stringify(data.expense_sale_list))
                     }
                 }
             }
@@ -507,18 +511,16 @@ class loadDataHandle {
                 let default_uom = {};
                 let tax_code = {};
                 let price_list = [];
-                if (data[i].general_information) {
-                    if (data[i].general_information.uom) {
-                        uom_title = data[i].general_information.uom.title
-                    }
-                    if (data[i].general_information.expense_type) {
-                        expense_type = data[i].general_information.expense_type;
-                        expense_type_title = data[i].general_information.expense_type.title;
-                    }
-                    default_uom = data[i].general_information.uom;
-                    tax_code = data[i].general_information.tax_code;
-                    price_list = data[i].general_information.price_list;
+                if (Object.keys(data[i].uom).length !== 0) {
+                    uom_title = data[i].uom.title
                 }
+                if (Object.keys(data[i].expense_type).length !== 0) {
+                    expense_type = data[i].expense_type;
+                    expense_type_title = data[i].expense_type.title;
+                }
+                default_uom = data[i].uom;
+                tax_code = data[i].tax_code;
+                price_list = data[i].price_list;
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
                     'title': data[i].title,
@@ -572,33 +574,7 @@ class loadDataHandle {
             }
             // load PRICE
             if (price && priceList) {
-                let valList = [];
-                let account_price_list = document.getElementById('customer-price-list').value;
-                $(priceList).empty();
-                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-                    for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].id === account_price_list) {
-                            valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                            let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                        <div class="row">
-                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                            <div class="col-2"></div>
-                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                        </div>
-                                    </a>`;
-                            $(priceList).append(option);
-                        }
-                    }
-                }
-                // get Min Price to display
-                if (is_change_item === true) {
-                    if (valList.length > 0) {
-                        let minVal = Math.min(...valList);
-                        $(price).attr('value', String(minVal));
-                    } else { // Product doesn't have price list or not map with customer price list
-                        $(price).attr('value', String(0));
-                    }
-                }
+                loadPriceProduct(ele[0], is_change_item);
             }
             // load TAX
             if (tax && data.tax) {
@@ -833,6 +809,8 @@ class loadDataHandle {
                 $(total).attr('value', String(data.total_expense));
                 totalRaw.value = data.total_expense
             }
+            // load total revenue before tax for tab product
+            finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
         }
     }
 
@@ -2288,9 +2266,13 @@ class calculateCaseHandle {
 
             $(elePretaxAmount).attr('value', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
+            if (is_product === true) {
+                finalRevenueBeforeTax.value = pretaxAmount;
+            }
             if (eleDiscount) {
                 $(eleDiscount).attr('value', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
+                finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
             }
             $(eleTaxes).attr('value', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
@@ -3165,6 +3147,7 @@ class submitHandle {
         _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
         _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
         _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
         _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
         _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
@@ -3249,7 +3232,7 @@ function filterDataProductNotPromotion(data_products) {
     return finalList
 }
 
-function loadPriceProduct(eleProduct) {
+function loadPriceProduct(eleProduct, is_change_item = true) {
         let optionSelected = eleProduct.options[eleProduct.selectedIndex];
         let productData = optionSelected.querySelector('.data-default');
         let is_change_price = false;
@@ -3259,34 +3242,57 @@ function loadPriceProduct(eleProduct) {
             let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
             // load PRICE
             if (price && priceList) {
-                let valList = [];
-                let account_price_list = document.getElementById('customer-price-list').value;
+                let account_price_id = document.getElementById('customer-price-list').value;
+                let general_price_id = null;
+                let general_price = 0;
+                let customer_price = null;
+                let current_price_checked = price.getAttribute('value');
                 $(priceList).empty();
-                for (let i = 0; i < data.price_list.length; i++) {
-                    if (data.price_list[i].id === account_price_list) {
-                        valList.push(parseFloat(data.price_list[i].value.toFixed(2)));
-                        let option = `<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                    <div class="row">
-                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                        <div class="col-2"></div>
-                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                    </div>
-                                </a>`;
-                        $(priceList).append(option);
+                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
+                    for (let i = 0; i < data.price_list.length; i++) {
+                        if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
+                            general_price_id = data.price_list[i].id;
+                            general_price = parseFloat(data.price_list[i].value);
+                            $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="row">
+                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                        <div class="col-2"><span></span></div>
+                                                    </div>
+                                                </button>`);
+                        }
+                        if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
+                            if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) {
+                                customer_price = parseFloat(data.price_list[i].value);
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                                        <div class="row">
+                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                            <div class="col-2"><span></span></div>
+                                                        </div>
+                                                    </button>`);
+                            } else {
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+                                                        <div class="row">
+                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                        </div>
+                                                    </button>`);
+                            }
+                        }
                     }
                 }
-                // get Min Price to display
-                if (valList.length > 0) {
-                    let minVal = Math.min(...valList);
-                    if (price.getAttribute('value') !== String(minVal)) {
-                        is_change_price = true;
+                // get Price to display
+                if (is_change_item === true) {
+                    if (customer_price) {
+                        $(price).attr('value', String(customer_price));
+                    } else {
+                        $(price).attr('value', String(general_price));
                     }
-                    $(price).attr('value', String(minVal));
-                } else { // Product doesn't have price list or not map with customer price list
-                    if (price.getAttribute('value') !== "0") {
-                        is_change_price = true;
-                    }
-                    $(price).attr('value', String(0));
+                }
+                if (current_price_checked !== price.getAttribute('value')) {
+                    is_change_price = true;
                 }
             }
         }

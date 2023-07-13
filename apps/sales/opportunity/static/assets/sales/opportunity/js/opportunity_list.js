@@ -12,16 +12,17 @@ $(function () {
 
         let config_is_AM_create = config.is_account_manager_create;
 
-        function getOppList(data){
+        function getOppList(data) {
             let result = []
-            data.map(function (item){
-                let list_sale_team = item.opportunity_sale_team_datas.map(obj=>obj.member.id)
-                if (item.sale_person.id === employee_current_id || list_sale_team.includes(employee_current_id)){
+            data.map(function (item) {
+                let list_sale_team = item.opportunity_sale_team_datas.map(obj => obj.member.id)
+                if (item.sale_person.id === employee_current_id || list_sale_team.includes(employee_current_id)) {
                     result.push(item)
                 }
             })
             return result
         }
+
         let _dataTable = $table.DataTable({
             searching: false,
             language: {
@@ -120,7 +121,9 @@ $(function () {
                     targets: 7,
                     render: (data, type, row) => {
                         let stage_current = null;
-                        stage_current = row.stage.find(function(obj) {return obj.is_current === true;});
+                        stage_current = row.stage.find(function (obj) {
+                            return obj.is_current === true;
+                        });
                         return `<p>${stage_current.indicator}</p>`
                     }
                 },
@@ -145,36 +148,34 @@ $(function () {
         });
 
         // Action on click dropdown customer
-        boxCustomer.on('click', function (e) {
-            if (!$(this)[0].innerHTML) {
-                let url = $(this).attr('data-url');
-                let method = $(this).attr('data-method');
-                $.fn.callAjax(url, method).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
-                                boxCustomer.append(`<option value=""></option>`);
-                                $('#data-customer').attr('value', JSON.stringify(data.account_list));
-                                data.account_list.map(function (item) {
-                                    if (config_is_AM_create) {
-                                        let list_manager = item.manager.map(obj => obj.id)
-                                        if (list_manager.includes(employee_current_id)) {
-                                            boxCustomer.append(`<option value="${item.id}">
+        function loadCustomer() {
+            let url = boxCustomer.attr('data-url');
+            let method = boxCustomer.attr('data-method');
+            $.fn.callAjax(url, method).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
+                            boxCustomer.append(`<option value=""></option>`);
+                            $('#data-customer').attr('value', JSON.stringify(data.account_list));
+                            data.account_list.map(function (item) {
+                                let list_manager = item.manager.map(obj => obj.id)
+                                if (list_manager.includes(employee_current_id)) {
+                                    boxCustomer.append(`<option value="${item.id}">
                                                             <span class="account-title">${item.name}</span>
                                                         </option>`)
-                                        }
-                                    } else {
-                                        boxCustomer.append(`<option value="${item.id}">
-                                                            <span class="account-title">${item.name}</span>
-                                                        </option>`)
-                                    }
-                                })
-                            }
+                                }
+                            })
                         }
                     }
-                )
-            }
+                }
+            )
+        }
+
+
+        loadCustomer();
+        boxCustomer.on('click', function (e) {
+
         });
 
         $('#btn-create_opportunity').on('click', function (e) {
@@ -240,27 +241,27 @@ $(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
                         $('#data-sale-person').val(JSON.stringify(data.employee_list));
-                        if (config_is_AM_create) {
-                            data.employee_list.map(function (employee) {
-                                if (employee.id === employee_current_id) {
-                                    ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
-                                    $('#group_id_emp_login').val(employee.group.id);
-                                }
-                            })
-                        } else {
-                            let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
-                            let group_id = emp_current.group.id
-                            $('#group_id_emp_login').val(group_id);
-                            data.employee_list.map(function (employee) {
-                                if (employee.group.id === group_id) {
-                                    if (employee.id === employee_current_id)
-                                        ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                                    else {
-                                        ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
-                                    }
-                                }
-                            })
-                        }
+                        // if (config_is_AM_create) {
+                        data.employee_list.map(function (employee) {
+                            if (employee.id === employee_current_id) {
+                                ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
+                                $('#group_id_emp_login').val(employee.group.id);
+                            }
+                        })
+                        // } else {
+                        //     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
+                        //     let group_id = emp_current.group.id
+                        //     $('#group_id_emp_login').val(group_id);
+                        //     data.employee_list.map(function (employee) {
+                        //         if (employee.group.id === group_id) {
+                        //             if (employee.id === employee_current_id)
+                        //                 ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
+                        //             else {
+                        //                 ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
+                        //             }
+                        //         }
+                        //     })
+                        // }
                     }
                 }
             }, (errs) => {
@@ -273,7 +274,7 @@ $(function () {
         let dict_sale_person = {}
 
         boxCustomer.on('change', function () {
-            if (config_is_AM_create) {
+            if (!config_is_AM_create) {
                 if (Object.keys(dict_customer).length === 0) {
                     dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
                         obj[item.id] = item;

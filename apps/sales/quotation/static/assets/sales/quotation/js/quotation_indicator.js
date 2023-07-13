@@ -146,8 +146,12 @@ function calculateIndicator(indicator_list) {
     let result_json = {};
     let revenueValue = 0;
     let rateValue = 0;
+    let formSubmit = $('#frm_quotation_create');
     let is_sale_order = false;
-    let _form = new SetupFormSubmit($('#frm_quotation_create'));
+    let _form = new SetupFormSubmit(formSubmit);
+    if (formSubmit[0].classList.contains('sale-order')) {
+        is_sale_order = true;
+    }
     submitClass.setupDataSubmit(_form, is_sale_order);
     let data_form = _form.dataForm;
     for (let indicator of indicator_list) {
@@ -171,7 +175,7 @@ function calculateIndicator(indicator_list) {
                             let functionData = functionClass.functionMaxMin(item, data_form, result_json);
                             parse_formula += functionData;
                         } else if (item.code === 'sumItemIf') {
-                            let functionData = functionClass.functionSumItemIf(item, data_form);
+                            let functionData = functionClass.functionSumItemIf(item, data_form, is_sale_order);
                             parse_formula += functionData;
                         }
                     }
@@ -183,13 +187,7 @@ function calculateIndicator(indicator_list) {
         // calculate
         // value
         let value = evaluateFormula(parse_formula);
-        if (value !== null) {
-            if (typeof value === 'number') {
-                if (value < 0) {
-                    value = 0;
-                }
-            }
-        } else {
+        if (value === null) {
             value = 0;
         }
         // rate value
@@ -211,6 +209,7 @@ function calculateIndicator(indicator_list) {
                     if (indicator.title === quotation_indicator.indicator.title) {
                         quotationValue = quotation_indicator.indicator_value;
                         differenceValue = (value - quotation_indicator.indicator_value);
+                        break;
                     }
                 }
             }
@@ -283,7 +282,7 @@ class indicatorFunctionHandle {
         return item.syntax + functionBody + "])";
     }
 
-    functionSumItemIf(item, data_form) {
+    functionSumItemIf(item, data_form, is_sale_order) {
         let self = this;
         let syntax = "sum(";
         let functionBody = "";
@@ -300,8 +299,14 @@ class indicatorFunctionHandle {
         // Tab Products
         if (data_form.quotation_products_data) {}
         // Tab Expense
-        if (data_form.quotation_expenses_data) {
-            functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+        if (is_sale_order === false) {
+            if (data_form.quotation_expenses_data) {
+                functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            }
+        } else {
+            if (data_form.sale_order_expenses_data) {
+                functionBody = self.extractDataToSum(data_form.sale_order_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            }
         }
         if (functionBody[functionBody.length - 1] === ",") {
             let functionBodySlice = functionBody.slice(0, -1);
@@ -371,7 +376,7 @@ $(function () {
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
             document.getElementById('quotation-indicator-data').value = "";
             loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyPopup({description: "Data is refreshed"}, 'success');
+            $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
         });
 
     });

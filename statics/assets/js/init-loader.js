@@ -1048,6 +1048,28 @@ $.fn.extend({
         return !additions ? self : self.addClass(additions);
     },
 
+    // person utils
+    shortNameGlobe: function (personData) {
+        if (typeof personData === 'object') {
+            if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
+                let last_name = personData['last_name'];
+                let first_name = personData['first_name'];
+                return `${last_name.length > 0 ? last_name[0] : ''}${first_name.length > 0 ? first_name[0] : ''}`;
+            }
+        }
+        return '';
+    },
+    renderAvatar: function (personData, clsName = "") {
+        let avatar = personData?.['avatar'];
+        let shortName = $.fn.shortNameGlobe(personData);
+        if (avatar) return `<div class="avatar"><img src="${avatar}" alt="${shortName}" class="avatar-img"></div>`;
+        return `
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}">
+                <span class="initial-wrap">${shortName}</span>
+            </div>
+        `;
+    },
+
     // utils
     classOfPlan: function (code) {
         let classPlan = {

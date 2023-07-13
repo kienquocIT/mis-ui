@@ -50,6 +50,11 @@ $(function () {
                     })
                 }
             }
+            if (selectEle.hasClass('ntt-drawer-left') || selectEle.hasClass('ntt-drawer-right')){
+                let heightNavHeader = $('.hk-navbar').outerHeight();
+                $('.ntt-drawer').css('top', heightNavHeader)
+                    .css('height', "calc(100vh - " + (heightNavHeader + "px") + ")");
+            }
         }
     }
 

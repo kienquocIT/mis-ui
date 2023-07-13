@@ -71,6 +71,8 @@ class ArgumentDecorator:
             return {
                 'id': str(user.id),
                 'user_id': str(user.user_id),
+                'first_name': str(user.first_name),
+                'last_name': str(user.last_name),
                 'fullname': user.get_full_name(),
                 'username_auth': user.username_auth,
                 'email': user.email,

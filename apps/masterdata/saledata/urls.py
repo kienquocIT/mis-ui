@@ -11,7 +11,7 @@ from apps.masterdata.saledata.views.accounts import (
 )
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
-    ExpenseDetailAPI
+    ExpenseDetailAPI, ExpenseForSaleListAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail
 from apps.masterdata.saledata.views.product import (
@@ -19,6 +19,7 @@ from apps.masterdata.saledata.views.product import (
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
     UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
+    ProductForSaleListAPI,
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -98,7 +99,8 @@ urlpatterns = [
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),
     path('products/api', ProductListAPI.as_view(), name='ProductListAPI'),
     path('product/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
-    path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI')
+    path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
+    path('products-sale/api', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
 ] + [
     path('masterdata/price', PriceMasterDataList.as_view(), name='PriceMasterDataList'),
     path('masterdata/tax-category/api', TaxCategoryListAPI.as_view(), name='TaxCategoryListAPI'),
@@ -148,6 +150,7 @@ urlpatterns = [
     path('expenses/create', ExpenseCreate.as_view(), name='ExpenseCreate'),
     path('expense/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
     path('expense/api/<str:pk>', ExpenseDetailAPI.as_view(), name='ExpenseDetailAPI'),
+    path('expenses-sale/api', ExpenseForSaleListAPI.as_view(), name='ExpenseForSaleListAPI'),
 ] + [
     path('shippings', ShippingList.as_view(), name='ShippingList'),
     path('shippings/create', ShippingCreate.as_view(), name='ShippingCreate'),

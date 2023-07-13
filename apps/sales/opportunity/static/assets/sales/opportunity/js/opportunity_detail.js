@@ -1723,6 +1723,53 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyPopup({description: "Successfully"}, 'success')
                         $('#create-new-call-log').hide();
+
+                        let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_1_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                data.call_log_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_1_result.push({
+                            'id': item.id,
+                            'type': 0,
+                            'subject': item.subject,
+                            'date': item.call_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_1_result;
+        }
+    })
+                        let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                let call_2_result = [];
+                                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                                    data.email_list.map(function (item) {
+                                        if (item.opportunity.id === pk) {
+                                            call_2_result.push({
+                                                'id': item.id,
+                                                'type': 1,
+                                                'subject': item.subject,
+                                                'date': item.date_created.split(' ')[0],
+                                            })
+                                        }
+                                    })
+                                }
+                                return call_2_result;
+                            }
+                        })
+                        Promise.all([call_1, call_2]).then((results) => {
+                            let sorted = results[0].concat(results[1]).sort(function(a, b) {
+                                return new Date(b.date) - new Date(a.date);
+                            })
+                            loadTimelineList(sorted)
+                        }).catch((error) => {
+                            console.log(error);
+                        });
                     }
                 })
     })
@@ -1850,6 +1897,53 @@ $(document).ready(function () {
                 if (data) {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#send-email').hide();
+
+                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_1_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                data.call_log_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_1_result.push({
+                            'id': item.id,
+                            'type': 0,
+                            'subject': item.subject,
+                            'date': item.call_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_1_result;
+        }
+    })
+                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_2_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                                data.email_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_2_result.push({
+                                            'id': item.id,
+                                            'type': 1,
+                                            'subject': item.subject,
+                                            'date': item.date_created.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_2_result;
+                        }
+                    })
+                    Promise.all([call_1, call_2]).then((results) => {
+                        let sorted = results[0].concat(results[1]).sort(function(a, b) {
+                            return new Date(b.date) - new Date(a.date);
+                        })
+                        loadTimelineList(sorted)
+                    }).catch((error) => {
+                        console.log(error);
+                    });
                 }
             },
             (errs) => {
@@ -1857,7 +1951,6 @@ $(document).ready(function () {
             }
         )
     })
-
 
 
     function loadTimelineList(data_timeline_list) {
@@ -1929,7 +2022,6 @@ $(document).ready(function () {
             return call_1_result;
         }
     })
-
     let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
@@ -1949,7 +2041,6 @@ $(document).ready(function () {
             return call_2_result;
         }
     })
-
     Promise.all([call_1, call_2]).then((results) => {
         let sorted = results[0].concat(results[1]).sort(function(a, b) {
             return new Date(b.date) - new Date(a.date);

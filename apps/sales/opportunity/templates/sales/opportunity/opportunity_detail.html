@@ -202,14 +202,22 @@
                                     <span class="text-primary">{% trans "Activity logs" %}</span>
                                 </div>
                                 <div class="col-9">
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-new-call-log"
-                                       class="create-new-call-log-button">
-                                        <span class="ml-3"><i class="bi bi-telephone"></i></span>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
+                                        <span class="ml-3"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'New call log' %}">
+                                            <i class="bi bi-telephone-fill"></i>
+                                        </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i
-                                            class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
+                                        <span class="ml-3"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'Send Email' %}">
+                                            <i class="bi bi-envelope-fill"></i>
+                                        </span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

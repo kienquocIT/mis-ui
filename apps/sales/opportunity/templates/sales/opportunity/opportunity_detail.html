@@ -182,12 +182,12 @@
                                     <span class="text-primary">{% trans 'Current action' %}</span>
                                 </div>
                                 <div class="col-9">
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
                                         <span class="ml-3"
                                               data-bs-toggle="tooltip"
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'New call log' %}">
-                                            <i class="bi bi-telephone"></i>
+                                            <i class="bi bi-telephone-fill"></i>
                                         </span>
                                     </a>
                                     <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
@@ -195,11 +195,9 @@
                                               data-bs-toggle="tooltip"
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'Send Email' %}">
-                                            <i class="bi bi-envelope"></i>
+                                            <i class="bi bi-envelope-fill"></i>
                                         </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                 </div>
                             </div>
 
@@ -213,7 +211,7 @@
                                               data-bs-toggle="tooltip"
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'New call log' %}">
-                                            <i class="bi bi-telephone"></i>
+                                            <i class="bi bi-telephone-fill"></i>
                                         </span>
                                     </a>
                                     <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
@@ -221,11 +219,9 @@
                                               data-bs-toggle="tooltip"
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'Send Email' %}">
-                                            <i class="bi bi-envelope"></i>
+                                            <i class="bi bi-envelope-fill"></i>
                                         </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                 </div>
                             </div>
                         </div>
@@ -235,7 +231,7 @@
                                       data-bs-toggle="tooltip"
                                       data-bs-placement="top"
                                       data-bs-original-title="{% trans 'Show actions' %}">
-                                    <i class="bi bi-pip"></i>
+                                    <i class="bi bi-pip text-primary"></i>
                                 </span>
                             </a>
                             <a href="#" id="btn-show-activity">
@@ -243,7 +239,7 @@
                                       data-bs-toggle="tooltip"
                                       data-bs-placement="top"
                                       data-bs-original-title="{% trans 'Show activity logs' %}">
-                                    <i class="bi bi-list"></i>
+                                    <i class="bi bi-clock-history text-primary"></i>
                                 </span>
                             </a>
                         </div>
@@ -310,69 +306,22 @@
                         </div>
                         <div class="mt-2 h-450p w-100 hidden div-activity">
                             <div class="row">
-                                <div class="col-1">
-                                    <ul class="nav flex-column nav-light nav-pills nav-vertical">
-                                        <li class="nav-item"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="left"
-                                            data-bs-original-title="{% trans 'Call log history' %}">
-                                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_call_log">
-                                                <center>
-                                                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-telephone-plus-fill"></i></span></span>
-                                                </center>
-{#                                                <span class="nav-link-text">Call logs</span>#}
-                                            </a>
-                                        </li>
-                                        <li class="nav-item"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="left"
-                                            data-bs-original-title="{% trans 'Email history' %}">
-                                            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_email">
-                                                <center>
-                                                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-envelope-check-fill"></i></span></span>
-                                                </center>
-{#                                                <span class="nav-link-text">Emails</span>#}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-11">
-                                    <div class="tab-content mt-0">
-                                        <div class="tab-pane fade show active" id="tab_block_call_log">
-                                            <table class="table nowrap w-100" id="table-call-log"
-                                                   data-method="GET"
-                                                   data-url-contact-detail="{% url 'ContactDetail' '0' %}"
-                                                   data-url-call-log="{% url 'OpportunityCallLogListAPI' %}">
-                                                <thead>
-                                                <tr>
-                                                    <th class="wrap-text">{% trans "Activity" %}</th>
-                                                    <th class="wrap-text">{% trans "To Contact" %}</th>
-                                                    <th class="wrap-text">{% trans 'Subject' %}</th>
-                                                    <th class="wrap-text">{% trans "Call Date" %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="tab-pane fade" id="tab_block_email">
-                                            <table class="table nowrap w-100" id="table-email"
-                                                   data-method="GET"
-                                                   data-url-contact-detail="{% url 'ContactDetail' '0' %}"
-                                                   data-url-email="{% url 'OpportunityEmailListAPI' %}">
-                                                <thead>
-                                                <tr>
-                                                    <th class="wrap-text">{% trans "Activity" %}</th>
-                                                    <th class="wrap-text">{% trans "To Contact/Email" %}</th>
-                                                    <th class="wrap-text">{% trans 'Subject' %}</th>
-                                                    <th class="wrap-text">{% trans "Date" %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                <div class="col-12">
+                                    <table class="table nowrap w-100" id="table-timeline"
+                                           data-url-call-log="{% url 'OpportunityCallLogListAPI' %}"
+                                           data-url-email="{% url 'OpportunityEmailListAPI' %}"
+                                           data-method="GET">
+                                        <thead>
+                                        <tr>
+                                            <th class="wrap-text">{% trans "Activity" %}</th>
+                                            <th class="wrap-text text-center">{% trans "Type" %}</th>
+                                            <th class="wrap-text">{% trans 'Subject' %}</th>
+                                            <th class="wrap-text">{% trans "Date" %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

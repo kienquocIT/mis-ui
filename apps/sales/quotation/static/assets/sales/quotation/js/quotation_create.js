@@ -604,10 +604,9 @@ $(function () {
                 }
                 // update total
                 calculateClass.updateTotal(tableCost[0], false, true, false);
+                // check disable
+                tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             }
-
-            // check disable
-            tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total

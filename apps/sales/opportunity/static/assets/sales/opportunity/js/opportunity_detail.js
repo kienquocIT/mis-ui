@@ -1566,24 +1566,24 @@ $(document).ready(function () {
         loadWinRate();
     })
 
-    if (config_is_select_stage) {
-        $('#btn-auto-update-stage').hide();
-    } else {
-        if (!$('#input-close-deal').is(':checked')) {
-            window.addEventListener('load', function () {
-                setTimeout(function () {
-                    autoLoadStage(true);
-                }, 1500);
-            });
-
-        }
-    }
+    // if (config_is_select_stage) {
+    //     $('#btn-auto-update-stage').hide();
+    // } else {
+    //     if (!$('#input-close-deal').is(':checked')) {
+    //         window.addEventListener('load', function () {
+    //             setTimeout(function () {
+    //                 autoLoadStage(true);
+    //             }, 1500);
+    //         });
+    //
+    //     }
+    // }
 
     function checkOppWonOrDelivery() {
         let check = false;
         let stage_id = $('.stage-selected').last().data('id');
         let indicator = dict_stage[stage_id].indicator;
-        if (indicator === 'Close Won' || indicator === 'Delivery') {
+        if (indicator === 'Closed Won' || indicator === 'Delivery') {
             check = true;
         }
         return check;

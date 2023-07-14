@@ -6,6 +6,17 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <style>
+        .sub-stage {
+            display: flex;
+
+            justify-content: center;
+        }
+
+        .sub-stage .dropdown {
+            margin-top: auto;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -157,15 +168,16 @@
                              data-url="{% url "OpportunityConfigStageListAPI" %}">
                         </div>
                         <div id="stage-hidden" class="hidden">
-                            <div class="border rounded mt-1 pr-2 sub-stage w-100 text-center">
-                                <p class="stage-indicator"></p>
-                                <div class="dropdown dropup">
+                            <div class="border rounded mt-1 pr-2 sub-stage w-100 text-center d-flex justify-content-center"
+                                 style="flex-direction: column;">
+                                <p class="stage-indicator" style="margin-bottom: auto;"></p>
+                                <div class="dropdown dropup" style="margin-top: auto;">
                                     <a href="#" data-bs-toggle="dropdown">
                                         <span class="text-right">
                                             <i class="bi bi-chevron-bar-right"></i>
                                         </span>
                                     </a>
-                                    <div class="dropdown-menu">
+                                    <div class="dropdown-menu position-absolute" style="z-index: 999;">
                                         <a class="dropdown-item btn-go-to-stage"
                                            href="#">{% trans "Go to Stage" %}</a>
                                     </div>
@@ -828,6 +840,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
-
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
 {% endblock %}

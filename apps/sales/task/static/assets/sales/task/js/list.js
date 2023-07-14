@@ -566,8 +566,6 @@ $(function () {
                 } else {
                     // put to form create submit
                 }
-
-
             });
         }
 

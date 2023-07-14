@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %} &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
+    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %}
+        &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
     <meta name="description" content="Management Information System"/>
 
     <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
@@ -14,8 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-            href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
+            href="//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
     >
 
     {% compress css %}
@@ -47,9 +48,25 @@
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
 
         <style>
+            html, body {
+                color: rgb(32, 33, 36);
+                font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                height: 100%;
+                margin: 0;
+                -webkit-text-size-adjust: 100%;
+                -moz-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                text-size-adjust: 100%
+            }
+
             :root {
-                --bs-body-font-family: 'Quicksand', sans-serif;
-                --bs-body-font-weight: 500;
+                --bs-body-color: rgb(32, 33, 36);
+                --bs-body-font-family: "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+                --bs-body-font-size: 16px;
+                --bs-body-font-weight: 400;
+                --bs-body-line-height: 24px;
             }
 
             {#  Override css of select2 for select2 working in Bootstrap Modal  #}

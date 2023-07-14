@@ -37,7 +37,7 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     resp.data.unit_of_measure_group.map(function (item) {
-                        if (item.title === 'Nhân công') {
+                        if (item.is_default) {
                             chooseUoMGroup.val(item.title);
                             chooseUoMGroup.attr('data-id', item.id);
                             loadUoM(item.id);

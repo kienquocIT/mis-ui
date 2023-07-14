@@ -365,12 +365,14 @@ function loadDetail(line) {
                         $('#title').val(data.title)
                         $('#supplier').attr('data-onload', JSON.stringify(data.supplier));
                         initSelectBox($('#supplier'))
-                        $('#posting_date').val(moment(data.posting_data).format('DD/MM/YYYY'));
+                        $('#date_created').val(moment(data.date_created, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+                        $('#posting_date').val(moment(data.posting_date, 'YYYY-MM-DD').format('DD/MM/YYYY'));
                         line.setDatalist = data.product_list
                         $('#line_detail_table').DataTable().clear().rows.add(data.product_list).draw();
                         $('.pretax').attr('data-init-money', data.pretax_amount)
                         $('.taxes').attr('data-init-money', data.taxes)
                         $('.total').attr('data-init-money', data.total_amount)
+
                         $.fn.initMaskMoney2()
                     }
                 },
@@ -387,15 +389,6 @@ $(function () {
     const $transFactory = $('#trans-factory')
     // end declare variable
 
-    // load data on detail page
-    loadDetail(lineDetail)
-
-    //run line detail table and all util function
-    lineDetail.init()
-
-    // init currency
-    $.fn.initMaskMoney2()
-
     //  run date pick of posting date
     let $validTime = $('#posting_date')
     $validTime.daterangepicker({
@@ -407,6 +400,17 @@ $(function () {
             format: 'DD/MM/YYYY'
         }
     })
+
+    // load data on detail page
+    loadDetail(lineDetail)
+
+    //run line detail table and all util function
+    lineDetail.init()
+
+    // init currency
+    $.fn.initMaskMoney2()
+
+
 
     // form submit
     let $form = $('#good_receipt_form')

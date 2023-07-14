@@ -209,23 +209,28 @@ $(async function () {
 
     function getStockByProdID(prod, dropdownElm) {
         const $elmTrans = $('#trans-factory')
-        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
+        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${
+            $('#base-trans-factory').attr('data-more-info')}</h6>`;
+        const warehouseID = $('#inputWareHouse').val();
+
+        if(!warehouseID.valid_uuid4()){
+            $.fn.notifyPopup({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
+            return false
+        }
         $.fn.callAjax(
             $('#url-factory').attr('data-warehouse-stock'),
             'GET',
             {'product_id': prod.product_data.id, uom_id:prod.uom_data.id}
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            const datas = data.warehouse_stock;
+            const datas = data.warehouse_stock
+
             let prodTotal = 0
-            let prodName = []
-            for (let data of datas) {
-                if (data.product_amount > 0 && (data.product_amount - data.picked_ready) > 0) {
-                    prodTotal += (data.product_amount - data.picked_ready)
-                    prodName.push(data.title)
-                }
-            }
-            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName.join(', ')}</p></div>`;
+            let prodName = ''
+            let WHInfo = datas.filter((item)=> item.id === warehouseID)[0]
+            prodTotal = WHInfo.product_amount - WHInfo.picked_ready
+            prodName = WHInfo.title
+            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-stock')}</i></h6><p>${prodTotal}</p></div>`;
             const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
             htmlContent += `<div class="dropdown-divider"></div><div class="text-right">

@@ -434,3 +434,55 @@ class OpportunityEmailListAPI(APIView):
         return create_update_opportunity(
             request=request, url=ApiURL.OPPORTUNITY_EMAIL_LIST, msg=SaleMsg.OPPORTUNITY_EMAIL_SEND
         )
+
+
+class OpportunityMeetingList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/meeting_list.html',
+        menu_active='id_menu_meeting',
+        breadcrumb='MEETING_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
+        # resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
+        if resp0.state and resp1.state and resp2.state and resp3.state:
+            return {
+                       'employee_current_id': request.user.employee_current_data.get('id', None),
+                       'account_list': resp1.result,
+                       'contact_list': resp2.result,
+                       'opportunity_list': resp3.result,
+                       # 'meeting_list': resp4.result,
+                   }, status.HTTP_200_OK
+        return {
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+               }, status.HTTP_200_OK
+
+
+class OpportunityMeetingListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
+        if resp.state:
+            return {'meeting_list': resp.result}, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_update_opportunity(
+            request=request, url=ApiURL.OPPORTUNITY_MEETING_LIST, msg=SaleMsg.OPPORTUNITY_MEETING_CREATED
+        )

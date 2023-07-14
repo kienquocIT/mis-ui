@@ -234,6 +234,10 @@ class MenusCRM:
                 name='Email', code='id_menu_email', view_name='OpportunityEmailList',
                 icon='<i class="bi bi-envelope-fill"></i>',
             ),
+            MenuCommon(
+                name='Meeting', code='id_menu_meeting', view_name='OpportunityMeetingList',
+                icon='<i class="bi bi-person-workspace"></i>',
+            ),
         ],
     )
 

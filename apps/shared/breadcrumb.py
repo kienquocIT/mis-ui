@@ -156,6 +156,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log list'), 'OpportunityCallLogList')
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email list'), 'OpportunityEmailList')
+    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting list'), 'OpportunityMeetingList')
 
 
 class BreadcrumbView:
@@ -427,4 +428,7 @@ class BreadcrumbView:
     ]
     EMAIL_LIST_PAGE = [
         BreadcrumbItem.EMAIL_LIST_PAGE
+    ]
+    MEETING_LIST_PAGE = [
+        BreadcrumbItem.MEETING_LIST_PAGE
     ]

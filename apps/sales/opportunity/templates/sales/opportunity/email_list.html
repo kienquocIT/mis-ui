@@ -59,7 +59,7 @@
     </table>
 
     <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
-         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+         aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -68,7 +68,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow: auto; height: 58vh">
                     <form data-url="{% url 'OpportunityEmailListAPI' %}"
                           data-url-redirect="{% url 'OpportunityEmailList' %}"
                           data-method="POST"
@@ -115,16 +115,18 @@
                                 <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3"
-                                id="btn-send-email">{% trans 'Send' %}</button>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-email"
+                                id="btn-send-email">{% trans 'Send' %}</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade mt-10" id="detail-send-email" tabindex="-1" role="dialog"
-         aria-labelledby="detailOpportunityModalForms" aria-hidden="true">
+         aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -133,7 +135,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow: auto; height: 58vh">
                     <div class="row form-group mb-3">
                         <label class="col-2 col-form-label required">{% trans 'Sale Code' %}</label>
                         <div class="col-10">

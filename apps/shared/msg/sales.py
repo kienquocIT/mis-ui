@@ -22,6 +22,7 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     QUOTATION_INDICATOR_RESTORE = _('Quotation indicator restore successfully')
     OPPORTUNITY_CALL_LOG_CREATE = _('Opportunity Call Log create successfully')
     OPPORTUNITY_EMAIL_SEND = _('Opportunity Email send successfully')
+    OPPORTUNITY_MEETING_CREATED = _('Opportunity Meeting create successfully')
     SALE_ORDER_INDICATOR_CREATE = _('Sale order indicator create successfully')
     SALE_ORDER_INDICATOR_UPDATE = _('Sale order indicator update successfully')
     SALE_ORDER_INDICATOR_RESTORE = _('Sale order indicator restore successfully')

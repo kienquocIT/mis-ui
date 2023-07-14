@@ -770,7 +770,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow: auto; height: 58vh">
                     <form data-url="{% url 'OpportunityCallLogListAPI' %}"
                           data-url-redirect="{% url 'OpportunityCallLogList' %}"
                           data-method="POST"
@@ -825,12 +825,16 @@
                                        for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3" id="btn-create-new-call-log">{% trans 'Save' %}</button>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-create-new-call-log"
+                            id="btn-create-new-call-log">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -841,7 +845,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow: auto; height: 58vh">
                     <form data-url="{% url 'OpportunityEmailListAPI' %}"
                           data-url-redirect="{% url 'OpportunityEmailList' %}"
                           data-method="POST"
@@ -888,9 +892,11 @@
                                 <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3"
-                                id="btn-send-email">{% trans 'Send' %}</button>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-email"
+                                id="btn-send-email">{% trans 'Send' %}</button>
                 </div>
             </div>
         </div>

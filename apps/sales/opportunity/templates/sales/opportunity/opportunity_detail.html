@@ -34,6 +34,8 @@
         <input id="data-product" class="hidden">
         {{ data.config | json_script:"id-config-data" }}
         {{ data.account_list | json_script:"account_list" }}
+        {{ data.contact_list | json_script:"contact_list" }}
+        {{ data.opportunity_list | json_script:"opportunity_list" }}
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>

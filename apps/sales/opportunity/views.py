@@ -91,13 +91,17 @@ class OpportunityDetail(View):
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
         resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        if resp.state:
+        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
+        if resp0.state and resp1.state and resp2.state and resp3.state:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'config': resp.result,
-                       'account_list': resp1.result
+                       'config': resp0.result,
+                       'account_list': resp1.result,
+                       'contact_list': resp2.result,
+                       'opportunity_list': resp3.result,
             }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -340,10 +344,16 @@ class OpportunityCallLogList(View):
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
         resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        if resp0.state and resp1.state:
+        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
+        resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
+        if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
                        'account_list': resp1.result,
+                       'contact_list': resp2.result,
+                       'opportunity_list': resp3.result,
+                       'call_log_list': resp4.result,
                    }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -386,10 +396,16 @@ class OpportunityEmailList(View):
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
         resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        if resp0.state and resp1.state:
+        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
+        resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).get()
+        if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
                        'account_list': resp1.result,
+                       'contact_list': resp2.result,
+                       'opportunity_list': resp3.result,
+                       'email_list': resp4.result,
                    }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),

@@ -224,15 +224,15 @@ class MenusCRM:
         ],
     )
     SALE_ACTIVITIES = MenuCommon(
-        name='Sale Activities', code='menu_sale_activities', view_name='', icon='<i class="bi bi-graph-up-arrow"></i>',
+        name='Sale Activities', code='menu_sale_activities', view_name='', icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
                 name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
-                icon='<i class="bi bi-telephone-plus-fill"></i>',
+                icon='<i class="bi bi-telephone-fill"></i>',
             ),
             MenuCommon(
                 name='Email', code='id_menu_email', view_name='OpportunityEmailList',
-                icon='<i class="bi bi-envelope-check-fill"></i>',
+                icon='<i class="bi bi-envelope-fill"></i>',
             ),
         ],
     )

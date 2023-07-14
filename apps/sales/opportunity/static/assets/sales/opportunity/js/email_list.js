@@ -3,37 +3,31 @@ $(function () {
     $(document).ready(function () {
         let employee_current_id = $('#employee_current_id').val();
         const account_list = JSON.parse($('#account_list').text());
+        const contact_list = JSON.parse($('#contact_list').text());
+        const opportunity_list = JSON.parse($('#opportunity_list').text());
+        const email_list = JSON.parse($('#email_list').text());
 
         function LoadEmailSaleCodeList(employee_current_id) {
             let $sc_sb = $('#email-sale-code-select-box');
             $sc_sb.html(``);
-            $.fn.callAjax($sc_sb.attr('data-url'), $sc_sb.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    console.log(data)
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
-                        $sc_sb.append(`<option></option>`)
-                        data.opportunity_list.map(function (item) {
-                            let added = false;
-                            if (Object.keys(item.sale_person).length !== 0) {
-                                if (item.sale_person.id === employee_current_id) {
-                                    $sc_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                                    added = true;
-                                }
-                            }
-                            if (item.opportunity_sale_team_datas.length > 0 && added === false) {
-                                $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
-                                    if (member_obj.member.id === employee_current_id) {
-                                        $sc_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                                        return;
-                                    }
-                                });
-                            }
-                        });
+            $sc_sb.append(`<option></option>`)
+            opportunity_list.map(function (item) {
+                let added = false;
+                if (Object.keys(item.sale_person).length !== 0) {
+                    if (item.sale_person.id === employee_current_id) {
+                        $sc_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                        added = true;
                     }
                 }
-            })
-
+                if (item.opportunity_sale_team_datas.length > 0 && added === false) {
+                    $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
+                        if (member_obj.member.id === employee_current_id) {
+                            $sc_sb.append(`<option data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                            return;
+                        }
+                    });
+                }
+            });
             $sc_sb.select2({dropdownParent: $("#send-email")});
         }
         LoadEmailSaleCodeList(employee_current_id);
@@ -41,54 +35,48 @@ $(function () {
         function LoadEmailToList(contact_list_id) {
             let $to_sb = $('#email-to-select-box');
             $to_sb.html(``);
-            $.fn.callAjax($to_sb.attr('data-url'), $to_sb.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
-                        $to_sb.append(`<option></option>`)
-                        data.contact_list.map(function (item) {
-                            if (contact_list_id.includes(item.id)) {
-                                if (item.email === null) {
-                                    $to_sb.append(`<option disabled>${item.fullname}</option>`);
-                                } else {
-                                    $to_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
-                                }
-                            }
-                        });
+            $to_sb.append(`<option></option>`)
+            contact_list.map(function (item) {
+                if (contact_list_id.includes(item.id)) {
+                    if (item.email === null) {
+                        $to_sb.append(`<option disabled>${item.fullname}</option>`);
+                    } else {
+                        $to_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
                     }
                 }
-            })
-
+            });
             $to_sb.select2({dropdownParent: $("#send-email")});
         }
 
         function LoadEmailCcList(contact_list_id) {
             let $cc_sb = $('#email-cc-select-box');
             $cc_sb.html(``);
-            $.fn.callAjax($cc_sb.attr('data-url'), $cc_sb.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
-                        $cc_sb.append(`<option></option>`)
-                        data.contact_list.map(function (item) {
-                            if (contact_list_id.includes(item.id)) {
-                                if (item.email === null) {
-                                    $cc_sb.append(`<option disabled>${item.fullname}</option>`);
-                                } else {
-                                    $cc_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
-                                }
-                            }
-                        });
+            $cc_sb.append(`<option></option>`)
+            contact_list.map(function (item) {
+                if (contact_list_id.includes(item.id)) {
+                    if (item.email === null) {
+                        $cc_sb.append(`<option disabled>${item.fullname}</option>`);
+                    } else {
+                        $cc_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
                     }
                 }
-            })
-
+            });
             $cc_sb.select2({dropdownParent: $("#send-email")});
         }
 
         $('#send-email-button').on('click', function () {
             $('#email-subject-input').val('');
             $('#email-content-area').val('');
+            LoadEmailSaleCodeList(employee_current_id);
+
+            $('#email-to-select-box').prop('hidden', false);
+            $('#email-to-select-box').next(1).prop('hidden', false);
+            $('#inputEmailTo').prop('hidden', true);
+            $('#email-to-select-btn').prop('hidden', true);
+            $('#email-to-input-btn').prop('hidden', false);
+
+            $('#email-to-select-box option').remove();
+            $('#email-cc-select-box option').remove();
         })
 
         $('#email-sale-code-select-box').on('change', function () {
@@ -97,6 +85,10 @@ $(function () {
             })[0].contact_mapped;
             LoadEmailToList(contact_list_id);
             LoadEmailCcList(contact_list_id);
+            $('#email-cc-input-btn').prop('hidden', false);
+            $('#inputEmailCc').prop('hidden', true);
+            $('#email-cc-add').prop('hidden', true);
+            $('#email-cc-remove').prop('hidden', true);
         })
 
         $('#email-to-input-btn').on('click', function() {
@@ -171,30 +163,18 @@ $(function () {
         function loadOpportunityEmailList() {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_email_list')) {
                 let dtb = $('#table_opportunity_email_list');
-                let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                console.log(data)
-                                return resp.data['email_list'] ? resp.data['email_list'] : [];
-                            }
-                            return [];
-                        },
-                    },
+                    data: email_list,
                     columns: [
                         {
                             data: 'email_to',
                             className: 'wrap-text w-25',
                             render: (data, type, row, meta) => {
                                 if (Object.keys(row.email_to_contact).length !== 0) {
-                                    return `<a target="_blank" href="` + $('#table_opportunity_email_list').attr('data-url-contact-detail').replace('0', row.email_to_contact.id) + `"><span class="text-primary link-primary underline_hover"><b>` + row.email_to_contact.fullname + `</b></span></a>`
+                                    return `<a target="_blank" href="` + $('#table_opportunity_email_list').attr('data-url-contact-detail').replace('0', row.email_to_contact.id) + `"><span class="link-secondary underline_hover"><b>` + row.email_to_contact.fullname + `</b></span></a>`
                                 }
                                 else {
-                                    return `<span class="text-primary">` + row.email_to + `</span>`
+                                    return `<span class="text-secondary">` + row.email_to + `</span>`
                                 }
                             }
                         },
@@ -202,7 +182,8 @@ $(function () {
                             data: 'subject',
                             className: 'wrap-text w-35',
                             render: (data, type, row, meta) => {
-                                return `<span><b>` + row.subject + `</b></span>`
+                                return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
+                                            data-bs-target="#detail-send-email"><span><b>` + row.subject + `</b></span></a>`
                             }
                         },
                         {
@@ -223,7 +204,33 @@ $(function () {
                 });
             }
         }
-
         loadOpportunityEmailList();
+
+        $(document).on('click', '#table_opportunity_email_list .detail-email-button', function () {
+            let email_id = $(this).attr('data-id');
+            let email_obj = JSON.parse($('#email_list').text()).filter(function(item) {
+                return item.id === email_id;
+            })[0]
+            $('#detail-email-subject-input').val(email_obj.subject);
+
+            $('#detail-email-sale-code-select-box option').remove();
+            $('#detail-email-sale-code-select-box').append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
+
+            $('#detail-email-to-select-box option').remove();
+            if (Object.keys(email_obj.email_to_contact).length !== 0) {
+                $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to_contact.fullname}&nbsp;&nbsp;&nbsp;(${email_obj.email_to_contact.email})</option>`);
+            }
+            else {
+                $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to}</option>`);
+            }
+
+            $('#detail-email-cc-select-box option').remove();
+            for (let i = 0; i < email_obj.email_cc_list.length; i++) {
+                $('#detail-email-cc-select-box').append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
+            }
+            $('#detail-email-cc-select-box').prop('disabled', true)
+
+            $('#detail-email-content-area').val(email_obj.content);
+        })
     });
 });

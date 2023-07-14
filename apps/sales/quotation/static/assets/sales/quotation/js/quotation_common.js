@@ -1351,8 +1351,6 @@ class dataTableHandle {
                     targets: 9,
                     width: "1%",
                     render: () => {
-                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        // return `${bt3}`
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                         } else {
@@ -1601,14 +1599,13 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "5%",
+                    width: "1%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
-                    width: "20%",
                     render: (data, type, row) => {
                         let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
                         let checkboxExpenseItemID = 'check-box-expense-item-' + String(row.order);
@@ -1631,16 +1628,22 @@ class dataTableHandle {
                                                         <div class="dropdown-menu w-210p mt-4 expense-more-info"></div>
                                                     </div>
                                                 </span>
-                                                <input 
-                                                    type="text" 
-                                                    class="form-control table-row-item disabled-show-normal" 
-                                                    value="${row.expense.title}"
-                                                    data-value="${row.expense.id}"
-                                                    disabled
-                                                >
-                                                <span class="input-suffix">
                                                 <div class="dropdown">
-                                                    <i class="fas fa-angle-down" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                                        <span class="input-affix-wrapper">
+                                                            <input 
+                                                                type="text" 
+                                                                class="form-control table-row-item disabled-show-normal" 
+                                                                value="${row.expense.title}"
+                                                                data-value="${row.expense.id}"
+                                                                style="padding-left: 38px"
+                                                                disabled
+                                                            >
+                                                            <span class="input-suffix">
+                                                                <i class="fas fa-angle-down"></i>
+                                                            </span>
+                                                        </span>
+                                                    </div>
                                                     <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
                                                         <div class="row mb-1">
                                                             <div class="col-6">
@@ -1659,7 +1662,6 @@ class dataTableHandle {
                                                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
                                                     </div>
                                                 </div>
-                                                </span>
                                             </span>
                                         </div>
                                 </div>`;
@@ -1681,16 +1683,22 @@ class dataTableHandle {
                                                         <div class="dropdown-menu w-210p mt-4 expense-more-info"></div>
                                                     </div>
                                                 </span>
-                                                <input 
-                                                    type="text" 
-                                                    class="form-control table-row-item disabled-show-normal" 
-                                                    value="${row.expense.title}"
-                                                    data-value="${row.expense.id}"
-                                                    disabled
-                                                >
-                                                <span class="input-suffix">
                                                 <div class="dropdown">
-                                                    <i class="fas fa-angle-down disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled></i>
+                                                    <div class="input-group disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled>
+                                                        <span class="input-affix-wrapper">
+                                                            <input 
+                                                                type="text" 
+                                                                class="form-control table-row-item disabled-show-normal" 
+                                                                value="${row.expense.title}"
+                                                                data-value="${row.expense.id}"
+                                                                style="padding-left: 38px"
+                                                                disabled
+                                                            >
+                                                            <span class="input-suffix">
+                                                                <i class="fas fa-angle-down"></i>
+                                                            </span>
+                                                        </span>
+                                                    </div>
                                                     <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
                                                         <div class="row mb-1">
                                                             <div class="col-6">
@@ -1709,7 +1717,6 @@ class dataTableHandle {
                                                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
                                                     </div>
                                                 </div>
-                                                </span>
                                             </span>
                                         </div>
                                 </div>`;
@@ -1718,7 +1725,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "10%",
+                    width: "1%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
@@ -1739,7 +1746,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "10%",
+                    width: "1%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1754,7 +1761,6 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: "20%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1800,7 +1806,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: "10%",
+                    width: "1%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
@@ -1859,7 +1865,6 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -1880,10 +1885,8 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "5%",
+                    width: "1%",
                     render: () => {
-                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        // return `${bt3}`
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                         } else {

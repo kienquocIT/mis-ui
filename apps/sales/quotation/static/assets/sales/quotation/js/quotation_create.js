@@ -399,10 +399,11 @@ $(function () {
             let itemTitle = $(this)[0].querySelector('.expense-title').innerHTML;
             if (itemID && itemTitle) {
                 let row = $(this)[0].closest('tr');
-                let eleExpense = row.querySelector('.table-row-item');
-                if (eleExpense) {
-                    eleExpense.value = itemTitle;
-                    eleExpense.setAttribute('data-value', itemID);
+                let eleExpenseShow = row.querySelector('.table-row-item');
+                let eleExpenseDropdown = row.querySelector('.expense-option-list');
+                if (eleExpenseShow) {
+                    eleExpenseShow.value = itemTitle;
+                    eleExpenseShow.setAttribute('data-value', itemID);
                     // make button option checked
                     let allOption = $(row).find('.table-row-expense-option');
                     if (allOption) {
@@ -410,7 +411,7 @@ $(function () {
                     }
                     $(this).addClass('option-btn-checked');
                     // load data expense selected
-                    loadDataClass.loadDataProductSelect($(eleExpense), true, true);
+                    loadDataClass.loadDataProductSelect($(eleExpenseDropdown), true, true);
                 }
             }
         });

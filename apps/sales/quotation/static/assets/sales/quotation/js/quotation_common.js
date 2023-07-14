@@ -558,10 +558,10 @@ class loadDataHandle {
     loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;
         let optionSelected = null;
-        if (is_expense === false) {
+        if (is_expense === false) { // PRODUCT
             optionSelected = ele[0].options[ele[0].selectedIndex];
-        } else {
-            optionSelected = ele[0].closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
+        } else { // EXPENSE
+            optionSelected = ele[0].querySelector('.option-btn-checked');
         }
         let productData = optionSelected.querySelector('.data-default');
         if (productData) {
@@ -586,6 +586,7 @@ class loadDataHandle {
             } else {
                 self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', tax.id);
             }
+            // load modal more information
             self.loadInformationSelectBox(ele, is_expense);
         }
         $.fn.initMaskMoney2();
@@ -601,7 +602,7 @@ class loadDataHandle {
             let inputWrapper = ele[0].closest('.input-affix-wrapper');
             dropdownContent = inputWrapper.querySelector('.dropdown-menu');
         } else { // Expense dropdown
-            optionSelected = ele[0].closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
+            optionSelected = ele[0].querySelector('.option-btn-checked');
             eleInfo = ele[0].closest('.dropdown-expense').querySelector('.fa-info-circle');
             dropdownContent = ele[0].closest('.dropdown-expense').querySelector('.expense-more-info');
         }
@@ -1615,7 +1616,7 @@ class dataTableHandle {
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
+                                                    <div class="btn-group dropdown">
                                                         <i
                                                             class="fas fa-info-circle"
                                                             data-bs-toggle="dropdown"
@@ -1625,7 +1626,7 @@ class dataTableHandle {
                                                             disabled
                                                         >
                                                         </i>
-                                                        <div class="dropdown-menu w-210p mt-4 expense-more-info"></div>
+                                                        <div class="dropdown-menu w-210p mt-2 ml-3 expense-more-info"></div>
                                                     </div>
                                                 </span>
                                                 <div class="dropdown">
@@ -1670,7 +1671,7 @@ class dataTableHandle {
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
+                                                    <div class="btn-group dropdown">
                                                         <i
                                                             class="fas fa-info-circle"
                                                             data-bs-toggle="dropdown"
@@ -1680,7 +1681,7 @@ class dataTableHandle {
                                                             disabled
                                                         >
                                                         </i>
-                                                        <div class="dropdown-menu w-210p mt-4 expense-more-info"></div>
+                                                        <div class="dropdown-menu w-210p mt-2 ml-3 expense-more-info"></div>
                                                     </div>
                                                 </span>
                                                 <div class="dropdown">

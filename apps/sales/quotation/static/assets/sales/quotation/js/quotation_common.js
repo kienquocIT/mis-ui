@@ -1614,9 +1614,8 @@ class dataTableHandle {
                         let checkboxExpenseItemID = 'check-box-expense-item-' + String(row.order);
                         let checkboxPurchaseItemID = 'check-box-purchase-item-' + String(row.order);
                         if (is_load_detail === false) {
-                            return `<div class="row">
-                                        <div class="dropdown dropdown-expense">
-                                            <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                            return `<div class="row dropdown-expense">
+                                        <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
                                                     <div class="btn-group dropstart">
@@ -1639,32 +1638,34 @@ class dataTableHandle {
                                                     data-value="${row.expense.id}"
                                                     disabled
                                                 >
-                                                <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
-                                            </span>
-                                            </div>
-                                            <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
-                                                <div class="row mb-1">
-                                                    <div class="col-6">
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
-                                                            <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
+                                                <span class="input-suffix">
+                                                <div class="dropdown">
+                                                    <i class="fas fa-angle-down" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                                    <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
+                                                        <div class="row mb-1">
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
-                                                            <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
-                                                        </div>
+                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
                                                     </div>
                                                 </div>
-                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
-                                            </div>
+                                                </span>
+                                            </span>
                                         </div>
                                 </div>`;
                         } else {
-                            return `<div class="row">
-                                        <div class="dropdown dropdown-expense">
-                                            <div class="input-group disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled>
+                            return `<div class="row dropdown-expense">
+                                        <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
                                                     <div class="btn-group dropstart">
@@ -1687,26 +1688,29 @@ class dataTableHandle {
                                                     data-value="${row.expense.id}"
                                                     disabled
                                                 >
-                                                <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
-                                            </span>
-                                            </div>
-                                            <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
-                                                <div class="row mb-1">
-                                                    <div class="col-6">
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
-                                                            <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
+                                                <span class="input-suffix">
+                                                <div class="dropdown">
+                                                    <i class="fas fa-angle-down disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled></i>
+                                                    <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
+                                                        <div class="row mb-1">
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
-                                                            <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
-                                                        </div>
+                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
                                                     </div>
                                                 </div>
-                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
-                                            </div>
+                                                </span>
+                                            </span>
                                         </div>
                                 </div>`;
                         }

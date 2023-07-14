@@ -4,6 +4,9 @@ $(document).ready(function () {
     const ele_select_product_category = $('#select-box-product-category');
 
     const config = JSON.parse($('#id-config-data').text());
+    const account_list = JSON.parse($('#account_list').text());
+    const contact_list = JSON.parse($('#contact_list').text());
+    const opportunity_list = JSON.parse($('#opportunity_list').text());
 
     const config_is_select_stage = config.is_select_stage;
     const config_is_AM_create = config.is_account_manager_create;
@@ -1601,68 +1604,45 @@ $(document).ready(function () {
     })
 
 
-    // for calllog
-    const account_list = JSON.parse($('#account_list').text());
+    // for call log
 
     function LoadSaleCodeList(default_sale_code_id) {
         let $sale_code_sb = $('#sale-code-select-box');
-        $.fn.callAjax($sale_code_sb.attr('data-url'), $sale_code_sb.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
-                    $sale_code_sb.append(`<option></option>`)
-                    data.opportunity_list.map(function (item) {
-                        if (default_sale_code_id === item.id) {
-                            $sale_code_sb.append(`<option selected value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                        } else {
-                            $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                        }
-                    })
-                }
+        $sale_code_sb.html(``);
+        $sale_code_sb.append(`<option></option>`)
+        opportunity_list.map(function (item) {
+            if (default_sale_code_id === item.id) {
+                $sale_code_sb.append(`<option selected value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+            } else {
+                $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
             }
         })
-
         $sale_code_sb.select2();
     }
 
     function LoadCustomerList(default_customer_id) {
         let $account_sb = $('#account-select-box');
-        $.fn.callAjax($account_sb.attr('data-url'), $account_sb.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
-                    $account_sb.append(`<option></option>`)
-                    data.account_list.map(function (item) {
-                        if (default_customer_id === item.id) {
-                            $account_sb.append(`<option selected value="${item.id}">${item.name}</option>`);
-                        } else {
-                            $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
-                        }
-                    })
-                }
+        $account_sb.html(``);
+        $account_sb.append(`<option></option>`)
+        account_list.map(function (item) {
+            if (default_customer_id === item.id) {
+                $account_sb.append(`<option selected value="${item.id}">${item.name}</option>`);
+            } else {
+                $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
             }
         })
-
         $account_sb.select2();
     }
 
     function LoadContactList(contact_list_id) {
         let $contact_sb = $('#contact-select-box');
         $contact_sb.html(``);
-        $.fn.callAjax($contact_sb.attr('data-url'), $contact_sb.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
-                    $contact_sb.append(`<option></option>`)
-                    data.contact_list.map(function (item) {
-                        if (contact_list_id.includes(item.id)) {
-                            $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
-                        }
-                    })
-                }
+        $contact_sb.append(`<option></option>`)
+        contact_list.map(function (item) {
+            if (contact_list_id.includes(item.id)) {
+                $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
             }
         })
-
         $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
     }
 
@@ -1697,25 +1677,6 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
 
-    let data_activities = [];
-    $.fn.callAjax($('#table-activities').attr('data-url-call-log'), $('#table-activities').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                data.call_log_list.map(function (item) {
-                    data_activities.push({
-                        'id': item.id,
-                        'type': 0,
-                        'subject': item.subject,
-                        'call_date': item.call_date.split(' ')[0],
-                        'repeat': item.repeat
-                    })
-                })
-            }
-            loadOpportunityCallLogList();
-        }
-    })
-
     $('#form-create-new-call-log').submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -1735,68 +1696,319 @@ $(document).ready(function () {
 
         // console.log(frm.dataForm)
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                $('#create-new-call-log').hide();
+
+                let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $('#create-new-call-log').hide();
+                        let call_1_result = [];
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                            data.call_log_list.map(function (item) {
+                                if (item.opportunity.id === pk) {
+                                    call_1_result.push({
+                                        'id': item.id,
+                                        'type': 0,
+                                        'subject': item.subject,
+                                        'date': item.call_date.split(' ')[0],
+                                    })
+                                }
+                            })
+                        }
+                        return call_1_result;
                     }
                 })
+                let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let call_2_result = [];
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                            data.email_list.map(function (item) {
+                                if (item.opportunity.id === pk) {
+                                    call_2_result.push({
+                                        'id': item.id,
+                                        'type': 1,
+                                        'subject': item.subject,
+                                        'date': item.date_created.split(' ')[0],
+                                    })
+                                }
+                            })
+                        }
+                        return call_2_result;
+                    }
+                })
+                Promise.all([call_1, call_2]).then((results) => {
+                    let sorted = results[0].concat(results[1]).sort(function(a, b) {
+                        return new Date(b.date) - new Date(a.date);
+                    })
+                    loadTimelineList(sorted)
+                }).catch((error) => {
+                    console.log(error);
+                });
+            }
+        })
     })
 
-    function loadOpportunityCallLogList() {
-        if (!$.fn.DataTable.isDataTable('#table-activities')) {
-            let dtb = $('#table-activities');
-            dtb.DataTableDefault({
-                pageLength: 5,
-                dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
-                data: data_activities,
-                columns: [
-                    {
-                        data: 'activity',
-                        className: 'wrap-text w-25',
-                        render: (data, type, row, meta) => {
-                            if (row.type === 0) {
-                                return `Call customer`
-                            }
-                        }
-                    },
-                    {
-                        data: 'type',
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return `<i class="bi bi-telephone-fill text-primary"></i>`
-                        }
-                    },
-                    {
-                        data: 'subject',
-                        className: 'wrap-text w-35',
-                        render: (data, type, row, meta) => {
-                            return row.subject
-                        }
-                    },
-                    {
-                        data: 'call_date',
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return row.call_date
-                        }
-                    },
-                    {
-                        data: 'repeat',
-                        className: 'wrap-text w-10 text-center',
-                        render: (data, type, row, meta) => {
-                            if (row.repeat) {
-                                return `<i class="bi bi-check-circle-fill text-success"></i>`
-                            } else {
-                                return ``
-                            }
-                        }
-                    },
-                ],
-            });
-        }
+
+    // for send email
+
+    function LoadEmailToList(contact_list_id) {
+        let $to_sb = $('#email-to-select-box');
+        $to_sb.html(``);
+        $to_sb.append(`<option></option>`)
+        contact_list.map(function (item) {
+            if (contact_list_id.includes(item.id)) {
+                if (item.email === null) {
+                    $to_sb.append(`<option disabled>${item.fullname}</option>`);
+                } else {
+                    $to_sb.append(`<option data-email-to-contact="${item.id}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                }
+            }
+        });
+        $to_sb.select2({dropdownParent: $("#send-email")});
     }
+
+    function LoadEmailCcList(contact_list_id) {
+        let $cc_sb = $('#email-cc-select-box');
+        $cc_sb.html(``);
+        $cc_sb.append(`<option></option>`)
+        contact_list.map(function (item) {
+            if (contact_list_id.includes(item.id)) {
+                if (item.email === null) {
+                    $cc_sb.append(`<option disabled>${item.fullname}</option>`);
+                } else {
+                    $cc_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                }
+            }
+        });
+        $cc_sb.select2({dropdownParent: $("#send-email")});
+    }
+
+    $('.send-email-button').on('click', function () {
+        $('#email-sale-code-span').text($('#span-code').text())
+        $('#email-subject-input').val('');
+        $('#email-content-area').val('');
+        let contact_list_id = account_list.filter(function(item) {
+            return item.id === $('#select-box-customer option:selected').attr('value');
+        })[0].contact_mapped;
+        LoadEmailToList(contact_list_id);
+        LoadEmailCcList(contact_list_id);
+    })
+
+    $('#email-to-input-btn').on('click', function() {
+        $('#email-to-select-box').prop('hidden', true);
+        $('#email-to-select-box').next(1).prop('hidden', true);
+        $('#inputEmailTo').prop('hidden', false);
+        $('#email-to-select-btn').prop('hidden', false);
+        $('#email-to-input-btn').prop('hidden', true);
+    })
+    $('#email-to-select-btn').on('click', function() {
+        $('#email-to-select-box').prop('hidden', false);
+        $('#email-to-select-box').next(1).prop('hidden', false);
+        $('#inputEmailTo').prop('hidden', true);
+        $('#email-to-select-btn').prop('hidden', true);
+        $('#email-to-input-btn').prop('hidden', false);
+    })
+
+    $('#email-cc-input-btn').on('click', function() {
+        $('#inputEmailCc').prop('hidden', false);
+        $('#email-cc-add').prop('hidden', false);
+        $('#email-cc-remove').prop('hidden', false);
+        $(this).prop('hidden', true);
+    })
+    $('#email-cc-remove').on('click', function() {
+        $('#email-cc-input-btn').prop('hidden', false);
+        $('#inputEmailCc').prop('hidden', true);
+        $('#email-cc-add').prop('hidden', true);
+        $(this).prop('hidden', true);
+    })
+    $('#email-cc-add').on('click', function() {
+        if ($('#inputEmailCc').val()) {
+            let data_email = $('#inputEmailCc').val();
+            $('#email-cc-select-box').append(`<option selected value="` + data_email + `">` + data_email + `</option>`);
+            $('#inputEmailCc').val('');
+        }
+    })
+
+    $('#form-new-email').submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+
+        frm.dataForm['subject'] = $('#email-subject-input').val();
+        if ($('#inputEmailTo').attr('hidden') !== 'hidden') {
+            frm.dataForm['email_to'] = $('#inputEmailTo').val();
+        }
+        if ($('#email-to-select-box').attr('hidden') !== 'hidden') {
+            frm.dataForm['email_to'] = $('#email-to-select-box option:selected').attr('value');
+        }
+        frm.dataForm['email_to_contact'] = $('#email-to-select-box option:selected').attr('data-email-to-contact');
+        frm.dataForm['opportunity'] = pk;
+        frm.dataForm['email_cc_list'] = $('#email-cc-select-box').val();
+        frm.dataForm['content'] = $('#email-content-area').val();
+
+        // console.log(frm.dataForm)
+
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        .then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $('#send-email').hide();
+
+                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_1_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                                data.call_log_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_1_result.push({
+                                            'id': item.id,
+                                            'type': 0,
+                                            'subject': item.subject,
+                                            'date': item.call_date.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_1_result;
+                        }
+                    })
+                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_2_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                                data.email_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_2_result.push({
+                                            'id': item.id,
+                                            'type': 1,
+                                            'subject': item.subject,
+                                            'date': item.date_created.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_2_result;
+                        }
+                    })
+                    Promise.all([call_1, call_2]).then((results) => {
+                        let sorted = results[0].concat(results[1]).sort(function(a, b) {
+                            return new Date(b.date) - new Date(a.date);
+                        })
+                        loadTimelineList(sorted);
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
+            },
+            (errs) => {
+                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+            }
+        )
+    })
+
+
+    function loadTimelineList(data_timeline_list) {
+        $('#table-timeline').DataTable().destroy();
+        let dtb = $('#table-timeline');
+        dtb.DataTableDefault({
+            pageLength: 5,
+            dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            data: data_timeline_list,
+            columns: [
+                {
+                    data: 'activity',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row, meta) => {
+                        if (row.type === 0) {
+                            return `<span>Call customer</span>`
+                        }
+                        else if (row.type === 1) {
+                            return `<span>Send email</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'type',
+                    className: 'wrap-text w-10 text-center',
+                    render: (data, type, row, meta) => {
+                        if (row.type === 0) {
+                            return `<i class="bi bi-telephone-fill"></i>`
+                        }
+                        else if (row.type === 1) {
+                            return `<i class="bi bi-envelope-fill"></i>`
+                        }
+                    }
+                },
+                {
+                    data: 'subject',
+                    className: 'wrap-text w-60',
+                    render: (data, type, row, meta) => {
+                        return row.subject
+                    }
+                },
+                {
+                    data: 'date',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row, meta) => {
+                        return row.date
+                    }
+                },
+            ],
+        });
+    }
+
+    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_1_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                data.call_log_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_1_result.push({
+                            'id': item.id,
+                            'type': 0,
+                            'subject': item.subject,
+                            'date': item.call_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_1_result;
+        }
+    })
+    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_2_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                data.email_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_2_result.push({
+                            'id': item.id,
+                            'type': 1,
+                            'subject': item.subject,
+                            'date': item.date_created.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_2_result;
+        }
+    })
+    Promise.all([call_1, call_2]).then((results) => {
+        let sorted = results[0].concat(results[1]).sort(function(a, b) {
+            return new Date(b.date) - new Date(a.date);
+        })
+        loadTimelineList(sorted);
+    }).catch((error) => {
+        console.log(error);
+    });
 })

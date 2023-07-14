@@ -212,6 +212,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
     OPPORTUNITY_EXPENSE_LIST = StringUrl('opportunity/opportunity-expense-list/lists')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
+    OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
+    OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')

@@ -73,7 +73,7 @@
                            class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker"/>
+                               class="form-control date-picker" autocomplete="off">
                         <span class="input-suffix">
                             <i class="bi bi-calendar-week"></i>
                         </span>
@@ -202,10 +202,25 @@
             </div>
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group">
-                    <div id="upload-area" class="form-control">
-                        {% trans "Click here to upload image" %}
+                    <div class="col-4">
+                        <div class="form-group">
+{#                            <label for="attachments" class="form-label">{% trans 'Click button to upload image' %}</label>#}
+                            <button
+                                    type="button"
+                                    class="form-control btn btn-info btn-file-upload text-white"
+                                    data-f-input-name="attachments"
+                                    data-f-input-required="false"
+                                    data-f-input-disabled="false"
+                                    data-f-name-ele-id="#fileNameTestDisplay"
+                            >{% trans 'Click here to upload image' %}</button>
+                            <p id="fileNameTestDisplay"></p>
+                        </div>
                     </div>
-                    <input id="input-attachment" type="file" class="hidden" name="attachments">
+
+                    {#                    <div id="upload-area" class="form-control">#}
+{#                        {% trans "Click here to upload image" %}#}
+{#                    </div>#}
+{#                    <input id="input-attachment" type="file" class="hidden" name="attachments">#}
                 </div>
             </div>
         </div>

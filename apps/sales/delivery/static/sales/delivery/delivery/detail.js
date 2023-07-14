@@ -402,11 +402,17 @@ $(async function () {
                 prodTable.initTableProd()
                 $('#textareaShippingAddress').val(res.sale_order_data?.shipping_address)
                 $('#textareaBilling').val(res.sale_order_data?.billing_address)
-                $('#input-attachment').val(res.attachments)
+                if (res.attachments){
+                    const fileDetail = res.attachments[0]?.['files']
+                    FileUtils.init($(`[name="attachments"]`).siblings('button'), fileDetail);
+                }
                 if (res.remaining_quantity === res.ready_quantity && res.state < 2) {
                     if ($('#config-three-all').length) $('#config-three-all').attr('disabled', false)
                 }
                 if (res.ready_quantity > 0 && res.state < 2) $('button[form="delivery_form"]').attr('disabled', false)
+
+                // after prepare HTML run event click button done
+                btnDoneClick()
             })
     };
 
@@ -436,6 +442,7 @@ $(async function () {
             putData['remaining_quantity'] = $storedData.remaining_quantity
             putData['ready_quantity'] = $storedData.ready_quantity
             putData['is_updated'] = $storedData.is_updated
+            putData['attachments'] = $('[name="attachments"]').val()
             let prodSub = []
             for (prod of prodTable.getProdList) {
                 if (prod.picked_quantity > 0)
@@ -463,6 +470,25 @@ $(async function () {
                 )
                 .catch((err) => console.log(err))
         })
+    }
+
+    // widget button click done
+    function btnDoneClick(){
+        $('#config-one-all').off().on('click', function (e) {
+            e.preventDefault()
+            handleOnClickDone()
+        })
+
+        // quick select config 3
+        $('#config-three-all').off().on('click', function (e) {
+            e.preventDefault()
+            const tableData = prodTable.getProdList
+            for (let item of tableData) {
+                item.picked_quantity = item.ready_quantity
+            }
+            prodTable.setProdList = tableData
+            $('#dtbPickingProductList').DataTable().clear().rows.add(tableData).draw();
+        });
     }
 
     // run datetimepicker
@@ -539,19 +565,4 @@ $(async function () {
         $('#dtbPickingProductList').DataTable().clear().rows.add(tableData).draw();
     }
 
-    $('#config-one-all').off().on('click', function (e) {
-        e.preventDefault()
-        handleOnClickDone()
-    })
-
-    // quick select config 3
-    $('#config-three-all').off().on('click', function (e) {
-        e.preventDefault()
-        const tableData = prodTable.getProdList
-        for (let item of tableData) {
-            item.picked_quantity = item.ready_quantity
-        }
-        prodTable.setProdList = tableData
-        $('#dtbPickingProductList').DataTable().clear().rows.add(tableData).draw();
-    });
 }, (jQuery));

@@ -673,8 +673,8 @@ class loadDataHandle {
                                                     <div class="row">
                                                         <div class="col-5"></div>
                                                         <div class="col-4"></div>
-                                                        <div class="col-3">
-                                                            <button class="btn btn-primary choose-shipping">${$.fn.transEle.attr('data-select-address')}</button>
+                                                        <div class="col-3 float-right">
+                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal">${$.fn.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1661,7 +1661,7 @@ class dataTableHandle {
                                                         </span>
                                                     </div>
                                                     <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
-                                                        <div class="row mb-1">
+                                                        <div class="row mb-2">
                                                             <div class="col-6">
                                                                 <div class="form-check">
                                                                     <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
@@ -1716,7 +1716,7 @@ class dataTableHandle {
                                                         </span>
                                                     </div>
                                                     <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
-                                                        <div class="row mb-1">
+                                                        <div class="row mb-2">
                                                             <div class="col-6">
                                                                 <div class="form-check">
                                                                     <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>

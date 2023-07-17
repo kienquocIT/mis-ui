@@ -316,6 +316,15 @@ $(function () {
             calculateClass.commonCalculate(tableProduct, row, true, false, false);
         });
 
+// If change product uom then clear table COST
+        tableProduct.on('change', '.table-row-uom', function (e) {
+            // Clear table COST if item or quantity change
+            tableCost.DataTable().clear().draw();
+            document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
+            document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
+            document.getElementById('quotation-create-cost-total').innerHTML = "0";
+        });
+
 // Check valid number for input
         $('#tab-content-quotation-product').on('change', '.validated-number', function (e) {
             let value = this.value;
@@ -460,6 +469,7 @@ $(function () {
                     let optionProduct = ``;
 
                     let valueUOM = "";
+                    let valueUOMGroup = "";
                     let showUOM = "";
                     let uomDataStr = "";
                     let optionUOM = ``;
@@ -484,6 +494,7 @@ $(function () {
                                 if (product_data_json.cost_price) {
                                     valuePrice = parseFloat(product_data_json.cost_price);
                                 }
+                                valueUOMGroup = product_data_json.uom_group.id;
                                 product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
                             }
                             if (optionSelected.querySelector('.data-info')) {
@@ -552,7 +563,7 @@ $(function () {
                         }
                         tableCost.DataTable().row.add(dataAdd).draw();
                         loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
-                        loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM);
+                        loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM, valueUOMGroup);
                         loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);
                     } else if (shipping) { // SHIPPING
                         let shippingID = shipping.getAttribute('data-id');

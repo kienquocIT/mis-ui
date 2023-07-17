@@ -7,6 +7,8 @@ $(document).ready(function () {
     const account_list = JSON.parse($('#account_list').text());
     const contact_list = JSON.parse($('#contact_list').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
+    const employee_list = JSON.parse($('#employee_list').text());
+    const account_map_employees = JSON.parse($('#account_map_employees').text());
 
     const config_is_select_stage = config.is_select_stage;
     const config_is_AM_create = config.is_account_manager_create;
@@ -1605,15 +1607,12 @@ $(document).ready(function () {
 
     // for call log
 
-    function LoadSaleCodeList(default_sale_code_id) {
+    function LoadSaleCodeListCallLog(default_sale_code_id) {
         let $sale_code_sb = $('#sale-code-select-box');
         $sale_code_sb.html(``);
-        $sale_code_sb.append(`<option></option>`)
         opportunity_list.map(function (item) {
             if (default_sale_code_id === item.id) {
                 $sale_code_sb.append(`<option selected value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-            } else {
-                $sale_code_sb.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
             }
         })
         $sale_code_sb.select2();
@@ -1657,7 +1656,7 @@ $(document).ready(function () {
         })[0].contact_mapped;
         LoadContactList(contact_list_id);
         if (loaded_modal_call_log === false) {
-            LoadSaleCodeList(pk);
+            LoadSaleCodeListCallLog(pk);
             LoadCustomerList($('#select-box-customer option:selected').attr('value'));
             loaded_modal_call_log = true;
         }
@@ -1739,11 +1738,30 @@ $(document).ready(function () {
                         return call_2_result;
                     }
                 })
-                Promise.all([call_1, call_2]).then((results) => {
-                    let sorted = results[0].concat(results[1]).sort(function(a, b) {
+                let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let call_3_result = [];
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
+                            data.meeting_list.map(function (item) {
+                                if (item.opportunity.id === pk) {
+                                    call_3_result.push({
+                                        'id': item.id,
+                                        'type': 2,
+                                        'subject': item.subject,
+                                        'date': item.meeting_date.split(' ')[0],
+                                    })
+                                }
+                            })
+                        }
+                        return call_3_result;
+                    }
+                })
+                Promise.all([call_1, call_2, call_3]).then((results) => {
+                    let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
                         return new Date(b.date) - new Date(a.date);
                     })
-                    loadTimelineList(sorted)
+                    loadTimelineList(sorted);
                 }).catch((error) => {
                     console.log(error);
                 });
@@ -1897,8 +1915,27 @@ $(document).ready(function () {
                             return call_2_result;
                         }
                     })
-                    Promise.all([call_1, call_2]).then((results) => {
-                        let sorted = results[0].concat(results[1]).sort(function(a, b) {
+                    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_3_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
+                                data.meeting_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_3_result.push({
+                                            'id': item.id,
+                                            'type': 2,
+                                            'subject': item.subject,
+                                            'date': item.meeting_date.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_3_result;
+                        }
+                    })
+                    Promise.all([call_1, call_2, call_3]).then((results) => {
+                        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
                             return new Date(b.date) - new Date(a.date);
                         })
                         loadTimelineList(sorted);
@@ -1914,6 +1951,223 @@ $(document).ready(function () {
     })
 
 
+    // for meeting
+
+    function LoadMeetingSaleCodeList(default_sale_code_id) {
+        let $sc_sb = $('#meeting-sale-code-select-box');
+        $sc_sb.html(``);
+        opportunity_list.map(function (item) {
+            if (item.id === default_sale_code_id) {
+                $sc_sb.append(`<option selected data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+            }
+        })
+        $sc_sb.select2({dropdownParent: $("#create-meeting")});
+    }
+
+    function LoadCustomerMember(contact_mapped_list) {
+            let $customer_member_sb = $('#meeting-customer-member-select-box');
+            $customer_member_sb.html(``);
+            $customer_member_sb.append(`<option></option>`);
+            contact_list.map(function (item) {
+                if (contact_mapped_list.includes(item.id)) {
+                    $customer_member_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                }
+            })
+            $customer_member_sb.select2({dropdownParent: $("#create-meeting")});
+        }
+
+    function LoadEmployeeAttended(customer_id) {
+            let employee_filtered = [];
+            for (let i = 0; i < account_map_employees.length; i++) {
+                if (account_map_employees[i].account.id === customer_id) {
+                    employee_filtered.push(account_map_employees[i].employee)
+                }
+            }
+            let $employee_attended_sb = $('#meeting-employee-attended-select-box');
+            $employee_attended_sb.html(``);
+            $employee_attended_sb.append(`<option></option>`);
+            employee_list.map(function (item) {
+                if (employee_filtered.includes(item.id)) {
+                    $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
+                }
+            })
+            $employee_attended_sb.select2({dropdownParent: $("#create-meeting")});
+        }
+
+    function LoadMeetingAddress(customer_id) {
+            account_list.map(function (item) {
+                if (customer_id === item.id) {
+                    LoadCustomerMember(item.contact_mapped);
+                }
+            })
+
+            let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function(item) {
+                return item.customer.id === customer_id;
+            })
+            let shipping_address_list = opportunity_obj[0].customer.shipping_address;
+            $('#meeting-address-select-box option').remove();
+            $('#meeting-address-select-box').append(`<option></option>`);
+            for (let i = 0; i < shipping_address_list.length; i++) {
+                $('#meeting-address-select-box').append(`<option>` + shipping_address_list[i] + `</option>`);
+            }
+            $('#meeting-address-select-box').select2({dropdownParent: $("#create-meeting")});
+        }
+
+    $('#meeting-date-input').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        drops: 'down',
+        minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+        locale: {
+            format: 'YYYY-MM-DD'
+        },
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'), 10) + 100
+    });
+    $('#meeting-date-input').val('');
+
+    let loaded_modal_meeting = false;
+    $('.new-meeting-button').on('click', function () {
+        $('#meeting-sale-code-select-box').prop('disabled', true);
+        if (loaded_modal_meeting === false) {
+            LoadMeetingSaleCodeList(pk);
+            let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
+            LoadMeetingAddress(customer_id);
+            LoadEmployeeAttended(customer_id);
+            loaded_modal_meeting = true;
+        }
+    })
+
+    $('#form-new-meeting').submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+
+        frm.dataForm['subject'] = $('#meeting-subject-input').val();
+        frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
+        frm.dataForm['meeting_date'] = $('#meeting-date-input').val();
+        frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
+        frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
+        frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
+
+        if ($('#repeat-activity').is(':checked')) {
+            frm.dataForm['repeat'] = 1;
+        }
+        else {
+            frm.dataForm['repeat'] = 0;
+        }
+
+        let employee_attended_list = [];
+        $('#meeting-employee-attended-select-box option:selected').each(function (index, element) {
+            employee_attended_list.push(
+                {
+                    'id': $(this).attr('value'),
+                    'code': $(this).attr('data-code'),
+                    'fullname': $(this).text()
+                }
+            )
+        })
+
+        let customer_member_list = [];
+        $('#meeting-customer-member-select-box option:selected').each(function (index, element) {
+            customer_member_list.push(
+                {
+                    'id': $(this).attr('value'),
+                    'fullname': $(this).text()
+                }
+            )
+        })
+
+        frm.dataForm['employee_attended_list'] = employee_attended_list;
+        frm.dataForm['customer_member_list'] = customer_member_list;
+
+        // console.log(frm.dataForm)
+
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        .then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $('#create-meeting').hide();
+
+                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_1_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
+                                data.call_log_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_1_result.push({
+                                            'id': item.id,
+                                            'type': 0,
+                                            'subject': item.subject,
+                                            'date': item.call_date.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_1_result;
+                        }
+                    })
+                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_2_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                                data.email_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_2_result.push({
+                                            'id': item.id,
+                                            'type': 1,
+                                            'subject': item.subject,
+                                            'date': item.date_created.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_2_result;
+                        }
+                    })
+                    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let call_3_result = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
+                                data.meeting_list.map(function (item) {
+                                    if (item.opportunity.id === pk) {
+                                        call_3_result.push({
+                                            'id': item.id,
+                                            'type': 2,
+                                            'subject': item.subject,
+                                            'date': item.meeting_date.split(' ')[0],
+                                        })
+                                    }
+                                })
+                            }
+                            return call_3_result;
+                        }
+                    })
+                    Promise.all([call_1, call_2, call_3]).then((results) => {
+                        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
+                            return new Date(b.date) - new Date(a.date);
+                        })
+                        loadTimelineList(sorted);
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
+            },
+            (errs) => {
+                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+            }
+        )
+    })
+
+
+    // TIMELINE
+
     function loadTimelineList(data_timeline_list) {
         $('#table-timeline').DataTable().destroy();
         let dtb = $('#table-timeline');
@@ -1924,13 +2178,16 @@ $(document).ready(function () {
             columns: [
                 {
                     data: 'activity',
-                    className: 'wrap-text w-15',
+                    className: 'wrap-text w-25',
                     render: (data, type, row, meta) => {
                         if (row.type === 0) {
-                            return `<span>Call customer</span>`
+                            return `<span>Call to customer</span>`
                         }
                         else if (row.type === 1) {
                             return `<span>Send email</span>`
+                        }
+                        else if (row.type === 2) {
+                            return `<span>Meeting with customer</span>`
                         }
                     }
                 },
@@ -1944,11 +2201,14 @@ $(document).ready(function () {
                         else if (row.type === 1) {
                             return `<i class="bi bi-envelope-fill"></i>`
                         }
+                        else if (row.type === 2) {
+                            return `<i class="bi bi-person-workspace"></i>`
+                        }
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-60',
+                    className: 'wrap-text w-50',
                     render: (data, type, row, meta) => {
                         return row.subject
                     }
@@ -2002,8 +2262,27 @@ $(document).ready(function () {
             return call_2_result;
         }
     })
-    Promise.all([call_1, call_2]).then((results) => {
-        let sorted = results[0].concat(results[1]).sort(function(a, b) {
+    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_3_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
+                data.meeting_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_3_result.push({
+                            'id': item.id,
+                            'type': 2,
+                            'subject': item.subject,
+                            'date': item.meeting_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_3_result;
+        }
+    })
+    Promise.all([call_1, call_2, call_3]).then((results) => {
+        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
             return new Date(b.date) - new Date(a.date);
         })
         loadTimelineList(sorted);

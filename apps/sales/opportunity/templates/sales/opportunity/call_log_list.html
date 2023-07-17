@@ -25,6 +25,9 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.account_list | json_script:"account_list" }}
+    {{ data.contact_list | json_script:"contact_list" }}
+    {{ data.opportunity_list | json_script:"opportunity_list" }}
+    {{ data.call_log_list | json_script:"call_log_list" }}
 
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
@@ -32,17 +35,23 @@
            data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
         <thead>
         <tr>
-            <th class="w-30">{% trans 'Subject' %}</th>
-            <th class="w-20">{% trans 'To Contact' %}
+            <th>{% trans 'To Contact' %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"
                    data-bs-placement="bottom"
                    title="{% trans 'Press row here to open detail page.' %}">
                 </i>
             </th>
-            <th class="text-center w-20">{% trans 'Sale Code' %}</th>
-            <th class="text-center w-20">{% trans 'Date' %}</th>
-            <th class="text-center w-10">{% trans 'Need repeat' %}</th>
+            <th>{% trans 'Subject' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to see detail call log.' %}">
+                </i>
+            </th>
+            <th class="text-center">{% trans 'Sale Code' %}</th>
+            <th class="text-center">{% trans 'Date' %}</th>
+            <th class="text-center">{% trans 'Need repeat' %}</th>
         </tr>
         </thead>
         <tbody>
@@ -50,7 +59,7 @@
     </table>
 
     <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
-         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+         aria-labelledby="createOpportunityCallLogModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -59,7 +68,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow: auto; height: 58vh">
                     <form data-url="{% url 'OpportunityCallLogListAPI' %}"
                           data-url-redirect="{% url 'OpportunityCallLogList' %}"
                           data-method="POST"
@@ -110,9 +119,71 @@
                                 <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3"
-                                id="btn-create-new-call-log">{% trans 'Save' %}</button>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-create-new-call-log"
+                            id="btn-create-new-call-log">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-call-log" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityCallLogModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Subject' %}
+                        </label>
+                        <input readonly id="detail-subject-input" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Sale Code' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Customer' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Contact' %}
+                            </label>
+                            <select disabled style="color: #6f6f6f" id="detail-contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Date' %}
+                            </label>
+                            <input readonly id="detail-date-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Input Result' %}
+                        </label>
+                        <textarea readonly id="detail-result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                            <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

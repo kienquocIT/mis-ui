@@ -3,11 +3,11 @@
 }
 
 .fa-file-alt {
-    font-size: larger;
+    font-size: x-large;
 }
 
-.fa-chart-line {
-    font-size: larger;
+.fa-chart-bar {
+    font-size: x-large;
 }
 
 .dropdown-menu .dropdown-header.header-wth-bg {
@@ -19,6 +19,11 @@
 }
 
 .disabled-but-edit:disabled {
+    color: #0c0c0c;
+    background-color: white;
+}
+
+.disabled-show-normal:disabled {
     color: #0c0c0c;
     background-color: white;
 }
@@ -97,4 +102,13 @@ a.dropdown-item.table-row-price-option:hover {
 
 .expired-price {
     color: #EB5757CC;
+}
+
+.valid-price {
+    color: #00D67F;
+}
+
+.fa-angle-down {
+    font-size: x-small;
+    color: #c7c7c7;
 }

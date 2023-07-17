@@ -285,7 +285,7 @@ $(function () {
                         $.fn.initMaskMoney2();
                         calculateClass.commonCalculate(tableProduct, row, true, false, false);
                     }
-                    // make a tag checked
+                    // make button option checked
                     let allOption = $(row).find('.table-row-price-option');
                     if (allOption) {
                         allOption.removeClass('option-btn-checked');
@@ -392,6 +392,29 @@ $(function () {
             tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
+// Action on click expense option
+        tableExpense.on('click', '.table-row-expense-option', function (e) {
+            let itemID = $(this)[0].getAttribute('data-value');
+            let itemTitle = $(this)[0].querySelector('.expense-title').innerHTML;
+            if (itemID && itemTitle) {
+                let row = $(this)[0].closest('tr');
+                let eleExpenseShow = row.querySelector('.table-row-item');
+                let eleExpenseDropdown = row.querySelector('.expense-option-list');
+                if (eleExpenseShow) {
+                    eleExpenseShow.value = itemTitle;
+                    eleExpenseShow.setAttribute('data-value', itemID);
+                    // make button option checked
+                    let allOption = $(row).find('.table-row-expense-option');
+                    if (allOption) {
+                        allOption.removeClass('option-btn-checked');
+                    }
+                    $(this).addClass('option-btn-checked');
+                    // load data expense selected
+                    loadDataClass.loadDataProductSelect($(eleExpenseDropdown), true, true);
+                }
+            }
+        });
+
 // Action on delete row expense
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
@@ -418,7 +441,7 @@ $(function () {
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                loadDataClass.loadDataProductSelect($(this));
+                // loadDataClass.loadDataProductSelect($(this));
             }
             calculateClass.commonCalculate(tableExpense, row, false, false, true);
         });
@@ -580,10 +603,9 @@ $(function () {
                 }
                 // update total
                 calculateClass.updateTotal(tableCost[0], false, true, false);
+                // check disable
+                tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             }
-
-            // check disable
-            tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
@@ -768,7 +790,7 @@ $(function () {
                     for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
                         let row = tableExpense.tBodies[0].rows[i];
                         if (row.querySelector('.table-row-item')) {
-                            loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                            loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
                             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
                             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
                         }
@@ -862,7 +884,7 @@ $(function () {
                         for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
                             let row = tableExpense.tBodies[0].rows[i];
                             if (row.querySelector('.table-row-item')) {
-                                loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                                loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
                                 loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value);
                                 loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
                             }

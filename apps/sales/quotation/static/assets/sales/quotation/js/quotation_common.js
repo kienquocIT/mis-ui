@@ -503,7 +503,6 @@ class loadDataHandle {
             eleBox.attr('data-link-detail', linkDetail);
             let data = JSON.parse(ele.value);
             eleBox.empty();
-            eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
                 let uom_title = "";
                 let expense_type_title = "";
@@ -537,28 +536,33 @@ class loadDataHandle {
                     'price_list': price_list,
                     'tax': tax_code,
                 }).replace(/"/g, "&quot;");
-                let option = `<option value="${data[i].id}">
-                            <span class="expense-title">${data[i].title}</span>
-                            <input type="hidden" class="data-default" value="${expense_data}">
-                            <input type="hidden" class="data-info" value="${dataStr}">
-                        </option>`
+                let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
+                                <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+                                <input type="hidden" class="data-default" value="${expense_data}">
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </button>`
                 if (valueToSelect && valueToSelect === data[i].id) {
-                    option = `<option value="${data[i].id}" selected>
-                            <span class="expense-title">${data[i].title}</span>
-                            <input type="hidden" class="data-default" value="${expense_data}">
-                            <input type="hidden" class="data-info" value="${dataStr}">
-                        </option>`
+                    option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
+                                <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+                                <input type="hidden" class="data-default" value="${expense_data}">
+                                <input type="hidden" class="data-info" value="${dataStr}">
+                            </button>`
                 }
                 eleBox.append(option);
             }
             // load data information
-            self.loadInformationSelectBox(eleBox);
+            self.loadInformationSelectBox(eleBox, true);
         }
     }
 
-    loadDataProductSelect(ele, is_change_item = true) {
+    loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;
-        let optionSelected = ele[0].options[ele[0].selectedIndex];
+        let optionSelected = null;
+        if (is_expense === false) { // PRODUCT
+            optionSelected = ele[0].options[ele[0].selectedIndex];
+        } else { // EXPENSE
+            optionSelected = ele[0].querySelector('.option-btn-checked');
+        }
         let productData = optionSelected.querySelector('.data-default');
         if (productData) {
             let data = JSON.parse(productData.value);
@@ -574,7 +578,7 @@ class loadDataHandle {
             }
             // load PRICE
             if (price && priceList) {
-                loadPriceProduct(ele[0], is_change_item);
+                loadPriceProduct(ele[0], is_change_item, is_expense);
             }
             // load TAX
             if (tax && data.tax) {
@@ -582,21 +586,31 @@ class loadDataHandle {
             } else {
                 self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', tax.id);
             }
-            self.loadInformationSelectBox(ele);
+            // load modal more information
+            self.loadInformationSelectBox(ele, is_expense);
         }
         $.fn.initMaskMoney2();
     }
 
-    loadInformationSelectBox(ele) {
-        let optionSelected = ele[0].options[ele[0].selectedIndex];
-        let inputWrapper = ele[0].closest('.input-affix-wrapper');
-        let dropdownContent = inputWrapper.querySelector('.dropdown-menu');
+    loadInformationSelectBox(ele, is_expense = false) {
+        let optionSelected = null;
+        let dropdownContent = null;
+        let eleInfo = null;
+        if (is_expense === false) { // Normal dropdown
+            optionSelected = ele[0].options[ele[0].selectedIndex];
+            eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
+            let inputWrapper = ele[0].closest('.input-affix-wrapper');
+            dropdownContent = inputWrapper.querySelector('.dropdown-menu');
+        } else { // Expense dropdown
+            optionSelected = ele[0].querySelector('.option-btn-checked');
+            eleInfo = ele[0].closest('.dropdown-expense').querySelector('.fa-info-circle');
+            dropdownContent = ele[0].closest('.dropdown-expense').querySelector('.expense-more-info');
+        }
         dropdownContent.innerHTML = ``;
-        let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
         eleInfo.setAttribute('disabled', true);
-        let eleData = optionSelected.querySelector('.data-info');
         let link = "";
         if (optionSelected) {
+            let eleData = optionSelected.querySelector('.data-info');
             if (eleData) {
                 // remove attr disabled
                 if (eleInfo) {
@@ -1148,7 +1162,7 @@ class dataTableHandle {
                             } else {
                                 return `<div class="row">
                                 <div class="dropdown">
-                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <div class="input-group dropdown-action disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled>
                                     <span class="input-affix-wrapper">
                                         <input 
                                             type="text" 
@@ -1338,8 +1352,6 @@ class dataTableHandle {
                     targets: 9,
                     width: "1%",
                     render: () => {
-                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        // return `${bt3}`
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                         } else {
@@ -1596,63 +1608,119 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
+                        let checkboxExpenseItemID = 'check-box-expense-item-' + String(row.order);
+                        let checkboxPurchaseItemID = 'check-box-purchase-item-' + String(row.order);
                         if (is_load_detail === false) {
-                            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
-                            return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <div class="btn-group dropstart">
-                                                <i
-                                                    class="fas fa-info-circle"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                                >
-                                                </i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                        </span>
-                                        <select 
-                                        class="form-select table-row-item" 
-                                        id="${selectExpenseID}"
-                                        required>
-                                            <option value="${row.expense.id}">${row.expense.title}</option>
-                                        </select>
-                                    </span>
-                                </div>
-                            </div>`;
+                            return `<div class="row dropdown-expense">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropdown">
+                                                        <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-2 ml-3 expense-more-info"></div>
+                                                    </div>
+                                                </span>
+                                                <div class="dropdown">
+                                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                                        <span class="input-affix-wrapper">
+                                                            <input 
+                                                                type="text" 
+                                                                class="form-control table-row-item disabled-show-normal" 
+                                                                value="${row.expense.title}"
+                                                                data-value="${row.expense.id}"
+                                                                style="padding-left: 38px"
+                                                                disabled
+                                                            >
+                                                            <span class="input-suffix">
+                                                                <i class="fas fa-angle-down"></i>
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
+                                                        <div class="row mb-1">
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+                                </div>`;
                         } else {
-                            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
-                            return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <div class="btn-group dropstart">
-                                                <i
-                                                    class="fas fa-info-circle"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                                >
-                                                </i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                        </span>
-                                        <select 
-                                        class="form-select table-row-item disabled-but-edit" 
-                                        id="${selectExpenseID}"
-                                        required
-                                        disabled>
-                                            <option value="${row.expense.id}">${row.expense.title}</option>
-                                        </select>
-                                    </span>
-                                </div>
-                            </div>`;
+                            return `<div class="row dropdown-expense">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropdown">
+                                                        <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-2 ml-3 expense-more-info"></div>
+                                                    </div>
+                                                </span>
+                                                <div class="dropdown">
+                                                    <div class="input-group disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled>
+                                                        <span class="input-affix-wrapper">
+                                                            <input 
+                                                                type="text" 
+                                                                class="form-control table-row-item disabled-show-normal" 
+                                                                value="${row.expense.title}"
+                                                                data-value="${row.expense.id}"
+                                                                style="padding-left: 38px"
+                                                                disabled
+                                                            >
+                                                            <span class="input-suffix">
+                                                                <i class="fas fa-angle-down"></i>
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
+                                                        <div class="row mb-1">
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
+                                                                    <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+                                </div>`;
                         }
                     }
                 },
@@ -1739,6 +1807,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: "1%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
@@ -1819,8 +1888,6 @@ class dataTableHandle {
                     targets: 7,
                     width: "1%",
                     render: () => {
-                        // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        // return `${bt3}`
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                         } else {
@@ -3000,7 +3067,8 @@ class submitHandle {
             let row = tableBody.rows[i];
             let eleExpense = row.querySelector('.table-row-item');
             if (eleExpense) {
-                let optionSelected = eleExpense.options[eleExpense.selectedIndex];
+                // let optionSelected = eleExpense.options[eleExpense.selectedIndex];
+                let optionSelected = eleExpense.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
                 if (optionSelected) {
                     if (optionSelected.querySelector('.data-info')) {
                         let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
@@ -3232,8 +3300,13 @@ function filterDataProductNotPromotion(data_products) {
     return finalList
 }
 
-function loadPriceProduct(eleProduct, is_change_item = true) {
-        let optionSelected = eleProduct.options[eleProduct.selectedIndex];
+function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
+        let optionSelected = null;
+        if (is_expense === false) { // PRODUCT
+            optionSelected = eleProduct.options[eleProduct.selectedIndex];
+        } else { // EXPENSE
+            optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
+        }
         let productData = optionSelected.querySelector('.data-default');
         let is_change_price = false;
         if (productData) {
@@ -3257,7 +3330,7 @@ function loadPriceProduct(eleProduct, is_change_item = true) {
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span></span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                     </div>
                                                 </button>`);
                         }
@@ -3268,7 +3341,7 @@ function loadPriceProduct(eleProduct, is_change_item = true) {
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span></span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                         </div>
                                                     </button>`);
                             } else {

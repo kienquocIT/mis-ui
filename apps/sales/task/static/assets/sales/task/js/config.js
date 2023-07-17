@@ -83,6 +83,19 @@ $(function(){
         })
     });
 
+    // block assign in Opp
+    $('#in_assign_any').on('change', function(){
+        if (!this.checked){
+            $('[name="in_assign_opt"]').prop('disabled', false)
+        }else $('[name="in_assign_opt"]').prop('disabled', true).prop('checked', false)
+    })
+    // block assign over Opp
+    $('#out_assign_any').on('change', function(){
+        if (!this.checked){
+            $('[name="out_assign_opt"]').prop('disabled', false)
+        }else $('[name="out_assign_opt"]').prop('disabled', true).prop('checked', false)
+    })
+
     $form.on('submit', function(e){
         const $todoElm = $('#todo_list')
         $.fn.showLoading();
@@ -111,9 +124,9 @@ $(function(){
             'is_edit_date': $('#assignee_edit_date').prop('checked'),
             'is_edit_est': $('#assignee_edit_est').prop('checked'),
             'is_in_assign': $('#in_assign_any').prop('checked'),
-            'in_assign_opt': inOpt,
+            'in_assign_opt': parseInt(inOpt),
             'is_out_assign': $('#out_assign_any').prop('checked'),
-            'out_assign_opt': outOpt,
+            'out_assign_opt': parseInt(outOpt),
         }
         $.fn.callAjax($form.attr('data-url'), 'PUT', putData, true)
             .then(

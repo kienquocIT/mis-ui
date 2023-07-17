@@ -289,12 +289,8 @@ $(document).ready(function () {
                 }
             }
 
-            if (!$('#check-input-rate').is(':checked')) {
-                if (is_load_rate) {
-                    $('#input-rate').val(dict_stage[ele_stage_current.data('id')].win_rate);
-                    $('#rangeInput').val(dict_stage[ele_stage_current.data('id')].win_rate);
-                }
-            }
+            if (!$('#check-input-rate').is(':checked') && (is_load_rate && ele_stage_current.length))
+                    $('#input-rate, #rangeInput').val(dict_stage[ele_stage_current.data('id')]?.win_rate);
         }
         return id_stage_current
     }

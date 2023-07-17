@@ -1,7 +1,9 @@
 function resetFormTask() {
     // clean html select etc.
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#selectOpportunity, #selectAssignTo').val(null).trigger('change');
+    $('#selectAssignTo').val(null).trigger('change');
+    if ($('.current-create-task').length !== 1)
+        $('#selectOpportunity').val(null).trigger('change');
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('[name="id"]').remove();
@@ -187,6 +189,27 @@ $(function () {
     // public global scope for list page render when edit
     window.formLabel = formLabel
 
+    // auto load opp if in page opp
+    const $btnInOpp = $('.current-create-task')
+    const $selectElm = $('#selectOpportunity')
+
+    if($btnInOpp.length){
+        const pk = $.fn.getPkDetail()
+        let data = {
+            "id": pk,
+            "title": ''
+        }
+        const isCheck = setInterval(()=>{
+            let oppCode = $('#span-code').text()
+            if (oppCode.length){
+                clearInterval(isCheck)
+                data.title = oppCode
+                $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
+                initSelectBox($selectElm)
+            }
+        }, 1000)
+    }
+
     // click to logwork
     $('#save-logtime').off().on('click', function () {
         const start = $('#startDateLogTime').val();
@@ -197,6 +220,7 @@ $(function () {
         }
     });
     let editor;
+
     // run CKEditor
     ClassicEditor
         .create(document.querySelector('.ck5-rich-txt'),

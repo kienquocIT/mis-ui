@@ -7,38 +7,6 @@
         id="drawer_task_create"
         {#        data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"#}
 >
-    <style>
-        .label-mark .item-tag {
-            color: #ffffff;
-            background: var(--bs-info);
-            border-radius: 0.375rem;
-            padding: 1px 4px 2px;
-            font-size: .8rem;
-        }
-
-        .label-mark .item-tag > .tag-delete {
-            margin-left: 4px;
-            color: #555555;
-            cursor: pointer;
-        }
-
-        .label-mark .item-tag + .item-tag {
-            margin-left: 4px;
-        }
-
-        .checklist_item label {
-            border: 0px solid transparent;
-            padding: 2px 8px;
-        }
-
-        .checklist_item label:focus,
-        .checklist_item label:hover {
-            cursor: text;
-            outline: dotted 1px var(--bs-info);
-            outline-offset: 2px;
-            border-radius: 4px;
-        }
-    </style>
     <div class="ntt-drawer-header">
         <div>
             <span class="ntt-drawer-header-text">{% trans 'Create Task' %}</span>
@@ -107,6 +75,7 @@
                                     data-prefix="opportunity_list"
                                     data-url="{% url 'OpportunityListAPI' %}"
                                     data-select2-closeOnSelect="true"
+                                    data-format="code"
                             >
                             </select>
                         </div>

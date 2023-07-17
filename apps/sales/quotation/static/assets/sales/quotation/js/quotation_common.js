@@ -335,13 +335,17 @@ class loadDataHandle {
             for (let i = 0; i < data.length; i++) {
                 let uom_title = "";
                 let default_uom = {};
+                let uom_group = {};
                 let tax_code = {};
-                if (data[i].sale_information) {
-                    if (data[i].sale_information.default_uom) {
+                if (Object.keys(data[i].sale_information).length !== 0) {
+                    if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
                         uom_title = data[i].sale_information.default_uom.title
                     }
                     default_uom = data[i].sale_information.default_uom;
                     tax_code = data[i].sale_information.tax_code;
+                }
+                if (Object.keys(data[i].general_information).length !== 0) {
+                    uom_group = data[i].general_information.uom_group;
                 }
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
@@ -354,6 +358,7 @@ class loadDataHandle {
                     'title': data[i].title,
                     'code': data[i].code,
                     'unit_of_measure': default_uom,
+                    'uom_group': uom_group,
                     'price_list': data[i].price_list,
                     'cost_price': data[i].cost_price,
                     'tax': tax_code,
@@ -394,39 +399,46 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationUOM(uom_id, box_id, valueToSelect = null) {
+    loadBoxQuotationUOM(uom_id, box_id, valueToSelect = null, uom_group = null) {
         let ele = document.getElementById(uom_id);
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
-        if (ele && eleBox) {
+        if (ele && eleBox && uom_group) {
             let data = JSON.parse(ele.value);
             let optionSelected = ``;
             eleBox.empty();
             eleBox.append(`<option value=""></option>`);
             for (let i = 0; i < data.length; i++) {
-                let dataStr = JSON.stringify({
-                    'id': data[i].id,
-                    'title': data[i].title,
-                    'code': data[i].code,
-                }).replace(/"/g, "&quot;");
-                let option = `<option value="${data[i].id}">
-                                <span class="uom-title">${data[i].title}</span>
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`
-                if (valueToSelect && valueToSelect === data[i].id) {
-                    optionSelected = `<option value="${data[i].id}" selected>
-                                <span class="uom-title">${data[i].title}</span>
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`
+                // check uom_group with product
+                if (data[i].group.id === uom_group) {
+                    let dataStr = JSON.stringify({
+                        'id': data[i].id,
+                        'title': data[i].title,
+                        'code': data[i].code,
+                    }).replace(/"/g, "&quot;");
+                    let option = `<option value="${data[i].id}">
+                                    <span class="uom-title">${data[i].title}</span>
+                                    <input type="hidden" class="data-info" value="${dataStr}">
+                                </option>`
+                    if (valueToSelect && valueToSelect === data[i].id) {
+                        // optionSelected = `<option value="${data[i].id}" selected>
+                        //             <span class="uom-title">${data[i].title}</span>
+                        //             <input type="hidden" class="data-info" value="${dataStr}">
+                        //         </option>`
+                        option = `<option value="${data[i].id}" selected>
+                                    <span class="uom-title">${data[i].title}</span>
+                                    <input type="hidden" class="data-info" value="${dataStr}">
+                                </option>`
+                    }
+                    eleBox.append(option);
                 }
-                eleBox.append(option)
             }
             // check if option selected
-            if (optionSelected) {
-                eleBox.empty();
-                eleBox.append(`<option value=""></option>`);
-                eleBox.append(optionSelected);
-            }
+            // if (optionSelected) {
+            //     eleBox.empty();
+            //     eleBox.append(`<option value=""></option>`);
+            //     eleBox.append(optionSelected);
+            // }
         }
     }
 
@@ -571,8 +583,8 @@ class loadDataHandle {
             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
             // load UOM
-            if (uom && data.unit_of_measure) {
-                self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id, data.unit_of_measure.id);
+            if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
+                self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id, data.unit_of_measure.id, data.uom_group.id);
             } else {
                 self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', uom.id);
             }
